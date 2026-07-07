@@ -1,0 +1,96 @@
+/* ============================================================
+   CounterLabel
+   Variants: primary | secondary
+   Status:   default | positive | intermediate | negative
+   Sizes:    small | medium | large
+   ============================================================ */
+
+.tds-counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-badge);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  white-space: nowrap;
+}
+
+/* --- Sizes --- */
+
+.tds-counter--sm {
+  min-width: 24px;
+  height: 16px;
+  padding: 0 var(--spacing-4);
+  font-size: var(--font-size-xs);
+}
+
+.tds-counter--md,
+.tds-counter:not([class*="tds-counter--sm"]):not([class*="tds-counter--lg"]) {
+  min-width: 32px;
+  height: 20px;
+  padding: 0 var(--spacing-8);
+  font-size: var(--font-size-xs);
+}
+
+.tds-counter--lg {
+  min-width: 42px;
+  height: 26px;
+  padding: 0 var(--spacing-8);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================================
+   VARIANT: Primary
+   ============================================================ */
+
+/* Default */
+.tds-counter--primary,
+.tds-counter:not([class*="tds-counter--secondary"]) {
+  background-color: var(--interactive-default);
+  color: var(--text-inverse);
+}
+
+/* Positive */
+.tds-counter--primary.tds-counter--positive {
+  background-color: var(--border-positive);
+}
+
+/* Intermediate */
+.tds-counter--primary.tds-counter--intermediate {
+  background-color: var(--border-intermediate);
+}
+
+/* Negative */
+.tds-counter--primary.tds-counter--negative {
+  background-color: var(--border-negative);
+}
+
+
+/* ============================================================
+   VARIANT: Secondary
+   ============================================================ */
+
+/* Default */
+.tds-counter--secondary {
+  background-color: var(--surface-neutral-03);
+  color: var(--text-default);
+}
+
+/* Positive */
+.tds-counter--secondary.tds-counter--positive {
+  background-color: var(--surface-positive);
+  color: var(--text-positive);
+}
+
+/* Intermediate */
+.tds-counter--secondary.tds-counter--intermediate {
+  background-color: var(--surface-intermediate);
+  color: var(--text-intermediate);
+}
+
+/* Negative */
+.tds-counter--secondary.tds-counter--negative {
+  background-color: var(--surface-negative);
+  color: var(--text-negative);
+}
