@@ -1,0 +1,44 @@
+/* ============================================================
+   DropdownPanel
+   The floating menu for Select, ActionList, NavList, etc.
+   MenuType: text | multiSelect
+   Options: showHeader
+   ============================================================ */
+
+.tds-dropdown-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 172px;
+  max-height: 316px;
+  padding: var(--spacing-8);
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-modal);
+  box-shadow: var(--elevation-xl);
+  overflow-y: auto;
+}
+
+/* --- Header --- */
+
+.tds-dropdown-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-4) var(--spacing-8);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-caption);
+}
+
+/* --- Divider --- */
+
+.tds-dropdown-panel__divider {
+  height: 1px;
+  margin: var(--spacing-4) 0;
+  background-color: var(--border-divider);
+}
