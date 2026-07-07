@@ -1,0 +1,82 @@
+/* ============================================================
+   RadioCard
+   States: selected | unselected
+   Options: showDescription
+   Layout: [radio] [content: label-row (icon + label) + description?]
+   ============================================================ */
+
+.tds-radio-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+  padding: var(--padding-md);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background-color: var(--surface-neutral-01);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.tds-radio-card:not(:has(.tds-radio-card__description)) {
+  align-items: center;
+}
+
+.tds-radio-card:hover {
+  background-color: var(--surface-hover);
+}
+
+.tds-radio-card--selected {
+  background-color: var(--surface-selected);
+  border-color: var(--border-interactive);
+}
+
+.tds-radio-card--selected:hover {
+  background-color: var(--surface-selected);
+}
+
+.tds-radio-card .tds-radio {
+  flex-shrink: 0;
+}
+
+.tds-radio-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  flex: 1;
+  min-width: 0;
+}
+
+.tds-radio-card__label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.tds-radio-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.tds-radio-card__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tds-radio-card__label {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.tds-radio-card__description {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+}
