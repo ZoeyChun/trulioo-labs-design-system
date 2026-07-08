@@ -1,0 +1,375 @@
+/* ============================================================
+   Bank Verification — page-local styles
+   Static reference implementation. Layout + page-local elements
+   only (side nav, avatar, TruAI button, card container).
+   All values reference /tokens/tokens.css variables.
+
+   Figma: Trulioo-ADS---2026 · BankV (708:10655)
+   ============================================================ */
+
+/* Page-local dimensions with no token equivalent in Figma */
+.bv-page {
+  --bv-form-max-width: 895px;         /* Max width of the form card */
+  --bv-field-col: 410px;              /* Single-column field width (Figma: 410) */
+  --bv-nav-size: var(--spacing-40);   /* logo / avatar / active pill: 40px */
+  --bv-icon-size: var(--spacing-16);  /* icon glyphs: 16px */
+}
+
+body {
+  margin: 0;
+  background-color: var(--surface-neutral-03);
+}
+
+.bv-page,
+.bv-page * {
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------
+   Page shell
+   -------------------------------------------------------- */
+
+.bv-page {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-8);
+  padding: var(--spacing-8);
+  min-height: 100vh;
+  background-color: var(--surface-neutral-03);
+  font-family: var(--font-family);
+  color: var(--text-default);
+}
+
+/* --------------------------------------------------------
+   Side nav (collapsed)
+   -------------------------------------------------------- */
+
+.bv-sidenav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.bv-sidenav__top {
+  padding: var(--padding-lg);
+}
+
+.bv-sidenav__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bv-nav-size);
+  height: var(--bv-nav-size);
+  border-radius: var(--radius-modal);
+  background-color: var(--interactive-default);
+  color: var(--icon-inverse);
+}
+
+.bv-sidenav__logo svg {
+  width: var(--spacing-24);
+  height: var(--spacing-24);
+}
+
+.bv-sidenav__nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+  padding: var(--padding-xl) var(--padding-lg);
+}
+
+.bv-sidenav__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-card);
+  color: var(--icon-muted);
+  text-decoration: none;
+}
+
+.bv-sidenav__item--active {
+  height: var(--bv-nav-size);
+  border-radius: var(--radius-badge);
+  background-color: var(--surface-inverse);
+  color: var(--icon-inverse);
+}
+
+.bv-sidenav__item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-24);
+  height: var(--spacing-24);
+}
+
+.bv-sidenav__item-icon svg,
+.bv-sidenav__item-icon img {
+  width: var(--spacing-24);   /* 24px nav glyphs */
+  height: var(--spacing-24);
+}
+
+.bv-sidenav__bottom {
+  margin-top: auto;
+  padding: var(--padding-lg);
+}
+
+/* Avatar */
+.bv-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bv-nav-size);
+  height: var(--bv-nav-size);
+  border-radius: var(--radius-badge);
+  background-color: var(--interactive-default);
+  color: var(--text-inverse);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* --------------------------------------------------------
+   Main panel
+   -------------------------------------------------------- */
+
+.bv-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-2xl);
+  padding: var(--padding-xl);
+  background-color: var(--surface-neutral-02);
+  border-radius: var(--radius-section);
+  box-shadow: var(--elevation-md);
+}
+
+.bv-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.bv-header__title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+/* TruAI button — page-local, no repo component */
+.bv-truai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-md) var(--padding-lg);
+  border: none;
+  border-radius: var(--radius-modal);
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.bv-truai-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bv-icon-size);
+  height: var(--bv-icon-size);
+}
+
+.bv-truai-btn__icon svg {
+  width: var(--bv-icon-size);
+  height: var(--bv-icon-size);
+}
+
+/* --------------------------------------------------------
+   Content area + card container
+   -------------------------------------------------------- */
+
+.bv-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-32);
+}
+
+.bv-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--bv-form-max-width);
+  background-color: var(--surface-neutral-01);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--elevation-sm);
+  overflow: hidden;
+}
+
+.bv-card__header {
+  padding: var(--padding-xl) var(--padding-2xl);
+}
+
+.bv-card__title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+/* Country selection — uses the tds-combobox component */
+.bv-card__section-country {
+  padding: 0 var(--padding-2xl) var(--padding-xl);
+}
+
+.bv-country {
+  width: var(--bv-field-col);
+  max-width: 100%;
+}
+
+/* Emoji flag sizing inside the combobox leading-visual slot */
+.bv-country__flag {
+  font-size: var(--font-size-md);
+  line-height: 1;
+}
+
+/* --------------------------------------------------------
+   Test-entity picker dropdown rows
+   The picker is a tds-select, and the select/dropdown-panel
+   components have no menu-item row style yet, so these rows are
+   page-local. (The combobox option rows live in the component.)
+   -------------------------------------------------------- */
+
+.bv-option {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: var(--padding-sm);
+  border: none;
+  background: none;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+}
+
+.bv-option:hover {
+  background-color: var(--surface-hover);
+}
+
+.bv-option__label {
+  flex: 1;
+  min-width: 0;
+}
+
+.bv-option--entity {
+  justify-content: space-between;
+}
+
+.bv-option--empty {
+  color: var(--text-placeholder);
+  cursor: default;
+}
+
+.bv-option--empty:hover {
+  background: none;
+}
+
+/* Account type */
+.bv-card__row-label {
+  display: flex;
+  align-items: center;
+  padding: var(--padding-md) var(--padding-2xl);
+}
+
+.bv-radio-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-md);
+  width: 100%;
+  padding: 0 var(--padding-2xl) var(--padding-xl);
+}
+
+.bv-radio-row .tds-radio-card {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Details */
+.bv-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  width: 100%;
+  padding: var(--padding-2xl);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.bv-details__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-lg);
+  width: 100%;
+}
+
+.bv-details__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.bv-details__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  width: 100%;
+}
+
+.bv-form-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+  width: 100%;
+}
+
+.bv-form-row > .tds-text-input,
+.bv-form-row > .bv-form-col,
+.bv-form-row > .bv-form-row__spacer {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Test-entity picker (reuses tds-select; full width of its column) */
+.bv-test-entity {
+  width: 100%;
+}
+
+
+/* Footer */
+.bv-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--padding-lg) var(--padding-2xl);
+  background-color: var(--surface-neutral-03);
+}
