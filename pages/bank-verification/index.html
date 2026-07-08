@@ -1,0 +1,200 @@
+<!-- Static reference implementation — visual spec only. The JS here drives demo-only UI states (combobox, radio, conditional fields, test-entity autofill); wire up real data/logic in your own app. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Verification — Trulioo Labs</title>
+
+  <!-- Design tokens -->
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+
+  <!-- Design system components -->
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/text-input/text-input.css">
+  <link rel="stylesheet" href="../../Components/text-input/field-label.css">
+  <link rel="stylesheet" href="../../Components/text-input/field-validation.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/select/combobox.css">
+  <link rel="stylesheet" href="../../Components/select/caret.css">
+  <link rel="stylesheet" href="../../Components/select/dropdown-panel.css">
+  <link rel="stylesheet" href="../../Components/tag/tag.css">
+  <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
+  <link rel="stylesheet" href="../../Components/radio-card/radio.css">
+  <link rel="stylesheet" href="../../Components/switch/switch.css">
+
+  <!-- Page-local styles -->
+  <link rel="stylesheet" href="bank-verification.css">
+</head>
+<body>
+
+  <div class="bv-page">
+
+    <!-- ======================================================
+         Side nav (collapsed) — page-local, no repo component
+         ====================================================== -->
+    <nav class="bv-sidenav" aria-label="Primary">
+
+      <div class="bv-sidenav__top">
+        <a class="bv-sidenav__logo" href="#" aria-label="Trulioo home">
+          <img src="../../assets/TL_logo.svg" alt="Trulioo" width="40" height="40">
+        </a>
+      </div>
+
+      <div class="bv-sidenav__nav">
+        <a class="bv-sidenav__item" href="#" aria-label="Home">
+          <span class="bv-sidenav__item-icon">
+            <!-- house icon placeholder -->
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/>
+            </svg>
+          </span>
+        </a>
+        <a class="bv-sidenav__item bv-sidenav__item--active" href="#" aria-label="Labs" aria-current="page">
+          <span class="bv-sidenav__item-icon">
+            <!-- Labs icon (brand asset) -->
+            <img src="../../assets/Lab_Icon.svg" alt="" width="24" height="24" aria-hidden="true">
+          </span>
+        </a>
+      </div>
+
+      <div class="bv-sidenav__bottom">
+        <span class="bv-avatar" aria-label="Zoey Chung">ZC</span>
+      </div>
+
+    </nav>
+
+    <!-- ======================================================
+         Main panel
+         ====================================================== -->
+    <main class="bv-main">
+
+      <header class="bv-header">
+        <h1 class="bv-header__title">Bank Verification</h1>
+        <button class="bv-truai-btn" type="button">
+          <span class="bv-truai-btn__icon">
+            <!-- sparkles icon placeholder -->
+            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/>
+              <path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/>
+            </svg>
+          </span>
+          TruAI
+        </button>
+      </header>
+
+      <div class="bv-content">
+
+        <!-- Card container — page-local, no repo component -->
+        <section class="bv-card" aria-labelledby="bv-card-title">
+
+          <div class="bv-card__header">
+            <h2 class="bv-card__title" id="bv-card-title">Verification form</h2>
+          </div>
+
+          <!-- Country selection (tds-combobox: type + select) -->
+          <div class="bv-card__section-country">
+            <div class="tds-combobox bv-country" id="bv-country">
+              <label class="tds-field-label" for="bv-country-input">Country</label>
+              <div class="tds-combobox__field tds-combobox__field--lg">
+                <span class="tds-combobox__leading-visual bv-country__flag" hidden></span>
+                <input class="tds-combobox__input" id="bv-country-input" type="text"
+                       placeholder="Type country" autocomplete="off"
+                       role="combobox" aria-expanded="false" aria-controls="bv-country-list">
+                <span class="tds-combobox__trailing-group">
+                  <span class="tds-caret tds-caret--default" aria-hidden="true">
+                    <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                  </span>
+                </span>
+              </div>
+              <div class="tds-combobox__menu">
+                <div class="tds-dropdown-panel bv-country__list" id="bv-country-list" role="listbox"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account type -->
+          <div class="bv-card__row-label">
+            <span class="tds-field-label">Account Type</span>
+          </div>
+          <div class="bv-radio-row">
+
+            <label class="tds-radio-card tds-radio-card--selected">
+              <input class="tds-radio" type="radio" name="account-type" value="person" checked>
+              <span class="tds-radio-card__content">
+                <span class="tds-radio-card__label-row">
+                  <span class="tds-radio-card__icon">
+                    <!-- user icon placeholder -->
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <circle cx="8" cy="5" r="2.5"/>
+                      <path d="M2.5 14c.8-2.6 3-4 5.5-4s4.7 1.4 5.5 4"/>
+                    </svg>
+                  </span>
+                  <span class="tds-radio-card__label">Person</span>
+                </span>
+              </span>
+            </label>
+
+            <label class="tds-radio-card">
+              <input class="tds-radio" type="radio" name="account-type" value="business">
+              <span class="tds-radio-card__content">
+                <span class="tds-radio-card__label-row">
+                  <span class="tds-radio-card__icon">
+                    <!-- building icon placeholder -->
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <rect x="3.5" y="1.5" width="9" height="13"/>
+                      <path d="M6 4.5h1.2M8.8 4.5H10M6 7.5h1.2M8.8 7.5H10M7 14.5v-3h2v3"/>
+                    </svg>
+                  </span>
+                  <span class="tds-radio-card__label">Business</span>
+                </span>
+              </span>
+            </label>
+
+          </div>
+
+          <!-- Details -->
+          <div class="bv-details">
+
+            <div class="bv-details__header">
+              <h3 class="bv-details__title">Details</h3>
+              <div class="tds-switch">
+                <span class="tds-switch__label-group">
+                  Test Entity
+                  <span class="tds-switch__icon">
+                    <!-- FontAwesome 7 Pro · circle-question (regular) -->
+                    <svg viewBox="0 0 512 512" width="16" height="16" fill="currentColor" aria-hidden="true">
+                      <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/>
+                    </svg>
+                  </span>
+                </span>
+                <button type="button" class="tds-switch__track tds-switch__track--sm" role="switch" aria-checked="false" aria-label="Test Entity" id="bv-test-entity-toggle">
+                  <span class="tds-switch__handle"></span>
+                  <span class="tds-switch__indicator"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Fields are rendered by bank-verification.js based on
+                 account type + test-entity state -->
+            <div class="bv-details__fields" id="bv-fields"></div>
+
+          </div>
+
+          <!-- Footer actions -->
+          <div class="bv-card__footer">
+            <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">Back</button>
+            <button class="tds-btn tds-btn--primary tds-btn--lg" type="button">Submit</button>
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="bank-verification.js"></script>
+</body>
+</html>
