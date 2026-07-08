@@ -1,0 +1,166 @@
+/* ============================================================
+   App Shell — shared page chrome
+   Side nav (collapsed), brand logo, avatar, TruAI button, and the
+   page background. Linked by every page so this chrome stays
+   consistent instead of being copy-pasted per page.
+
+   Page-local (no repo component). Token-driven only.
+   ============================================================ */
+
+.app-shell {
+  --app-nav-size: var(--spacing-40);   /* logo / avatar / active pill: 40px */
+  --app-nav-icon: var(--spacing-24);   /* nav glyphs: 24px */
+
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-8);
+  min-height: 100vh;
+  padding: var(--spacing-8);
+  background-color: var(--surface-neutral-03);
+  font-family: var(--font-family);
+  color: var(--text-default);
+}
+
+.app-shell *,
+.app-shell *::before,
+.app-shell *::after {
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------
+   Side nav (collapsed)
+   -------------------------------------------------------- */
+
+.app-sidenav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.app-sidenav__top {
+  padding: var(--spacing-20, 20px) var(--padding-lg) var(--padding-lg);
+}
+
+.app-sidenav__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--app-nav-size);
+  height: var(--app-nav-size);
+  border-radius: var(--radius-modal);
+  background-color: var(--interactive-default);
+  color: var(--icon-inverse);
+  overflow: hidden;
+}
+
+.app-sidenav__nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+  padding: var(--padding-xl) var(--padding-lg);
+}
+
+.app-sidenav__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-card);
+  color: var(--icon-faint);
+  text-decoration: none;
+}
+
+.app-sidenav__item:hover {
+  background-color: var(--surface-neutral-02);
+}
+
+.app-sidenav__item--active {
+  height: var(--app-nav-size);
+  border-radius: var(--radius-badge);
+  background-color: var(--surface-inverse);
+  color: var(--icon-inverse);
+}
+
+.app-sidenav__item--active:hover {
+  background-color: var(--surface-inverse);
+}
+
+.app-sidenav__item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--app-nav-icon);
+  height: var(--app-nav-icon);
+}
+
+.app-sidenav__item-icon svg,
+.app-sidenav__item-icon img {
+  width: var(--app-nav-icon);
+  height: var(--app-nav-icon);
+}
+
+.app-sidenav__bottom {
+  margin-top: auto;
+  padding: var(--spacing-20, 20px) var(--padding-lg) var(--padding-lg);
+}
+
+.app-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--app-nav-size);
+  height: var(--app-nav-size);
+  border-radius: var(--radius-badge);
+  background-color: var(--interactive-default);
+  color: var(--text-inverse);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* --------------------------------------------------------
+   Main panel — page background box (page fills it)
+   -------------------------------------------------------- */
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------------
+   TruAI button (dark pill, used across pages)
+   -------------------------------------------------------- */
+
+.app-truai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-md) var(--padding-lg);
+  border: none;
+  border-radius: var(--radius-modal);
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.app-truai-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-16);
+  height: var(--spacing-16);
+}
+
+.app-truai-btn__icon svg {
+  width: var(--spacing-16);
+  height: var(--spacing-16);
+}

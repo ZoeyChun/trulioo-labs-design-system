@@ -1,0 +1,384 @@
+<!-- Static reference implementation — visual spec only. Light JS drives demo-only tab switching and section collapse; wire up real data/logic in your own app. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Verification — Trulioo Labs</title>
+
+  <!-- Design tokens -->
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+
+  <!-- Design system components -->
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/tag/tag.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/select/caret.css">
+  <link rel="stylesheet" href="../../Components/select/field-label.css">
+
+  <!-- Shared chrome + page-local styles -->
+  <link rel="stylesheet" href="../_shared/app-shell.css">
+  <link rel="stylesheet" href="document-verification.css">
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- ===================== Side nav ===================== -->
+    <nav class="app-sidenav" aria-label="Primary">
+      <div class="app-sidenav__top">
+        <a class="app-sidenav__logo" href="#" aria-label="Trulioo home">
+          <img src="../../assets/TL_logo.svg" alt="Trulioo" width="40" height="40">
+        </a>
+      </div>
+
+      <div class="app-sidenav__nav">
+        <a class="app-sidenav__item" href="#" aria-label="Home">
+          <span class="app-sidenav__item-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/>
+            </svg>
+          </span>
+        </a>
+        <a class="app-sidenav__item app-sidenav__item--active" href="#" aria-label="Labs" aria-current="page">
+          <span class="app-sidenav__item-icon">
+            <img src="../../assets/Lab_Icon.svg" alt="" width="24" height="24" aria-hidden="true">
+          </span>
+        </a>
+      </div>
+
+      <div class="app-sidenav__bottom">
+        <span class="app-avatar" aria-label="Zoey Chung">ZC</span>
+      </div>
+    </nav>
+
+    <!-- ===================== Main panel ===================== -->
+    <main class="app-main dv-panel">
+
+      <!-- Header block -->
+      <div class="dv-header">
+        <div class="dv-header__top">
+          <div class="dv-header__title-group">
+            <h1 class="dv-title">Jane Doe</h1>
+            <span class="tds-tag tds-tag--positive tds-tag--md">Accepted</span>
+          </div>
+          <div class="dv-header__actions">
+            <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
+              <span class="tds-btn__leading-icon">
+                <!-- FontAwesome file-export -->
+                <svg viewBox="0 0 576 512" fill="currentColor" aria-hidden="true"><path d="M96.5 0c-35.3 0-64 28.7-64 64l0 384c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-96 78.1 0-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l72-72c9.4-9.4 9.4-24.6 0-33.9l-72-72c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-78.1 0 0-133.5c0-17-6.7-33.3-18.7-45.3L291.2 18.7C279.2 6.7 263 0 246 0L96.5 0zM358 176l-93.5 0c-13.3 0-24-10.7-24-24L240.5 58.5 358 176zM224.5 328c0-13.3 10.7-24 24-24l104 0 0 48-104 0c-13.3 0-24-10.7-24-24z"/></svg>
+              </span>
+              Export
+            </button>
+            <button class="app-truai-btn" type="button">
+              <span class="app-truai-btn__icon">
+                <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
+              </span>
+              TruAI
+            </button>
+          </div>
+        </div>
+
+        <!-- Metadata strip -->
+        <div class="dv-meta">
+          <div class="dv-meta__item">
+            <span class="dv-meta__label">Country / Jurisdiction</span>
+            <span class="dv-meta__value">United States 🇺🇸</span>
+          </div>
+          <span class="dv-meta__divider" aria-hidden="true"></span>
+          <div class="dv-meta__item">
+            <span class="dv-meta__label">Transaction ID</span>
+            <span class="dv-meta__value">8c2f4e7a-19bd-4f02-a6c1-77de42915b3a</span>
+          </div>
+          <span class="dv-meta__divider" aria-hidden="true"></span>
+          <div class="dv-meta__item">
+            <span class="dv-meta__label">Date</span>
+            <span class="dv-meta__value">17 Jun 2026, 2:14 PM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="dv-content">
+
+        <!-- Tabs -->
+        <div class="dv-tabs" role="tablist" aria-label="Verification sections">
+          <button class="dv-tab dv-tab--active" role="tab" aria-selected="true" type="button">Document</button>
+          <button class="dv-tab" role="tab" aria-selected="false" type="button">Biometrics</button>
+          <button class="dv-tab" role="tab" aria-selected="false" type="button">Network Insights</button>
+          <button class="dv-tab" role="tab" aria-selected="false" type="button">Device Intelligence</button>
+        </div>
+
+        <div class="dv-columns">
+
+          <!-- ============ Left sidebar ============ -->
+          <aside class="dv-sidebar">
+
+            <!-- Test entity select -->
+            <div class="dv-sidebar__block">
+              <div class="tds-select">
+                <span class="tds-field-label">Test Entity</span>
+                <button type="button" class="tds-select__trigger tds-select__trigger--lg dv-select-trigger" aria-haspopup="listbox">
+                  <span class="tds-select__text-wrapper"><span class="tds-select__value">Clear Document</span></span>
+                  <span class="tds-select__trailing-group">
+                    <span class="tds-tag tds-tag--positive tds-tag--sm">Accepted</span>
+                    <span class="tds-caret tds-caret--default" aria-hidden="true">
+                      <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="dv-sidebar__block">
+              <h2 class="dv-section-title">Summary</h2>
+              <div class="dv-ai-card">
+                <span class="dv-ai-badge">
+                  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
+                  TruAI
+                </span>
+                <p class="dv-ai-text">Jane Doe’s document has been verified. No additional steps required.</p>
+              </div>
+              <ul class="dv-summary-list">
+                <li class="dv-summary-row"><span class="dv-summary-label">Document</span><span class="tds-tag tds-tag--positive tds-tag--sm">Accepted</span></li>
+                <li class="dv-summary-row"><span class="dv-summary-label">Biometrics</span><span class="tds-tag tds-tag--positive tds-tag--sm">Accepted</span></li>
+                <li class="dv-summary-row"><span class="dv-summary-label">Known faces</span><span class="tds-tag tds-tag--positive tds-tag--sm">Accepted</span></li>
+                <li class="dv-summary-row"><span class="dv-summary-label">Data match</span><span class="tds-tag tds-tag--positive tds-tag--sm">10 Matches</span></li>
+                <li class="dv-summary-row"><span class="dv-summary-label">Device intelligence</span><span class="tds-tag tds-tag--positive tds-tag--sm">Low Risk</span></li>
+              </ul>
+            </div>
+
+            <!-- Client details (expanded) -->
+            <div class="dv-sidebar__block dv-collapsible dv-collapsible--open">
+              <button class="dv-collapsible__header" type="button" aria-expanded="true">
+                <span class="dv-chevron" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
+                </span>
+                <span class="dv-section-title">Client Details</span>
+              </button>
+              <div class="dv-collapsible__body">
+                <div class="dv-detail-row">
+                  <span class="dv-detail-label">Full Name
+                    <span class="dv-caret" aria-hidden="true"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2.5 4h7z"/></svg></span>
+                  </span>
+                  <span class="dv-detail-value">Jane Doe</span>
+                </div>
+                <div class="dv-detail-row">
+                  <span class="dv-detail-label">Date of Birth</span>
+                  <span class="dv-detail-value">1986/03/24</span>
+                </div>
+                <div class="dv-detail-row">
+                  <span class="dv-detail-label">Address
+                    <span class="dv-caret" aria-hidden="true"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2.5 4h7z"/></svg></span>
+                  </span>
+                  <span class="dv-detail-value">919 Government St, Victoria, BC V6W 3Y8</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Document information (collapsed) -->
+            <div class="dv-sidebar__block dv-collapsible dv-sidebar__block--last">
+              <button class="dv-collapsible__header" type="button" aria-expanded="false">
+                <span class="dv-chevron" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
+                </span>
+                <span class="dv-section-title">Document Information</span>
+              </button>
+              <div class="dv-collapsible__body" hidden>
+                <div class="dv-detail-row"><span class="dv-detail-label">Document Type</span><span class="dv-detail-value">Driver’s License</span></div>
+                <div class="dv-detail-row"><span class="dv-detail-label">Document Number</span><span class="dv-detail-value">D1234-56789-01234</span></div>
+                <div class="dv-detail-row"><span class="dv-detail-label">Expiry Date</span><span class="dv-detail-value">2029/03/24</span></div>
+              </div>
+            </div>
+
+          </aside>
+
+          <!-- ============ Right panel ============ -->
+          <section class="dv-doc-panel">
+            <div class="dv-doc-panel__header">
+              <h2 class="dv-doc-panel__title">Document</h2>
+            </div>
+
+            <div class="dv-doc-panel__body">
+
+              <!-- Indicators column -->
+              <div class="dv-indicators">
+                <div class="dv-indicators__header">
+                  <div class="dv-indicators__title-group">
+                    <h3 class="dv-indicators__title">Indicators</h3>
+                    <div class="dv-tag-row">
+                      <span class="tds-tag tds-tag--negative tds-tag--sm">7 Declined</span>
+                      <span class="tds-tag tds-tag--intermediate tds-tag--sm">1 Review</span>
+                      <span class="tds-tag tds-tag--positive tds-tag--sm">11 Accepted</span>
+                      <span class="tds-tag tds-tag--default tds-tag--sm">3 Not run</span>
+                    </div>
+                  </div>
+                  <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button">
+                    <span class="tds-btn__leading-icon">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
+                    </span>
+                    Expand all
+                  </button>
+                </div>
+
+                <!-- Declined (expanded) -->
+                <div class="dv-group dv-collapsible dv-collapsible--open">
+                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="true">
+                    <span class="dv-chevron" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
+                    </span>
+                    <span class="dv-group__label">Declined</span>
+                    <span class="tds-tag tds-tag--negative tds-tag--sm">7</span>
+                  </button>
+                  <div class="dv-collapsible__body">
+                    <div class="dv-table" role="table">
+                      <div class="dv-table__row" role="row">
+                        <div class="dv-table__text-cell"><span class="dv-cell-title">Photos streamed — M2</span><span class="dv-cell-sub">Live capture via mobile SDK</span></div>
+                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
+                      </div>
+                      <div class="dv-table__row" role="row">
+                        <div class="dv-table__text-cell"><span class="dv-cell-title">Expiry date check</span><span class="dv-cell-sub">Document expired 12 Mar 2024</span></div>
+                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
+                      </div>
+                      <div class="dv-table__row" role="row">
+                        <div class="dv-table__text-cell"><span class="dv-cell-title">Document type match</span><span class="dv-cell-sub">Detected type: expired permit</span></div>
+                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
+                      </div>
+                      <div class="dv-table__row" role="row">
+                        <div class="dv-table__text-cell"><span class="dv-cell-title">MRZ checksum</span><span class="dv-cell-sub">Line 2 checksum failed</span></div>
+                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
+                      </div>
+                      <div class="dv-table__row" role="row">
+                        <div class="dv-table__text-cell"><span class="dv-cell-title">Portrait tampering</span><span class="dv-cell-sub">Possible digital manipulation</span></div>
+                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
+                      </div>
+                    </div>
+                    <div class="dv-more">
+                      <button class="tds-btn tds-btn--invisible tds-btn--sm" type="button">
+                        <span class="tds-btn__leading-icon">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+                        </span>
+                        2 more declined
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Review (collapsed) -->
+                <div class="dv-group dv-collapsible">
+                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
+                    <span class="dv-chevron" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
+                    </span>
+                    <span class="dv-group__label">Review</span>
+                    <span class="tds-tag tds-tag--intermediate tds-tag--sm">1</span>
+                  </button>
+                  <div class="dv-collapsible__body" hidden>
+                    <div class="dv-table" role="table">
+                      <div class="dv-table__row" role="row">
+                        <div class="dv-table__text-cell"><span class="dv-cell-title">Address format</span><span class="dv-cell-sub">Differs from postal standard</span></div>
+                        <div class="dv-table__label-cell"><span class="dv-status dv-status--intermediate"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v4M8 11h.01"/></svg></span>Review</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Accepted (collapsed) -->
+                <div class="dv-group dv-collapsible">
+                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
+                    <span class="dv-chevron" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
+                    </span>
+                    <span class="dv-group__label">Accepted</span>
+                    <span class="tds-tag tds-tag--positive tds-tag--sm">11</span>
+                  </button>
+                  <div class="dv-collapsible__body" hidden>
+                    <div class="dv-table" role="table">
+                      <div class="dv-table__row" role="row">
+                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face match</span><span class="dv-cell-sub">98% similarity to portrait</span></div>
+                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Not run (collapsed) -->
+                <div class="dv-group dv-collapsible">
+                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
+                    <span class="dv-chevron" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
+                    </span>
+                    <span class="dv-group__label">Not run</span>
+                    <span class="tds-tag tds-tag--default tds-tag--sm">3</span>
+                  </button>
+                  <div class="dv-collapsible__body" hidden>
+                    <div class="dv-table" role="table">
+                      <div class="dv-table__row" role="row">
+                        <div class="dv-table__text-cell"><span class="dv-cell-title">Liveness (optional)</span><span class="dv-cell-sub">Not included in this workflow</span></div>
+                        <div class="dv-table__label-cell"><span class="dv-status">Not run</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Document viewer column -->
+              <div class="dv-viewer">
+                <h3 class="dv-section-title">Driver’s License</h3>
+
+                <figure class="dv-doc-image">
+                  <figcaption class="dv-doc-image__caption">
+                    Front of Document
+                    <button class="dv-icon-btn" type="button" aria-label="Expand front of document">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                    </button>
+                  </figcaption>
+                  <div class="dv-doc-image__media">
+                    <svg viewBox="0 0 293 205" role="img" aria-label="Front of ID document placeholder" preserveAspectRatio="xMidYMid slice">
+                      <rect width="293" height="205" fill="var(--surface-neutral-03)"/>
+                      <rect x="16" y="16" width="80" height="100" rx="6" fill="var(--surface-neutral-04)"/>
+                      <circle cx="56" cy="52" r="22" fill="var(--border-strong)"/>
+                      <path d="M34 96c0-14 10-22 22-22s22 8 22 22z" fill="var(--border-strong)"/>
+                      <rect x="112" y="24" width="150" height="12" rx="3" fill="var(--border-strong)"/>
+                      <rect x="112" y="48" width="120" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="112" y="66" width="140" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="112" y="84" width="100" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="140" width="261" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="160" width="200" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                    </svg>
+                  </div>
+                </figure>
+
+                <figure class="dv-doc-image">
+                  <figcaption class="dv-doc-image__caption">
+                    Back of Document
+                    <button class="dv-icon-btn" type="button" aria-label="Expand back of document">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                    </button>
+                  </figcaption>
+                  <div class="dv-doc-image__media">
+                    <svg viewBox="0 0 293 202" role="img" aria-label="Back of ID document placeholder" preserveAspectRatio="xMidYMid slice">
+                      <rect width="293" height="202" fill="var(--surface-neutral-03)"/>
+                      <rect x="16" y="20" width="261" height="26" rx="3" fill="var(--border-strong)"/>
+                      <rect x="16" y="60" width="180" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="78" width="220" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="96" width="160" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="130" width="261" height="40" rx="3" fill="var(--surface-neutral-04)"/>
+                    </svg>
+                  </div>
+                </figure>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="document-verification.js"></script>
+</body>
+</html>
