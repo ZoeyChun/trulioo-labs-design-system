@@ -587,3 +587,154 @@ body { margin: 0; }
 
 .dv-icon-btn:hover { background-color: var(--surface-neutral-02); }
 .dv-icon-btn svg { width: 16px; height: 16px; }
+
+/* --------------------------------------------------------
+   Tab panels (right side swaps per tab; sidebar persists)
+   -------------------------------------------------------- */
+
+.dv-tabpanel { flex: 1; min-width: 0; }
+.dv-tabpanel[hidden] { display: none; }
+
+/* Two-card layout (content card + media card), e.g. Biometrics */
+.dv-split {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+}
+
+.dv-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-modal);
+  overflow: hidden;
+}
+
+.dv-card--main { flex: 1; min-width: 0; }
+
+.dv-viewer-card {
+  flex-shrink: 0;
+  width: var(--dv-viewer-width);
+}
+
+.dv-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  padding: var(--spacing-16);
+}
+
+.dv-card__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.dv-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  padding: 0 var(--spacing-16) var(--spacing-16);
+}
+
+/* Check rows (label + status), used by Biometrics groups */
+.dv-check-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.dv-check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-lg);
+  padding: var(--spacing-12) 0;
+  border-bottom: 1px solid var(--border-divider);
+}
+
+.dv-check-row:last-child { border-bottom: none; }
+
+.dv-check-label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+}
+
+/* Portrait caption is plain text (no grey bar) */
+.dv-doc-image--portrait .dv-doc-image__caption {
+  background: transparent;
+  padding: 0 0 var(--spacing-8);
+}
+
+/* Placeholder panels (tabs built next) */
+.dv-tab-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-48);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-modal);
+  color: var(--text-description);
+  font-size: var(--font-size-sm);
+}
+
+/* Match tag on group headers (Data Match) — pushed to the right edge */
+.dv-match { margin-left: auto; }
+.dv-tag-icon { display: inline-flex; align-items: center; }
+.dv-tag-icon svg { width: 12px; height: 12px; }
+
+/* Key/value rows (Data Match expanded groups) */
+.dv-kv { display: flex; flex-direction: column; width: 100%; }
+
+.dv-kv-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gap-lg);
+  padding: var(--spacing-12) 0;
+  border-bottom: 1px solid var(--border-divider);
+}
+
+.dv-kv-row:last-child { border-bottom: none; }
+
+.dv-kv-label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-caption);
+}
+
+.dv-kv-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-2);
+  text-align: right;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+
+.dv-kv-sub {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-caption);
+}
+
+/* Table column-header row (Known Faces transaction tables) */
+.dv-table__head { background-color: var(--surface-neutral-02); }
+
+.dv-table__col-head {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}

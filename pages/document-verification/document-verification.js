@@ -12,8 +12,9 @@
 
   document.addEventListener("DOMContentLoaded", function () {
 
-    /* Tabs */
+    /* Tabs — switch active state + show the matching panel */
     var tabs = document.querySelectorAll(".dv-tab");
+    var panels = document.querySelectorAll(".dv-tabpanel");
     tabs.forEach(function (tab) {
       tab.addEventListener("click", function () {
         tabs.forEach(function (t) {
@@ -22,6 +23,11 @@
         });
         tab.classList.add("dv-tab--active");
         tab.setAttribute("aria-selected", "true");
+
+        var target = tab.getAttribute("data-tab");
+        panels.forEach(function (p) {
+          p.hidden = (p.getAttribute("data-tab") !== target);
+        });
       });
     });
 
