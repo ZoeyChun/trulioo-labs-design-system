@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScoreGauge — Live Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: #1A2322;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 40px;
+      /* DS --font-family */
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    #gauges {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px 18px 20px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(36,48,47,0.10);
+    }
+    button {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #A0B0AF;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+
+<div id="gauges"></div>
+<button onclick="replay()">Replay Animation</button>
+
+<script>
+// ── Geometry ─────────────────────────────────────────────────────────────────
+const SVG_W = 227, SVG_H = 180;
+const CX = 113.526, CY = 121.53;
+const R_OUTER = 95.53, R_INNER = 76.43, R_DARK = R_OUTER - 5;
+const POINTER_R = 73;                 // straddles the arc inner edge: tip half over the band (gauge), base half over the interior (background)
+const START_DEG = 160, SWEEP_DEG = 220;
+
+// ── DS color tokens ────────────────────────────────────────────────────────────
+const TRACK_COLOR   = '#f4f6f4';      // --surface-neutral-02
+const POINTER_COLOR = '#004c45';      // --interactive-default (constant, all tiers)
+const NUMBER_COLOR  = '#172d2d';      // --text-default
+const DURATION = 1400;
+
+const PALETTE = {
+  high:   { fill: '#fff1f1', border: '#db2b2b', tagText: '#ba151d' }, // negative
+  medium: { fill: '#fff4db', border: '#d8a13b', tagText: '#775516' }, // intermediate
+  low:    { fill: '#eaf7f0', border: '#6fb38a', tagText: '#166534' }, // positive
+};
+
+const SCENARIOS = [
+  { score: 92, risk: 'low',    label: 'Low Risk' },
+  { score: 50, risk: 'medium', label: 'Medium Risk' },
+  { score: 8,  risk: 'high',   label: 'High Risk' },
+];
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const toRad = d => (d * Math.PI) / 180;
+function polar(deg, r) {
+  const a = toRad(deg);
+  return [CX + r * Math.cos(a), CY + r * Math.sin(a)];
+}
+function sectorPath(s, e, rO, rI) {
+  const sweep = ((e - s) + 360) % 360;
+  if (sweep < 0.05) return '';
+  const lg = sweep > 180 ? 1 : 0;
+  const [osx,osy] = polar(s, rO), [oex,oey] = polar(e, rO);
+  const [iex,iey] = polar(e, rI), [isx,isy] = polar(s, rI);
+  return `M${osx} ${osy} A${rO} ${rO} 0 ${lg} 1 ${oex} ${oey} L${iex} ${iey} A${rI} ${rI} 0 ${lg} 0 ${isx} ${isy} Z`;
+}
+
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  parent?.appendChild(e);
+  return e;
+}
+
+// ── Build gauge DOM ───────────────────────────────────────────────────────────
+function buildGauge({ score, risk, label }) {
+  const pal = PALETTE[risk];
+  const trackPath = sectorPath(START_DEG, START_DEG + SWEEP_DEG, R_OUTER, R_INNER);
+
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const svg = el('svg', { width: SVG_W, height: SVG_H, viewBox: `0 0 ${SVG_W} ${SVG_H}`, overflow: 'visible' }, card);
+
+  el('path', { d: trackPath, fill: TRACK_COLOR }, svg);
+
+  const fillLight = el('path', { fill: pal.fill, d: '' }, svg);
+  const fillDark  = el('path', { fill: pal.border, d: '' }, svg);
+  // Pointer: white backing (kept elongated as the outline) + equilateral dark-green core on top
+  const ptrWhite = el('polygon', {
+    points: '0,-12 8.5,6.5 -8.5,6.5',
+    fill: '#ffffff',
+    stroke: '#ffffff',
+    'stroke-width': 4,
+    'stroke-linejoin': 'round',
+  }, svg);
+  const ptrGreen = el('polygon', {
+    points: '0,-7 7,5.5 -7,5.5',
+    fill: POINTER_COLOR,
+    'stroke-linejoin': 'round',
+  }, svg);
+
+  const scoreTxt = el('text', {
+    x: CX, y: 101,
+    'text-anchor': 'middle',
+    'dominant-baseline': 'middle',
+    style: `font-size:64px;font-weight:400;fill:${NUMBER_COLOR};font-family:-apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',Roboto,Helvetica,Arial,sans-serif;letter-spacing:0`,
+  }, svg);
+  scoreTxt.textContent = '0';
+
+  // Badge — Tag component, medium size (positive | intermediate | negative)
+  const fo = el('foreignObject', { x: CX - 70, y: 125, width: 140, height: 30, overflow: 'visible' }, svg);
+  const badgeWrap = document.createElement('div');
+  badgeWrap.style.cssText = 'display:flex; align-items:center; justify-content:center; height:100%;';
+  const badge = document.createElement('span');
+  badge.textContent = label;
+  badge.style.cssText = `
+    display:inline-flex; align-items:center;
+    background:${pal.fill}; border:1px solid ${pal.border}; color:${pal.tagText};
+    border-radius:9999px; padding:4px 8px; font-size:12px; font-weight:510;
+    font-variation-settings:'wght' 510;
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    white-space:nowrap; line-height:16px;
+  `;
+  badgeWrap.appendChild(badge);
+  fo.appendChild(badgeWrap);
+
+  // Animation
+  let raf, t0;
+  function animate(now) {
+    if (t0 == null) t0 = now;
+    const raw   = Math.min((now - t0) / DURATION, 1);
+    const eased = 1 - Math.pow(1 - raw, 4);
+    const v     = score * eased;
+
+    if (v > 0.3) {
+      const fillEnd = START_DEG + (v / 100) * SWEEP_DEG;
+      fillLight.setAttribute('d', sectorPath(START_DEG, fillEnd, R_OUTER, R_INNER));
+      fillDark.setAttribute('d',  sectorPath(START_DEG, fillEnd, R_OUTER, R_DARK));
+      const [px, py] = polar(fillEnd, POINTER_R);
+      const tf = `translate(${px},${py}) rotate(${fillEnd + 90})`;
+      ptrWhite.setAttribute('transform', tf);
+      ptrGreen.setAttribute('transform', tf);
+      ptrWhite.style.display = '';
+      ptrGreen.style.display = '';
+    } else {
+      fillLight.setAttribute('d', '');
+      fillDark.setAttribute('d',  '');
+      ptrWhite.style.display = 'none';
+      ptrGreen.style.display = 'none';
+    }
+
+    scoreTxt.textContent = Math.round(v);
+    if (raw < 1) raf = requestAnimationFrame(animate);
+  }
+
+  card._replay = () => {
+    cancelAnimationFrame(raf);
+    t0 = null;
+    raf = requestAnimationFrame(animate);
+  };
+  card._replay();
+  return card;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+const container = document.getElementById('gauges');
+const cards = SCENARIOS.map(s => {
+  const c = buildGauge(s);
+  container.appendChild(c);
+  return c;
+});
+
+function replay() { cards.forEach(c => c._replay()); }
+</script>
+</body>
+</html>
