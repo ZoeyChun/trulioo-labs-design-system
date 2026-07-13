@@ -1,4 +1,4 @@
-<!-- Static reference implementation — visual spec only. Light JS drives demo-only tab switching and section collapse; wire up real data/logic in your own app. -->
+<!-- Static reference implementation — visual spec only. Scenario data drives tab content via document-verification.js. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,18 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document Verification — Trulioo Labs</title>
 
-  <!-- Design tokens -->
   <link rel="stylesheet" href="../../tokens/tokens.css">
-
-  <!-- Design system components -->
   <link rel="stylesheet" href="../../Components/button/button.css">
   <link rel="stylesheet" href="../../Components/tag/tag.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/select/caret.css">
   <link rel="stylesheet" href="../../Components/select/dropdown-panel.css">
   <link rel="stylesheet" href="../../Components/select/field-label.css">
-
-  <!-- Shared chrome + page-local styles -->
   <link rel="stylesheet" href="../_shared/app-shell.css">
   <link rel="stylesheet" href="document-verification.css">
 </head>
@@ -25,14 +20,12 @@
 
   <div class="app-shell">
 
-    <!-- ===================== Side nav ===================== -->
     <nav class="app-sidenav" aria-label="Primary">
       <div class="app-sidenav__top">
         <a class="app-sidenav__logo" href="#" aria-label="Trulioo home">
           <img src="../../assets/TL_logo.svg" alt="Trulioo" width="40" height="40">
         </a>
       </div>
-
       <div class="app-sidenav__nav">
         <a class="app-sidenav__item" href="#" aria-label="Home">
           <span class="app-sidenav__item-icon">
@@ -47,26 +40,23 @@
           </span>
         </a>
       </div>
-
       <div class="app-sidenav__bottom">
         <span class="app-avatar" aria-label="Zoey Chung">ZC</span>
       </div>
     </nav>
 
-    <!-- ===================== Main panel ===================== -->
     <main class="app-main dv-panel">
 
-      <!-- Header block -->
       <div class="dv-header">
         <div class="dv-header__top">
           <div class="dv-header__title-group">
             <h1 class="dv-title">Jane Doe</h1>
-            <span class="tds-tag tds-tag--negative tds-tag--md">Declined</span>
+            <span id="dv-overall-status"></span>
+            <span id="dv-secondary-status" hidden></span>
           </div>
           <div class="dv-header__actions">
             <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
               <span class="tds-btn__leading-icon">
-                <!-- FontAwesome file-export -->
                 <svg viewBox="0 0 576 512" fill="currentColor" aria-hidden="true"><path d="M96.5 0c-35.3 0-64 28.7-64 64l0 384c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-96 78.1 0-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l72-72c9.4-9.4 9.4-24.6 0-33.9l-72-72c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-78.1 0 0-133.5c0-17-6.7-33.3-18.7-45.3L291.2 18.7C279.2 6.7 263 0 246 0L96.5 0zM358 176l-93.5 0c-13.3 0-24-10.7-24-24L240.5 58.5 358 176zM224.5 328c0-13.3 10.7-24 24-24l104 0 0 48-104 0c-13.3 0-24-10.7-24-24z"/></svg>
               </span>
               Export
@@ -80,7 +70,6 @@
           </div>
         </div>
 
-        <!-- Metadata strip -->
         <div class="dv-meta">
           <div class="dv-meta__item">
             <span class="dv-meta__label">Country / Jurisdiction</span>
@@ -89,7 +78,7 @@
           <span class="dv-meta__divider" aria-hidden="true"></span>
           <div class="dv-meta__item">
             <span class="dv-meta__label">Transaction ID</span>
-            <span class="dv-meta__value">8c2f4e7a-19bd-4f02-a6c1-77de42915b3a</span>
+            <span class="dv-meta__value" id="dv-transaction-id"></span>
           </div>
           <span class="dv-meta__divider" aria-hidden="true"></span>
           <div class="dv-meta__item">
@@ -99,10 +88,7 @@
         </div>
       </div>
 
-      <!-- Content -->
       <div class="dv-content">
-
-        <!-- Tabs -->
         <div class="dv-tabs" role="tablist" aria-label="Verification sections">
           <button class="dv-tab dv-tab--active" role="tab" aria-selected="true" type="button" data-tab="document">Document</button>
           <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="biometrics">Biometrics</button>
@@ -111,56 +97,34 @@
           <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="device-intelligence">Device Intelligence</button>
         </div>
 
-        <div class="dv-columns">
+        <div class="dv-columns" id="dv-columns">
 
-          <!-- ============ Left sidebar ============ -->
-          <aside class="dv-sidebar">
-
-            <!-- Test entity select -->
-            <div class="dv-sidebar__block">
-              <div class="tds-select dv-te-select" id="dv-te-select">
-                <span class="tds-field-label">Test Entity</span>
-                <button type="button" class="tds-select__trigger tds-select__trigger--lg dv-select-trigger" aria-haspopup="listbox" aria-expanded="false">
-                  <span class="tds-select__text-wrapper"><span class="tds-select__value dv-te-value">Face mismatch</span></span>
-                  <span class="tds-select__trailing-group">
-                    <span class="tds-tag tds-tag--negative tds-tag--sm dv-te-tag">Declined</span>
-                    <span class="tds-caret tds-caret--default" aria-hidden="true">
-                      <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
-                    </span>
-                  </span>
+          <aside class="dv-sidebar" id="dv-sidebar">
+            <div class="dv-sidebar__block dv-sidebar__block--entity">
+              <div class="dv-sidebar__entity-head">
+                <h2 class="dv-sidebar__heading">Test Entity</h2>
+                <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="dv-sidebar" aria-label="Collapse summary panel">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
                 </button>
-                <div class="tds-select__menu">
-                  <div class="tds-dropdown-panel" role="listbox" aria-label="Test entity scenario">
-                    <button type="button" class="dv-te-option" role="option" data-name="Happy path" data-tone="positive" data-result="Accepted">
-                      <span class="dv-te-option__text"><span class="dv-te-option__name">Happy path</span><span class="dv-te-option__desc">All 60+ signals accepted. Clean doc, face match passes.</span></span>
-                      <span class="tds-tag tds-tag--positive tds-tag--sm">Accepted</span>
-                    </button>
-                    <button type="button" class="dv-te-option" role="option" data-name="Expired document" data-tone="negative" data-result="Declined">
-                      <span class="dv-te-option__text"><span class="dv-te-option__name">Expired document</span><span class="dv-te-option__desc">Document expired, auto-decline triggered.</span></span>
-                      <span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span>
-                    </button>
-                    <button type="button" class="dv-te-option" role="option" data-name="Face mismatch" data-tone="negative" data-result="Declined">
-                      <span class="dv-te-option__text"><span class="dv-te-option__name">Face mismatch</span><span class="dv-te-option__desc">Selfie doesn’t match document photo.</span></span>
-                      <span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span>
-                    </button>
-                    <button type="button" class="dv-te-option" role="option" data-name="DOB mismatch" data-tone="intermediate" data-result="Review">
-                      <span class="dv-te-option__text"><span class="dv-te-option__name">DOB mismatch</span><span class="dv-te-option__desc">OCR DOB doesn’t match user input. Matcher → declined, overall → review.</span></span>
-                      <span class="tds-tag tds-tag--intermediate tds-tag--sm">Review</span>
-                    </button>
-                    <button type="button" class="dv-te-option" role="option" data-name="Known face hit" data-tone="negative" data-result="Declined">
-                      <span class="dv-te-option__text"><span class="dv-te-option__name">Known face hit</span><span class="dv-te-option__desc">Face matches a known fraudster.</span></span>
-                      <span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span>
-                    </button>
-                    <button type="button" class="dv-te-option" role="option" data-name="Deepfake detected" data-tone="negative" data-result="Declined">
-                      <span class="dv-te-option__text"><span class="dv-te-option__name">Deepfake detected</span><span class="dv-te-option__desc">Synthetic selfie detected by ML model.</span></span>
-                      <span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span>
-                    </button>
+              </div>
+              <div class="dv-sidebar__entity-select">
+                <div class="tds-select dv-te-select" id="dv-te-select">
+                  <button type="button" class="tds-select__trigger tds-select__trigger--lg dv-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="tds-select__text-wrapper"><span class="tds-select__value dv-te-value" id="dv-te-value">Happy path</span></span>
+                    <span class="tds-select__trailing-group">
+                      <span class="tds-tag tds-tag--positive tds-tag--sm dv-te-tag" id="dv-te-tag">Accepted</span>
+                      <span class="tds-caret tds-caret--default" aria-hidden="true">
+                        <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                      </span>
+                    </span>
+                  </button>
+                  <div class="tds-select__menu">
+                    <div class="tds-dropdown-panel" role="listbox" aria-label="Test entity scenario" id="dv-te-options"></div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Summary -->
             <div class="dv-sidebar__block">
               <h2 class="dv-section-title">Summary</h2>
               <div class="dv-ai-card">
@@ -168,18 +132,11 @@
                   <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
                   TruAI
                 </span>
-                <p class="dv-ai-text">Jane Doe’s document has been verified. No additional steps required.</p>
+                <p class="dv-ai-text" id="dv-truai-text"></p>
               </div>
-              <ul class="dv-summary-list">
-                <li class="dv-summary-row"><span class="dv-summary-label">Document</span><span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span></li>
-                <li class="dv-summary-row"><span class="dv-summary-label">Biometrics</span><span class="tds-tag tds-tag--intermediate tds-tag--sm">Review</span></li>
-                <li class="dv-summary-row"><span class="dv-summary-label">Known faces</span><span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span></li>
-                <li class="dv-summary-row"><span class="dv-summary-label">Data match</span><span class="tds-tag tds-tag--default tds-tag--sm">10 Matches</span></li>
-                <li class="dv-summary-row"><span class="dv-summary-label">Device intelligence</span><span class="tds-tag tds-tag--negative tds-tag--sm">High Risk</span></li>
-              </ul>
+              <ul class="dv-summary-list" id="dv-summary-list"></ul>
             </div>
 
-            <!-- Client details (expanded) -->
             <div class="dv-sidebar__block dv-collapsible dv-collapsible--open">
               <button class="dv-collapsible__header" type="button" aria-expanded="true">
                 <span class="dv-chevron" aria-hidden="true">
@@ -207,7 +164,6 @@
               </div>
             </div>
 
-            <!-- Document information (collapsed) -->
             <div class="dv-sidebar__block dv-collapsible dv-sidebar__block--last">
               <button class="dv-collapsible__header" type="button" aria-expanded="false">
                 <span class="dv-chevron" aria-hidden="true">
@@ -215,143 +171,35 @@
                 </span>
                 <span class="dv-section-title">Document Information</span>
               </button>
-              <div class="dv-collapsible__body" hidden>
-                <div class="dv-detail-row"><span class="dv-detail-label">Document Type</span><span class="dv-detail-value">Driver’s License</span></div>
-                <div class="dv-detail-row"><span class="dv-detail-label">Document Number</span><span class="dv-detail-value">D1234-56789-01234</span></div>
-                <div class="dv-detail-row"><span class="dv-detail-label">Expiry Date</span><span class="dv-detail-value">2029/03/24</span></div>
-              </div>
+              <div class="dv-collapsible__body" hidden id="dv-document-info"></div>
             </div>
-
           </aside>
 
-          <!-- ============ Right panel (tab panels) ============ -->
+          <div class="dv-main">
+          <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="dv-sidebar" aria-label="Show summary panel">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+          </button>
+
+          <!-- Document -->
           <section class="dv-doc-panel dv-tabpanel" data-tab="document">
             <div class="dv-doc-panel__header dv-ni2-panelhead">
               <div class="dv-ni2-panelhead__title">
                 <h2 class="dv-doc-panel__title">Document</h2>
-                <div class="dv-tag-row"><span class="tds-tag tds-tag--negative tds-tag--sm">7 Declined</span>
-                      <span class="tds-tag tds-tag--intermediate tds-tag--sm">1 Review</span>
-                      <span class="tds-tag tds-tag--positive tds-tag--sm">11 Accepted</span>
-                      <span class="tds-tag tds-tag--default tds-tag--sm">3 Not run</span></div>
+                <div class="dv-tag-row" id="dv-document-badges"></div>
               </div>
-              <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button">
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
                 <span class="tds-btn__leading-icon">
                   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
                 </span>
                 Expand all
               </button>
             </div>
-
             <div class="dv-doc-panel__body">
-
-              <!-- Indicators column -->
               <div class="dv-indicators">
-
-                <!-- Declined (expanded) -->
-                <div class="dv-group dv-collapsible dv-collapsible--open">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="true">
-                    <span class="dv-chevron" aria-hidden="true">
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
-                    </span>
-                    <span class="dv-group__label">Declined</span>
-                    <span class="tds-tag tds-tag--negative tds-tag--sm">7</span>
-                  </button>
-                  <div class="dv-collapsible__body">
-                    <div class="dv-table" role="table">
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Photos streamed — M2</span><span class="dv-cell-sub">Live capture via mobile SDK</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Expiry date check</span><span class="dv-cell-sub">Document expired 12 Mar 2024</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Document type match</span><span class="dv-cell-sub">Detected type: expired permit</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">MRZ checksum</span><span class="dv-cell-sub">Line 2 checksum failed</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Portrait tampering</span><span class="dv-cell-sub">Possible digital manipulation</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--negative"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></div>
-                      </div>
-                    </div>
-                    <div class="dv-more">
-                      <button class="tds-btn tds-btn--invisible tds-btn--sm" type="button">
-                        <span class="tds-btn__leading-icon">
-                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
-                        </span>
-                        2 more declined
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Review (collapsed) -->
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true">
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
-                    </span>
-                    <span class="dv-group__label">Review</span>
-                    <span class="tds-tag tds-tag--intermediate tds-tag--sm">1</span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-table" role="table">
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Address format</span><span class="dv-cell-sub">Differs from postal standard</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--intermediate"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v4M8 11h.01"/></svg></span>Review</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Accepted (collapsed) -->
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true">
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
-                    </span>
-                    <span class="dv-group__label">Accepted</span>
-                    <span class="tds-tag tds-tag--positive tds-tag--sm">11</span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-table" role="table">
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face match</span><span class="dv-cell-sub">98% similarity to portrait</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Not run (collapsed) -->
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true">
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
-                    </span>
-                    <span class="dv-group__label">Not run</span>
-                    <span class="tds-tag tds-tag--default tds-tag--sm">3</span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-table" role="table">
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Liveness (optional)</span><span class="dv-cell-sub">Not included in this workflow</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status">Not run</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div id="dv-document-indicators" class="dv-indicators__list"></div>
               </div>
-
-              <!-- Document viewer column -->
               <div class="dv-viewer">
                 <h3 class="dv-section-title">Driver’s License</h3>
-
                 <figure class="dv-doc-image">
                   <figcaption class="dv-doc-image__caption">
                     Front of Document
@@ -374,7 +222,6 @@
                     </svg>
                   </div>
                 </figure>
-
                 <figure class="dv-doc-image">
                   <figcaption class="dv-doc-image__caption">
                     Back of Document
@@ -394,20 +241,17 @@
                   </div>
                 </figure>
               </div>
-
             </div>
           </section>
 
-          <!-- ============ biometrics ============ -->
+          <!-- Biometrics -->
           <section class="dv-tabpanel dv-doc-panel" data-tab="biometrics" hidden>
             <div class="dv-doc-panel__header dv-ni2-panelhead">
               <div class="dv-ni2-panelhead__title">
                 <h2 class="dv-doc-panel__title">Biometrics</h2>
-                <div class="dv-tag-row"><span class="tds-tag tds-tag--positive tds-tag--sm">12 Accepted</span>
-                      <span class="tds-tag tds-tag--positive tds-tag--sm">3 Matches</span>
-                      <span class="tds-tag tds-tag--default tds-tag--sm">3 Not detected</span></div>
+                <div class="dv-tag-row" id="dv-biometrics-badges"></div>
               </div>
-              <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button">
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
                 <span class="tds-btn__leading-icon">
                   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
                 </span>
@@ -416,116 +260,17 @@
             </div>
             <div class="dv-doc-panel__body">
               <div class="dv-indicators">
-                <div class="dv-group dv-collapsible dv-collapsible--open">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="true">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Accepted</span>
-                    <span class="tds-tag tds-tag--positive tds-tag--sm">12</span>
-                  </button>
-                  <div class="dv-collapsible__body">
-                    <div class="dv-table" role="table">
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face match verification</span><span class="dv-cell-sub">Face Match</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face liveness</span><span class="dv-cell-sub">Liveness &amp; anti-spoof</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face detected</span><span class="dv-cell-sub">Liveness &amp; anti-spoof</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Single face</span><span class="dv-cell-sub">Liveness &amp; anti-spoof</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Eyes open</span><span class="dv-cell-sub">Liveness &amp; anti-spoof</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">No occlusion</span><span class="dv-cell-sub">Liveness &amp; anti-spoof</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Photo stream check</span><span class="dv-cell-sub">Liveness &amp; anti-spoof</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face angle</span><span class="dv-cell-sub">Capture Quality</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face size</span><span class="dv-cell-sub">Capture Quality</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face not cropped</span><span class="dv-cell-sub">Capture Quality</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Border distance</span><span class="dv-cell-sub">Capture Quality</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Camera distance</span><span class="dv-cell-sub">Capture Quality</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Not detected</span>
-                    <span class="tds-tag tds-tag--default tds-tag--sm">3</span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-table" role="table">
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face filter</span><span class="dv-cell-sub">Deepfake &amp; GenAI detection</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5 8h6"/></svg></span>Not detected</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Face swap</span><span class="dv-cell-sub">Deepfake &amp; GenAI detection</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5 8h6"/></svg></span>Not detected</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">AI generated</span><span class="dv-cell-sub">Deepfake &amp; GenAI detection</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5 8h6"/></svg></span>Not detected</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Known faces</span>
-                    <span class="tds-tag tds-tag--positive tds-tag--sm">3 Matches</span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-table" role="table">
-                      <div class="dv-table__row dv-table__head" role="row"><div class="dv-table__text-cell dv-table__col-head">Transaction</div><div class="dv-table__label-cell dv-table__col-head">Result</div></div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">13 Nov 2022, 2:56 PM</span><span class="dv-cell-sub">0bbb93aa-4964-457c-8523-62b48b39cc83</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">23 Jun 2021, 12:22 PM</span><span class="dv-cell-sub">0bbb93aa-4964-457c-8523-62b48b39cc83</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">18 Apr 2020, 7:24 PM</span><span class="dv-cell-sub">0bbb93aa-4964-457c-8523-62b48b39cc83</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div id="dv-biometrics-indicators" class="dv-indicators__list"></div>
               </div>
               <div class="dv-viewer">
                 <h3 class="dv-section-title">Selfie</h3>
                 <figure class="dv-doc-image">
+                  <figcaption class="dv-doc-image__caption">
+                    Selfie
+                    <button class="dv-icon-btn" type="button" aria-label="Expand selfie">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                    </button>
+                  </figcaption>
                   <div class="dv-doc-image__media">
                     <svg viewBox="0 0 293 320" role="img" aria-label="Selfie placeholder" preserveAspectRatio="xMidYMid slice"><rect width="293" height="320" fill="var(--surface-neutral-03)"/><circle cx="146" cy="130" r="62" fill="var(--border-strong)"/><path d="M44 300c0-52 46-84 102-84s102 32 102 84z" fill="var(--border-strong)"/></svg>
                   </div>
@@ -534,15 +279,14 @@
             </div>
           </section>
 
-          <!-- ============ data-match ============ -->
+          <!-- Data Match -->
           <section class="dv-tabpanel dv-doc-panel" data-tab="data-match" hidden>
             <div class="dv-doc-panel__header dv-ni2-panelhead">
               <div class="dv-ni2-panelhead__title">
                 <h2 class="dv-doc-panel__title">Data Match</h2>
-                <div class="dv-tag-row"><span class="tds-tag tds-tag--positive tds-tag--sm">2 Exact Match</span>
-                      <span class="tds-tag tds-tag--positive tds-tag--sm">4 Partial Match</span></div>
+                <div class="dv-tag-row" id="dv-datamatch-badges"></div>
               </div>
-              <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button">
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
                 <span class="tds-btn__leading-icon">
                   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
                 </span>
@@ -551,52 +295,7 @@
             </div>
             <div class="dv-doc-panel__body">
               <div class="dv-indicators">
-                <div class="dv-group dv-collapsible dv-collapsible--open">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="true">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Exact Match</span>
-                    <span class="tds-tag tds-tag--positive tds-tag--sm">2</span>
-                  </button>
-                  <div class="dv-collapsible__body">
-                    <div class="dv-table" role="table">
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">First Name</span><span class="dv-cell-sub">Input: Jane · OCR: Jane · 100% confidence</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Exact Match</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Middle Name</span><span class="dv-cell-sub">Input: M · OCR: M · 100% confidence</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Exact Match</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Partial Match</span>
-                    <span class="tds-tag tds-tag--positive tds-tag--sm">4</span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-table" role="table">
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Last Name</span><span class="dv-cell-sub">Input: Doe · OCR: Doe · 82% confidence</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Partial Match</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Date of Birth</span><span class="dv-cell-sub">Input: 1986/03/24 · OCR: 1986/03/24</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Partial Match</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">Full Name</span><span class="dv-cell-sub">Input: Jane Doe · OCR: Jane M Doe</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Partial Match</span></div>
-                      </div>
-                      <div class="dv-table__row" role="row">
-                        <div class="dv-table__text-cell"><span class="dv-cell-title">First Last Name</span><span class="dv-cell-sub">Input: Jane Doe · OCR: Jane Doe</span></div>
-                        <div class="dv-table__label-cell"><span class="dv-status dv-status--positive"><span class="dv-status__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Partial Match</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div id="dv-datamatch-indicators" class="dv-indicators__list"></div>
               </div>
               <div class="dv-viewer">
                 <h3 class="dv-section-title">Driver’s License</h3>
@@ -612,508 +311,58 @@
             </div>
           </section>
 
-          <!-- ============ Network Insights ============ -->
+          <!-- Network Insights -->
           <section class="dv-tabpanel dv-doc-panel" data-tab="network-insights" hidden>
             <div class="dv-doc-panel__header dv-ni2-panelhead">
               <div class="dv-ni2-panelhead__title">
                 <h2 class="dv-doc-panel__title">Network Insights</h2>
-                <span class="tds-tag tds-tag--negative tds-tag--sm dv-ni-pill"><span class="dv-tag-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 14V2.5h7l-1.6 2.6L11 8H4"/></svg></span>Flagged</span>
+                <span id="dv-network-header-badge" class="tds-tag tds-tag--positive tds-tag--sm dv-ni-pill">Clean</span>
               </div>
-              <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg></span>Expand all</button>
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
+                <span class="tds-btn__leading-icon">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
+                </span>
+                Expand all
+              </button>
             </div>
-            <div class="dv-ni2-body">
-                <div class="dv-group dv-collapsible dv-collapsible--open">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="true">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Flagged</span>
-                    <span class="tds-tag tds-tag--default tds-tag--sm">3</span>
-                  </button>
-                  <div class="dv-collapsible__body">
-                    <div class="dv-ni2-accs">
-                  <div class="dv-acc dv-collapsible dv-collapsible--open">
-                    <button class="dv-acc__header dv-collapsible__header" type="button" aria-expanded="true">
-                      <span class="dv-acc__title">Synthetic identity</span>
-                      <span class="dv-acc__chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></span>
-                    </button>
-                    <div class="dv-collapsible__body dv-acc__body">
-                      <div class="dv-acc__trend">
-                        <div class="dv-acc__trend-head"><span class="dv-acc__trend-title">Trend</span><span class="tds-tag tds-tag--default tds-tag--sm">100% Acceptance rate</span></div>
-                        <div class="dv-ni2-trend__row">
-                          <div class="dv-ni2-trend__left"><span class="dv-ni2-note"><svg viewBox="0 0 93 93" aria-hidden="true"><rect width="93" height="93" fill="var(--surface-neutral-03)"/><circle cx="46" cy="38" r="18" fill="var(--border-strong)"/><path d="M16 90c0-17 13-27 30-27s30 10 30 27z" fill="var(--border-strong)"/></svg></span><div class="dv-ni2-trend__text"><p class="dv-ni2-trend__title">This face appears in 4 transactions under different person and document data</p><p class="dv-ni2-trend__sub">Same face detected across multiple identities with conflicting data.</p></div></div>
-                          <div class="dv-ni2-trend__right">
-                        <div class="dv-detail-row"><span class="dv-detail-label">Transactions affected</span><span class="dv-detail-value">4</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Identity conflicts</span><span class="dv-detail-value">3</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">First seen</span><span class="dv-detail-value">May 2026</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Most recent</span><span class="dv-detail-value">June 2026</span></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="dv-ni2-txnbar">
-                        <button class="dv-ni2-txntoggle" type="button" aria-expanded="true"><span class="dv-ni2-txntoggle__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8h10"/></svg></span><span class="dv-ni2-txntoggle__label">Hide transactions</span></button>
-                        <span class="dv-ni2-txnbar__tags"><span class="tds-tag tds-tag--negative tds-tag--sm">2 Declined</span><span class="tds-tag tds-tag--positive tds-tag--sm">2 Accepted</span></span>
-                      </div>
-                      <div class="dv-txntable">
-                        <div class="dv-txntable__head">
-                          <span class="dv-txntable__ch">Transaction</span>
-                          <span class="dv-txntable__ch">Difference from current</span>
-                          <span class="dv-txntable__ch">Result</span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">23 Jun 2021, 12:22 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="tds-tag tds-tag--default tds-tag--sm">Person</span><span class="tds-tag tds-tag--default tds-tag--sm">Document</span><span class="tds-tag tds-tag--default tds-tag--sm">IP Address</span><span class="tds-tag tds-tag--default tds-tag--sm">Address</span><span class="tds-tag tds-tag--default tds-tag--sm">Face</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--negative"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">19 Aug 2021, 9:45 AM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="tds-tag tds-tag--default tds-tag--sm">Person</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--negative"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">05 Oct 2021, 3:30 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">12 Nov 2021, 6:15 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="dv-acc dv-collapsible">
-                    <button class="dv-acc__header dv-collapsible__header" type="button" aria-expanded="false">
-                      <span class="dv-acc__title">Document conflict</span>
-                      <span class="dv-acc__chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></span>
-                    </button>
-                    <div class="dv-collapsible__body dv-acc__body" hidden>
-                      <div class="dv-acc__trend">
-                        <div class="dv-acc__trend-head"><span class="dv-acc__trend-title">Trend</span><span class="tds-tag tds-tag--default tds-tag--sm">50% Acceptance rate</span></div>
-                        <div class="dv-ni2-trend__row">
-                          <div class="dv-ni2-trend__left"><span class="dv-ni2-note"><svg viewBox="0 0 93 93" aria-hidden="true"><rect width="93" height="93" fill="var(--surface-neutral-03)"/><circle cx="46" cy="38" r="18" fill="var(--border-strong)"/><path d="M16 90c0-17 13-27 30-27s30 10 30 27z" fill="var(--border-strong)"/></svg></span><div class="dv-ni2-trend__text"><p class="dv-ni2-trend__title">909346 — Driver License appears in 4 transactions under different person data</p><p class="dv-ni2-trend__sub">Same document detected across multiple identities.</p></div></div>
-                          <div class="dv-ni2-trend__right">
-                        <div class="dv-detail-row"><span class="dv-detail-label">Transactions affected</span><span class="dv-detail-value">4</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Identity conflicts</span><span class="dv-detail-value">3</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">First seen</span><span class="dv-detail-value">May 2026</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Most recent</span><span class="dv-detail-value">June 2026</span></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="dv-ni2-txnbar">
-                        <button class="dv-ni2-txntoggle" type="button" aria-expanded="false"><span class="dv-ni2-txntoggle__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 3v10M3 8h10"/></svg></span><span class="dv-ni2-txntoggle__label">View transactions</span></button>
-                        <span class="dv-ni2-txnbar__tags"><span class="tds-tag tds-tag--negative tds-tag--sm">2 Declined</span><span class="tds-tag tds-tag--positive tds-tag--sm">2 Accepted</span></span>
-                      </div>
-                      <div class="dv-txntable" hidden>
-                        <div class="dv-txntable__head">
-                          <span class="dv-txntable__ch">Transaction</span>
-                          <span class="dv-txntable__ch">Difference from current</span>
-                          <span class="dv-txntable__ch">Result</span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">23 Jun 2021, 12:22 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="tds-tag tds-tag--default tds-tag--sm">Document</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--negative"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">19 Aug 2021, 9:45 AM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="tds-tag tds-tag--default tds-tag--sm">IP Address</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--negative"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">05 Oct 2021, 3:30 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">12 Nov 2021, 6:15 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="dv-acc dv-collapsible">
-                    <button class="dv-acc__header dv-collapsible__header" type="button" aria-expanded="false">
-                      <span class="dv-acc__title">IP Velocity Anomaly</span>
-                      <span class="dv-acc__chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></span>
-                    </button>
-                    <div class="dv-collapsible__body dv-acc__body" hidden>
-                      <div class="dv-acc__trend">
-                        <div class="dv-acc__trend-head"><span class="dv-acc__trend-title">Trend</span><span class="tds-tag tds-tag--default tds-tag--sm">50% Acceptance rate</span></div>
-                        <div class="dv-ni2-trend__row">
-                          <div class="dv-ni2-trend__left"><span class="dv-ni2-note"><svg viewBox="0 0 93 93" aria-hidden="true"><rect width="93" height="93" fill="var(--surface-neutral-03)"/><circle cx="46" cy="38" r="18" fill="var(--border-strong)"/><path d="M16 90c0-17 13-27 30-27s30 10 30 27z" fill="var(--border-strong)"/></svg></span><div class="dv-ni2-trend__text"><p class="dv-ni2-trend__title">High volume originating from 192.168.42.10</p><p class="dv-ni2-trend__sub">22 transactions from the same IP address in a short window.</p></div></div>
-                          <div class="dv-ni2-trend__right">
-                        <div class="dv-detail-row"><span class="dv-detail-label">Transactions affected</span><span class="dv-detail-value">4</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Identity conflicts</span><span class="dv-detail-value">3</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">First seen</span><span class="dv-detail-value">May 2026</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Most recent</span><span class="dv-detail-value">June 2026</span></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="dv-ni2-txnbar">
-                        <button class="dv-ni2-txntoggle" type="button" aria-expanded="false"><span class="dv-ni2-txntoggle__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 3v10M3 8h10"/></svg></span><span class="dv-ni2-txntoggle__label">View transactions</span></button>
-                        <span class="dv-ni2-txnbar__tags"><span class="tds-tag tds-tag--negative tds-tag--sm">2 Declined</span><span class="tds-tag tds-tag--positive tds-tag--sm">2 Accepted</span></span>
-                      </div>
-                      <div class="dv-txntable" hidden>
-                        <div class="dv-txntable__head">
-                          <span class="dv-txntable__ch">Transaction</span>
-                          <span class="dv-txntable__ch">Difference from current</span>
-                          <span class="dv-txntable__ch">Result</span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">23 Jun 2021, 12:22 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="tds-tag tds-tag--default tds-tag--sm">Document</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--negative"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">19 Aug 2021, 9:45 AM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="tds-tag tds-tag--default tds-tag--sm">IP Address</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--negative"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg></span>Declined</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">05 Oct 2021, 3:30 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">12 Nov 2021, 6:15 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Clean</span>
-                    <span class="tds-tag tds-tag--default tds-tag--sm">2</span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-ni2-accs">
-                  <div class="dv-acc dv-collapsible">
-                    <button class="dv-acc__header dv-collapsible__header" type="button" aria-expanded="false">
-                      <span class="dv-acc__title">Returning identity</span>
-                      <span class="dv-acc__chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></span>
-                    </button>
-                    <div class="dv-collapsible__body dv-acc__body" hidden>
-                      <div class="dv-acc__trend">
-                        <div class="dv-acc__trend-head"><span class="dv-acc__trend-title">Trend</span><span class="tds-tag tds-tag--default tds-tag--sm">100% Acceptance rate</span></div>
-                        <div class="dv-ni2-trend__row">
-                          <div class="dv-ni2-trend__left"><span class="dv-ni2-note"><svg viewBox="0 0 93 93" aria-hidden="true"><rect width="93" height="93" fill="var(--surface-neutral-03)"/><circle cx="46" cy="38" r="18" fill="var(--border-strong)"/><path d="M16 90c0-17 13-27 30-27s30 10 30 27z" fill="var(--border-strong)"/></svg></span><div class="dv-ni2-trend__text"><p class="dv-ni2-trend__title">Identity seen in prior transactions with consistent data</p><p class="dv-ni2-trend__sub">Recurring identity across the network, no conflicts.</p></div></div>
-                          <div class="dv-ni2-trend__right">
-                        <div class="dv-detail-row"><span class="dv-detail-label">Transactions affected</span><span class="dv-detail-value">4</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Identity conflicts</span><span class="dv-detail-value">3</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">First seen</span><span class="dv-detail-value">May 2026</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Most recent</span><span class="dv-detail-value">June 2026</span></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="dv-ni2-txnbar">
-                        <button class="dv-ni2-txntoggle" type="button" aria-expanded="false"><span class="dv-ni2-txntoggle__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 3v10M3 8h10"/></svg></span><span class="dv-ni2-txntoggle__label">View transactions</span></button>
-                        <span class="dv-ni2-txnbar__tags"><span class="tds-tag tds-tag--positive tds-tag--sm">2 Accepted</span></span>
-                      </div>
-                      <div class="dv-txntable" hidden>
-                        <div class="dv-txntable__head">
-                          <span class="dv-txntable__ch">Transaction</span>
-                          <span class="dv-txntable__ch">Difference from current</span>
-                          <span class="dv-txntable__ch">Result</span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">23 Jun 2021, 12:22 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">19 Aug 2021, 9:45 AM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="dv-acc dv-collapsible">
-                    <button class="dv-acc__header dv-collapsible__header" type="button" aria-expanded="false">
-                      <span class="dv-acc__title">Document cycling</span>
-                      <span class="dv-acc__chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></span>
-                    </button>
-                    <div class="dv-collapsible__body dv-acc__body" hidden>
-                      <div class="dv-acc__trend">
-                        <div class="dv-acc__trend-head"><span class="dv-acc__trend-title">Trend</span><span class="tds-tag tds-tag--default tds-tag--sm">100% Acceptance rate</span></div>
-                        <div class="dv-ni2-trend__row">
-                          <div class="dv-ni2-trend__left"><span class="dv-ni2-note"><svg viewBox="0 0 93 93" aria-hidden="true"><rect width="93" height="93" fill="var(--surface-neutral-03)"/><circle cx="46" cy="38" r="18" fill="var(--border-strong)"/><path d="M16 90c0-17 13-27 30-27s30 10 30 27z" fill="var(--border-strong)"/></svg></span><div class="dv-ni2-trend__text"><p class="dv-ni2-trend__title">Document reused across recent transactions with matching data</p><p class="dv-ni2-trend__sub">No conflicting personal data detected.</p></div></div>
-                          <div class="dv-ni2-trend__right">
-                        <div class="dv-detail-row"><span class="dv-detail-label">Transactions affected</span><span class="dv-detail-value">4</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Identity conflicts</span><span class="dv-detail-value">3</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">First seen</span><span class="dv-detail-value">May 2026</span></div>
-                        <div class="dv-detail-row"><span class="dv-detail-label">Most recent</span><span class="dv-detail-value">June 2026</span></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="dv-ni2-txnbar">
-                        <button class="dv-ni2-txntoggle" type="button" aria-expanded="false"><span class="dv-ni2-txntoggle__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 3v10M3 8h10"/></svg></span><span class="dv-ni2-txntoggle__label">View transactions</span></button>
-                        <span class="dv-ni2-txnbar__tags"><span class="tds-tag tds-tag--positive tds-tag--sm">2 Accepted</span></span>
-                      </div>
-                      <div class="dv-txntable" hidden>
-                        <div class="dv-txntable__head">
-                          <span class="dv-txntable__ch">Transaction</span>
-                          <span class="dv-txntable__ch">Difference from current</span>
-                          <span class="dv-txntable__ch">Result</span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">23 Jun 2021, 12:22 PM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                        <div class="dv-txntable__row">
-                          <span class="dv-txntable__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">19 Aug 2021, 9:45 AM</a><span class="dv-txn-id">0bbb93aa-4964-457c-8523-62b48b39cc83</span></span></span>
-                          <span class="dv-txntable__cell dv-txn-diff"><span class="dv-txn-dash">-</span></span>
-                          <span class="dv-txntable__cell"><span class="dv-txn-result"><span class="dv-txn-result__icon dv-txn-result__icon--positive"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>Accepted</span></span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                    </div>
-                  </div>
-                </div>
-            </div>
+            <div class="dv-ni2-body" id="dv-network-body"></div>
           </section>
 
-          <!-- ============ Device Intelligence ============ -->
+          <!-- Device Intelligence -->
           <section class="dv-tabpanel dv-doc-panel" data-tab="device-intelligence" hidden>
             <div class="dv-doc-panel__header dv-ni2-panelhead">
               <div class="dv-ni2-panelhead__title">
                 <h2 class="dv-doc-panel__title">Device Intelligence</h2>
-                <span class="tds-tag tds-tag--negative tds-tag--sm">High Risk</span>
+                <span id="dv-device-header-badge" class="tds-tag tds-tag--positive tds-tag--sm">Low Risk</span>
               </div>
-              <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg></span>Expand all</button>
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
+                <span class="tds-btn__leading-icon">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
+                </span>
+                Expand all
+              </button>
             </div>
-            <div class="dv-di-body">
-              <div class="dv-di-top">
-                <div class="dv-di-summary">
-                  <div class="dv-di-score">
-                    <span class="dv-di-score__label">Risk Score</span>
-                    <div class="dv-di-gauge" data-score="8" data-risk="high" data-label="High Risk"></div>
-                  </div>
-                  <div class="dv-di-detail">
-                    <p class="dv-di-statement">Strong indicators of suspicious or fraudulent behavior. Immediate review or action is recommended.</p>
-                    <div class="dv-di-meta">
-                      <div class="dv-di-meta__row"><span class="dv-di-meta__label">Device ID</span><span class="dv-di-meta__value">3045489E05849546</span></div>
-                      <div class="dv-di-meta__row"><span class="dv-di-meta__label">Created at</span><span class="dv-di-meta__value">05 July 2026, 3:30pm</span></div>
-                    </div>
-                    <div class="dv-di-chips">
-                      <div class="dv-di-chip">Persona HIGH — confidence 57/100 · 1 signals · 1 errors</div>
-                      <div class="dv-di-chip">Velocity anomaly across ES → RU → SE</div>
-                      <div class="dv-di-chip">Linked to 3 different identities</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-di-showinfo"><button class="tds-btn tds-btn--invisible tds-btn--sm" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg></span>Show Device Information</button></div>
-              </div>
-              <span class="dv-di-evidence-label">Evidence</span>
-                <div class="dv-group dv-collapsible dv-collapsible--open">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="true">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Risk Outputs</span>
-                    <span class="dv-ni2-counts"><span class="tds-tag tds-tag--negative tds-tag--sm">4 Risk</span></span>
-                  </button>
-                  <div class="dv-collapsible__body">
-                    <div class="dv-ditable">
-                      <div class="dv-ditable__head"><span class="dv-ditable__ch">Transaction</span><span class="dv-ditable__ch">Result</span><span class="dv-ditable__ch">Insight</span></div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Device Risk Level</span><span class="dv-cell-sub">Device risk level for the session based on available signals.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Device Risk Level</span><span class="dv-cell-sub">Device risk level for the session based on available signals.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Device Risk Level</span><span class="dv-cell-sub">Device risk level for the session based on available signals.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Device Risk Level</span><span class="dv-cell-sub">Device risk level for the session based on available signals.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Network &amp; Location</span>
-                    <span class="dv-ni2-counts"><span class="tds-tag tds-tag--negative tds-tag--sm">2 Risk</span><span class="tds-tag tds-tag--positive tds-tag--sm">2 No Risk</span><span class="tds-tag tds-tag--default tds-tag--sm">1 Not Run</span></span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-ditable">
-                      <div class="dv-ditable__head"><span class="dv-ditable__ch">Transaction</span><span class="dv-ditable__ch">Result</span><span class="dv-ditable__ch">Insight</span></div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">IP reputation</span><span class="dv-cell-sub">Reputation of the originating IP address.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Proxy / VPN</span><span class="dv-cell-sub">Anonymising network detected.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Geo velocity</span><span class="dv-cell-sub">Plausible travel between sessions.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Timezone match</span><span class="dv-cell-sub">Device timezone matches location.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Integrity &amp; Compromise</span>
-                    <span class="dv-ni2-counts"><span class="tds-tag tds-tag--negative tds-tag--sm">2 Risk</span><span class="tds-tag tds-tag--positive tds-tag--sm">2 No Risk</span><span class="tds-tag tds-tag--default tds-tag--sm">1 Not Run</span></span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-ditable">
-                      <div class="dv-ditable__head"><span class="dv-ditable__ch">Transaction</span><span class="dv-ditable__ch">Result</span><span class="dv-ditable__ch">Insight</span></div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">IP reputation</span><span class="dv-cell-sub">Reputation of the originating IP address.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Proxy / VPN</span><span class="dv-cell-sub">Anonymising network detected.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Geo velocity</span><span class="dv-cell-sub">Plausible travel between sessions.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Timezone match</span><span class="dv-cell-sub">Device timezone matches location.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Device Identity &amp; History</span>
-                    <span class="dv-ni2-counts"><span class="tds-tag tds-tag--negative tds-tag--sm">2 Risk</span><span class="tds-tag tds-tag--positive tds-tag--sm">2 No Risk</span><span class="tds-tag tds-tag--default tds-tag--sm">1 Not Run</span></span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-ditable">
-                      <div class="dv-ditable__head"><span class="dv-ditable__ch">Transaction</span><span class="dv-ditable__ch">Result</span><span class="dv-ditable__ch">Insight</span></div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">IP reputation</span><span class="dv-cell-sub">Reputation of the originating IP address.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Proxy / VPN</span><span class="dv-cell-sub">Anonymising network detected.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Geo velocity</span><span class="dv-cell-sub">Plausible travel between sessions.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Timezone match</span><span class="dv-cell-sub">Device timezone matches location.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Behavioral Biometrics</span>
-                    <span class="dv-ni2-counts"><span class="tds-tag tds-tag--negative tds-tag--sm">2 Risk</span><span class="tds-tag tds-tag--positive tds-tag--sm">2 No Risk</span><span class="tds-tag tds-tag--default tds-tag--sm">1 Not Run</span></span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-ditable">
-                      <div class="dv-ditable__head"><span class="dv-ditable__ch">Transaction</span><span class="dv-ditable__ch">Result</span><span class="dv-ditable__ch">Insight</span></div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">IP reputation</span><span class="dv-cell-sub">Reputation of the originating IP address.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Proxy / VPN</span><span class="dv-cell-sub">Anonymising network detected.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Geo velocity</span><span class="dv-cell-sub">Plausible travel between sessions.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Timezone match</span><span class="dv-cell-sub">Device timezone matches location.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="dv-group dv-collapsible">
-                  <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg></span>
-                    <span class="dv-group__label">Location History</span>
-                    <span class="dv-ni2-counts"><span class="tds-tag tds-tag--negative tds-tag--sm">2 Risk</span><span class="tds-tag tds-tag--positive tds-tag--sm">2 No Risk</span><span class="tds-tag tds-tag--default tds-tag--sm">1 Not Run</span></span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden>
-                    <div class="dv-ditable">
-                      <div class="dv-ditable__head"><span class="dv-ditable__ch">Transaction</span><span class="dv-ditable__ch">Result</span><span class="dv-ditable__ch">Insight</span></div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">IP reputation</span><span class="dv-cell-sub">Reputation of the originating IP address.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Proxy / VPN</span><span class="dv-cell-sub">Anonymising network detected.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">High</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg></span>Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Geo velocity</span><span class="dv-cell-sub">Plausible travel between sessions.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                      <div class="dv-ditable__row">
-                        <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">Timezone match</span><span class="dv-cell-sub">Device timezone matches location.</span></span></span>
-                        <span class="dv-ditable__cell dv-di-result">Low</span>
-                        <span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg></span>No Risk</span></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            </div>
+            <div id="dv-device-body" class="dv-di-body"></div>
           </section>
 
+          </div>
 
         </div>
       </div>
-
     </main>
+  </div>
+
+  <div class="dv-image-modal" id="dv-image-modal" hidden role="dialog" aria-modal="true" aria-labelledby="dv-image-modal-title">
+    <div class="dv-image-modal__overlay" data-modal-close></div>
+    <div class="dv-image-modal__panel">
+      <div class="dv-image-modal__header">
+        <h2 class="dv-image-modal__title" id="dv-image-modal-title"></h2>
+        <button class="dv-image-modal__close" type="button" aria-label="Close" data-modal-close>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+      </div>
+      <div class="dv-image-modal__body" id="dv-image-modal-body"></div>
+    </div>
   </div>
 
   <script src="document-verification.js"></script>
