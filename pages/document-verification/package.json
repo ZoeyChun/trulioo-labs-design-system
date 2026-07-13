@@ -1,0 +1,12 @@
+{
+  "name": "document-verification-demo",
+  "private": true,
+  "scripts": {
+    "build": "esbuild src/app.ts --bundle --outfile=document-verification.js --format=iife --target=es2019",
+    "typecheck": "tsc --strict --noEmit --module NodeNext --moduleResolution NodeNext --target ES2020 src/*.ts"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.2"
+  }
+}
