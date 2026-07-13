@@ -156,3 +156,34 @@
     document.querySelectorAll(".dv-di-gauge[data-score]").forEach(render);
   });
 })();
+
+/* ============================================================
+   Test Entity dropdown (left panel) — same pattern as the
+   bank-verification test-entity select. Selection updates the
+   trigger value + status tag only; tab content is unaffected.
+   ============================================================ */
+(function () {
+  "use strict";
+  document.addEventListener("DOMContentLoaded", function () {
+    var sel = document.getElementById("dv-te-select");
+    if (!sel) return;
+    var trigger = sel.querySelector(".tds-select__trigger");
+    var value = sel.querySelector(".dv-te-value");
+    var tag = sel.querySelector(".dv-te-tag");
+    function close() { sel.classList.remove("tds-select--open"); trigger.setAttribute("aria-expanded", "false"); }
+    trigger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var open = sel.classList.toggle("tds-select--open");
+      trigger.setAttribute("aria-expanded", String(open));
+    });
+    sel.querySelectorAll(".dv-te-option").forEach(function (opt) {
+      opt.addEventListener("click", function () {
+        value.textContent = opt.getAttribute("data-name");
+        tag.className = "tds-tag tds-tag--" + opt.getAttribute("data-tone") + " tds-tag--sm dv-te-tag";
+        tag.textContent = opt.getAttribute("data-result");
+        close();
+      });
+    });
+    document.addEventListener("click", function (e) { if (!sel.contains(e.target)) close(); });
+  });
+})();

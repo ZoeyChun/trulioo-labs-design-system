@@ -1106,3 +1106,29 @@ body { margin: 0; }
 
 /* Hidden rows in "+N more" collapsed lists */
 .dv-table__row[hidden] { display: none; }
+
+/* Test Entity dropdown options (left panel) */
+.dv-te-option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: var(--padding-sm);
+  border: none;
+  background: none;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  text-align: left;
+}
+.dv-te-option:hover { background-color: var(--surface-hover); }
+.dv-te-option__text { display: flex; flex-direction: column; gap: var(--spacing-2); min-width: 0; }
+.dv-te-option__name {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+.dv-te-option__desc { font-size: var(--font-size-xs); line-height: var(--line-height-xs); color: var(--text-caption); }
+.dv-te-option .tds-tag { flex-shrink: 0; }

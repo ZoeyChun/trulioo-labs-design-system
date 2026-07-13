@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../Components/tag/tag.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/select/caret.css">
+  <link rel="stylesheet" href="../../Components/select/dropdown-panel.css">
   <link rel="stylesheet" href="../../Components/select/field-label.css">
 
   <!-- Shared chrome + page-local styles -->
@@ -117,17 +118,45 @@
 
             <!-- Test entity select -->
             <div class="dv-sidebar__block">
-              <div class="tds-select">
+              <div class="tds-select dv-te-select" id="dv-te-select">
                 <span class="tds-field-label">Test Entity</span>
-                <button type="button" class="tds-select__trigger tds-select__trigger--lg dv-select-trigger" aria-haspopup="listbox">
-                  <span class="tds-select__text-wrapper"><span class="tds-select__value">Face mismatch</span></span>
+                <button type="button" class="tds-select__trigger tds-select__trigger--lg dv-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="tds-select__text-wrapper"><span class="tds-select__value dv-te-value">Face mismatch</span></span>
                   <span class="tds-select__trailing-group">
-                    <span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span>
+                    <span class="tds-tag tds-tag--negative tds-tag--sm dv-te-tag">Declined</span>
                     <span class="tds-caret tds-caret--default" aria-hidden="true">
                       <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
                     </span>
                   </span>
                 </button>
+                <div class="tds-select__menu">
+                  <div class="tds-dropdown-panel" role="listbox" aria-label="Test entity scenario">
+                    <button type="button" class="dv-te-option" role="option" data-name="Happy path" data-tone="positive" data-result="Accepted">
+                      <span class="dv-te-option__text"><span class="dv-te-option__name">Happy path</span><span class="dv-te-option__desc">All 60+ signals accepted. Clean doc, face match passes.</span></span>
+                      <span class="tds-tag tds-tag--positive tds-tag--sm">Accepted</span>
+                    </button>
+                    <button type="button" class="dv-te-option" role="option" data-name="Expired document" data-tone="negative" data-result="Declined">
+                      <span class="dv-te-option__text"><span class="dv-te-option__name">Expired document</span><span class="dv-te-option__desc">Document expired, auto-decline triggered.</span></span>
+                      <span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span>
+                    </button>
+                    <button type="button" class="dv-te-option" role="option" data-name="Face mismatch" data-tone="negative" data-result="Declined">
+                      <span class="dv-te-option__text"><span class="dv-te-option__name">Face mismatch</span><span class="dv-te-option__desc">Selfie doesn’t match document photo.</span></span>
+                      <span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span>
+                    </button>
+                    <button type="button" class="dv-te-option" role="option" data-name="DOB mismatch" data-tone="intermediate" data-result="Review">
+                      <span class="dv-te-option__text"><span class="dv-te-option__name">DOB mismatch</span><span class="dv-te-option__desc">OCR DOB doesn’t match user input. Matcher → declined, overall → review.</span></span>
+                      <span class="tds-tag tds-tag--intermediate tds-tag--sm">Review</span>
+                    </button>
+                    <button type="button" class="dv-te-option" role="option" data-name="Known face hit" data-tone="negative" data-result="Declined">
+                      <span class="dv-te-option__text"><span class="dv-te-option__name">Known face hit</span><span class="dv-te-option__desc">Face matches a known fraudster.</span></span>
+                      <span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span>
+                    </button>
+                    <button type="button" class="dv-te-option" role="option" data-name="Deepfake detected" data-tone="negative" data-result="Declined">
+                      <span class="dv-te-option__text"><span class="dv-te-option__name">Deepfake detected</span><span class="dv-te-option__desc">Synthetic selfie detected by ML model.</span></span>
+                      <span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
