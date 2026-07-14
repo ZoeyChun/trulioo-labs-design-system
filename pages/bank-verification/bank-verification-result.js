@@ -131,7 +131,7 @@
     document.getElementById("bv-result-date").textContent = formatDate();
 
     var teBlock = document.getElementById("bv-result-te-block");
-    if (config.testEntityMode) {
+    if (config.testEntityMode && config.testEntity) {
       teBlock.hidden = false;
       renderResultTestEntity(config);
     } else {

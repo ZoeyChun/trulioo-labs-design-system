@@ -226,7 +226,7 @@
       transactionId: txnId,
       testEntity: entity,
       testEntityIndex: st.selectedTestEntity,
-      testEntityMode: st.testEntity,
+      testEntityMode: !!(st.testEntity && st.selectedTestEntity != null),
       accountType: st.accountType,
       matchCount: matchCount,
       truAi: buildTruAi(name, matchInfo),

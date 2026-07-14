@@ -251,3 +251,7 @@
 .bv-result-hidden-te {
   display: none;
 }
+
+#bv-result-te-block[hidden] {
+  display: none !important;
+}
