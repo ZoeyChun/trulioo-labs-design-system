@@ -182,7 +182,7 @@
   grid-column: auto;
 }
 
-.bv-match-score-block .dv-di-gauge svg {
+.bv-match-score-block .dv-di-gauge .score-gauge {
   display: block;
   width: 227px;
   height: 180px;

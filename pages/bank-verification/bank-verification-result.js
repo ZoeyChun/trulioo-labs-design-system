@@ -11,13 +11,6 @@
   var ICON_INTERMEDIATE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v4M8 11h.01"/></svg>';
   var CARET_SVG = '<svg viewBox="0 0 8 11" fill="currentColor" aria-hidden="true"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>';
 
-  var GAUGE_NS = "http://www.w3.org/2000/svg";
-  var GAUGE_PAL = {
-    high: { fill: "#fff1f1", border: "#db2b2b", tag: "#ba151d" },
-    medium: { fill: "#fff4db", border: "#d8a13b", tag: "#775516" },
-    low: { fill: "#eaf7f0", border: "#6fb38a", tag: "#166534" }
-  };
-
   function toneClass(tone) {
     return "tds-tag tds-tag--" + tone + " tds-tag--sm";
   }
@@ -45,90 +38,6 @@
     });
   }
 
-  function renderGauge(container, score, risk, label) {
-    var CX = 113.526, CY = 121.53, R_OUTER = 95.53, R_INNER = 76.43, R_DARK = R_OUTER - 5;
-    var POINTER_R = 73, START = 160, SWEEP = 220, DURATION = 1400;
-    var pal = GAUGE_PAL[risk] || GAUGE_PAL.low;
-
-    function polar(deg, r) {
-      var a = deg * Math.PI / 180;
-      return [CX + r * Math.cos(a), CY + r * Math.sin(a)];
-    }
-    function sector(s, e, rO, rI) {
-      var sweep = ((e - s) % 360 + 360) % 360;
-      if (sweep < 0.05) return "";
-      var lg = sweep > 180 ? 1 : 0;
-      var o1 = polar(s, rO), o2 = polar(e, rO), i2 = polar(e, rI), i1 = polar(s, rI);
-      return "M" + o1[0] + " " + o1[1] + " A" + rO + " " + rO + " 0 " + lg + " 1 " + o2[0] + " " + o2[1] +
-        " L" + i2[0] + " " + i2[1] + " A" + rI + " " + rI + " 0 " + lg + " 0 " + i1[0] + " " + i1[1] + " Z";
-    }
-    function mk(tag, attrs, parent) {
-      var el = document.createElementNS(GAUGE_NS, tag);
-      if (attrs) Object.keys(attrs).forEach(function (k) { el.setAttribute(k, String(attrs[k])); });
-      if (parent) parent.appendChild(el);
-      return el;
-    }
-
-    container.innerHTML = "";
-    var svg = mk("svg", { width: 227, height: 180, viewBox: "0 0 227 180", overflow: "visible" });
-    container.appendChild(svg);
-    mk("path", { d: sector(START, START + SWEEP, R_OUTER, R_INNER), fill: "#f4f6f4" }, svg);
-    var fl = mk("path", { fill: pal.fill, d: "" }, svg);
-    var fd = mk("path", { fill: pal.border, d: "" }, svg);
-    var pw = mk("polygon", { points: "0,-12 8.5,6.5 -8.5,6.5", fill: "#fff", stroke: "#fff", "stroke-width": 4, "stroke-linejoin": "round" }, svg);
-    var pg = mk("polygon", { points: "0,-7 7,5.5 -7,5.5", fill: "#004c45", "stroke-linejoin": "round" }, svg);
-
-    var scoreText = mk("text", {
-      x: CX, y: 101, "text-anchor": "middle", "dominant-baseline": "middle"
-    }, svg);
-    var numTspan = document.createElementNS(GAUGE_NS, "tspan");
-    numTspan.setAttribute("style", "font-size:64px;font-weight:400;fill:#172d2d;font-family:inherit;");
-    numTspan.textContent = "0";
-    var pctTspan = document.createElementNS(GAUGE_NS, "tspan");
-    pctTspan.setAttribute("style", "font-size:24px;line-height:26px;font-weight:400;fill:#172d2d;font-family:inherit;");
-    pctTspan.textContent = "%";
-    scoreText.appendChild(numTspan);
-    scoreText.appendChild(pctTspan);
-
-    var badgeFo = mk("foreignObject", { x: CX - 70, y: 125, width: 140, height: 30, overflow: "visible" }, svg);
-    var badgeWrap = document.createElement("div");
-    badgeWrap.className = "bv-gauge-badge-wrap";
-    var badge = document.createElement("span");
-    badge.className = "bv-gauge-badge";
-    badge.textContent = label;
-    badge.style.backgroundColor = pal.fill;
-    badge.style.borderColor = pal.border;
-    badge.style.color = pal.tag;
-    badgeWrap.appendChild(badge);
-    badgeFo.appendChild(badgeWrap);
-
-    var t0 = null;
-    function anim(now) {
-      if (t0 === null) t0 = now;
-      var raw = Math.min((now - t0) / DURATION, 1);
-      var v = score * (1 - Math.pow(1 - raw, 4));
-      if (v > 0.3) {
-        var end = START + (v / 100) * SWEEP;
-        fl.setAttribute("d", sector(START, end, R_OUTER, R_INNER));
-        fd.setAttribute("d", sector(START, end, R_OUTER, R_DARK));
-        var p = polar(end, POINTER_R);
-        var tf = "translate(" + p[0] + "," + p[1] + ") rotate(" + (end + 90) + ")";
-        pw.setAttribute("transform", tf);
-        pg.setAttribute("transform", tf);
-        pw.style.display = "";
-        pg.style.display = "";
-      } else {
-        fl.setAttribute("d", "");
-        fd.setAttribute("d", "");
-        pw.style.display = "none";
-        pg.style.display = "none";
-      }
-      numTspan.textContent = String(Math.round(v));
-      if (raw < 1) requestAnimationFrame(anim);
-    }
-    requestAnimationFrame(anim);
-  }
-
   function renderResult(config) {
     document.getElementById("bv-result-title").textContent = config.displayName;
 
@@ -154,7 +63,13 @@
       if (collapseScore) collapseScore.hidden = false;
     }
 
-    renderGauge(document.getElementById("bv-result-gauge"), config.score, config.risk, config.match);
+    var gaugeEl = document.getElementById("bv-result-gauge");
+    gaugeEl.setAttribute("data-score", String(config.score));
+    gaugeEl.setAttribute("data-max", "100");
+    gaugeEl.setAttribute("data-risk", config.risk);
+    gaugeEl.setAttribute("data-label", config.match);
+    gaugeEl.setAttribute("data-show-percent", "true");
+    window.ScoreGauge.render(gaugeEl);
     document.getElementById("bv-result-truai").textContent = config.truAi;
 
     var appended = document.getElementById("bv-result-appended");

@@ -1,0 +1,60 @@
+/* ScoreGauge — fixed canvas; score + badge stacked with gap (Safari-safe) */
+
+.score-gauge {
+  position: relative;
+  width: 227px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.score-gauge__chart {
+  display: block;
+  width: 227px;
+  height: 180px;
+}
+
+.score-gauge__center {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 69px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm, 8px);
+  pointer-events: none;
+}
+
+.score-gauge__score {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  color: var(--text-default, #172d2d);
+  font-family: var(--font-family, inherit);
+  white-space: nowrap;
+}
+
+.score-gauge__value {
+  font-size: 4rem; /* Numbers/xl — 64px */
+  line-height: 1;
+  font-weight: var(--font-weight-regular, 400);
+}
+
+.score-gauge__percent {
+  font-size: var(--font-size-2xl, 1.5rem); /* Heading/xl — 24px */
+  line-height: var(--line-height-2xl, 1.625rem);
+  font-weight: var(--font-weight-regular, 400);
+}
+
+.score-gauge__badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid;
+  border-radius: var(--radius-badge, 9999px);
+  padding: var(--padding-xs, 4px) var(--padding-sm, 8px);
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+  font-weight: var(--font-weight-medium, 510);
+  font-family: var(--font-family, inherit);
+  white-space: nowrap;
+}
