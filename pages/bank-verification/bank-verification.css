@@ -18,6 +18,13 @@ body {
   background-color: var(--surface-neutral-03);
 }
 
+.bv-form-shell .app-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
 .bv-form-shell .app-main .bv-view,
 .bv-form-shell .app-main .bv-view * {
   box-sizing: border-box;
