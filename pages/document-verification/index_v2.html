@@ -502,11 +502,53 @@
 
   <script src="document-verification.js"></script>
   <script>
-  /* TDS SideNav: collapsed/expanded mode + sub-nav expand/collapse */
+  /* TDS SideNav: collapsed/expanded + sub-nav + mobile overlay */
   (function () {
+    var shell = document.getElementById('app-shell');
     var sideNav = document.getElementById('app-sidenav');
     var toggle = document.getElementById('sidenav-toggle');
+    var hamburger = document.getElementById('app-nav-toggle');
+    var overlay = document.getElementById('app-sidenav-overlay');
     if (!sideNav || !toggle) return;
+
+    /* --- Mobile hamburger menu --- */
+    function openMobileNav() {
+      shell.classList.add('app-shell--nav-open');
+      overlay.hidden = false;
+      overlay.setAttribute('aria-hidden', 'false');
+      if (hamburger) {
+        hamburger.setAttribute('aria-expanded', 'true');
+        hamburger.setAttribute('aria-label', 'Close navigation');
+      }
+    }
+
+    function closeMobileNav() {
+      shell.classList.remove('app-shell--nav-open');
+      overlay.hidden = true;
+      overlay.setAttribute('aria-hidden', 'true');
+      if (hamburger) {
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.setAttribute('aria-label', 'Open navigation');
+      }
+    }
+
+    if (hamburger) {
+      hamburger.addEventListener('click', function () {
+        var isOpen = shell.classList.contains('app-shell--nav-open');
+        isOpen ? closeMobileNav() : openMobileNav();
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', closeMobileNav);
+    }
+
+    /* close on Escape */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && shell.classList.contains('app-shell--nav-open')) {
+        closeMobileNav();
+      }
+    });
 
     /* --- Collapsed / expanded mode toggle (chevron circle button) --- */
     toggle.addEventListener('click', function () {

@@ -271,6 +271,8 @@
     background-color: var(--surface-neutral-02);
   }
 
+  /* --- Overlay backdrop --- */
+
   .app-sidenav-overlay {
     display: block;
     position: fixed;
@@ -282,6 +284,8 @@
   .app-sidenav-overlay[hidden] {
     display: none;
   }
+
+  /* --- Legacy app-sidenav mobile --- */
 
   .app-sidenav {
     position: fixed;
@@ -354,5 +358,53 @@
 
   .app-sidenav__profile {
     color: var(--text-default);
+  }
+
+  /* --- TDS SideNav mobile overlay --- */
+
+  .app-shell .tds-side-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 210;
+    width: min(280px, calc(100vw - var(--spacing-16)));
+    height: 100dvh;
+    background-color: var(--surface-neutral-02);
+    box-shadow: var(--elevation-md);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease, visibility 0.2s ease;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .app-shell .tds-side-nav .tds-side-nav__toggle {
+    display: none;
+  }
+
+  .app-shell--nav-open .tds-side-nav {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed {
+    width: min(280px, calc(100vw - var(--spacing-16)));
+  }
+
+  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__nav-stack {
+    display: flex;
+  }
+
+  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__icon-rail {
+    display: none;
+  }
+
+  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__wordmark {
+    display: block;
+  }
+
+  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__profile-info {
+    display: flex;
   }
 }
