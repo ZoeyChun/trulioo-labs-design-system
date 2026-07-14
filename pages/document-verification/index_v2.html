@@ -23,12 +23,12 @@
 
     <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
 
-    <!-- TDS SideNav component (expanded mode) -->
+    <!-- TDS SideNav component -->
     <aside class="tds-side-nav" id="app-sidenav" aria-label="Primary">
 
-      <!-- Header: logo + wordmark -->
+      <!-- Header: logo + wordmark (click to toggle collapsed/expanded) -->
       <div class="tds-side-nav__header">
-        <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+        <button type="button" class="tds-side-nav__brand" aria-label="Collapse sidebar" aria-expanded="true" id="sidenav-toggle">
           <span class="tds-side-nav__logo">
             <img src="../../assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40">
           </span>
@@ -40,6 +40,7 @@
 
       <!-- Main nav -->
       <div class="tds-side-nav__main">
+        <!-- Expanded: nav-stack with labels + sub-navs -->
         <div class="tds-side-nav__nav-stack">
 
           <!-- Home -->
@@ -124,6 +125,26 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- Collapsed: icon-only rail (hidden by default, shown when .tds-side-nav--collapsed) -->
+        <div class="tds-side-nav__icon-rail" aria-hidden="true">
+          <!-- Home -->
+          <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Home</span>
+            </span>
+          </button>
+          <!-- Labs (active) -->
+          <button type="button" class="tds-side-nav__icon-button tds-side-nav__icon-button--active" aria-current="page" aria-label="Labs">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v5.5L3 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1L10 7.5V2M5 2h6"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Labs</span>
+            </span>
+          </button>
         </div>
       </div>
 
@@ -476,12 +497,28 @@
 
   <script src="document-verification.js"></script>
   <script>
-  /* TDS SideNav: expand / collapse nav items with sub-nav */
+  /* TDS SideNav: collapsed/expanded mode + sub-nav expand/collapse */
   (function () {
-    var sideNav = document.querySelector('.tds-side-nav');
-    if (!sideNav) return;
+    var sideNav = document.getElementById('app-sidenav');
+    var toggle = document.getElementById('sidenav-toggle');
+    if (!sideNav || !toggle) return;
 
+    /* --- Collapsed / expanded mode toggle (click logo) --- */
+    toggle.addEventListener('click', function () {
+      var isExpanded = !sideNav.classList.contains('tds-side-nav--collapsed');
+      sideNav.classList.toggle('tds-side-nav--collapsed', isExpanded);
+      toggle.setAttribute('aria-expanded', String(!isExpanded));
+      toggle.setAttribute('aria-label', isExpanded ? 'Expand sidebar' : 'Collapse sidebar');
+
+      var iconRail = sideNav.querySelector('.tds-side-nav__icon-rail');
+      if (iconRail) iconRail.setAttribute('aria-hidden', String(!isExpanded));
+    });
+
+    /* --- Sub-nav expand / collapse (click nav items with aria-expanded) --- */
     sideNav.addEventListener('click', function (e) {
+      /* skip if it was the brand/logo toggle */
+      if (e.target.closest('#sidenav-toggle')) return;
+
       var btn = e.target.closest('.tds-side-nav__nav-item[aria-expanded]');
       if (!btn) return;
 
@@ -491,18 +528,16 @@
       var subNav = group.querySelector('.tds-side-nav__sub-nav');
       if (!subNav) return;
 
-      var isExpanded = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!isExpanded));
+      var isOpen = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!isOpen));
 
-      /* toggle sub-nav visibility */
-      subNav.style.display = isExpanded ? 'none' : '';
+      subNav.style.display = isOpen ? 'none' : '';
 
-      /* flip chevron icon */
       var chevron = btn.querySelector('.tds-side-nav__nav-item-chevron svg');
       if (chevron) {
-        chevron.innerHTML = isExpanded
-          ? '<path d="M4 6l4 4 4-4"/>'   /* down = collapsed */
-          : '<path d="M4 10l4-4 4 4"/>';  /* up = expanded */
+        chevron.innerHTML = isOpen
+          ? '<path d="M4 6l4 4 4-4"/>'
+          : '<path d="M4 10l4-4 4 4"/>';
       }
     });
   })();
