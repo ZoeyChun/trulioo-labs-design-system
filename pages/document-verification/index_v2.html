@@ -26,9 +26,14 @@
     <!-- TDS SideNav component -->
     <aside class="tds-side-nav" id="app-sidenav" aria-label="Primary">
 
-      <!-- Header: logo + wordmark (click to toggle collapsed/expanded) -->
+      <!-- Collapse / expand toggle (circle on the right edge) -->
+      <button type="button" class="tds-side-nav__toggle" id="sidenav-toggle" aria-label="Collapse sidebar" aria-expanded="true">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4l-4 4 4 4"/></svg>
+      </button>
+
+      <!-- Header: logo + wordmark -->
       <div class="tds-side-nav__header">
-        <button type="button" class="tds-side-nav__brand" aria-label="Collapse sidebar" aria-expanded="true" id="sidenav-toggle">
+        <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
           <span class="tds-side-nav__logo">
             <img src="../../assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40">
           </span>
@@ -503,12 +508,20 @@
     var toggle = document.getElementById('sidenav-toggle');
     if (!sideNav || !toggle) return;
 
-    /* --- Collapsed / expanded mode toggle (click logo) --- */
+    /* --- Collapsed / expanded mode toggle (chevron circle button) --- */
     toggle.addEventListener('click', function () {
       var isExpanded = !sideNav.classList.contains('tds-side-nav--collapsed');
       sideNav.classList.toggle('tds-side-nav--collapsed', isExpanded);
       toggle.setAttribute('aria-expanded', String(!isExpanded));
       toggle.setAttribute('aria-label', isExpanded ? 'Expand sidebar' : 'Collapse sidebar');
+
+      /* flip chevron: left = expanded, right = collapsed */
+      var chevronSvg = toggle.querySelector('svg');
+      if (chevronSvg) {
+        chevronSvg.innerHTML = isExpanded
+          ? '<path d="M6 4l4 4-4 4"/>'   /* right = collapsed */
+          : '<path d="M10 4l-4 4 4 4"/>'; /* left = expanded */
+      }
 
       var iconRail = sideNav.querySelector('.tds-side-nav__icon-rail');
       if (iconRail) iconRail.setAttribute('aria-hidden', String(!isExpanded));

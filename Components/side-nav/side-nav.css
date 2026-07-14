@@ -11,6 +11,7 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
+  position: relative;
   width: 232px;
   flex-shrink: 0;
   min-height: 100%;
@@ -22,6 +23,37 @@
   width: 72px;
   overflow: visible;
   z-index: 10;
+}
+
+/* --- Collapse / expand toggle (24px circle on the right edge) --- */
+
+.tds-side-nav__toggle {
+  position: absolute;
+  top: 26px;
+  right: -12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-neutral-01);
+  color: var(--icon-faint);
+  cursor: pointer;
+  z-index: 20;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease;
+}
+
+.tds-side-nav__toggle:hover {
+  background-color: var(--surface-neutral-02);
+}
+
+.tds-side-nav__toggle .icon {
+  width: 12px;
+  height: 12px;
 }
 
 /* --- Header (Figma: pt 20, px 16, pb 16, gap 12) --- */
