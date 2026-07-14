@@ -30,12 +30,10 @@
       <div class="tds-side-nav__header">
         <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
           <span class="tds-side-nav__logo">
-            <img src="../../assets/TL_logo.svg" alt="Trulioo" width="40" height="40">
+            <img src="../../assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40">
           </span>
           <span class="tds-side-nav__wordmark">
-            <svg viewBox="0 0 98 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M10.39 6.608H0V4.064h23.75v2.544H13.36V20h-2.97V6.608ZM27.597 10.064C28.237 8.464 29.757 7.6 31.677 7.6v3.008h-.76c-2.4 0-3.32 1.04-3.32 3.776V20h-2.8V7.84h2.8v2.224ZM44.107 7.84V20h-2.8v-1.904c-.8 1.2-2.16 2.16-4.16 2.16-3.12 0-4.88-2.16-4.88-5.2V7.84h2.8v6.72c0 2.08 1.04 3.2 2.88 3.2 1.92 0 3.36-1.28 3.36-3.52V7.84h2.8ZM47.822 20V4.064h2.8V20h-2.8ZM53.88 7.84h2.8V20h-2.8V7.84Zm-.24-3.776c0-.96.8-1.68 1.64-1.68.88 0 1.68.72 1.68 1.68 0 .96-.8 1.68-1.68 1.68-.84 0-1.64-.72-1.64-1.68ZM65.435 7.6c3.68 0 6.4 2.88 6.4 6.4s-2.72 6.4-6.4 6.4c-3.68 0-6.4-2.88-6.4-6.4s2.72-6.4 6.4-6.4Zm0 10.32c2 0 3.52-1.6 3.52-3.92 0-2.32-1.52-3.92-3.52-3.92-2 0-3.52 1.6-3.52 3.92 0 2.32 1.52 3.92 3.52 3.92ZM80.432 7.6c3.68 0 6.4 2.88 6.4 6.4s-2.72 6.4-6.4 6.4c-3.68 0-6.4-2.88-6.4-6.4s2.72-6.4 6.4-6.4Zm0 10.32c2 0 3.52-1.6 3.52-3.92 0-2.32-1.52-3.92-3.52-3.92-2 0-3.52 1.6-3.52 3.92 0 2.32 1.52 3.92 3.52 3.92Z" fill="var(--text-default)"/>
-            </svg>
+            <img src="../../assets/trulioo-wordmark.svg" alt="Trulioo" width="98" height="24">
           </span>
         </button>
       </div>
@@ -477,5 +475,37 @@
   </div>
 
   <script src="document-verification.js"></script>
+  <script>
+  /* TDS SideNav: expand / collapse nav items with sub-nav */
+  (function () {
+    var sideNav = document.querySelector('.tds-side-nav');
+    if (!sideNav) return;
+
+    sideNav.addEventListener('click', function (e) {
+      var btn = e.target.closest('.tds-side-nav__nav-item[aria-expanded]');
+      if (!btn) return;
+
+      var group = btn.closest('.tds-side-nav__nav-group');
+      if (!group) return;
+
+      var subNav = group.querySelector('.tds-side-nav__sub-nav');
+      if (!subNav) return;
+
+      var isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!isExpanded));
+
+      /* toggle sub-nav visibility */
+      subNav.style.display = isExpanded ? 'none' : '';
+
+      /* flip chevron icon */
+      var chevron = btn.querySelector('.tds-side-nav__nav-item-chevron svg');
+      if (chevron) {
+        chevron.innerHTML = isExpanded
+          ? '<path d="M4 6l4 4 4-4"/>'   /* down = collapsed */
+          : '<path d="M4 10l4-4 4 4"/>';  /* up = expanded */
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
