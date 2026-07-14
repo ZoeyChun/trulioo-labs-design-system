@@ -18,32 +18,8 @@
 
   var COUNTRY_META = window.BVShared.COUNTRY_META;
   var TEST_ENTITIES = window.BVShared.TEST_ENTITIES;
-
-  // Default fields shown before a country is selected
-  var GENERIC_FIELDS = {
-    person: ["Full Name", "Account Number", "IBAN", "BIC / SWIFT Code"],
-    business: ["Business Name", "Account Number", "IBAN", "BIC / SWIFT Code"]
-  };
-
-  // Input fields per account type + country (from product spec)
-  var COUNTRY_FIELDS = {
-    person: {
-      "Brazil": ["Full Name", "National ID Number", "IBAN"],
-      "South Korea": ["Full Name", "Bank Account Number", "Clearing System ID", "BIC"],
-      "Mexico": ["Full Name", "Bank Account Number", "Clearing System ID", "BIC"],
-      "United States": ["Full Name", "Bank Account Number", "Clearing System ID"],
-      "France": ["Full Name", "IBAN"],
-      "Spain": ["First Name", "First Surname", "Second Surname", "IBAN"]
-    },
-    business: {
-      "Germany": ["Business Name", "IBAN", "Business Registration Number", "Tax ID Number"],
-      "Belgium": ["Business Name", "IBAN", "Business Registration Number", "Tax ID Number"],
-      "United States": ["Business Name", "Bank Account Number", "BIC", "Clearing System ID"],
-      "India": ["Business Name", "Bank Account Number", "BIC", "Clearing System ID"],
-      "Brazil": ["Business Name", "IBAN", "Business Registration Number", "Tax ID Number", "Bank Account Number"],
-      "South Korea": ["Business Name", "Bank Account Number", "BIC"]
-    }
-  };
+  var GENERIC_FIELDS = window.BVShared.GENERIC_FIELDS;
+  var COUNTRY_FIELDS = window.BVShared.COUNTRY_FIELDS;
 
   var PLACEHOLDERS = {
     "Full Name": "First and last name",
@@ -95,9 +71,7 @@
   }
 
   function fieldsForCurrentSelection() {
-    if (!state.country) return GENERIC_FIELDS[state.accountType];
-    var set = COUNTRY_FIELDS[state.accountType];
-    return set[state.country] || GENERIC_FIELDS[state.accountType];
+    return window.BVShared.fieldsForCountry(state.accountType, state.country);
   }
 
   function updateCountryPlacement() {

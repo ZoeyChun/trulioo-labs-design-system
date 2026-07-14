@@ -60,6 +60,39 @@
     ]
   };
 
+  var GENERIC_FIELDS = {
+    person: ["Full Name", "Account Number", "IBAN", "BIC / SWIFT Code"],
+    business: ["Business Name", "Account Number", "IBAN", "BIC / SWIFT Code"]
+  };
+
+  var COUNTRY_FIELDS = {
+    person: {
+      "Brazil": ["Full Name", "National ID Number", "IBAN"],
+      "South Korea": ["Full Name", "Bank Account Number", "Clearing System ID", "BIC"],
+      "Mexico": ["Full Name", "Bank Account Number", "Clearing System ID", "BIC"],
+      "United States": ["Full Name", "Bank Account Number", "Clearing System ID"],
+      "France": ["Full Name", "IBAN"],
+      "Spain": ["First Name", "First Surname", "Second Surname", "IBAN"]
+    },
+    business: {
+      "Germany": ["Business Name", "IBAN", "Business Registration Number", "Tax ID Number"],
+      "Belgium": ["Business Name", "IBAN", "Business Registration Number", "Tax ID Number"],
+      "United States": ["Business Name", "Bank Account Number", "BIC", "Clearing System ID"],
+      "India": ["Business Name", "Bank Account Number", "BIC", "Clearing System ID"],
+      "Brazil": ["Business Name", "IBAN", "Business Registration Number", "Tax ID Number", "Bank Account Number"],
+      "South Korea": ["Business Name", "Bank Account Number", "BIC"]
+    }
+  };
+
+  var NAME_FIELDS = ["Full Name", "Business Name", "First Name", "First Surname", "Second Surname"];
+  var ACCOUNT_FIELDS = ["Bank Account Number", "Account Number", "IBAN", "BIC", "BIC / SWIFT Code", "Clearing System ID"];
+
+  function fieldsForCountry(accountType, country) {
+    if (!country) return GENERIC_FIELDS[accountType].slice();
+    var set = COUNTRY_FIELDS[accountType];
+    return (set && set[country]) ? set[country].slice() : GENERIC_FIELDS[accountType].slice();
+  }
+
   function entityFlag(country) {
     return COUNTRY_META[country] ? COUNTRY_META[country].flag : "";
   }
@@ -136,36 +169,43 @@
     };
   }
 
-  function buildFieldMatches(values, matchInfo, accountType) {
-    var nameVal = displayName(values, accountType);
-    var acct = values["Bank Account Number"] || values["Account Number"] || values["IBAN"] || "—";
-    var nameKind = matchInfo.kind;
-    var acctKind = matchInfo.kind === "positive" ? "positive" : matchInfo.kind === "negative" ? "negative" : "intermediate";
-    if (matchInfo.match === "Partial Match") acctKind = "negative";
-    var nameDetail = nameKind === "negative"
-      ? "Data Input: " + nameVal + "   Data returned: —"
-      : "Data Input: " + nameVal + "   Data returned: " + nameVal;
+  function fieldResultKind(fieldLabel, matchInfo) {
+    var isName = NAME_FIELDS.indexOf(fieldLabel) !== -1;
+    var isAccount = ACCOUNT_FIELDS.indexOf(fieldLabel) !== -1;
 
-    return [
-      {
-        signal: accountType === "business" ? "Business Name" : "Full Name",
-        detail: nameDetail,
-        result: nameKind === "negative" ? "No match" : "Match",
-        kind: nameKind === "negative" ? "negative" : "positive"
-      },
-      {
-        signal: "First Initial",
-        detail: "—",
-        result: nameKind === "negative" ? "No match" : "Match",
-        kind: nameKind === "negative" ? "negative" : "positive"
-      },
-      {
-        signal: "Bank Account Number",
-        detail: acctKind === "negative" ? "Data Input: " + acct + "   Data returned: —" : "—",
-        result: acctKind === "negative" ? "No match" : "Match",
-        kind: acctKind
-      }
-    ];
+    if (matchInfo.match === "Strong Match") return "positive";
+    if (matchInfo.match === "No Match") return isName ? "negative" : "positive";
+    if (isAccount) return "negative";
+    return "positive";
+  }
+
+  function buildFieldDetail(fieldLabel, value, kind, matchLevel) {
+    if (!value) return "—";
+    if (kind === "negative") {
+      return "Data Input: " + value + "   Data returned: —";
+    }
+    if (kind === "positive" && ACCOUNT_FIELDS.indexOf(fieldLabel) !== -1 && matchLevel === "Strong Match") {
+      return "—";
+    }
+    if (kind === "positive") {
+      return "Data Input: " + value + "   Data returned: " + value;
+    }
+    return "—";
+  }
+
+  function buildFieldMatches(values, matchInfo, accountType, country) {
+    var fields = fieldsForCountry(accountType, country);
+
+    return fields.map(function (fieldLabel) {
+      var kind = fieldResultKind(fieldLabel, matchInfo);
+      var value = values[fieldLabel] || "";
+      return {
+        signal: fieldLabel,
+        detail: buildFieldDetail(fieldLabel, value, kind, matchInfo.match),
+        result: kind === "negative" ? "No match" : "Match",
+        kind: kind
+      };
+    });
   }
 
   function buildAppended(values, matchInfo, country, accountType, meta) {
@@ -211,7 +251,7 @@
     var meta = COUNTRY_RESULT_META[country] || COUNTRY_RESULT_META["United States"];
     var matchInfo = entity ? matchFromEntity(entity) : inferMatch(values);
     var name = displayName(values, st.accountType);
-    var fieldMatches = buildFieldMatches(values, matchInfo, st.accountType);
+    var fieldMatches = buildFieldMatches(values, matchInfo, st.accountType, country);
     var matchCount = fieldMatches.filter(function (r) { return r.kind === "positive"; }).length;
     var txnId = uuid();
 
@@ -333,7 +373,10 @@
   global.BVShared = {
     SESSION_KEY: SESSION_KEY,
     COUNTRY_META: COUNTRY_META,
+    GENERIC_FIELDS: GENERIC_FIELDS,
+    COUNTRY_FIELDS: COUNTRY_FIELDS,
     TEST_ENTITIES: TEST_ENTITIES,
+    fieldsForCountry: fieldsForCountry,
     entityFlag: entityFlag,
     saveSession: saveSession,
     loadSession: loadSession,
