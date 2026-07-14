@@ -8,11 +8,9 @@
    ============================================================ */
 
 /* Page-local dimensions with no token equivalent in Figma */
-.bv-page {
+.bv-form-shell {
   --bv-form-max-width: 895px;         /* Max width of the form card */
   --bv-field-col: 410px;              /* Single-column field width (Figma: 410) */
-  --bv-nav-size: var(--spacing-40);   /* logo / avatar / active pill: 40px */
-  --bv-icon-size: var(--spacing-16);  /* icon glyphs: 16px */
 }
 
 body {
@@ -20,125 +18,16 @@ body {
   background-color: var(--surface-neutral-03);
 }
 
-.bv-page,
-.bv-page * {
+.bv-form-shell .app-main.bv-main,
+.bv-form-shell .app-main.bv-main * {
   box-sizing: border-box;
 }
 
 /* --------------------------------------------------------
-   Page shell
-   -------------------------------------------------------- */
-
-.bv-page {
-  display: flex;
-  align-items: stretch;
-  gap: var(--spacing-8);
-  padding: var(--spacing-8);
-  min-height: 100vh;
-  background-color: var(--surface-neutral-03);
-  font-family: var(--font-family);
-  color: var(--text-default);
-}
-
-/* --------------------------------------------------------
-   Side nav (collapsed)
-   -------------------------------------------------------- */
-
-.bv-sidenav {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  flex-shrink: 0;
-}
-
-.bv-sidenav__top {
-  padding: var(--padding-lg);
-}
-
-.bv-sidenav__logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--bv-nav-size);
-  height: var(--bv-nav-size);
-  border-radius: var(--radius-modal);
-  background-color: var(--interactive-default);
-  color: var(--icon-inverse);
-}
-
-.bv-sidenav__logo svg {
-  width: var(--spacing-24);
-  height: var(--spacing-24);
-}
-
-.bv-sidenav__nav {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--gap-lg);
-  padding: var(--padding-xl) var(--padding-lg);
-}
-
-.bv-sidenav__item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--padding-xs) var(--padding-sm);
-  border-radius: var(--radius-card);
-  color: var(--icon-muted);
-  text-decoration: none;
-}
-
-.bv-sidenav__item--active {
-  height: var(--bv-nav-size);
-  border-radius: var(--radius-badge);
-  background-color: var(--surface-inverse);
-  color: var(--icon-inverse);
-}
-
-.bv-sidenav__item-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--spacing-24);
-  height: var(--spacing-24);
-}
-
-.bv-sidenav__item-icon svg,
-.bv-sidenav__item-icon img {
-  width: var(--spacing-24);   /* 24px nav glyphs */
-  height: var(--spacing-24);
-}
-
-.bv-sidenav__bottom {
-  margin-top: auto;
-  padding: var(--padding-lg);
-}
-
-/* Avatar */
-.bv-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--bv-nav-size);
-  height: var(--bv-nav-size);
-  border-radius: var(--radius-badge);
-  background-color: var(--interactive-default);
-  color: var(--text-inverse);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-semibold);
-}
-
-/* --------------------------------------------------------
-   Main panel
+   Main panel (form card chrome inside app-main)
    -------------------------------------------------------- */
 
 .bv-main {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   gap: var(--gap-2xl);
   padding: var(--padding-xl);
@@ -184,13 +73,13 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--bv-icon-size);
-  height: var(--bv-icon-size);
+  width: var(--spacing-16);
+  height: var(--spacing-16);
 }
 
 .bv-truai-btn__icon svg {
-  width: var(--bv-icon-size);
-  height: var(--bv-icon-size);
+  width: var(--spacing-16);
+  height: var(--spacing-16);
 }
 
 /* --------------------------------------------------------
@@ -254,11 +143,15 @@ body {
 .bv-form-top-row .bv-form-col {
   flex: 1;
   min-width: 0;
+  width: 100%;
 }
 
 .bv-form-top-row .bv-country,
-.bv-form-top-row .bv-test-entity {
+.bv-form-top-row .bv-test-entity,
+.bv-form-col .bv-country,
+.bv-form-col .bv-test-entity {
   width: 100%;
+  max-width: none;
 }
 
 /* Country selection — uses the tds-combobox component */
@@ -266,9 +159,14 @@ body {
   padding: 0 var(--padding-2xl) var(--padding-xl);
 }
 
+.bv-card__section-country .bv-country {
+  width: 100%;
+  max-width: var(--bv-field-col);
+}
+
 .bv-country {
-  width: var(--bv-field-col);
-  max-width: 100%;
+  width: 100%;
+  max-width: var(--bv-field-col);
 }
 
 /* Emoji flag sizing inside the combobox leading-visual slot */
@@ -500,4 +398,140 @@ body {
   justify-content: space-between;
   padding: var(--padding-lg) var(--padding-2xl);
   background-color: var(--surface-neutral-03);
+}
+
+.bv-card__footer .tds-btn {
+  min-width: 0;
+}
+
+/* --------------------------------------------------------
+   Responsive — form layout
+   -------------------------------------------------------- */
+
+@media (max-width: 960px) {
+  .bv-content {
+    padding: 0 var(--padding-lg);
+  }
+
+  .bv-card__header {
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+  }
+
+  .bv-form-top-row {
+    flex-direction: column;
+  }
+
+  .bv-country,
+  .bv-card__section-country .bv-country,
+  .bv-test-entity,
+  .bv-form-top-row .bv-country,
+  .bv-form-col .bv-country {
+    width: 100%;
+    max-width: none;
+  }
+
+  .bv-form-row {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .bv-form-shell .bv-main {
+    align-items: stretch;
+    gap: var(--gap-lg);
+    padding: var(--padding-md);
+    border-radius: var(--radius-card);
+  }
+
+  .bv-header {
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+  }
+
+  .bv-header__title {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+  }
+
+  .bv-content {
+    padding: 0;
+    justify-content: flex-start;
+  }
+
+  .bv-card {
+    border-radius: var(--radius-card);
+  }
+
+  .bv-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-md);
+    padding: var(--padding-lg);
+  }
+
+  .bv-card__row-label,
+  .bv-radio-row,
+  .bv-form-top-row,
+  .bv-card__section-country,
+  .bv-details,
+  .bv-card__footer {
+    padding-left: var(--padding-lg);
+    padding-right: var(--padding-lg);
+  }
+
+  .bv-radio-row,
+  .bv-form-top-row {
+    padding-bottom: var(--padding-lg);
+  }
+
+  .bv-card__section-country {
+    padding-bottom: var(--padding-lg);
+  }
+
+  .bv-details {
+    padding-top: var(--padding-lg);
+    padding-bottom: var(--padding-lg);
+    gap: var(--gap-lg);
+  }
+
+  .bv-details__fields {
+    gap: var(--gap-lg);
+  }
+
+  .bv-card__footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: var(--gap-md);
+    padding: var(--padding-lg);
+  }
+
+  .bv-card__footer .tds-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .bv-form-shell .bv-main {
+    padding: var(--padding-sm);
+  }
+
+  .bv-radio-row {
+    flex-direction: column;
+  }
+
+  .bv-card__header {
+    padding: var(--padding-md);
+  }
+
+  .bv-card__row-label,
+  .bv-radio-row,
+  .bv-form-top-row,
+  .bv-card__section-country,
+  .bv-details,
+  .bv-card__footer {
+    padding-left: var(--padding-md);
+    padding-right: var(--padding-md);
+  }
 }

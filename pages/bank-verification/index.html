@@ -24,50 +24,52 @@
   <link rel="stylesheet" href="../../Components/switch/switch.css">
 
   <!-- Page-local styles -->
+  <link rel="stylesheet" href="../shared/app-shell.css">
   <link rel="stylesheet" href="bank-verification.css">
 </head>
 <body>
 
-  <div class="bv-page" id="bv-form-view">
+  <div class="app-shell bv-form-shell" id="app-shell">
 
-    <!-- ======================================================
-         Side nav (collapsed) — page-local, no repo component
-         ====================================================== -->
-    <nav class="bv-sidenav" aria-label="Primary">
+    <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
 
-      <div class="bv-sidenav__top">
-        <a class="bv-sidenav__logo" href="#" aria-label="Trulioo home">
+    <nav class="app-sidenav" id="app-sidenav" aria-label="Primary">
+      <div class="app-sidenav__top">
+        <a class="app-sidenav__logo" href="#" aria-label="Trulioo home">
           <img src="../../assets/TL_logo.svg" alt="Trulioo" width="40" height="40">
         </a>
       </div>
-
-      <div class="bv-sidenav__nav">
-        <a class="bv-sidenav__item" href="#" aria-label="Home">
-          <span class="bv-sidenav__item-icon">
-            <!-- house icon placeholder -->
+      <div class="app-sidenav__nav">
+        <a class="app-sidenav__item" href="#" aria-label="Home">
+          <span class="app-sidenav__item-icon">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/>
             </svg>
           </span>
+          <span class="app-sidenav__item-label">Home</span>
         </a>
-        <a class="bv-sidenav__item bv-sidenav__item--active" href="#" aria-label="Labs" aria-current="page">
-          <span class="bv-sidenav__item-icon">
-            <!-- Labs icon (brand asset) -->
+        <a class="app-sidenav__item app-sidenav__item--active" href="#" aria-label="Labs" aria-current="page">
+          <span class="app-sidenav__item-icon">
             <img src="../../assets/Lab_Icon.svg" alt="" width="24" height="24" aria-hidden="true">
           </span>
+          <span class="app-sidenav__item-label">Labs</span>
         </a>
       </div>
-
-      <div class="bv-sidenav__bottom">
-        <span class="bv-avatar" aria-label="Zoey Chung">ZC</span>
+      <div class="app-sidenav__bottom">
+        <a class="app-sidenav__profile" href="#" aria-label="Profile">
+          <span class="app-avatar" aria-hidden="true">ZC</span>
+          <span class="app-sidenav__item-label">Profile</span>
+        </a>
       </div>
-
     </nav>
 
-    <!-- ======================================================
-         Main panel
-         ====================================================== -->
-    <main class="bv-main">
+    <main class="app-main bv-main">
+
+      <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 5h14M3 10h14M3 15h14"/>
+        </svg>
+      </button>
 
       <header class="bv-header">
         <h1 class="bv-header__title">Bank Verification</h1>
@@ -154,7 +156,7 @@
 
           <!-- Country selection — standalone when test entity is off -->
           <div class="bv-card__section-country" id="bv-country-section">
-            <div class="tds-combobox bv-country" id="bv-country">
+            <div class="tds-combobox tds-combobox--full-width bv-country" id="bv-country">
               <label class="tds-field-label" for="bv-country-input">Country</label>
               <div class="tds-combobox__field tds-combobox__field--lg">
                 <span class="tds-combobox__leading-visual bv-country__flag" hidden></span>

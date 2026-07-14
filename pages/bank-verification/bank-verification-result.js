@@ -324,6 +324,7 @@
     }
 
     wireInteractions();
+    shared.initAppNavToggle();
     renderPage();
   });
 })();

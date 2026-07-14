@@ -272,6 +272,36 @@
     });
   }
 
+  function initAppNavToggle() {
+    var shell = document.getElementById("app-shell");
+    var toggle = document.getElementById("app-nav-toggle");
+    var overlay = document.getElementById("app-sidenav-overlay");
+    if (!shell || !toggle || !overlay) return;
+
+    function setOpen(open) {
+      shell.classList.toggle("app-shell--nav-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      overlay.hidden = !open;
+      overlay.setAttribute("aria-hidden", String(!open));
+    }
+
+    toggle.addEventListener("click", function () {
+      setOpen(!shell.classList.contains("app-shell--nav-open"));
+    });
+    overlay.addEventListener("click", function () {
+      setOpen(false);
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && shell.classList.contains("app-shell--nav-open")) {
+        setOpen(false);
+      }
+    });
+    window.matchMedia("(min-width: 769px)").addEventListener("change", function (query) {
+      if (query.matches) setOpen(false);
+    });
+  }
+
   global.BVShared = {
     SESSION_KEY: SESSION_KEY,
     COUNTRY_META: COUNTRY_META,
@@ -282,6 +312,7 @@
     buildResultConfig: buildResultConfig,
     applyTestEntityToSession: applyTestEntityToSession,
     sortedEntityEntries: sortedEntityEntries,
-    bindEllipsisTooltip: bindEllipsisTooltip
+    bindEllipsisTooltip: bindEllipsisTooltip,
+    initAppNavToggle: initAppNavToggle
   };
 })(window);

@@ -331,7 +331,7 @@
     var entities = TEST_ENTITIES[state.accountType];
     var current = state.selectedTestEntity != null ? entities[state.selectedTestEntity] : null;
 
-    var root = el("div", "tds-select bv-test-entity");
+    var root = el("div", "tds-select tds-select--full-width bv-test-entity");
     var label = el("label", "tds-field-label");
     label.textContent = "Test entity";
 
@@ -595,6 +595,7 @@
     initAccountType();
     initToggle();
     initSubmit();
+    window.BVShared.initAppNavToggle();
     renderTestEntityPanel();
     renderDetails();
     restoreFromSession();

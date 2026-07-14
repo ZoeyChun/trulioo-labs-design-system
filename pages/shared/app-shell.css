@@ -98,6 +98,13 @@
   overflow: hidden;
 }
 
+.app-sidenav__logo img {
+  width: var(--app-nav-size);
+  height: var(--app-nav-size);
+  max-width: var(--app-nav-size);
+  max-height: var(--app-nav-size);
+}
+
 .app-sidenav__nav {
   display: flex;
   flex-direction: column;
