@@ -10,6 +10,9 @@
 .dv-panel {
   --dv-sidebar-width: 316px;   /* left summary card (Figma: 316) */
   --dv-viewer-width: 353px;    /* document image column, fixed (Figma: 353) */
+  --dv-sidebar-sticky-top: var(--spacing-8);
+  --dv-viewport-chrome: 260px;
+  --dv-split-pane-max-height: calc(100dvh - var(--dv-viewport-chrome));
 
   gap: var(--spacing-32);
   padding: var(--padding-xl);
@@ -17,7 +20,7 @@
   border-radius: var(--radius-section);
   box-shadow: var(--elevation-md);
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: visible;
 }
 
 html {
@@ -35,8 +38,152 @@ body.dv-is-resizing {
   user-select: none;
 }
 
+/* App shell + nav — duplicated here so Cursor/Glass preview iframes render
+   the collapsed sidenav rail even if ../shared/app-shell.css fails to load. */
+.app-shell {
+  --app-nav-size: var(--spacing-40);
+  --app-nav-icon: var(--spacing-24);
+  --app-nav-rail: 72px;
+
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-8);
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 100%;
+  padding: var(--spacing-8);
+  background-color: var(--surface-neutral-03);
+  font-family: var(--font-family);
+  color: var(--text-default);
+  overflow-x: visible;
+}
+
+.app-sidenav-overlay {
+  display: none;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: visible;
+}
+
+@media (min-width: 769px) {
+  .app-sidenav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+    position: sticky;
+    top: var(--spacing-8);
+    align-self: flex-start;
+    width: var(--app-nav-rail);
+    max-height: calc(100dvh - (2 * var(--spacing-8)));
+    min-height: calc(100dvh - (2 * var(--spacing-8)));
+  }
+
+  .app-sidenav__top {
+    padding: var(--spacing-20, 20px) var(--padding-lg) var(--padding-lg);
+    flex-shrink: 0;
+  }
+
+  .app-sidenav__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--app-nav-size);
+    height: var(--app-nav-size);
+    border-radius: var(--radius-modal);
+    background-color: var(--interactive-default);
+    color: var(--icon-inverse);
+    overflow: hidden;
+  }
+
+  .app-sidenav__logo img {
+    width: var(--app-nav-size);
+    height: var(--app-nav-size);
+    max-width: var(--app-nav-size);
+    max-height: var(--app-nav-size);
+  }
+
+  .app-sidenav__nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-lg);
+    padding: var(--padding-xl) var(--padding-lg);
+    flex-shrink: 0;
+  }
+
+  .app-sidenav__item,
+  .app-sidenav__profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-xs) var(--padding-sm);
+    border-radius: var(--radius-card);
+    color: var(--icon-faint);
+    text-decoration: none;
+  }
+
+  .app-sidenav__item--active {
+    height: var(--app-nav-size);
+    border-radius: var(--radius-badge);
+    background-color: var(--surface-inverse);
+    color: var(--icon-inverse);
+  }
+
+  .app-sidenav__item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--app-nav-icon);
+    height: var(--app-nav-icon);
+    flex-shrink: 0;
+  }
+
+  .app-sidenav__item-icon svg,
+  .app-sidenav__item-icon img {
+    width: var(--app-nav-icon);
+    height: var(--app-nav-icon);
+    max-width: var(--app-nav-icon);
+    max-height: var(--app-nav-icon);
+  }
+
+  .app-sidenav__item-label {
+    display: none;
+  }
+
+  .app-sidenav__bottom {
+    margin-top: auto;
+    padding: var(--spacing-20, 20px) var(--padding-lg) var(--padding-lg);
+    flex-shrink: 0;
+  }
+
+  .app-sidenav__profile {
+    gap: var(--gap-md);
+    color: var(--text-default);
+  }
+
+  .app-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--app-nav-size);
+    height: var(--app-nav-size);
+    border-radius: var(--radius-badge);
+    background-color: var(--interactive-default);
+    color: var(--text-inverse);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+    font-weight: var(--font-weight-semibold);
+    flex-shrink: 0;
+  }
+}
+
 /* App nav toggle — also defined here so Cursor/Glass preview iframes always
-   constrain the hamburger, even if ../_shared/app-shell.css fails to load. */
+   constrain the hamburger, even if ../shared/app-shell.css fails to load. */
 .app-nav-toggle {
   display: none !important;
   align-items: center;
@@ -70,10 +217,54 @@ body.dv-is-resizing {
 }
 
 @media (max-width: 768px) {
+  .app-shell {
+    gap: var(--spacing-4);
+    padding: var(--spacing-4);
+  }
+
   .app-nav-toggle {
     display: inline-flex !important;
     align-self: flex-start;
     margin-bottom: var(--spacing-4);
+  }
+
+  .app-sidenav-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background-color: var(--surface-overlay);
+  }
+
+  .app-sidenav-overlay[hidden] {
+    display: none;
+  }
+
+  .app-sidenav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 210;
+    display: flex;
+    flex-direction: column;
+    width: min(280px, calc(100vw - var(--spacing-16)));
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    padding: var(--spacing-16) var(--spacing-12);
+    background-color: var(--surface-neutral-01);
+    box-shadow: var(--elevation-md);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease, visibility 0.2s ease;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .app-shell--nav-open .app-sidenav {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
   }
 
   /* Glass preview fallback when app-shell.css is unavailable */
@@ -88,6 +279,43 @@ body.dv-is-resizing {
     gap: var(--gap-md);
     padding: var(--padding-md);
   }
+
+  .app-sidenav__nav {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .app-sidenav__bottom {
+    margin-top: auto;
+  }
+}
+
+/* Thin scrollbars on scrollable panels */
+.dv-sidebar,
+.dv-split-pane > .dv-split-pane__start.dv-indicators,
+.dv-split-pane > .dv-split-pane__end.dv-viewer {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.dv-sidebar::-webkit-scrollbar,
+.dv-split-pane > .dv-split-pane__start.dv-indicators::-webkit-scrollbar,
+.dv-split-pane > .dv-split-pane__end.dv-viewer::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.dv-sidebar::-webkit-scrollbar-thumb,
+.dv-split-pane > .dv-split-pane__start.dv-indicators::-webkit-scrollbar-thumb,
+.dv-split-pane > .dv-split-pane__end.dv-viewer::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border-radius: 999px;
+}
+
+.dv-sidebar::-webkit-scrollbar-track,
+.dv-split-pane > .dv-split-pane__start.dv-indicators::-webkit-scrollbar-track,
+.dv-split-pane > .dv-split-pane__end.dv-viewer::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* --------------------------------------------------------
@@ -257,9 +485,15 @@ body.dv-is-resizing {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  align-self: flex-start;
+  position: sticky;
+  top: var(--dv-sidebar-sticky-top);
   width: var(--dv-sidebar-width);
   max-width: 100%;
   min-width: 0;
+  max-height: calc(100vh - (2 * var(--dv-sidebar-sticky-top)));
+  max-height: calc(100dvh - (2 * var(--dv-sidebar-sticky-top)));
+  overflow-y: auto;
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-modal);
@@ -526,7 +760,7 @@ body.dv-is-resizing {
   flex-direction: column;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-modal);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .dv-doc-panel__header {
@@ -549,6 +783,7 @@ body.dv-is-resizing {
   display: flex;
   align-items: stretch;
   width: 100%;
+  overflow: visible;
 }
 
 /* Resizable split between indicators and document/selfie viewer */
@@ -556,7 +791,7 @@ body.dv-is-resizing {
   --dv-split-end: var(--dv-viewer-width);
   display: grid;
   grid-template-columns: minmax(240px, 1fr) 8px var(--dv-split-end, var(--dv-viewer-width));
-  align-items: stretch;
+  align-items: start;
 }
 
 .dv-split-pane__start {
@@ -574,6 +809,7 @@ body.dv-is-resizing {
 .dv-split-pane__divider {
   grid-column: 2;
   align-self: stretch;
+  min-height: min(var(--dv-split-pane-max-height), 100%);
   width: 8px;
   margin: 0;
   padding: 0;
@@ -608,13 +844,16 @@ body.dv-is-resizing {
 
 .dv-split-pane > .dv-split-pane__end.dv-viewer {
   width: 100%;
+  min-width: 0;
   max-width: none;
   flex: none;
   border-left: none;
-}
-
-.dv-split-pane .dv-indicators {
-  min-width: 0;
+  position: sticky;
+  top: var(--dv-sidebar-sticky-top);
+  align-self: start;
+  max-height: var(--dv-split-pane-max-height);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 /* Indicators column — flexes to fill extra width on larger screens */
@@ -625,6 +864,13 @@ body.dv-is-resizing {
   flex: 1;
   min-width: 0;
   padding: var(--spacing-16);
+}
+
+.dv-split-pane > .dv-split-pane__start.dv-indicators {
+  flex: none;
+  max-height: var(--dv-split-pane-max-height);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 /* Scenario-rendered accordion lists (groups are injected here, not direct
@@ -665,6 +911,23 @@ body.dv-is-resizing {
   align-items: center;
   gap: var(--spacing-4);
   flex-wrap: wrap;
+}
+
+/* Tags are read-only status indicators on this page */
+.dv-panel .tds-tag {
+  cursor: default;
+  pointer-events: none;
+  transition: none;
+}
+
+.dv-panel .tds-tag:hover {
+  filter: none;
+}
+
+/* Keep default cursor over tags nested in accordion headers */
+.dv-panel .dv-group__header .tds-tag,
+.dv-panel .dv-collapsible__header .tds-tag {
+  pointer-events: auto;
 }
 
 /* Collapsible indicator groups */
@@ -806,13 +1069,12 @@ body.dv-is-resizing {
   width: 100%;
 }
 
-/* Document viewer column — fixed width; indicators absorb extra space */
+/* Document viewer column — width comes from split-pane grid on tab panels */
 .dv-viewer {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-24);
   flex-shrink: 0;
-  width: var(--dv-viewer-width);
   padding: var(--spacing-16);
   border-left: 1px solid var(--border-subtle);
 }
@@ -839,6 +1101,10 @@ body.dv-is-resizing {
   color: var(--text-default);
 }
 
+.dv-viewer .dv-doc-image {
+  flex-shrink: 0;
+}
+
 .dv-doc-image__media {
   width: 100%;
   cursor: zoom-in;
@@ -848,6 +1114,50 @@ body.dv-is-resizing {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Narrow / stacked layouts: scale image down and letterbox with dark background */
+@media (max-width: 1200px) {
+  .dv-doc-image__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface-inverse);
+    padding: var(--spacing-16);
+  }
+
+  .dv-doc-image__media svg {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: min(240px, 38dvh);
+  }
+
+  .dv-viewer:not(:has(.dv-doc-image ~ .dv-doc-image)) .dv-doc-image__media svg {
+    max-height: min(360px, 52dvh);
+  }
+}
+
+/* Side-by-side split with a short viewport: avoid bottom crop in the viewer column */
+@media (max-height: 900px) and (min-width: 1201px) {
+  .dv-split-pane > .dv-split-pane__end.dv-viewer .dv-doc-image__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface-inverse);
+    padding: var(--spacing-12);
+  }
+
+  .dv-split-pane > .dv-split-pane__end.dv-viewer .dv-doc-image__media svg {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: min(200px, 22dvh);
+  }
+
+  .dv-split-pane > .dv-split-pane__end.dv-viewer:not(:has(.dv-doc-image ~ .dv-doc-image)) .dv-doc-image__media svg {
+    max-height: min(320px, 45dvh);
+  }
 }
 
 /* Image preview modal */
@@ -1675,8 +1985,20 @@ body.dv-is-resizing {
     width: 100%;
     max-width: none;
     flex: none;
+    position: static;
+    top: auto;
+    max-height: none;
+    overflow-y: visible;
     border-left: none;
     border-top: 1px solid var(--border-subtle);
+  }
+
+  .dv-split-pane__start,
+  .dv-split-pane > .dv-split-pane__start.dv-indicators,
+  .dv-split-pane .dv-indicators {
+    max-height: none;
+    overflow-y: visible;
+    flex: 1;
   }
 
   .dv-ni2-trend__row {
@@ -1702,13 +2024,16 @@ body.dv-is-resizing {
     flex-direction: column;
   }
 
-  .dv-sidebar {
-    width: 100%;
+  .dv-columns--sidebar-collapsed {
+    padding-left: 16px;
   }
 
-  .dv-sidebar-toggle--expand {
-    top: 16px;
-    transform: translate(-50%, 0);
+  .dv-sidebar {
+    position: static;
+    top: auto;
+    width: 100%;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .dv-di-summary {
@@ -1731,21 +2056,31 @@ body.dv-is-resizing {
   .dv-panel {
     gap: var(--spacing-16);
     padding: var(--padding-md);
+    overflow-x: visible;
   }
 
   .dv-columns {
     flex-direction: column;
+    overflow: visible;
+  }
+
+  .dv-columns--sidebar-collapsed {
+    padding-left: 16px;
   }
 
   .dv-sidebar {
+    position: static;
+    top: auto;
     width: 100%;
     max-width: 100%;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .dv-sidebar-toggle--expand {
-    top: 16px;
-    left: var(--spacing-8);
-    transform: none;
+    left: 0;
+    top: var(--dv-panel-header-offset);
+    transform: translate(-50%, -50%);
   }
 
   .dv-header__top {

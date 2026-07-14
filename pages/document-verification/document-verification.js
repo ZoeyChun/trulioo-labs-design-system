@@ -1684,6 +1684,7 @@ ${evidence}`;
   var SPLIT_MIN_START = 240;
   var SPLIT_MIN_END = 220;
   var SPLIT_STACK_MAX = 1200;
+  var sharedSplitEnd = SPLIT_DEFAULT_END;
   function selectTab(tabId) {
     const tabs = document.querySelectorAll(".dv-tab");
     const panels = document.querySelectorAll(".dv-tabpanel");
@@ -1695,6 +1696,7 @@ ${evidence}`;
     panels.forEach((panel) => {
       panel.hidden = panel.getAttribute("data-tab") !== tabId;
     });
+    syncSplitPaneForActiveTab();
   }
   function setCollapsibleOpen(section, open) {
     section.classList.toggle("dv-collapsible--open", open);
@@ -2085,20 +2087,42 @@ ${evidence}`;
   function isSplitPaneStacked() {
     return window.matchMedia(`(max-width: ${SPLIT_STACK_MAX}px)`).matches;
   }
+  function getActiveSplitPane() {
+    var _a;
+    const activePanel = document.querySelector(".dv-tabpanel:not([hidden])");
+    return (_a = activePanel == null ? void 0 : activePanel.querySelector("[data-split-pane]")) != null ? _a : null;
+  }
   function clampSplitEnd(pane, endWidth) {
-    const maxEnd = pane.getBoundingClientRect().width - SPLIT_MIN_START - 8;
+    const paneWidth = pane.getBoundingClientRect().width;
+    if (paneWidth <= 0) return endWidth;
+    const maxEnd = paneWidth - SPLIT_MIN_START - 8;
     return Math.max(SPLIT_MIN_END, Math.min(endWidth, maxEnd));
   }
   function setSplitEndWidth(pane, endWidth) {
     const clamped = clampSplitEnd(pane, endWidth);
     pane.style.setProperty("--dv-split-end", `${clamped}px`);
     pane.style.gridTemplateColumns = `minmax(${SPLIT_MIN_START}px, 1fr) 8px ${clamped}px`;
+    return clamped;
+  }
+  function applySharedSplitEndToAllPanes(endWidth) {
+    document.querySelectorAll("[data-split-pane]").forEach((pane) => {
+      setSplitEndWidth(pane, endWidth);
+    });
+  }
+  function syncSplitPaneForActiveTab() {
+    if (isSplitPaneStacked()) return;
+    const activePane = getActiveSplitPane();
+    if (!activePane) return;
+    sharedSplitEnd = clampSplitEnd(activePane, sharedSplitEnd);
+    applySharedSplitEndToAllPanes(sharedSplitEnd);
   }
   function wireSplitPanes() {
+    applySharedSplitEndToAllPanes(SPLIT_DEFAULT_END);
+    sharedSplitEnd = SPLIT_DEFAULT_END;
+    syncSplitPaneForActiveTab();
     document.querySelectorAll("[data-split-pane]").forEach((pane) => {
       const divider = pane.querySelector(".dv-split-pane__divider");
       if (!divider) return;
-      setSplitEndWidth(pane, SPLIT_DEFAULT_END);
       const stopDragging = (pointerId, onMove, onUp) => {
         divider.classList.remove("is-dragging");
         document.body.classList.remove("dv-is-resizing");
@@ -2109,9 +2133,12 @@ ${evidence}`;
         divider.removeEventListener("pointerup", onUp);
         divider.removeEventListener("pointercancel", onUp);
       };
-      const startDrag = (clientX) => {
-        const rect = pane.getBoundingClientRect();
-        setSplitEndWidth(pane, rect.right - clientX);
+      const updateSplitFromPointer = (clientX) => {
+        const clamped = setSplitEndWidth(pane, pane.getBoundingClientRect().right - clientX);
+        sharedSplitEnd = clamped;
+        document.querySelectorAll("[data-split-pane]").forEach((otherPane) => {
+          if (otherPane !== pane) setSplitEndWidth(otherPane, sharedSplitEnd);
+        });
       };
       divider.addEventListener("pointerdown", (event) => {
         if (isSplitPaneStacked()) return;
@@ -2119,9 +2146,9 @@ ${evidence}`;
         divider.setPointerCapture(event.pointerId);
         divider.classList.add("is-dragging");
         document.body.classList.add("dv-is-resizing");
-        startDrag(event.clientX);
+        updateSplitFromPointer(event.clientX);
         const onMove = (ev) => {
-          startDrag(ev.clientX);
+          updateSplitFromPointer(ev.clientX);
         };
         const onUp = (ev) => {
           stopDragging(ev.pointerId, onMove, onUp);
@@ -2135,12 +2162,17 @@ ${evidence}`;
         if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
         event.preventDefault();
         const current = Number.parseInt(
-          getComputedStyle(pane).getPropertyValue("--dv-split-end") || `${SPLIT_DEFAULT_END}px`,
+          getComputedStyle(pane).getPropertyValue("--dv-split-end") || `${SPLIT_DEFAULT_END}`,
           10
         );
         const delta = event.key === "ArrowLeft" ? -16 : 16;
-        setSplitEndWidth(pane, current + delta);
+        sharedSplitEnd = setSplitEndWidth(pane, current + delta);
+        applySharedSplitEndToAllPanes(sharedSplitEnd);
+        syncSplitPaneForActiveTab();
       });
+    });
+    window.addEventListener("resize", () => {
+      syncSplitPaneForActiveTab();
     });
   }
   function wireAppNavToggle() {

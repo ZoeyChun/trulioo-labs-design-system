@@ -17,6 +17,8 @@ const SPLIT_MIN_END = 220;
 const SPLIT_STACK_MAX = 1200;
 type SortDir = "asc" | "desc";
 
+let sharedSplitEnd = SPLIT_DEFAULT_END;
+
 function selectTab(tabId: TabId | string): void {
   const tabs = document.querySelectorAll<HTMLElement>(".dv-tab");
   const panels = document.querySelectorAll<HTMLElement>(".dv-tabpanel");
@@ -28,6 +30,7 @@ function selectTab(tabId: TabId | string): void {
   panels.forEach((panel) => {
     panel.hidden = panel.getAttribute("data-tab") !== tabId;
   });
+  syncSplitPaneForActiveTab();
 }
 
 function setCollapsibleOpen(section: Element, open: boolean): void {
@@ -512,23 +515,47 @@ function isSplitPaneStacked(): boolean {
   return window.matchMedia(`(max-width: ${SPLIT_STACK_MAX}px)`).matches;
 }
 
+function getActiveSplitPane(): HTMLElement | null {
+  const activePanel = document.querySelector<HTMLElement>(".dv-tabpanel:not([hidden])");
+  return activePanel?.querySelector<HTMLElement>("[data-split-pane]") ?? null;
+}
+
 function clampSplitEnd(pane: HTMLElement, endWidth: number): number {
-  const maxEnd = pane.getBoundingClientRect().width - SPLIT_MIN_START - 8;
+  const paneWidth = pane.getBoundingClientRect().width;
+  if (paneWidth <= 0) return endWidth;
+  const maxEnd = paneWidth - SPLIT_MIN_START - 8;
   return Math.max(SPLIT_MIN_END, Math.min(endWidth, maxEnd));
 }
 
-function setSplitEndWidth(pane: HTMLElement, endWidth: number): void {
+function setSplitEndWidth(pane: HTMLElement, endWidth: number): number {
   const clamped = clampSplitEnd(pane, endWidth);
   pane.style.setProperty("--dv-split-end", `${clamped}px`);
   pane.style.gridTemplateColumns = `minmax(${SPLIT_MIN_START}px, 1fr) 8px ${clamped}px`;
+  return clamped;
+}
+
+function applySharedSplitEndToAllPanes(endWidth: number): void {
+  document.querySelectorAll<HTMLElement>("[data-split-pane]").forEach((pane) => {
+    setSplitEndWidth(pane, endWidth);
+  });
+}
+
+function syncSplitPaneForActiveTab(): void {
+  if (isSplitPaneStacked()) return;
+  const activePane = getActiveSplitPane();
+  if (!activePane) return;
+  sharedSplitEnd = clampSplitEnd(activePane, sharedSplitEnd);
+  applySharedSplitEndToAllPanes(sharedSplitEnd);
 }
 
 function wireSplitPanes(): void {
+  applySharedSplitEndToAllPanes(SPLIT_DEFAULT_END);
+  sharedSplitEnd = SPLIT_DEFAULT_END;
+  syncSplitPaneForActiveTab();
+
   document.querySelectorAll<HTMLElement>("[data-split-pane]").forEach((pane) => {
     const divider = pane.querySelector<HTMLElement>(".dv-split-pane__divider");
     if (!divider) return;
-
-    setSplitEndWidth(pane, SPLIT_DEFAULT_END);
 
     const stopDragging = (
       pointerId: number,
@@ -545,9 +572,12 @@ function wireSplitPanes(): void {
       divider.removeEventListener("pointercancel", onUp);
     };
 
-    const startDrag = (clientX: number): void => {
-      const rect = pane.getBoundingClientRect();
-      setSplitEndWidth(pane, rect.right - clientX);
+    const updateSplitFromPointer = (clientX: number): void => {
+      const clamped = setSplitEndWidth(pane, pane.getBoundingClientRect().right - clientX);
+      sharedSplitEnd = clamped;
+      document.querySelectorAll<HTMLElement>("[data-split-pane]").forEach((otherPane) => {
+        if (otherPane !== pane) setSplitEndWidth(otherPane, sharedSplitEnd);
+      });
     };
 
     divider.addEventListener("pointerdown", (event) => {
@@ -557,10 +587,10 @@ function wireSplitPanes(): void {
       divider.setPointerCapture(event.pointerId);
       divider.classList.add("is-dragging");
       document.body.classList.add("dv-is-resizing");
-      startDrag(event.clientX);
+      updateSplitFromPointer(event.clientX);
 
       const onMove = (ev: PointerEvent): void => {
-        startDrag(ev.clientX);
+        updateSplitFromPointer(ev.clientX);
       };
 
       const onUp = (ev: PointerEvent): void => {
@@ -578,12 +608,18 @@ function wireSplitPanes(): void {
       event.preventDefault();
 
       const current = Number.parseInt(
-        getComputedStyle(pane).getPropertyValue("--dv-split-end") || `${SPLIT_DEFAULT_END}px`,
+        getComputedStyle(pane).getPropertyValue("--dv-split-end") || `${SPLIT_DEFAULT_END}`,
         10,
       );
       const delta = event.key === "ArrowLeft" ? -16 : 16;
-      setSplitEndWidth(pane, current + delta);
+      sharedSplitEnd = setSplitEndWidth(pane, current + delta);
+      applySharedSplitEndToAllPanes(sharedSplitEnd);
+      syncSplitPaneForActiveTab();
     });
+  });
+
+  window.addEventListener("resize", () => {
+    syncSplitPaneForActiveTab();
   });
 }
 
