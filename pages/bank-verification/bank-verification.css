@@ -18,13 +18,29 @@ body {
   background-color: var(--surface-neutral-03);
 }
 
-.bv-form-shell .app-main.bv-main,
-.bv-form-shell .app-main.bv-main * {
+.bv-form-shell .app-main .bv-view,
+.bv-form-shell .app-main .bv-view * {
   box-sizing: border-box;
 }
 
 /* --------------------------------------------------------
-   Main panel (form card chrome inside app-main)
+   View switching — only one panel visible at a time
+   -------------------------------------------------------- */
+
+.bv-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.bv-view[hidden] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------
+   Form panel chrome
    -------------------------------------------------------- */
 
 .bv-main {
@@ -136,7 +152,8 @@ body {
 }
 
 #bv-form-view[hidden],
-#bv-result-view[hidden] {
+#bv-result-view[hidden],
+.bv-view[hidden] {
   display: none !important;
 }
 

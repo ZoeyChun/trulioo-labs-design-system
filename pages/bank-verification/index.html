@@ -65,13 +65,15 @@
       </div>
     </nav>
 
-    <main class="app-main bv-main" id="bv-form-view">
+    <main class="app-main">
 
       <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
           <path d="M3 5h14M3 10h14M3 15h14"/>
         </svg>
       </button>
+
+      <div class="bv-view bv-main" id="bv-form-view">
 
       <header class="bv-header">
         <h1 class="bv-header__title">Bank Verification</h1>
@@ -200,15 +202,7 @@
 
       </div>
 
-    </main>
-
-    <main class="app-main dv-panel" id="bv-result-view" hidden>
-
-      <button type="button" class="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <path d="M3 5h14M3 10h14M3 15h14"/>
-        </svg>
-      </button>
+      <div class="bv-view dv-panel" id="bv-result-view" hidden>
 
       <div class="dv-header">
         <div class="dv-header__top">
@@ -355,6 +349,8 @@
 
         </div>
       </div>
+    </div>
+
     </main>
 
   </div>
