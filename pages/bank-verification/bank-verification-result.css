@@ -180,6 +180,29 @@
   width: 100%;
 }
 
+.bv-gauge-score {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--text-default);
+  font-family: var(--font-family);
+}
+
+.bv-gauge-score__value {
+  font-size: 4rem; /* Numbers/xl — 64px */
+  line-height: 1;
+  font-weight: var(--font-weight-regular);
+}
+
+.bv-score-percent {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-default);
+}
+
 .bv-gauge-badge-wrap {
   display: flex;
   align-items: center;
