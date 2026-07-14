@@ -18,9 +18,11 @@
 </head>
 <body>
 
-  <div class="app-shell">
+  <div class="app-shell" id="app-shell">
 
-    <nav class="app-sidenav" aria-label="Primary">
+    <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
+
+    <nav class="app-sidenav" id="app-sidenav" aria-label="Primary">
       <div class="app-sidenav__top">
         <a class="app-sidenav__logo" href="#" aria-label="Trulioo home">
           <img src="../../assets/TL_logo.svg" alt="Trulioo" width="40" height="40">
@@ -33,19 +35,30 @@
               <path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/>
             </svg>
           </span>
+          <span class="app-sidenav__item-label">Home</span>
         </a>
         <a class="app-sidenav__item app-sidenav__item--active" href="#" aria-label="Labs" aria-current="page">
           <span class="app-sidenav__item-icon">
             <img src="../../assets/Lab_Icon.svg" alt="" width="24" height="24" aria-hidden="true">
           </span>
+          <span class="app-sidenav__item-label">Labs</span>
         </a>
       </div>
       <div class="app-sidenav__bottom">
-        <span class="app-avatar" aria-label="Zoey Chung">ZC</span>
+        <a class="app-sidenav__profile" href="#" aria-label="Profile">
+          <span class="app-avatar" aria-hidden="true">ZC</span>
+          <span class="app-sidenav__item-label">Profile</span>
+        </a>
       </div>
     </nav>
 
     <main class="app-main dv-panel">
+
+      <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 5h14M3 10h14M3 15h14"/>
+        </svg>
+      </button>
 
       <div class="dv-header">
         <div class="dv-header__top">
@@ -194,11 +207,12 @@
                 Expand all
               </button>
             </div>
-            <div class="dv-doc-panel__body">
-              <div class="dv-indicators">
+            <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
+              <div class="dv-indicators dv-split-pane__start">
                 <div id="dv-document-indicators" class="dv-indicators__list"></div>
               </div>
-              <div class="dv-viewer">
+              <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
+              <div class="dv-viewer dv-split-pane__end">
                 <h3 class="dv-section-title">Driver’s License</h3>
                 <figure class="dv-doc-image">
                   <figcaption class="dv-doc-image__caption">
@@ -258,11 +272,12 @@
                 Expand all
               </button>
             </div>
-            <div class="dv-doc-panel__body">
-              <div class="dv-indicators">
+            <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
+              <div class="dv-indicators dv-split-pane__start">
                 <div id="dv-biometrics-indicators" class="dv-indicators__list"></div>
               </div>
-              <div class="dv-viewer">
+              <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
+              <div class="dv-viewer dv-split-pane__end">
                 <h3 class="dv-section-title">Selfie</h3>
                 <figure class="dv-doc-image">
                   <figcaption class="dv-doc-image__caption">
@@ -293,11 +308,12 @@
                 Expand all
               </button>
             </div>
-            <div class="dv-doc-panel__body">
-              <div class="dv-indicators">
+            <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
+              <div class="dv-indicators dv-split-pane__start">
                 <div id="dv-datamatch-indicators" class="dv-indicators__list"></div>
               </div>
-              <div class="dv-viewer">
+              <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
+              <div class="dv-viewer dv-split-pane__end">
                 <h3 class="dv-section-title">Driver’s License</h3>
                 <figure class="dv-doc-image">
                   <figcaption class="dv-doc-image__caption">Front of Document <button class="dv-icon-btn" type="button" aria-label="Expand front of document"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg></button></figcaption>

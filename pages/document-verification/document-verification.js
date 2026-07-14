@@ -1680,6 +1680,10 @@ ${evidence}`;
   // src/app.ts
   var INITIAL_SCENARIO = "happy-path";
   var MORE_VISIBLE_ROWS = 5;
+  var SPLIT_DEFAULT_END = 353;
+  var SPLIT_MIN_START = 240;
+  var SPLIT_MIN_END = 220;
+  var SPLIT_STACK_MAX = 1200;
   function selectTab(tabId) {
     const tabs = document.querySelectorAll(".dv-tab");
     const panels = document.querySelectorAll(".dv-tabpanel");
@@ -2078,6 +2082,94 @@ ${evidence}`;
       if (modal instanceof HTMLElement && !modal.hidden) closeImageModal();
     });
   }
+  function isSplitPaneStacked() {
+    return window.matchMedia(`(max-width: ${SPLIT_STACK_MAX}px)`).matches;
+  }
+  function clampSplitEnd(pane, endWidth) {
+    const maxEnd = pane.getBoundingClientRect().width - SPLIT_MIN_START - 8;
+    return Math.max(SPLIT_MIN_END, Math.min(endWidth, maxEnd));
+  }
+  function setSplitEndWidth(pane, endWidth) {
+    const clamped = clampSplitEnd(pane, endWidth);
+    pane.style.setProperty("--dv-split-end", `${clamped}px`);
+    pane.style.gridTemplateColumns = `minmax(${SPLIT_MIN_START}px, 1fr) 8px ${clamped}px`;
+  }
+  function wireSplitPanes() {
+    document.querySelectorAll("[data-split-pane]").forEach((pane) => {
+      const divider = pane.querySelector(".dv-split-pane__divider");
+      if (!divider) return;
+      setSplitEndWidth(pane, SPLIT_DEFAULT_END);
+      const stopDragging = (pointerId, onMove, onUp) => {
+        divider.classList.remove("is-dragging");
+        document.body.classList.remove("dv-is-resizing");
+        if (divider.hasPointerCapture(pointerId)) {
+          divider.releasePointerCapture(pointerId);
+        }
+        divider.removeEventListener("pointermove", onMove);
+        divider.removeEventListener("pointerup", onUp);
+        divider.removeEventListener("pointercancel", onUp);
+      };
+      const startDrag = (clientX) => {
+        const rect = pane.getBoundingClientRect();
+        setSplitEndWidth(pane, rect.right - clientX);
+      };
+      divider.addEventListener("pointerdown", (event) => {
+        if (isSplitPaneStacked()) return;
+        event.preventDefault();
+        divider.setPointerCapture(event.pointerId);
+        divider.classList.add("is-dragging");
+        document.body.classList.add("dv-is-resizing");
+        startDrag(event.clientX);
+        const onMove = (ev) => {
+          startDrag(ev.clientX);
+        };
+        const onUp = (ev) => {
+          stopDragging(ev.pointerId, onMove, onUp);
+        };
+        divider.addEventListener("pointermove", onMove);
+        divider.addEventListener("pointerup", onUp);
+        divider.addEventListener("pointercancel", onUp);
+      });
+      divider.addEventListener("keydown", (event) => {
+        if (isSplitPaneStacked()) return;
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        const current = Number.parseInt(
+          getComputedStyle(pane).getPropertyValue("--dv-split-end") || `${SPLIT_DEFAULT_END}px`,
+          10
+        );
+        const delta = event.key === "ArrowLeft" ? -16 : 16;
+        setSplitEndWidth(pane, current + delta);
+      });
+    });
+  }
+  function wireAppNavToggle() {
+    const shell = document.getElementById("app-shell");
+    const toggle = document.getElementById("app-nav-toggle");
+    const overlay = document.getElementById("app-sidenav-overlay");
+    if (!(shell instanceof HTMLElement) || !(toggle instanceof HTMLElement) || !(overlay instanceof HTMLElement)) {
+      return;
+    }
+    const setOpen = (open) => {
+      shell.classList.toggle("app-shell--nav-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      overlay.hidden = !open;
+      overlay.setAttribute("aria-hidden", String(!open));
+    };
+    toggle.addEventListener("click", () => {
+      setOpen(!shell.classList.contains("app-shell--nav-open"));
+    });
+    overlay.addEventListener("click", () => setOpen(false));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && shell.classList.contains("app-shell--nav-open")) {
+        setOpen(false);
+      }
+    });
+    window.matchMedia("(min-width: 769px)").addEventListener("change", (query) => {
+      if (query.matches) setOpen(false);
+    });
+  }
   function wireTestEntitySelect() {
     const sel = document.getElementById("dv-te-select");
     if (!sel) return;
@@ -2116,6 +2208,8 @@ ${evidence}`;
     wireDeviceInfoToggle();
     wireSidebarCollapse();
     wireImageModal();
+    wireSplitPanes();
+    wireAppNavToggle();
     wireTestEntitySelect();
     setScenario(INITIAL_SCENARIO);
   });
