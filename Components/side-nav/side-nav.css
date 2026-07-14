@@ -35,6 +35,7 @@
 
 .tds-side-nav--collapsed .tds-side-nav__header {
   justify-content: center;
+  overflow: visible;
 }
 
 .tds-side-nav__brand {
@@ -246,6 +247,7 @@ button.tds-side-nav__nav-item {
   align-items: center;
   gap: var(--gap-lg);
   width: 100%;
+  overflow: visible;
 }
 
 .tds-side-nav__icon-button,
