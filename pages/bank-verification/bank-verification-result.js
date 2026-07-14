@@ -78,20 +78,19 @@
     var pw = mk("polygon", { points: "0,-12 8.5,6.5 -8.5,6.5", fill: "#fff", stroke: "#fff", "stroke-width": 4, "stroke-linejoin": "round" }, svg);
     var pg = mk("polygon", { points: "0,-7 7,5.5 -7,5.5", fill: "#004c45", "stroke-linejoin": "round" }, svg);
 
-    var scoreFo = mk("foreignObject", { x: 0, y: 74, width: 227, height: 54, overflow: "visible" }, svg);
-    var scoreWrap = document.createElement("div");
-    scoreWrap.className = "bv-gauge-score";
-    var scoreValue = document.createElement("span");
-    scoreValue.className = "bv-gauge-score__value";
-    scoreValue.textContent = "0";
-    var scorePercent = document.createElement("span");
-    scorePercent.className = "bv-score-percent";
-    scorePercent.textContent = "%";
-    scoreWrap.appendChild(scoreValue);
-    scoreWrap.appendChild(scorePercent);
-    scoreFo.appendChild(scoreWrap);
+    var scoreText = mk("text", {
+      x: CX, y: 101, "text-anchor": "middle", "dominant-baseline": "middle"
+    }, svg);
+    var numTspan = document.createElementNS(GAUGE_NS, "tspan");
+    numTspan.setAttribute("style", "font-size:64px;font-weight:400;fill:#172d2d;font-family:inherit;");
+    numTspan.textContent = "0";
+    var pctTspan = document.createElementNS(GAUGE_NS, "tspan");
+    pctTspan.setAttribute("style", "font-size:24px;line-height:26px;font-weight:400;fill:#172d2d;font-family:inherit;");
+    pctTspan.textContent = "%";
+    scoreText.appendChild(numTspan);
+    scoreText.appendChild(pctTspan);
 
-    var badgeFo = mk("foreignObject", { x: 0, y: 136, width: 227, height: 30, overflow: "visible" }, svg);
+    var badgeFo = mk("foreignObject", { x: CX - 70, y: 125, width: 140, height: 30, overflow: "visible" }, svg);
     var badgeWrap = document.createElement("div");
     badgeWrap.className = "bv-gauge-badge-wrap";
     var badge = document.createElement("span");
@@ -124,7 +123,7 @@
         pw.style.display = "none";
         pg.style.display = "none";
       }
-      scoreValue.textContent = String(Math.round(v));
+      numTspan.textContent = String(Math.round(v));
       if (raw < 1) requestAnimationFrame(anim);
     }
     requestAnimationFrame(anim);
@@ -142,17 +141,17 @@
     document.getElementById("bv-result-date").textContent = formatDate();
 
     var teBlock = document.getElementById("bv-result-te-block");
-    var matchScoreHead = document.getElementById("bv-match-score-head");
-    var matchScoreTitle = document.getElementById("bv-match-score-title");
+    var collapseTe = document.getElementById("bv-sidebar-collapse-te");
+    var collapseScore = document.getElementById("bv-sidebar-collapse-score");
     if (config.testEntityMode && config.testEntity) {
       teBlock.hidden = false;
-      if (matchScoreHead) matchScoreHead.hidden = true;
-      if (matchScoreTitle) matchScoreTitle.hidden = false;
+      if (collapseTe) collapseTe.hidden = false;
+      if (collapseScore) collapseScore.hidden = true;
       renderResultTestEntity(config);
     } else {
       teBlock.hidden = true;
-      if (matchScoreHead) matchScoreHead.hidden = false;
-      if (matchScoreTitle) matchScoreTitle.hidden = true;
+      if (collapseTe) collapseTe.hidden = true;
+      if (collapseScore) collapseScore.hidden = false;
     }
 
     renderGauge(document.getElementById("bv-result-gauge"), config.score, config.risk, config.match);
