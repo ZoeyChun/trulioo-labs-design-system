@@ -522,6 +522,7 @@
   function initSubmit() {
     document.getElementById("bv-submit-btn").addEventListener("click", function () {
       window.BVShared.saveSession({
+        view: "result",
         state: {
           accountType: state.accountType,
           testEntity: state.testEntity,
@@ -530,13 +531,15 @@
         },
         values: getFormValues()
       });
-      window.location.href = "result.html";
+      if (window.BVResult) {
+        window.BVResult.showResult();
+      }
     });
   }
 
   function restoreFromSession() {
     var session = window.BVShared.loadSession();
-    if (!session || !session.state) return;
+    if (!session || !session.state) return null;
 
     state.accountType = session.state.accountType || "person";
     state.testEntity = !!session.state.testEntity;
@@ -571,6 +574,8 @@
         if (input) input.value = session.values[key];
       });
     }
+
+    return session;
   }
 
   window.BankVerification = {
@@ -598,6 +603,9 @@
     window.BVShared.initAppNavToggle();
     renderTestEntityPanel();
     renderDetails();
-    restoreFromSession();
+    var session = restoreFromSession();
+    if (window.BVResult && (location.hash === "#result" || (session && session.view === "result"))) {
+      window.BVResult.showResult(session);
+    }
   });
 })();

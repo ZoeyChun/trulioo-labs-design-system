@@ -77,6 +77,28 @@
     }
   }
 
+  function showFormView() {
+    var formView = document.getElementById("bv-form-view");
+    var resultView = document.getElementById("bv-result-view");
+    if (!formView || !resultView) return;
+    formView.hidden = false;
+    resultView.hidden = true;
+    document.title = "Bank Verification — Trulioo Labs";
+    if (location.hash) {
+      history.replaceState(null, "", location.pathname + location.search);
+    }
+  }
+
+  function showResultView() {
+    var formView = document.getElementById("bv-form-view");
+    var resultView = document.getElementById("bv-result-view");
+    if (!formView || !resultView) return;
+    formView.hidden = true;
+    resultView.hidden = false;
+    document.title = "Bank Verification Results — Trulioo Labs";
+    history.replaceState(null, "", location.pathname + location.search + "#result");
+  }
+
   function uuid() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
       var r = Math.random() * 16 | 0;
@@ -274,20 +296,26 @@
 
   function initAppNavToggle() {
     var shell = document.getElementById("app-shell");
-    var toggle = document.getElementById("app-nav-toggle");
     var overlay = document.getElementById("app-sidenav-overlay");
-    if (!shell || !toggle || !overlay) return;
+    if (!shell || !overlay) return;
+
+    var toggles = shell.querySelectorAll(".app-nav-toggle");
+    if (!toggles.length) return;
 
     function setOpen(open) {
       shell.classList.toggle("app-shell--nav-open", open);
-      toggle.setAttribute("aria-expanded", String(open));
-      toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      toggles.forEach(function (toggle) {
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      });
       overlay.hidden = !open;
       overlay.setAttribute("aria-hidden", String(!open));
     }
 
-    toggle.addEventListener("click", function () {
-      setOpen(!shell.classList.contains("app-shell--nav-open"));
+    toggles.forEach(function (toggle) {
+      toggle.addEventListener("click", function () {
+        setOpen(!shell.classList.contains("app-shell--nav-open"));
+      });
     });
     overlay.addEventListener("click", function () {
       setOpen(false);
@@ -313,6 +341,8 @@
     applyTestEntityToSession: applyTestEntityToSession,
     sortedEntityEntries: sortedEntityEntries,
     bindEllipsisTooltip: bindEllipsisTooltip,
-    initAppNavToggle: initAppNavToggle
+    initAppNavToggle: initAppNavToggle,
+    showFormView: showFormView,
+    showResultView: showResultView
   };
 })(window);

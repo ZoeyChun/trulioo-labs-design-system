@@ -276,6 +276,16 @@
     });
   }
 
+  function goBackToForm() {
+    var current = shared.loadSession();
+    if (current) {
+      current.view = "form";
+      shared.saveSession(current);
+    }
+    shared.showFormView();
+    window.scrollTo(0, 0);
+  }
+
   function wireInteractions() {
     var columns = document.getElementById("bv-result-columns");
 
@@ -314,17 +324,45 @@
     window.scrollTo(0, 0);
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
-    if (!shared) return;
+  function showResult(fromSession) {
+    session = fromSession || shared.loadSession();
+    if (!session || !session.state) return false;
+    session.view = "result";
+    shared.saveSession(session);
+    shared.showResultView();
+    renderPage();
+    return true;
+  }
 
-    session = shared.loadSession();
-    if (!session || !session.state) {
-      window.location.replace("index.html");
+  function bootResultPage() {
+    var resultView = document.getElementById("bv-result-view");
+    if (!resultView) {
+      if (shared.loadSession()) {
+        window.location.replace("index.html#result");
+      } else {
+        window.location.replace("index.html");
+      }
       return;
     }
 
     wireInteractions();
-    shared.initAppNavToggle();
-    renderPage();
-  });
+
+    var backBtn = document.getElementById("bv-result-back-btn");
+    if (backBtn) backBtn.addEventListener("click", goBackToForm);
+
+    var editBtn = document.getElementById("bv-result-edit");
+    if (editBtn) {
+      editBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        goBackToForm();
+      });
+    }
+  }
+
+  window.BVResult = {
+    showResult: showResult,
+    goBackToForm: goBackToForm
+  };
+
+  document.addEventListener("DOMContentLoaded", bootResultPage);
 })();

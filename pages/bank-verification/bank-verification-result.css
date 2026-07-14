@@ -28,6 +28,10 @@
   width: 32px;
   height: 32px;
   flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   background-color: var(--surface-neutral-01);
