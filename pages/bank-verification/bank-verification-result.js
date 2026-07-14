@@ -77,20 +77,30 @@
     var fd = mk("path", { fill: pal.border, d: "" }, svg);
     var pw = mk("polygon", { points: "0,-12 8.5,6.5 -8.5,6.5", fill: "#fff", stroke: "#fff", "stroke-width": 4, "stroke-linejoin": "round" }, svg);
     var pg = mk("polygon", { points: "0,-7 7,5.5 -7,5.5", fill: "#004c45", "stroke-linejoin": "round" }, svg);
-    var txt = mk("text", {
-      x: CX, y: 101, "text-anchor": "middle", "dominant-baseline": "middle",
-      style: "font-size:64px;font-weight:400;fill:#172d2d;font-family:inherit;"
+
+    var numTspan = document.createElementNS(GAUGE_NS, "tspan");
+    numTspan.setAttribute("style", "font-size:64px;font-weight:400;fill:#172d2d;font-family:inherit;");
+    numTspan.textContent = "0";
+    var pctTspan = document.createElementNS(GAUGE_NS, "tspan");
+    pctTspan.setAttribute("style", "font-size:24px;line-height:26px;font-weight:400;fill:#172d2d;font-family:inherit;");
+    pctTspan.textContent = "%";
+    var scoreText = mk("text", {
+      x: CX, y: 101, "text-anchor": "middle", "dominant-baseline": "middle"
     }, svg);
-    txt.textContent = "0";
-    var fo = mk("foreignObject", { x: CX - 70, y: 125, width: 140, height: 30, overflow: "visible" }, svg);
-    var wrap = document.createElement("div");
-    wrap.style.cssText = "display:flex;align-items:center;justify-content:center;height:100%;";
+    scoreText.appendChild(numTspan);
+    scoreText.appendChild(pctTspan);
+
+    var badgeFo = mk("foreignObject", { x: CX - 70, y: 136, width: 140, height: 30, overflow: "visible" }, svg);
+    var badgeWrap = document.createElement("div");
+    badgeWrap.className = "bv-gauge-badge-wrap";
     var badge = document.createElement("span");
+    badge.className = "bv-gauge-badge";
     badge.textContent = label;
-    badge.style.cssText = "display:inline-flex;align-items:center;background:" + pal.fill + ";border:1px solid " + pal.border +
-      ";color:" + pal.tag + ";border-radius:9999px;padding:4px 8px;font-size:12px;font-weight:510;white-space:nowrap;line-height:16px;font-family:inherit;";
-    wrap.appendChild(badge);
-    fo.appendChild(wrap);
+    badge.style.backgroundColor = pal.fill;
+    badge.style.borderColor = pal.border;
+    badge.style.color = pal.tag;
+    badgeWrap.appendChild(badge);
+    badgeFo.appendChild(badgeWrap);
 
     var t0 = null;
     function anim(now) {
@@ -113,7 +123,7 @@
         pw.style.display = "none";
         pg.style.display = "none";
       }
-      txt.textContent = String(Math.round(v));
+      numTspan.textContent = String(Math.round(v));
       if (raw < 1) requestAnimationFrame(anim);
     }
     requestAnimationFrame(anim);
@@ -131,11 +141,17 @@
     document.getElementById("bv-result-date").textContent = formatDate();
 
     var teBlock = document.getElementById("bv-result-te-block");
+    var matchScoreHead = document.getElementById("bv-match-score-head");
+    var matchScoreTitle = document.getElementById("bv-match-score-title");
     if (config.testEntityMode && config.testEntity) {
       teBlock.hidden = false;
+      if (matchScoreHead) matchScoreHead.hidden = true;
+      if (matchScoreTitle) matchScoreTitle.hidden = false;
       renderResultTestEntity(config);
     } else {
       teBlock.hidden = true;
+      if (matchScoreHead) matchScoreHead.hidden = false;
+      if (matchScoreTitle) matchScoreTitle.hidden = true;
     }
 
     renderGauge(document.getElementById("bv-result-gauge"), config.score, config.risk, config.match);
@@ -289,8 +305,10 @@
   function wireInteractions() {
     var columns = document.getElementById("bv-result-columns");
 
-    document.querySelector(".bv-result-shell .dv-sidebar-toggle--collapse").addEventListener("click", function () {
-      columns.classList.add("dv-columns--sidebar-collapsed");
+    document.querySelectorAll(".bv-result-shell .dv-sidebar-toggle--collapse").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        columns.classList.add("dv-columns--sidebar-collapsed");
+      });
     });
     document.querySelector(".bv-result-shell .dv-sidebar-toggle--expand").addEventListener("click", function () {
       columns.classList.remove("dv-columns--sidebar-collapsed");
