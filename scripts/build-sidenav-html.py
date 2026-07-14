@@ -34,7 +34,7 @@ def build(active_page):
         bank_item = sub_item("Bank Verification", bv_href, True, BANK_ICON)
 
     return f'''    <!-- TDS SideNav component -->
-    <aside class="tds-side-nav" id="app-sidenav" aria-label="Primary">
+    <aside class="tds-side-nav tds-side-nav--collapsed" id="app-sidenav" aria-label="Primary">
 
       <div class="tds-side-nav__header">
         <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
@@ -106,7 +106,7 @@ def build(active_page):
           </div>
         </div>
 
-        <div class="tds-side-nav__icon-rail" aria-hidden="true">
+        <div class="tds-side-nav__icon-rail" aria-hidden="false">
           <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
             <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
             <span class="tds-side-nav__tooltip" role="tooltip">
@@ -124,12 +124,13 @@ def build(active_page):
         </div>
       </div>
 
-      <button type="button" class="tds-side-nav__collapse-bar" id="sidenav-collapse" aria-label="Collapse sidebar" aria-expanded="true">
-        <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 4 6 8l4 4M6 4 2 8l4 4"/></svg>
+      <button type="button" class="tds-side-nav__collapse-bar" id="sidenav-collapse" aria-label="Expand sidebar" aria-expanded="false">
+        <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4M10 4l4 4-4 4"/></svg>
+        <span class="tds-side-nav__collapse-label text-label-sm-uppercase">Hide Sidebar</span>
       </button>
 
       <div class="tds-side-nav__footer">
-        <button type="button" class="tds-side-nav__profile" aria-label="Jane Doe, janedoe@trulioo.com">
+        <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" aria-label="Jane Doe, janedoe@trulioo.com">
           <span class="tds-side-nav__avatar">JD</span>
           <span class="tds-side-nav__profile-info">
             <span class="tds-side-nav__profile-name-row">

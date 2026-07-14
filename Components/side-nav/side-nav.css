@@ -35,6 +35,7 @@ button.tds-side-nav__collapse-bar {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--gap-sm);
   flex-shrink: 0;
   width: 100%;
   padding: var(--padding-md) var(--padding-lg);
@@ -62,6 +63,15 @@ button.tds-side-nav__collapse-bar:hover {
 .tds-side-nav__collapse-bar .icon {
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
+}
+
+.tds-side-nav__collapse-label {
+  color: var(--text-description);
+}
+
+.tds-side-nav--collapsed .tds-side-nav__collapse-label {
+  display: none;
 }
 
 /* --- Header (Figma: pt 20, px 16, pb 16, gap 12) --- */
