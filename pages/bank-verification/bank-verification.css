@@ -219,6 +219,10 @@ body {
 }
 
 .bv-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-lg);
   padding: var(--padding-xl) var(--padding-2xl);
 }
 
@@ -228,6 +232,33 @@ body {
   line-height: var(--line-height-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--text-default);
+}
+
+.bv-test-entity-switch {
+  flex-shrink: 0;
+}
+
+/* Top row: test entity (left) + country (right) when toggle is on */
+.bv-form-top-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+  padding: 0 var(--padding-2xl) var(--padding-xl);
+}
+
+.bv-form-top-row[hidden],
+.bv-card__section-country[hidden] {
+  display: none;
+}
+
+.bv-form-top-row .bv-form-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.bv-form-top-row .bv-country,
+.bv-form-top-row .bv-test-entity {
+  width: 100%;
 }
 
 /* Country selection — uses the tds-combobox component */
@@ -279,8 +310,63 @@ body {
   min-width: 0;
 }
 
+.bv-option__flag,
+.bv-test-entity__flag {
+  flex-shrink: 0;
+  font-size: var(--font-size-md);
+  line-height: 1;
+}
+
+.bv-test-entity__flag {
+  width: auto;
+  height: auto;
+}
+
+.bv-test-entity__trigger {
+  overflow: hidden;
+}
+
+.bv-test-entity__trigger .tds-select__text-wrapper {
+  flex-direction: row;
+  align-items: center;
+}
+
+.bv-test-entity__trigger .tds-select__trailing-group {
+  flex-shrink: 0;
+}
+
+.bv-test-entity__trigger .tds-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bv-floating-tooltip {
+  position: fixed;
+  z-index: 9999;
+  max-width: min(20rem, calc(100vw - 16px));
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: normal;
+  word-break: break-word;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
 .bv-option--entity {
-  justify-content: space-between;
+  gap: var(--gap-sm);
+}
+
+.bv-option--entity .tds-tag {
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .bv-option--empty {
@@ -290,6 +376,45 @@ body {
 
 .bv-option--empty:hover {
   background: none;
+}
+
+.tds-combobox__option--selected {
+  background-color: var(--surface-hover);
+}
+
+.bv-country__clear-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--spacing-24);
+  height: var(--spacing-24);
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-button);
+  background: none;
+  color: var(--text-placeholder);
+  cursor: pointer;
+}
+
+.bv-country__clear-btn:hover {
+  color: var(--text-default);
+  background-color: var(--surface-neutral-03);
+}
+
+.bv-country__clear-btn svg {
+  width: var(--spacing-16);
+  height: var(--spacing-16);
+}
+
+/* Account type — first section after card header */
+.bv-card__row-label--first {
+  padding-top: 0;
+}
+
+.bv-radio-row--first {
+  padding-top: 0;
 }
 
 /* Account type */
@@ -323,10 +448,6 @@ body {
 }
 
 .bv-details__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gap-lg);
   width: 100%;
 }
 
@@ -343,6 +464,13 @@ body {
   flex-direction: column;
   gap: var(--gap-xl);
   width: 100%;
+}
+
+.bv-details__hint {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-placeholder);
 }
 
 .bv-form-row {
