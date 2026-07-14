@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TDS SideNav — Preview</title>
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="side-nav.css">
+  <style>
+    body {
+      font-family: var(--font-family);
+      background: var(--surface-neutral-01);
+      color: var(--text-default);
+      margin: 0;
+      padding: 32px;
+    }
+    h2 {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      margin: 0 0 8px;
+    }
+    h3 {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-description);
+      margin: 24px 0 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .preview-section { margin-bottom: 48px; }
+    .preview-row {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .preview-card {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      background: var(--surface-neutral-02);
+    }
+    .state-label {
+      font-size: var(--font-size-xs);
+      color: var(--text-caption);
+      margin-bottom: 8px;
+      font-weight: var(--font-weight-medium);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-section">
+    <h2>TDS SideNav</h2>
+    <p style="color: var(--text-description); margin: 0 0 24px;">Expanded (232px) and collapsed (72px) modes. Figma: 1187:10323 · 1188:10370</p>
+
+    <div class="preview-row">
+      <div>
+        <div class="state-label">Expanded</div>
+        <div class="preview-card">
+          <div class="tds-side-nav-preview">
+            <aside class="tds-side-nav tds-side-nav--demo-figma" id="preview-expanded">
+              <div class="tds-side-nav__header">
+                <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+                  <span class="tds-side-nav__logo">
+                    <img src="../../assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40">
+                  </span>
+                </button>
+              </div>
+              <div class="tds-side-nav__main">
+                <div class="tds-side-nav__nav-stack">
+                  <button type="button" class="tds-side-nav__nav-item">
+                    <span class="tds-side-nav__nav-item-label">
+                      <span class="tds-side-nav__nav-item-icon" aria-hidden="true">
+                        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+                      </span>
+                      <span class="tds-side-nav__nav-item-text">Home</span>
+                    </span>
+                  </button>
+                  <div class="tds-side-nav__nav-group">
+                    <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-current="page" aria-expanded="true">
+                      <span class="tds-side-nav__nav-item-label">
+                        <span class="tds-side-nav__nav-item-icon" aria-hidden="true">
+                          <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v5.5L3 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1L10 7.5V2M5 2h6"/></svg>
+                        </span>
+                        <span class="tds-side-nav__nav-item-text">Labs</span>
+                      </span>
+                      <span class="tds-side-nav__nav-item-chevron" aria-hidden="true">
+                        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg>
+                      </span>
+                    </button>
+                    <div class="tds-side-nav__sub-nav">
+                      <div class="tds-side-nav__section">
+                        <div class="tds-side-nav__section-title">KYB</div>
+                        <div class="tds-side-nav__section-items">
+                          <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">UBO Agent</span></button>
+                          <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Policy Review</span></button>
+                        </div>
+                      </div>
+                      <hr class="tds-side-nav__divider">
+                      <div class="tds-side-nav__section">
+                        <div class="tds-side-nav__section-title">KYC</div>
+                        <div class="tds-side-nav__section-items">
+                          <button type="button" class="tds-side-nav__sub-item tds-side-nav__sub-item--selected" aria-current="page"><span class="tds-side-nav__sub-item-text">Document Verification</span></button>
+                          <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Bank Verification</span></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tds-side-nav__icon-rail" aria-hidden="true">
+                  <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
+                    <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="tds-side-nav__collapse-bar" id="preview-collapse-expanded" aria-label="Collapse sidebar" aria-expanded="true">
+                <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 4 6 8l4 4M6 4 2 8l4 4"/></svg>
+              </button>
+              <div class="tds-side-nav__footer">
+                <button type="button" class="tds-side-nav__profile" aria-label="Jane Doe, janedoe@trulioo.com">
+                  <span class="tds-side-nav__avatar">JD</span>
+                  <span class="tds-side-nav__profile-info">
+                    <span class="tds-side-nav__profile-name-row">
+                      <span class="tds-side-nav__profile-name">Jane Doe</span>
+                    </span>
+                    <span class="tds-side-nav__profile-email">janedoe@trulioo.com</span>
+                  </span>
+                </button>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="state-label">Collapsed</div>
+        <div class="preview-card">
+          <div class="tds-side-nav-preview tds-side-nav-preview--collapsed">
+            <aside class="tds-side-nav tds-side-nav--collapsed tds-side-nav--demo-short">
+              <div class="tds-side-nav__header">
+                <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+                  <span class="tds-side-nav__logo">
+                    <img src="../../assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40">
+                  </span>
+                </button>
+              </div>
+              <div class="tds-side-nav__main">
+                <div class="tds-side-nav__icon-rail" aria-hidden="false">
+                  <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
+                    <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+                    <span class="tds-side-nav__tooltip" role="tooltip"><span class="tds-side-nav__tooltip-caret"></span><span class="tds-side-nav__tooltip-body">Home</span></span>
+                  </button>
+                  <button type="button" class="tds-side-nav__icon-button tds-side-nav__icon-button--active" aria-current="page" aria-label="Labs">
+                    <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v5.5L3 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1L10 7.5V2M5 2h6"/></svg>
+                    <span class="tds-side-nav__tooltip" role="tooltip"><span class="tds-side-nav__tooltip-caret"></span><span class="tds-side-nav__tooltip-body">Labs</span></span>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="tds-side-nav__collapse-bar" aria-label="Expand sidebar" aria-expanded="false">
+                <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4M10 4l4 4-4 4"/></svg>
+              </button>
+              <div class="tds-side-nav__footer">
+                <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" aria-label="Jane Doe">
+                  <span class="tds-side-nav__avatar">JD</span>
+                </button>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="side-nav.js"></script>
+  <script>
+    TdsSideNav.init({ rootId: 'preview-expanded', collapseId: 'preview-collapse-expanded' });
+  </script>
+</body>
+</html>
