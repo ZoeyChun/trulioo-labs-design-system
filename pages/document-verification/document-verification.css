@@ -181,7 +181,7 @@ body.dv-is-resizing {
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: visible;
 }
 
 .dv-tabs {
@@ -232,12 +232,13 @@ body.dv-is-resizing {
   width: 100%;
   max-width: 100%;
   position: relative;
-  overflow-x: clip;
+  overflow: visible;
   --dv-panel-header-offset: 58px;
 }
 
 .dv-columns--sidebar-collapsed {
   gap: 0;
+  padding-left: 14px;
 }
 
 .dv-main {
@@ -245,7 +246,7 @@ body.dv-is-resizing {
   flex: 1;
   min-width: 0;
   max-width: 100%;
-  overflow-x: clip;
+  overflow: visible;
 }
 
 /* --------------------------------------------------------
