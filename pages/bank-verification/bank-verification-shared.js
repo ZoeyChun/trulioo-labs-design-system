@@ -87,6 +87,24 @@
   var NAME_FIELDS = ["Full Name", "Business Name", "First Name", "First Surname", "Second Surname"];
   var ACCOUNT_FIELDS = ["Bank Account Number", "Account Number", "IBAN", "BIC", "BIC / SWIFT Code", "Clearing System ID"];
 
+  function isNameField(fieldLabel) {
+    return NAME_FIELDS.indexOf(fieldLabel) !== -1;
+  }
+
+  function isAccountField(fieldLabel) {
+    return ACCOUNT_FIELDS.indexOf(fieldLabel) !== -1;
+  }
+
+  function secondaryFields(fields) {
+    return fields.filter(function (fieldLabel) {
+      return !isNameField(fieldLabel) && !isAccountField(fieldLabel);
+    });
+  }
+
+  function matchResult(match, tone, score, risk, kind) {
+    return { match: match, tone: tone, score: score, risk: risk, kind: kind };
+  }
+
   function fieldsForCountry(accountType, country) {
     if (!country) return GENERIC_FIELDS[accountType].slice();
     var set = COUNTRY_FIELDS[accountType];
@@ -148,34 +166,53 @@
   }
 
   function inferMatch(values) {
-    var acct = (values["Bank Account Number"] || values["Account Number"] || "").toUpperCase();
-    if (acct.indexOf("NOMATCH") !== -1) {
-      return { match: "No Match", tone: "negative", score: 12, risk: "high", kind: "negative" };
+    var acct = (values["Bank Account Number"] || values["Account Number"] || values["IBAN"] || "").toUpperCase();
+    if (acct.indexOf("NOMATCH") !== -1 || acct.indexOf("PARTIAL") !== -1) {
+      return matchResult("No Match", "negative", 12, "high", "negative");
     }
-    if (acct.indexOf("PARTIAL") !== -1) {
-      return { match: "Partial Match", tone: "intermediate", score: 61, risk: "medium", kind: "intermediate" };
+
+    var nameFail = NAME_FIELDS.some(function (field) {
+      return (values[field] || "").toUpperCase().indexOf("NOMATCH") !== -1;
+    });
+    if (nameFail) {
+      return matchResult("No Match", "negative", 12, "high", "negative");
     }
-    return { match: "Strong Match", tone: "positive", score: 92, risk: "low", kind: "positive" };
+
+    var secondaryPartial = Object.keys(values).some(function (key) {
+      if (isNameField(key) || isAccountField(key)) return false;
+      return (values[key] || "").toUpperCase().indexOf("PARTIAL") !== -1;
+    });
+    if (secondaryPartial) {
+      return matchResult("Partial Match", "intermediate", 61, "medium", "intermediate");
+    }
+
+    return matchResult("Strong Match", "positive", 92, "low", "positive");
   }
 
   function matchFromEntity(entity) {
     var score = entity.match === "Strong Match" ? 92 : entity.match === "Partial Match" ? 61 : 12;
-    return {
-      match: entity.match,
-      tone: entity.tone,
-      score: score,
-      risk: entity.tone === "positive" ? "low" : entity.tone === "intermediate" ? "medium" : "high",
-      kind: entity.tone === "positive" ? "positive" : entity.tone === "intermediate" ? "intermediate" : "negative"
-    };
+    return matchResult(
+      entity.match,
+      entity.tone,
+      score,
+      entity.tone === "positive" ? "low" : entity.tone === "intermediate" ? "medium" : "high",
+      entity.tone === "positive" ? "positive" : entity.tone === "intermediate" ? "intermediate" : "negative"
+    );
   }
 
-  function fieldResultKind(fieldLabel, matchInfo) {
-    var isName = NAME_FIELDS.indexOf(fieldLabel) !== -1;
-    var isAccount = ACCOUNT_FIELDS.indexOf(fieldLabel) !== -1;
+  function fieldResultKind(fieldLabel, matchInfo, countryFields) {
+    var secondaries = secondaryFields(countryFields);
 
     if (matchInfo.match === "Strong Match") return "positive";
-    if (matchInfo.match === "No Match") return isName ? "negative" : "positive";
-    if (isAccount) return "negative";
+
+    if (matchInfo.match === "No Match") {
+      if (isNameField(fieldLabel) || isAccountField(fieldLabel)) return "negative";
+      return "positive";
+    }
+
+    // Partial Match — identity + account must exact-match; only secondary fields may fail.
+    if (isNameField(fieldLabel) || isAccountField(fieldLabel)) return "positive";
+    if (secondaries.length && fieldLabel === secondaries[0]) return "negative";
     return "positive";
   }
 
@@ -197,7 +234,7 @@
     var fields = fieldsForCountry(accountType, country);
 
     return fields.map(function (fieldLabel) {
-      var kind = fieldResultKind(fieldLabel, matchInfo);
+      var kind = fieldResultKind(fieldLabel, matchInfo, fields);
       var value = values[fieldLabel] || "";
       return {
         signal: fieldLabel,
