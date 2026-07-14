@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../../Components/select/caret.css">
   <link rel="stylesheet" href="../../Components/select/dropdown-panel.css">
   <link rel="stylesheet" href="../../Components/select/field-label.css">
+  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../shared/app-shell.css">
   <link rel="stylesheet" href="document-verification.css">
 </head>
@@ -22,35 +23,124 @@
 
     <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
 
-    <nav class="app-sidenav" id="app-sidenav" aria-label="Primary">
-      <div class="app-sidenav__top">
-        <a class="app-sidenav__logo" href="#" aria-label="Trulioo home">
-          <img src="../../assets/TL_logo.svg" alt="Trulioo" width="40" height="40">
-        </a>
-      </div>
-      <div class="app-sidenav__nav">
-        <a class="app-sidenav__item" href="#" aria-label="Home">
-          <span class="app-sidenav__item-icon">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/>
-            </svg>
+    <!-- TDS SideNav component -->
+    <aside class="tds-side-nav tds-side-nav--collapsed" id="app-sidenav" aria-label="Primary">
+
+      <div class="tds-side-nav__header">
+        <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+          <span class="tds-side-nav__logo">
+            <img src="../../assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40">
           </span>
-          <span class="app-sidenav__item-label">Home</span>
-        </a>
-        <a class="app-sidenav__item app-sidenav__item--active" href="#" aria-label="Labs" aria-current="page">
-          <span class="app-sidenav__item-icon">
-            <img src="../../assets/Lab_Icon.svg" alt="" width="24" height="24" aria-hidden="true">
+        </button>
+      </div>
+
+      <div class="tds-side-nav__main">
+        <div class="tds-side-nav__nav-stack">
+          <div>
+            <button type="button" class="tds-side-nav__nav-item">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+                </span>
+                <span class="tds-side-nav__nav-item-text">Home</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="tds-side-nav__nav-group">
+            <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-current="page" aria-expanded="true">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v5.5L3 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1L10 7.5V2M5 2h6"/></svg>
+                </span>
+                <span class="tds-side-nav__nav-item-text">Labs</span>
+              </span>
+              <span class="tds-side-nav__nav-item-chevron" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg>
+              </span>
+            </button>
+
+            <div class="tds-side-nav__sub-nav">
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYB</div>
+                <div class="tds-side-nav__section-items">
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.5" cy="5" r="2.5"/><path d="M1 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="11.5" cy="5.5" r="2"/><path d="M15 13c0-2 1.5-3 0-3-1 0-2.5 1-2.5 3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">UBO Agent</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1.5h8a1 1 0 0 1 1 1v12l-5-2.5-5 2.5v-12a1 1 0 0 1 1-1z"/><path d="M6 6l1.5 1.5L10 5"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Policy Review</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Deep Search</span>
+                  </button>
+                </div>
+              </div>
+
+              <hr class="tds-side-nav__divider">
+
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYC</div>
+                <div class="tds-side-nav__section-items">
+                  <a href="index.html" class="tds-side-nav__sub-item tds-side-nav__sub-item--selected" aria-current="page">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><circle cx="6" cy="7.5" r="1.5"/><path d="M3.5 11.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5"/><path d="M10 7h2.5M10 9.5h2.5"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Document Verification</span>
+                  </a>
+                  <a href="../bank-verification/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v8H2z"/><path d="M5 7v2M8 6v4M11 7v2M4 4V2h8v2"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Bank Verification</span>
+                  </a>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Electronic ID</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tds-side-nav__icon-rail" aria-hidden="false">
+          <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Home</span>
+            </span>
+          </button>
+          <button type="button" class="tds-side-nav__icon-button tds-side-nav__icon-button--active" aria-current="page" aria-label="Labs">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v5.5L3 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1L10 7.5V2M5 2h6"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Labs</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="tds-side-nav__collapse-bar" id="sidenav-collapse" aria-label="Expand sidebar" aria-expanded="false">
+        <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4M10 4l4 4-4 4"/></svg>
+        <span class="tds-side-nav__collapse-label text-label-sm-uppercase">Hide Sidebar</span>
+      </button>
+
+      <div class="tds-side-nav__footer">
+        <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" aria-label="Jane Doe, janedoe@trulioo.com">
+          <span class="tds-side-nav__avatar">JD</span>
+          <span class="tds-side-nav__profile-info">
+            <span class="tds-side-nav__profile-name-row">
+              <span class="tds-side-nav__profile-name">Jane Doe</span>
+              <span class="tds-side-nav__profile-chevron" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+              </span>
+            </span>
+            <span class="tds-side-nav__profile-email">janedoe@trulioo.com</span>
           </span>
-          <span class="app-sidenav__item-label">Labs</span>
-        </a>
+        </button>
       </div>
-      <div class="app-sidenav__bottom">
-        <a class="app-sidenav__profile" href="#" aria-label="Profile">
-          <span class="app-avatar" aria-hidden="true">ZC</span>
-          <span class="app-sidenav__item-label">Profile</span>
-        </a>
-      </div>
-    </nav>
+
+    </aside>
 
     <main class="app-main dv-panel">
 
@@ -382,5 +472,7 @@
   </div>
 
   <script src="document-verification.js"></script>
+  <script src="../../Components/side-nav/side-nav.js"></script>
+  <script>TdsSideNav.init();</script>
 </body>
 </html>

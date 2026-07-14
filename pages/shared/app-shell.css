@@ -368,6 +368,7 @@
     left: 0;
     bottom: 0;
     z-index: 210;
+    align-self: auto;
     width: min(280px, calc(100vw - var(--spacing-16)));
     height: 100dvh;
     background-color: var(--surface-neutral-02);
@@ -378,22 +379,22 @@
     pointer-events: none;
   }
 
-  /* Hide the collapse/expand toggle on mobile */
-  .app-shell .tds-side-nav .tds-side-nav__toggle {
+  .app-shell .tds-side-nav.tds-side-nav--collapsed {
+    width: min(280px, calc(100vw - var(--spacing-16)));
+  }
+
+  /* Hide the collapse bar on mobile */
+  .app-shell .tds-side-nav .tds-side-nav__collapse-bar {
     display: none;
   }
 
-  /* Always show expanded layout on mobile (nav-stack, wordmark, profile) */
+  /* Always show expanded layout on mobile (nav-stack, profile) */
   .app-shell .tds-side-nav .tds-side-nav__icon-rail {
     display: none !important;
   }
 
   .app-shell .tds-side-nav .tds-side-nav__nav-stack {
     display: flex !important;
-  }
-
-  .app-shell .tds-side-nav .tds-side-nav__wordmark {
-    display: block !important;
   }
 
   .app-shell .tds-side-nav .tds-side-nav__profile-info {

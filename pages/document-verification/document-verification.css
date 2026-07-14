@@ -288,6 +288,51 @@ body.dv-is-resizing {
   .app-sidenav__bottom {
     margin-top: auto;
   }
+
+  /* TDS SideNav — hidden off-canvas until hamburger opens drawer */
+  .app-shell .tds-side-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 210;
+    align-self: auto;
+    width: min(280px, calc(100vw - var(--spacing-16)));
+    height: 100dvh;
+    max-height: 100dvh;
+    background-color: var(--surface-neutral-02);
+    box-shadow: var(--elevation-md);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease, visibility 0.2s ease;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .app-shell .tds-side-nav.tds-side-nav--collapsed {
+    width: min(280px, calc(100vw - var(--spacing-16)));
+  }
+
+  .app-shell .tds-side-nav .tds-side-nav__collapse-bar {
+    display: none;
+  }
+
+  .app-shell .tds-side-nav .tds-side-nav__icon-rail {
+    display: none !important;
+  }
+
+  .app-shell .tds-side-nav .tds-side-nav__nav-stack {
+    display: flex !important;
+  }
+
+  .app-shell .tds-side-nav .tds-side-nav__profile-info {
+    display: flex !important;
+  }
+
+  .app-shell--nav-open .tds-side-nav {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
 }
 
 /* Thin scrollbars on scrollable panels */
