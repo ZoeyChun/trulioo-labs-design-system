@@ -1,0 +1,481 @@
+<!-- Static reference implementation — visual spec only. Scenario data drives tab content via document-verification.js. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Verification — Trulioo Labs</title>
+
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/tag/tag.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/select/caret.css">
+  <link rel="stylesheet" href="../../Components/select/dropdown-panel.css">
+  <link rel="stylesheet" href="../../Components/select/field-label.css">
+  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
+  <link rel="stylesheet" href="../shared/app-shell.css">
+  <link rel="stylesheet" href="document-verification.css">
+</head>
+<body>
+
+  <div class="app-shell" id="app-shell">
+
+    <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
+
+    <!-- TDS SideNav component (expanded mode) -->
+    <aside class="tds-side-nav" id="app-sidenav" aria-label="Primary">
+
+      <!-- Header: logo + wordmark -->
+      <div class="tds-side-nav__header">
+        <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+          <span class="tds-side-nav__logo">
+            <img src="../../assets/TL_logo.svg" alt="Trulioo" width="40" height="40">
+          </span>
+          <span class="tds-side-nav__wordmark">
+            <svg viewBox="0 0 98 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M10.39 6.608H0V4.064h23.75v2.544H13.36V20h-2.97V6.608ZM27.597 10.064C28.237 8.464 29.757 7.6 31.677 7.6v3.008h-.76c-2.4 0-3.32 1.04-3.32 3.776V20h-2.8V7.84h2.8v2.224ZM44.107 7.84V20h-2.8v-1.904c-.8 1.2-2.16 2.16-4.16 2.16-3.12 0-4.88-2.16-4.88-5.2V7.84h2.8v6.72c0 2.08 1.04 3.2 2.88 3.2 1.92 0 3.36-1.28 3.36-3.52V7.84h2.8ZM47.822 20V4.064h2.8V20h-2.8ZM53.88 7.84h2.8V20h-2.8V7.84Zm-.24-3.776c0-.96.8-1.68 1.64-1.68.88 0 1.68.72 1.68 1.68 0 .96-.8 1.68-1.68 1.68-.84 0-1.64-.72-1.64-1.68ZM65.435 7.6c3.68 0 6.4 2.88 6.4 6.4s-2.72 6.4-6.4 6.4c-3.68 0-6.4-2.88-6.4-6.4s2.72-6.4 6.4-6.4Zm0 10.32c2 0 3.52-1.6 3.52-3.92 0-2.32-1.52-3.92-3.52-3.92-2 0-3.52 1.6-3.52 3.92 0 2.32 1.52 3.92 3.52 3.92ZM80.432 7.6c3.68 0 6.4 2.88 6.4 6.4s-2.72 6.4-6.4 6.4c-3.68 0-6.4-2.88-6.4-6.4s2.72-6.4 6.4-6.4Zm0 10.32c2 0 3.52-1.6 3.52-3.92 0-2.32-1.52-3.92-3.52-3.92-2 0-3.52 1.6-3.52 3.92 0 2.32 1.52 3.92 3.52 3.92Z" fill="var(--text-default)"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      <!-- Main nav -->
+      <div class="tds-side-nav__main">
+        <div class="tds-side-nav__nav-stack">
+
+          <!-- Home -->
+          <div>
+            <button type="button" class="tds-side-nav__nav-item">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+                </span>
+                <span class="tds-side-nav__nav-item-text">Home</span>
+              </span>
+            </button>
+          </div>
+
+          <!-- Labs (active, expanded) -->
+          <div class="tds-side-nav__nav-group">
+            <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-current="page" aria-expanded="true">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v5.5L3 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1L10 7.5V2M5 2h6"/></svg>
+                </span>
+                <span class="tds-side-nav__nav-item-text">Labs</span>
+              </span>
+              <span class="tds-side-nav__nav-item-chevron" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg>
+              </span>
+            </button>
+
+            <!-- Sub-nav -->
+            <div class="tds-side-nav__sub-nav">
+              <!-- KYB section -->
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYB</div>
+                <div class="tds-side-nav__section-items">
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.5" cy="5" r="2.5"/><path d="M1 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="11.5" cy="5.5" r="2"/><path d="M15 13c0-2 1.5-3 0-3-1 0-2.5 1-2.5 3"/></svg>
+                    </span>
+                    <span class="tds-side-nav__sub-item-text">UBO Agent</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1.5h8a1 1 0 0 1 1 1v12l-5-2.5-5 2.5v-12a1 1 0 0 1 1-1z"/><path d="M6 6l1.5 1.5L10 5"/></svg>
+                    </span>
+                    <span class="tds-side-nav__sub-item-text">Policy Review</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+                    </span>
+                    <span class="tds-side-nav__sub-item-text">Deep Search</span>
+                  </button>
+                </div>
+              </div>
+
+              <hr class="tds-side-nav__divider">
+
+              <!-- KYC section -->
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYC</div>
+                <div class="tds-side-nav__section-items">
+                  <button type="button" class="tds-side-nav__sub-item tds-side-nav__sub-item--selected" aria-current="page">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><circle cx="6" cy="7.5" r="1.5"/><path d="M3.5 11.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5"/><path d="M10 7h2.5M10 9.5h2.5"/></svg>
+                    </span>
+                    <span class="tds-side-nav__sub-item-text">Document Verification</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v8H2z"/><path d="M5 7v2M8 6v4M11 7v2M4 4V2h8v2"/></svg>
+                    </span>
+                    <span class="tds-side-nav__sub-item-text">Bank Verification</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg>
+                    </span>
+                    <span class="tds-side-nav__sub-item-text">Electronic ID</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Footer: user profile -->
+      <div class="tds-side-nav__footer">
+        <button type="button" class="tds-side-nav__profile" aria-label="Zoey Chun, zoey.chun@trulioo.com">
+          <span class="tds-side-nav__avatar">ZC</span>
+          <span class="tds-side-nav__profile-info">
+            <span class="tds-side-nav__profile-name-row">
+              <span class="tds-side-nav__profile-name">Zoey Chun</span>
+              <span class="tds-side-nav__profile-chevron" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+              </span>
+            </span>
+            <span class="tds-side-nav__profile-email">zoey.chun@trulioo.com</span>
+          </span>
+        </button>
+      </div>
+
+    </aside>
+
+    <main class="app-main dv-panel">
+
+      <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 5h14M3 10h14M3 15h14"/>
+        </svg>
+      </button>
+
+      <div class="dv-header">
+        <div class="dv-header__top">
+          <div class="dv-header__title-group">
+            <h1 class="dv-title">Jane Doe</h1>
+            <span id="dv-overall-status"></span>
+            <span id="dv-secondary-status" hidden></span>
+          </div>
+          <div class="dv-header__actions">
+            <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
+              <span class="tds-btn__leading-icon">
+                <svg viewBox="0 0 576 512" fill="currentColor" aria-hidden="true"><path d="M96.5 0c-35.3 0-64 28.7-64 64l0 384c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-96 78.1 0-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l72-72c9.4-9.4 9.4-24.6 0-33.9l-72-72c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-78.1 0 0-133.5c0-17-6.7-33.3-18.7-45.3L291.2 18.7C279.2 6.7 263 0 246 0L96.5 0zM358 176l-93.5 0c-13.3 0-24-10.7-24-24L240.5 58.5 358 176zM224.5 328c0-13.3 10.7-24 24-24l104 0 0 48-104 0c-13.3 0-24-10.7-24-24z"/></svg>
+              </span>
+              Export
+            </button>
+            <button class="app-truai-btn" type="button">
+              <span class="app-truai-btn__icon">
+                <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
+              </span>
+              TruAI
+            </button>
+          </div>
+        </div>
+
+        <div class="dv-meta">
+          <div class="dv-meta__item">
+            <span class="dv-meta__label">Country / Jurisdiction</span>
+            <span class="dv-meta__value">United States 🇺🇸</span>
+          </div>
+          <span class="dv-meta__divider" aria-hidden="true"></span>
+          <div class="dv-meta__item">
+            <span class="dv-meta__label">Transaction ID</span>
+            <span class="dv-meta__value" id="dv-transaction-id"></span>
+          </div>
+          <span class="dv-meta__divider" aria-hidden="true"></span>
+          <div class="dv-meta__item">
+            <span class="dv-meta__label">Date</span>
+            <span class="dv-meta__value">17 Jun 2026, 2:14 PM</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-content">
+        <div class="dv-tabs" role="tablist" aria-label="Verification sections">
+          <button class="dv-tab dv-tab--active" role="tab" aria-selected="true" type="button" data-tab="document">Document</button>
+          <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="biometrics">Biometrics</button>
+          <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="data-match">Data Match</button>
+          <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="network-insights">Network Insights</button>
+          <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="device-intelligence">Device Intelligence</button>
+        </div>
+
+        <div class="dv-columns" id="dv-columns">
+
+          <aside class="dv-sidebar" id="dv-sidebar">
+            <div class="dv-sidebar__block dv-sidebar__block--entity">
+              <div class="dv-sidebar__entity-head">
+                <h2 class="dv-sidebar__heading">Test Entity</h2>
+                <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="dv-sidebar" aria-label="Collapse summary panel">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+                </button>
+              </div>
+              <div class="dv-sidebar__entity-select">
+                <div class="tds-select dv-te-select" id="dv-te-select">
+                  <button type="button" class="tds-select__trigger tds-select__trigger--lg dv-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="tds-select__text-wrapper"><span class="tds-select__value dv-te-value" id="dv-te-value">Happy path</span></span>
+                    <span class="tds-select__trailing-group">
+                      <span class="tds-tag tds-tag--positive tds-tag--sm dv-te-tag" id="dv-te-tag">Accepted</span>
+                      <span class="tds-caret tds-caret--default" aria-hidden="true">
+                        <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                      </span>
+                    </span>
+                  </button>
+                  <div class="tds-select__menu">
+                    <div class="tds-dropdown-panel" role="listbox" aria-label="Test entity scenario" id="dv-te-options"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dv-sidebar__block">
+              <h2 class="dv-section-title">Summary</h2>
+              <div class="dv-ai-card">
+                <span class="dv-ai-badge">
+                  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
+                  TruAI
+                </span>
+                <p class="dv-ai-text" id="dv-truai-text"></p>
+              </div>
+              <ul class="dv-summary-list" id="dv-summary-list"></ul>
+            </div>
+
+            <div class="dv-sidebar__block dv-collapsible dv-collapsible--open">
+              <button class="dv-collapsible__header" type="button" aria-expanded="true">
+                <span class="dv-chevron" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
+                </span>
+                <span class="dv-section-title">Client Details</span>
+              </button>
+              <div class="dv-collapsible__body">
+                <div class="dv-detail-row">
+                  <span class="dv-detail-label">Full Name
+                    <span class="dv-caret" aria-hidden="true"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2.5 4h7z"/></svg></span>
+                  </span>
+                  <span class="dv-detail-value">Jane Doe</span>
+                </div>
+                <div class="dv-detail-row">
+                  <span class="dv-detail-label">Date of Birth</span>
+                  <span class="dv-detail-value">1986/03/24</span>
+                </div>
+                <div class="dv-detail-row">
+                  <span class="dv-detail-label">Address
+                    <span class="dv-caret" aria-hidden="true"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L2.5 4h7z"/></svg></span>
+                  </span>
+                  <span class="dv-detail-value">919 Government St, Victoria, BC V6W 3Y8</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="dv-sidebar__block dv-collapsible dv-sidebar__block--last">
+              <button class="dv-collapsible__header" type="button" aria-expanded="false">
+                <span class="dv-chevron" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
+                </span>
+                <span class="dv-section-title">Document Information</span>
+              </button>
+              <div class="dv-collapsible__body" hidden id="dv-document-info"></div>
+            </div>
+          </aside>
+
+          <div class="dv-main">
+          <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="dv-sidebar" aria-label="Show summary panel">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+          </button>
+
+          <!-- Document -->
+          <section class="dv-doc-panel dv-tabpanel" data-tab="document">
+            <div class="dv-doc-panel__header dv-ni2-panelhead">
+              <div class="dv-ni2-panelhead__title">
+                <h2 class="dv-doc-panel__title">Document</h2>
+                <div class="dv-tag-row" id="dv-document-badges"></div>
+              </div>
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
+                <span class="tds-btn__leading-icon">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
+                </span>
+                Expand all
+              </button>
+            </div>
+            <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
+              <div class="dv-indicators dv-split-pane__start">
+                <div id="dv-document-indicators" class="dv-indicators__list"></div>
+              </div>
+              <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
+              <div class="dv-viewer dv-split-pane__end">
+                <h3 class="dv-section-title">Driver’s License</h3>
+                <figure class="dv-doc-image">
+                  <figcaption class="dv-doc-image__caption">
+                    Front of Document
+                    <button class="dv-icon-btn" type="button" aria-label="Expand front of document">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                    </button>
+                  </figcaption>
+                  <div class="dv-doc-image__media">
+                    <svg viewBox="0 0 293 205" role="img" aria-label="Front of ID document placeholder" preserveAspectRatio="xMidYMid meet">
+                      <rect width="293" height="205" fill="transparent"/>
+                      <rect x="16" y="16" width="80" height="100" rx="6" fill="var(--surface-neutral-04)"/>
+                      <circle cx="56" cy="52" r="22" fill="var(--border-strong)"/>
+                      <path d="M34 96c0-14 10-22 22-22s22 8 22 22z" fill="var(--border-strong)"/>
+                      <rect x="112" y="24" width="150" height="12" rx="3" fill="var(--border-strong)"/>
+                      <rect x="112" y="48" width="120" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="112" y="66" width="140" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="112" y="84" width="100" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="140" width="261" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="160" width="200" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                    </svg>
+                  </div>
+                </figure>
+                <figure class="dv-doc-image">
+                  <figcaption class="dv-doc-image__caption">
+                    Back of Document
+                    <button class="dv-icon-btn" type="button" aria-label="Expand back of document">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                    </button>
+                  </figcaption>
+                  <div class="dv-doc-image__media">
+                    <svg viewBox="0 0 293 202" role="img" aria-label="Back of ID document placeholder" preserveAspectRatio="xMidYMid meet">
+                      <rect width="293" height="202" fill="transparent"/>
+                      <rect x="16" y="20" width="261" height="26" rx="3" fill="var(--border-strong)"/>
+                      <rect x="16" y="60" width="180" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="78" width="220" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="96" width="160" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                      <rect x="16" y="130" width="261" height="40" rx="3" fill="var(--surface-neutral-04)"/>
+                    </svg>
+                  </div>
+                </figure>
+              </div>
+            </div>
+          </section>
+
+          <!-- Biometrics -->
+          <section class="dv-tabpanel dv-doc-panel" data-tab="biometrics" hidden>
+            <div class="dv-doc-panel__header dv-ni2-panelhead">
+              <div class="dv-ni2-panelhead__title">
+                <h2 class="dv-doc-panel__title">Biometrics</h2>
+                <div class="dv-tag-row" id="dv-biometrics-badges"></div>
+              </div>
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
+                <span class="tds-btn__leading-icon">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
+                </span>
+                Expand all
+              </button>
+            </div>
+            <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
+              <div class="dv-indicators dv-split-pane__start">
+                <div id="dv-biometrics-indicators" class="dv-indicators__list"></div>
+              </div>
+              <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
+              <div class="dv-viewer dv-split-pane__end">
+                <h3 class="dv-section-title">Selfie</h3>
+                <figure class="dv-doc-image">
+                  <figcaption class="dv-doc-image__caption">
+                    Selfie
+                    <button class="dv-icon-btn" type="button" aria-label="Expand selfie">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                    </button>
+                  </figcaption>
+                  <div class="dv-doc-image__media">
+                    <svg viewBox="0 0 293 320" role="img" aria-label="Selfie placeholder" preserveAspectRatio="xMidYMid meet"><rect width="293" height="320" fill="transparent"/><circle cx="146" cy="130" r="62" fill="var(--border-strong)"/><path d="M44 300c0-52 46-84 102-84s102 32 102 84z" fill="var(--border-strong)"/></svg>
+                  </div>
+                </figure>
+              </div>
+            </div>
+          </section>
+
+          <!-- Data Match -->
+          <section class="dv-tabpanel dv-doc-panel" data-tab="data-match" hidden>
+            <div class="dv-doc-panel__header dv-ni2-panelhead">
+              <div class="dv-ni2-panelhead__title">
+                <h2 class="dv-doc-panel__title">Data Match</h2>
+                <div class="dv-tag-row" id="dv-datamatch-badges"></div>
+              </div>
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
+                <span class="tds-btn__leading-icon">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
+                </span>
+                Expand all
+              </button>
+            </div>
+            <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
+              <div class="dv-indicators dv-split-pane__start">
+                <div id="dv-datamatch-indicators" class="dv-indicators__list"></div>
+              </div>
+              <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
+              <div class="dv-viewer dv-split-pane__end">
+                <h3 class="dv-section-title">Driver’s License</h3>
+                <figure class="dv-doc-image">
+                  <figcaption class="dv-doc-image__caption">Front of Document <button class="dv-icon-btn" type="button" aria-label="Expand front of document"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg></button></figcaption>
+                  <div class="dv-doc-image__media"><svg viewBox="0 0 293 205" role="img" aria-label="Front of ID placeholder" preserveAspectRatio="xMidYMid meet"><rect width="293" height="205" fill="transparent"/><rect x="16" y="16" width="80" height="100" rx="6" fill="var(--surface-neutral-04)"/><circle cx="56" cy="52" r="22" fill="var(--border-strong)"/><path d="M34 96c0-14 10-22 22-22s22 8 22 22z" fill="var(--border-strong)"/><rect x="112" y="24" width="150" height="12" rx="3" fill="var(--border-strong)"/><rect x="112" y="48" width="120" height="9" rx="3" fill="var(--surface-neutral-04)"/><rect x="112" y="66" width="140" height="9" rx="3" fill="var(--surface-neutral-04)"/></svg></div>
+                </figure>
+                <figure class="dv-doc-image">
+                  <figcaption class="dv-doc-image__caption">Back of Document <button class="dv-icon-btn" type="button" aria-label="Expand back of document"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg></button></figcaption>
+                  <div class="dv-doc-image__media"><svg viewBox="0 0 293 202" role="img" aria-label="Back of ID placeholder" preserveAspectRatio="xMidYMid meet"><rect width="293" height="202" fill="transparent"/><rect x="16" y="20" width="261" height="26" rx="3" fill="var(--border-strong)"/><rect x="16" y="60" width="180" height="9" rx="3" fill="var(--surface-neutral-04)"/><rect x="16" y="78" width="220" height="9" rx="3" fill="var(--surface-neutral-04)"/></svg></div>
+                </figure>
+              </div>
+            </div>
+          </section>
+
+          <!-- Network Insights -->
+          <section class="dv-tabpanel dv-doc-panel" data-tab="network-insights" hidden>
+            <div class="dv-doc-panel__header dv-ni2-panelhead">
+              <div class="dv-ni2-panelhead__title">
+                <h2 class="dv-doc-panel__title">Network Insights</h2>
+                <span id="dv-network-header-badge" class="tds-tag tds-tag--positive tds-tag--sm dv-ni-pill">Clean</span>
+              </div>
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
+                <span class="tds-btn__leading-icon">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
+                </span>
+                Expand all
+              </button>
+            </div>
+            <div class="dv-ni2-body" id="dv-network-body"></div>
+          </section>
+
+          <!-- Device Intelligence -->
+          <section class="dv-tabpanel dv-doc-panel" data-tab="device-intelligence" hidden>
+            <div class="dv-doc-panel__header dv-ni2-panelhead">
+              <div class="dv-ni2-panelhead__title">
+                <h2 class="dv-doc-panel__title">Device Intelligence</h2>
+                <span id="dv-device-header-badge" class="tds-tag tds-tag--positive tds-tag--sm">Low Risk</span>
+              </div>
+              <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
+                <span class="tds-btn__leading-icon">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
+                </span>
+                Expand all
+              </button>
+            </div>
+            <div id="dv-device-body" class="dv-di-body"></div>
+          </section>
+
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="dv-image-modal" id="dv-image-modal" hidden role="dialog" aria-modal="true" aria-labelledby="dv-image-modal-title">
+    <div class="dv-image-modal__overlay" data-modal-close></div>
+    <div class="dv-image-modal__panel">
+      <div class="dv-image-modal__header">
+        <h2 class="dv-image-modal__title" id="dv-image-modal-title"></h2>
+        <button class="dv-image-modal__close" type="button" aria-label="Close" data-modal-close>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+      </div>
+      <div class="dv-image-modal__body" id="dv-image-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="document-verification.js"></script>
+</body>
+</html>
