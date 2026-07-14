@@ -378,33 +378,32 @@
     pointer-events: none;
   }
 
+  /* Hide the collapse/expand toggle on mobile */
   .app-shell .tds-side-nav .tds-side-nav__toggle {
     display: none;
   }
 
+  /* Always show expanded layout on mobile (nav-stack, wordmark, profile) */
+  .app-shell .tds-side-nav .tds-side-nav__icon-rail {
+    display: none !important;
+  }
+
+  .app-shell .tds-side-nav .tds-side-nav__nav-stack {
+    display: flex !important;
+  }
+
+  .app-shell .tds-side-nav .tds-side-nav__wordmark {
+    display: block !important;
+  }
+
+  .app-shell .tds-side-nav .tds-side-nav__profile-info {
+    display: flex !important;
+  }
+
+  /* Slide in when open */
   .app-shell--nav-open .tds-side-nav {
     transform: translateX(0);
     visibility: visible;
     pointer-events: auto;
-  }
-
-  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed {
-    width: min(280px, calc(100vw - var(--spacing-16)));
-  }
-
-  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__nav-stack {
-    display: flex;
-  }
-
-  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__icon-rail {
-    display: none;
-  }
-
-  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__wordmark {
-    display: block;
-  }
-
-  .app-shell--nav-open .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__profile-info {
-    display: flex;
   }
 }
