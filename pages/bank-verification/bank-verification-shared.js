@@ -77,6 +77,11 @@
     business: ["Business Name", "Account Number", "IBAN", "BIC / SWIFT Code"]
   };
 
+  var NO_COUNTRY_FIELDS = {
+    person: ["Full Name", "Bank Account Number"],
+    business: ["Business Name", "Bank Account Number"]
+  };
+
   var COUNTRY_FIELDS = {
     person: {
       "Brazil": ["Full Name", "National ID Number", "IBAN"],
@@ -118,7 +123,7 @@
   }
 
   function fieldsForCountry(accountType, country) {
-    if (!country) return GENERIC_FIELDS[accountType].slice();
+    if (!country) return NO_COUNTRY_FIELDS[accountType].slice();
     var set = COUNTRY_FIELDS[accountType];
     return (set && set[country]) ? set[country].slice() : GENERIC_FIELDS[accountType].slice();
   }
@@ -373,12 +378,7 @@
     name.textContent = ent.name;
     bindEllipsisTooltip(name, ent.name);
 
-    var desc = document.createElement("span");
-    desc.className = "tds-select__subtext";
-    desc.textContent = ent.description || "";
-
     textWrap.appendChild(name);
-    textWrap.appendChild(desc);
 
     var otag = document.createElement("span");
     otag.className = "tds-tag tds-tag--" + ent.tone + " tds-tag--sm";

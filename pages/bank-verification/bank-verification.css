@@ -137,6 +137,17 @@ body {
   overflow: hidden;
 }
 
+/* Dropdown menus are position:absolute; allow them to extend past the card */
+.bv-card:has(.tds-select--open),
+.bv-card:has(.tds-combobox--open) {
+  overflow: visible;
+}
+
+.bv-test-entity.tds-select--open,
+.bv-country.tds-combobox--open {
+  z-index: 20;
+}
+
 .bv-card__header {
   display: flex;
   align-items: center;
@@ -198,6 +209,7 @@ body {
 /* Country / test entity slot */
 .bv-card__section-country {
   padding: 0 var(--padding-2xl) var(--padding-xl);
+  overflow: visible;
 }
 
 /* Emoji flag sizing inside the combobox leading-visual slot */
@@ -246,10 +258,6 @@ body {
   min-width: 0;
   font-weight: var(--font-weight-figma);
   font-variation-settings: var(--font-variation-figma-medium);
-}
-
-.bv-option__text .tds-select__subtext {
-  white-space: normal;
 }
 
 .bv-option .tds-tag {
@@ -412,6 +420,30 @@ body {
   flex-direction: column;
   gap: var(--gap-xl);
   width: 100%;
+}
+
+.bv-form-errors {
+  margin: 0;
+  padding: var(--padding-sm) var(--padding-md);
+  border: 1px solid var(--border-negative);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-negative);
+  color: var(--text-negative);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.bv-form-errors[hidden] {
+  display: none !important;
+}
+
+.bv-form-errors ul {
+  margin: 0;
+  padding-left: var(--padding-lg);
+}
+
+.bv-form-errors li + li {
+  margin-top: var(--spacing-4);
 }
 
 .bv-details__hint {

@@ -256,6 +256,9 @@
       shared.saveSession(current);
     }
     shared.showFormView();
+    if (window.BankVerification && window.BankVerification.resetFormToDefault) {
+      window.BankVerification.resetFormToDefault();
+    }
     window.scrollTo(0, 0);
   }
 

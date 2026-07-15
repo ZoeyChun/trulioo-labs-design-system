@@ -103,19 +103,151 @@
     return required;
   }
 
-  function isFormValid() {
-    return requiredFieldLabels().every(function (label) {
+  function getSubmitValidationErrors() {
+    var errors = [];
+
+    if (!state.country) {
+      if (state.testEntity) {
+        errors.push({
+          code: "test_entity_required",
+          message: "Select a test entity to continue."
+        });
+      } else {
+        errors.push({
+          code: "country_required",
+          message: "Select a country to continue."
+        });
+      }
+    }
+
+    requiredFieldLabels().forEach(function (label) {
       var input = document.querySelector('#bv-fields [data-bv-field="' + label + '"]');
-      return input && input.value.trim().length > 0;
+      if (!input || !input.value.trim()) {
+        errors.push({
+          code: "field_required",
+          field: label,
+          message: label + " is required."
+        });
+      }
     });
+
+    return errors;
+  }
+
+  function isFormValid() {
+    return getSubmitValidationErrors().length === 0;
+  }
+
+  function clearFormErrors() {
+    var banner = document.getElementById("bv-form-errors");
+    if (banner) {
+      banner.hidden = true;
+      banner.innerHTML = "";
+    }
+
+    document.querySelectorAll("#bv-fields .tds-text-input--invalid").forEach(function (wrap) {
+      wrap.classList.remove("tds-text-input--invalid");
+    });
+    document.querySelectorAll("#bv-fields .tds-field-validation--error").forEach(function (node) {
+      node.remove();
+    });
+
+    var countryRoot = document.getElementById("bv-country");
+    if (countryRoot) countryRoot.classList.remove("tds-combobox--invalid");
+
+    var teTrigger = document.querySelector(".bv-test-entity .tds-select__trigger");
+    if (teTrigger) teTrigger.classList.remove("tds-select__trigger--focus");
+  }
+
+  function setFieldError(fieldLabel, message) {
+    var input = document.querySelector('#bv-fields [data-bv-field="' + fieldLabel + '"]');
+    if (!input) return;
+
+    var wrap = input.closest(".tds-text-input");
+    if (!wrap) return;
+
+    wrap.classList.add("tds-text-input--invalid");
+    wrap.classList.remove("tds-text-input--success");
+
+    var existing = wrap.querySelector(".tds-field-validation--error");
+    if (existing) existing.remove();
+
+    var val = el("span", "tds-field-validation tds-field-validation--error");
+    var icon = el("span", "tds-field-validation__icon");
+    icon.innerHTML = ERROR_SVG;
+    var txt = document.createElement("span");
+    txt.textContent = message;
+    val.appendChild(icon);
+    val.appendChild(txt);
+    wrap.appendChild(val);
+  }
+
+  function showFormErrors(errors) {
+    clearFormErrors();
+    if (!errors.length) return;
+
+    var banner = document.getElementById("bv-form-errors");
+    if (banner) {
+      banner.hidden = false;
+      if (errors.length === 1) {
+        banner.textContent = errors[0].message;
+      } else {
+        var list = document.createElement("ul");
+        errors.forEach(function (err) {
+          var item = document.createElement("li");
+          item.textContent = err.message;
+          list.appendChild(item);
+        });
+        banner.appendChild(list);
+      }
+    }
+
+    errors.forEach(function (err) {
+      if (err.field) setFieldError(err.field, err.message);
+    });
+
+    var countryError = errors.some(function (err) { return err.code === "country_required"; });
+    if (countryError) {
+      var countryRoot = document.getElementById("bv-country");
+      if (countryRoot) countryRoot.classList.add("tds-combobox--invalid");
+      var countryInput = document.getElementById("bv-country-input");
+      if (countryInput) countryInput.focus();
+      return;
+    }
+
+    var teError = errors.some(function (err) { return err.code === "test_entity_required"; });
+    if (teError) {
+      var teTrigger = document.querySelector(".bv-test-entity .tds-select__trigger");
+      if (teTrigger) teTrigger.focus();
+      return;
+    }
+
+    var firstFieldError = null;
+    for (var i = 0; i < errors.length; i++) {
+      if (errors[i].field) {
+        firstFieldError = errors[i];
+        break;
+      }
+    }
+    if (firstFieldError) {
+      var firstInput = document.querySelector('#bv-fields [data-bv-field="' + firstFieldError.field + '"]');
+      if (firstInput) firstInput.focus();
+    }
   }
 
   function updateSubmitButton() {
     var btn = document.getElementById("bv-submit-btn");
     if (!btn) return;
     var valid = isFormValid();
-    btn.disabled = !valid;
+    btn.removeAttribute("disabled");
     btn.setAttribute("aria-disabled", String(!valid));
+  }
+
+  function onFieldInput() {
+    if (getSubmitValidationErrors().length === 0) {
+      clearFormErrors();
+    }
+    updateSubmitButton();
   }
 
   function updateFormPrimaryField() {
@@ -159,6 +291,9 @@
 
   var X_SVG =
     '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
+
+  var ERROR_SVG =
+    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/><path d="M8 5.25v3.5M8 10.75h.01" stroke-linecap="round"/></svg>';
 
   /* =========================================================
      Country combobox
@@ -234,6 +369,7 @@
     }
     function select(c, opts) {
       opts = opts || {};
+      var preserveLabels = window.BVShared.fieldsForCountry(state.accountType, state.country);
       state.country = c.name;
       input.value = c.name;
       flag.textContent = c.flag;
@@ -242,10 +378,12 @@
       if (state.testEntity && !opts.fromTestEntity) {
         syncTestEntityToCountry(c.name);
       }
-      if (!opts.skipDetails) renderDetails();
+      if (!opts.skipDetails) renderDetails({ preserveLabels: preserveLabels });
+      clearFormErrors();
     }
     function clear(keepOpen, opts) {
       opts = opts || {};
+      var preserveLabels = window.BVShared.fieldsForCountry(state.accountType, state.country);
       state.country = null;
       input.value = "";
       flag.hidden = true;
@@ -253,7 +391,7 @@
       if (state.testEntity && !opts.skipEntitySync) {
         syncTestEntityToCountry(null);
       }
-      if (!opts.skipDetails) renderDetails();
+      if (!opts.skipDetails) renderDetails({ preserveLabels: preserveLabels });
       if (keepOpen) {
         renderOptions("");
         open();
@@ -275,13 +413,14 @@
     });
     input.addEventListener("input", function () {
       flag.hidden = true;
+      var preserveLabels = window.BVShared.fieldsForCountry(state.accountType, state.country);
       state.country = null;
       if (state.testEntity) {
         syncTestEntityToCountry(null);
       }
       renderOptions(input.value);
       open();
-      renderDetails();
+      renderDetails({ preserveLabels: preserveLabels });
     });
     input.addEventListener("keydown", function (e) {
       if (e.key === "Escape") { close(); input.blur(); }
@@ -305,6 +444,30 @@
 
   var fieldIdCounter = 0;
 
+  function shouldPreserveLabel(label, opts) {
+    if (!opts.preserveLabels) return true;
+    return opts.preserveLabels.indexOf(label) !== -1;
+  }
+
+  function enforceFieldValues(expectedValues) {
+    function apply() {
+      document.querySelectorAll("#bv-fields [data-bv-field]").forEach(function (input) {
+        var label = input.getAttribute("data-bv-field");
+        var expected = Object.prototype.hasOwnProperty.call(expectedValues, label)
+          ? expectedValues[label]
+          : "";
+        if (input.value !== expected) {
+          input.value = expected;
+        }
+      });
+    }
+
+    requestAnimationFrame(function () {
+      apply();
+      requestAnimationFrame(apply);
+    });
+  }
+
   function makeTextInput(label, opts) {
     opts = opts || {};
     fieldIdCounter += 1;
@@ -325,13 +488,16 @@
     var input = el("input", "tds-text-input__native", { id: id, type: "text" });
 
     input.setAttribute("data-bv-field", label);
+    input.setAttribute("autocomplete", "off");
+    input.setAttribute("data-1p-ignore", "true");
+    input.setAttribute("data-lpignore", "true");
+    input.setAttribute("name", "bv-" + id);
     if (opts.required) {
       input.setAttribute("aria-required", "true");
     }
 
-    if (opts.value) {
-      input.value = opts.value;
-    } else {
+    input.value = opts.value ? opts.value : "";
+    if (!input.value) {
       input.placeholder = PLACEHOLDERS[label] || label;
     }
     field.appendChild(input);
@@ -349,7 +515,7 @@
       wrap.appendChild(val);
     }
 
-    input.addEventListener("input", updateSubmitButton);
+    input.addEventListener("input", onFieldInput);
     return wrap;
   }
 
@@ -427,19 +593,26 @@
       return c.name === entity.country;
     });
     if (country && countryApi) {
-      countryApi.select(country, { fromTestEntity: true });
+      countryApi.select(country, { fromTestEntity: true, skipDetails: true });
     }
     renderTestEntityPanel();
-    renderDetails();
+    renderDetails({ preserveValues: false, useEntityPrefill: true });
   }
 
-  function renderDetails() {
+  function renderDetails(opts) {
+    opts = opts || {};
     var container = document.getElementById("bv-fields");
+    clearFormErrors();
+
+    var preserved = opts.preserveValues !== false ? getFormValues() : {};
     container.innerHTML = "";
 
-    var prefill = {};
-    if (state.testEntity && state.selectedTestEntity != null) {
-      prefill = TEST_ENTITIES[state.accountType][state.selectedTestEntity].values || {};
+    var entityPrefill = {};
+    var useEntityPrefill = opts.useEntityPrefill === true &&
+      state.testEntity &&
+      state.selectedTestEntity != null;
+    if (useEntityPrefill) {
+      entityPrefill = TEST_ENTITIES[state.accountType][state.selectedTestEntity].values || {};
     }
 
     var fields = fieldsForCurrentSelection();
@@ -448,15 +621,25 @@
       requiredSet[fieldLabel] = true;
     });
 
+    var expectedValues = {};
+
     for (var i = 0; i < fields.length; i += 2) {
       var row = el("div", "bv-form-row");
       for (var j = 0; j < 2; j++) {
         var label = fields[i + j];
         if (label) {
-          var value = prefill[label];
+          var value = "";
+          var prefilled = false;
+          if (useEntityPrefill && entityPrefill[label]) {
+            value = entityPrefill[label];
+            prefilled = true;
+          } else if (shouldPreserveLabel(label, opts) && preserved[label]) {
+            value = preserved[label];
+          }
+          expectedValues[label] = value;
           row.appendChild(makeTextInput(label, {
             value: value,
-            prefilled: !!value,
+            prefilled: prefilled,
             required: !!requiredSet[label]
           }));
         } else {
@@ -464,6 +647,10 @@
         }
       }
       container.appendChild(row);
+    }
+
+    if (!useEntityPrefill) {
+      enforceFieldValues(expectedValues);
     }
 
     updateSubmitButton();
@@ -487,7 +674,7 @@
           countryApi.refreshOptions();
         }
         renderTestEntityPanel();
-        renderDetails();
+        renderDetails({ preserveValues: false });
       });
     });
   }
@@ -513,6 +700,7 @@
       renderTestEntityPanel();
       if (countryApi) countryApi.clear(false, { skipEntitySync: true, skipDetails: true });
       renderDetails();
+      clearFormErrors();
     });
   }
 
@@ -543,7 +731,14 @@
   function initSubmit() {
     var btn = document.getElementById("bv-submit-btn");
     btn.addEventListener("click", function () {
-      if (btn.disabled) return;
+      var errors = getSubmitValidationErrors();
+      if (errors.length) {
+        showFormErrors(errors);
+        updateSubmitButton();
+        return;
+      }
+
+      clearFormErrors();
       window.BVShared.saveSession({
         view: "result",
         state: {
@@ -560,46 +755,33 @@
     });
   }
 
-  function restoreFromSession() {
-    var session = window.BVShared.loadSession();
-    if (!session || !session.state) return null;
-
-    state.accountType = session.state.accountType || "person";
-    state.testEntity = !!session.state.testEntity;
-    state.selectedTestEntity = session.state.selectedTestEntity;
-    state.country = session.state.country || null;
+  function resetFormToDefault() {
+    state.accountType = "person";
+    state.testEntity = false;
+    state.selectedTestEntity = null;
+    state.country = null;
 
     document.querySelectorAll('input[name="account-type"]').forEach(function (radio) {
-      radio.checked = radio.value === state.accountType;
-      radio.closest(".tds-radio-card").classList.toggle("tds-radio-card--selected", radio.checked);
+      var isPerson = radio.value === "person";
+      radio.checked = isPerson;
+      radio.closest(".tds-radio-card").classList.toggle("tds-radio-card--selected", isPerson);
     });
 
     var toggle = document.getElementById("bv-test-entity-toggle");
-    toggle.setAttribute("aria-checked", String(state.testEntity));
-    toggle.classList.toggle("tds-switch__track--on", state.testEntity);
+    if (toggle) {
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.remove("tds-switch__track--on");
+    }
 
+    if (countryApi) {
+      countryApi.clear(false, { skipEntitySync: true, skipDetails: true });
+      countryApi.refreshOptions();
+    }
+
+    clearFormErrors();
     renderTestEntityPanel();
-
-    if (state.country && countryApi) {
-      var match = countriesForAccountType(state.accountType).find(function (c) {
-        return c.name === state.country;
-      });
-      if (match) countryApi.select(match, { fromTestEntity: true, skipDetails: true });
-    } else if (countryApi) {
-      countryApi.clear();
-    }
-
-    renderDetails();
-
-    if (session.values) {
-      Object.keys(session.values).forEach(function (key) {
-        var input = document.querySelector('#bv-fields [data-bv-field="' + key + '"]');
-        if (input) input.value = session.values[key];
-      });
-    }
-
+    renderDetails({ preserveValues: false });
     updateSubmitButton();
-    return session;
   }
 
   window.BankVerification = {
@@ -613,6 +795,7 @@
     },
     getFormValues: getFormValues,
     setTestEntity: setTestEntity,
+    resetFormToDefault: resetFormToDefault,
     TEST_ENTITIES: TEST_ENTITIES,
     entityFlag: entityFlag
   };
@@ -626,9 +809,8 @@
     initFormBack();
     initSubmit();
     window.BVShared.initAppNavToggle();
-    renderTestEntityPanel();
-    renderDetails();
-    var session = restoreFromSession();
+    resetFormToDefault();
+    var session = window.BVShared.loadSession();
     if (window.BVResult && (location.hash === "#result" || (session && session.view === "result"))) {
       window.BVResult.showResult(session);
     }
