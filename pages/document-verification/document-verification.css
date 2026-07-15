@@ -182,6 +182,19 @@ body.dv-is-resizing {
   }
 }
 
+/* TDS SideNav nav items — inlined in HTML for Cursor preview; keep in sync with side-nav.css */
+button.tds-side-nav__nav-item,
+.tds-side-nav__nav-item {
+  height: 40px;
+  min-height: 40px;
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-lg);
+}
+
+.tds-side-nav__nav-item-label {
+  justify-content: flex-start;
+}
+
 /* App nav toggle — also defined here so Cursor/Glass preview iframes always
    constrain the hamburger, even if ../shared/app-shell.css fails to load. */
 .app-nav-toggle {
@@ -314,6 +327,10 @@ body.dv-is-resizing {
 
   .app-shell .tds-side-nav .tds-side-nav__collapse-bar {
     display: none;
+  }
+
+  .app-shell--nav-open .tds-side-nav .tds-side-nav__collapse-label {
+    display: inline;
   }
 
   .app-shell .tds-side-nav .tds-side-nav__icon-rail {

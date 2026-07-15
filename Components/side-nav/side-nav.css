@@ -17,7 +17,9 @@
   flex-shrink: 0;
   height: 100%;
   min-height: 0;
-  background-color: transparent;
+  background-color: var(--surface-neutral-03);
+  --tds-side-nav-item-hover: var(--surface-neutral-02);
+  --tds-side-nav-sub-item-hover: var(--surface-neutral-03);
   box-sizing: border-box;
   overflow: visible;
   z-index: 10;
@@ -56,7 +58,7 @@ button.tds-side-nav__collapse-bar {
 
 .tds-side-nav__collapse-bar:hover,
 button.tds-side-nav__collapse-bar:hover {
-  background-color: var(--surface-neutral-03);
+  background-color: var(--tds-side-nav-item-hover);
 }
 
 .tds-side-nav__collapse-bar .fa-icon,
@@ -174,7 +176,7 @@ button.tds-side-nav__collapse-bar:hover {
 .tds-side-nav__nav-group {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-lg);
+  gap: var(--gap-sm);
   width: 100%;
 }
 
@@ -186,10 +188,11 @@ button.tds-side-nav__nav-item {
   align-items: center;
   gap: var(--gap-md);
   width: 100%;
-  height: 32px;
-  padding: var(--padding-xs) var(--padding-lg) var(--padding-xs) var(--padding-sm);
+  height: 40px;
+  min-height: 40px;
+  padding: var(--padding-xs) var(--padding-sm);
   border: none;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-lg);
   background: none;
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
@@ -207,9 +210,10 @@ button.tds-side-nav__nav-item {
   appearance: none;
 }
 
-.tds-side-nav__nav-item:hover,
-button.tds-side-nav__nav-item:hover {
-  background-color: var(--surface-neutral-03);
+.tds-side-nav__nav-item:hover:not(.tds-side-nav__nav-item--active):not([aria-current="page"]),
+button.tds-side-nav__nav-item:hover:not(.tds-side-nav__nav-item--active):not([aria-current="page"]),
+.tds-side-nav__nav-item--hover-demo {
+  background-color: var(--tds-side-nav-item-hover);
 }
 
 .tds-side-nav__nav-item:focus-visible {
@@ -221,6 +225,7 @@ button.tds-side-nav__nav-item:hover {
 .tds-side-nav__nav-item[aria-current="page"] {
   height: 40px;
   padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-lg);
   background-color: var(--surface-inverse);
   color: var(--text-inverse);
 }
@@ -235,6 +240,7 @@ button.tds-side-nav__nav-item[aria-current="page"]:hover {
 .tds-side-nav__nav-item-label {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-start;
   gap: var(--gap-sm);
   flex: 1 1 auto;
   min-width: 0;
@@ -251,9 +257,10 @@ button.tds-side-nav__nav-item[aria-current="page"]:hover {
 }
 
 .tds-side-nav__nav-item-icon .fa-icon,
-.tds-side-nav__nav-item-icon .icon {
-  width: 16px;
-  height: 16px;
+.tds-side-nav__nav-item-icon .icon,
+.tds-side-nav__nav-item-icon .tds-labs-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .tds-side-nav__nav-item--active .tds-side-nav__nav-item-icon,
@@ -331,9 +338,9 @@ button.tds-side-nav__icon-button {
 
 .tds-side-nav__icon-button .fa-icon,
 .tds-side-nav__icon-button .icon,
-.tds-side-nav__nav-item-icon .tds-labs-icon {
-  width: 16px;
-  height: 16px;
+.tds-side-nav__icon-button .tds-labs-icon {
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
 }
 
@@ -359,9 +366,9 @@ button.tds-side-nav__icon-button {
   appearance: none;
 }
 
-.tds-side-nav__icon-button:hover,
-button.tds-side-nav__icon-button:hover {
-  background-color: var(--surface-neutral-03);
+.tds-side-nav__icon-button:hover:not(.tds-side-nav__icon-button--active):not([aria-current="page"]),
+button.tds-side-nav__icon-button:hover:not(.tds-side-nav__icon-button--active):not([aria-current="page"]) {
+  background-color: var(--tds-side-nav-item-hover);
 }
 
 .tds-side-nav__icon-button--active,
@@ -375,11 +382,6 @@ button.tds-side-nav__icon-button:hover {
 button.tds-side-nav__icon-button--active:hover,
 button.tds-side-nav__icon-button[aria-current="page"]:hover {
   background-color: var(--surface-inverse);
-}
-
-.tds-side-nav--collapsed .tds-side-nav__icon-button:hover:not(.tds-side-nav__icon-button--active):not([aria-current="page"]),
-.tds-side-nav--collapsed button.tds-side-nav__icon-button:hover:not(.tds-side-nav__icon-button--active):not([aria-current="page"]) {
-  background-color: transparent;
 }
 
 /* Collapsed tooltip */
@@ -438,7 +440,9 @@ button.tds-side-nav__icon-button:focus-visible .tds-side-nav__tooltip {
   flex-direction: column;
   gap: var(--gap-lg);
   width: 100%;
-  padding-left: var(--padding-lg);
+  padding: var(--padding-md);
+  border-radius: var(--radius-xl);
+  background-color: var(--surface-neutral-02);
   box-sizing: border-box;
 }
 
@@ -508,16 +512,24 @@ a.tds-side-nav__sub-item {
   appearance: none;
 }
 
-.tds-side-nav__sub-item:hover,
-button.tds-side-nav__sub-item:hover,
-a.tds-side-nav__sub-item:hover,
+.tds-side-nav__sub-item:hover:not(.tds-side-nav__sub-item--selected):not([aria-current="page"]),
+button.tds-side-nav__sub-item:hover:not(.tds-side-nav__sub-item--selected):not([aria-current="page"]),
+a.tds-side-nav__sub-item:hover:not(.tds-side-nav__sub-item--selected):not([aria-current="page"]),
 .tds-side-nav__sub-item--hover-demo {
-  background-color: var(--surface-neutral-03);
+  border-radius: var(--radius-lg);
+  background-color: var(--tds-side-nav-sub-item-hover);
+}
+
+.tds-side-nav__sub-item:focus-visible,
+button.tds-side-nav__sub-item:focus-visible,
+a.tds-side-nav__sub-item:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
 }
 
 .tds-side-nav__sub-item--selected,
 .tds-side-nav__sub-item[aria-current="page"] {
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-lg);
   background-color: var(--surface-inverse);
   color: var(--text-inverse);
 }
@@ -594,7 +606,7 @@ button.tds-side-nav__profile {
 
 .tds-side-nav__profile:hover,
 button.tds-side-nav__profile:hover {
-  background-color: var(--surface-neutral-03);
+  background-color: var(--tds-side-nav-item-hover);
   box-shadow: var(--elevation-xs);
 }
 
@@ -608,7 +620,7 @@ button.tds-side-nav__profile--collapsed {
 
 .tds-side-nav__profile--collapsed:hover,
 button.tds-side-nav__profile--collapsed:hover {
-  background-color: var(--surface-neutral-03);
+  background-color: var(--tds-side-nav-item-hover);
   box-shadow: none;
 }
 
@@ -690,7 +702,6 @@ button.tds-side-nav__profile--collapsed:hover {
 .tds-side-nav-preview {
   width: 232px;
   flex-shrink: 0;
-  background-color: var(--surface-neutral-02);
 }
 
 .tds-side-nav-preview--collapsed {

@@ -18,6 +18,20 @@
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../shared/app-shell.css">
   <link rel="stylesheet" href="document-verification.css">
+  <style>
+    /* Nav item spec — inlined because Cursor preview often skips ../../ component CSS */
+    button.tds-side-nav__nav-item,
+    .tds-side-nav__nav-item {
+      height: 40px;
+      min-height: 40px;
+      padding: var(--padding-xs) var(--padding-sm);
+      border-radius: var(--radius-lg);
+    }
+
+    .tds-side-nav__nav-item-label {
+      justify-content: flex-start;
+    }
+  </style>
 </head>
 <body>
 
@@ -154,6 +168,11 @@
           </button>
         </div>
       </div>
+
+      <button type="button" class="tds-side-nav__collapse-bar" id="sidenav-collapse" aria-label="Collapse sidebar" aria-expanded="true">
+        <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 4 6 8l4 4M6 4 2 8l4 4"/></svg>
+        <span class="tds-side-nav__collapse-label text-label-sm-uppercase">Hide Sidebar</span>
+      </button>
 
       <!-- Footer: user profile -->
       <div class="tds-side-nav__footer">
@@ -552,29 +571,49 @@
       }
     });
 
-    /* --- Collapsed / expanded mode toggle (chevron circle button) --- */
-    toggle.addEventListener('click', function () {
-      var isExpanded = !sideNav.classList.contains('tds-side-nav--collapsed');
-      sideNav.classList.toggle('tds-side-nav--collapsed', isExpanded);
-      toggle.setAttribute('aria-expanded', String(!isExpanded));
-      toggle.setAttribute('aria-label', isExpanded ? 'Expand sidebar' : 'Collapse sidebar');
+    /* --- Collapsed / expanded mode --- */
+    var collapseBar = document.getElementById('sidenav-collapse');
+    var CHEVRONS_LEFT = '<path d="M10 4 6 8l4 4M6 4 2 8l4 4"/>';
+    var CHEVRONS_RIGHT = '<path d="M6 4l4 4-4 4M10 4l4 4-4 4"/>';
 
-      /* flip chevron: left = expanded, right = collapsed */
-      var chevronSvg = toggle.querySelector('svg');
-      if (chevronSvg) {
-        chevronSvg.innerHTML = isExpanded
-          ? '<path d="M6 4l4 4-4 4"/>'   /* right = collapsed */
-          : '<path d="M10 4l-4 4 4 4"/>'; /* left = expanded */
+    function setSideNavCollapsed(collapsed) {
+      sideNav.classList.toggle('tds-side-nav--collapsed', collapsed);
+
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', String(!collapsed));
+        toggle.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+        var toggleSvg = toggle.querySelector('svg');
+        if (toggleSvg) {
+          toggleSvg.innerHTML = collapsed
+            ? '<path d="M6 4l4 4-4 4"/>'
+            : '<path d="M10 4l-4 4 4 4"/>';
+        }
+      }
+
+      if (collapseBar) {
+        collapseBar.setAttribute('aria-expanded', String(!collapsed));
+        collapseBar.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+        var barSvg = collapseBar.querySelector('svg');
+        if (barSvg) barSvg.innerHTML = collapsed ? CHEVRONS_RIGHT : CHEVRONS_LEFT;
       }
 
       var iconRail = sideNav.querySelector('.tds-side-nav__icon-rail');
-      if (iconRail) iconRail.setAttribute('aria-hidden', String(!isExpanded));
+      if (iconRail) iconRail.setAttribute('aria-hidden', String(collapsed));
+    }
+
+    toggle.addEventListener('click', function () {
+      setSideNavCollapsed(!sideNav.classList.contains('tds-side-nav--collapsed'));
     });
+
+    if (collapseBar) {
+      collapseBar.addEventListener('click', function () {
+        setSideNavCollapsed(!sideNav.classList.contains('tds-side-nav--collapsed'));
+      });
+    }
 
     /* --- Sub-nav expand / collapse (click nav items with aria-expanded) --- */
     sideNav.addEventListener('click', function (e) {
-      /* skip if it was the brand/logo toggle */
-      if (e.target.closest('#sidenav-toggle')) return;
+      if (e.target.closest('#sidenav-toggle') || e.target.closest('#sidenav-collapse')) return;
 
       var btn = e.target.closest('.tds-side-nav__nav-item[aria-expanded]');
       if (!btn) return;
