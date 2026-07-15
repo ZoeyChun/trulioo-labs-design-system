@@ -330,9 +330,29 @@ button.tds-side-nav__icon-button {
 }
 
 .tds-side-nav__icon-button .fa-icon,
-.tds-side-nav__icon-button .icon {
+.tds-side-nav__icon-button .icon,
+.tds-side-nav__nav-item-icon .tds-labs-icon {
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
+}
+
+.tds-labs-icon--ondark {
+  display: none;
+}
+
+.tds-side-nav__icon-button--active .tds-labs-icon--onlight,
+.tds-side-nav__icon-button[aria-current="page"] .tds-labs-icon--onlight,
+.tds-side-nav__nav-item--active .tds-labs-icon--onlight,
+.tds-side-nav__nav-item[aria-current="page"] .tds-labs-icon--onlight {
+  display: none;
+}
+
+.tds-side-nav__icon-button--active .tds-labs-icon--ondark,
+.tds-side-nav__icon-button[aria-current="page"] .tds-labs-icon--ondark,
+.tds-side-nav__nav-item--active .tds-labs-icon--ondark,
+.tds-side-nav__nav-item[aria-current="page"] .tds-labs-icon--ondark {
+  display: block;
 }
 
 button.tds-side-nav__icon-button {
