@@ -137,25 +137,6 @@
   overflow: hidden;
 }
 
-.bv-result-te-select .tds-select__text-wrapper {
-  flex-direction: row;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-}
-
-.bv-result-te-select .tds-select__value {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bv-result-te-select .tds-select__trailing-group {
-  flex-shrink: 0;
-}
-
 .bv-result-te-select .tds-select__country-flag {
   flex-shrink: 0;
 }

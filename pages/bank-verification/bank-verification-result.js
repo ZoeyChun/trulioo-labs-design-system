@@ -200,11 +200,7 @@
 
     var textWrap = document.createElement("span");
     textWrap.className = "tds-select__text-wrapper";
-    var value = document.createElement("span");
-    value.className = "tds-select__value" + (current ? "" : " tds-select__placeholder");
-    value.textContent = current ? current.name : "Select test entity";
-    textWrap.appendChild(value);
-    if (current) shared.bindEllipsisTooltip(value, current.name);
+    shared.fillTestEntityTriggerContent(trigger, textWrap, current);
 
     var trailing = document.createElement("span");
     trailing.className = "tds-select__trailing-group";
@@ -230,34 +226,11 @@
     panel.className = "tds-dropdown-panel";
 
     shared.sortedEntityEntries(entities, currentIndex).forEach(function (entry) {
-      var ent = entry.ent;
-      var i = entry.index;
-      var isSelected = currentIndex === i;
-      var opt = document.createElement("button");
-      opt.type = "button";
-      opt.className = "bv-option bv-option--entity" + (isSelected ? " bv-option--selected" : "");
-      opt.setAttribute("role", "option");
-      opt.setAttribute("aria-selected", String(isSelected));
-      var optFlag = document.createElement("span");
-      optFlag.className = "bv-option__flag";
-      optFlag.textContent = shared.entityFlag(ent.country);
-      var name = document.createElement("span");
-      name.className = "bv-option__label";
-      name.textContent = ent.name;
-      shared.bindEllipsisTooltip(name, ent.name);
-      var otag = document.createElement("span");
-      otag.className = toneClass(ent.tone);
-      otag.textContent = ent.match;
-      opt.appendChild(optFlag);
-      opt.appendChild(name);
-      opt.appendChild(otag);
-      opt.addEventListener("mousedown", function (e) {
-        e.preventDefault();
+      panel.appendChild(shared.buildTestEntityOption(entry.ent, entry.index, currentIndex === entry.index, function (i) {
         closeResultTestEntitySelect();
         session = shared.applyTestEntityToSession(session, i);
         renderPage();
-      });
-      panel.appendChild(opt);
+      }));
     });
     menu.appendChild(panel);
     root.appendChild(trigger);

@@ -169,7 +169,12 @@
       <div class="bv-view bv-main" id="bv-form-view">
 
       <header class="bv-header">
-        <h1 class="bv-header__title">Bank Verification</h1>
+        <div class="bv-header__title-group">
+          <button type="button" class="bv-result-back" id="bv-form-back-btn" aria-label="Back to home">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+          </button>
+          <h1 class="bv-header__title">Bank Verification</h1>
+        </div>
         <button class="bv-truai-btn" type="button">
           <span class="bv-truai-btn__icon">
             <!-- sparkles icon placeholder -->
@@ -285,7 +290,7 @@
           <!-- Footer actions -->
           <div class="bv-card__footer">
             <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="bv-back-btn">Back</button>
-            <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="bv-submit-btn">Submit</button>
+            <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="bv-submit-btn" disabled aria-disabled="true">Submit</button>
           </div>
 
         </section>

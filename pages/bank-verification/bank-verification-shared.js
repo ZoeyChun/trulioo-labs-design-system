@@ -32,30 +32,42 @@
   var TEST_ENTITIES = {
     person: [
       { name: "Creator Payout", country: "United States", match: "Strong Match", tone: "positive",
+        description: "Verify a creator\u2019s payout account.",
         values: { "Full Name": "Jordan Rivera", "Bank Account Number": "US021000021987", "Clearing System ID": "USABA" } },
       { name: "Marketplace Withdrawal", country: "Brazil", match: "Partial Match", tone: "intermediate",
+        description: "Verify a marketplace withdrawal account.",
         values: { "Full Name": "Maria Silva", "National ID Number": "529.982.247-25", "IBAN": "BR15 0000 0000 0001 0094 5432 1001 2345 6789 C1" } },
       { name: "Freelancer Payment", country: "Mexico", match: "Strong Match", tone: "positive",
+        description: "Verify a freelancer\u2019s payout account.",
         values: { "Full Name": "Ana Gutierrez", "Bank Account Number": "012180001002345678901", "Clearing System ID": "012180", "BIC": "TESTMXMM" } },
       { name: "Payroll Disbursement", country: "France", match: "Strong Match", tone: "positive",
+        description: "Verify a payroll disbursement account.",
         values: { "Full Name": "Pierre Dupont", "IBAN": "FR14 2004 1010 0505 0001 3M02 606" } },
       { name: "Gig Worker Payout", country: "South Korea", match: "Partial Match", tone: "intermediate",
+        description: "Verify a gig worker\u2019s payout account.",
         values: { "Full Name": "Kim Min-jun", "Bank Account Number": "110-123-456789", "Clearing System ID": "KRABA", "BIC": "CZNBKRSE" } },
       { name: "Failed Verification", country: "Spain", match: "No Match", tone: "negative",
+        description: "Unable to verify the identity or bank account.",
         values: { "First Name": "Ana", "First Surname": "García", "Second Surname": "López", "IBAN": "ES91 2100 0418 4502 0005 1332" } }
     ],
     business: [
       { name: "Supplier Payment", country: "Germany", match: "Strong Match", tone: "positive",
+        description: "Verify a supplier\u2019s payout account.",
         values: { "Business Name": "Müller GmbH", "IBAN": "DE89 3704 0044 0532 0130 00", "Business Registration Number": "HRB 123456", "Tax ID Number": "DE123456789" } },
       { name: "Vendor Settlement", country: "Belgium", match: "Partial Match", tone: "intermediate",
+        description: "Verify a vendor before settlement.",
         values: { "Business Name": "Bruxelles SA", "IBAN": "BE68 5390 0754 7034", "Business Registration Number": "BE 0123.456.789", "Tax ID Number": "BE0123456789" } },
       { name: "Enterprise Payout", country: "United States", match: "Strong Match", tone: "positive",
+        description: "Verify a business payout account.",
         values: { "Business Name": "Acme Corp Ltd", "Bank Account Number": "778812340091", "BIC": "BOFAUS3N", "Clearing System ID": "USABA" } },
       { name: "Marketplace Withdrawal", country: "India", match: "Partial Match", tone: "intermediate",
+        description: "Verify a marketplace withdrawal account.",
         values: { "Business Name": "Globex Trading", "Bank Account Number": "112233445566", "BIC": "HDFCINBB", "Clearing System ID": "INABA" } },
       { name: "Payroll Disbursement", country: "Brazil", match: "Strong Match", tone: "positive",
+        description: "Verify a payroll disbursement account.",
         values: { "Business Name": "TechBrasil Ltda", "IBAN": "BR15 0000 0000 0001 0094 5432 1001 2345 6789 C1", "Business Registration Number": "12.345.678/0001-90", "Tax ID Number": "12.345.678/0001-90", "Bank Account Number": "1234567890" } },
       { name: "Failed Verification", country: "South Korea", match: "No Match", tone: "negative",
+        description: "Unable to verify the business or bank account.",
         values: { "Business Name": "Seoul Ventures", "Bank Account Number": "220-456-789012", "BIC": "CZNBKRSE" } }
     ]
   };
@@ -341,6 +353,62 @@
     return entries;
   }
 
+  function buildTestEntityOption(ent, index, isSelected, onSelect) {
+    var opt = document.createElement("button");
+    opt.type = "button";
+    opt.className = "bv-option bv-option--entity" + (isSelected ? " bv-option--selected" : "");
+    opt.setAttribute("role", "option");
+    opt.setAttribute("aria-selected", String(isSelected));
+
+    var optFlag = document.createElement("span");
+    optFlag.className = "bv-option__flag";
+    optFlag.setAttribute("aria-hidden", "true");
+    optFlag.textContent = entityFlag(ent.country);
+
+    var textWrap = document.createElement("span");
+    textWrap.className = "bv-option__text";
+
+    var name = document.createElement("span");
+    name.className = "bv-option__label";
+    name.textContent = ent.name;
+    bindEllipsisTooltip(name, ent.name);
+
+    var desc = document.createElement("span");
+    desc.className = "tds-select__subtext";
+    desc.textContent = ent.description || "";
+
+    textWrap.appendChild(name);
+    textWrap.appendChild(desc);
+
+    var otag = document.createElement("span");
+    otag.className = "tds-tag tds-tag--" + ent.tone + " tds-tag--sm";
+    otag.textContent = ent.match;
+
+    opt.appendChild(optFlag);
+    opt.appendChild(textWrap);
+    opt.appendChild(otag);
+
+    opt.addEventListener("mousedown", function (e) {
+      e.preventDefault();
+      onSelect(index);
+    });
+
+    return opt;
+  }
+
+  function fillTestEntityTriggerContent(trigger, textWrap, entity) {
+    textWrap.textContent = "";
+
+    var value = document.createElement("span");
+    value.className = "tds-select__value" + (entity ? "" : " tds-select__placeholder");
+    value.textContent = entity ? entity.name : "Select test entity";
+    textWrap.appendChild(value);
+
+    if (entity) {
+      bindEllipsisTooltip(value, entity.name);
+    }
+  }
+
   var tooltipEl = null;
 
   function ensureTooltip() {
@@ -440,6 +508,8 @@
     buildResultConfig: buildResultConfig,
     applyTestEntityToSession: applyTestEntityToSession,
     sortedEntityEntries: sortedEntityEntries,
+    buildTestEntityOption: buildTestEntityOption,
+    fillTestEntityTriggerContent: fillTestEntityTriggerContent,
     bindEllipsisTooltip: bindEllipsisTooltip,
     bindTooltip: bindTooltip,
     initAppNavToggle: initAppNavToggle,

@@ -74,6 +74,50 @@
     return window.BVShared.fieldsForCountry(state.accountType, state.country);
   }
 
+  var PERSON_NAME_FIELDS = ["Full Name", "First Name"];
+  var BUSINESS_NAME_FIELD = "Business Name";
+  var ACCOUNT_FIELD_LABELS = ["Bank Account Number", "Account Number", "IBAN"];
+
+  function requiredFieldLabels() {
+    var fields = fieldsForCurrentSelection();
+    var required = [];
+
+    if (state.accountType === "person") {
+      for (var i = 0; i < PERSON_NAME_FIELDS.length; i++) {
+        if (fields.indexOf(PERSON_NAME_FIELDS[i]) !== -1) {
+          required.push(PERSON_NAME_FIELDS[i]);
+          break;
+        }
+      }
+    } else if (fields.indexOf(BUSINESS_NAME_FIELD) !== -1) {
+      required.push(BUSINESS_NAME_FIELD);
+    }
+
+    for (var j = 0; j < ACCOUNT_FIELD_LABELS.length; j++) {
+      if (fields.indexOf(ACCOUNT_FIELD_LABELS[j]) !== -1) {
+        required.push(ACCOUNT_FIELD_LABELS[j]);
+        break;
+      }
+    }
+
+    return required;
+  }
+
+  function isFormValid() {
+    return requiredFieldLabels().every(function (label) {
+      var input = document.querySelector('#bv-fields [data-bv-field="' + label + '"]');
+      return input && input.value.trim().length > 0;
+    });
+  }
+
+  function updateSubmitButton() {
+    var btn = document.getElementById("bv-submit-btn");
+    if (!btn) return;
+    var valid = isFormValid();
+    btn.disabled = !valid;
+    btn.setAttribute("aria-disabled", String(!valid));
+  }
+
   function updateFormPrimaryField() {
     var countryWrap = document.getElementById("bv-country-wrap");
     var teWrap = document.getElementById("bv-test-entity-wrap");
@@ -270,12 +314,20 @@
     if (opts.prefilled) wrap.classList.add("tds-text-input--success");
 
     var lbl = el("label", "tds-field-label", { for: id });
-    lbl.textContent = label;
+    lbl.appendChild(document.createTextNode(label));
+    if (opts.required) {
+      var req = el("span", "tds-field-label__required", { "aria-hidden": "true" });
+      req.textContent = "*";
+      lbl.appendChild(req);
+    }
 
     var field = el("div", "tds-text-input__field tds-text-input__field--lg");
     var input = el("input", "tds-text-input__native", { id: id, type: "text" });
 
     input.setAttribute("data-bv-field", label);
+    if (opts.required) {
+      input.setAttribute("aria-required", "true");
+    }
 
     if (opts.value) {
       input.value = opts.value;
@@ -296,6 +348,8 @@
       val.appendChild(txt);
       wrap.appendChild(val);
     }
+
+    input.addEventListener("input", updateSubmitButton);
     return wrap;
   }
 
@@ -322,9 +376,7 @@
     }
 
     var textWrap = el("span", "tds-select__text-wrapper");
-    var value = el("span", "tds-select__value" + (current ? "" : " tds-select__placeholder"));
-    value.textContent = current ? current.name : "Select test entity";
-    if (current) window.BVShared.bindEllipsisTooltip(value, current.name);
+    window.BVShared.fillTestEntityTriggerContent(trigger, textWrap, current);
 
     var trailing = el("span", "tds-select__trailing-group");
     if (current) {
@@ -336,7 +388,6 @@
     caret.innerHTML = CARET_SVG;
     trailing.appendChild(caret);
 
-    textWrap.appendChild(value);
     trigger.appendChild(flagEl);
     trigger.appendChild(textWrap);
     trigger.appendChild(trailing);
@@ -345,28 +396,10 @@
     var panel = el("div", "tds-dropdown-panel");
     var selectedIndex = state.selectedTestEntity;
     window.BVShared.sortedEntityEntries(entities, selectedIndex).forEach(function (entry) {
-      var ent = entry.ent;
-      var i = entry.index;
-      var isSelected = selectedIndex === i;
-      var opt = el("button", "bv-option bv-option--entity" + (isSelected ? " bv-option--selected" : ""), {
-        type: "button", role: "option", "aria-selected": String(isSelected)
-      });
-      var optFlag = el("span", "bv-option__flag", { "aria-hidden": "true" });
-      optFlag.textContent = entityFlag(ent.country);
-      var name = el("span", "bv-option__label");
-      name.textContent = ent.name;
-      window.BVShared.bindEllipsisTooltip(name, ent.name);
-      var otag = el("span", "tds-tag tds-tag--" + ent.tone + " tds-tag--sm");
-      otag.textContent = ent.match;
-      opt.appendChild(optFlag);
-      opt.appendChild(name);
-      opt.appendChild(otag);
-      opt.addEventListener("mousedown", function (e) {
-        e.preventDefault();
+      panel.appendChild(window.BVShared.buildTestEntityOption(entry.ent, entry.index, selectedIndex === entry.index, function (i) {
         state.selectedTestEntity = i;
         applyTestEntity();
-      });
-      panel.appendChild(opt);
+      }));
     });
     menu.appendChild(panel);
 
@@ -410,6 +443,10 @@
     }
 
     var fields = fieldsForCurrentSelection();
+    var requiredSet = {};
+    requiredFieldLabels().forEach(function (fieldLabel) {
+      requiredSet[fieldLabel] = true;
+    });
 
     for (var i = 0; i < fields.length; i += 2) {
       var row = el("div", "bv-form-row");
@@ -419,7 +456,8 @@
           var value = prefill[label];
           row.appendChild(makeTextInput(label, {
             value: value,
-            prefilled: !!value
+            prefilled: !!value,
+            required: !!requiredSet[label]
           }));
         } else {
           row.appendChild(el("div", "bv-form-row__spacer", { "aria-hidden": "true" }));
@@ -427,6 +465,8 @@
       }
       container.appendChild(row);
     }
+
+    updateSubmitButton();
   }
 
   /* =========================================================
@@ -492,8 +532,18 @@
     applyTestEntity();
   }
 
+  function initFormBack() {
+    var backBtn = document.getElementById("bv-form-back-btn");
+    if (!backBtn) return;
+    backBtn.addEventListener("click", function () {
+      /* Future: navigate to home / labs landing */
+    });
+  }
+
   function initSubmit() {
-    document.getElementById("bv-submit-btn").addEventListener("click", function () {
+    var btn = document.getElementById("bv-submit-btn");
+    btn.addEventListener("click", function () {
+      if (btn.disabled) return;
       window.BVShared.saveSession({
         view: "result",
         state: {
@@ -548,6 +598,7 @@
       });
     }
 
+    updateSubmitButton();
     return session;
   }
 
@@ -572,6 +623,7 @@
     initCountry();
     initAccountType();
     initToggle();
+    initFormBack();
     initSubmit();
     window.BVShared.initAppNavToggle();
     renderTestEntityPanel();
