@@ -1,0 +1,48 @@
+/* ============================================================
+   DismissIssueBadge
+   An inline dismiss/close icon for tags and badges.
+   Sizes:  small (12×16) | medium (15×18) | large (16×24)
+   States: rest | hover
+   Color:  white | black
+   ============================================================ */
+
+.tds-dismiss-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background-color 0.15s ease;
+}
+
+/* --- Sizes --- */
+
+.tds-dismiss-badge--sm {
+  width: 12px;
+  height: 16px;
+}
+
+.tds-dismiss-badge--md {
+  width: 15px;
+  height: 18px;
+}
+
+.tds-dismiss-badge--lg {
+  width: 16px;
+  height: 24px;
+}
+
+/* --- Color variants --- */
+
+.tds-dismiss-badge--white { color: var(--icon-inverse); }
+.tds-dismiss-badge--black { color: var(--icon-default); }
+
+/* --- Hover --- */
+
+.tds-dismiss-badge:hover {
+  background-color: var(--surface-hover);
+  border-radius: var(--radius-full);
+}

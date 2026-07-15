@@ -1,0 +1,13 @@
+/* ============================================================
+   Flag icons (flag-icons / lipis)
+   https://flagicons.lipis.dev/
+   Usage: <span class="fi fi-ca"></span>
+   ============================================================ */
+
+.tds-select__country-flag .fi,
+.tds-action-list-item__leading-visual .fi {
+  width: 18px;
+  line-height: 12px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}

@@ -4,8 +4,6 @@
    Last updated: 2026-07-06
    ============================================================ */
 
-@import url("./fonts.css");
-
 :root {
 
   /* --------------------------------------------------------
@@ -262,9 +260,8 @@
      Usage: apply the composite class or pick individual props.
      -------------------------------------------------------- */
 
-  --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-family: "Inter", sans-serif;
   --font-family-display: "Tobias", Georgia, "Times New Roman", serif;
-  --font-family-tab: "Manrope", var(--font-family);
   --font-family-mono: "SF Mono", "JetBrains Mono", "DM Mono", "Fira Code", monospace;
 
   /* Tab-specific text colors (Figma Tab Item) */
@@ -298,15 +295,17 @@
   --line-height-4xl: 2.25rem;  /* 36px */
   --line-height-5xl: 2.5rem;   /* 40px */
 
-  /* Font weight
-     Figma "SF Pro Medium" = 510 (not 500). Inter variable font supports 510; use --font-weight-figma for label/* styles. */
+  /* Font weight */
   --font-weight-light: 300;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
-  --font-weight-figma: 510;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --font-variation-figma-medium: "wght" 510;
+
+  /* Figma component weights — Inter (replaces SF Pro 510/590) */
+  --font-weight-figma: 500;
+  --font-variation-figma-medium: "wght" 500;
+  --font-variation-figma-semibold: "wght" 600;
 }
 
 
@@ -321,16 +320,16 @@
 .text-body-md   { font-size: var(--font-size-md);  line-height: var(--line-height-md);  font-weight: var(--font-weight-regular); }
 .text-body-lg   { font-size: var(--font-size-lg);  line-height: var(--line-height-lg);  font-weight: var(--font-weight-regular); }
 
-/* Label — Figma label/* = SF Pro Medium (510) */
-.text-label-sm  { font-size: var(--font-size-xs);  line-height: var(--line-height-xs);  font-weight: var(--font-weight-figma);  font-variation-settings: var(--font-variation-figma-medium); }
-.text-label-md  { font-size: var(--font-size-sm);  line-height: var(--line-height-sm);  font-weight: var(--font-weight-figma);  font-variation-settings: var(--font-variation-figma-medium); }
-.text-label-lg  { font-size: var(--font-size-md);  line-height: var(--line-height-lg);  font-weight: var(--font-weight-figma);  font-variation-settings: var(--font-variation-figma-medium); }
+/* Label — Inter Medium */
+.text-label-sm  { font-size: var(--font-size-xs);  line-height: var(--line-height-xs);  font-weight: var(--font-weight-medium); }
+.text-label-md  { font-size: var(--font-size-sm);  line-height: var(--line-height-sm);  font-weight: var(--font-weight-medium); }
+.text-label-lg  { font-size: var(--font-size-md);  line-height: var(--line-height-lg);  font-weight: var(--font-weight-medium); }
 .text-label-sm-uppercase {
-  font-size: var(--font-size-xs);  line-height: var(--line-height-xs);  font-weight: var(--font-weight-figma);  font-variation-settings: var(--font-variation-figma-medium);
+  font-size: var(--font-size-xs);  line-height: var(--line-height-xs);  font-weight: var(--font-weight-medium);
   text-transform: uppercase;  letter-spacing: 0.5px;
 }
 .text-label-md-uppercase {
-  font-size: var(--font-size-sm);  line-height: var(--line-height-sm);  font-weight: var(--font-weight-figma);  font-variation-settings: var(--font-variation-figma-medium);
+  font-size: var(--font-size-sm);  line-height: var(--line-height-sm);  font-weight: var(--font-weight-medium);
   text-transform: uppercase;  letter-spacing: 0.5px;
 }
 
@@ -352,4 +351,4 @@
 .text-display-3xl { font-family: var(--font-family-display); font-size: var(--font-size-display-3xl); line-height: 5.375rem; font-weight: var(--font-weight-medium); }
 
 /* Numbers */
-.text-numbers-xl  { font-size: 4.75rem; line-height: normal; font-weight: var(--font-weight-regular); }
+.text-numbers-xl  { font-size: 4rem; line-height: 3.8125rem; font-weight: var(--font-weight-regular); }  /* 64px / 61px */

@@ -1,0 +1,59 @@
+/* ============================================================
+   RadioGroup
+   Figma: RadioGroup (100:4222)
+   Wraps Radio atoms with labels and optional captions.
+   ============================================================ */
+
+.tds-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.tds-radio-group__item {
+  position: relative;
+  display: block;
+  padding-left: var(--padding-xl);
+  cursor: pointer;
+}
+
+.tds-radio-group__item .tds-radio {
+  position: absolute;
+  left: 0;
+  top: 2px;
+}
+
+.tds-radio-group__item--disabled {
+  cursor: not-allowed;
+}
+
+.tds-radio-group__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  align-items: flex-start;
+}
+
+.tds-radio-group__label {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.tds-radio-group__item--disabled .tds-radio-group__label {
+  color: var(--text-description);
+}
+
+.tds-radio-group__caption {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+}

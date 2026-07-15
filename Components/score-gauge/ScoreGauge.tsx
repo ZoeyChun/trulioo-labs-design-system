@@ -40,8 +40,7 @@ const PALETTE: Record<RiskLevel, { fill: string; border: string; tagText: string
 };
 
 // DS --font-family
-const FONT_STACK =
-  "-apple-system, BlinkMacSystemFont, 'SF Pro', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+const FONT_STACK = "'Inter', sans-serif";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const toRad = (d: number) => (d * Math.PI) / 180;
@@ -133,7 +132,7 @@ export function ScoreGauge({ score, risk, label, animationKey = 0 }: ScoreGaugeP
           />
         </>}
 
-        {/* Score number — Numbers/xl: SF Pro Regular 64 */}
+        {/* Score number — Numbers/xl: Inter Regular 64 */}
         <text
           x={CX} y={101}
           textAnchor="middle"
@@ -171,7 +170,7 @@ const cardStyle: React.CSSProperties = {
   boxShadow: '0 4px 20px rgba(36,48,47,0.10)',
 };
 
-/** Tag pill — DS Tag component, medium size (SF Pro Medium 510, 12px / 16px). */
+/** Tag pill — DS Tag component, medium size (Inter Medium 500, 12px / 16px). */
 function tagStyle(pal: { fill: string; border: string; tagText: string }): React.CSSProperties {
   return {
     display: 'inline-flex',

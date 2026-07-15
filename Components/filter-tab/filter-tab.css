@@ -1,0 +1,59 @@
+/* ============================================================
+   FilterTabs / FilterTabsItem
+   Figma: FilterTabs (844:6968) · FilterTabsItem (346:10174)
+   Selected: interactive fill + inverse label/sm medium
+   Unselected: transparent + description body/xs regular
+   Counter: CounterLabel secondary small
+   ============================================================ */
+
+.tds-filter-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--spacing-8);
+}
+
+.tds-filter-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-8) var(--padding-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background-color: transparent;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.tds-filter-tab:hover {
+  background-color: var(--surface-hover);
+}
+
+.tds-filter-tab:focus-visible {
+  border-color: var(--border-focus);
+  outline: none;
+}
+
+.tds-filter-tab[aria-selected="true"],
+.tds-filter-tab--selected {
+  background-color: var(--interactive-default);
+  color: var(--text-inverse);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+}
+
+.tds-filter-tab[aria-selected="true"]:hover,
+.tds-filter-tab--selected:hover {
+  background-color: var(--interactive-hover);
+}
+
+.tds-filter-tab[aria-selected="true"]:focus-visible,
+.tds-filter-tab--selected:focus-visible {
+  border-color: var(--border-focus);
+}

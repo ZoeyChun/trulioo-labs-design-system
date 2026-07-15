@@ -1,0 +1,128 @@
+/* ============================================================
+   DataField
+   Figma: DataField (856:13029)
+   Direction: vertical | horizontal
+   Options: description, leadingIcon, trailingIcon, flag, tag, caret
+   ============================================================ */
+
+.tds-data-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  width: 100%;
+  font-family: var(--font-family);
+}
+
+.tds-data-field--horizontal {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-8);
+}
+
+/* --- Label --- */
+
+.tds-data-field__label-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  flex-shrink: 0;
+}
+
+.tds-data-field__label {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+  white-space: nowrap;
+}
+
+.tds-data-field__caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.tds-data-field__caret svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* --- Value --- */
+
+.tds-data-field__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tds-data-field--horizontal .tds-data-field__content {
+  flex: 1;
+  align-items: flex-end;
+}
+
+.tds-data-field__value-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.tds-data-field__value {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.tds-data-field--horizontal .tds-data-field__value {
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+}
+
+/* --- Description --- */
+
+.tds-data-field__description {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+}
+
+/* --- Icons & flag --- */
+
+.tds-data-field__leading-icon,
+.tds-data-field__trailing-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.tds-data-field__leading-icon svg,
+.tds-data-field__trailing-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tds-data-field__flag {
+  display: inline-flex;
+  flex-shrink: 0;
+}

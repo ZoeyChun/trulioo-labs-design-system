@@ -5,13 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ScoreGauge — Medium Risk</title>
   <style>
+    @font-face {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+      src: url("../../tokens/fonts/inter/inter-latin.woff2") format("woff2");
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       min-height: 100vh;
       background: #1A2322;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 32px; padding: 40px;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: "Inter", sans-serif;
     }
     .card {
       background: #fff; border-radius: 16px; padding: 18px 18px 20px;
@@ -91,7 +98,7 @@ function buildGauge({ score, risk, label }) {
 
   const scoreTxt = el('text', {
     x: CX, y: 101, 'text-anchor': 'middle', 'dominant-baseline': 'middle',
-    style: `font-size:64px;font-weight:400;fill:${NUMBER_COLOR};font-family:-apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',Roboto,Helvetica,Arial,sans-serif;letter-spacing:0`,
+    style: `font-size:64px;font-weight:400;fill:${NUMBER_COLOR};font-family:"Inter",sans-serif;letter-spacing:0`,
   }, svg);
   scoreTxt.textContent = '0';
 
@@ -106,7 +113,7 @@ function buildGauge({ score, risk, label }) {
     background:${pal.fill}; border:1px solid ${pal.border}; color:${pal.tagText};
     border-radius:9999px; padding:4px 8px; font-size:12px; font-weight:510;
     font-variation-settings:'wght' 510;
-    font-family:-apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    font-family:"Inter",sans-serif;
     white-space:nowrap; line-height:16px;
   `;
   badgeWrap.appendChild(badge);

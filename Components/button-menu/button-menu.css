@@ -1,0 +1,19 @@
+/* ============================================================
+   ButtonMenu
+   Figma: ButtonMenu (832:13390)
+   Composes: Button + DropdownPanel + ActionList.Item
+   Variants: primary | secondary | danger | invisible
+   Sizes: small | medium | large
+   ============================================================ */
+
+.tds-button-menu {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+  position: relative;
+}
+
+.tds-button-menu .tds-dropdown-panel {
+  min-width: 156px;
+}

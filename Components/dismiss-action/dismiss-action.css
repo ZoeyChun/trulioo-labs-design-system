@@ -1,0 +1,56 @@
+/* ============================================================
+   DismissAction (Icon button — close / dismiss)
+   Sizes:  small | medium | large
+   States: rest | hover | pressed | focus | disabled | selected
+   ============================================================ */
+
+.tds-dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  background-color: transparent;
+  color: var(--icon-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* --- Sizes --- */
+
+.tds-dismiss--sm { width: 24px; height: 24px; }
+
+.tds-dismiss--md,
+.tds-dismiss:not([class*="tds-dismiss--sm"]):not([class*="tds-dismiss--lg"]) {
+  width: 28px;
+  height: 28px;
+}
+
+.tds-dismiss--lg { width: 32px; height: 32px; }
+
+/* --- States --- */
+
+.tds-dismiss:hover {
+  background-color: var(--surface-hover);
+  color: var(--icon-default);
+}
+
+.tds-dismiss:active {
+  background-color: var(--surface-neutral-03);
+}
+
+.tds-dismiss:focus-visible {
+  border-color: var(--border-focus);
+  outline: none;
+}
+
+.tds-dismiss:disabled,
+.tds-dismiss[aria-disabled="true"] {
+  color: var(--icon-disabled);
+  cursor: not-allowed;
+}
+
+.tds-dismiss--selected {
+  background-color: var(--surface-selected);
+  color: var(--interactive-default);
+}

@@ -1,0 +1,17 @@
+/* ============================================================
+   FilterButton
+   Figma: FilterButton (836:13511)
+   Composes: Button (bars-filter leading icon) + DropdownPanel
+   ============================================================ */
+
+.tds-filter-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+  position: relative;
+}
+
+.tds-filter-button .tds-dropdown-panel {
+  width: 172px;
+}

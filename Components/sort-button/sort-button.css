@@ -1,0 +1,17 @@
+/* ============================================================
+   SortButton
+   Figma: SortButton (836:12519)
+   Composes: Button (arrow-down-arrow-up leading icon) + DropdownPanel
+   ============================================================ */
+
+.tds-sort-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+  position: relative;
+}
+
+.tds-sort-button .tds-dropdown-panel {
+  width: 172px;
+}

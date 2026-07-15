@@ -1,0 +1,367 @@
+/* ============================================================
+   Accordion
+   Figma: Accordion (810:5659)
+   Sizes: small (12px pad) | medium (16px) | large (20px)
+   States: enabled | hover | focused | disabled | skeleton
+   Slots: leadingIcon, tags, action, trailingIcon, counter, chevron
+   ============================================================ */
+
+.tds-accordion {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background-color: var(--surface-neutral-01);
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.tds-accordion:focus-within,
+.tds-accordion--focused {
+  border-width: 2px;
+  border-color: var(--border-focus);
+}
+
+/* --- Header trigger --- */
+
+.tds-accordion__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  width: 100%;
+  margin: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease;
+}
+
+.tds-accordion__header:hover,
+.tds-accordion--hover-demo .tds-accordion__header {
+  background-color: var(--surface-hover);
+}
+
+.tds-accordion--disabled .tds-accordion__header,
+.tds-accordion__header:disabled {
+  cursor: not-allowed;
+}
+
+.tds-accordion--disabled .tds-accordion__header:hover,
+.tds-accordion--disabled.tds-accordion--hover-demo .tds-accordion__header {
+  background-color: transparent;
+}
+
+.tds-accordion--skeleton .tds-accordion__header {
+  cursor: default;
+  pointer-events: none;
+}
+
+.tds-accordion--skeleton .tds-accordion__header:hover {
+  background-color: transparent;
+}
+
+/* --- Leading / trailing groups --- */
+
+.tds-accordion__leading,
+.tds-accordion__trailing {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.tds-accordion__leading {
+  gap: var(--gap-md);
+  min-width: 0;
+}
+
+.tds-accordion__trailing {
+  gap: var(--gap-md);
+  margin-left: auto;
+}
+
+/* --- Tags (trailing slot) --- */
+
+.tds-accordion__tags {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  flex-shrink: 0;
+}
+
+/* --- Title --- */
+
+.tds-accordion__title {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.tds-accordion--disabled .tds-accordion__title {
+  color: var(--text-disabled);
+}
+
+/* --- Icons --- */
+
+.tds-accordion__icon,
+.tds-accordion__action-icon,
+.tds-accordion__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-muted);
+}
+
+.tds-accordion__icon svg,
+.tds-accordion__action-icon svg,
+.tds-accordion__chevron svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tds-accordion--disabled .tds-accordion__icon,
+.tds-accordion--disabled .tds-accordion__action-icon,
+.tds-accordion--disabled .tds-accordion__chevron {
+  color: var(--icon-disabled);
+}
+
+.tds-accordion__chevron svg {
+  transition: transform 0.2s ease;
+}
+
+.tds-accordion--expanded .tds-accordion__chevron svg {
+  transform: rotate(180deg);
+}
+
+/* --- Tag slot reuses .tds-tag --- */
+
+.tds-accordion--disabled .tds-tag {
+  color: var(--text-disabled);
+}
+
+.tds-accordion--disabled .tds-counter {
+  opacity: 0.5;
+}
+
+/* --- Header action (external link) --- */
+
+.tds-accordion__action {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-link);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.tds-accordion__action:hover {
+  color: var(--interactive-hover);
+}
+
+.tds-accordion--disabled .tds-accordion__action {
+  color: var(--text-disabled);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* --- Counter slot reuses .tds-counter --- */
+
+.tds-accordion__counter {
+  flex-shrink: 0;
+}
+
+/* --- Content panel --- */
+
+.tds-accordion__content {
+  display: none;
+  border-top: 1px solid var(--border-subtle);
+  box-sizing: border-box;
+}
+
+.tds-accordion--expanded .tds-accordion__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.tds-accordion__body {
+  margin: 0;
+  color: var(--text-description);
+}
+
+.tds-accordion--disabled .tds-accordion__body {
+  color: var(--text-disabled);
+}
+
+/* --- Sizes: header padding + typography --- */
+
+.tds-accordion--sm .tds-accordion__header {
+  padding: var(--padding-md);
+}
+
+.tds-accordion--sm .tds-accordion__title {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.tds-accordion--sm .tds-accordion__action {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.tds-accordion--sm .tds-accordion__content {
+  padding: var(--padding-md);
+}
+
+.tds-accordion--sm .tds-accordion__body {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.tds-accordion--md .tds-accordion__header,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__header {
+  padding: var(--padding-lg);
+}
+
+.tds-accordion--md .tds-accordion__title,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__title {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-sm);
+}
+
+.tds-accordion--md .tds-accordion__action,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__action {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.tds-accordion--md .tds-accordion__content,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__content {
+  padding: var(--padding-lg);
+}
+
+.tds-accordion--md .tds-accordion__body,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__body {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.tds-accordion--lg .tds-accordion__header {
+  padding: var(--padding-xl);
+}
+
+.tds-accordion--lg .tds-accordion__title {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}
+
+.tds-accordion--lg .tds-accordion__action {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-lg);
+}
+
+.tds-accordion--lg .tds-accordion__content {
+  padding: var(--padding-xl);
+}
+
+.tds-accordion--lg .tds-accordion__body {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-lg);
+}
+
+/* --- Skeleton --- */
+
+.tds-accordion__skeleton-bar {
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background-color: var(--surface-neutral-04);
+}
+
+.tds-accordion__skeleton-bar--icon {
+  width: 16px;
+  height: 16px;
+}
+
+.tds-accordion__skeleton-bar--title {
+  width: 160px;
+  height: 12px;
+}
+
+.tds-accordion__skeleton-bar--tag {
+  width: 48px;
+  height: 20px;
+  border-radius: var(--radius-badge);
+}
+
+.tds-accordion__skeleton-bar--action {
+  width: 60px;
+  height: 12px;
+}
+
+.tds-accordion__skeleton-bar--counter {
+  width: 24px;
+  height: 16px;
+  border-radius: var(--radius-badge);
+}
+
+.tds-accordion--skeleton.tds-accordion--expanded .tds-accordion__content {
+  gap: var(--gap-sm);
+}
+
+.tds-accordion__skeleton-bar--line {
+  height: 10px;
+  width: 100%;
+}
+
+.tds-accordion__skeleton-bar--line-short {
+  height: 10px;
+  width: 240px;
+}
+
+/* ============================================================
+   Accordion / DataFieldList
+   Figma: Accordion/DataFieldList (1034:11268)
+   Slot content: horizontal DataField rows with optional dividers
+   ============================================================ */
+
+.tds-accordion__data-field-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  width: 100%;
+  padding: var(--spacing-8) 0;
+  box-sizing: border-box;
+}
+
+.tds-accordion__data-field-list--compact {
+  gap: var(--spacing-8);
+}
+
+.tds-accordion__data-field-list .tds-data-field--horizontal + .tds-data-field--horizontal {
+  /* spacing handled by gap */
+}
+
+.tds-accordion__data-field-divider {
+  height: 1px;
+  width: 100%;
+  margin: 0;
+  border: none;
+  background-color: var(--border-subtle);
+  flex-shrink: 0;
+}
