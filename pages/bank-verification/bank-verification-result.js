@@ -5,6 +5,19 @@
 
   var shared = window.BVShared;
   var session = null;
+  var teSelectOutsideListener = null;
+
+  function closeResultTestEntitySelect() {
+    var root = document.getElementById("bv-result-te-select");
+    if (root) root.classList.remove("tds-select--open");
+  }
+
+  function unbindResultTestEntityOutsideClick() {
+    if (teSelectOutsideListener) {
+      document.removeEventListener("click", teSelectOutsideListener);
+      teSelectOutsideListener = null;
+    }
+  }
 
   var ICON_POSITIVE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg>';
   var ICON_NEGATIVE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg>';
@@ -36,6 +49,41 @@
       minute: "2-digit",
       hour12: true
     });
+  }
+
+  function renderFieldDetailCell(detail) {
+    var cell = document.createElement("div");
+    cell.className = "dv-table__detail-cell";
+
+    if (!detail) {
+      var dash = document.createElement("span");
+      dash.className = "dv-cell-sub";
+      dash.textContent = "—";
+      cell.appendChild(dash);
+      return cell;
+    }
+
+    var list = document.createElement("ul");
+    list.className = "bv-field-detail";
+    [
+      { label: "Data Input:", value: detail.input },
+      { label: "Data returned:", value: detail.returned || "—" }
+    ].forEach(function (item) {
+      var li = document.createElement("li");
+      li.className = "bv-field-detail__item";
+      var label = document.createElement("span");
+      label.className = "bv-field-detail__label";
+      label.textContent = item.label;
+      var value = document.createElement("span");
+      value.className = "bv-field-detail__value";
+      value.textContent = item.value;
+      li.appendChild(label);
+      li.appendChild(document.createTextNode(" "));
+      li.appendChild(value);
+      list.appendChild(li);
+    });
+    cell.appendChild(list);
+    return cell;
   }
 
   function renderResult(config) {
@@ -100,11 +148,23 @@
     config.fieldMatches.forEach(function (row) {
       var tr = document.createElement("div");
       tr.className = "dv-table__row";
-      tr.innerHTML =
-        '<div class="dv-table__text-cell">' + row.signal + '</div>' +
-        '<div class="dv-table__detail-cell bv-result-main__detail">' + row.detail + '</div>' +
-        '<div class="dv-table__label-cell"><span class="' + statusClass(row.kind) + '">' +
-        '<span class="dv-status__icon">' + statusIcon(row.kind) + '</span>' + row.result + '</span></div>';
+
+      var signalCell = document.createElement("div");
+      signalCell.className = "dv-table__text-cell";
+      var signalTitle = document.createElement("span");
+      signalTitle.className = "dv-cell-title";
+      signalTitle.textContent = row.signal;
+      signalCell.appendChild(signalTitle);
+
+      var labelCell = document.createElement("div");
+      labelCell.className = "dv-table__label-cell";
+      labelCell.innerHTML =
+        '<span class="' + statusClass(row.kind) + '">' +
+        '<span class="dv-status__icon">' + statusIcon(row.kind) + '</span>' + row.result + '</span>';
+
+      tr.appendChild(signalCell);
+      tr.appendChild(renderFieldDetailCell(row.detail));
+      tr.appendChild(labelCell);
       tbody.appendChild(tr);
     });
 
@@ -117,15 +177,18 @@
 
   function renderResultTestEntity(config) {
     var root = document.getElementById("bv-result-te-select");
+    unbindResultTestEntityOutsideClick();
+    closeResultTestEntitySelect();
+    root.innerHTML = "";
     var entities = shared.TEST_ENTITIES[config.accountType];
     var current = config.testEntity;
     var currentIndex = config.testEntityIndex;
 
-    root.innerHTML = "";
     var trigger = document.createElement("button");
     trigger.type = "button";
     trigger.className = "tds-select__trigger tds-select__trigger--lg dv-select-trigger bv-test-entity__trigger";
     trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
 
     var flag = document.createElement("span");
     flag.className = "tds-select__country-flag bv-test-entity__flag";
@@ -190,6 +253,7 @@
       opt.appendChild(otag);
       opt.addEventListener("mousedown", function (e) {
         e.preventDefault();
+        closeResultTestEntitySelect();
         session = shared.applyTestEntityToSession(session, i);
         renderPage();
       });
@@ -200,11 +264,16 @@
     root.appendChild(menu);
 
     trigger.addEventListener("click", function () {
-      root.classList.toggle("tds-select--open");
+      var open = root.classList.toggle("tds-select--open");
+      trigger.setAttribute("aria-expanded", String(open));
     });
-    document.addEventListener("click", function closeTe(e) {
-      if (!root.contains(e.target)) root.classList.remove("tds-select--open");
-    });
+    teSelectOutsideListener = function (e) {
+      if (!root.contains(e.target)) {
+        closeResultTestEntitySelect();
+        trigger.setAttribute("aria-expanded", "false");
+      }
+    };
+    document.addEventListener("click", teSelectOutsideListener);
   }
 
   function goBackToForm() {

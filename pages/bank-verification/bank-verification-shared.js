@@ -217,17 +217,17 @@
   }
 
   function buildFieldDetail(fieldLabel, value, kind, matchLevel) {
-    if (!value) return "—";
+    if (!value) return null;
     if (kind === "negative") {
-      return "Data Input: " + value + "   Data returned: —";
+      return { input: value, returned: null };
     }
     if (kind === "positive" && ACCOUNT_FIELDS.indexOf(fieldLabel) !== -1 && matchLevel === "Strong Match") {
-      return "—";
+      return null;
     }
     if (kind === "positive") {
-      return "Data Input: " + value + "   Data returned: " + value;
+      return { input: value, returned: value };
     }
-    return "—";
+    return null;
   }
 
   function buildFieldMatches(values, matchInfo, accountType, country) {
@@ -371,6 +371,26 @@
     });
   }
 
+  function bindTooltip(el, text) {
+    if (!el || !text) return;
+    function show() {
+      var tip = ensureTooltip();
+      tip.textContent = text;
+      tip.hidden = false;
+      var rect = el.getBoundingClientRect();
+      tip.style.left = Math.max(8, rect.left + rect.width / 2) + "px";
+      tip.style.top = rect.top + "px";
+      tip.style.transform = "translate(-50%, calc(-100% - 6px))";
+    }
+    function hide() {
+      if (tooltipEl) tooltipEl.hidden = true;
+    }
+    el.addEventListener("mouseenter", show);
+    el.addEventListener("focus", show);
+    el.addEventListener("mouseleave", hide);
+    el.addEventListener("blur", hide);
+  }
+
   function initAppNavToggle() {
     var shell = document.getElementById("app-shell");
     var overlay = document.getElementById("app-sidenav-overlay");
@@ -421,6 +441,7 @@
     applyTestEntityToSession: applyTestEntityToSession,
     sortedEntityEntries: sortedEntityEntries,
     bindEllipsisTooltip: bindEllipsisTooltip,
+    bindTooltip: bindTooltip,
     initAppNavToggle: initAppNavToggle,
     showFormView: showFormView,
     showResultView: showResultView

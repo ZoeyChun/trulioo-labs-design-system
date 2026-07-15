@@ -150,12 +150,14 @@ body {
   flex-shrink: 0;
 }
 
-/* Top row: test entity (left) + country (right) when toggle is on */
-.bv-form-top-row {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--gap-lg);
-  padding: 0 var(--padding-2xl) var(--padding-xl);
+.bv-test-entity-info {
+  cursor: help;
+}
+
+.bv-test-entity-info:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
 }
 
 #bv-form-view[hidden],
@@ -164,31 +166,15 @@ body {
   display: none !important;
 }
 
-.bv-form-top-row[hidden],
-.bv-card__section-country[hidden] {
-  display: none;
+.bv-card__section-country[hidden],
+#bv-country-wrap[hidden],
+#bv-test-entity-wrap[hidden] {
+  display: none !important;
 }
 
-.bv-form-top-row .bv-form-col {
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-}
-
-.bv-form-top-row .bv-country,
-.bv-form-top-row .bv-test-entity,
-.bv-form-col .bv-country,
-.bv-form-col .bv-test-entity {
-  width: 100%;
-  max-width: none;
-}
-
-/* Country selection — uses the tds-combobox component */
-.bv-card__section-country {
-  padding: 0 var(--padding-2xl) var(--padding-xl);
-}
-
-.bv-card__section-country .bv-country {
+.bv-card__section-country .bv-country,
+.bv-card__section-country .bv-test-entity,
+#bv-test-entity-wrap .bv-test-entity {
   width: 100%;
   max-width: var(--bv-field-col);
 }
@@ -196,6 +182,11 @@ body {
 .bv-country {
   width: 100%;
   max-width: var(--bv-field-col);
+}
+
+/* Country / test entity slot */
+.bv-card__section-country {
+  padding: 0 var(--padding-2xl) var(--padding-xl);
 }
 
 /* Emoji flag sizing inside the combobox leading-visual slot */
@@ -447,15 +438,10 @@ body {
     gap: var(--gap-md);
   }
 
-  .bv-form-top-row {
-    flex-direction: column;
-  }
-
   .bv-country,
   .bv-card__section-country .bv-country,
   .bv-test-entity,
-  .bv-form-top-row .bv-country,
-  .bv-form-col .bv-country {
+  .bv-card__section-country .bv-test-entity {
     width: 100%;
     max-width: none;
   }
@@ -501,7 +487,6 @@ body {
 
   .bv-card__row-label,
   .bv-radio-row,
-  .bv-form-top-row,
   .bv-card__section-country,
   .bv-details,
   .bv-card__footer {
@@ -509,8 +494,7 @@ body {
     padding-right: var(--padding-lg);
   }
 
-  .bv-radio-row,
-  .bv-form-top-row {
+  .bv-radio-row {
     padding-bottom: var(--padding-lg);
   }
 
@@ -556,7 +540,6 @@ body {
 
   .bv-card__row-label,
   .bv-radio-row,
-  .bv-form-top-row,
   .bv-card__section-country,
   .bv-details,
   .bv-card__footer {

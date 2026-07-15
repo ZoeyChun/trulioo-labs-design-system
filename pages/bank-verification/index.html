@@ -190,7 +190,7 @@
             <div class="tds-switch bv-test-entity-switch">
               <span class="tds-switch__label-group">
                 Test Entity
-                <span class="tds-switch__icon">
+                <span class="tds-switch__icon bv-test-entity-info" id="bv-test-entity-info" tabindex="0" role="img" aria-label="About Test Entity">
                   <svg viewBox="0 0 512 512" width="16" height="16" fill="currentColor" aria-hidden="true">
                     <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/>
                   </svg>
@@ -243,31 +243,28 @@
 
           </div>
 
-          <!-- Test entity + country row (visible when toggle is on) -->
-          <div class="bv-form-top-row" id="bv-form-top-row" hidden>
-            <div class="bv-form-col" id="bv-test-entity-col"></div>
-            <div class="bv-form-col" id="bv-country-col"></div>
-          </div>
-
-          <!-- Country selection — standalone when test entity is off -->
+          <!-- Country or test entity (swapped when toggle is on) -->
           <div class="bv-card__section-country" id="bv-country-section">
-            <div class="tds-combobox tds-combobox--full-width bv-country" id="bv-country">
-              <label class="tds-field-label" for="bv-country-input">Country</label>
-              <div class="tds-combobox__field tds-combobox__field--lg">
-                <span class="tds-combobox__leading-visual bv-country__flag" hidden></span>
-                <input class="tds-combobox__input" id="bv-country-input" type="text"
-                       placeholder="Type country" autocomplete="off"
-                       role="combobox" aria-expanded="false" aria-controls="bv-country-list">
-                <span class="tds-combobox__trailing-group">
-                  <span class="tds-caret tds-caret--default" aria-hidden="true">
-                    <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+            <div id="bv-country-wrap">
+              <div class="tds-combobox tds-combobox--full-width bv-country" id="bv-country">
+                <label class="tds-field-label" for="bv-country-input">Country</label>
+                <div class="tds-combobox__field tds-combobox__field--lg">
+                  <span class="tds-combobox__leading-visual bv-country__flag" hidden></span>
+                  <input class="tds-combobox__input" id="bv-country-input" type="text"
+                         placeholder="Type country" autocomplete="off"
+                         role="combobox" aria-expanded="false" aria-controls="bv-country-list">
+                  <span class="tds-combobox__trailing-group">
+                    <span class="tds-caret tds-caret--default" aria-hidden="true">
+                      <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                    </span>
                   </span>
-                </span>
-              </div>
-              <div class="tds-combobox__menu">
-                <div class="tds-dropdown-panel bv-country__list" id="bv-country-list" role="listbox"></div>
+                </div>
+                <div class="tds-combobox__menu">
+                  <div class="tds-dropdown-panel bv-country__list" id="bv-country-list" role="listbox"></div>
+                </div>
               </div>
             </div>
+            <div id="bv-test-entity-wrap" hidden></div>
           </div>
 
           <!-- Details -->

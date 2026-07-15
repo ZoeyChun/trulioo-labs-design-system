@@ -74,20 +74,21 @@
     return window.BVShared.fieldsForCountry(state.accountType, state.country);
   }
 
-  function updateCountryPlacement() {
-    var countryRoot = document.getElementById("bv-country");
+  function updateFormPrimaryField() {
+    var countryWrap = document.getElementById("bv-country-wrap");
+    var teWrap = document.getElementById("bv-test-entity-wrap");
     var section = document.getElementById("bv-country-section");
-    var topRow = document.getElementById("bv-form-top-row");
-    var countryCol = document.getElementById("bv-country-col");
+    teWrap.innerHTML = "";
 
     if (state.testEntity) {
-      countryCol.appendChild(countryRoot);
-      section.hidden = true;
-      topRow.hidden = false;
-    } else {
-      section.appendChild(countryRoot);
+      countryWrap.hidden = true;
+      teWrap.hidden = false;
       section.hidden = false;
-      topRow.hidden = true;
+      teWrap.appendChild(makeTestEntitySelect());
+    } else {
+      countryWrap.hidden = false;
+      teWrap.hidden = true;
+      section.hidden = false;
     }
   }
 
@@ -199,15 +200,16 @@
       }
       if (!opts.skipDetails) renderDetails();
     }
-    function clear(keepOpen) {
+    function clear(keepOpen, opts) {
+      opts = opts || {};
       state.country = null;
       input.value = "";
       flag.hidden = true;
       flag.textContent = "";
-      if (state.testEntity) {
+      if (state.testEntity && !opts.skipEntitySync) {
         syncTestEntityToCountry(null);
       }
-      renderDetails();
+      if (!opts.skipDetails) renderDetails();
       if (keepOpen) {
         renderOptions("");
         open();
@@ -382,11 +384,7 @@
   }
 
   function renderTestEntityPanel() {
-    var entityCol = document.getElementById("bv-test-entity-col");
-    entityCol.innerHTML = "";
-    updateCountryPlacement();
-    if (!state.testEntity) return;
-    entityCol.appendChild(makeTestEntitySelect());
+    updateFormPrimaryField();
   }
 
   function applyTestEntity() {
@@ -460,20 +458,21 @@
 
   function initToggle() {
     var toggle = document.getElementById("bv-test-entity-toggle");
+    var info = document.getElementById("bv-test-entity-info");
+    if (info) {
+      window.BVShared.bindTooltip(
+        info,
+        "Auto-fill sample entities to instantly explore the results"
+      );
+    }
     toggle.addEventListener("click", function () {
       state.testEntity = !state.testEntity;
       toggle.setAttribute("aria-checked", String(state.testEntity));
       toggle.classList.toggle("tds-switch__track--on", state.testEntity);
       state.selectedTestEntity = null;
-      if (state.testEntity) {
-        renderTestEntityPanel();
-        if (countryApi) countryApi.clear();
-        else renderDetails();
-      } else {
-        if (countryApi) countryApi.clear();
-        renderTestEntityPanel();
-        renderDetails();
-      }
+      renderTestEntityPanel();
+      if (countryApi) countryApi.clear(false, { skipEntitySync: true, skipDetails: true });
+      renderDetails();
     });
   }
 
