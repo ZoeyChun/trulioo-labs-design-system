@@ -340,7 +340,7 @@
 
 /* Heading */
 .text-heading-xs  { font-size: var(--font-size-sm);  line-height: var(--line-height-sm);  font-weight: var(--font-weight-semibold); }
-.text-heading-sm  { font-size: var(--font-size-md);  line-height: var(--line-height-sm);  font-weight: var(--font-weight-semibold); }
+.text-heading-sm  { font-size: var(--font-size-md);  line-height: var(--line-height-md);  font-weight: var(--font-weight-semibold); }
 .text-heading-md  { font-size: var(--font-size-lg);  line-height: var(--line-height-lg);  font-weight: var(--font-weight-semibold); }
 .text-heading-lg  { font-size: var(--font-size-xl);  line-height: var(--line-height-xl);  font-weight: var(--font-weight-semibold); }
 .text-heading-xl  { font-size: var(--font-size-2xl); line-height: var(--line-height-2xl); font-weight: var(--font-weight-semibold); }
@@ -5816,6 +5816,7 @@ code {
 
 
 
+
 <div class="ds-app ds-app--tabs">
   <div class="ds-topbar">
     <span class="ds-topbar__title">Buttons</span>
@@ -10183,7 +10184,7 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
         <div class="type-specimen__row"><span class="text-heading-xl">Heading XL</span><span class="type-specimen__meta">24px / 26px · 600</span></div>
         <div class="type-specimen__row"><span class="text-heading-lg">Heading Large</span><span class="type-specimen__meta">20px / 24px · 600</span></div>
         <div class="type-specimen__row"><span class="text-heading-md">Heading Medium</span><span class="type-specimen__meta">18px / 22px · 600</span></div>
-        <div class="type-specimen__row"><span class="text-heading-sm">Heading Small</span><span class="type-specimen__meta">16px / 18px · 600</span></div>
+        <div class="type-specimen__row"><span class="text-heading-sm">Heading Small</span><span class="type-specimen__meta">16px / 20px · 600</span></div>
         <div class="type-specimen__row"><span class="text-heading-xs">Heading XS</span><span class="type-specimen__meta">14px / 18px · 600</span></div>
       </div>
         </div>
@@ -10263,6 +10264,9 @@ function toggleSwitch(label) {
   track.classList.toggle('tds-switch__track--on', !on);
 }
 
+/**
+ * Tab navigation for preview.html — one component family visible at a time.
+ */
 /**
  * Tab navigation for preview.html — one component family visible at a time.
  */
@@ -10649,6 +10653,7 @@ document.querySelectorAll('#pagination-pages .tds-data-table__pagination-page').
   });
 });
 </script>
+
 
 
 
