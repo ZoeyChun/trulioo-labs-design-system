@@ -128,28 +128,6 @@ button.tds-side-nav__collapse-bar:hover {
   object-fit: cover;
 }
 
-.tds-side-nav__wordmark {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  width: 98px;
-  height: 24px;
-  overflow: hidden;
-  line-height: 0;
-}
-
-.tds-side-nav__wordmark img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: left center;
-}
-
-.tds-side-nav--collapsed .tds-side-nav__wordmark {
-  display: none;
-}
-
 /* --- Main content (Figma: px 16, py 24, gap 16) --- */
 
 .tds-side-nav__main {

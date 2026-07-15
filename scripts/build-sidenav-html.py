@@ -111,9 +111,6 @@ def build(
 {child}    <span class="tds-side-nav__logo">
 {child}      <img src="{assets_prefix}/trulioo-logo-mark.svg" alt="" width="40" height="40">
 {child}    </span>
-{child}    <span class="tds-side-nav__wordmark" aria-hidden="true">
-{child}      <img src="{assets_prefix}/trulioo-wordmark.svg" alt="" width="98" height="24">
-{child}    </span>
 {child}  </button>
 {child}</div>
 
