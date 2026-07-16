@@ -3067,6 +3067,234 @@ button.tds-side-nav__profile--collapsed:hover {
 
 
 /* ============================================================
+   Progress Indicator
+   Figma: Progress indicator (1242:22104)
+            _Progress indicator item (1238:21018)
+            icon-margin (1412:23912)
+   Directions: horizontal | vertical
+   Item states: incomplete | current | completed | error | disabled | skeleton
+   Steps: 2–10
+   ============================================================ */
+
+.tds-progress-indicator {
+  display: flex;
+  gap: 1px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tds-progress-indicator--horizontal {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.tds-progress-indicator--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+  width: auto;
+}
+
+/* --- Item --- */
+
+.tds-progress-indicator__item {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.tds-progress-indicator--horizontal .tds-progress-indicator__item {
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 128px;
+}
+
+.tds-progress-indicator--vertical .tds-progress-indicator__item {
+  flex-direction: row;
+  align-items: stretch;
+  flex: 0 0 auto;
+  width: 160px;
+  min-height: 58px;
+}
+
+/* --- Progress line --- */
+
+.tds-progress-indicator__line {
+  flex-shrink: 0;
+  background-color: var(--border-subtle);
+}
+
+.tds-progress-indicator--horizontal .tds-progress-indicator__line {
+  width: 100%;
+  height: 4px;
+}
+
+.tds-progress-indicator--vertical .tds-progress-indicator__line {
+  width: 4px;
+  align-self: stretch;
+}
+
+.tds-progress-indicator__item--current .tds-progress-indicator__line {
+  background-color: var(--surface-inverse);
+}
+
+.tds-progress-indicator__item--completed .tds-progress-indicator__line {
+  background-color: var(--icon-positive);
+}
+
+.tds-progress-indicator__item--error .tds-progress-indicator__line {
+  background-color: var(--icon-negative);
+}
+
+.tds-progress-indicator__item--disabled .tds-progress-indicator__line,
+.tds-progress-indicator__item--skeleton .tds-progress-indicator__line {
+  background-color: var(--surface-neutral-03);
+}
+
+/* --- Content --- */
+
+.tds-progress-indicator__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tds-progress-indicator--horizontal .tds-progress-indicator__content {
+  padding: var(--padding-lg) var(--padding-lg) 0 0;
+}
+
+.tds-progress-indicator--vertical .tds-progress-indicator__content {
+  flex: 1 1 auto;
+  padding: 0 var(--padding-lg) 0 10px;
+}
+
+.tds-progress-indicator--horizontal .tds-progress-indicator__item--skeleton .tds-progress-indicator__content {
+  padding-top: 10px;
+}
+
+/* --- Label row --- */
+
+.tds-progress-indicator__label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  min-width: 0;
+}
+
+/* --- Step icon --- */
+
+.tds-progress-indicator__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.tds-progress-indicator__icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+}
+
+.tds-progress-indicator__item--incomplete .tds-progress-indicator__icon-badge,
+.tds-progress-indicator__item--disabled .tds-progress-indicator__icon-badge {
+  border: 1px dashed var(--border-strong);
+  background-color: var(--color-white);
+  color: var(--text-description);
+}
+
+.tds-progress-indicator__item--current .tds-progress-indicator__icon-badge {
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+}
+
+.tds-progress-indicator__item--disabled .tds-progress-indicator__icon-badge {
+  color: var(--text-disabled);
+}
+
+.tds-progress-indicator__item--skeleton .tds-progress-indicator__icon-badge {
+  border: 1px dashed var(--border-strong);
+  background-color: var(--color-white);
+}
+
+.tds-progress-indicator__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tds-progress-indicator__item--completed .tds-progress-indicator__icon {
+  color: var(--icon-positive);
+}
+
+.tds-progress-indicator__item--error .tds-progress-indicator__icon {
+  color: var(--icon-negative);
+}
+
+/* --- Title & caption --- */
+
+.tds-progress-indicator__title {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.tds-progress-indicator__item--disabled .tds-progress-indicator__title {
+  color: var(--text-disabled);
+}
+
+.tds-progress-indicator__caption {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+}
+
+.tds-progress-indicator--horizontal .tds-progress-indicator__caption {
+  padding-left: 32px;
+}
+
+.tds-progress-indicator--vertical .tds-progress-indicator__caption {
+  padding-left: 42px;
+  padding-right: var(--padding-lg);
+}
+
+.tds-progress-indicator__item--disabled .tds-progress-indicator__caption {
+  color: var(--text-disabled);
+}
+
+.tds-progress-indicator__item--no-caption .tds-progress-indicator__caption {
+  display: none;
+}
+
+/* --- Skeleton --- */
+
+.tds-progress-indicator__skeleton-title {
+  display: block;
+  width: 88px;
+  height: 8px;
+  border-radius: 2px;
+  background-color: var(--surface-neutral-03);
+}
+
+
+/* ============================================================
    DismissAction (Icon button — close / dismiss)
    Sizes:  small | medium | large
    States: rest | hover | pressed | focus | disabled | selected
@@ -5380,26 +5608,6 @@ body {
   overflow: visible;
 }
 
-.ds-showcase__canvas--code {
-  padding: 0;
-  background: var(--color-white);
-  border: none;
-}
-
-.ds-showcase__canvas--code .ds-code {
-  margin: 0;
-  padding: var(--spacing-24) var(--spacing-32);
-  overflow: auto;
-  max-height: 420px;
-  font-family: var(--font-family-mono);
-  font-size: 12px;
-  line-height: 1.65;
-  color: var(--text-default);
-  background: var(--color-white);
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
 .ds-showcase__canvas--tight {
   padding: var(--spacing-24) var(--spacing-32);
 }
@@ -5632,126 +5840,16 @@ code {
   .ds-showcase__head {
     padding: var(--spacing-16);
   }
-  .ds-showcase__canvas--code .ds-code {
-    padding: var(--spacing-16);
-  }
   .ds-chapter__title { font-size: var(--font-size-2xl); line-height: var(--line-height-2xl); }
   .grid-2, .grid-3 { gap: var(--spacing-24); }
-}
-
-/* --- Source code toggle (Preview / HTML / CSS) --- */
-
-.ds-code-view {
-  margin-top: var(--spacing-8);
-  border: 1px solid var(--border-divider);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--surface-neutral-01);
-}
-
-.ds-code-view__bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-12);
-  padding: var(--spacing-8) var(--spacing-12);
-  border-bottom: 1px solid var(--border-divider);
-  background: var(--surface-neutral-02);
-}
-
-.ds-code-toggle {
-  display: inline-flex;
-  padding: 2px;
-  gap: 2px;
-  background: var(--surface-neutral-03);
-  border-radius: var(--radius-md);
-}
-
-.ds-code-toggle__btn {
-  appearance: none;
-  border: none;
-  background: transparent;
-  padding: var(--spacing-4) var(--spacing-12);
-  border-radius: calc(var(--radius-md) - 2px);
-  font-family: var(--font-family);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  line-height: var(--line-height-sm);
-  color: var(--text-description);
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.ds-code-toggle__btn:hover {
-  color: var(--text-default);
-}
-
-.ds-code-toggle__btn.is-active {
-  background: var(--surface-neutral-01);
-  color: var(--text-default);
-  box-shadow: var(--shadow-button-resting);
-}
-
-.ds-code-view__filepath {
-  font-family: var(--font-family-mono);
-  font-size: 11px;
-  line-height: 1.4;
-  color: var(--text-caption);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.ds-code-view__body {
-  min-height: 120px;
-}
-
-.ds-code-panel {
-  position: relative;
-}
-
-.ds-code-panel pre {
-  margin: 0;
-  padding: var(--spacing-24) var(--spacing-32);
-  padding-top: calc(var(--spacing-24) + var(--spacing-32));
-  overflow: auto;
-  max-height: 420px;
-  font-family: var(--font-family-mono);
-  font-size: 12px;
-  line-height: 1.65;
-  color: var(--text-default);
-  background: var(--surface-neutral-01);
-  tab-size: 2;
-}
-
-.ds-code-panel__copy {
-  position: absolute;
-  top: var(--spacing-12);
-  right: var(--spacing-12);
-  z-index: 1;
-}
-
-@media (max-width: 640px) {
-  .ds-code-view__bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .ds-code-toggle {
-    width: 100%;
-    justify-content: stretch;
-  }
-
-  .ds-code-toggle__btn {
-    flex: 1;
-    text-align: center;
-  }
 }
 
   </style>
 </head>
 <body>
+
+
+
 
 
 
@@ -5995,393 +6093,6 @@ code {
         </button>
       </div>
         </div>
-      <article class="ds-showcase">
-        <div class="ds-showcase__head">
-          <h3 class="ds-showcase__title">Source code</h3>
-          <p class="ds-showcase__desc">Copy the HTML markup or full component stylesheet below. CSS is synced from <code>src/lib/components/atoms/button.css</code> on each preview build.</p>
-          <div class="ds-showcase__meta">
-            <code class="ds-api">.tds-btn · src/lib/components/atoms/button.css</code>
-          </div>
-        </div>
-
-        <div class="ds-showcase__canvas">
-          <div class="row">
-            <button type="button" class="tds-btn tds-btn--lg tds-btn--primary">Primary</button>
-            <button type="button" class="tds-btn tds-btn--lg tds-btn--secondary">Secondary</button>
-            <button type="button" class="tds-btn tds-btn--lg tds-btn--danger">Danger</button>
-            <button type="button" class="tds-btn tds-btn--lg tds-btn--invisible">Invisible</button>
-          </div>
-          <div class="spacer--sm"></div>
-          <div class="row">
-            <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
-              <span class="tds-btn__leading-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/></svg></span>
-              With icon
-            </button>
-            <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
-              With counter
-              <span class="tds-btn__counter">20</span>
-            </button>
-            <button type="button" class="tds-btn tds-btn--md tds-btn--primary" disabled>Disabled</button>
-          </div>
-        </div>
-
-        <div class="ds-code-view" data-code-view>
-          <div class="ds-code-view__bar">
-            <div class="ds-code-toggle" role="tablist" aria-label="Button source view">
-              <button type="button" class="ds-code-toggle__btn is-active" role="tab" aria-selected="true" data-code-view-tab="html">HTML</button>
-              <button type="button" class="ds-code-toggle__btn" role="tab" aria-selected="false" data-code-view-tab="css">CSS</button>
-            </div>
-            <span class="ds-code-view__filepath" data-code-view-path>Markup</span>
-          </div>
-
-          <div class="ds-code-view__body">
-            <div class="ds-code-view__panel" data-code-view-panel="html">
-              <div class="ds-code-panel">
-                <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary ds-code-panel__copy" data-copy-code>Copy</button>
-                <pre><code>&lt;!-- Variants --&gt;
-&lt;button type="button" class="tds-btn tds-btn--lg tds-btn--primary"&gt;Button&lt;/button&gt;
-&lt;button type="button" class="tds-btn tds-btn--lg tds-btn--secondary"&gt;Button&lt;/button&gt;
-&lt;button type="button" class="tds-btn tds-btn--lg tds-btn--danger"&gt;Button&lt;/button&gt;
-&lt;button type="button" class="tds-btn tds-btn--lg tds-btn--invisible"&gt;Button&lt;/button&gt;
-
-&lt;!-- Sizes --&gt;
-&lt;button type="button" class="tds-btn tds-btn--sm tds-btn--primary"&gt;Small&lt;/button&gt;
-&lt;button type="button" class="tds-btn tds-btn--md tds-btn--primary"&gt;Medium&lt;/button&gt;
-&lt;button type="button" class="tds-btn tds-btn--lg tds-btn--primary"&gt;Large&lt;/button&gt;
-
-&lt;!-- With leading icon --&gt;
-&lt;button type="button" class="tds-btn tds-btn--lg tds-btn--secondary"&gt;
-  &lt;span class="tds-btn__leading-icon" aria-hidden="true"&gt;
-    &lt;!-- 16×16 SVG --&gt;
-  &lt;/span&gt;
-  Button
-&lt;/button&gt;
-
-&lt;!-- With counter --&gt;
-&lt;button type="button" class="tds-btn tds-btn--lg tds-btn--secondary"&gt;
-  Button
-  &lt;span class="tds-btn__counter"&gt;20&lt;/span&gt;
-&lt;/button&gt;
-
-&lt;!-- States --&gt;
-&lt;button type="button" class="tds-btn tds-btn--lg tds-btn--primary" disabled&gt;Button&lt;/button&gt;
-&lt;button type="button" class="tds-btn tds-btn--lg tds-btn--primary tds-btn--inactive"&gt;Button&lt;/button&gt;</code></pre>
-              </div>
-            </div>
-
-            <div class="ds-code-view__panel" data-code-view-panel="css" hidden>
-              <div class="ds-code-panel">
-                <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary ds-code-panel__copy" data-copy-code>Copy</button>
-                <pre><code>/* ============================================================
-   Button
-   Figma: Button (96:2225)
-   Variants: primary | secondary | danger | invisible
-   Sizes:    small (24px) | medium (32px) | large (42px)
-   States:   rest | hover | focus | pressed | disabled | inactive
-   ============================================================ */
-
-.tds-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-8);
-  border-radius: var(--radius-button);
-  font-family: var(--font-family);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  cursor: pointer;
-  white-space: nowrap;
-  text-decoration: none;
-  border: 1px solid transparent;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-}
-
-/* --- Sizes --- */
-
-.tds-btn--sm {
-  height: 24px;
-  padding: var(--padding-xs) var(--padding-sm);
-  gap: var(--spacing-4);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-}
-
-.tds-btn--md,
-.tds-btn:not([class*="tds-btn--sm"]):not([class*="tds-btn--lg"]) {
-  height: 32px;
-  padding: var(--padding-sm) var(--padding-md);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-}
-
-.tds-btn--lg {
-  height: 42px;
-  padding: var(--padding-md) var(--padding-lg);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-}
-
-/* --- Align content: start --- */
-
-.tds-btn--align-start {
-  justify-content: flex-start;
-}
-
-.tds-btn--align-start.tds-btn--sm { height: 24px; }
-.tds-btn--align-start.tds-btn--md,
-.tds-btn--align-start:not([class*="tds-btn--sm"]):not([class*="tds-btn--lg"]) { height: 32px; }
-.tds-btn--align-start.tds-btn--lg { height: 42px; }
-
-
-/* ============================================================
-   VARIANT: Secondary (default)
-   ============================================================ */
-
-.tds-btn--secondary,
-.tds-btn:not([class*="tds-btn--primary"]):not([class*="tds-btn--danger"]):not([class*="tds-btn--invisible"]) {
-  background-color: var(--surface-neutral-01);
-  border-color: var(--border-strong);
-  color: var(--text-default);
-  box-shadow: var(--shadow-button-resting);
-}
-
-.tds-btn--secondary:hover,
-.tds-btn:not([class*="tds-btn--primary"]):not([class*="tds-btn--danger"]):not([class*="tds-btn--invisible"]):hover {
-  background-color: var(--surface-neutral-02);
-  box-shadow: var(--shadow-button-elevated);
-}
-
-.tds-btn--secondary:focus-visible,
-.tds-btn--secondary.tds-btn--focus,
-.tds-btn:not([class*="tds-btn--primary"]):not([class*="tds-btn--danger"]):not([class*="tds-btn--invisible"]):focus-visible,
-.tds-btn:not([class*="tds-btn--primary"]):not([class*="tds-btn--danger"]):not([class*="tds-btn--invisible"]).tds-btn--focus {
-  border-color: var(--border-interactive);
-  border-width: 2px;
-  outline: none;
-  box-shadow: none;
-}
-
-.tds-btn--secondary:active,
-.tds-btn:not([class*="tds-btn--primary"]):not([class*="tds-btn--danger"]):not([class*="tds-btn--invisible"]):active {
-  background-color: var(--surface-neutral-03);
-  box-shadow: var(--shadow-button-elevated);
-}
-
-.tds-btn--secondary:disabled,
-.tds-btn--secondary[aria-disabled="true"],
-.tds-btn:not([class*="tds-btn--primary"]):not([class*="tds-btn--danger"]):not([class*="tds-btn--invisible"]):disabled {
-  background-color: var(--surface-neutral-01);
-  border-color: var(--border-subtle);
-  color: var(--text-disabled);
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
-
-/* ============================================================
-   VARIANT: Primary
-   ============================================================ */
-
-.tds-btn--primary {
-  background-color: var(--interactive-default);
-  border-color: var(--interactive-default);
-  color: var(--text-inverse);
-  box-shadow: none;
-}
-
-.tds-btn--primary:hover {
-  background-color: var(--interactive-hover);
-  border-color: var(--interactive-hover);
-}
-
-.tds-btn--primary:focus-visible,
-.tds-btn--primary.tds-btn--focus {
-  border-color: var(--border-interactive);
-  border-width: 2px;
-  outline: none;
-}
-
-.tds-btn--primary:active {
-  background-color: var(--interactive-active);
-  border-color: var(--interactive-hover);
-}
-
-.tds-btn--primary:disabled,
-.tds-btn--primary[aria-disabled="true"] {
-  background-color: var(--interactive-disabled);
-  border-color: var(--border-subtle);
-  color: var(--text-disabled);
-  cursor: not-allowed;
-}
-
-
-/* ============================================================
-   VARIANT: Danger
-   ============================================================ */
-
-.tds-btn--danger {
-  background-color: var(--surface-neutral-01);
-  border-color: var(--border-negative);
-  color: var(--text-negative);
-  box-shadow: none;
-}
-
-.tds-btn--danger:hover {
-  background-color: var(--border-negative);
-  border-color: var(--border-negative);
-  color: var(--text-inverse);
-}
-
-.tds-btn--danger:focus-visible,
-.tds-btn--danger.tds-btn--focus {
-  border-color: var(--border-interactive);
-  border-width: 2px;
-  outline: none;
-}
-
-.tds-btn--danger:active {
-  background-color: var(--border-negative);
-  border-color: var(--border-negative);
-  color: var(--text-inverse);
-}
-
-.tds-btn--danger:disabled,
-.tds-btn--danger[aria-disabled="true"] {
-  background-color: var(--surface-neutral-01);
-  border-color: transparent;
-  color: var(--text-disabled);
-  cursor: not-allowed;
-}
-
-
-/* ============================================================
-   VARIANT: Invisible
-   ============================================================ */
-
-.tds-btn--invisible {
-  background-color: var(--surface-neutral-01);
-  border-color: transparent;
-  color: var(--interactive-default);
-  box-shadow: none;
-}
-
-.tds-btn--invisible:hover {
-  background-color: var(--surface-neutral-02);
-  color: var(--interactive-hover);
-}
-
-.tds-btn--invisible:focus-visible,
-.tds-btn--invisible.tds-btn--focus {
-  background-color: var(--surface-neutral-01);
-  border-color: var(--border-interactive);
-  border-width: 2px;
-  outline: none;
-}
-
-.tds-btn--invisible:active {
-  background-color: var(--surface-neutral-03);
-  color: var(--interactive-default);
-}
-
-.tds-btn--invisible:disabled,
-.tds-btn--invisible[aria-disabled="true"] {
-  background-color: var(--surface-neutral-01);
-  color: var(--text-disabled);
-  cursor: not-allowed;
-}
-
-
-/* ============================================================
-   STATE: Inactive (all variants)
-   ============================================================ */
-
-.tds-btn--inactive {
-  background-color: var(--surface-neutral-02);
-  border-color: transparent;
-  color: var(--text-description);
-  box-shadow: none;
-}
-
-.tds-btn--inactive:hover,
-.tds-btn--inactive:active,
-.tds-btn--inactive:focus-visible {
-  background-color: var(--surface-neutral-02);
-  border-color: transparent;
-  color: var(--text-description);
-  box-shadow: none;
-}
-
-.tds-btn--primary.tds-btn--inactive:hover,
-.tds-btn--secondary.tds-btn--inactive:hover,
-.tds-btn--danger.tds-btn--inactive:hover,
-.tds-btn--invisible.tds-btn--inactive:hover {
-  background-color: var(--surface-neutral-02);
-  border-color: transparent;
-  color: var(--text-description);
-}
-
-
-/* ============================================================
-   Icon slots
-   ============================================================ */
-
-.tds-btn__leading-icon,
-.tds-btn__trailing-icon {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  color: var(--icon-faint);
-}
-
-.tds-btn__leading-icon svg,
-.tds-btn__trailing-icon svg {
-  width: 16px;
-  height: 16px;
-}
-
-.tds-btn__counter {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 18px;
-  padding: 0 6px;
-  border-radius: var(--radius-full);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  background-color: var(--interactive-subtle);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-default);
-}
-
-.tds-btn--sm .tds-btn__counter {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-}
-
-.tds-btn--md .tds-btn__counter,
-.tds-btn:not([class*="tds-btn--sm"]):not([class*="tds-btn--lg"]) .tds-btn__counter {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-}
-
-.tds-btn--lg .tds-btn__counter {
-  font-size: 11px;
-  line-height: 14px;
-}
-
-.tds-btn--primary .tds-btn__counter {
-  border-color: transparent;
-}
-</code></pre>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
       </article>
 
       <article class="ds-showcase">
@@ -7926,6 +7637,200 @@ code {
 
       <article class="ds-showcase">
         <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Progress indicator — item states</h3>
+          <p class="ds-showcase__desc">Individual step anatomy with progress line, numbered badge, heading, and optional caption (Figma 1238:21018).</p>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-progress-indicator__item--{state}</code></div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="ds-state-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-24);">
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Incomplete</span>
+<ol class="tds-progress-indicator tds-progress-indicator--horizontal" aria-label="Step states">
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--incomplete">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">1</span></span>
+        <span class="tds-progress-indicator__title">Step</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Optional label</p>
+    </div>
+  </li>
+</ol></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Current</span>
+<ol class="tds-progress-indicator tds-progress-indicator--horizontal" aria-label="Step states">
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--current">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">1</span></span>
+        <span class="tds-progress-indicator__title">Step</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Optional label</p>
+    </div>
+  </li>
+</ol></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Completed</span>
+<ol class="tds-progress-indicator tds-progress-indicator--horizontal" aria-label="Step states">
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--completed">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg></span>
+        <span class="tds-progress-indicator__title">Step</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Optional label</p>
+    </div>
+  </li>
+</ol></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Error</span>
+<ol class="tds-progress-indicator tds-progress-indicator--horizontal" aria-label="Step states">
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--error">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 14H9v-2h2v2zm0-4H9V5h2v5z"/></svg></span>
+        <span class="tds-progress-indicator__title">Step</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Optional label</p>
+    </div>
+  </li>
+</ol></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Disabled</span>
+<ol class="tds-progress-indicator tds-progress-indicator--horizontal" aria-label="Step states">
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--disabled">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">1</span></span>
+        <span class="tds-progress-indicator__title">Step</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Optional label</p>
+    </div>
+  </li>
+</ol></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Skeleton</span>
+<ol class="tds-progress-indicator tds-progress-indicator--horizontal" aria-label="Step states">
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--skeleton">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge"></span></span>
+        <span class="tds-progress-indicator__skeleton-title" aria-hidden="true"></span>
+      </div>
+      <p class="tds-progress-indicator__caption">Optional label</p>
+    </div>
+  </li>
+</ol></div>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Progress indicator — horizontal</h3>
+          <p class="ds-showcase__desc">Multi-step KYB flow with 4 steps — completed, current, and upcoming (Figma 1242:22104).</p>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-progress-indicator--horizontal</code></div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--white">
+<ol class="tds-progress-indicator tds-progress-indicator--horizontal" aria-label="KYB verification progress">
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--completed">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg></span>
+        <span class="tds-progress-indicator__title">Business details</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Entity information</p>
+    </div>
+  </li>
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--current" aria-current="step">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">2</span></span>
+        <span class="tds-progress-indicator__title">Ownership</span>
+      </div>
+      <p class="tds-progress-indicator__caption">UBO verification</p>
+    </div>
+  </li>
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--incomplete">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">3</span></span>
+        <span class="tds-progress-indicator__title">Documents</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Upload filings</p>
+    </div>
+  </li>
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--incomplete">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">4</span></span>
+        <span class="tds-progress-indicator__title">Review</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Final decision</p>
+    </div>
+  </li>
+</ol>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Progress indicator — vertical</h3>
+          <p class="ds-showcase__desc">Vertical layout for sidebar or narrow panels — same states and anatomy.</p>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-progress-indicator--vertical</code></div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--white">
+<ol class="tds-progress-indicator tds-progress-indicator--vertical" aria-label="KYB verification progress">
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--completed">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg></span>
+        <span class="tds-progress-indicator__title">Business details</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Entity information</p>
+    </div>
+  </li>
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--current" aria-current="step">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">2</span></span>
+        <span class="tds-progress-indicator__title">Ownership</span>
+      </div>
+      <p class="tds-progress-indicator__caption">UBO verification</p>
+    </div>
+  </li>
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--error">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 14H9v-2h2v2zm0-4H9V5h2v5z"/></svg></span>
+        <span class="tds-progress-indicator__title">Documents</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Upload required</p>
+    </div>
+  </li>
+  <li class="tds-progress-indicator__item tds-progress-indicator__item--disabled">
+    <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+    <div class="tds-progress-indicator__content">
+      <div class="tds-progress-indicator__label-row">
+        <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">4</span></span>
+        <span class="tds-progress-indicator__title">Review</span>
+      </div>
+      <p class="tds-progress-indicator__caption">Final decision</p>
+    </div>
+  </li>
+</ol>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Side nav — Nav item</h3>
           <p class="ds-showcase__desc">Top-level items — default and active (expanded) with optional chevron for expandable groups.</p>
           <div class="ds-showcase__meta"><code class="ds-api">.tds-side-nav__nav-item</code></div>
@@ -8125,556 +8030,7 @@ code {
         </div>
       </article>
 
-      <article class="ds-showcase">
-        <div class="ds-showcase__head">
-          <h3 class="ds-showcase__title">Source</h3>
-          <div class="ds-showcase__meta"><code class="ds-api">side-nav.css</code></div>
-        </div>
-        <div class="ds-showcase__canvas ds-showcase__canvas--code">
-          <pre class="ds-code">/* ============================================================
-   SideNav
-   Figma: SideNav (1198:20540)
-   Sub-components: NavItem, SubItem, SectionTitle, Divider, UserProfile
-   Modes: expanded (232px) | collapsed (72px)
-   ============================================================ */
-
-.tds-side-nav {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: space-between;
-  position: relative;
-  width: 232px;
-  min-height: 100%;
-  background-color: var(--surface-neutral-02);
-  box-sizing: border-box;
-  overflow: visible;
-  z-index: 1;
-}
-
-.tds-side-nav--collapsed {
-  width: 72px;
-  z-index: 10;
-}
-
-/* --- Header --- */
-
-.tds-side-nav__header {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-md);
-  flex-shrink: 0;
-  padding: 20px var(--padding-lg) var(--padding-lg);
-  overflow: hidden;
-}
-
-.tds-side-nav--collapsed .tds-side-nav__header {
-  justify-content: center;
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-}
-
-.tds-side-nav__brand {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--gap-md);
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  text-align: left;
-  color: inherit;
-}
-
-.tds-side-nav--collapsed .tds-side-nav__brand {
-  justify-content: center;
-}
-
-.tds-side-nav__logo {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.tds-side-nav__wordmark {
-  display: block;
-  flex-shrink: 0;
-  width: 88.227px;
-  height: 24px;
-  overflow: hidden;
-}
-
-.tds-side-nav__wordmark img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: left bottom;
-}
-
-.tds-side-nav--collapsed .tds-side-nav__wordmark {
-  display: none;
-}
-
-/* --- Main content --- */
-
-.tds-side-nav__main {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: var(--gap-lg);
-  min-height: 0;
-  padding: var(--padding-xl) var(--padding-lg);
-  overflow: hidden auto;
-}
-
-.tds-side-nav--collapsed .tds-side-nav__main {
-  align-items: center;
-  padding-left: var(--padding-lg);
-  padding-right: var(--padding-lg);
-}
-
-/* --- Top-level nav item --- */
-
-.tds-side-nav__nav-item,
-button.tds-side-nav__nav-item {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-md);
-  width: 100%;
-  min-height: 32px;
-  padding: var(--padding-xs) var(--padding-lg) var(--padding-xs) var(--padding-sm);
-  border: none;
-  border-radius: var(--radius-full);
-  background: none;
-  font-family: var(--font-family);
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-default);
-  cursor: pointer;
-  text-align: left;
-  box-sizing: border-box;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-button.tds-side-nav__nav-item {
-  appearance: none;
-}
-
-.tds-side-nav__nav-item:hover {
-  background-color: var(--surface-hover);
-}
-
-.tds-side-nav__nav-item:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 2px;
-}
-
-.tds-side-nav__nav-item--active,
-.tds-side-nav__nav-item[aria-current="page"] {
-  min-height: 40px;
-  background-color: var(--surface-inverse);
-  color: var(--text-inverse);
-}
-
-.tds-side-nav__nav-item--active:hover,
-.tds-side-nav__nav-item[aria-current="page"]:hover {
-  background-color: var(--surface-inverse);
-}
-
-.tds-side-nav__nav-item-label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.tds-side-nav__nav-item-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  color: var(--icon-faint);
-}
-
-.tds-side-nav__nav-item--active .tds-side-nav__nav-item-icon,
-.tds-side-nav__nav-item[aria-current="page"] .tds-side-nav__nav-item-icon {
-  color: var(--icon-inverse);
-}
-
-.tds-side-nav__nav-item-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tds-side-nav__nav-item-chevron {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  color: var(--icon-faint);
-}
-
-.tds-side-nav__nav-item--active .tds-side-nav__nav-item-chevron,
-.tds-side-nav__nav-item[aria-current="page"] .tds-side-nav__nav-item-chevron {
-  color: var(--icon-inverse);
-}
-
-/* Collapsed icon rail */
-
-.tds-side-nav__icon-rail {
-  display: none;
-}
-
-.tds-side-nav--collapsed .tds-side-nav__nav-stack {
-  display: none;
-}
-
-.tds-side-nav--collapsed .tds-side-nav__icon-rail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--gap-lg);
-  width: 100%;
-}
-
-.tds-side-nav__icon-button,
-button.tds-side-nav__icon-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: none;
-  border-radius: var(--radius-full);
-  background: none;
-  color: var(--icon-faint);
-  cursor: pointer;
-  position: relative;
-}
-
-button.tds-side-nav__icon-button {
-  appearance: none;
-}
-
-.tds-side-nav__icon-button:hover {
-  background-color: var(--surface-hover);
-}
-
-.tds-side-nav__icon-button--active,
-.tds-side-nav__icon-button[aria-current="page"] {
-  background-color: var(--surface-inverse);
-  color: var(--icon-inverse);
-}
-
-.tds-side-nav__icon-button--active:hover,
-.tds-side-nav__icon-button[aria-current="page"]:hover {
-  background-color: var(--surface-inverse);
-}
-
-/* Collapsed tooltip */
-
-.tds-side-nav__tooltip {
-  position: absolute;
-  left: calc(100% + var(--spacing-4));
-  top: 50%;
-  transform: translateY(-50%);
-  display: none;
-  align-items: center;
-  gap: 0;
-  z-index: 20;
-  pointer-events: none;
-}
-
-.tds-side-nav__icon-button:hover .tds-side-nav__tooltip,
-.tds-side-nav__icon-button:focus-visible .tds-side-nav__tooltip {
-  display: inline-flex;
-}
-
-.tds-side-nav__tooltip-caret {
-  width: 6px;
-  height: 36px;
-  flex-shrink: 0;
-}
-
-.tds-side-nav__tooltip-caret::before {
-  content: "";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-right: 6px solid var(--surface-inverse);
-  margin-top: 12px;
-}
-
-.tds-side-nav__tooltip-body {
-  padding: var(--padding-sm) var(--padding-md);
-  border-radius: var(--radius-lg);
-  background-color: var(--surface-inverse);
-  font-family: var(--font-family);
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-sm);
-  color: var(--text-inverse);
-  white-space: nowrap;
-}
-
-/* --- Sub navigation --- */
-
-.tds-side-nav__sub-nav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-lg);
-  width: 100%;
-  padding-left: var(--padding-lg);
-}
-
-.tds-side-nav__section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-md);
-  width: 100%;
-}
-
-.tds-side-nav__section-title {
-  font-family: var(--font-family);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-description);
-}
-
-.tds-side-nav__section-items {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-xs);
-  width: 100%;
-}
-
-.tds-side-nav__divider {
-  width: 100%;
-  height: 1px;
-  margin: 0;
-  border: none;
-  background-color: var(--border-subtle);
-}
-
-/* --- Sub item --- */
-
-.tds-side-nav__sub-item,
-button.tds-side-nav__sub-item,
-a.tds-side-nav__sub-item {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  width: 100%;
-  height: 32px;
-  padding: var(--padding-xs);
-  border: none;
-  border-radius: var(--radius-full);
-  background: none;
-  font-family: var(--font-family);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-default);
-  text-align: left;
-  text-decoration: none;
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-button.tds-side-nav__sub-item,
-a.tds-side-nav__sub-item {
-  appearance: none;
-}
-
-.tds-side-nav__sub-item:hover,
-.tds-side-nav__sub-item--hover-demo {
-  background-color: var(--surface-neutral-03);
-}
-
-.tds-side-nav__sub-item--selected,
-.tds-side-nav__sub-item[aria-current="page"] {
-  background-color: var(--surface-inverse);
-  color: var(--text-inverse);
-}
-
-.tds-side-nav__sub-item--selected:hover,
-.tds-side-nav__sub-item[aria-current="page"]:hover {
-  background-color: var(--surface-inverse);
-}
-
-.tds-side-nav__sub-item-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  color: var(--icon-faint);
-}
-
-.tds-side-nav__sub-item--selected .tds-side-nav__sub-item-icon,
-.tds-side-nav__sub-item[aria-current="page"] .tds-side-nav__sub-item-icon {
-  color: var(--icon-inverse);
-}
-
-.tds-side-nav__sub-item-text {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* --- Footer / profile --- */
-
-.tds-side-nav__footer {
-  display: flex;
-  flex-shrink: 0;
-  padding: var(--padding-lg) var(--padding-sm);
-}
-
-.tds-side-nav--collapsed .tds-side-nav__footer {
-  justify-content: center;
-  padding: 20px var(--padding-lg) var(--padding-lg);
-}
-
-.tds-side-nav__profile,
-button.tds-side-nav__profile {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  width: 100%;
-  min-height: 56px;
-  padding: var(--padding-sm);
-  border: none;
-  border-radius: var(--radius-card);
-  background-color: var(--surface-neutral-01);
-  cursor: pointer;
-  text-align: left;
-  box-sizing: border-box;
-  transition: background-color 0.15s ease;
-}
-
-button.tds-side-nav__profile {
-  appearance: none;
-}
-
-.tds-side-nav__profile:hover {
-  background-color: var(--surface-neutral-01);
-  filter: brightness(0.98);
-}
-
-.tds-side-nav__profile--collapsed {
-  width: auto;
-}
-
-.tds-side-nav__avatar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background-color: var(--interactive-default);
-  font-family: var(--font-family);
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-inverse);
-}
-
-.tds-side-nav__profile-info {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  min-width: 0;
-}
-
-.tds-side-nav--collapsed .tds-side-nav__profile-info {
-  display: none;
-}
-
-.tds-side-nav__profile-name-row {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--gap-xs);
-  min-width: 0;
-}
-
-.tds-side-nav__profile-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-family: var(--font-family);
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-default);
-}
-
-.tds-side-nav__profile-chevron {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 12px;
-  height: 12px;
-  color: var(--icon-faint);
-}
-
-.tds-side-nav__profile-email {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-family: var(--font-family);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  color: var(--text-description);
-}
-
-/* Preview helpers */
-
-.tds-side-nav--demo {
-  min-height: 560px;
-}
-
-.tds-side-nav--demo-short {
-  min-height: 360px;
-}
-
-.tds-side-nav__state-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-16);
-}
-</pre>
-        </div>
-      </article>
-    </section>
+      </section>
 
       <section class="ds-chapter ds-tab-panel" id="disclosure" role="tabpanel" aria-labelledby="tab-disclosure" hidden>
       <header class="ds-chapter__header">
@@ -8934,351 +8290,7 @@ button.tds-side-nav__profile {
         </div>
       </article>
 
-      <article class="ds-showcase">
-        <div class="ds-showcase__head">
-          <h3 class="ds-showcase__title">Source</h3>
-          <div class="ds-showcase__meta"><code class="ds-api">accordion.css</code></div>
-        </div>
-        <div class="ds-showcase__canvas ds-showcase__canvas--code">
-          <pre class="ds-code">/* ============================================================
-   Accordion
-   Figma: Accordion (810:5659)
-   Sizes: small (12px pad) | medium (16px) | large (20px)
-   States: enabled | hover | focused | disabled | skeleton
-   Slots: leadingIcon, tags, action, trailingIcon, counter, chevron
-   ============================================================ */
-
-.tds-accordion {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-card);
-  background-color: var(--surface-neutral-01);
-  box-sizing: border-box;
-  overflow: hidden;
-  transition: border-color 0.15s ease;
-}
-
-.tds-accordion:focus-within,
-.tds-accordion--focused {
-  border-width: 2px;
-  border-color: var(--border-focus);
-}
-
-/* --- Header trigger --- */
-
-.tds-accordion__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gap-md);
-  width: 100%;
-  margin: 0;
-  border: none;
-  background: none;
-  text-align: left;
-  cursor: pointer;
-  font-family: inherit;
-  color: inherit;
-  box-sizing: border-box;
-  transition: background-color 0.15s ease;
-}
-
-.tds-accordion__header:hover,
-.tds-accordion--hover-demo .tds-accordion__header {
-  background-color: var(--surface-hover);
-}
-
-.tds-accordion--disabled .tds-accordion__header,
-.tds-accordion__header:disabled {
-  cursor: not-allowed;
-}
-
-.tds-accordion--disabled .tds-accordion__header:hover,
-.tds-accordion--disabled.tds-accordion--hover-demo .tds-accordion__header {
-  background-color: transparent;
-}
-
-.tds-accordion--skeleton .tds-accordion__header {
-  cursor: default;
-  pointer-events: none;
-}
-
-.tds-accordion--skeleton .tds-accordion__header:hover {
-  background-color: transparent;
-}
-
-/* --- Leading / trailing groups --- */
-
-.tds-accordion__leading,
-.tds-accordion__trailing {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.tds-accordion__leading {
-  gap: var(--gap-md);
-  min-width: 0;
-}
-
-.tds-accordion__trailing {
-  gap: var(--gap-md);
-  margin-left: auto;
-}
-
-/* --- Tags (trailing slot) --- */
-
-.tds-accordion__tags {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  flex-shrink: 0;
-}
-
-/* --- Title --- */
-
-.tds-accordion__title {
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-default);
-  white-space: nowrap;
-}
-
-.tds-accordion--disabled .tds-accordion__title {
-  color: var(--text-disabled);
-}
-
-/* --- Icons --- */
-
-.tds-accordion__icon,
-.tds-accordion__action-icon,
-.tds-accordion__chevron {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  color: var(--icon-muted);
-}
-
-.tds-accordion__icon svg,
-.tds-accordion__action-icon svg,
-.tds-accordion__chevron svg {
-  width: 16px;
-  height: 16px;
-}
-
-.tds-accordion--disabled .tds-accordion__icon,
-.tds-accordion--disabled .tds-accordion__action-icon,
-.tds-accordion--disabled .tds-accordion__chevron {
-  color: var(--icon-disabled);
-}
-
-.tds-accordion__chevron svg {
-  transition: transform 0.2s ease;
-}
-
-.tds-accordion--expanded .tds-accordion__chevron svg {
-  transform: rotate(180deg);
-}
-
-/* --- Tag slot reuses .tds-tag --- */
-
-.tds-accordion--disabled .tds-tag {
-  color: var(--text-disabled);
-}
-
-.tds-accordion--disabled .tds-counter {
-  opacity: 0.5;
-}
-
-/* --- Header action (external link) --- */
-
-.tds-accordion__action {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  border: none;
-  background: none;
-  padding: 0;
-  font-family: inherit;
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-link);
-  text-decoration: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color 0.15s ease;
-}
-
-.tds-accordion__action:hover {
-  color: var(--interactive-hover);
-}
-
-.tds-accordion--disabled .tds-accordion__action {
-  color: var(--text-disabled);
-  pointer-events: none;
-  cursor: not-allowed;
-}
-
-/* --- Counter slot reuses .tds-counter --- */
-
-.tds-accordion__counter {
-  flex-shrink: 0;
-}
-
-/* --- Content panel --- */
-
-.tds-accordion__content {
-  display: none;
-  border-top: 1px solid var(--border-subtle);
-  box-sizing: border-box;
-}
-
-.tds-accordion--expanded .tds-accordion__content {
-  display: flex;
-  flex-direction: column;
-}
-
-.tds-accordion__body {
-  margin: 0;
-  color: var(--text-description);
-}
-
-.tds-accordion--disabled .tds-accordion__body {
-  color: var(--text-disabled);
-}
-
-/* --- Sizes: header padding + typography --- */
-
-.tds-accordion--sm .tds-accordion__header {
-  padding: var(--padding-md);
-}
-
-.tds-accordion--sm .tds-accordion__title {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-}
-
-.tds-accordion--sm .tds-accordion__action {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-}
-
-.tds-accordion--sm .tds-accordion__content {
-  padding: var(--padding-md);
-}
-
-.tds-accordion--sm .tds-accordion__body {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-}
-
-.tds-accordion--md .tds-accordion__header,
-.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__header {
-  padding: var(--padding-lg);
-}
-
-.tds-accordion--md .tds-accordion__title,
-.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__title {
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-sm);
-}
-
-.tds-accordion--md .tds-accordion__action,
-.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__action {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-}
-
-.tds-accordion--md .tds-accordion__content,
-.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__content {
-  padding: var(--padding-lg);
-}
-
-.tds-accordion--md .tds-accordion__body,
-.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__body {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-}
-
-.tds-accordion--lg .tds-accordion__header {
-  padding: var(--padding-xl);
-}
-
-.tds-accordion--lg .tds-accordion__title {
-  font-size: var(--font-size-lg);
-  line-height: var(--line-height-lg);
-}
-
-.tds-accordion--lg .tds-accordion__action {
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-lg);
-}
-
-.tds-accordion--lg .tds-accordion__content {
-  padding: var(--padding-xl);
-}
-
-.tds-accordion--lg .tds-accordion__body {
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-lg);
-}
-
-/* --- Skeleton --- */
-
-.tds-accordion__skeleton-bar {
-  flex-shrink: 0;
-  border-radius: var(--radius-md);
-  background-color: var(--surface-neutral-04);
-}
-
-.tds-accordion__skeleton-bar--icon {
-  width: 16px;
-  height: 16px;
-}
-
-.tds-accordion__skeleton-bar--title {
-  width: 160px;
-  height: 12px;
-}
-
-.tds-accordion__skeleton-bar--tag {
-  width: 48px;
-  height: 20px;
-  border-radius: var(--radius-badge);
-}
-
-.tds-accordion__skeleton-bar--action {
-  width: 60px;
-  height: 12px;
-}
-
-.tds-accordion__skeleton-bar--counter {
-  width: 24px;
-  height: 16px;
-  border-radius: var(--radius-badge);
-}
-
-.tds-accordion--skeleton.tds-accordion--expanded .tds-accordion__content {
-  gap: var(--gap-sm);
-}
-
-.tds-accordion__skeleton-bar--line {
-  height: 10px;
-  width: 100%;
-}
-
-.tds-accordion__skeleton-bar--line-short {
-  height: 10px;
-  width: 240px;
-}
-</pre>
-        </div>
-      </article>
-    </section>
+      </section>
 
                   <section class="ds-chapter ds-tab-panel" id="data" role="tabpanel" aria-labelledby="tab-data" hidden>
       <header class="ds-chapter__header">
@@ -9551,578 +8563,7 @@ button.tds-side-nav__profile {
         </div>
       </article>
 
-      <article class="ds-showcase">
-        <div class="ds-showcase__head">
-          <h3 class="ds-showcase__title">Source</h3>
-          <div class="ds-showcase__meta"><code class="ds-api">data-table.css</code></div>
-        </div>
-        <div class="ds-showcase__canvas ds-showcase__canvas--code">
-          <pre class="ds-code">/* ============================================================
-   DataTable
-   Figma: DataTable (678:7115)
-   Sub-components: Header, ColumnHeaderCell, TextCell, LabelCell,
-                   RowHeaderCell, CheckboxCell, RowActionsCell, Signals, Footer
-   Densities: compact (34px) | default (50px) | comfort (66px)
-   ============================================================ */
-
-.tds-data-table-container {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--surface-neutral-01);
-  overflow: hidden;
-}
-
-.tds-data-table__wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.tds-data-table {
-  width: 100%;
-  min-width: 720px;
-  border-collapse: collapse;
-  font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  color: var(--text-default);
-}
-
-/* --- Density row heights --- */
-
-.tds-data-table--compact td {
-  height: 34px;
-}
-
-.tds-data-table--compact .tds-data-table__text-cell,
-.tds-data-table--compact td:not(.tds-data-table__text-cell--subtext) {
-  padding-top: var(--spacing-4);
-  padding-bottom: var(--spacing-4);
-}
-
-.tds-data-table:not(.tds-data-table--compact):not(.tds-data-table--comfort) td {
-  height: 50px;
-}
-
-.tds-data-table--comfort td {
-  height: 66px;
-}
-
-/* --- Table header section --- */
-
-.tds-data-table__header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-sm);
-  padding: 0 0 var(--padding-sm);
-}
-
-.tds-data-table__header-toolbar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--gap-lg);
-  width: 100%;
-}
-
-.tds-data-table__header-text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-  min-width: 0;
-  flex: 1 1 auto;
-}
-
-.tds-data-table__header-title {
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-default);
-}
-
-.tds-data-table__header-subtitle {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  color: var(--text-description);
-}
-
-.tds-data-table__header-actions,
-.tds-data-table__header-filter-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-xs);
-  flex-shrink: 0;
-}
-
-.tds-data-table__header-divider {
-  width: 100%;
-  height: 1px;
-  margin: 0;
-  border: none;
-  background-color: var(--border-subtle);
-}
-
-.tds-data-table__header-filter-row {
-  width: 100%;
-}
-
-.tds-data-table__header--stacked {
-  gap: var(--gap-sm);
-}
-
-.tds-data-table__header--toolbar-only {
-  padding-top: var(--padding-sm);
-}
-
-/* --- Column header --- */
-
-.tds-data-table thead tr {
-  background-color: var(--surface-neutral-02);
-}
-
-.tds-data-table thead th:first-child {
-  border-top-left-radius: var(--radius-sm);
-}
-
-.tds-data-table thead th:last-child {
-  border-top-right-radius: var(--radius-sm);
-}
-
-.tds-data-table th {
-  height: 27px;
-  padding: var(--spacing-4) var(--spacing-8);
-  text-align: left;
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-description);
-  border-bottom: none;
-  white-space: nowrap;
-  vertical-align: middle;
-  box-sizing: border-box;
-}
-
-.tds-data-table th[aria-sort] {
-  cursor: pointer;
-}
-
-.tds-data-table th[aria-sort]:hover,
-.tds-data-table th[aria-sort="ascending"],
-.tds-data-table th[aria-sort="descending"] {
-  color: var(--text-default);
-}
-
-.tds-data-table__sort-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  margin-left: var(--spacing-4);
-  color: var(--icon-faint);
-  vertical-align: middle;
-}
-
-th[aria-sort="ascending"] .tds-data-table__sort-icon,
-th[aria-sort="descending"] .tds-data-table__sort-icon {
-  color: var(--icon-default);
-}
-
-/* --- Body cells --- */
-
-.tds-data-table td {
-  padding: var(--spacing-4) var(--spacing-8);
-  border-bottom: 1px solid var(--border-subtle);
-  vertical-align: middle;
-  box-sizing: border-box;
-}
-
-.tds-data-table__text-cell {
-  padding-top: var(--padding-lg);
-  padding-bottom: var(--padding-lg);
-}
-
-.tds-data-table td:has(.tds-data-table__actions-cell) {
-  padding: 6px var(--spacing-8);
-}
-
-.tds-data-table__cell-inner {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  max-width: 100%;
-}
-
-.tds-data-table__cell-subtext {
-  display: block;
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  color: var(--text-caption);
-}
-
-.tds-data-table__cell-leading-visual {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  color: var(--icon-faint);
-}
-
-/* Alignment */
-.tds-data-table td[data-align="right"],
-.tds-data-table th[data-align="right"] {
-  text-align: right;
-}
-
-.tds-data-table td[data-align="right"] .tds-data-table__cell-inner,
-.tds-data-table td[data-align="right"] .tds-data-table__label-cell,
-.tds-data-table td[data-align="right"] .tds-data-table__actions-cell,
-.tds-data-table td[data-align="right"] .tds-data-table__signals {
-  justify-content: flex-end;
-}
-
-.tds-data-table td[data-align="center"],
-.tds-data-table th[data-align="center"] {
-  text-align: center;
-}
-
-/* --- Row header cell --- */
-
-.tds-data-table__row-header {
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-default);
-}
-
-/* --- Label cell --- */
-
-.tds-data-table__label-cell {
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-4);
-}
-
-/* --- Signals cell --- */
-
-.tds-data-table__signals {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  white-space: nowrap;
-}
-
-.tds-data-table__signals-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-}
-
-.tds-data-table__signals--negative {
-  color: var(--text-negative);
-}
-
-.tds-data-table__signals--negative .tds-data-table__signals-icon {
-  color: var(--text-negative);
-}
-
-.tds-data-table__signals--positive {
-  color: var(--text-positive);
-}
-
-.tds-data-table__signals--positive .tds-data-table__signals-icon {
-  color: var(--text-positive);
-}
-
-.tds-data-table__signals--intermediate {
-  color: var(--text-intermediate);
-}
-
-.tds-data-table__signals--intermediate .tds-data-table__signals-icon {
-  color: var(--text-intermediate);
-}
-
-/* --- Checkbox cell --- */
-
-.tds-data-table__checkbox-cell {
-  width: 32px;
-  padding: var(--spacing-4) var(--spacing-8);
-}
-
-.tds-data-table th.tds-data-table__checkbox-cell {
-  width: 32px;
-  text-transform: none;
-  letter-spacing: 0;
-  font-size: inherit;
-}
-
-/* --- Row actions cell --- */
-
-.tds-data-table__actions-cell {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--spacing-4);
-}
-
-.tds-data-table__actions-col {
-  width: 64px;
-  min-width: 64px;
-  max-width: 64px;
-}
-
-.tds-data-table__action-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: none;
-  color: var(--icon-faint);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: color 0.15s ease;
-}
-
-.tds-data-table__action-icon:hover {
-  color: var(--icon-default);
-}
-
-.tds-data-table__action-icon:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
-}
-
-.tds-data-table__icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  border: none;
-  border-radius: 0;
-  background-color: transparent;
-  color: var(--icon-faint);
-  cursor: pointer;
-  padding: 0;
-  flex-shrink: 0;
-  transition: color 0.15s ease;
-}
-
-.tds-data-table__icon-btn:hover {
-  color: var(--icon-default);
-}
-
-.tds-data-table__icon-btn:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
-}
-
-/* --- Loading / skeleton --- */
-
-.tds-data-table__skeleton {
-  height: 14px;
-  border-radius: var(--radius-sm);
-  background-color: var(--surface-neutral-03);
-  animation: tds-skeleton-pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes tds-skeleton-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-/* --- Cell state modifiers --- */
-
-.tds-data-table__cell-placeholder {
-  color: var(--text-description);
-}
-
-.tds-data-table__cell-text-stack {
-  display: inline-flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  align-items: flex-start;
-}
-
-.tds-data-table td[data-align="right"] .tds-data-table__cell-text-stack {
-  align-items: flex-end;
-}
-
-.tds-data-table__text-cell--subtext {
-  height: 67px;
-  padding-top: var(--spacing-8);
-  padding-bottom: var(--spacing-8);
-}
-
-.tds-data-table__text-cell--loading {
-  height: 48px;
-}
-
-.tds-data-table--cells-demo {
-  min-width: 0;
-}
-
-.tds-data-table--cells-demo thead tr {
-  background-color: var(--surface-neutral-02);
-}
-
-/* --- Header icon buttons --- */
-
-.tds-data-table__header-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: var(--padding-sm);
-  border: none;
-  border-radius: var(--radius-md);
-  background: none;
-  color: var(--icon-faint);
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.tds-data-table__header-icon-btn:hover {
-  background-color: var(--surface-hover);
-  color: var(--icon-default);
-}
-
-/* --- Footer --- */
-
-.tds-data-table__footer {
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-end;
-  width: 100%;
-  min-height: 42px;
-  box-sizing: border-box;
-}
-
-.tds-data-table__footer-counter {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  padding: var(--padding-sm) var(--padding-lg);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  color: var(--text-description);
-  white-space: nowrap;
-  text-align: right;
-}
-
-.tds-data-table__footer-pagination {
-  display: flex;
-  flex: 1 1 0;
-  align-items: center;
-  padding: var(--padding-sm) var(--padding-lg);
-  min-width: 0;
-}
-
-.tds-data-table__pagination {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: var(--spacing-4);
-  width: 100%;
-}
-
-.tds-data-table__pagination-direction {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-4);
-  padding: var(--spacing-4);
-  border: none;
-  border-radius: var(--radius-md);
-  background: none;
-  font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  color: var(--interactive-default);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.tds-data-table__pagination-direction:first-child {
-  justify-self: start;
-}
-
-.tds-data-table__pagination-direction:last-child {
-  justify-self: end;
-}
-
-.tds-data-table__pagination-direction:hover {
-  background-color: var(--surface-hover);
-}
-
-.tds-data-table__pagination-direction .icon {
-  width: 16px;
-  height: 16px;
-  color: var(--icon-faint);
-  flex-shrink: 0;
-}
-
-.tds-data-table__pagination-pages {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-8);
-  justify-self: center;
-}
-
-.tds-data-table__pagination-page {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: none;
-  border-radius: var(--radius-md);
-  background: transparent;
-  font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  line-height: 1;
-  color: var(--text-default);
-  cursor: pointer;
-  flex-shrink: 0;
-  box-sizing: border-box;
-}
-
-.tds-data-table__pagination-page:hover {
-  background-color: var(--surface-hover);
-}
-
-.tds-data-table__pagination-page--active,
-.tds-data-table__pagination-page.tds-data-table__pagination-page--active {
-  background-color: var(--interactive-default);
-  color: var(--text-inverse);
-}
-
-.tds-data-table__pagination-page--active:hover {
-  background-color: var(--interactive-default);
-}
-</pre>
-        </div>
-      </article>
-    </section>
+      </section>
 
 <section class="ds-chapter ds-tab-panel" id="typography" role="tabpanel" aria-labelledby="tab-typography" hidden>
       <header class="ds-chapter__header">
@@ -10264,6 +8705,15 @@ function toggleSwitch(label) {
   track.classList.toggle('tds-switch__track--on', !on);
 }
 
+/**
+ * Tab navigation for preview.html — one component family visible at a time.
+ */
+/**
+ * Tab navigation for preview.html — one component family visible at a time.
+ */
+/**
+ * Tab navigation for preview.html — one component family visible at a time.
+ */
 /**
  * Tab navigation for preview.html — one component family visible at a time.
  */
@@ -10598,51 +9048,6 @@ document.getElementById('indet-cb').indeterminate = true;
 const indetCbDis = document.getElementById('indet-cb-dis');
 if (indetCbDis) indetCbDis.indeterminate = true;
 
-// Source code view toggles (HTML / CSS)
-const CODE_VIEW_PATHS = {
-  html: 'Markup',
-  css: 'src/lib/components/atoms/button.css',
-};
-
-document.querySelectorAll('[data-code-view]').forEach(view => {
-  const tabs = view.querySelectorAll('[data-code-view-tab]');
-  const panels = view.querySelectorAll('[data-code-view-panel]');
-  const pathEl = view.querySelector('[data-code-view-path]');
-
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const id = tab.dataset.codeViewTab;
-      tabs.forEach(t => {
-        const active = t === tab;
-        t.classList.toggle('is-active', active);
-        t.setAttribute('aria-selected', active ? 'true' : 'false');
-      });
-      panels.forEach(panel => {
-        panel.hidden = panel.dataset.codeViewPanel !== id;
-      });
-      if (pathEl) pathEl.textContent = CODE_VIEW_PATHS[id] || id;
-    });
-  });
-
-  view.querySelectorAll('[data-copy-code]').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const panel = btn.closest('[data-code-view-panel]');
-      const code = panel?.querySelector('code');
-      if (!code) return;
-      const text = code.textContent || '';
-      try {
-        await navigator.clipboard.writeText(text);
-        const label = btn.textContent;
-        btn.textContent = 'Copied';
-        setTimeout(() => { btn.textContent = label; }, 1500);
-      } catch {
-        btn.textContent = 'Failed';
-        setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
-      }
-    });
-  });
-});
-
 // Pagination interaction
 document.querySelectorAll('#pagination-pages .tds-data-table__pagination-page').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -10653,6 +9058,9 @@ document.querySelectorAll('#pagination-pages .tds-data-table__pagination-page').
   });
 });
 </script>
+
+
+
 
 
 
