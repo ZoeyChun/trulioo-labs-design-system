@@ -18,14 +18,16 @@
 
   var COUNTRY_META = window.BVShared.COUNTRY_META;
   var TEST_ENTITIES = window.BVShared.TEST_ENTITIES;
-  var GENERIC_FIELDS = window.BVShared.GENERIC_FIELDS;
-  var COUNTRY_FIELDS = window.BVShared.COUNTRY_FIELDS;
 
   var PLACEHOLDERS = {
     "Full Name": "First and last name",
     "First Name": "Given name",
+    "Last Name": "Family name",
+    "Middle Name": "Middle name",
     "First Surname": "First family name",
     "Second Surname": "Second family name",
+    "Given Names": "Given names",
+    "Surname": "Surname",
     "National ID Number": "e.g. CPF format",
     "Business Name": "Legal registered name",
     "Business Registration Number": "e.g. HRB 123456",
@@ -61,7 +63,10 @@
   }
 
   function countriesForAccountType(type) {
-    return Object.keys(COUNTRY_FIELDS[type]).map(function (name) {
+    var names = type === "person"
+      ? window.BVShared.personCountryNames()
+      : window.BVShared.businessCountryNames();
+    return names.map(function (name) {
       return { name: name, flag: COUNTRY_META[name].flag };
     }).sort(function (a, b) {
       if (a.name === "United States") return -1;
@@ -74,33 +79,8 @@
     return window.BVShared.fieldsForCountry(state.accountType, state.country);
   }
 
-  var PERSON_NAME_FIELDS = ["Full Name", "First Name"];
-  var BUSINESS_NAME_FIELD = "Business Name";
-  var ACCOUNT_FIELD_LABELS = ["Bank Account Number", "Account Number", "IBAN"];
-
   function requiredFieldLabels() {
-    var fields = fieldsForCurrentSelection();
-    var required = [];
-
-    if (state.accountType === "person") {
-      for (var i = 0; i < PERSON_NAME_FIELDS.length; i++) {
-        if (fields.indexOf(PERSON_NAME_FIELDS[i]) !== -1) {
-          required.push(PERSON_NAME_FIELDS[i]);
-          break;
-        }
-      }
-    } else if (fields.indexOf(BUSINESS_NAME_FIELD) !== -1) {
-      required.push(BUSINESS_NAME_FIELD);
-    }
-
-    for (var j = 0; j < ACCOUNT_FIELD_LABELS.length; j++) {
-      if (fields.indexOf(ACCOUNT_FIELD_LABELS[j]) !== -1) {
-        required.push(ACCOUNT_FIELD_LABELS[j]);
-        break;
-      }
-    }
-
-    return required;
+    return window.BVShared.requiredFieldsForCountry(state.accountType, state.country);
   }
 
   function getSubmitValidationErrors() {
@@ -130,6 +110,16 @@
         });
       }
     });
+
+    if (state.country) {
+      window.BVShared.getExtraValidationErrors(
+        state.accountType,
+        state.country,
+        getFormValues()
+      ).forEach(function (err) {
+        errors.push(err);
+      });
+    }
 
     return errors;
   }
