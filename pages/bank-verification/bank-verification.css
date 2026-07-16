@@ -212,10 +212,10 @@ body {
   overflow: visible;
 }
 
-/* Emoji flag sizing inside the combobox leading-visual slot */
+/* Country flag sizing inside the combobox leading-visual slot */
 .bv-country__flag {
-  font-size: var(--font-size-md);
-  line-height: 1;
+  width: 18px;
+  height: 12px;
 }
 
 /* --------------------------------------------------------
@@ -267,8 +267,6 @@ body {
 .bv-option__flag,
 .bv-test-entity__flag {
   flex-shrink: 0;
-  font-size: var(--font-size-md);
-  line-height: 1;
 }
 
 .bv-test-entity__flag {

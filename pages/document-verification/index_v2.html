@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="../../Components/select/dropdown-panel.css">
   <link rel="stylesheet" href="../../Components/select/field-label.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
+  <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="../shared/flag-icons.css">
   <link rel="stylesheet" href="../shared/app-shell.css">
   <link rel="stylesheet" href="document-verification.css">
   <style>
@@ -223,7 +225,10 @@
         <div class="dv-meta">
           <div class="dv-meta__item">
             <span class="dv-meta__label">Country / Jurisdiction</span>
-            <span class="dv-meta__value">United States 🇺🇸</span>
+            <span class="dv-meta__value dv-meta__value--country">
+              <span>United States</span>
+              <span class="tds-select__country-flag dv-meta__flag" aria-hidden="true"><span class="fi fi-us"></span></span>
+            </span>
           </div>
           <span class="dv-meta__divider" aria-hidden="true"></span>
           <div class="dv-meta__item">

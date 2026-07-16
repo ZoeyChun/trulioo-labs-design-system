@@ -93,7 +93,7 @@
     statusEl.className = "tds-tag tds-tag--" + config.tone + " tds-tag--md";
     statusEl.textContent = config.match;
 
-    document.getElementById("bv-result-country").textContent = config.country + " " + config.countryFlag;
+    shared.fillCountryMetaValue(document.getElementById("bv-result-country"), config.country);
     document.getElementById("bv-result-txn").textContent = config.transactionId;
     document.getElementById("bv-result-date").textContent = formatDate();
 
@@ -193,7 +193,7 @@
     var flag = document.createElement("span");
     flag.className = "tds-select__country-flag bv-test-entity__flag";
     if (current) {
-      flag.textContent = shared.entityFlag(current.country);
+      shared.setFlagElement(flag, current.country);
     } else {
       flag.hidden = true;
     }

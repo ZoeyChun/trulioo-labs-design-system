@@ -16,7 +16,6 @@
 
   /* ---------------- Mock data (from shared) ---------------- */
 
-  var COUNTRY_META = window.BVShared.COUNTRY_META;
   var TEST_ENTITIES = window.BVShared.TEST_ENTITIES;
 
   var PLACEHOLDERS = {
@@ -67,7 +66,7 @@
       ? window.BVShared.personCountryNames()
       : window.BVShared.businessCountryNames();
     return names.map(function (name) {
-      return { name: name, flag: COUNTRY_META[name].flag };
+      return { name: name };
     }).sort(function (a, b) {
       if (a.name === "United States") return -1;
       if (b.name === "United States") return 1;
@@ -323,7 +322,7 @@
         var opt = el("button", "tds-combobox__option" + (isSelected ? " tds-combobox__option--selected" : ""),
           { type: "button", role: "option", "aria-selected": String(isSelected) });
         var f = el("span", "tds-combobox__option-visual");
-        f.textContent = c.flag;
+        window.BVShared.setFlagElement(f, c.name);
         var label = el("span", "tds-combobox__option-label");
         label.textContent = c.name;
         opt.appendChild(f);
@@ -362,8 +361,7 @@
       var preserveLabels = window.BVShared.fieldsForCountry(state.accountType, state.country);
       state.country = c.name;
       input.value = c.name;
-      flag.textContent = c.flag;
-      flag.hidden = false;
+      window.BVShared.setFlagElement(flag, c.name);
       close();
       if (state.testEntity && !opts.fromTestEntity) {
         syncTestEntityToCountry(c.name);
@@ -376,8 +374,7 @@
       var preserveLabels = window.BVShared.fieldsForCountry(state.accountType, state.country);
       state.country = null;
       input.value = "";
-      flag.hidden = true;
-      flag.textContent = "";
+      window.BVShared.setFlagElement(flag, null);
       if (state.testEntity && !opts.skipEntitySync) {
         syncTestEntityToCountry(null);
       }
@@ -402,7 +399,7 @@
       if (state.country) openWithSelection();
     });
     input.addEventListener("input", function () {
-      flag.hidden = true;
+      window.BVShared.setFlagElement(flag, null);
       var preserveLabels = window.BVShared.fieldsForCountry(state.accountType, state.country);
       state.country = null;
       if (state.testEntity) {
@@ -509,10 +506,6 @@
     return wrap;
   }
 
-  function entityFlag(country) {
-    return COUNTRY_META[country] ? COUNTRY_META[country].flag : "";
-  }
-
   function makeTestEntitySelect() {
     var entities = TEST_ENTITIES[state.accountType];
     var current = state.selectedTestEntity != null ? entities[state.selectedTestEntity] : null;
@@ -526,7 +519,7 @@
 
     var flagEl = el("span", "tds-select__country-flag bv-test-entity__flag", { "aria-hidden": "true" });
     if (current) {
-      flagEl.textContent = entityFlag(current.country);
+      window.BVShared.setFlagElement(flagEl, current.country);
     } else {
       flagEl.hidden = true;
     }
@@ -787,7 +780,7 @@
     setTestEntity: setTestEntity,
     resetFormToDefault: resetFormToDefault,
     TEST_ENTITIES: TEST_ENTITIES,
-    entityFlag: entityFlag
+    countryCode: function (country) { return window.BVShared.countryCode(country); }
   };
 
   /* ---------------- Boot ---------------- */

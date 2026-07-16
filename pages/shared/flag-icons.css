@@ -1,0 +1,45 @@
+/* Flag icons (flag-icons / lipis) — shared page styles
+   Requires: ../../assets/flag-icons/css/flag-icons.min.css
+   Usage: <span class="fi fi-us"></span> */
+
+.tds-select__country-flag .fi,
+.tds-combobox__leading-visual .fi,
+.tds-combobox__option-visual .fi,
+.bv-option__flag .fi,
+.dv-meta__flag .fi {
+  width: 18px;
+  line-height: 12px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.tds-select__country-flag,
+.tds-combobox__leading-visual.bv-country__flag,
+.tds-combobox__option-visual,
+.bv-option__flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dv-meta__value--country {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.dv-meta__flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}

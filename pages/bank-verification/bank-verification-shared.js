@@ -139,60 +139,6 @@
     "United Kingdom": { code: "GB", variantGroup: "ibanOrOther" }
   };
 
-  var COUNTRY_META = {
-    "Argentina": { flag: "🇦🇷" },
-    "Australia": { flag: "🇦🇺" },
-    "Austria": { flag: "🇦🇹" },
-    "Belgium": { flag: "🇧🇪" },
-    "Brazil": { flag: "🇧🇷" },
-    "Bulgaria": { flag: "🇧🇬" },
-    "Chile": { flag: "🇨🇱" },
-    "China": { flag: "🇨🇳" },
-    "Colombia": { flag: "🇨🇴" },
-    "Croatia": { flag: "🇭🇷" },
-    "Cyprus": { flag: "🇨🇾" },
-    "Ecuador": { flag: "🇪🇨" },
-    "Egypt": { flag: "🇪🇬" },
-    "Estonia": { flag: "🇪🇪" },
-    "Finland": { flag: "🇫🇮" },
-    "France": { flag: "🇫🇷" },
-    "Germany": { flag: "🇩🇪" },
-    "Ghana": { flag: "🇬🇭" },
-    "Greece": { flag: "🇬🇷" },
-    "India": { flag: "🇮🇳" },
-    "Indonesia": { flag: "🇮🇩" },
-    "Ireland": { flag: "🇮🇪" },
-    "Italy": { flag: "🇮🇹" },
-    "Latvia": { flag: "🇱🇻" },
-    "Lithuania": { flag: "🇱🇹" },
-    "Luxembourg": { flag: "🇱🇺" },
-    "Malaysia": { flag: "🇲🇾" },
-    "Malta": { flag: "🇲🇹" },
-    "Mexico": { flag: "🇲🇽" },
-    "Nepal": { flag: "🇳🇵" },
-    "Netherlands": { flag: "🇳🇱" },
-    "Nigeria": { flag: "🇳🇬" },
-    "Norway": { flag: "🇳🇴" },
-    "Pakistan": { flag: "🇵🇰" },
-    "Peru": { flag: "🇵🇪" },
-    "Philippines": { flag: "🇵🇭" },
-    "Portugal": { flag: "🇵🇹" },
-    "Saudi Arabia": { flag: "🇸🇦" },
-    "Slovakia": { flag: "🇸🇰" },
-    "Slovenia": { flag: "🇸🇮" },
-    "South Africa": { flag: "🇿🇦" },
-    "South Korea": { flag: "🇰🇷" },
-    "Spain": { flag: "🇪🇸" },
-    "Thailand": { flag: "🇹🇭" },
-    "Turkey": { flag: "🇹🇷" },
-    "UAE": { flag: "🇦🇪" },
-    "Uganda": { flag: "🇺🇬" },
-    "United Kingdom": { flag: "🇬🇧" },
-    "United States": { flag: "🇺🇸" },
-    "Uruguay": { flag: "🇺🇾" },
-    "Vietnam": { flag: "🇻🇳" }
-  };
-
   var COUNTRY_RESULT_META = {
     "Brazil": { bank: "Banco do Brasil", currency: "BRL", code: "BR", city: "São Paulo", state: "SP" },
     "South Korea": { bank: "Kookmin Bank", currency: "KRW", code: "KR", city: "Seoul", state: "Seoul" },
@@ -464,8 +410,39 @@
     return buildBusinessFields(country);
   }
 
+  function countryCode(country) {
+    var meta = getCountryResultMeta(country);
+    return meta && meta.code && meta.code !== "—" ? meta.code.toLowerCase() : "";
+  }
+
   function entityFlag(country) {
-    return COUNTRY_META[country] ? COUNTRY_META[country].flag : "";
+    return countryCode(country);
+  }
+
+  function setFlagElement(el, country) {
+    if (!el) return;
+    var code = countryCode(country);
+    if (!code) {
+      el.hidden = true;
+      el.innerHTML = "";
+      return;
+    }
+    el.hidden = false;
+    el.innerHTML = '<span class="fi fi-' + code + '"></span>';
+  }
+
+  function fillCountryMetaValue(el, countryName) {
+    if (!el) return;
+    el.className = "dv-meta__value dv-meta__value--country";
+    el.textContent = "";
+    var nameSpan = document.createElement("span");
+    nameSpan.textContent = countryName;
+    el.appendChild(nameSpan);
+    var flagWrap = document.createElement("span");
+    flagWrap.className = "tds-select__country-flag dv-meta__flag";
+    flagWrap.setAttribute("aria-hidden", "true");
+    setFlagElement(flagWrap, countryName);
+    el.appendChild(flagWrap);
   }
 
   function saveSession(session) {
@@ -717,7 +694,7 @@
     var optFlag = document.createElement("span");
     optFlag.className = "bv-option__flag";
     optFlag.setAttribute("aria-hidden", "true");
-    optFlag.textContent = entityFlag(ent.country);
+    setFlagElement(optFlag, ent.country);
 
     var textWrap = document.createElement("span");
     textWrap.className = "bv-option__text";
@@ -848,7 +825,6 @@
     SESSION_KEY: SESSION_KEY,
     PERSON_COUNTRIES: PERSON_COUNTRIES,
     BUSINESS_COUNTRIES: BUSINESS_COUNTRIES,
-    COUNTRY_META: COUNTRY_META,
     GENERIC_FIELDS: GENERIC_FIELDS,
     TEST_ENTITIES: TEST_ENTITIES,
     personCountryNames: personCountryNames,
@@ -856,7 +832,10 @@
     fieldsForCountry: fieldsForCountry,
     requiredFieldsForCountry: requiredFieldsForCountry,
     getExtraValidationErrors: getExtraValidationErrors,
+    countryCode: countryCode,
     entityFlag: entityFlag,
+    setFlagElement: setFlagElement,
+    fillCountryMetaValue: fillCountryMetaValue,
     saveSession: saveSession,
     loadSession: loadSession,
     buildResultConfig: buildResultConfig,
