@@ -3,8 +3,6 @@
    Usage: <span class="fi fi-us"></span> */
 
 .tds-select__country-flag .fi,
-.tds-combobox__leading-visual .fi,
-.tds-combobox__option-visual .fi,
 .bv-option__flag .fi,
 .dv-meta__flag .fi {
   width: 18px;
@@ -13,14 +11,32 @@
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
+.tds-combobox__leading-visual .fi,
+.tds-combobox__option-visual .fi {
+  width: 16px;
+  line-height: 12px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
 .tds-select__country-flag,
-.tds-combobox__leading-visual.bv-country__flag,
-.tds-combobox__option-visual,
 .bv-option__flag {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.tds-combobox__leading-visual.bv-country__flag,
+.tds-combobox__option-visual {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
   height: 12px;
   border-radius: 2px;
   overflow: hidden;
