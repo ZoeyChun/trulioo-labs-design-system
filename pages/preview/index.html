@@ -5844,6 +5844,84 @@ code {
   .grid-2, .grid-3 { gap: var(--spacing-24); }
 }
 
+/* ============================================================
+   StatCard
+   Sentiment: positive | negative  (colors the footer icon)
+   ============================================================ */
+
+.tds-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  padding: var(--padding-lg);
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-divider);
+  border-radius: var(--radius-xl);
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+.tds-stat-card__label {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-description);
+  word-break: break-word;
+}
+.tds-stat-card__value-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  overflow: hidden;
+}
+.tds-stat-card__value {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-variation-figma-semibold);
+  color: var(--text-default);
+  word-break: break-word;
+}
+.tds-stat-card__sub-label {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+  word-break: break-word;
+}
+.tds-stat-card__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+}
+.tds-stat-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-muted);
+}
+.tds-stat-card__icon svg,
+.tds-stat-card__icon .icon { width: 16px; height: 16px; }
+.tds-stat-card__description {
+  margin: 0;
+  flex: 1 0 0;
+  min-width: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-default);
+  word-break: break-word;
+}
+.tds-stat-card--positive .tds-stat-card__icon { color: var(--icon-positive); }
+.tds-stat-card--negative .tds-stat-card__icon { color: var(--icon-negative); }
+
   </style>
 </head>
 <body>
@@ -8560,6 +8638,44 @@ code {
         </table>
         </div>
 </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Stat card</h3>
+          <p class="ds-showcase__desc">Compact metric card — label, value, sub-label, and a footer with a sentiment icon + description. Positive and negative sentiments color the footer icon (Figma 915:9281).</p>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-stat-card · .tds-stat-card--positive · .tds-stat-card--negative</code></div>
+        </div>
+        <div class="ds-showcase__canvas">
+          <div class="ds-state-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 289px)); gap: var(--spacing-16);">
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Negative</span>
+              <div class="tds-stat-card tds-stat-card--negative">
+                <p class="tds-stat-card__label">Label</p>
+                <div class="tds-stat-card__value-group">
+                  <p class="tds-stat-card__value">Value</p>
+                  <p class="tds-stat-card__sub-label">Sub Label</p>
+                </div>
+                <div class="tds-stat-card__footer">
+                  <span class="tds-stat-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M10 6 6 10M6 6l4 4"/></svg></span>
+                  <p class="tds-stat-card__description">Description</p>
+                </div>
+              </div>
+            </div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Positive</span>
+              <div class="tds-stat-card tds-stat-card--positive">
+                <p class="tds-stat-card__label">Label</p>
+                <div class="tds-stat-card__value-group">
+                  <p class="tds-stat-card__value">Value</p>
+                  <p class="tds-stat-card__sub-label">Sub Label</p>
+                </div>
+                <div class="tds-stat-card__footer">
+                  <span class="tds-stat-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8 7.25 9.75 10.5 6.25"/></svg></span>
+                  <p class="tds-stat-card__description">Description</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </article>
 
