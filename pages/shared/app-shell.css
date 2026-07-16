@@ -401,7 +401,7 @@
     display: flex !important;
   }
 
-  /* Mobile drawer always shows expanded brand (wordmark + Labs badge) */
+  /* Mobile drawer always shows expanded brand logo */
   .app-shell .tds-side-nav .tds-side-nav__brand-expanded {
     display: inline-flex !important;
   }
