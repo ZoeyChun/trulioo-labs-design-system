@@ -1901,6 +1901,7 @@ button.tds-nav-item:disabled:hover {
 .tds-side-nav--collapsed {
   width: 72px;
   z-index: 10;
+  cursor: pointer;
 }
 
 /* --- Collapse / expand control (Figma: bordered bar above profile) --- */
@@ -1979,6 +1980,7 @@ button.tds-side-nav__collapse-bar:hover {
 
 .tds-side-nav--collapsed .tds-side-nav__brand {
   justify-content: center;
+  cursor: default;
 }
 
 .tds-side-nav__logo {
@@ -3742,16 +3744,26 @@ button.tds-side-nav__profile--collapsed:hover {
    ============================================================ */
 
 .tds-action-list-item,
-label.tds-action-list-item {
+label.tds-action-list-item,
+button.tds-action-list-item {
   display: flex;
   align-items: center;
   gap: var(--spacing-8);
   border-radius: var(--radius-button);
   font-family: var(--font-family);
   color: var(--text-default);
+  background-color: transparent;
   cursor: pointer;
   transition: background-color 0.15s ease;
   border: 2px solid transparent;
+}
+
+button.tds-action-list-item {
+  appearance: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  font: inherit;
 }
 
 label.tds-action-list-item {
@@ -5895,87 +5907,11 @@ code {
   .grid-2, .grid-3 { gap: var(--spacing-24); }
 }
 
-/* ============================================================
-   StatCard
-   Sentiment: positive | negative  (colors the footer icon)
-   ============================================================ */
-
-.tds-stat-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-xl);
-  padding: var(--padding-lg);
-  background-color: var(--surface-neutral-01);
-  border: 1px solid var(--border-divider);
-  border-radius: var(--radius-xl);
-  font-family: var(--font-family);
-  box-sizing: border-box;
-}
-.tds-stat-card__label {
-  margin: 0;
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-description);
-  word-break: break-word;
-}
-.tds-stat-card__value-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-xs);
-  overflow: hidden;
-}
-.tds-stat-card__value {
-  margin: 0;
-  font-size: var(--font-size-2xl);
-  line-height: var(--line-height-2xl);
-  font-weight: var(--font-weight-semibold);
-  font-variation-settings: var(--font-variation-figma-semibold);
-  color: var(--text-default);
-  word-break: break-word;
-}
-.tds-stat-card__sub-label {
-  margin: 0;
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-regular);
-  color: var(--text-description);
-  word-break: break-word;
-}
-.tds-stat-card__footer {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  width: 100%;
-}
-.tds-stat-card__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  color: var(--icon-muted);
-}
-.tds-stat-card__icon svg,
-.tds-stat-card__icon .icon { width: 16px; height: 16px; }
-.tds-stat-card__description {
-  margin: 0;
-  flex: 1 0 0;
-  min-width: 0;
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-regular);
-  color: var(--text-default);
-  word-break: break-word;
-}
-.tds-stat-card--positive .tds-stat-card__icon { color: var(--icon-positive); }
-.tds-stat-card--negative .tds-stat-card__icon { color: var(--icon-negative); }
-
   </style>
 </head>
 <body>
+
+
 
 
 
@@ -7967,6 +7903,7 @@ code {
         <div class="ds-showcase__canvas ds-showcase__canvas--flush">
 <div class="ds-state-grid" style="grid-template-columns: 1fr; gap: var(--spacing-16); max-width: 240px;">
             <div class="ds-state-demo"><span class="ds-state-demo__label">Default</span><button type="button" class="tds-side-nav__nav-item"><span class="tds-side-nav__nav-item-label"><span class="tds-side-nav__nav-item-icon"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5 8 2l5.5 4.5V13a1 1 0 0 1-1 1H3.5a1 1 0 0 1-1-1V6.5z"/><path d="M6 14V9h4v5"/></svg></span><span class="tds-side-nav__nav-item-text">Home</span></span></button></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Hover</span><button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--hover-demo"><span class="tds-side-nav__nav-item-label"><span class="tds-side-nav__nav-item-icon"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5 8 2l5.5 4.5V13a1 1 0 0 1-1 1H3.5a1 1 0 0 1-1-1V6.5z"/><path d="M6 14V9h4v5"/></svg></span><span class="tds-side-nav__nav-item-text">Home</span></span></button></div>
             <div class="ds-state-demo"><span class="ds-state-demo__label">Active · expanded</span><button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-current="page"><span class="tds-side-nav__nav-item-label"><span class="tds-side-nav__nav-item-icon"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 2.5h4l1 3h2.5v2H2.5v-2H5l1-3zM4.5 9.5h7v4.5h-7V9.5z"/></svg></span><span class="tds-side-nav__nav-item-text">Labs</span></span><span class="tds-side-nav__nav-item-chevron"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 10l4-4 4 4"/></svg></span></button></div>
           </div>
         </div>
@@ -8108,41 +8045,6 @@ code {
 
       <article class="ds-showcase">
         <div class="ds-showcase__head">
-          <h3 class="ds-showcase__title">Tooltip</h3>
-          <p class="ds-showcase__desc">Simple and rich bodies with positional carets — dark and light themes (Figma 1054:18565 · 1129:10395).</p>
-          <div class="ds-showcase__meta"><code class="ds-api">.tds-tooltip · __body · __caret</code></div>
-        </div>
-        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
-<div class="ds-state-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-24);">
-        <div class="ds-state-demo"><span class="ds-state-demo__label">Simple · dark · bottom</span>
-<div class="tds-tooltip tds-tooltip--simple tds-tooltip--dark tds-tooltip--bottom">
-  <div class="tds-tooltip__body"><p class="tds-tooltip__text">This is a tooltip</p></div>
-  <span class="tds-tooltip__caret" aria-hidden="true"></span>
-</div></div>
-        <div class="ds-state-demo"><span class="ds-state-demo__label">Simple · light · bottom</span>
-<div class="tds-tooltip tds-tooltip--simple tds-tooltip--light tds-tooltip--bottom">
-  <div class="tds-tooltip__body"><p class="tds-tooltip__text">This is a tooltip</p></div>
-  <span class="tds-tooltip__caret" aria-hidden="true"></span>
-</div></div>
-        <div class="ds-state-demo"><span class="ds-state-demo__label">Rich · dark · bottom</span>
-<div class="tds-tooltip tds-tooltip--rich tds-tooltip--dark tds-tooltip--bottom">
-  <div class="tds-tooltip__body">
-    <div class="tds-tooltip__header"><p class="tds-tooltip__text">This is a tooltip</p></div>
-    <p class="tds-tooltip__description">Tooltips are used to describe or identify an element. In most scenarios, tooltips help the user understand the meaning, function or alt-text of an element.</p>
-  </div>
-  <span class="tds-tooltip__caret" aria-hidden="true"></span>
-</div></div>
-        <div class="ds-state-demo"><span class="ds-state-demo__label">Simple · dark · left</span>
-<div class="tds-tooltip tds-tooltip--simple tds-tooltip--dark tds-tooltip--left">
-  <div class="tds-tooltip__body"><p class="tds-tooltip__text">This is a tooltip</p></div>
-  <span class="tds-tooltip__caret" aria-hidden="true"></span>
-</div></div>
-      </div>
-        </div>
-      </article>
-
-      <article class="ds-showcase">
-        <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Side nav — Collapsed hover tooltip</h3>
           <p class="ds-showcase__desc">Icon rail with inverse tooltip on hover (Figma 1201:10370).</p>
           <div class="ds-showcase__meta"><code class="ds-api">.tds-side-nav__tooltip</code></div>
@@ -8165,7 +8067,7 @@ code {
 </aside>
 </div>
         </div>
-      </article>
+      </article>      </article>
 
       </section>
 
@@ -8700,44 +8602,6 @@ code {
         </div>
       </article>
 
-      <article class="ds-showcase">
-        <div class="ds-showcase__head">
-          <h3 class="ds-showcase__title">Stat card</h3>
-          <p class="ds-showcase__desc">Compact metric card — label, value, sub-label, and a footer with a sentiment icon + description. Positive and negative sentiments color the footer icon (Figma 915:9281).</p>
-          <div class="ds-showcase__meta"><code class="ds-api">.tds-stat-card · .tds-stat-card--positive · .tds-stat-card--negative</code></div>
-        </div>
-        <div class="ds-showcase__canvas">
-          <div class="ds-state-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 289px)); gap: var(--spacing-16);">
-            <div class="ds-state-demo"><span class="ds-state-demo__label">Negative</span>
-              <div class="tds-stat-card tds-stat-card--negative">
-                <p class="tds-stat-card__label">Label</p>
-                <div class="tds-stat-card__value-group">
-                  <p class="tds-stat-card__value">Value</p>
-                  <p class="tds-stat-card__sub-label">Sub Label</p>
-                </div>
-                <div class="tds-stat-card__footer">
-                  <span class="tds-stat-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M10 6 6 10M6 6l4 4"/></svg></span>
-                  <p class="tds-stat-card__description">Description</p>
-                </div>
-              </div>
-            </div>
-            <div class="ds-state-demo"><span class="ds-state-demo__label">Positive</span>
-              <div class="tds-stat-card tds-stat-card--positive">
-                <p class="tds-stat-card__label">Label</p>
-                <div class="tds-stat-card__value-group">
-                  <p class="tds-stat-card__value">Value</p>
-                  <p class="tds-stat-card__sub-label">Sub Label</p>
-                </div>
-                <div class="tds-stat-card__footer">
-                  <span class="tds-stat-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8 7.25 9.75 10.5 6.25"/></svg></span>
-                  <p class="tds-stat-card__description">Description</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-
       </section>
 
 <section class="ds-chapter ds-tab-panel" id="typography" role="tabpanel" aria-labelledby="tab-typography" hidden>
@@ -8880,6 +8744,12 @@ function toggleSwitch(label) {
   track.classList.toggle('tds-switch__track--on', !on);
 }
 
+/**
+ * Tab navigation for preview.html — one component family visible at a time.
+ */
+/**
+ * Tab navigation for preview.html — one component family visible at a time.
+ */
 /**
  * Tab navigation for preview.html — one component family visible at a time.
  */
@@ -9233,6 +9103,8 @@ document.querySelectorAll('#pagination-pages .tds-data-table__pagination-page').
   });
 });
 </script>
+
+
 
 
 

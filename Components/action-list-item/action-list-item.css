@@ -7,16 +7,26 @@
    ============================================================ */
 
 .tds-action-list-item,
-label.tds-action-list-item {
+label.tds-action-list-item,
+button.tds-action-list-item {
   display: flex;
   align-items: center;
   gap: var(--spacing-8);
   border-radius: var(--radius-button);
   font-family: var(--font-family);
   color: var(--text-default);
+  background-color: transparent;
   cursor: pointer;
   transition: background-color 0.15s ease;
   border: 2px solid transparent;
+}
+
+button.tds-action-list-item {
+  appearance: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  font: inherit;
 }
 
 label.tds-action-list-item {
