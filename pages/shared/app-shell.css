@@ -401,6 +401,15 @@
     display: flex !important;
   }
 
+  /* Mobile drawer always shows expanded brand (wordmark + Labs badge) */
+  .app-shell .tds-side-nav .tds-side-nav__brand-expanded {
+    display: inline-flex !important;
+  }
+
+  .app-shell .tds-side-nav .tds-side-nav__logo {
+    display: none !important;
+  }
+
   /* Slide in when open */
   .app-shell--nav-open .tds-side-nav {
     transform: translateX(0);

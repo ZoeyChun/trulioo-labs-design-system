@@ -111,6 +111,12 @@ def build(
 {child}    <span class="tds-side-nav__logo">
 {child}      <img src="{assets_prefix}/trulioo-logo-mark.svg" alt="" width="40" height="40">
 {child}    </span>
+{child}    <span class="tds-side-nav__brand-expanded">
+{child}      <span class="tds-side-nav__wordmark">
+{child}        <img src="{assets_prefix}/trulioo-wordmark.svg" alt="Trulioo" width="98" height="24">
+{child}      </span>
+{child}      <span class="tds-side-nav__labs-badge">Labs</span>
+{child}    </span>
 {child}  </button>
 {child}</div>
 

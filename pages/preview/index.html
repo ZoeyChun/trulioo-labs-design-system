@@ -2001,6 +2001,57 @@ button.tds-side-nav__collapse-bar:hover {
   object-fit: cover;
 }
 
+.tds-side-nav__brand-expanded {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.tds-side-nav--collapsed .tds-side-nav__brand-expanded {
+  display: none;
+}
+
+.tds-side-nav:not(.tds-side-nav--collapsed) .tds-side-nav__logo {
+  display: none;
+}
+
+.tds-side-nav__wordmark {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 98px;
+  height: 24px;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.tds-side-nav__wordmark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.tds-side-nav__labs-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 23px;
+  padding: 6px 10px;
+  border: 1px solid #96a3a1;
+  border-radius: 100px;
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
 /* --- Main content (Figma: px 16, py 24, gap 16) --- */
 
 .tds-side-nav__main {
@@ -7980,6 +8031,10 @@ code {
   <div class="tds-side-nav__header">
     <button type="button" class="tds-side-nav__brand" aria-expanded="true">
       <span class="tds-side-nav__logo"><img src="../../assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40"></span>
+      <span class="tds-side-nav__brand-expanded">
+        <span class="tds-side-nav__wordmark"><img src="../../assets/trulioo-wordmark.svg" alt="Trulioo" width="98" height="24"></span>
+        <span class="tds-side-nav__labs-badge">Labs</span>
+      </span>
     </button>
   </div>
   <div class="tds-side-nav__main">
@@ -8030,6 +8085,10 @@ code {
   <div class="tds-side-nav__header">
     <button type="button" class="tds-side-nav__brand" aria-expanded="false">
       <span class="tds-side-nav__logo"><img src="../../assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40"></span>
+      <span class="tds-side-nav__brand-expanded">
+        <span class="tds-side-nav__wordmark"><img src="../../assets/trulioo-wordmark.svg" alt="Trulioo" width="98" height="24"></span>
+        <span class="tds-side-nav__labs-badge">Labs</span>
+      </span>
     </button>
   </div>
   <div class="tds-side-nav__main">

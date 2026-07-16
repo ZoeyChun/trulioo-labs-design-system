@@ -49,11 +49,17 @@
         <svg class="icon" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 4l-4 4 4 4"/></svg>
       </button>
 
-      <!-- Header: logo -->
+      <!-- Header: logo mark (collapsed) / wordmark + Labs badge (expanded) -->
       <div class="tds-side-nav__header">
         <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
           <span class="tds-side-nav__logo">
-            <img src="../../assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40">
+            <img src="../../assets/trulioo-logo-mark.svg" alt="" width="40" height="40">
+          </span>
+          <span class="tds-side-nav__brand-expanded">
+            <span class="tds-side-nav__wordmark">
+              <img src="../../assets/trulioo-wordmark.svg" alt="Trulioo" width="98" height="24">
+            </span>
+            <span class="tds-side-nav__labs-badge">Labs</span>
           </span>
         </button>
       </div>
@@ -524,15 +530,17 @@
   </div>
 
   <script src="document-verification.js"></script>
+  <script src="../../Components/side-nav/side-nav.js"></script>
   <script>
-  /* TDS SideNav: collapsed/expanded + sub-nav + mobile overlay */
+  /* TDS SideNav: mobile overlay + collapse/expand (side-nav.js) */
   (function () {
     var shell = document.getElementById('app-shell');
     var sideNav = document.getElementById('app-sidenav');
-    var toggle = document.getElementById('sidenav-toggle');
     var hamburger = document.getElementById('app-nav-toggle');
     var overlay = document.getElementById('app-sidenav-overlay');
-    if (!sideNav || !toggle) return;
+    if (!sideNav) return;
+
+    TdsSideNav.init({ toggleId: 'sidenav-toggle' });
 
     /* --- Mobile hamburger menu --- */
     function openMobileNav() {
@@ -566,76 +574,9 @@
       overlay.addEventListener('click', closeMobileNav);
     }
 
-    /* close on Escape */
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && shell.classList.contains('app-shell--nav-open')) {
         closeMobileNav();
-      }
-    });
-
-    /* --- Collapsed / expanded mode --- */
-    var collapseBar = document.getElementById('sidenav-collapse');
-    var CHEVRONS_LEFT = '<path d="M10 4 6 8l4 4M6 4 2 8l4 4"/>';
-    var CHEVRONS_RIGHT = '<path d="M6 4l4 4-4 4M10 4l4 4-4 4"/>';
-
-    function setSideNavCollapsed(collapsed) {
-      sideNav.classList.toggle('tds-side-nav--collapsed', collapsed);
-
-      if (toggle) {
-        toggle.setAttribute('aria-expanded', String(!collapsed));
-        toggle.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
-        var toggleSvg = toggle.querySelector('svg');
-        if (toggleSvg) {
-          toggleSvg.innerHTML = collapsed
-            ? '<path d="M6 4l4 4-4 4"/>'
-            : '<path d="M10 4l-4 4 4 4"/>';
-        }
-      }
-
-      if (collapseBar) {
-        collapseBar.setAttribute('aria-expanded', String(!collapsed));
-        collapseBar.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
-        var barSvg = collapseBar.querySelector('svg');
-        if (barSvg) barSvg.innerHTML = collapsed ? CHEVRONS_RIGHT : CHEVRONS_LEFT;
-      }
-
-      var iconRail = sideNav.querySelector('.tds-side-nav__icon-rail');
-      if (iconRail) iconRail.setAttribute('aria-hidden', String(collapsed));
-    }
-
-    toggle.addEventListener('click', function () {
-      setSideNavCollapsed(!sideNav.classList.contains('tds-side-nav--collapsed'));
-    });
-
-    if (collapseBar) {
-      collapseBar.addEventListener('click', function () {
-        setSideNavCollapsed(!sideNav.classList.contains('tds-side-nav--collapsed'));
-      });
-    }
-
-    /* --- Sub-nav expand / collapse (click nav items with aria-expanded) --- */
-    sideNav.addEventListener('click', function (e) {
-      if (e.target.closest('#sidenav-toggle') || e.target.closest('#sidenav-collapse')) return;
-
-      var btn = e.target.closest('.tds-side-nav__nav-item[aria-expanded]');
-      if (!btn) return;
-
-      var group = btn.closest('.tds-side-nav__nav-group');
-      if (!group) return;
-
-      var subNav = group.querySelector('.tds-side-nav__sub-nav');
-      if (!subNav) return;
-
-      var isOpen = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!isOpen));
-
-      subNav.style.display = isOpen ? 'none' : '';
-
-      var chevron = btn.querySelector('.tds-side-nav__nav-item-chevron svg');
-      if (chevron) {
-        chevron.innerHTML = isOpen
-          ? '<path d="M4 6l4 4 4-4"/>'
-          : '<path d="M4 10l4-4 4 4"/>';
       }
     });
   })();
