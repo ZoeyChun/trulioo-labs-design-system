@@ -1,3 +1,5 @@
+@import './tab-item/tab-item.css';
+
 /* ============================================================
    Tabs
    Figma: Tabs (405:8964)
@@ -9,24 +11,29 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  position: relative;
   width: 100%;
+  padding-bottom: 1px;
 }
 
 .tds-tabs__row {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
   width: 100%;
 }
 
 .tds-tabs__list {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: var(--spacing-32);
 }
 
 .tds-tabs__divider {
-  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 1px;
   background-color: var(--border-strong);
   flex-shrink: 0;

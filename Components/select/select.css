@@ -1,3 +1,10 @@
+@import '../_shared/field-label/field-label.css';
+@import '../_shared/field-caption/field-caption.css';
+@import '../_shared/field-validation/field-validation.css';
+@import '../_shared/caret/caret.css';
+@import '../_shared/dropdown-panel/dropdown-panel.css';
+@import '../_shared/tag/tag.css';
+
 /* ============================================================
    Select
    Figma: Select (96:1624)
