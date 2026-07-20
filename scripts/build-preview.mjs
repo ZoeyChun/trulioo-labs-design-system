@@ -75,16 +75,6 @@ function discoverComponentLinks() {
   return links.sort();
 }
 
-function extractPreviewLayoutCss(html) {
-  const marker = "/* --- App shell --- */";
-  const start = html.indexOf(marker);
-  if (start === -1) {
-    throw new Error("Could not find preview layout CSS marker in index.html");
-  }
-  const styleEnd = html.indexOf("</style>", start);
-  return html.slice(start, styleEnd).trim();
-}
-
 function extractBody(html) {
   const bodyStart = html.indexOf("<body>");
   const bodyEnd = html.lastIndexOf("</body>");
@@ -96,13 +86,13 @@ function extractBody(html) {
 
 function buildPreviewHtml() {
   const existing = fs.readFileSync(PREVIEW, "utf8");
-  const layoutCss = extractPreviewLayoutCss(existing);
   const body = extractBody(existing);
   const componentLinks = discoverComponentLinks();
 
   const links = [
     `<link rel="stylesheet" href="../../tokens/fonts.css">`,
     `<link rel="stylesheet" href="../../tokens/tokens.css">`,
+    `<link rel="stylesheet" href="preview-shell.css">`,
     `<link rel="stylesheet" href="../shared/tds-shared-atoms.css">`,
     `<link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">`,
     ...componentLinks.map(
@@ -119,9 +109,9 @@ function buildPreviewHtml() {
   ${links}
   <style>
 /* AUTO-GENERATED layout — run: node scripts/build-preview.mjs */
-/* Component styles loaded via <link>; tokens via tokens/tokens.css */
+/* Shell styles in pages/preview/preview-shell.css */
 
-${PREVIEW_BASE_CSS}${layoutCss}
+${PREVIEW_BASE_CSS}
   </style>
 </head>
 ${body}

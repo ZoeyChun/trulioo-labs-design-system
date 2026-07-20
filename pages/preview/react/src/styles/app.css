@@ -1,0 +1,5 @@
+/* Minimal runtime overrides */
+
+.tds-preview__panels {
+  position: relative;
+}

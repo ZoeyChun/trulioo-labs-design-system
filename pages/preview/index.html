@@ -6,17 +6,21 @@
   <title>Trulioo Design System — Component Reference</title>
   <link rel="stylesheet" href="../../tokens/fonts.css">
   <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="preview-shell.css">
   <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../../Components/accordion/accordion.css">
   <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
   <link rel="stylesheet" href="../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../Components/breadcrumb/breadcrumb.css">
   <link rel="stylesheet" href="../../Components/button-menu/button-menu.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
   <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
   <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
   <link rel="stylesheet" href="../../Components/data-field/data-field.css">
   <link rel="stylesheet" href="../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../Components/date-picker/date-picker.css">
   <link rel="stylesheet" href="../../Components/dismiss-action/dismiss-action.css">
   <link rel="stylesheet" href="../../Components/dismiss-issue-badge/dismiss-issue-badge.css">
   <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
@@ -26,7 +30,9 @@
   <link rel="stylesheet" href="../../Components/progress-indicator/progress-indicator.css">
   <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="../../Components/radio-group/radio-group.css">
+  <link rel="stylesheet" href="../../Components/risk-category-card/risk-category-card.css">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
+  <link rel="stylesheet" href="../../Components/section-header/section-header.css">
   <link rel="stylesheet" href="../../Components/select/combobox.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
@@ -37,7 +43,7 @@
   <link rel="stylesheet" href="../../Components/tooltip/tooltip.css">
   <style>
 /* AUTO-GENERATED layout — run: node scripts/build-preview.mjs */
-/* Component styles loaded via <link>; tokens via tokens/tokens.css */
+/* Shell styles in pages/preview/preview-shell.css */
 
 /* --- Base --- */
 
@@ -53,666 +59,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- App shell --- */
 
-.ds-app {
-  display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  min-height: 100vh;
-}
-
-/* --- Sidebar --- */
-
-.ds-sidebar {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding: var(--spacing-24) var(--spacing-16);
-  border-right: 1px solid var(--border-divider);
-  background: var(--color-white);
-  overflow-y: auto;
-}
-
-.ds-sidebar__brand {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-12);
-  padding: var(--spacing-8) var(--spacing-8) var(--spacing-24);
-  text-decoration: none;
-  color: inherit;
-}
-
-.ds-sidebar__mark {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  background: var(--interactive-default);
-  color: var(--text-inverse);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  letter-spacing: -0.3px;
-}
-
-.ds-sidebar__name {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  letter-spacing: -0.2px;
-}
-
-.ds-sidebar__tag {
-  display: block;
-  font-size: 11px;
-  color: var(--text-caption);
-  margin-top: 2px;
-}
-
-.ds-sidebar__nav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  flex: 1;
-}
-
-.ds-sidebar__label {
-  font-size: 11px;
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--text-caption);
-  padding: var(--spacing-16) var(--spacing-8) var(--spacing-8);
-}
-
-.ds-sidebar__link {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  width: 100%;
-  padding: var(--spacing-8) var(--spacing-12);
-  border: none;
-  border-radius: var(--radius-md);
-  background: transparent;
-  font-family: inherit;
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  color: var(--text-description);
-  text-decoration: none;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.ds-sidebar__link:hover {
-  background: var(--surface-hover);
-  color: var(--text-default);
-}
-
-.ds-sidebar__link.is-active {
-  background: var(--surface-selected);
-  color: var(--interactive-default);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-}
-
-.ds-sidebar__num {
-  font-family: var(--font-family-mono);
-  font-size: 11px;
-  color: var(--text-caption);
-  min-width: 18px;
-}
-
-.ds-sidebar__link.is-active .ds-sidebar__num {
-  color: var(--interactive-default);
-}
-
-.ds-sidebar__footer {
-  padding: var(--spacing-16) var(--spacing-8) var(--spacing-8);
-  border-top: 1px solid var(--border-divider);
-  margin-top: var(--spacing-16);
-}
-
-.ds-sidebar__footer p {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  color: var(--text-caption);
-}
-
-.ds-sidebar__footer a {
-  color: var(--text-link);
-  text-decoration: none;
-}
-
-.ds-sidebar__footer a:hover {
-  text-decoration: underline;
-}
-
-/* --- Main content --- */
-
-.ds-main {
-  min-width: 0;
-  background: var(--surface-neutral-02);
-  overflow-y: auto;
-  max-height: 100vh;
-}
-
-.ds-content {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: var(--spacing-48) var(--spacing-48) 120px;
-}
-
-/* --- Tab panels (one component family at a time) --- */
-
-.ds-app--tabs .ds-hero {
-  display: none;
-}
-
-.ds-tab-panel {
-  display: none;
-}
-
-.ds-tab-panel.is-active {
-  display: block;
-  animation: ds-tab-enter 0.22s ease;
-}
-
-@keyframes ds-tab-enter {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ds-tab-panel.is-active {
-    animation: none;
-  }
-}
-
-/* --- Hero --- */
-
-.ds-hero {
-  padding: var(--spacing-48);
-  margin-bottom: var(--spacing-48);
-  background: var(--color-white);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-section);
-  box-shadow: var(--elevation-xs);
-}
-
-.ds-hero__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  padding: var(--spacing-4) var(--spacing-12);
-  border-radius: var(--radius-full);
-  background: var(--surface-selected);
-  color: var(--interactive-default);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  margin-bottom: var(--spacing-24);
-}
-
-.ds-hero__title {
-  font-family: var(--font-family-display);
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: var(--font-weight-regular);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  color: var(--text-default);
-  margin-bottom: var(--spacing-24);
-  max-width: 14ch;
-}
-
-.ds-hero__lead {
-  font-size: var(--font-size-lg);
-  line-height: var(--line-height-lg);
-  color: var(--text-description);
-  max-width: 52ch;
-  margin-bottom: var(--spacing-32);
-}
-
-.ds-hero__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-16);
-}
-
-.ds-hero__card {
-  padding: var(--spacing-24);
-  border-radius: var(--radius-lg);
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-}
-
-.ds-hero__card strong {
-  display: block;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  margin-bottom: var(--spacing-4);
-}
-
-.ds-hero__card span {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  color: var(--text-caption);
-}
-
-/* --- Chapter — component family intro (not a card itself) --- */
-
-.ds-chapter {
-  margin-bottom: var(--spacing-48);
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  scroll-margin-top: var(--spacing-24);
-  overflow: visible;
-}
-
-.ds-chapter__header {
-  padding: 0 0 var(--spacing-24);
-  margin-bottom: var(--spacing-16);
-  background: transparent;
-  border: none;
-}
-
-.ds-chapter__index {
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--interactive-default);
-  letter-spacing: 0.4px;
-  padding: var(--spacing-4) var(--spacing-12);
-  margin-bottom: var(--spacing-16);
-  border-radius: var(--radius-full);
-  background: var(--surface-selected);
-  border: 1px solid color-mix(in srgb, var(--border-focus) 24%, transparent);
-}
-
-.ds-chapter__title {
-  font-size: var(--font-size-3xl);
-  line-height: var(--line-height-3xl);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.03em;
-  margin-bottom: var(--spacing-12);
-}
-
-.ds-chapter__desc {
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-md);
-  color: var(--text-description);
-  max-width: 62ch;
-}
-
-/* --- Showcase — one self-contained section card per topic --- */
-
-.ds-showcase {
-  --ds-showcase-pad-x: var(--spacing-32);
-  --ds-showcase-pad-y: var(--spacing-24);
-  margin: 0 0 var(--spacing-24);
-  padding: 0;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  background: var(--color-white);
-  box-shadow: var(--elevation-xs);
-  overflow: visible;
-}
-
-.ds-showcase:last-child {
-  margin-bottom: 0;
-}
-
-.ds-showcase__head {
-  padding: var(--spacing-24) var(--spacing-32);
-  background: var(--color-white);
-  border-bottom: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-}
-
-.ds-showcase__title {
-  font-size: var(--font-size-lg);
-  line-height: var(--line-height-lg);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.02em;
-  margin-bottom: var(--spacing-8);
-  color: var(--text-default);
-}
-
-.ds-showcase__desc {
-  font-size: var(--font-size-sm);
-  line-height: 1.6;
-  color: var(--text-description);
-  max-width: 58ch;
-}
-
-.ds-showcase__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--spacing-8);
-  margin-top: var(--spacing-12);
-}
-
-.ds-api {
-  font-family: var(--font-family-mono);
-  font-size: 11px;
-  line-height: 1.4;
-  color: var(--text-description);
-  background: transparent;
-  border: 1px solid var(--border-divider);
-  padding: var(--spacing-4) var(--spacing-8);
-  border-radius: var(--radius-sm);
-}
-
-.ds-tag {
-  font-size: 11px;
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-caption);
-  background: transparent;
-  border: 1px solid var(--border-divider);
-  padding: var(--spacing-2) var(--spacing-8);
-  border-radius: var(--radius-full);
-}
-
-.ds-showcase__canvas {
-  padding: var(--spacing-24) var(--spacing-32) var(--spacing-32);
-  background: var(--color-white);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-}
-
-.ds-showcase__canvas > .grid-2,
-.ds-showcase__canvas > .grid-3,
-.ds-showcase__canvas > .ds-state-grid,
-.ds-showcase__canvas > .ds-matrix,
-.ds-showcase__canvas > .row {
-  width: 100%;
-}
-
-.ds-showcase__canvas--white {
-  background: var(--color-white);
-  border: none;
-  padding: var(--spacing-24) var(--spacing-32) var(--spacing-32);
-}
-
-.ds-showcase__canvas--flush {
-  padding: 0;
-  background: var(--color-white);
-  border: none;
-  overflow: hidden;
-}
-
-.ds-showcase__canvas--side-nav {
-  padding: 0;
-  background: var(--color-white);
-  border: none;
-  overflow: hidden;
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-start;
-}
-
-.ds-showcase__canvas--side-nav-tooltip {
-  overflow: visible;
-}
-
-.ds-showcase__canvas--tight {
-  padding: var(--spacing-24) var(--spacing-32);
-}
-
-.ds-showcase__canvas--menu {
-  min-height: 280px;
-  padding: var(--spacing-24) var(--spacing-32) 200px;
-  overflow: visible;
-}
-
-.ds-showcase__canvas--grid {
-  display: block;
-}
-
-.ds-showcase__canvas--grid > * {
-  width: 100%;
-}
-
-/* --- State matrix (docs demos) --- */
-
-.ds-matrix {
-  display: grid;
-  grid-template-columns: 88px repeat(4, auto);
-  gap: var(--spacing-24) var(--spacing-32);
-  align-items: center;
-}
-
-.ds-matrix--5col {
-  grid-template-columns: 88px repeat(5, auto);
-}
-
-.ds-matrix__corner { }
-
-.ds-matrix__colhead {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-caption);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-
-.ds-matrix__rowhead {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  color: var(--text-description);
-}
-
-.ds-matrix__cell {
-  display: flex;
-  align-items: center;
-  padding: var(--spacing-4) 0;
-}
-
-@media (max-width: 640px) {
-  .ds-matrix {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-8);
-  }
-  .ds-matrix__colhead { display: none; }
-  .ds-matrix__rowhead {
-    margin-top: var(--spacing-12);
-    padding-top: var(--spacing-12);
-    border-top: 1px solid var(--border-divider);
-  }
-  .ds-matrix__rowhead:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
-}
-
-/* --- Labeled state grid (field demos) --- */
-
-.ds-state-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-24) var(--spacing-32);
-}
-
-.ds-state-demo {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-12);
-  min-width: 0;
-  padding: var(--spacing-16);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--color-white);
-}
-
-.ds-state-demo__label {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-caption);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-
-@media (max-width: 640px) {
-  .ds-state-grid { grid-template-columns: 1fr; }
-}
-
-/* --- Demo utilities (unchanged helpers) --- */
-
-.row { display: flex; align-items: center; gap: var(--spacing-12); flex-wrap: wrap; }
-.row--start { align-items: flex-start; }
-.row--col { flex-direction: column; align-items: flex-start; }
-.row + .row { margin-top: var(--spacing-16); }
-.spacer { height: var(--spacing-24); }
-.spacer--sm { height: var(--spacing-12); }
-
-.card {
-  background: var(--surface-neutral-01);
-  border-radius: var(--radius-card);
-  padding: var(--spacing-32);
-  border: 1px solid var(--border-subtle);
-}
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-32); }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--spacing-32); }
-
-code {
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-xs);
-  color: var(--text-caption);
-  background: var(--surface-neutral-03);
-  padding: var(--spacing-2) 6px;
-  border-radius: var(--radius-sm);
-}
-
-.icon { width: 16px; height: 16px; flex-shrink: 0; }
-.icon--sm { width: 12px; height: 12px; }
-.icon--lg { width: 20px; height: 20px; }
-
-/* --- Typography specimens --- */
-
-.type-specimen { display: flex; flex-direction: column; gap: 0; }
-.type-specimen__row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--spacing-24);
-  padding: var(--spacing-12) 0;
-  border-bottom: 1px solid var(--border-divider);
-}
-.type-specimen__row:last-child { border-bottom: none; }
-.type-specimen__meta {
-  font-family: var(--font-family-mono);
-  font-size: 11px;
-  line-height: var(--line-height-xs);
-  color: var(--text-caption);
-  white-space: nowrap;
-}
-
-/* --- Mobile top bar --- */
-
-.ds-topbar {
-  display: none;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-16);
-  padding: var(--spacing-12) var(--spacing-24);
-  background: color-mix(in srgb, var(--color-white) 88%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-divider);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-}
-
-.ds-topbar__title {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-default);
-}
-
-.ds-topbar__picker {
-  flex-shrink: 0;
-}
-
-.ds-topbar__select {
-  appearance: none;
-  min-width: 148px;
-  padding: var(--spacing-8) var(--spacing-32) var(--spacing-8) var(--spacing-12);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--color-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23526660' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;
-  font-family: inherit;
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  color: var(--text-default);
-  cursor: pointer;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* --- Responsive --- */
-
-@media (max-width: 1024px) {
-  .ds-app { grid-template-columns: 1fr; }
-  .ds-sidebar { display: none; }
-  .ds-topbar { display: flex; }
-  .ds-main { max-height: none; }
-  .ds-content { padding: var(--spacing-32) var(--spacing-24) 80px; }
-  .ds-hero { padding: var(--spacing-32); }
-  .ds-hero__grid { grid-template-columns: 1fr; }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; }
-  .ds-chapter__header { padding-bottom: var(--spacing-24); }
-}
-
-@media (max-width: 640px) {
-  .ds-content { padding: var(--spacing-32) var(--spacing-16) 80px; }
-  .ds-showcase__canvas,
-  .ds-showcase__canvas--white,
-  .ds-showcase__canvas--tight,
-  .ds-showcase__canvas--menu {
-    padding-left: var(--spacing-16);
-    padding-right: var(--spacing-16);
-  }
-  .ds-showcase__head {
-    padding: var(--spacing-16);
-  }
-  .ds-chapter__title { font-size: var(--font-size-2xl); line-height: var(--line-height-2xl); }
-  .grid-2, .grid-3 { gap: var(--spacing-24); }
-}
   </style>
 </head>
 <body>
@@ -787,21 +134,33 @@ code {
 
 
 <div class="ds-app ds-app--tabs">
+  <svg xmlns="http://www.w3.org/2000/svg" class="ds-icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="ds-i-buttons" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" x="2" y="7" width="20" height="10" rx="2"/></symbol>
+    <symbol id="ds-i-inputs" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M17 22h-1a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4h1"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M7 22h1a4 4 0 0 0 4-4v-1"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M7 2h1a4 4 0 0 1 4 4v1"/></symbol>
+    <symbol id="ds-i-controls" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" x="2" y="6" width="20" height="12" rx="6"/><circle cx="8" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="ds-i-tags" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="ds-i-navigation" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" x="3" y="3" width="18" height="18" rx="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 3v18"/></symbol>
+    <symbol id="ds-i-disclosure" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" x="3" y="3" width="18" height="18" rx="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 9h18"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m9 15 3 3 3-3"/></symbol>
+    <symbol id="ds-i-data" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" x="3" y="3" width="18" height="18" rx="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 9h18M3 15h18M12 3v18"/></symbol>
+    <symbol id="ds-i-typography" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 7V4h16v3"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 20h6"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 4v16"/></symbol>
+    <symbol id="ds-i-tokens" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5S13 7 12 2c-1 5-2 6.4-4 8.5S5 17 5 15a7 7 0 0 0 7 7z"/></symbol>
+  </svg>
   <div class="ds-topbar">
-    <span class="ds-topbar__title">Buttons</span>
-    <label class="ds-topbar__picker">
-      <span class="sr-only">Component section</span>
-      <select id="ds-mobile-tab" class="ds-topbar__select" aria-label="Component section">
-        <option value="buttons">Buttons</option>
-        <option value="inputs">Inputs</option>
-        <option value="controls">Controls</option>
-        <option value="tags">Tags</option>
-        <option value="navigation">Navigation</option>
-        <option value="disclosure">Disclosure</option>
-        <option value="data">Data</option>
-        <option value="typography">Typography</option>
-      </select>
-    </label>
+    <div class="ds-topbar__row">
+      <span class="ds-topbar__mark" aria-hidden="true">TDS</span>
+      <span class="ds-topbar__title">Buttons</span>
+    </div>
+    <nav class="ds-mobile-tabs" role="tablist" aria-label="Components">
+      <button type="button" class="ds-mobile-tabs__btn is-active" role="tab" data-tab="buttons" aria-selected="true">Buttons</button>
+      <button type="button" class="ds-mobile-tabs__btn" role="tab" data-tab="inputs" aria-selected="false">Inputs</button>
+      <button type="button" class="ds-mobile-tabs__btn" role="tab" data-tab="controls" aria-selected="false">Controls</button>
+      <button type="button" class="ds-mobile-tabs__btn" role="tab" data-tab="tags" aria-selected="false">Tags</button>
+      <button type="button" class="ds-mobile-tabs__btn" role="tab" data-tab="navigation" aria-selected="false">Navigation</button>
+      <button type="button" class="ds-mobile-tabs__btn" role="tab" data-tab="disclosure" aria-selected="false">Disclosure</button>
+      <button type="button" class="ds-mobile-tabs__btn" role="tab" data-tab="data" aria-selected="false">Data</button>
+      <button type="button" class="ds-mobile-tabs__btn" role="tab" data-tab="typography" aria-selected="false">Typography</button>
+      <button type="button" class="ds-mobile-tabs__btn" role="tab" data-tab="tokens" aria-selected="false">Tokens</button>
+    </nav>
   </div>
   <aside class="ds-sidebar">
     <a href="#" class="ds-sidebar__brand">
@@ -812,14 +171,15 @@ code {
       </span>
     </a>
     <nav class="ds-sidebar__nav" role="tablist" aria-label="Components">
-      <button type="button" class="ds-sidebar__link is-active" role="tab" id="tab-buttons" data-tab="buttons" aria-selected="true" tabindex="0"><span class="ds-sidebar__num">01</span> Buttons</button>
-      <button type="button" class="ds-sidebar__link" role="tab" id="tab-inputs" data-tab="inputs" aria-selected="false" tabindex="-1"><span class="ds-sidebar__num">02</span> Inputs</button>
-      <button type="button" class="ds-sidebar__link" role="tab" id="tab-controls" data-tab="controls" aria-selected="false" tabindex="-1"><span class="ds-sidebar__num">03</span> Controls</button>
-      <button type="button" class="ds-sidebar__link" role="tab" id="tab-tags" data-tab="tags" aria-selected="false" tabindex="-1"><span class="ds-sidebar__num">04</span> Tags</button>
-      <button type="button" class="ds-sidebar__link" role="tab" id="tab-navigation" data-tab="navigation" aria-selected="false" tabindex="-1"><span class="ds-sidebar__num">05</span> Navigation</button>
-      <button type="button" class="ds-sidebar__link" role="tab" id="tab-disclosure" data-tab="disclosure" aria-selected="false" tabindex="-1"><span class="ds-sidebar__num">06</span> Disclosure</button>
-      <button type="button" class="ds-sidebar__link" role="tab" id="tab-data" data-tab="data" aria-selected="false" tabindex="-1"><span class="ds-sidebar__num">07</span> Data</button>
-      <button type="button" class="ds-sidebar__link" role="tab" id="tab-typography" data-tab="typography" aria-selected="false" tabindex="-1"><span class="ds-sidebar__num">08</span> Typography</button>
+      <button type="button" class="ds-sidebar__link is-active" role="tab" id="tab-buttons" data-tab="buttons" aria-selected="true" tabindex="0"><span class="ds-sidebar__icon" aria-hidden="true"><svg class="ds-sidebar__glyph" width="16" height="16"><use href="#ds-i-buttons"/></svg></span><span class="ds-sidebar__label">Buttons</span></button>
+      <button type="button" class="ds-sidebar__link" role="tab" id="tab-inputs" data-tab="inputs" aria-selected="false" tabindex="-1"><span class="ds-sidebar__icon" aria-hidden="true"><svg class="ds-sidebar__glyph" width="16" height="16"><use href="#ds-i-inputs"/></svg></span><span class="ds-sidebar__label">Inputs</span></button>
+      <button type="button" class="ds-sidebar__link" role="tab" id="tab-controls" data-tab="controls" aria-selected="false" tabindex="-1"><span class="ds-sidebar__icon" aria-hidden="true"><svg class="ds-sidebar__glyph" width="16" height="16"><use href="#ds-i-controls"/></svg></span><span class="ds-sidebar__label">Controls</span></button>
+      <button type="button" class="ds-sidebar__link" role="tab" id="tab-tags" data-tab="tags" aria-selected="false" tabindex="-1"><span class="ds-sidebar__icon" aria-hidden="true"><svg class="ds-sidebar__glyph" width="16" height="16"><use href="#ds-i-tags"/></svg></span><span class="ds-sidebar__label">Tags</span></button>
+      <button type="button" class="ds-sidebar__link" role="tab" id="tab-navigation" data-tab="navigation" aria-selected="false" tabindex="-1"><span class="ds-sidebar__icon" aria-hidden="true"><svg class="ds-sidebar__glyph" width="16" height="16"><use href="#ds-i-navigation"/></svg></span><span class="ds-sidebar__label">Navigation</span></button>
+      <button type="button" class="ds-sidebar__link" role="tab" id="tab-disclosure" data-tab="disclosure" aria-selected="false" tabindex="-1"><span class="ds-sidebar__icon" aria-hidden="true"><svg class="ds-sidebar__glyph" width="16" height="16"><use href="#ds-i-disclosure"/></svg></span><span class="ds-sidebar__label">Disclosure</span></button>
+      <button type="button" class="ds-sidebar__link" role="tab" id="tab-data" data-tab="data" aria-selected="false" tabindex="-1"><span class="ds-sidebar__icon" aria-hidden="true"><svg class="ds-sidebar__glyph" width="16" height="16"><use href="#ds-i-data"/></svg></span><span class="ds-sidebar__label">Data</span></button>
+      <button type="button" class="ds-sidebar__link" role="tab" id="tab-typography" data-tab="typography" aria-selected="false" tabindex="-1"><span class="ds-sidebar__icon" aria-hidden="true"><svg class="ds-sidebar__glyph" width="16" height="16"><use href="#ds-i-typography"/></svg></span><span class="ds-sidebar__label">Typography</span></button>
+      <button type="button" class="ds-sidebar__link" role="tab" id="tab-tokens" data-tab="tokens" aria-selected="false" tabindex="-1"><span class="ds-sidebar__icon" aria-hidden="true"><svg class="ds-sidebar__glyph" width="16" height="16"><use href="#ds-i-tokens"/></svg></span><span class="ds-sidebar__label">Tokens</span></button>
     </nav>
     <div class="ds-sidebar__footer">
       <p>Synced from <a href="https://www.figma.com/design/aMXWPoPQ94hxTKOhUngOih/Trulioo-ADS---2026" target="_blank" rel="noopener">Figma ADS 2026</a>. Classes use the <code>tds-</code> prefix.</p>
@@ -839,7 +199,6 @@ code {
       </header>
 <section class="ds-chapter ds-tab-panel is-active" id="buttons" role="tabpanel" aria-labelledby="tab-buttons">
       <header class="ds-chapter__header">
-        <div class="ds-chapter__index">01 — Buttons</div>
         <h2 class="ds-chapter__title">Buttons</h2>
         <p class="ds-chapter__desc">Trigger actions, submit forms, and navigate flows. Use one primary action per view — secondary and invisible variants for supporting actions.</p>
       </header>
@@ -1075,18 +434,19 @@ code {
   <span class="ds-matrix__colhead">Inactive</span>
   <span class="ds-matrix__colhead">Loading</span>
 
-  <span class="ds-matrix__rowhead">Secondary</span>
-  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--focus" aria-label="Secondary focused"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
-  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary" disabled aria-label="Secondary disabled"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
-  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--inactive" aria-label="Secondary inactive"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
-  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--loading" aria-busy="true" aria-label="Secondary loading"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
-
   <span class="ds-matrix__rowhead">Primary</span>
-  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary" aria-label="Primary"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary" aria-label="Primary default"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary tds-icon-btn--focus" aria-label="Primary focused"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary" disabled aria-label="Primary disabled"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary tds-icon-btn--inactive" aria-label="Primary inactive"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary tds-icon-btn--loading" aria-busy="true" aria-label="Primary loading"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+
+  <span class="ds-matrix__rowhead">Secondary</span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary" aria-label="Secondary default"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--focus" aria-label="Secondary focused"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary" disabled aria-label="Secondary disabled"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--inactive" aria-label="Secondary inactive"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--loading" aria-busy="true" aria-label="Secondary loading"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
 
   <span class="ds-matrix__rowhead">Danger</span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--danger" aria-label="Danger"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
@@ -1176,7 +536,6 @@ code {
 
       <section class="ds-chapter ds-tab-panel" id="inputs" role="tabpanel" aria-labelledby="tab-inputs" hidden>
       <header class="ds-chapter__header">
-        <div class="ds-chapter__index">02 — Inputs</div>
         <h2 class="ds-chapter__title">Inputs</h2>
         <p class="ds-chapter__desc">Collect and validate business data. Pair labels with fields, surface errors inline, and prefer large fields for high-stakes KYB forms.</p>
       </header>
@@ -1736,11 +1095,253 @@ code {
       </div>
         </div>
       </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Date picker — single calendar</h3>
+          <p class="ds-showcase__desc">Click the field to open the calendar and select a date. States match Figma 1632:29292 — enabled, filled, error, warning, disabled, read-only.</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-date-picker · .tds-date-picker--open · .tds-date-picker__calendar</code>
+            <span class="ds-tag">Interactive</span>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="ds-state-grid">
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Enabled · empty</span>
+          <div class="tds-date-picker" data-date-picker data-size="lg">
+            <label class="tds-field-label">Label</label>
+            <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+              <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+              <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+            </button>
+          </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Filled</span>
+          <div class="tds-date-picker" data-date-picker data-size="lg" data-value="03/13/2021">
+            <label class="tds-field-label">Label</label>
+            <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+              <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+              <span class="tds-date-picker__value">03/13/2021</span>
+            </button>
+          </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Error</span>
+          <div class="tds-date-picker tds-date-picker--invalid" data-date-picker data-size="lg">
+            <label class="tds-field-label">Label</label>
+            <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false" aria-invalid="true">
+              <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+              <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+            </button>
+            <span class="tds-field-validation tds-field-validation--error"><span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM5.5 8.625C5.11328 8.625 4.8125 8.32422 4.8125 7.9375C4.8125 7.55078 5.11328 7.25 5.5 7.25C5.88672 7.25 6.1875 7.55078 6.1875 7.9375C6.1875 8.32422 5.88672 8.625 5.5 8.625ZM5.5 3.125C5.88672 3.125 6.20898 3.46875 6.16602 3.85547L6.01562 6.08984C5.99414 6.34766 5.7793 6.5625 5.5 6.5625C5.24219 6.5625 5.00586 6.34766 4.98438 6.08984L4.83398 3.85547C4.79102 3.46875 5.11328 3.125 5.5 3.125Z" fill="currentColor"/></svg></span>Validation message</span>
+          </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Warning</span>
+          <div class="tds-date-picker tds-date-picker--warning" data-date-picker data-size="lg">
+            <label class="tds-field-label">Label</label>
+            <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+              <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+              <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+            </button>
+          </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Disabled</span>
+          <div class="tds-date-picker tds-date-picker--disabled">
+            <label class="tds-field-label">Label</label>
+            <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" disabled aria-haspopup="dialog" aria-expanded="false">
+              <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+              <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+            </button>
+          </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Read-only</span>
+          <div class="tds-date-picker tds-date-picker--readonly">
+            <label class="tds-field-label">Label</label>
+            <div class="tds-date-picker__field tds-date-picker__field--lg" aria-readonly="true">
+              <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+              <span class="tds-date-picker__value">03/13/2021</span>
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Date picker — single sizes</h3>
+          <p class="ds-showcase__desc">Small (28px), medium (32px), and large (40px) field heights — all interactive.</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-date-picker__field--{sm|md|lg}</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="grid-3">
+        <div class="tds-date-picker" data-date-picker data-size="sm">
+          <label class="tds-field-label">Label</label>
+          <button type="button" class="tds-date-picker__field tds-date-picker__field--sm" aria-haspopup="dialog" aria-expanded="false">
+            <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+            <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+          </button>
+        </div>
+        <div class="tds-date-picker" data-date-picker data-size="md">
+          <label class="tds-field-label">Label</label>
+          <button type="button" class="tds-date-picker__field tds-date-picker__field--md" aria-haspopup="dialog" aria-expanded="false">
+            <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+            <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+          </button>
+        </div>
+        <div class="tds-date-picker" data-date-picker data-size="lg">
+          <label class="tds-field-label">Label</label>
+          <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+            <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+            <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+          </button>
+        </div>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Date picker — range calendar</h3>
+          <p class="ds-showcase__desc">Two linked fields share one calendar — click start, pick a date, then pick end. Range highlights in teal (Figma 1632:29424).</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-date-picker-range · .tds-date-picker-range--interactive</code>
+            <span class="ds-tag">Interactive</span>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="ds-state-grid">
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Enabled · empty</span>
+          <div class="tds-date-picker-range tds-date-picker-range--interactive" data-date-picker-range data-size="lg">
+            <div class="tds-date-picker" data-date-picker-part="start">
+              <label class="tds-field-label">Label</label>
+              <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+              </button>
+            </div>
+            <div class="tds-date-picker" data-date-picker-part="end">
+              <label class="tds-field-label">Label</label>
+              <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Filled</span>
+          <div class="tds-date-picker-range tds-date-picker-range--interactive" data-date-picker-range data-size="lg" data-start="03/01/2021" data-end="03/20/2021">
+            <div class="tds-date-picker" data-date-picker-part="start">
+              <label class="tds-field-label">Label</label>
+              <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value">03/01/2021</span>
+              </button>
+            </div>
+            <div class="tds-date-picker" data-date-picker-part="end">
+              <label class="tds-field-label">Label</label>
+              <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value">03/20/2021</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Error</span>
+          <div class="tds-date-picker-range tds-date-picker-range--interactive tds-date-picker-range--invalid" data-date-picker-range data-size="lg">
+            <div class="tds-date-picker" data-date-picker-part="start">
+              <label class="tds-field-label">Label</label>
+              <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false" aria-invalid="true">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+              </button>
+            </div>
+            <div class="tds-date-picker" data-date-picker-part="end">
+              <label class="tds-field-label">Label</label>
+              <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false" aria-invalid="true">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Disabled</span>
+          <div class="tds-date-picker-range tds-date-picker-range--disabled">
+            <div class="tds-date-picker tds-date-picker--disabled" data-date-picker-part="start">
+              <label class="tds-field-label">Label</label>
+              <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" disabled aria-haspopup="dialog" aria-expanded="false">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+              </button>
+            </div>
+            <div class="tds-date-picker tds-date-picker--disabled" data-date-picker-part="end">
+              <label class="tds-field-label">Label</label>
+              <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" disabled aria-haspopup="dialog" aria-expanded="false">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Read-only</span>
+          <div class="tds-date-picker-range tds-date-picker-range--readonly">
+            <div class="tds-date-picker tds-date-picker--readonly" data-date-picker-part="start">
+              <label class="tds-field-label">Label</label>
+              <div class="tds-date-picker__field tds-date-picker__field--lg" aria-readonly="true">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value">03/01/2021</span>
+              </div>
+            </div>
+            <div class="tds-date-picker tds-date-picker--readonly" data-date-picker-part="end">
+              <label class="tds-field-label">Label</label>
+              <div class="tds-date-picker__field tds-date-picker__field--lg" aria-readonly="true">
+                <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                <span class="tds-date-picker__value">03/20/2021</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        </div>
+      </article>
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Calendar day item states</h3>
+          <p class="ds-showcase__desc">40×40 day cells — enabled, hover, focus, selected, today, in-range, outside month, disabled (Figma 1632:29116).</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-date-picker__day--{selected|today|in-range|outside|disabled|focus}</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas">
+<div class="row" style="flex-wrap: wrap; gap: 8px;">
+        <button type="button" class="tds-date-picker__day">13</button>
+        <button type="button" class="tds-date-picker__day tds-date-picker__day--hover-demo">13</button>
+        <button type="button" class="tds-date-picker__day tds-date-picker__day--focus">13</button>
+        <button type="button" class="tds-date-picker__day tds-date-picker__day--selected">13</button>
+        <button type="button" class="tds-date-picker__day tds-date-picker__day--today">13</button>
+        <button type="button" class="tds-date-picker__day tds-date-picker__day--in-range">13</button>
+        <button type="button" class="tds-date-picker__day tds-date-picker__day--in-range tds-date-picker__day--range-end-hover">13</button>
+        <button type="button" class="tds-date-picker__day tds-date-picker__day--outside">13</button>
+        <button type="button" class="tds-date-picker__day tds-date-picker__day--disabled" disabled>13</button>
+      </div>
+        </div>
+      </article>
     </section>
 
       <section class="ds-chapter ds-tab-panel" id="controls" role="tabpanel" aria-labelledby="tab-controls" hidden>
       <header class="ds-chapter__header">
-        <div class="ds-chapter__index">03 — Controls</div>
         <h2 class="ds-chapter__title">Controls</h2>
         <p class="ds-chapter__desc">Binary and single-select choices — checkboxes, radios, switches, and radio cards. Entire rows should be clickable, not just the control.</p>
       </header>
@@ -2016,7 +1617,6 @@ code {
 
       <section class="ds-chapter ds-tab-panel" id="tags" role="tabpanel" aria-labelledby="tab-tags" hidden>
       <header class="ds-chapter__header">
-        <div class="ds-chapter__index">04 — Tags & Counters</div>
         <h2 class="ds-chapter__title">Tags & Counters</h2>
         <p class="ds-chapter__desc">Compact status indicators and numeric badges. Use semantic colors for risk states; counters annotate tabs, filters, and buttons.</p>
       </header>
@@ -2103,6 +1703,23 @@ code {
 
       <article class="ds-showcase">
         <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">AI tag</h3>
+          <p class="ds-showcase__desc">TruAI badge with required sparkles icon — small and medium sizes, rest and hover states (Figma 1821:33907).</p>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-ai-tag · .tds-ai-tag--{sm|md}</code></div>
+        </div>
+        <div class="ds-showcase__canvas">
+<div class="ds-state-grid" style="grid-template-columns: repeat(2, auto); gap: var(--spacing-24); justify-content: start;">
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Small · rest</span><span class="tds-ai-tag tds-ai-tag--sm"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Small · hover</span><span class="tds-ai-tag tds-ai-tag--sm tds-ai-tag--hover-demo"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Medium · rest</span><span class="tds-ai-tag tds-ai-tag--md"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Medium · hover</span><span class="tds-ai-tag tds-ai-tag--md tds-ai-tag--hover-demo"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Interactive</span><button type="button" class="tds-ai-tag tds-ai-tag--md"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></button></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Counter label — Primary</h3>
           <p class="ds-showcase__desc">High-emphasis count on teal background — alerts, notifications.</p>
           <div class="ds-showcase__meta">
@@ -2146,10 +1763,56 @@ code {
 
       <section class="ds-chapter ds-tab-panel" id="navigation" role="tabpanel" aria-labelledby="tab-navigation" hidden>
       <header class="ds-chapter__header">
-        <div class="ds-chapter__index">05 — Navigation</div>
         <h2 class="ds-chapter__title">Navigation</h2>
-        <p class="ds-chapter__desc">Wayfinding across workspaces — tabs, filter chips, nav lists, and dropdown panels. Keep hierarchy flat and scannable.</p>
+        <p class="ds-chapter__desc">Wayfinding across workspaces — tabs, filter chips, nav lists, breadcrumbs, and dropdown panels. Keep hierarchy flat and scannable.</p>
       </header>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Breadcrumbs</h3>
+          <p class="ds-showcase__desc">Hierarchical path navigation — link items use body/xs in teal; current page uses body/xs in default text. Divider is “/” in icon-faint (Figma 1596:23587).</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-breadcrumbs · .tds-breadcrumb-item · .tds-breadcrumb-divider</code>
+            <span class="ds-tag">New</span>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+        <nav class="tds-breadcrumbs" aria-label="Breadcrumb">
+          <a href="#" class="tds-breadcrumb-item">One</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <span class="tds-breadcrumb-item tds-breadcrumb-item--current" aria-current="page">Current page</span>
+        </nav>
+        <nav class="tds-breadcrumbs" aria-label="Breadcrumb">
+          <a href="#" class="tds-breadcrumb-item">One</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <a href="#" class="tds-breadcrumb-item">Two</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <span class="tds-breadcrumb-item tds-breadcrumb-item--current" aria-current="page">Current page</span>
+        </nav>
+        <nav class="tds-breadcrumbs" aria-label="Breadcrumb">
+          <a href="#" class="tds-breadcrumb-item">One</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <a href="#" class="tds-breadcrumb-item">Two</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <a href="#" class="tds-breadcrumb-item">Three</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <span class="tds-breadcrumb-item tds-breadcrumb-item--current" aria-current="page">Current page</span>
+        </nav>
+        <nav class="tds-breadcrumbs" aria-label="Breadcrumb">
+          <a href="#" class="tds-breadcrumb-item">One</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <a href="#" class="tds-breadcrumb-item">Two</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <a href="#" class="tds-breadcrumb-item">Three</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <a href="#" class="tds-breadcrumb-item">Four</a>
+          <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+          <span class="tds-breadcrumb-item tds-breadcrumb-item--current" aria-current="page">Current page</span>
+        </nav>
+      </div>
+        </div>
+      </article>
 
       <article class="ds-showcase">
         <div class="ds-showcase__head">
@@ -2950,7 +2613,6 @@ code {
 
       <section class="ds-chapter ds-tab-panel" id="disclosure" role="tabpanel" aria-labelledby="tab-disclosure" hidden>
       <header class="ds-chapter__header">
-        <div class="ds-chapter__index">06 — Disclosure</div>
         <h2 class="ds-chapter__title">Accordion</h2>
         <p class="ds-chapter__desc">Expandable sections for progressive disclosure — KYB entity details, verification steps, and nested metadata. Tags and counter sit in the trailing group with action and chevron.</p>
       </header>
@@ -3210,10 +2872,28 @@ code {
 
                   <section class="ds-chapter ds-tab-panel" id="data" role="tabpanel" aria-labelledby="tab-data" hidden>
       <header class="ds-chapter__header">
-        <div class="ds-chapter__index">07 — Data tables</div>
         <h2 class="ds-chapter__title">Data tables</h2>
         <p class="ds-chapter__desc">Dense entity lists with sortable columns, row actions, and skeleton loading. Tables scroll horizontally on narrow viewports.</p>
       </header>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Section header</h3>
+          <p class="ds-showcase__desc">Borderless tinted bar for grouping table sections — optional icon, subtext, tag, counter, and action button (Figma 1816:29234).</p>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-section-header</code></div>
+        </div>
+        <div class="ds-showcase__canvas">
+<div class="ds-state-grid" style="grid-template-columns: 1fr; gap: var(--spacing-16);">
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Title only</span><div class="tds-section-header"><div class="tds-section-header__left"><div class="tds-section-header__title-stack"><p class="tds-section-header__title">Section Title</p></div></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Title + subtext</span><div class="tds-section-header"><div class="tds-section-header__left"><div class="tds-section-header__title-stack"><p class="tds-section-header__title">Section Title</p><p class="tds-section-header__subtext">Description text</p></div></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Title + tag</span><div class="tds-section-header"><div class="tds-section-header__left"><div class="tds-section-header__title-stack"><p class="tds-section-header__title">Section Title</p></div><span class="tds-tag tds-tag--sm tds-tag--default">Label</span></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Title + counter</span><div class="tds-section-header"><div class="tds-section-header__left"><div class="tds-section-header__title-stack"><p class="tds-section-header__title">Section Title</p></div><span class="tds-counter tds-counter--primary tds-counter--sm">20</span></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Title + leading icon</span><div class="tds-section-header"><div class="tds-section-header__left"><span class="tds-section-header__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 10.5c.8 1 1.6 1.5 2.5 1.5s1.7-.5 2.5-1.5" stroke-linecap="round"/><circle cx="6" cy="6.5" r=".75" fill="currentColor" stroke="none"/><circle cx="10" cy="6.5" r=".75" fill="currentColor" stroke="none"/></svg></span><div class="tds-section-header__title-stack"><p class="tds-section-header__title">Section Title</p></div></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Title + button</span><div class="tds-section-header"><div class="tds-section-header__left"><div class="tds-section-header__title-stack"><p class="tds-section-header__title">Section Title</p></div></div><div class="tds-section-header__right"><button type="button" class="tds-btn tds-btn--secondary tds-btn--sm">Button</button></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Full configuration</span><div class="tds-section-header"><div class="tds-section-header__left"><span class="tds-section-header__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 10.5c.8 1 1.6 1.5 2.5 1.5s1.7-.5 2.5-1.5" stroke-linecap="round"/><circle cx="6" cy="6.5" r=".75" fill="currentColor" stroke="none"/><circle cx="10" cy="6.5" r=".75" fill="currentColor" stroke="none"/></svg></span><div class="tds-section-header__title-stack"><p class="tds-section-header__title">Section Title</p><p class="tds-section-header__subtext">Description text</p></div><span class="tds-tag tds-tag--sm tds-tag--default">Label</span><span class="tds-counter tds-counter--primary tds-counter--sm">20</span></div><div class="tds-section-header__right"><button type="button" class="tds-btn tds-btn--secondary tds-btn--sm">Button</button></div></div></div>
+          </div>
+        </div>
+      </article>
 
       <article class="ds-showcase">
         <div class="ds-showcase__head">
@@ -3318,14 +2998,52 @@ code {
 
       <article class="ds-showcase">
         <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Ownership table</h3>
+          <p class="ds-showcase__desc">Borderless container — tinted column header and row dividers only (Figma 884:13685).</p>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-data-table-container · .tds-data-table</code></div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--table">
+<div class="tds-data-table-container">
+      <div class="tds-data-table__wrapper">
+      <table class="tds-data-table">
+        <thead>
+          <tr>
+            <th aria-sort="none">Name</th>
+            <th aria-sort="none">Ownership</th>
+            <th aria-sort="none">Address</th>
+            <th aria-sort="none">Screening Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="tds-data-table__text-cell tds-data-table__text-cell--subtext"><span class="tds-data-table__cell-inner"><span class="tds-data-table__cell-text-stack"><span>James Morton</span><span class="tds-data-table__cell-subtext">Secondary text</span></span></span></td>
+            <td class="tds-data-table__text-cell">65%</td>
+            <td class="tds-data-table__text-cell">71 Queen Victoria St, San Francisco</td>
+            <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--md tds-tag--positive">Clear</span></span></td>
+          </tr>
+          <tr>
+            <td class="tds-data-table__text-cell tds-data-table__text-cell--subtext"><span class="tds-data-table__cell-inner"><span class="tds-data-table__cell-text-stack"><span>Walter Decosta</span><span class="tds-data-table__cell-subtext">Secondary text</span></span></span></td>
+            <td class="tds-data-table__text-cell">35%</td>
+            <td class="tds-data-table__text-cell">71 Queen Victoria St, San Francisco</td>
+            <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--md tds-tag--negative">2 more entities connected</span></span></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+</div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Repositories table</h3>
-          <p class="ds-showcase__desc">Default density — 3 columns, row actions, and pagination footer (Figma 884:13677).</p>
+          <p class="ds-showcase__desc">Default density — 3 columns, row actions, and pagination footer (Figma 884:13677). No container border.</p>
           <div class="ds-showcase__meta">
             <code class="ds-api">.tds-data-table-container · .tds-data-table</code>
             <span class="ds-tag">Live example</span>
           </div>
         </div>
-        <div class="ds-showcase__canvas ds-showcase__canvas--flush">
+        <div class="ds-showcase__canvas ds-showcase__canvas--table">
 <div class="tds-data-table-container">
       <div class="tds-data-table__header">
         <div class="tds-data-table__header-text">
@@ -3479,11 +3197,25 @@ code {
         </div>
       </article>
 
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Risk category card</h3>
+          <p class="ds-showcase__desc">Compact risk summary — category title, risk tag, signal count, and score out of 100 (Figma 920:9307).</p>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-risk-category-card</code></div>
+        </div>
+        <div class="ds-showcase__canvas">
+<div class="ds-state-grid" style="grid-template-columns: repeat(auto-fit, minmax(284px, 1fr)); gap: var(--spacing-16);">
+            <div class="ds-state-demo"><span class="ds-state-demo__label">High risk</span><div class="tds-risk-category-card"><div class="tds-risk-category-card__title-row"><p class="tds-risk-category-card__title">Sanctions</p><span class="tds-tag tds-tag--xl tds-tag--negative">High Risk</span></div><div class="tds-risk-category-card__details-row"><div class="tds-risk-category-card__signals"><span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span><p class="tds-risk-category-card__signal-count">3 signals</p></div><div class="tds-risk-category-card__score-group"><p class="tds-risk-category-card__score">82</p><p class="tds-risk-category-card__score-suffix">/100</p></div></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Medium risk</span><div class="tds-risk-category-card"><div class="tds-risk-category-card__title-row"><p class="tds-risk-category-card__title">Adverse media</p><span class="tds-tag tds-tag--md tds-tag--intermediate">Medium Risk</span></div><div class="tds-risk-category-card__details-row"><div class="tds-risk-category-card__signals"><span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span><p class="tds-risk-category-card__signal-count">1 signal</p></div><div class="tds-risk-category-card__score-group"><p class="tds-risk-category-card__score">45</p><p class="tds-risk-category-card__score-suffix">/100</p></div></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Low risk</span><div class="tds-risk-category-card"><div class="tds-risk-category-card__title-row"><p class="tds-risk-category-card__title">Identity</p><span class="tds-tag tds-tag--xl tds-tag--positive">Low Risk</span></div><div class="tds-risk-category-card__details-row"><div class="tds-risk-category-card__signals"><span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span><p class="tds-risk-category-card__signal-count">0 signals</p></div><div class="tds-risk-category-card__score-group"><p class="tds-risk-category-card__score">12</p><p class="tds-risk-category-card__score-suffix">/100</p></div></div></div></div>
+          </div>
+        </div>
+      </article>
+
       </section>
 
 <section class="ds-chapter ds-tab-panel" id="typography" role="tabpanel" aria-labelledby="tab-typography" hidden>
       <header class="ds-chapter__header">
-        <div class="ds-chapter__index">08 — Typography</div>
         <h2 class="ds-chapter__title">Typography</h2>
         <p class="ds-chapter__desc">Figma text styles mapped to utility classes. Inter for UI, Tobias for display.</p>
       </header>
@@ -3602,9 +3334,1887 @@ code {
         </div>
       </article>
     </section>
+
+<!-- TOKEN_DOCS_START -->
+<section class="ds-chapter ds-tab-panel" id="tokens" role="tabpanel" aria-labelledby="tab-tokens" hidden>
+  <header class="ds-chapter__header">
+    <h2 class="ds-chapter__title">Design tokens</h2>
+    <p class="ds-chapter__desc">Reference documentation for color, typography, spacing, radius, and elevation tokens. Source of truth: <code>tokens/tokens.css</code> and Figma ADS 2026.</p>
+    <div class="ds-token-doc-meta">
+      <span><strong>Contributors:</strong> Zoey, Ecem, Mandeep</span>
+      <span><strong>Last updated:</strong> 2026-06-30</span>
+    </div>
+  </header>
+
+<nav class="ds-token-tabs" role="tablist" aria-label="Token categories">
+    <button type="button" class="ds-token-tabs__btn is-active" role="tab" id="token-tab-core-colors" data-token-tab="core-colors" aria-selected="true" aria-controls="token-panel-core-colors" tabindex="0">Core colors</button>
+    <button type="button" class="ds-token-tabs__btn" role="tab" id="token-tab-color-tokens" data-token-tab="color-tokens" aria-selected="false" aria-controls="token-panel-color-tokens" tabindex="-1">Color tokens</button>
+    <button type="button" class="ds-token-tabs__btn" role="tab" id="token-tab-typography-tokens" data-token-tab="typography-tokens" aria-selected="false" aria-controls="token-panel-typography-tokens" tabindex="-1">Typography tokens</button>
+    <button type="button" class="ds-token-tabs__btn" role="tab" id="token-tab-spacing-radius-tokens" data-token-tab="spacing-radius-tokens" aria-selected="false" aria-controls="token-panel-spacing-radius-tokens" tabindex="-1">Spacing &amp; radius tokens</button>
+    <button type="button" class="ds-token-tabs__btn" role="tab" id="token-tab-elevation-tokens" data-token-tab="elevation-tokens" aria-selected="false" aria-controls="token-panel-elevation-tokens" tabindex="-1">Elevation tokens</button>
+  </nav>
+
+  <div class="ds-token-panels">
+<div class="ds-token-panel is-active" id="token-panel-core-colors" role="tabpanel" aria-labelledby="token-tab-core-colors">
+<article class="ds-showcase" id="token-doc-core-colors">
+  <div class="ds-showcase__head">
+    <h3 class="ds-showcase__title">Core colors</h3>
+    <p class="ds-showcase__desc">Raw color palette for the Trulioo design system. These are the foundational primitives — use semantic tokens in production.</p>
+    <div class="ds-showcase__meta">
+      <code class="ds-api">tokens/tokens.css</code>
+      <a class="ds-token-figma-link" href="https://www.figma.com/design/aMXWPoPQ94hxTKOhUngOih/Trulioo-ADS---2026?node-id=84-418" target="_blank" rel="noopener noreferrer">View in Figma</a>
+    </div>
+  </div>
+  <div class="ds-showcase__canvas ds-showcase__canvas--flush ds-showcase__canvas--token-doc">
+    <div class="ds-token-table">
+      <div class="ds-token-table__head"><span>Token</span><span>Hex</span><span>Preview</span></div>
+      <div class="ds-token-group-label">Teal</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/10</span>
+    <code class="ds-token-row__var">var(--color-teal-10)</code>
+  </div>
+  <div class="ds-token-row__usage">#e6f8f4</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-10)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#e6f8f4</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/20</span>
+    <code class="ds-token-row__var">var(--color-teal-20)</code>
+  </div>
+  <div class="ds-token-row__usage">#c2ede4</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-20)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#c2ede4</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/30</span>
+    <code class="ds-token-row__var">var(--color-teal-30)</code>
+  </div>
+  <div class="ds-token-row__usage">#8ed8ca</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-30)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#8ed8ca</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/40</span>
+    <code class="ds-token-row__var">var(--color-teal-40)</code>
+  </div>
+  <div class="ds-token-row__usage">#5ac0ae</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-40)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#5ac0ae</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/50</span>
+    <code class="ds-token-row__var">var(--color-teal-50)</code>
+  </div>
+  <div class="ds-token-row__usage">#2ea892</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-50)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#2ea892</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/60</span>
+    <code class="ds-token-row__var">var(--color-teal-60)</code>
+  </div>
+  <div class="ds-token-row__usage">#0e8a78</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-60)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#0e8a78</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/70</span>
+    <code class="ds-token-row__var">var(--color-teal-70)</code>
+  </div>
+  <div class="ds-token-row__usage">#006b5c</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-70)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#006b5c</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/80</span>
+    <code class="ds-token-row__var">var(--color-teal-80)</code>
+  </div>
+  <div class="ds-token-row__usage">#004c45</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-80)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#004c45</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/90</span>
+    <code class="ds-token-row__var">var(--color-teal-90)</code>
+  </div>
+  <div class="ds-token-row__usage">#003530</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-90)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#003530</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/teal/100</span>
+    <code class="ds-token-row__var">var(--color-teal-100)</code>
+  </div>
+  <div class="ds-token-row__usage">#00201e</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-teal-100)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#00201e</span>
+  </div>
+</div><div class="ds-token-group-label">Violet</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/10</span>
+    <code class="ds-token-row__var">var(--color-violet-10)</code>
+  </div>
+  <div class="ds-token-row__usage">#f5eefb</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-10)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#f5eefb</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/20</span>
+    <code class="ds-token-row__var">var(--color-violet-20)</code>
+  </div>
+  <div class="ds-token-row__usage">#e8d8f5</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-20)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#e8d8f5</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/30</span>
+    <code class="ds-token-row__var">var(--color-violet-30)</code>
+  </div>
+  <div class="ds-token-row__usage">#dcc0f5</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-30)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#dcc0f5</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/40</span>
+    <code class="ds-token-row__var">var(--color-violet-40)</code>
+  </div>
+  <div class="ds-token-row__usage">#c8a0ea</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-40)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#c8a0ea</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/50</span>
+    <code class="ds-token-row__var">var(--color-violet-50)</code>
+  </div>
+  <div class="ds-token-row__usage">#b080dc</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-50)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#b080dc</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/60</span>
+    <code class="ds-token-row__var">var(--color-violet-60)</code>
+  </div>
+  <div class="ds-token-row__usage">#9460c8</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-60)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#9460c8</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/70</span>
+    <code class="ds-token-row__var">var(--color-violet-70)</code>
+  </div>
+  <div class="ds-token-row__usage">#7840a8</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-70)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#7840a8</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/80</span>
+    <code class="ds-token-row__var">var(--color-violet-80)</code>
+  </div>
+  <div class="ds-token-row__usage">#592d80</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-80)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#592d80</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/90</span>
+    <code class="ds-token-row__var">var(--color-violet-90)</code>
+  </div>
+  <div class="ds-token-row__usage">#3d1d60</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-90)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#3d1d60</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/violet/100</span>
+    <code class="ds-token-row__var">var(--color-violet-100)</code>
+  </div>
+  <div class="ds-token-row__usage">#2e1548</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-violet-100)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#2e1548</span>
+  </div>
+</div><div class="ds-token-group-label">Neutral</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/10</span>
+    <code class="ds-token-row__var">var(--color-neutral-10)</code>
+  </div>
+  <div class="ds-token-row__usage">#f4f6f4</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-10)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#f4f6f4</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/15</span>
+    <code class="ds-token-row__var">var(--color-neutral-15)</code>
+  </div>
+  <div class="ds-token-row__usage">#e8ede8</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-15)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#e8ede8</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/20</span>
+    <code class="ds-token-row__var">var(--color-neutral-20)</code>
+  </div>
+  <div class="ds-token-row__usage">#dde2de</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-20)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#dde2de</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/30</span>
+    <code class="ds-token-row__var">var(--color-neutral-30)</code>
+  </div>
+  <div class="ds-token-row__usage">#c5cec8</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-30)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#c5cec8</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/40</span>
+    <code class="ds-token-row__var">var(--color-neutral-40)</code>
+  </div>
+  <div class="ds-token-row__usage">#a8b4ac</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-40)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#a8b4ac</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/50</span>
+    <code class="ds-token-row__var">var(--color-neutral-50)</code>
+  </div>
+  <div class="ds-token-row__usage">#8a9a90</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-50)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#8a9a90</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/60</span>
+    <code class="ds-token-row__var">var(--color-neutral-60)</code>
+  </div>
+  <div class="ds-token-row__usage">#617269</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-60)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#617269</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/70</span>
+    <code class="ds-token-row__var">var(--color-neutral-70)</code>
+  </div>
+  <div class="ds-token-row__usage">#526660</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-70)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#526660</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/80</span>
+    <code class="ds-token-row__var">var(--color-neutral-80)</code>
+  </div>
+  <div class="ds-token-row__usage">#3d524d</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-80)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#3d524d</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/90</span>
+    <code class="ds-token-row__var">var(--color-neutral-90)</code>
+  </div>
+  <div class="ds-token-row__usage">#2a3f3b</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-90)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#2a3f3b</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/neutral/100</span>
+    <code class="ds-token-row__var">var(--color-neutral-100)</code>
+  </div>
+  <div class="ds-token-row__usage">#172d2d</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-neutral-100)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#172d2d</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/white</span>
+    <code class="ds-token-row__var">var(--color-white)</code>
+  </div>
+  <div class="ds-token-row__usage">#ffffff</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-white)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#ffffff</span>
+  </div>
+</div><div class="ds-token-group-label">Status</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/red/border</span>
+    <code class="ds-token-row__var">var(--color-red-border)</code>
+  </div>
+  <div class="ds-token-row__usage">#db2b2b</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-border)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#db2b2b</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/red/bg</span>
+    <code class="ds-token-row__var">var(--color-red-bg)</code>
+  </div>
+  <div class="ds-token-row__usage">#fff1f1</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-bg)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#fff1f1</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/red/text</span>
+    <code class="ds-token-row__var">var(--color-red-text)</code>
+  </div>
+  <div class="ds-token-row__usage">#ba151d</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-text)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#ba151d</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/border</span>
+    <code class="ds-token-row__var">var(--color-amber-border)</code>
+  </div>
+  <div class="ds-token-row__usage">#d8a13b</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-border)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#d8a13b</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/bg</span>
+    <code class="ds-token-row__var">var(--color-amber-bg)</code>
+  </div>
+  <div class="ds-token-row__usage">#fff4db</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-bg)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#fff4db</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/text</span>
+    <code class="ds-token-row__var">var(--color-amber-text)</code>
+  </div>
+  <div class="ds-token-row__usage">#775516</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-text)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#775516</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/icon</span>
+    <code class="ds-token-row__var">var(--color-amber-icon)</code>
+  </div>
+  <div class="ds-token-row__usage">#b07a1a</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-icon)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#b07a1a</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/border</span>
+    <code class="ds-token-row__var">var(--color-green-border)</code>
+  </div>
+  <div class="ds-token-row__usage">#6fb38a</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-border)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#6fb38a</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/bg</span>
+    <code class="ds-token-row__var">var(--color-green-bg)</code>
+  </div>
+  <div class="ds-token-row__usage">#eaf7f0</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-bg)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#eaf7f0</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/text</span>
+    <code class="ds-token-row__var">var(--color-green-text)</code>
+  </div>
+  <div class="ds-token-row__usage">#166534</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-text)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#166534</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/icon</span>
+    <code class="ds-token-row__var">var(--color-green-icon)</code>
+  </div>
+  <div class="ds-token-row__usage">#3d8b5e</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-icon)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#3d8b5e</span>
+  </div>
+</div>
+    </div>
+  </div>
+</article>
+</div>
+
+<div class="ds-token-panel" id="token-panel-color-tokens" role="tabpanel" aria-labelledby="token-tab-color-tokens" hidden>
+<article class="ds-showcase" id="token-doc-color-tokens">
+  <div class="ds-showcase__head">
+    <h3 class="ds-showcase__title">Color tokens</h3>
+    <p class="ds-showcase__desc">Semantic color variables for the Trulioo design system. All tokens alias Core primitives and are scoped for specific use cases.</p>
+    <div class="ds-showcase__meta">
+      <code class="ds-api">tokens/tokens.css</code>
+      <a class="ds-token-figma-link" href="https://www.figma.com/design/aMXWPoPQ94hxTKOhUngOih/Trulioo-ADS---2026?node-id=84-418" target="_blank" rel="noopener noreferrer">View in Figma</a>
+    </div>
+  </div>
+  <div class="ds-showcase__canvas ds-showcase__canvas--flush ds-showcase__canvas--token-doc">
+    <div class="ds-token-table">
+      <div class="ds-token-table__head ds-token-table__head--color"><span>Token</span><span>Usage</span><span>Light mode</span></div>
+      <div class="ds-token-group-label">Text</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/default</span>
+    <span class="ds-token-row__alias">→ neutral/100</span>
+  </div>
+  <div class="ds-token-row__usage">Main text color for headings, paragraphs, and data values</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-default)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#172d2d</span>
+      <code class="ds-token-row__var">var(--text-default)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/description</span>
+    <span class="ds-token-row__alias">→ neutral/70</span>
+  </div>
+  <div class="ds-token-row__usage">Supporting text for secondary details and helper text</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-description)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#526660</span>
+      <code class="ds-token-row__var">var(--text-description)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/caption</span>
+    <span class="ds-token-row__alias">→ neutral/60</span>
+  </div>
+  <div class="ds-token-row__usage">Smallest text for timestamps, units, and metadata</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-caption)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#617269</span>
+      <code class="ds-token-row__var">var(--text-caption)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/placeholder</span>
+    <span class="ds-token-row__alias">→ neutral/50</span>
+  </div>
+  <div class="ds-token-row__usage">Field labels, category headers, and input placeholder text</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-placeholder)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#8a9a90</span>
+      <code class="ds-token-row__var">var(--text-placeholder)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/inverse</span>
+    <span class="ds-token-row__alias">→ white</span>
+  </div>
+  <div class="ds-token-row__usage">Text on dark or colored backgrounds</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-inverse)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#ffffff</span>
+      <code class="ds-token-row__var">var(--text-inverse)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/disabled</span>
+    <span class="ds-token-row__alias">→ neutral/50</span>
+  </div>
+  <div class="ds-token-row__usage">Text in disabled or inactive states</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-disabled)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#8a9a90</span>
+      <code class="ds-token-row__var">var(--text-disabled)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/link</span>
+    <span class="ds-token-row__alias">→ teal/70</span>
+  </div>
+  <div class="ds-token-row__usage">Hyperlink and link text color</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-link)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#006b5c</span>
+      <code class="ds-token-row__var">var(--text-link)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/negative</span>
+    <span class="ds-token-row__alias">→ red/text</span>
+  </div>
+  <div class="ds-token-row__usage">Error messages and destructive status text</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-negative)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#ba151d</span>
+      <code class="ds-token-row__var">var(--text-negative)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/intermediate</span>
+    <span class="ds-token-row__alias">→ amber/text</span>
+  </div>
+  <div class="ds-token-row__usage">Warning and pending status text</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-intermediate)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#775516</span>
+      <code class="ds-token-row__var">var(--text-intermediate)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/positive</span>
+    <span class="ds-token-row__alias">→ green/text</span>
+  </div>
+  <div class="ds-token-row__usage">Success and verified status text</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-positive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#166534</span>
+      <code class="ds-token-row__var">var(--text-positive)</code>
+    </div>
+  </div>
+</div><div class="ds-token-group-label">Surface</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/neutral/01</span>
+    <span class="ds-token-row__alias">→ white</span>
+  </div>
+  <div class="ds-token-row__usage">Primary page and card backgrounds</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-neutral-01)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#ffffff</span>
+      <code class="ds-token-row__var">var(--surface-neutral-01)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/neutral/02</span>
+    <span class="ds-token-row__alias">→ neutral/10</span>
+  </div>
+  <div class="ds-token-row__usage">Subtle section backgrounds and table stripes</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-neutral-02)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#f4f6f4</span>
+      <code class="ds-token-row__var">var(--surface-neutral-02)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/neutral/03</span>
+    <span class="ds-token-row__alias">→ neutral/15</span>
+  </div>
+  <div class="ds-token-row__usage">Secondary containers and grouped panels</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-neutral-03)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#e8ede8</span>
+      <code class="ds-token-row__var">var(--surface-neutral-03)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/neutral/04</span>
+    <span class="ds-token-row__alias">→ neutral/20</span>
+  </div>
+  <div class="ds-token-row__usage">Tertiary surfaces and inset areas</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-neutral-04)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#dde2de</span>
+      <code class="ds-token-row__var">var(--surface-neutral-04)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/disabled</span>
+    <span class="ds-token-row__alias">→ neutral/20</span>
+  </div>
+  <div class="ds-token-row__usage">Disabled input and control backgrounds</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-disabled)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#dde2de</span>
+      <code class="ds-token-row__var">var(--surface-disabled)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/hover</span>
+    <span class="ds-token-row__alias">→ neutral/10</span>
+  </div>
+  <div class="ds-token-row__usage">Hover state for list rows and menu items</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-hover)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#f4f6f4</span>
+      <code class="ds-token-row__var">var(--surface-hover)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/selected</span>
+    <span class="ds-token-row__alias">→ teal/10</span>
+  </div>
+  <div class="ds-token-row__usage">Selected rows, tabs, and filter chips</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-selected)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#e6f8f4</span>
+      <code class="ds-token-row__var">var(--surface-selected)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/overlay</span>
+    <span class="ds-token-row__alias">#171c1a @ 50%</span>
+  </div>
+  <div class="ds-token-row__usage">Modal and drawer backdrop scrim</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-overlay)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#171c1a @ 50%</span>
+      <code class="ds-token-row__var">var(--surface-overlay)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/inverse</span>
+    <span class="ds-token-row__alias">→ neutral/100</span>
+  </div>
+  <div class="ds-token-row__usage">Dark toolbars, inverse headers, and footers</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-inverse)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#172d2d</span>
+      <code class="ds-token-row__var">var(--surface-inverse)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/negative</span>
+    <span class="ds-token-row__alias">→ red/bg</span>
+  </div>
+  <div class="ds-token-row__usage">Error alert and validation message backgrounds</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-negative)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#fff1f1</span>
+      <code class="ds-token-row__var">var(--surface-negative)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/intermediate</span>
+    <span class="ds-token-row__alias">→ amber/bg</span>
+  </div>
+  <div class="ds-token-row__usage">Warning alert backgrounds</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-intermediate)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#fff4db</span>
+      <code class="ds-token-row__var">var(--surface-intermediate)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/positive</span>
+    <span class="ds-token-row__alias">→ green/bg</span>
+  </div>
+  <div class="ds-token-row__usage">Success alert and verified state backgrounds</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-positive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#eaf7f0</span>
+      <code class="ds-token-row__var">var(--surface-positive)</code>
+    </div>
+  </div>
+</div><div class="ds-token-group-label">Border</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/subtle</span>
+    <span class="ds-token-row__alias">→ neutral/20</span>
+  </div>
+  <div class="ds-token-row__usage">Default borders on cards, inputs, and dividers</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-subtle)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#dde2de</span>
+      <code class="ds-token-row__var">var(--border-subtle)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/strong</span>
+    <span class="ds-token-row__alias">→ neutral/30</span>
+  </div>
+  <div class="ds-token-row__usage">Emphasized borders on inputs and data cells</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-strong)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#c5cec8</span>
+      <code class="ds-token-row__var">var(--border-strong)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/interactive</span>
+    <span class="ds-token-row__alias">→ teal/80</span>
+  </div>
+  <div class="ds-token-row__usage">Interactive control outlines and selected borders</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-interactive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#004c45</span>
+      <code class="ds-token-row__var">var(--border-interactive)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/divider</span>
+    <span class="ds-token-row__alias">→ neutral/15</span>
+  </div>
+  <div class="ds-token-row__usage">Section dividers and list separators</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-divider)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#e8ede8</span>
+      <code class="ds-token-row__var">var(--border-divider)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/disabled</span>
+    <span class="ds-token-row__alias">→ neutral/30</span>
+  </div>
+  <div class="ds-token-row__usage">Disabled control borders</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-disabled)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#c5cec8</span>
+      <code class="ds-token-row__var">var(--border-disabled)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/focus</span>
+    <span class="ds-token-row__alias">→ teal/60</span>
+  </div>
+  <div class="ds-token-row__usage">Focus rings on interactive elements</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-focus)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#0e8a78</span>
+      <code class="ds-token-row__var">var(--border-focus)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/selected</span>
+    <span class="ds-token-row__alias">→ teal/80</span>
+  </div>
+  <div class="ds-token-row__usage">Selected item borders</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-selected)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#004c45</span>
+      <code class="ds-token-row__var">var(--border-selected)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/negative</span>
+    <span class="ds-token-row__alias">→ red/border</span>
+  </div>
+  <div class="ds-token-row__usage">Error state borders</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-negative)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#db2b2b</span>
+      <code class="ds-token-row__var">var(--border-negative)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/intermediate</span>
+    <span class="ds-token-row__alias">→ amber/border</span>
+  </div>
+  <div class="ds-token-row__usage">Warning state borders</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-intermediate)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#d8a13b</span>
+      <code class="ds-token-row__var">var(--border-intermediate)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/positive</span>
+    <span class="ds-token-row__alias">→ green/border</span>
+  </div>
+  <div class="ds-token-row__usage">Success state borders</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-positive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#6fb38a</span>
+      <code class="ds-token-row__var">var(--border-positive)</code>
+    </div>
+  </div>
+</div><div class="ds-token-group-label">Interactive</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/default</span>
+    <span class="ds-token-row__alias">→ teal/80</span>
+  </div>
+  <div class="ds-token-row__usage">Primary button and link fill</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-default)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#004c45</span>
+      <code class="ds-token-row__var">var(--interactive-default)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/hover</span>
+    <span class="ds-token-row__alias">→ teal/90</span>
+  </div>
+  <div class="ds-token-row__usage">Primary button hover fill</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-hover)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#003530</span>
+      <code class="ds-token-row__var">var(--interactive-hover)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/active</span>
+    <span class="ds-token-row__alias">→ teal/100</span>
+  </div>
+  <div class="ds-token-row__usage">Primary button pressed fill</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-active)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#00201e</span>
+      <code class="ds-token-row__var">var(--interactive-active)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/subtle</span>
+    <span class="ds-token-row__alias">→ teal/10</span>
+  </div>
+  <div class="ds-token-row__usage">Subtle interactive backgrounds and chips</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-subtle)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#e6f8f4</span>
+      <code class="ds-token-row__var">var(--interactive-subtle)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/disabled</span>
+    <span class="ds-token-row__alias">→ neutral/40</span>
+  </div>
+  <div class="ds-token-row__usage">Disabled interactive control fill</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-disabled)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#a8b4ac</span>
+      <code class="ds-token-row__var">var(--interactive-disabled)</code>
+    </div>
+  </div>
+</div><div class="ds-token-group-label">Icon</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/default</span>
+    <span class="ds-token-row__alias">→ neutral/100</span>
+  </div>
+  <div class="ds-token-row__usage">Default icon color on light surfaces</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-default)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#172d2d</span>
+      <code class="ds-token-row__var">var(--icon-default)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/muted</span>
+    <span class="ds-token-row__alias">→ neutral/70</span>
+  </div>
+  <div class="ds-token-row__usage">Secondary icons in toolbars and metadata</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-muted)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#526660</span>
+      <code class="ds-token-row__var">var(--icon-muted)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/faint</span>
+    <span class="ds-token-row__alias">→ neutral/60</span>
+  </div>
+  <div class="ds-token-row__usage">Decorative and low-emphasis icons</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-faint)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#617269</span>
+      <code class="ds-token-row__var">var(--icon-faint)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/disabled</span>
+    <span class="ds-token-row__alias">→ neutral/50</span>
+  </div>
+  <div class="ds-token-row__usage">Icons in disabled states</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-disabled)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#8a9a90</span>
+      <code class="ds-token-row__var">var(--icon-disabled)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/inverse</span>
+    <span class="ds-token-row__alias">→ white</span>
+  </div>
+  <div class="ds-token-row__usage">Icons on dark or colored backgrounds</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-inverse)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#ffffff</span>
+      <code class="ds-token-row__var">var(--icon-inverse)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/interactive</span>
+    <span class="ds-token-row__alias">→ teal/80</span>
+  </div>
+  <div class="ds-token-row__usage">Interactive icon buttons and links</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-interactive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#004c45</span>
+      <code class="ds-token-row__var">var(--icon-interactive)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/negative</span>
+    <span class="ds-token-row__alias">→ red/border</span>
+  </div>
+  <div class="ds-token-row__usage">Error and destructive action icons</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-negative)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#db2b2b</span>
+      <code class="ds-token-row__var">var(--icon-negative)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/intermediate</span>
+    <span class="ds-token-row__alias">→ amber/icon</span>
+  </div>
+  <div class="ds-token-row__usage">Warning status icons</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-intermediate)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#b07a1a</span>
+      <code class="ds-token-row__var">var(--icon-intermediate)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/positive</span>
+    <span class="ds-token-row__alias">→ green/icon</span>
+  </div>
+  <div class="ds-token-row__usage">Success and verified status icons</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-positive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#3d8b5e</span>
+      <code class="ds-token-row__var">var(--icon-positive)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/ai</span>
+    <span class="ds-token-row__alias">→ violet/80</span>
+  </div>
+  <div class="ds-token-row__usage">AI and Labs feature accent icons</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-ai)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#592d80</span>
+      <code class="ds-token-row__var">var(--icon-ai)</code>
+    </div>
+  </div>
+</div><div class="ds-token-group-label">AI</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">ai/accent</span>
+    <span class="ds-token-row__alias">→ violet/80</span>
+  </div>
+  <div class="ds-token-row__usage">AI feature accent color</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--ai-accent)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#592d80</span>
+      <code class="ds-token-row__var">var(--ai-accent)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">ai/surface</span>
+    <span class="ds-token-row__alias">→ violet/10</span>
+  </div>
+  <div class="ds-token-row__usage">AI panel and badge backgrounds</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--ai-surface)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#f5eefb</span>
+      <code class="ds-token-row__var">var(--ai-surface)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">ai/badge</span>
+    <span class="ds-token-row__alias">→ violet/30</span>
+  </div>
+  <div class="ds-token-row__usage">AI badge fill</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--ai-badge)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#dcc0f5</span>
+      <code class="ds-token-row__var">var(--ai-badge)</code>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">ai/hover</span>
+    <span class="ds-token-row__alias">→ violet/20</span>
+  </div>
+  <div class="ds-token-row__usage">AI interactive hover background</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--ai-hover)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#e8d8f5</span>
+      <code class="ds-token-row__var">var(--ai-hover)</code>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+</article>
+</div>
+
+<div class="ds-token-panel" id="token-panel-typography-tokens" role="tabpanel" aria-labelledby="token-tab-typography-tokens" hidden>
+<article class="ds-showcase" id="token-doc-typography-tokens">
+  <div class="ds-showcase__head">
+    <h3 class="ds-showcase__title">Typography tokens</h3>
+    <p class="ds-showcase__desc">Font families, sizes, weights, and line heights used across the system.</p>
+    <div class="ds-showcase__meta">
+      <code class="ds-api">tokens/tokens.css</code>
+      <a class="ds-token-figma-link" href="https://www.figma.com/design/aMXWPoPQ94hxTKOhUngOih/Trulioo-ADS---2026?node-id=84-418" target="_blank" rel="noopener noreferrer">View in Figma</a>
+    </div>
+  </div>
+  <div class="ds-showcase__canvas ds-showcase__canvas--flush ds-showcase__canvas--token-doc">
+    <div class="ds-token-table">
+      <div class="ds-token-table__head ds-token-table__head--3"><span>Token</span><span>Value</span><span>Notes</span></div>
+      <div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/family</span>
+    <code class="ds-token-row__var">var(--font-family)</code>
+  </div>
+  <div class="ds-token-row__usage">&quot;Inter&quot;, sans-serif</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/family/display</span>
+    <code class="ds-token-row__var">var(--font-family-display)</code>
+  </div>
+  <div class="ds-token-row__usage">&quot;Tobias&quot;, Georgia, &quot;Times New Roman&quot;, serif</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/family/mono</span>
+    <code class="ds-token-row__var">var(--font-family-mono)</code>
+  </div>
+  <div class="ds-token-row__usage">&quot;SF Mono&quot;, &quot;JetBrains Mono&quot;, &quot;DM Mono&quot;, &quot;Fira Code&quot;, monospace</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/tab/default</span>
+    <code class="ds-token-row__var">var(--text-tab-default)</code>
+  </div>
+  <div class="ds-token-row__usage">#666666</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/tab/disabled</span>
+    <code class="ds-token-row__var">var(--text-tab-disabled)</code>
+  </div>
+  <div class="ds-token-row__usage">#b3b3b3</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/xs</span>
+    <code class="ds-token-row__var">var(--font-size-xs)</code>
+  </div>
+  <div class="ds-token-row__usage">0.75rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">12px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/sm</span>
+    <code class="ds-token-row__var">var(--font-size-sm)</code>
+  </div>
+  <div class="ds-token-row__usage">0.875rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">14px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/md</span>
+    <code class="ds-token-row__var">var(--font-size-md)</code>
+  </div>
+  <div class="ds-token-row__usage">1rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">16px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/lg</span>
+    <code class="ds-token-row__var">var(--font-size-lg)</code>
+  </div>
+  <div class="ds-token-row__usage">1.125rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">18px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/xl</span>
+    <code class="ds-token-row__var">var(--font-size-xl)</code>
+  </div>
+  <div class="ds-token-row__usage">1.25rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">20px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/2xl</span>
+    <code class="ds-token-row__var">var(--font-size-2xl)</code>
+  </div>
+  <div class="ds-token-row__usage">1.5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">24px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/3xl</span>
+    <code class="ds-token-row__var">var(--font-size-3xl)</code>
+  </div>
+  <div class="ds-token-row__usage">1.75rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">28px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/4xl</span>
+    <code class="ds-token-row__var">var(--font-size-4xl)</code>
+  </div>
+  <div class="ds-token-row__usage">2rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">32px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/display/sm</span>
+    <code class="ds-token-row__var">var(--font-size-display-sm)</code>
+  </div>
+  <div class="ds-token-row__usage">2.25rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">36px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/display/md</span>
+    <code class="ds-token-row__var">var(--font-size-display-md)</code>
+  </div>
+  <div class="ds-token-row__usage">2.625rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">42px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/display/lg</span>
+    <code class="ds-token-row__var">var(--font-size-display-lg)</code>
+  </div>
+  <div class="ds-token-row__usage">3rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">48px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/display/xl</span>
+    <code class="ds-token-row__var">var(--font-size-display-xl)</code>
+  </div>
+  <div class="ds-token-row__usage">3.375rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">54px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/display/2xl</span>
+    <code class="ds-token-row__var">var(--font-size-display-2xl)</code>
+  </div>
+  <div class="ds-token-row__usage">3.75rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">60px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/size/display/3xl</span>
+    <code class="ds-token-row__var">var(--font-size-display-3xl)</code>
+  </div>
+  <div class="ds-token-row__usage">4.75rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">76px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/xs</span>
+    <code class="ds-token-row__var">var(--line-height-xs)</code>
+  </div>
+  <div class="ds-token-row__usage">1rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">16px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/sm</span>
+    <code class="ds-token-row__var">var(--line-height-sm)</code>
+  </div>
+  <div class="ds-token-row__usage">1.125rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">18px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/md</span>
+    <code class="ds-token-row__var">var(--line-height-md)</code>
+  </div>
+  <div class="ds-token-row__usage">1.25rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">20px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/lg</span>
+    <code class="ds-token-row__var">var(--line-height-lg)</code>
+  </div>
+  <div class="ds-token-row__usage">1.375rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">22px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/xl</span>
+    <code class="ds-token-row__var">var(--line-height-xl)</code>
+  </div>
+  <div class="ds-token-row__usage">1.5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">24px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/2xl</span>
+    <code class="ds-token-row__var">var(--line-height-2xl)</code>
+  </div>
+  <div class="ds-token-row__usage">1.625rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">26px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/3xl</span>
+    <code class="ds-token-row__var">var(--line-height-3xl)</code>
+  </div>
+  <div class="ds-token-row__usage">1.875rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">30px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/4xl</span>
+    <code class="ds-token-row__var">var(--line-height-4xl)</code>
+  </div>
+  <div class="ds-token-row__usage">2.25rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">36px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/5xl</span>
+    <code class="ds-token-row__var">var(--line-height-5xl)</code>
+  </div>
+  <div class="ds-token-row__usage">2.5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">40px</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/weight/light</span>
+    <code class="ds-token-row__var">var(--font-weight-light)</code>
+  </div>
+  <div class="ds-token-row__usage">300</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/weight/regular</span>
+    <code class="ds-token-row__var">var(--font-weight-regular)</code>
+  </div>
+  <div class="ds-token-row__usage">400</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/weight/medium</span>
+    <code class="ds-token-row__var">var(--font-weight-medium)</code>
+  </div>
+  <div class="ds-token-row__usage">500</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/weight/semibold</span>
+    <code class="ds-token-row__var">var(--font-weight-semibold)</code>
+  </div>
+  <div class="ds-token-row__usage">600</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/weight/bold</span>
+    <code class="ds-token-row__var">var(--font-weight-bold)</code>
+  </div>
+  <div class="ds-token-row__usage">700</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/weight/figma</span>
+    <code class="ds-token-row__var">var(--font-weight-figma)</code>
+  </div>
+  <div class="ds-token-row__usage">500</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/variation/figma/medium</span>
+    <code class="ds-token-row__var">var(--font-variation-figma-medium)</code>
+  </div>
+  <div class="ds-token-row__usage">&quot;wght&quot; 500</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">font/variation/figma/semibold</span>
+    <code class="ds-token-row__var">var(--font-variation-figma-semibold)</code>
+  </div>
+  <div class="ds-token-row__usage">&quot;wght&quot; 600</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div>
+    </div>
+  </div>
+</article>
+</div>
+
+<div class="ds-token-panel" id="token-panel-spacing-radius-tokens" role="tabpanel" aria-labelledby="token-tab-spacing-radius-tokens" hidden>
+<article class="ds-showcase" id="token-doc-spacing-radius-tokens">
+  <div class="ds-showcase__head">
+    <h3 class="ds-showcase__title">Spacing &amp; radius tokens</h3>
+    <p class="ds-showcase__desc">Spacing and border radius variables for consistent layout. Core tokens define raw values; semantic tokens alias them for specific use cases.</p>
+    <div class="ds-showcase__meta">
+      <code class="ds-api">tokens/tokens.css</code>
+      <a class="ds-token-figma-link" href="https://www.figma.com/design/aMXWPoPQ94hxTKOhUngOih/Trulioo-ADS---2026?node-id=84-418" target="_blank" rel="noopener noreferrer">View in Figma</a>
+    </div>
+  </div>
+  <div class="ds-showcase__canvas ds-showcase__canvas--flush ds-showcase__canvas--token-doc">
+    <div class="ds-token-table">
+      <div class="ds-token-table__head ds-token-table__head--3"><span>Token</span><span>Value</span><span>Notes</span></div>
+      <div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/2</span>
+    <code class="ds-token-row__var">var(--spacing-2)</code>
+  </div>
+  <div class="ds-token-row__usage">0.125rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-2)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/4</span>
+    <code class="ds-token-row__var">var(--spacing-4)</code>
+  </div>
+  <div class="ds-token-row__usage">0.25rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-4)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/8</span>
+    <code class="ds-token-row__var">var(--spacing-8)</code>
+  </div>
+  <div class="ds-token-row__usage">0.5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-8)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/12</span>
+    <code class="ds-token-row__var">var(--spacing-12)</code>
+  </div>
+  <div class="ds-token-row__usage">0.75rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-12)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/16</span>
+    <code class="ds-token-row__var">var(--spacing-16)</code>
+  </div>
+  <div class="ds-token-row__usage">1rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-16)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/24</span>
+    <code class="ds-token-row__var">var(--spacing-24)</code>
+  </div>
+  <div class="ds-token-row__usage">1.5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-24)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/32</span>
+    <code class="ds-token-row__var">var(--spacing-32)</code>
+  </div>
+  <div class="ds-token-row__usage">2rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-32)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/40</span>
+    <code class="ds-token-row__var">var(--spacing-40)</code>
+  </div>
+  <div class="ds-token-row__usage">2.5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-40)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/48</span>
+    <code class="ds-token-row__var">var(--spacing-48)</code>
+  </div>
+  <div class="ds-token-row__usage">3rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-48)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/64</span>
+    <code class="ds-token-row__var">var(--spacing-64)</code>
+  </div>
+  <div class="ds-token-row__usage">4rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-64)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/80</span>
+    <code class="ds-token-row__var">var(--spacing-80)</code>
+  </div>
+  <div class="ds-token-row__usage">5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-80)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/96</span>
+    <code class="ds-token-row__var">var(--spacing-96)</code>
+  </div>
+  <div class="ds-token-row__usage">6rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-96)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/160</span>
+    <code class="ds-token-row__var">var(--spacing-160)</code>
+  </div>
+  <div class="ds-token-row__usage">10rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-160)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">spacing/200</span>
+    <code class="ds-token-row__var">var(--spacing-200)</code>
+  </div>
+  <div class="ds-token-row__usage">12.5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-200)"></span></div>
+</div><div class="ds-token-group-label">Padding</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">padding/xs</span>
+    <code class="ds-token-row__var">var(--padding-xs)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-4)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-xs)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">padding/sm</span>
+    <code class="ds-token-row__var">var(--padding-sm)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-8)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-sm)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">padding/md</span>
+    <code class="ds-token-row__var">var(--padding-md)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-12)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-md)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">padding/lg</span>
+    <code class="ds-token-row__var">var(--padding-lg)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-16)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-lg)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">padding/xl</span>
+    <code class="ds-token-row__var">var(--padding-xl)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-24)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">padding/2xl</span>
+    <code class="ds-token-row__var">var(--padding-2xl)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-32)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-2xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">padding/3xl</span>
+    <code class="ds-token-row__var">var(--padding-3xl)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-40)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-3xl)"></span></div>
+</div><div class="ds-token-group-label">Gap</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">gap/xs</span>
+    <code class="ds-token-row__var">var(--gap-xs)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-4)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-xs)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">gap/sm</span>
+    <code class="ds-token-row__var">var(--gap-sm)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-8)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-sm)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">gap/md</span>
+    <code class="ds-token-row__var">var(--gap-md)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-12)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-md)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">gap/lg</span>
+    <code class="ds-token-row__var">var(--gap-lg)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-16)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-lg)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">gap/xl</span>
+    <code class="ds-token-row__var">var(--gap-xl)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-24)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">gap/2xl</span>
+    <code class="ds-token-row__var">var(--gap-2xl)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-32)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-2xl)"></span></div>
+</div><div class="ds-token-group-label">Margin</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">margin/sm</span>
+    <code class="ds-token-row__var">var(--margin-sm)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-16)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-sm)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">margin/md</span>
+    <code class="ds-token-row__var">var(--margin-md)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-24)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-md)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">margin/lg</span>
+    <code class="ds-token-row__var">var(--margin-lg)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-32)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-lg)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">margin/xl</span>
+    <code class="ds-token-row__var">var(--margin-xl)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-48)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">margin/2xl</span>
+    <code class="ds-token-row__var">var(--margin-2xl)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-64)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-2xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">margin/3xl</span>
+    <code class="ds-token-row__var">var(--margin-3xl)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--spacing-96)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-3xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/none</span>
+    <code class="ds-token-row__var">var(--radius-none)</code>
+  </div>
+  <div class="ds-token-row__usage">0</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-none)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/xs</span>
+    <code class="ds-token-row__var">var(--radius-xs)</code>
+  </div>
+  <div class="ds-token-row__usage">0.125rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-xs)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/sm</span>
+    <code class="ds-token-row__var">var(--radius-sm)</code>
+  </div>
+  <div class="ds-token-row__usage">0.25rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-sm)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/md</span>
+    <code class="ds-token-row__var">var(--radius-md)</code>
+  </div>
+  <div class="ds-token-row__usage">0.375rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-md)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/lg</span>
+    <code class="ds-token-row__var">var(--radius-lg)</code>
+  </div>
+  <div class="ds-token-row__usage">0.5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-lg)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/xl</span>
+    <code class="ds-token-row__var">var(--radius-xl)</code>
+  </div>
+  <div class="ds-token-row__usage">0.75rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/2xl</span>
+    <code class="ds-token-row__var">var(--radius-2xl)</code>
+  </div>
+  <div class="ds-token-row__usage">1rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-2xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/3xl</span>
+    <code class="ds-token-row__var">var(--radius-3xl)</code>
+  </div>
+  <div class="ds-token-row__usage">1.5rem</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-3xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/full</span>
+    <code class="ds-token-row__var">var(--radius-full)</code>
+  </div>
+  <div class="ds-token-row__usage">9999px</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-full)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/button</span>
+    <code class="ds-token-row__var">var(--radius-button)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--radius-md)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-button)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/card</span>
+    <code class="ds-token-row__var">var(--radius-card)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--radius-lg)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-card)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/modal</span>
+    <code class="ds-token-row__var">var(--radius-modal)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--radius-xl)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-modal)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/section</span>
+    <code class="ds-token-row__var">var(--radius-section)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--radius-2xl)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-section)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">radius/badge</span>
+    <code class="ds-token-row__var">var(--radius-badge)</code>
+  </div>
+  <div class="ds-token-row__usage">var(--radius-full)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-badge)"></span></div>
+</div>
+    </div>
+  </div>
+</article>
+</div>
+
+<div class="ds-token-panel" id="token-panel-elevation-tokens" role="tabpanel" aria-labelledby="token-tab-elevation-tokens" hidden>
+<article class="ds-showcase" id="token-doc-elevation-tokens">
+  <div class="ds-showcase__head">
+    <h3 class="ds-showcase__title">Elevation tokens</h3>
+    <p class="ds-showcase__desc">Box shadow tokens for elevation and depth.</p>
+    <div class="ds-showcase__meta">
+      <code class="ds-api">tokens/tokens.css</code>
+      <a class="ds-token-figma-link" href="https://www.figma.com/design/aMXWPoPQ94hxTKOhUngOih/Trulioo-ADS---2026?node-id=84-418" target="_blank" rel="noopener noreferrer">View in Figma</a>
+    </div>
+  </div>
+  <div class="ds-showcase__canvas ds-showcase__canvas--flush ds-showcase__canvas--token-doc">
+    <div class="ds-token-table">
+      <div class="ds-token-table__head ds-token-table__head--4"><span>Token</span><span>Usage</span><span>Preview</span></div>
+      <div class="ds-token-row ds-token-row--elevation">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">elevation/xs</span>
+    <code class="ds-token-row__var">var(--elevation-xs)</code>
+  </div>
+  <div class="ds-token-row__usage">Subtle lift — toggles, chips, inline cards</div>
+  <div class="ds-token-row__preview"><span class="ds-token-elevation-preview" style="box-shadow: var(--elevation-xs)"></span></div>
+</div><div class="ds-token-row ds-token-row--elevation">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">elevation/sm</span>
+    <code class="ds-token-row__var">var(--elevation-sm)</code>
+  </div>
+  <div class="ds-token-row__usage">Default cards, dropdowns, popovers</div>
+  <div class="ds-token-row__preview"><span class="ds-token-elevation-preview" style="box-shadow: var(--elevation-sm)"></span></div>
+</div><div class="ds-token-row ds-token-row--elevation">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">elevation/md</span>
+    <code class="ds-token-row__var">var(--elevation-md)</code>
+  </div>
+  <div class="ds-token-row__usage">Hover cards, raised panels, tooltips</div>
+  <div class="ds-token-row__preview"><span class="ds-token-elevation-preview" style="box-shadow: var(--elevation-md)"></span></div>
+</div><div class="ds-token-row ds-token-row--elevation">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">elevation/lg</span>
+    <code class="ds-token-row__var">var(--elevation-lg)</code>
+  </div>
+  <div class="ds-token-row__usage">Drawers, sidebars, floating action buttons</div>
+  <div class="ds-token-row__preview"><span class="ds-token-elevation-preview" style="box-shadow: var(--elevation-lg)"></span></div>
+</div><div class="ds-token-row ds-token-row--elevation">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">elevation/xl</span>
+    <code class="ds-token-row__var">var(--elevation-xl)</code>
+  </div>
+  <div class="ds-token-row__usage">Modals and elevated dialogs</div>
+  <div class="ds-token-row__preview"><span class="ds-token-elevation-preview" style="box-shadow: var(--elevation-xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--elevation">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">elevation/2xl</span>
+    <code class="ds-token-row__var">var(--elevation-2xl)</code>
+  </div>
+  <div class="ds-token-row__usage">Maximum elevation for overlays</div>
+  <div class="ds-token-row__preview"><span class="ds-token-elevation-preview" style="box-shadow: var(--elevation-2xl)"></span></div>
+</div><div class="ds-token-group-label">Component shadows</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">shadow/button/resting</span>
+    <code class="ds-token-row__var">var(--shadow-button-resting)</code>
+  </div>
+  <div class="ds-token-row__usage">0 1px 0 rgba(31, 35, 40, 0.04)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">shadow/button/elevated</span>
+    <code class="ds-token-row__var">var(--shadow-button-elevated)</code>
+  </div>
+  <div class="ds-token-row__usage">0 1px 1px rgba(0, 0, 0, 0.04), 0 1px 1.5px rgba(0, 0, 0, 0.06)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">shadow/inset</span>
+    <code class="ds-token-row__var">var(--shadow-inset)</code>
+  </div>
+  <div class="ds-token-row__usage">inset 0 1px 0 rgba(31, 35, 40, 0.04)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">shadow/switch/handle</span>
+    <code class="ds-token-row__var">var(--shadow-switch-handle)</code>
+  </div>
+  <div class="ds-token-row__usage">0 2px 4px rgba(140, 149, 159, 0.15)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">overlay/on/interactive</span>
+    <code class="ds-token-row__var">var(--overlay-on-interactive)</code>
+  </div>
+  <div class="ds-token-row__usage">rgba(255, 255, 255, 0.2)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">overlay/on/neutral</span>
+    <code class="ds-token-row__var">var(--overlay-on-neutral)</code>
+  </div>
+  <div class="ds-token-row__usage">rgba(0, 0, 0, 0.1)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
+</div>
+    </div>
+  </div>
+</article>
+</div>
+  </div>
+</section>
+<!-- TOKEN_DOCS_END -->
+
     </div>
   </main>
 </div>
+<script src="../../Components/date-picker/date-picker.js"></script>
 <script>
 function toggleAccordion(header) {
   const accordion = header.closest('.tds-accordion');
@@ -3621,39 +5231,7 @@ function toggleSwitch(label) {
   track.classList.toggle('tds-switch__track--on', !on);
 }
 
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
-/**
- * Tab navigation for preview.html — one component family visible at a time.
- */
+/** Tab navigation — one component family visible at a time. */
 (function initPreviewTabs() {
   const TAB_IDS = [
     "buttons",
@@ -3664,29 +5242,30 @@ function toggleSwitch(label) {
     "disclosure",
     "data",
     "typography",
+    "tokens",
   ];
 
   const tabs = document.querySelectorAll(".ds-sidebar__link[data-tab]");
+  const mobileTabs = document.querySelectorAll(".ds-mobile-tabs__btn[data-tab]");
   const panels = document.querySelectorAll(".ds-tab-panel");
-  const mobileSelect = document.getElementById("ds-mobile-tab");
   const topbarTitle = document.querySelector(".ds-topbar__title");
 
   if (!tabs.length || !panels.length) return;
-
-  function panelFor(id) {
-    return document.getElementById(id);
-  }
 
   function tabFor(id) {
     return document.querySelector(`.ds-sidebar__link[data-tab="${id}"]`);
   }
 
+  function mobileTabFor(id) {
+    return document.querySelector(`.ds-mobile-tabs__btn[data-tab="${id}"]`);
+  }
+
   function labelFor(id) {
     const tab = tabFor(id);
-    if (!tab) return id;
-    const clone = tab.cloneNode(true);
-    clone.querySelector(".ds-sidebar__num")?.remove();
-    return (clone.textContent || id).trim();
+    const label = tab?.querySelector(".ds-sidebar__label");
+    if (label) return label.textContent.trim();
+    const mobileTab = mobileTabFor(id);
+    return (mobileTab?.textContent || id).trim();
   }
 
   function activateTab(id, { updateHash = true, scrollTop = true } = {}) {
@@ -3699,13 +5278,21 @@ function toggleSwitch(label) {
       tab.setAttribute("tabindex", active ? "0" : "-1");
     });
 
+    mobileTabs.forEach((tab) => {
+      const active = tab.dataset.tab === id;
+      tab.classList.toggle("is-active", active);
+      tab.setAttribute("aria-selected", active ? "true" : "false");
+      if (active) {
+        tab.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+      }
+    });
+
     panels.forEach((panel) => {
       const active = panel.id === id;
       panel.classList.toggle("is-active", active);
       panel.hidden = !active;
     });
 
-    if (mobileSelect) mobileSelect.value = id;
     if (topbarTitle) topbarTitle.textContent = labelFor(id);
 
     if (updateHash && window.location.hash !== `#${id}`) {
@@ -3742,15 +5329,14 @@ function toggleSwitch(label) {
         return;
       }
 
-      const nextTab = tabFor(TAB_IDS[next]);
-      nextTab?.focus();
+      tabFor(TAB_IDS[next])?.focus();
       activateTab(TAB_IDS[next]);
     });
   });
 
-  if (mobileSelect) {
-    mobileSelect.addEventListener("change", () => activateTab(mobileSelect.value));
-  }
+  mobileTabs.forEach((tab) => {
+    tab.addEventListener("click", () => activateTab(tab.dataset.tab));
+  });
 
   window.addEventListener("hashchange", () => {
     const id = window.location.hash.replace("#", "");
@@ -3762,6 +5348,77 @@ function toggleSwitch(label) {
     : TAB_IDS[0];
 
   activateTab(initial, { updateHash: !window.location.hash });
+})();
+
+(function initTokenSubTabs() {
+  const root = document.getElementById("tokens");
+  if (!root) return;
+
+  const TOKEN_TAB_IDS = Array.from(root.querySelectorAll(".ds-token-tabs__btn[data-token-tab]")).map(
+    (tab) => tab.dataset.tokenTab
+  );
+  if (!TOKEN_TAB_IDS.length) return;
+
+  const tabs = root.querySelectorAll(".ds-token-tabs__btn[data-token-tab]");
+  const panels = root.querySelectorAll(".ds-token-panel");
+
+  function tabFor(id) {
+    return root.querySelector(`.ds-token-tabs__btn[data-token-tab="${id}"]`);
+  }
+
+  function activateTokenTab(id, { scrollTop = true } = {}) {
+    if (!TOKEN_TAB_IDS.includes(id)) id = TOKEN_TAB_IDS[0];
+
+    tabs.forEach((tab) => {
+      const active = tab.dataset.tokenTab === id;
+      tab.classList.toggle("is-active", active);
+      tab.setAttribute("aria-selected", active ? "true" : "false");
+      tab.setAttribute("tabindex", active ? "0" : "-1");
+    });
+
+    panels.forEach((panel) => {
+      const active = panel.id === `token-panel-${id}`;
+      panel.classList.toggle("is-active", active);
+      panel.hidden = !active;
+    });
+
+    if (scrollTop) {
+      const main = document.querySelector(".ds-main");
+      if (main) main.scrollTop = 0;
+    }
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => activateTokenTab(tab.dataset.tokenTab));
+
+    tab.addEventListener("keydown", (e) => {
+      const idx = TOKEN_TAB_IDS.indexOf(tab.dataset.tokenTab);
+      if (idx < 0) return;
+
+      let next = idx;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        next = (idx + 1) % TOKEN_TAB_IDS.length;
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        next = (idx - 1 + TOKEN_TAB_IDS.length) % TOKEN_TAB_IDS.length;
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        next = 0;
+      } else if (e.key === "End") {
+        e.preventDefault();
+        next = TOKEN_TAB_IDS.length - 1;
+      } else {
+        return;
+      }
+
+      const nextTab = tabFor(TOKEN_TAB_IDS[next]);
+      nextTab?.focus();
+      activateTokenTab(TOKEN_TAB_IDS[next]);
+    });
+  });
+
+  activateTokenTab(TOKEN_TAB_IDS[0], { scrollTop: false });
 })();
 
 // Interactive tabs

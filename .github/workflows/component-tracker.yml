@@ -1,0 +1,23 @@
+name: Component Tracker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tracker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build component tracker JSON
+        run: node scripts/build-component-tracker.mjs
+
+      - name: Verify generated tracker is committed
+        run: |
+          git diff --exit-code pages/preview/react/src/data/component-tracker.json

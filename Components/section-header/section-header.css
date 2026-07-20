@@ -1,0 +1,90 @@
+/* ============================================================
+   SectionHeader
+   Figma: SectionHeader (1816:29234)
+   Slots: leadingIcon, subtext, tag, counter, button
+
+   Markup:
+   <div class="tds-section-header">
+     <div class="tds-section-header__left">
+       <span class="tds-section-header__icon" aria-hidden="true"><svg .../></span>
+       <div class="tds-section-header__title-stack">
+         <p class="tds-section-header__title">Section Title</p>
+         <p class="tds-section-header__subtext">Description text</p>
+       </div>
+       <span class="tds-tag tds-tag--sm tds-tag--default">Label</span>
+       <span class="tds-counter tds-counter--primary tds-counter--sm">20</span>
+     </div>
+     <div class="tds-section-header__right">
+       <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm">Button</button>
+     </div>
+   </div>
+   ============================================================ */
+
+.tds-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-lg);
+  width: 100%;
+  padding: var(--padding-lg);
+  background-color: var(--surface-neutral-02);
+  border: none;
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+.tds-section-header__left {
+  display: flex;
+  flex: 1 0 0;
+  align-items: center;
+  gap: var(--gap-md);
+  min-width: 0;
+}
+
+.tds-section-header__right {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.tds-section-header__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.tds-section-header__icon svg,
+.tds-section-header__icon .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.tds-section-header__title-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  min-width: 0;
+}
+
+.tds-section-header__title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-variation-figma-semibold);
+  color: var(--text-default);
+  word-break: break-word;
+}
+
+.tds-section-header__subtext {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+  word-break: break-word;
+}

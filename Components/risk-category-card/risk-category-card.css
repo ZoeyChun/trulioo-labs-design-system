@@ -1,0 +1,135 @@
+/* ============================================================
+   RiskCategoryCard
+   Figma: RiskCategoryCard (920:9307)
+   Variants: high | medium | low  (risk tag type + size)
+
+   Markup:
+   <div class="tds-risk-category-card">
+     <div class="tds-risk-category-card__title-row">
+       <p class="tds-risk-category-card__title">Category</p>
+       <span class="tds-tag tds-tag--xl tds-tag--negative">High Risk</span>
+     </div>
+     <div class="tds-risk-category-card__details-row">
+       <div class="tds-risk-category-card__signals">
+         <span class="tds-risk-category-card__icon" aria-hidden="true">
+           <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M8 2.5 14 13.5H2L8 2.5z"/>
+             <path d="M8 6.5v2.5"/>
+             <circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/>
+           </svg>
+         </span>
+         <p class="tds-risk-category-card__signal-count">0 signals</p>
+       </div>
+       <div class="tds-risk-category-card__score-group">
+         <p class="tds-risk-category-card__score">0</p>
+         <p class="tds-risk-category-card__score-suffix">/100</p>
+       </div>
+     </div>
+   </div>
+   ============================================================ */
+
+.tds-risk-category-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  width: 284px;
+  max-width: 100%;
+  padding: var(--padding-md);
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+/* --- Title row --- */
+
+.tds-risk-category-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+  width: 100%;
+  min-width: 0;
+}
+
+.tds-risk-category-card__title {
+  flex: 1 0 0;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-variation-figma-semibold);
+  color: var(--text-default);
+  word-break: break-word;
+}
+
+/* --- Details row --- */
+
+.tds-risk-category-card__details-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 0;
+}
+
+.tds-risk-category-card__signals {
+  display: flex;
+  flex: 1 0 0;
+  align-items: center;
+  gap: var(--gap-sm);
+  min-width: 0;
+}
+
+.tds-risk-category-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-negative);
+}
+
+.tds-risk-category-card__icon svg,
+.tds-risk-category-card__icon .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.tds-risk-category-card__signal-count {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+  white-space: nowrap;
+}
+
+/* --- Score --- */
+
+.tds-risk-category-card__score-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: flex-end;
+  gap: var(--spacing-2);
+  white-space: nowrap;
+}
+
+.tds-risk-category-card__score {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-variation-figma-semibold);
+  color: var(--text-default);
+}
+
+.tds-risk-category-card__score-suffix {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-caption);
+}

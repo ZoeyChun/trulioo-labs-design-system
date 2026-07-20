@@ -2,17 +2,20 @@
 
 /* ============================================================
    DataTable
-   Figma: DataTable (678:7115)
+   Figma: DataTable (884:13685)
    Sub-components: Header, ColumnHeaderCell, TextCell, LabelCell,
                    RowHeaderCell, CheckboxCell, RowActionsCell, Signals, Footer
    Densities: compact (34px) | default (50px) | comfort (66px)
+   No outer container border — header tint + row dividers only.
    ============================================================ */
 
 .tds-data-table-container {
   display: flex;
   flex-direction: column;
   background-color: var(--surface-neutral-01);
-  overflow: hidden;
+  border: none;
+  box-shadow: none;
+  overflow: clip;
 }
 
 .tds-data-table__wrapper {

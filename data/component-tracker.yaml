@@ -1,0 +1,648 @@
+# Trulioo Design System component tracker (repo source of truth)
+# Edit this file, then run: node scripts/build-component-tracker.mjs
+
+components:
+  -
+    id: button
+    name: Button
+    category: Core Controls
+    figmaStatus: Done
+    figmaVariants: 72
+    cssFile: button/button.css
+    classPrefixes:
+      - tds-btn
+    figmaNodeId: "96:2225"
+    notes: 4 variants x 3 sizes x 5 states + alignment
+  -
+    id: icon-button
+    name: IconButton
+    category: Core Controls
+    figmaStatus: Done
+    figmaVariants: 168
+    cssFile: icon-button/icon-button.css
+    classPrefixes:
+      - tds-icon-btn
+    figmaNodeId: "1371:22653"
+    notes: 4 variants x 3 sizes x 7 states x 2 shapes
+  -
+    id: button-menu
+    name: ButtonMenu
+    category: Core Controls
+    figmaStatus: Done
+    figmaVariants: 12
+    cssFile: button-menu/button-menu.css
+    classPrefixes:
+      - tds-button-menu
+    subComponents: DropdownPanel
+    figmaNodeId: "832:13390"
+    notes: Uses dropdown-panel for menu
+  -
+    id: switch
+    name: Switch
+    category: Core Controls
+    figmaStatus: Done
+    figmaVariants: 8
+    cssFile: switch/switch.css
+    classPrefixes:
+      - tds-switch
+    figmaNodeId: "96:3234"
+  -
+    id: checkbox
+    name: Checkbox
+    category: Core Controls
+    figmaStatus: Done
+    figmaVariants: 6
+    cssFile: checkbox/checkbox.css
+    classPrefixes:
+      - tds-checkbox
+    figmaNodeId: "299:12998"
+  -
+    id: dismiss-action
+    name: DismissAction
+    category: Core Controls
+    figmaStatus: Done
+    figmaVariants: 12
+    cssFile: dismiss-action/dismiss-action.css
+    classPrefixes:
+      - tds-dismiss
+    figmaNodeId: "331:8149"
+  -
+    id: text-input
+    name: TextInput
+    category: Form Inputs
+    figmaStatus: Done
+    figmaVariants: 97
+    cssFile: text-input/text-input.css
+    classPrefixes:
+      - tds-text-input
+    subComponents: FieldLabel, FieldCaption, FieldValidation
+    figmaNodeId: "96:3268"
+    notes: Imports shared atoms via @import
+  -
+    id: select
+    name: Select
+    category: Form Inputs
+    figmaStatus: Done
+    figmaVariants: 30
+    cssFile: select/select.css
+    classPrefixes:
+      - tds-select
+      - tds-combobox
+    subComponents: FieldLabel, FieldCaption, FieldValidation, Caret, DropdownPanel, Tag
+    figmaNodeId: "96:1624"
+    notes: Includes combobox variant
+  -
+    id: date-picker
+    name: DatePicker
+    category: Form Inputs
+    figmaStatus: Done
+    cssFile: date-picker/date-picker.css
+    classPrefixes:
+      - tds-date-picker
+      - tds-date-picker-range
+    subComponents: FieldLabel, FieldCaption, FieldValidation
+    figmaNodeId: "1632:29292"
+    notes: Single and range calendar variants
+  -
+    id: radio
+    name: Radio
+    category: Form Inputs
+    figmaStatus: Done
+    figmaVariants: 6
+    cssFile: _shared/radio/radio.css
+    classPrefixes:
+      - tds-radio
+    figmaNodeId: "100:4253"
+    notes: Shared atom
+  -
+    id: radio-group
+    name: RadioGroup
+    category: Form Inputs
+    figmaStatus: Done
+    figmaVariants: 6
+    cssFile: radio-group/radio-group.css
+    classPrefixes:
+      - tds-radio-group
+    subComponents: Radio
+    figmaNodeId: "100:4222"
+  -
+    id: radio-card
+    name: RadioCard
+    category: Form Inputs
+    figmaStatus: Done
+    figmaVariants: 2
+    cssFile: radio-card/radio-card.css
+    classPrefixes:
+      - tds-radio-card
+    subComponents: Radio
+    figmaNodeId: "359:3332"
+  -
+    id: field-label
+    name: FieldLabel
+    category: Shared Atoms
+    figmaStatus: Done
+    figmaVariants: 2
+    cssFile: _shared/field-label/field-label.css
+    classPrefixes:
+      - tds-field-label
+    figmaNodeId: "107:2085"
+    notes: Used by TextInput, Select
+  -
+    id: field-caption
+    name: FieldCaption
+    category: Shared Atoms
+    figmaStatus: Done
+    figmaVariants: 0
+    cssFile: _shared/field-caption/field-caption.css
+    classPrefixes:
+      - tds-field-caption
+    notes: Used by TextInput, Select
+  -
+    id: field-validation
+    name: FieldValidation
+    category: Shared Atoms
+    figmaStatus: Done
+    figmaVariants: 2
+    cssFile: _shared/field-validation/field-validation.css
+    classPrefixes:
+      - tds-field-validation
+    figmaNodeId: "107:2078"
+    notes: Used by TextInput, Select
+  -
+    id: caret
+    name: Caret
+    category: Shared Atoms
+    figmaStatus: Done
+    figmaVariants: 3
+    cssFile: _shared/caret/caret.css
+    classPrefixes:
+      - tds-caret
+    figmaNodeId: "640:9140"
+    notes: Used by Select, Tooltip
+  -
+    id: dropdown-panel
+    name: DropdownPanel
+    category: Shared Atoms
+    figmaStatus: Done
+    figmaVariants: 12
+    cssFile: _shared/dropdown-panel/dropdown-panel.css
+    classPrefixes:
+      - tds-dropdown-panel
+    subComponents: ActionListItem
+    figmaNodeId: "320:21652"
+    notes: Used by Select, ButtonMenu, FilterButton, SortButton
+  -
+    id: tag
+    name: Tag
+    category: Shared Atoms
+    figmaStatus: Done
+    figmaVariants: 112
+    cssFile: _shared/tag/tag.css
+    classPrefixes:
+      - tds-tag
+    figmaNodeId: "331:8199"
+    notes: Used by Select, Accordion
+  -
+    id: ai-tag
+    name: AITag
+    category: Data Display
+    figmaStatus: Done
+    figmaVariants: 4
+    cssFile: ai-tag/ai-tag.css
+    classPrefixes:
+      - tds-ai-tag
+    figmaNodeId: "1821:33907"
+    notes: TruAI badge; sparkles icon always required
+  -
+    id: side-nav
+    name: SideNav
+    category: Navigation
+    figmaStatus: Done
+    figmaVariants: 3
+    cssFile: side-nav/side-nav.css
+    classPrefixes:
+      - tds-side-nav
+      - tds-side-nav-preview
+    subComponents: NavItem, NavList, SubItem, UserProfile
+    figmaNodeId: "1188:10384"
+    notes: "3 modes: expanded, collapsed, mobile"
+  -
+    id: nav-item
+    name: NavItem
+    category: Navigation
+    figmaStatus: Done
+    figmaVariants: 15
+    cssFile: side-nav/nav-item/nav-item.css
+    classPrefixes:
+      - tds-side-nav__nav-item
+    notes: Nested under side-nav/
+  -
+    id: nav-list
+    name: NavList
+    category: Navigation
+    figmaStatus: Done
+    figmaVariants: 0
+    cssFile: side-nav/nav-list/nav-list.css
+    classPrefixes:
+      - tds-nav-list
+    notes: Nested under side-nav/
+  -
+    id: tabs
+    name: Tabs
+    category: Navigation
+    figmaStatus: Done
+    figmaVariants: 6
+    cssFile: tabs/tabs.css
+    classPrefixes:
+      - tds-tabs
+    subComponents: TabItem
+    figmaNodeId: "405:8964"
+  -
+    id: tab-item
+    name: TabItem
+    category: Navigation
+    figmaStatus: Done
+    figmaVariants: 4
+    cssFile: tabs/tab-item/tab-item.css
+    classPrefixes:
+      - tds-tab-item
+    figmaNodeId: "403:5492"
+    notes: Nested under tabs/
+  -
+    id: filter-tab
+    name: FilterTabs
+    category: Navigation
+    figmaStatus: Done
+    figmaVariants: 3
+    cssFile: filter-tab/filter-tab.css
+    classPrefixes:
+      - tds-filter-tab
+      - tds-filter-tabs
+    subComponents: FilterTabsItem
+    figmaNodeId: "844:6968"
+  -
+    id: breadcrumb
+    name: Breadcrumb
+    category: Navigation
+    figmaStatus: Done
+    cssFile: breadcrumb/breadcrumb.css
+    classPrefixes:
+      - tds-breadcrumbs
+      - tds-breadcrumb-item
+    figmaNodeId: "1596:23587"
+    notes: BreadCrumbs container, item, and divider
+  -
+    id: filter-tab-2
+    name: FilterTabsItem
+    category: Navigation
+    figmaStatus: Done
+    figmaVariants: 12
+    cssFile: filter-tab/filter-tab.css
+    notes: Shares CSS file with FilterTabs; adoption tracked on FilterTabs
+  -
+    id: data-table
+    name: DataTable
+    category: Data Display
+    figmaStatus: Done
+    figmaVariants: 12
+    cssFile: data-table/data-table.css
+    classPrefixes:
+      - tds-data-table
+      - tds-data-table-container
+    subComponents: ColumnHeaderCell, Row, Header, SortButton, Signals, SectionHeader
+    figmaNodeId: "884:13685"
+    notes: Complex composite with many sub-components
+  -
+    id: data-field
+    name: DataField
+    category: Data Display
+    figmaStatus: Done
+    figmaVariants: 24
+    cssFile: data-field/data-field.css
+    classPrefixes:
+      - tds-data-field
+    figmaNodeId: "856:13029"
+  -
+    id: counter-label
+    name: CounterLabel
+    category: Data Display
+    figmaStatus: Done
+    figmaVariants: 24
+    cssFile: counter-label/counter-label.css
+    classPrefixes:
+      - tds-counter
+    figmaNodeId: "409:9115"
+  -
+    id: section-header
+    name: SectionHeader
+    category: Data Display
+    figmaStatus: Done
+    figmaVariants: 32
+    cssFile: section-header/section-header.css
+    classPrefixes:
+      - tds-section-header
+    figmaNodeId: "1816:29234"
+    notes: Groups table sections; composes Tag, Counter, Button
+  -
+    id: dismiss-issue-badge
+    name: DismissIssueBadge
+    category: Data Display
+    figmaStatus: Done
+    figmaVariants: 12
+    cssFile: dismiss-issue-badge/dismiss-issue-badge.css
+    classPrefixes:
+      - tds-dismiss-badge
+    figmaNodeId: "331:8174"
+  -
+    id: flag-icon
+    name: CountryFlag
+    category: Data Display
+    figmaStatus: Done
+    figmaVariants: 255
+    cssFile: flag-icon/flag-icon.css
+    classPrefixes:
+      - fi
+      - tds-select__country-flag
+    figmaNodeId: "299:8750"
+    notes: 255 country codes
+  -
+    id: action-list-item
+    name: ActionListItem
+    category: Data Display
+    figmaStatus: Done
+    figmaVariants: 0
+    cssFile: action-list-item/action-list-item.css
+    classPrefixes:
+      - tds-action-list-item
+    notes: Used inside DropdownPanel
+  -
+    id: stat-card
+    name: StatCard
+    category: Data Display
+    figmaStatus: Done
+    figmaVariants: 2
+    cssFile: stat-card/stat-card.css
+    classPrefixes:
+      - tds-stat-card
+    figmaNodeId: "915:9281"
+  -
+    id: tooltip
+    name: Tooltip
+    category: Feedback
+    figmaStatus: Done
+    figmaVariants: 16
+    cssFile: tooltip/tooltip.css
+    classPrefixes:
+      - tds-tooltip
+    subComponents: Caret
+    figmaNodeId: "1054:18565"
+    notes: Body + Caret sub-components
+  -
+    id: announcement
+    name: Announcement
+    category: Feedback
+    figmaStatus: Done
+    figmaVariants: 10
+    cssFile: announcement/announcement.css
+    classPrefixes:
+      - tds-announcement
+    figmaNodeId: "866:13118"
+  -
+    id: accordion
+    name: Accordion
+    category: Containers
+    figmaStatus: Done
+    figmaVariants: 102
+    cssFile: accordion/accordion.css
+    classPrefixes:
+      - tds-accordion
+    subComponents: Tag, CounterLabel, DataFieldList
+    figmaNodeId: "810:5659"
+    notes: Complex component with many states
+  -
+    id: progress-indicator
+    name: ProgressIndicator
+    category: Progress
+    figmaStatus: Done
+    figmaVariants: 18
+    cssFile: progress-indicator/progress-indicator.css
+    classPrefixes:
+      - tds-progress-indicator
+    subComponents: _ProgressIndicatorItem
+    figmaNodeId: "1242:22104"
+    notes: Horizontal step progress
+  -
+    id: step-progress
+    name: StepProgress
+    category: Progress
+    figmaStatus: Done
+    figmaVariants: 7
+    classPrefixes:
+    subComponents: _StepProgressItem
+    figmaNodeId: "1264:24192"
+    notes: Figma only, CSS pending
+  -
+    id: listed-progress-item
+    name: ListedProgressItem
+    category: Progress
+    figmaStatus: Done
+    figmaVariants: 6
+    classPrefixes:
+    subComponents: Button, Link, IconButton, Tag
+    figmaNodeId: "1267:24260"
+    notes: Figma only, CSS pending
+  -
+    id: score-gauge
+    name: ScoreGauge
+    category: Scoring
+    figmaStatus: Done
+    figmaVariants: 0
+    cssFile: score-gauge/score-gauge.css
+    classPrefixes:
+      - score-gauge
+    notes: SVG-based, has JS + React variants
+  -
+    id: score-card
+    name: ScoreCard
+    category: Scoring
+    figmaStatus: Done
+    figmaVariants: 3
+    classPrefixes:
+    subComponents: ScoreGauge
+    figmaNodeId: "916:9298"
+    notes: CSS pending
+  -
+    id: risk-category-card
+    name: RiskCategoryCard
+    category: Scoring
+    figmaStatus: Done
+    figmaVariants: 3
+    cssFile: risk-category-card/risk-category-card.css
+    classPrefixes:
+      - tds-risk-category-card
+    figmaNodeId: "920:9307"
+    notes: Category title, risk tag, signal count, and score out of 100
+  -
+    id: font-awesome-icon
+    name: FontAwesome Icon
+    category: Utility
+    figmaStatus: Done
+    figmaVariants: 42
+    classPrefixes:
+    figmaNodeId: "544:9787"
+    notes: Icon system, no standalone CSS
+  -
+    id: filter-button
+    name: FilterButton
+    category: Utility
+    figmaStatus: Done
+    figmaVariants: 2
+    cssFile: filter-button/filter-button.css
+    classPrefixes:
+      - tds-filter-button
+    subComponents: DropdownPanel
+    figmaNodeId: "836:13511"
+  -
+    id: sort-button
+    name: SortButton
+    category: Utility
+    figmaStatus: Done
+    figmaVariants: 2
+    cssFile: data-table/sort-button/sort-button.css
+    classPrefixes:
+      - tds-sort-button
+    subComponents: DropdownPanel
+    figmaNodeId: "836:12519"
+    notes: Nested under data-table/
+
+planned:
+  -
+    name: Dialog / Modal
+    category: Feedback
+    priority: High
+    description: Overlay dialog with backdrop, header, body, footer actions
+    dependsOn: Button, DismissAction
+    notes: Common pattern in KYB flows
+  -
+    name: Toast / Snackbar
+    category: Feedback
+    priority: High
+    description: Temporary notification bar with auto-dismiss
+    dependsOn: DismissAction
+    notes: For success/error feedback
+  -
+    name: Alert / InlineNotification
+    category: Feedback
+    priority: High
+    description: Persistent inline message with icon and dismiss
+    dependsOn: DismissAction
+    notes: Replaces Announcement for inline use
+  -
+    name: Badge
+    category: Data Display
+    priority: High
+    description: Small count or status indicator on icons/avatars
+    notes: Needed for nav items, notifications
+  -
+    name: Avatar
+    category: Data Display
+    priority: High
+    description: User/entity photo or initials circle
+    notes: Used in SideNav UserProfile, comments
+  -
+    name: Pagination
+    category: Navigation
+    priority: High
+    description: Page navigation with prev/next and page numbers
+    dependsOn: Button, IconButton
+    notes: Used with DataTable
+  -
+    name: Skeleton / Loading
+    category: Feedback
+    priority: Medium
+    description: Shimmer placeholder for loading states
+    notes: For progressive content loading
+  -
+    name: Popover
+    category: Feedback
+    priority: Medium
+    description: Anchored floating content panel (non-modal)
+    dependsOn: Caret, DropdownPanel
+    notes: For rich hover/click content
+  -
+    name: Card
+    category: Containers
+    priority: Medium
+    description: Bordered content container with header and actions
+    notes: General-purpose content wrapper
+  -
+    name: Divider
+    category: Utility
+    priority: Medium
+    description: Horizontal or vertical separator line
+    notes: For section separation
+  -
+    name: Textarea
+    category: Form Inputs
+    priority: Medium
+    description: Multi-line text input with auto-resize
+    dependsOn: FieldLabel, FieldCaption, FieldValidation
+    notes: For notes, comments
+  -
+    name: SearchInput
+    category: Form Inputs
+    priority: Medium
+    description: Text input with search icon and clear action
+    dependsOn: TextInput, DismissAction
+    notes: For filtering lists/tables
+  -
+    name: Slider / RangeInput
+    category: Form Inputs
+    priority: Low
+    description: Continuous or stepped range selector
+    notes: For score thresholds
+  -
+    name: FileUpload
+    category: Form Inputs
+    priority: Low
+    description: Drag-and-drop or click-to-browse file input
+    dependsOn: Button
+    notes: For document upload flows
+  -
+    name: ProgressBar
+    category: Progress
+    priority: Low
+    description: Linear determinate/indeterminate progress
+    notes: For upload/processing progress
+  -
+    name: EmptyState
+    category: Feedback
+    priority: Low
+    description: Illustration + message for zero-data scenarios
+    dependsOn: Button
+    notes: For empty tables, search results
+  -
+    name: TopNav / AppBar
+    category: Navigation
+    priority: Low
+    description: Horizontal top navigation bar
+    dependsOn: Button, Avatar, Badge
+    notes: If app needs a top bar
+  -
+    name: SegmentedControl
+    category: Core Controls
+    priority: Low
+    description: Toggle between 2–5 mutually exclusive options
+    notes: Alternative to Tabs for settings
+  -
+    name: Timeline
+    category: Data Display
+    priority: Low
+    description: Vertical timeline with events and connectors
+    notes: For entity history/audit trail
+  -
+    name: TreeView
+    category: Navigation
+    priority: Low
+    description: Hierarchical collapsible list
+    notes: For nested entity structures
