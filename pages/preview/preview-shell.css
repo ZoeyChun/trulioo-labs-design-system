@@ -2,6 +2,7 @@
 
 /* Apple-style spacing rhythm */
 .ds-app {
+  --ds-content-max: 1200px;
   --ds-space-page-x: var(--spacing-64);
   --ds-space-page-top: var(--spacing-96);
   --ds-space-page-bottom: var(--spacing-160);
@@ -179,6 +180,14 @@
   color: var(--text-caption);
 }
 
+.ds-sidebar__footer p + p {
+  margin-top: 10px;
+}
+
+.ds-sidebar__footer-link {
+  font-weight: var(--font-weight-medium);
+}
+
 .ds-sidebar__footer a {
   color: var(--text-link);
   text-decoration: none;
@@ -201,7 +210,7 @@
 }
 
 .ds-content {
-  max-width: 980px;
+  max-width: var(--ds-content-max);
   margin: 0 auto;
   padding: var(--ds-space-page-top) var(--ds-space-page-x) var(--ds-space-page-bottom);
 }
@@ -1032,14 +1041,11 @@ code {
 
 @media (min-width: 1280px) {
   .ds-app {
-    --ds-space-page-x: var(--spacing-80);
+    --ds-content-max: 1280px;
+    --ds-space-page-x: var(--spacing-64);
     --ds-space-page-top: var(--spacing-96);
     --ds-space-section: var(--spacing-96);
     --ds-space-canvas: var(--spacing-64);
-  }
-
-  .ds-content {
-    max-width: 920px;
   }
 }
 

@@ -28,7 +28,7 @@ body {
 /* --- Design tokens --- */
 
 .tds-preview {
-  --preview-max: 1120px;
+  --preview-max: 1280px;
   --preview-sidebar: 260px;
   --preview-sidebar-collapsed: 52px;
   --preview-sidebar-expand: 520ms;
