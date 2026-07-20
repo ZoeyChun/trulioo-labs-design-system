@@ -1847,35 +1847,85 @@ body {
       <article class="ds-showcase">
         <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Tabs</h3>
-          <p class="ds-showcase__desc">Horizontal section switcher with optional counters per tab.</p>
+          <p class="ds-showcase__desc">Section switcher — label/md medium with a 3px interactive underline on the active tab only. Supports 2–10 tabs with 32px spacing (Figma 405:8964).</p>
           <div class="ds-showcase__meta">
             <code class="ds-api">.tds-tabs · .tds-tab-item</code>
             
           </div>
         </div>
         <div class="ds-showcase__canvas">
-<div class="tds-tabs">
-        <div class="tds-tabs__row">
-          <div class="tds-tabs__list">
-            <button class="tds-tab-item tds-tab-item--active">
-              <span class="tds-tab-item__content">Overview</span>
-              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
-            </button>
-            <button class="tds-tab-item">
-              <span class="tds-tab-item__content">Documents</span>
-              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
-            </button>
-            <button class="tds-tab-item">
-              <span class="tds-tab-item__content">Activity <span class="tds-tab-item__counter">14</span></span>
-              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
-            </button>
-            <button class="tds-tab-item tds-tab-item--disabled" disabled>
-              <span class="tds-tab-item__content">Settings</span>
-              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
-            </button>
+<div style="display: flex; flex-direction: column; gap: var(--spacing-32); width: 100%;">
+        <div class="tds-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list">
+              <button type="button" class="tds-tab-item tds-tab-item--active" role="tab" aria-selected="true"><span class="tds-tab-item__content">Tab 1</span><span class="tds-tab-item__indicator" aria-hidden="true"></span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 2</span></button>
+            </div>
           </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
         </div>
-        <div class="tds-tabs__divider" aria-hidden="true"></div>
+        <div class="tds-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list">
+              <button type="button" class="tds-tab-item tds-tab-item--active" role="tab" aria-selected="true"><span class="tds-tab-item__content">Tab 1</span><span class="tds-tab-item__indicator" aria-hidden="true"></span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 2</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 3</span></button>
+            </div>
+          </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
+        </div>
+        <div class="tds-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list">
+              <button type="button" class="tds-tab-item tds-tab-item--active" role="tab" aria-selected="true"><span class="tds-tab-item__content">Tab 1</span><span class="tds-tab-item__indicator" aria-hidden="true"></span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 2</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 3</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 4</span></button>
+            </div>
+          </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
+        </div>
+        <div class="tds-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list">
+              <button type="button" class="tds-tab-item tds-tab-item--active" role="tab" aria-selected="true"><span class="tds-tab-item__content">Overview</span><span class="tds-tab-item__indicator" aria-hidden="true"></span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Documents</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Activity <span class="tds-tab-item__counter">14</span></span></button>
+              <button type="button" class="tds-tab-item tds-tab-item--disabled" role="tab" aria-selected="false" disabled><span class="tds-tab-item__content">Settings</span></button>
+            </div>
+          </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
+        </div>
+        <div class="tds-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list">
+              <button type="button" class="tds-tab-item tds-tab-item--active" role="tab" aria-selected="true"><span class="tds-tab-item__content">Tab 1</span><span class="tds-tab-item__indicator" aria-hidden="true"></span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 2</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 3</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 4</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 5</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 6</span></button>
+            </div>
+          </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
+        </div>
+        <div class="tds-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list">
+              <button type="button" class="tds-tab-item tds-tab-item--active" role="tab" aria-selected="true"><span class="tds-tab-item__content">Tab 1</span><span class="tds-tab-item__indicator" aria-hidden="true"></span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 2</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 3</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 4</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 5</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 6</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 7</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 8</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 9</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 10</span></button>
+            </div>
+          </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
+        </div>
       </div>
         </div>
       </article>
@@ -1883,37 +1933,48 @@ body {
       <article class="ds-showcase">
         <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Tabs with trailing action</h3>
-          <p class="ds-showcase__desc">Tab row with an inline action — e.g. add entity without leaving the tab context.</p>
+          <p class="ds-showcase__desc">Overflow control with a circular IconButton chevron — plain for 2–3 tabs, elevated surface for 4+ tabs (Figma 405:8964).</p>
           <div class="ds-showcase__meta">
-            <code class="ds-api">.tds-tabs__trailing-action</code>
+            <code class="ds-api">.tds-tabs__trailing-action · .tds-tabs__trailing-action--elevated</code>
             
           </div>
         </div>
         <div class="ds-showcase__canvas">
-<div class="tds-tabs">
-        <div class="tds-tabs__row">
-          <div class="tds-tabs__list">
-            <button class="tds-tab-item tds-tab-item--active">
-              <span class="tds-tab-item__content">All entities</span>
-              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
-            </button>
-            <button class="tds-tab-item">
-              <span class="tds-tab-item__content">Recent</span>
-              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
-            </button>
-            <button class="tds-tab-item">
-              <span class="tds-tab-item__content">Flagged <span class="tds-tab-item__counter">3</span></span>
-              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
-            </button>
+<div style="display: flex; flex-direction: column; gap: var(--spacing-32); width: 100%;">
+        <div class="tds-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list">
+              <button type="button" class="tds-tab-item tds-tab-item--active" role="tab" aria-selected="true"><span class="tds-tab-item__content">Tab 1</span><span class="tds-tab-item__indicator" aria-hidden="true"></span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 2</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 3</span></button>
+            </div>
+            <div class="tds-tabs__trailing-action">
+              <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Scroll tabs forward">
+                <span class="tds-icon-btn__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></span>
+              </button>
+            </div>
           </div>
-          <div class="tds-tabs__trailing-action">
-            <button class="tds-btn tds-btn--sm tds-btn--invisible">
-              <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
-              Add
-            </button>
-          </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
         </div>
-        <div class="tds-tabs__divider" aria-hidden="true"></div>
+        <div class="tds-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list">
+              <button type="button" class="tds-tab-item tds-tab-item--active" role="tab" aria-selected="true"><span class="tds-tab-item__content">Tab 1</span><span class="tds-tab-item__indicator" aria-hidden="true"></span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 2</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 3</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 4</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 5</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 6</span></button>
+              <button type="button" class="tds-tab-item" role="tab" aria-selected="false"><span class="tds-tab-item__content">Tab 7</span></button>
+            </div>
+            <div class="tds-tabs__trailing-action tds-tabs__trailing-action--elevated">
+              <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Scroll tabs forward">
+                <span class="tds-icon-btn__icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5"/></svg></span>
+              </button>
+            </div>
+          </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
+        </div>
       </div>
         </div>
       </article>
@@ -5427,8 +5488,18 @@ document.querySelectorAll('.tds-tabs').forEach(tabs => {
   tabs.querySelectorAll('.tds-tab-item:not(.tds-tab-item--disabled)').forEach(tab => {
     tab.addEventListener('click', () => {
       const list = tab.closest('.tds-tabs__list') || tabs;
-      list.querySelectorAll('.tds-tab-item').forEach(t => t.classList.remove('tds-tab-item--active'));
+      list.querySelectorAll('.tds-tab-item').forEach(t => {
+        t.classList.remove('tds-tab-item--active');
+        t.setAttribute('aria-selected', 'false');
+      });
       tab.classList.add('tds-tab-item--active');
+      tab.setAttribute('aria-selected', 'true');
+      if (!tab.querySelector('.tds-tab-item__indicator')) {
+        const indicator = document.createElement('span');
+        indicator.className = 'tds-tab-item__indicator';
+        indicator.setAttribute('aria-hidden', 'true');
+        tab.appendChild(indicator);
+      }
     });
   });
 });

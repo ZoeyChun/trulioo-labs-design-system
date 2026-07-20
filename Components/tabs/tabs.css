@@ -4,7 +4,7 @@
    Tabs
    Figma: Tabs (405:8964)
    Container for TabItem atoms.
-   Options: trailingAction
+   Options: trailingAction (IconButton chevron for overflow)
    ============================================================ */
 
 .tds-tabs {
@@ -13,20 +13,25 @@
   align-items: flex-start;
   position: relative;
   width: 100%;
+  min-height: 29px;
   padding-bottom: 1px;
 }
 
 .tds-tabs__row {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: var(--spacing-16);
   width: 100%;
+  overflow: hidden;
 }
 
 .tds-tabs__list {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: var(--spacing-32);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .tds-tabs__divider {
@@ -37,14 +42,23 @@
   height: 1px;
   background-color: var(--border-strong);
   flex-shrink: 0;
+  pointer-events: none;
 }
 
 .tds-tabs__trailing-action {
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  padding: var(--spacing-4) var(--spacing-8);
+}
+
+.tds-tabs__trailing-action--elevated {
+  padding: 0;
   border-radius: var(--radius-md);
+  background-color: var(--surface-neutral-01);
+}
+
+.tds-tabs__trailing-action .tds-icon-btn {
+  color: var(--icon-faint);
 }
 
 /* --- Filter Tabs container --- */

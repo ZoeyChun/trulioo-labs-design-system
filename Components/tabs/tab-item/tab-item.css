@@ -31,7 +31,7 @@
 }
 
 .tds-tab-item__indicator {
-  display: block;
+  display: none;
   width: 100%;
   height: 3px;
   border-radius: 1.5px;
@@ -46,6 +46,7 @@
 }
 
 .tds-tab-item:hover .tds-tab-item__indicator {
+  display: block;
   background-color: var(--border-interactive);
 }
 
@@ -56,6 +57,7 @@
 
 .tds-tab-item[aria-selected="true"] .tds-tab-item__indicator,
 .tds-tab-item--active .tds-tab-item__indicator {
+  display: block;
   background-color: var(--border-interactive);
 }
 
@@ -79,6 +81,7 @@
 }
 
 .tds-tab-item--hover-demo .tds-tab-item__indicator {
+  display: block;
   background-color: var(--border-interactive);
 }
 

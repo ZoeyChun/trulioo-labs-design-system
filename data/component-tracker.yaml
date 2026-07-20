@@ -251,7 +251,7 @@ components:
     name: Tabs
     category: Navigation
     figmaStatus: Done
-    figmaVariants: 6
+    figmaVariants: 10
     cssFile: tabs/tabs.css
     classPrefixes:
       - tds-tabs
