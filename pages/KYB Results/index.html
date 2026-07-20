@@ -1,0 +1,1249 @@
+<!-- Static reference implementation — visual spec only. Demo interactions in kyb-results.js. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYB Results — Trulioo Labs</title>
+
+  <link rel="preload" href="../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
+  <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/tabs/tabs.css">
+  <link rel="stylesheet" href="../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../Components/section-header/section-header.css">
+  <link rel="stylesheet" href="../../Components/accordion/accordion.css">
+  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../Components/stat-card/stat-card.css">
+  <link rel="stylesheet" href="../../Components/filter-tab/filter-tab.css">
+  <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
+  <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
+  <link rel="stylesheet" href="../../Components/risk-category-card/risk-category-card.css">
+  <link rel="stylesheet" href="../../Components/dismiss-action/dismiss-action.css">
+  <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
+  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
+  <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="../shared/flag-icons.css">
+  <link rel="stylesheet" href="../shared/app-shell.css">
+  <link rel="stylesheet" href="../document-verification/document-verification.css">
+  <link rel="stylesheet" href="../bank-verification/bank-verification-result.css">
+  <link rel="stylesheet" href="kyb-results.css">
+</head>
+<body>
+
+  <div class="app-shell" id="app-shell">
+
+    <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
+
+    <!-- TDS SideNav component -->
+    <aside class="tds-side-nav tds-side-nav--collapsed" id="app-sidenav" aria-label="Primary">
+
+      <div class="tds-side-nav__header">
+        <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+          <span class="tds-side-nav__logo">
+            <img src="../../assets/trulioo-logo-mark.svg" alt="" width="40" height="40">
+          </span>
+          <span class="tds-side-nav__brand-expanded">
+            <span class="tds-side-nav__brand-logo">
+              <img src="../../assets/trulioo-labs-logo.svg" alt="Trulioo Labs" width="152" height="24">
+            </span>
+          </span>
+        </button>
+      </div>
+
+      <div class="tds-side-nav__main">
+        <div class="tds-side-nav__nav-stack">
+          <div>
+            <button type="button" class="tds-side-nav__nav-item">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg></span>
+                <span class="tds-side-nav__nav-item-text">Home</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="tds-side-nav__nav-group">
+            <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-current="page" aria-expanded="true">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon tds-labs-icon tds-labs-icon--onlight" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="#617269"/></svg><svg class="icon tds-labs-icon tds-labs-icon--ondark" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="white"/></svg></span>
+                <span class="tds-side-nav__nav-item-text">Labs</span>
+              </span>
+              <span class="tds-side-nav__nav-item-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></span>
+            </button>
+
+            <div class="tds-side-nav__sub-nav">
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYB</div>
+                <div class="tds-side-nav__section-items">
+                  <a href="index.html" class="tds-side-nav__sub-item tds-side-nav__sub-item--selected" aria-current="page">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="1.5" width="9" height="13"/><path d="M6 4.5h1.2M8.8 4.5H10M6 7.5h1.2M8.8 7.5H10M7 14.5v-3h2v3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">KYB Results</span>
+                  </a>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.5" cy="5" r="2.5"/><path d="M1 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="11.5" cy="5.5" r="2"/><path d="M15 13c0-2 1.5-3 0-3-1 0-2.5 1-2.5 3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">UBO Agent</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1.5h8a1 1 0 0 1 1 1v12l-5-2.5-5 2.5v-12a1 1 0 0 1 1-1z"/><path d="M6 6l1.5 1.5L10 5"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Policy Review</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Deep Search</span>
+                  </button>
+                </div>
+              </div>
+
+              <hr class="tds-side-nav__divider">
+
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYC</div>
+                <div class="tds-side-nav__section-items">
+                  <a href="../document-verification/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><circle cx="6" cy="7.5" r="1.5"/><path d="M3.5 11.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5"/><path d="M10 7h2.5M10 9.5h2.5"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Document Verification</span>
+                  </a>
+                  <a href="../bank-verification/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v8H2z"/><path d="M5 7v2M8 6v4M11 7v2M4 4V2h8v2"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Bank Verification</span>
+                  </a>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Electronic ID</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tds-side-nav__icon-rail" aria-hidden="false">
+          <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Home</span>
+            </span>
+          </button>
+          <button type="button" class="tds-side-nav__icon-button tds-side-nav__icon-button--active" aria-current="page" aria-label="Labs">
+            <svg class="icon tds-labs-icon tds-labs-icon--onlight" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="#617269"/></svg><svg class="icon tds-labs-icon tds-labs-icon--ondark" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="white"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Labs</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="tds-side-nav__collapse-bar" id="sidenav-collapse" aria-label="Expand sidebar" aria-expanded="false">
+        <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4M10 4l4 4-4 4"/></svg>
+        <span class="tds-side-nav__collapse-label text-label-sm-uppercase">Hide Sidebar</span>
+      </button>
+
+      <div class="tds-side-nav__footer">
+        <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" aria-label="Jane Doe, janedoe@trulioo.com">
+          <span class="tds-side-nav__avatar">JD</span>
+          <span class="tds-side-nav__profile-info">
+            <span class="tds-side-nav__profile-name-row">
+              <span class="tds-side-nav__profile-name">Jane Doe</span>
+              <span class="tds-side-nav__profile-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg></span>
+            </span>
+            <span class="tds-side-nav__profile-email">janedoe@trulioo.com</span>
+          </span>
+        </button>
+      </div>
+
+    </aside>
+
+    <main class="app-main dv-panel kyb-panel" data-active-tab="ownership">
+
+      <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 5h14M3 10h14M3 15h14"/>
+        </svg>
+      </button>
+
+      <div class="dv-header">
+        <div class="dv-header__top">
+          <div class="dv-header__title-group">
+            <h1 class="dv-title">Meridian Apex Consulting Ltd.</h1>
+            <span class="tds-tag tds-tag--intermediate tds-tag--md">Review</span>
+          </div>
+          <div class="dv-header__actions">
+            <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
+              <span class="tds-btn__leading-icon">
+                <svg viewBox="0 0 576 512" fill="currentColor" aria-hidden="true"><path d="M96.5 0c-35.3 0-64 28.7-64 64l0 384c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-96 78.1 0-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l72-72c9.4-9.4 9.4-24.6 0-33.9l-72-72c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-78.1 0 0-133.5c0-17-6.7-33.3-18.7-45.3L291.2 18.7C279.2 6.7 263 0 246 0L96.5 0zM358 176l-93.5 0c-13.3 0-24-10.7-24-24L240.5 58.5 358 176zM224.5 328c0-13.3 10.7-24 24-24l104 0 0 48-104 0c-13.3 0-24-10.7-24-24z"/></svg>
+              </span>
+              Export
+            </button>
+            <button class="app-truai-btn" type="button">
+              <span class="app-truai-btn__icon">
+                <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
+              </span>
+              TruAI
+            </button>
+          </div>
+        </div>
+
+        <div class="kyb-identity" id="kyb-identity">
+          <div class="kyb-identity__fields">
+            <div class="kyb-identity__field-wrap">
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Country / Jurisdiction</p>
+                <div class="tds-data-field__content">
+                  <div class="tds-data-field__value-row">
+                    <p class="tds-data-field__value">United Kingdom</p>
+                    <span class="tds-select__country-flag" aria-hidden="true"><span class="fi fi-gb"></span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="kyb-identity__field-wrap">
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Transaction ID</p>
+                <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">KYB-2026-004821</p></div></div>
+              </div>
+            </div>
+            <div class="kyb-identity__field-wrap">
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Date</p>
+                <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">20 Jul 2026, 11:41 AM</p></div></div>
+              </div>
+            </div>
+            <div class="kyb-identity__field-wrap">
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Company Number</p>
+                <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">12847362</p></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-content">
+        <div class="tds-tabs" role="tablist" aria-label="KYB results sections" id="kyb-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list">
+              <button class="tds-tab-item tds-tab-item--active" type="button" role="tab" aria-selected="true" id="kyb-tab-ownership" data-kyb-tab="ownership" aria-controls="kyb-ownership">
+                <span class="tds-tab-item__content">Ownership / UBO</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="kyb-tab-signals" data-kyb-tab="signals" aria-controls="kyb-signals">
+                <span class="tds-tab-item__content">Signals</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="kyb-tab-business-insights" data-kyb-tab="business-insights" aria-controls="kyb-business-insights">
+                <span class="tds-tab-item__content">Business Insights</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="kyb-tab-presence" data-kyb-tab="presence" aria-controls="kyb-presence">
+                <span class="tds-tab-item__content">Web Insights</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="kyb-tab-financial" data-kyb-tab="financial" aria-controls="kyb-financial">
+                <span class="tds-tab-item__content">Financial Profile</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="kyb-tab-monitoring" data-kyb-tab="monitoring" aria-controls="kyb-monitoring">
+                <span class="tds-tab-item__content">Monitoring</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="kyb-tab-raw-data" data-kyb-tab="raw-data" aria-controls="kyb-raw-data">
+                <span class="tds-tab-item__content">Raw Data</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="kyb-tab-sources" data-kyb-tab="sources" aria-controls="kyb-sources">
+                <span class="tds-tab-item__content">Sources</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
+        </div>
+
+        <div class="dv-columns" id="kyb-columns">
+          <aside class="dv-sidebar kyb-sidebar-panel" id="kyb-sidebar">
+            <div class="kyb-score-card">
+              <div class="kyb-score-card__head">
+                <h2 class="kyb-score-card__title">Match score</h2>
+                <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="kyb-sidebar" aria-label="Collapse summary panel">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+                </button>
+              </div>
+              <div class="dv-di-gauge" data-score="79" data-risk="low" data-label="Low Risk"></div>
+              <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" data-kyb-jump-tab="signals">
+                <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>
+                See score breakdown
+              </button>
+            </div>
+
+            <div class="tds-accordion tds-accordion--sm kyb-sidebar-accordion">
+              <button type="button" class="tds-accordion__header" aria-expanded="false">
+                <span class="tds-accordion__leading">
+                  <span class="tds-accordion__title">Summary</span>
+                </span>
+                <span class="tds-accordion__trailing">
+                  <span class="tds-ai-tag tds-ai-tag--sm"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span>
+                  <span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span>
+                </span>
+              </button>
+              <div class="tds-accordion__content" hidden>
+                <p class="tds-accordion__body">Meridian Apex Consulting Ltd. is an active but commercially dormant private company with no verifiable operating footprint. Ownership resolves through a BVI holding company to a single inferred beneficial owner.</p>
+              </div>
+            </div>
+
+            <div class="tds-accordion tds-accordion--sm tds-accordion--expanded kyb-sidebar-accordion">
+              <button type="button" class="tds-accordion__header" aria-expanded="true">
+                <span class="tds-accordion__leading">
+                  <span class="tds-accordion__title">Signal Breakdown</span>
+                </span>
+                <span class="tds-accordion__trailing">
+                  <span class="tds-accordion__counter"><span class="tds-counter tds-counter--primary tds-counter--sm">38</span></span>
+                  <span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span>
+                </span>
+              </button>
+              <div class="tds-accordion__content">
+                <div class="kyb-sidebar-risk-list">
+                  <div class="tds-risk-category-card">
+                    <div class="tds-risk-category-card__title-row">
+                      <p class="tds-risk-category-card__title">Business Model</p>
+                      <span class="tds-tag tds-tag--md tds-tag--negative">High Risk</span>
+                    </div>
+                    <div class="tds-risk-category-card__details-row">
+                      <div class="tds-risk-category-card__signals">
+                        <span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span>
+                        <p class="tds-risk-category-card__signal-count">3 negative signals</p>
+                      </div>
+                      <div class="tds-risk-category-card__score-group">
+                        <p class="tds-risk-category-card__score">84</p>
+                        <p class="tds-risk-category-card__score-suffix">/100</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tds-risk-category-card">
+                    <div class="tds-risk-category-card__title-row">
+                      <p class="tds-risk-category-card__title">Financial Health</p>
+                      <span class="tds-tag tds-tag--md tds-tag--negative">High Risk</span>
+                    </div>
+                    <div class="tds-risk-category-card__details-row">
+                      <div class="tds-risk-category-card__signals">
+                        <span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span>
+                        <p class="tds-risk-category-card__signal-count">3 negative signals</p>
+                      </div>
+                      <div class="tds-risk-category-card__score-group">
+                        <p class="tds-risk-category-card__score">68</p>
+                        <p class="tds-risk-category-card__score-suffix">/100</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tds-risk-category-card">
+                    <div class="tds-risk-category-card__title-row">
+                      <p class="tds-risk-category-card__title">Fraud &amp; Financial Crimes</p>
+                      <span class="tds-tag tds-tag--md tds-tag--positive">Low Risk</span>
+                    </div>
+                    <div class="tds-risk-category-card__details-row">
+                      <div class="tds-risk-category-card__signals">
+                        <span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span>
+                        <p class="tds-risk-category-card__signal-count">0 negative signals</p>
+                      </div>
+                      <div class="tds-risk-category-card__score-group">
+                        <p class="tds-risk-category-card__score">20</p>
+                        <p class="tds-risk-category-card__score-suffix">/100</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tds-risk-category-card">
+                    <div class="tds-risk-category-card__title-row">
+                      <p class="tds-risk-category-card__title">Governance &amp; Compliance</p>
+                      <span class="tds-tag tds-tag--md tds-tag--intermediate">Medium Risk</span>
+                    </div>
+                    <div class="tds-risk-category-card__details-row">
+                      <div class="tds-risk-category-card__signals">
+                        <span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span>
+                        <p class="tds-risk-category-card__signal-count">1 negative signal</p>
+                      </div>
+                      <div class="tds-risk-category-card__score-group">
+                        <p class="tds-risk-category-card__score">52</p>
+                        <p class="tds-risk-category-card__score-suffix">/100</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tds-risk-category-card">
+                    <div class="tds-risk-category-card__title-row">
+                      <p class="tds-risk-category-card__title">Third-Party &amp; Market</p>
+                      <span class="tds-tag tds-tag--md tds-tag--intermediate">Medium Risk</span>
+                    </div>
+                    <div class="tds-risk-category-card__details-row">
+                      <div class="tds-risk-category-card__signals">
+                        <span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span>
+                        <p class="tds-risk-category-card__signal-count">1 negative signal</p>
+                      </div>
+                      <div class="tds-risk-category-card__score-group">
+                        <p class="tds-risk-category-card__score">57</p>
+                        <p class="tds-risk-category-card__score-suffix">/100</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <div class="dv-main">
+            <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="kyb-sidebar" aria-label="Show summary panel">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+            </button>
+
+            <div class="kyb-main-stack" id="kyb-tab-panels">
+              <!-- Ownership / UBO -->
+              <section class="kyb-section" id="kyb-ownership" data-kyb-tab="ownership" role="tabpanel" aria-labelledby="kyb-tab-ownership">
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Ownership / UBO</p>
+                    </div>
+                    <span class="tds-ai-tag tds-ai-tag--sm"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span>
+                  </div>
+                </div>
+                <div class="kyb-section__body">
+                  <div class="tds-data-table-container">
+                    <div class="tds-data-table__wrapper">
+                      <table class="tds-data-table tds-data-table--comfort kyb-ownership-table">
+                        <colgroup>
+                          <col>
+                          <col>
+                          <col class="kyb-ownership-table__col-pct">
+                          <col class="kyb-ownership-table__col-status">
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th aria-sort="none">Name</th>
+                            <th aria-sort="none">Role</th>
+                            <th aria-sort="none" data-align="right">Ownership %</th>
+                            <th aria-sort="none" data-align="right">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td class="tds-data-table__text-cell">Apex Holdings BVI Ltd.</td>
+                            <td class="tds-data-table__text-cell">Parent company</td>
+                            <td class="tds-data-table__text-cell" data-align="right">100%</td>
+                            <td class="tds-data-table__text-cell" data-align="right"><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--md tds-tag--intermediate">Inferred</span></span></td>
+                          </tr>
+                          <tr>
+                            <td class="tds-data-table__text-cell">James Whitmore</td>
+                            <td class="tds-data-table__text-cell">Director</td>
+                            <td class="tds-data-table__text-cell" data-align="right">—</td>
+                            <td class="tds-data-table__text-cell" data-align="right"><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--md tds-tag--positive">Verified</span></span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <hr class="kyb-section-divider">
+                  <div class="kyb-officer-block">
+                    <h3 class="kyb-subsection-title kyb-subsection-title--sm">Officer Information:</h3>
+                    <div class="kyb-field-grid">
+                      <div class="tds-data-field">
+                        <p class="tds-data-field__label">Director name</p>
+                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">James Whitmore</p></div></div>
+                      </div>
+                      <div class="tds-data-field">
+                        <p class="tds-data-field__label">Appointment date</p>
+                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">14 Mar 2019</p></div></div>
+                      </div>
+                    </div>
+                    <div class="tds-announcement tds-announcement--warning tds-announcement--inline" role="status">
+                      <span class="tds-announcement__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>
+                      <div class="tds-announcement__content"><p class="tds-announcement__message">Beneficial owner could not be independently verified from registry sources.</p></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Signals -->
+              <section class="kyb-section" id="kyb-signals" data-kyb-tab="signals" role="tabpanel" aria-labelledby="kyb-tab-signals" hidden>
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Signals</p>
+                    </div>
+                    <span class="tds-ai-tag tds-ai-tag--sm"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span>
+                  </div>
+                </div>
+                <div class="kyb-section__body">
+                  <div class="kyb-toolbar">
+                    <div class="tds-filter-tabs" role="tablist" aria-label="Signal filters">
+                      <button type="button" class="tds-filter-tab tds-filter-tab--selected" role="tab" aria-selected="true">All <span class="tds-counter tds-counter--secondary tds-counter--sm">38</span></button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Negative <span class="tds-counter tds-counter--secondary tds-counter--sm">8</span></button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Positive <span class="tds-counter tds-counter--secondary tds-counter--sm">24</span></button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Neutral <span class="tds-counter tds-counter--secondary tds-counter--sm">6</span></button>
+                    </div>
+                    <div class="kyb-toolbar__filters">
+                      <div class="tds-filter-button">
+                        <button type="button" class="tds-btn tds-btn--md tds-btn--secondary"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>Filter</button>
+                      </div>
+                      <div class="tds-sort-button">
+                        <button type="button" class="tds-btn tds-btn--md tds-btn--secondary"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span>Sort</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="kyb-signal-categories">
+                    <div class="tds-accordion tds-accordion--md tds-accordion--expanded kyb-signal-category">
+                      <button type="button" class="tds-accordion__header" aria-expanded="true">
+                        <span class="tds-accordion__leading"><span class="tds-accordion__title">Business Model</span></span>
+                        <span class="tds-accordion__trailing"><span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span></span>
+                      </button>
+                      <div class="tds-accordion__content">
+                        <div class="tds-data-table-container">
+                          <div class="tds-data-table__wrapper">
+                            <table class="tds-data-table">
+                              <thead>
+                                <tr>
+                                  <th aria-sort="none">Impact</th>
+                                  <th aria-sort="none">Signal</th>
+                                  <th aria-sort="none">Applicable</th>
+                                  <th aria-sort="none">Data</th>
+                                  <th class="tds-data-table__actions-col" aria-hidden="true"></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--negative">Increased</span></span></td>
+                                  <td class="tds-data-table__text-cell">No verifiable operating footprint detected for the registered business activity.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td class="tds-data-table__text-cell">—</td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">Unavailable</p>
+                                      <p class="kyb-signal-detail__description">No supporting source data was returned for this signal.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--negative">Increased</span></span></td>
+                                  <td class="tds-data-table__text-cell">Stated industry classification does not align with observable business activity.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">Stated industry classification does not align with observable business activity.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--negative">Increased</span></span></td>
+                                  <td class="tds-data-table__text-cell">Company appears commercially dormant with no active trading indicators.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">Company appears commercially dormant with no active trading indicators.</p>
+                                    </div>
+                                  </td>
+                                </tr></tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tds-accordion tds-accordion--md kyb-signal-category">
+                      <button type="button" class="tds-accordion__header" aria-expanded="false">
+                        <span class="tds-accordion__leading"><span class="tds-accordion__title">Financial Health</span></span>
+                        <span class="tds-accordion__trailing"><span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span></span>
+                      </button>
+                      <div class="tds-accordion__content" hidden>
+                        <div class="tds-data-table-container">
+                          <div class="tds-data-table__wrapper">
+                            <table class="tds-data-table">
+                              <thead>
+                                <tr>
+                                  <th aria-sort="none">Impact</th>
+                                  <th aria-sort="none">Signal</th>
+                                  <th aria-sort="none">Applicable</th>
+                                  <th aria-sort="none">Data</th>
+                                  <th class="tds-data-table__actions-col" aria-hidden="true"></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--negative">Increased</span></span></td>
+                                  <td class="tds-data-table__text-cell">The business has an elevated risk of default based on its credit profile.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">The business has an elevated risk of default based on its credit profile.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--negative">Increased</span></span></td>
+                                  <td class="tds-data-table__text-cell">Recent payment delinquencies reported against the entity.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">Recent payment delinquencies reported against the entity.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--negative">Increased</span></span></td>
+                                  <td class="tds-data-table__text-cell">Micro-entity accounts filed with negligible turnover relative to stated business scope.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">Micro-entity accounts filed with negligible turnover relative to stated business scope.</p>
+                                    </div>
+                                  </td>
+                                </tr></tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tds-accordion tds-accordion--md kyb-signal-category">
+                      <button type="button" class="tds-accordion__header" aria-expanded="false">
+                        <span class="tds-accordion__leading"><span class="tds-accordion__title">Fraud &amp; Financial Crimes</span></span>
+                        <span class="tds-accordion__trailing"><span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span></span>
+                      </button>
+                      <div class="tds-accordion__content" hidden>
+                        <div class="tds-data-table-container">
+                          <div class="tds-data-table__wrapper">
+                            <table class="tds-data-table">
+                              <thead>
+                                <tr>
+                                  <th aria-sort="none">Impact</th>
+                                  <th aria-sort="none">Signal</th>
+                                  <th aria-sort="none">Applicable</th>
+                                  <th aria-sort="none">Data</th>
+                                  <th class="tds-data-table__actions-col" aria-hidden="true"></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--positive">Decreased</span></span></td>
+                                  <td class="tds-data-table__text-cell">No sanctions or watchlist matches found for the entity or associated persons.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Absent</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">No sanctions or watchlist matches found for the entity or associated persons.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--positive">Decreased</span></span></td>
+                                  <td class="tds-data-table__text-cell">No adverse media related to fraud, money laundering, or financial crime detected.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Absent</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">No adverse media related to fraud, money laundering, or financial crime detected.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--positive">Decreased</span></span></td>
+                                  <td class="tds-data-table__text-cell">No politically exposed person (PEP) links identified for directors or beneficial owners.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Absent</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">No politically exposed person (PEP) links identified for directors or beneficial owners.</p>
+                                    </div>
+                                  </td>
+                                </tr></tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tds-accordion tds-accordion--md kyb-signal-category">
+                      <button type="button" class="tds-accordion__header" aria-expanded="false">
+                        <span class="tds-accordion__leading"><span class="tds-accordion__title">Governance &amp; Compliance</span></span>
+                        <span class="tds-accordion__trailing"><span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span></span>
+                      </button>
+                      <div class="tds-accordion__content" hidden>
+                        <div class="tds-data-table-container">
+                          <div class="tds-data-table__wrapper">
+                            <table class="tds-data-table">
+                              <thead>
+                                <tr>
+                                  <th aria-sort="none">Impact</th>
+                                  <th aria-sort="none">Signal</th>
+                                  <th aria-sort="none">Applicable</th>
+                                  <th aria-sort="none">Data</th>
+                                  <th class="tds-data-table__actions-col" aria-hidden="true"></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--negative">Increased</span></span></td>
+                                  <td class="tds-data-table__text-cell">Beneficial ownership resolves through an offshore holding company with limited transparency.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">Beneficial ownership resolves through an offshore holding company with limited transparency.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--positive">Decreased</span></span></td>
+                                  <td class="tds-data-table__text-cell">Company is active on registry with current annual filings submitted.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">Company is active on registry with current annual filings submitted.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--positive">Decreased</span></span></td>
+                                  <td class="tds-data-table__text-cell">Registered office address confirmed and matches Companies House records.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">Registered office address confirmed and matches Companies House records.</p>
+                                    </div>
+                                  </td>
+                                </tr></tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tds-accordion tds-accordion--md kyb-signal-category">
+                      <button type="button" class="tds-accordion__header" aria-expanded="false">
+                        <span class="tds-accordion__leading"><span class="tds-accordion__title">Third-Party &amp; Market</span></span>
+                        <span class="tds-accordion__trailing"><span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span></span>
+                      </button>
+                      <div class="tds-accordion__content" hidden>
+                        <div class="tds-data-table-container">
+                          <div class="tds-data-table__wrapper">
+                            <table class="tds-data-table">
+                              <thead>
+                                <tr>
+                                  <th aria-sort="none">Impact</th>
+                                  <th aria-sort="none">Signal</th>
+                                  <th aria-sort="none">Applicable</th>
+                                  <th aria-sort="none">Data</th>
+                                  <th class="tds-data-table__actions-col" aria-hidden="true"></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--negative">Increased</span></span></td>
+                                  <td class="tds-data-table__text-cell">Registered address is shared with multiple unrelated entities at the same location.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">Registered address is shared with multiple unrelated entities at the same location.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--positive">Decreased</span></span></td>
+                                  <td class="tds-data-table__text-cell">No supplier or customer dispute records found in available commercial databases.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Absent</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">No supplier or customer dispute records found in available commercial databases.</p>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr data-kyb-signal-row>
+                                  <td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--positive">Decreased</span></span></td>
+                                  <td class="tds-data-table__text-cell">Domain registration aligns with the legal entity name and jurisdiction.</td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
+                                  <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Present</span></td>
+                                  <td data-align="right"><span class="tds-data-table__actions-cell"><button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></span></td>
+                                </tr>
+                                <tr class="kyb-signal-detail-row" hidden>
+                                  <td colspan="5">
+                                    <div class="kyb-signal-detail">
+                                      <p class="kyb-signal-detail__label">Value</p>
+                                      <p class="kyb-signal-detail__value">True</p>
+                                      <p class="kyb-signal-detail__description">Domain registration aligns with the legal entity name and jurisdiction.</p>
+                                    </div>
+                                  </td>
+                                </tr></tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Business Insights -->
+              <section class="kyb-section" id="kyb-business-insights" data-kyb-tab="business-insights" role="tabpanel" aria-labelledby="kyb-tab-business-insights" hidden>
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Business Insights</p>
+                    </div>
+                    <span class="tds-ai-tag tds-ai-tag--sm"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span>
+                  </div>
+                </div>
+                <div class="kyb-section__body">
+                  <div class="kyb-insights-intro">
+                    <div class="kyb-insights-intro__head">
+                      <h3 class="kyb-insights-intro__name">Meridian Apex Consulting Ltd.</h3>
+                      <span class="tds-tag tds-tag--positive tds-tag--sm">Active</span>
+                    </div>
+                    <div class="kyb-field-strip">
+                      <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">Incorporated</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">12 Mar 2019</p></div></div></div></div>
+                      <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">Entity type</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Private limited</p></div></div></div></div>
+                      <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">Industry</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Management consultancy</p></div></div></div></div>
+                      <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">Employees</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">0</p></div></div></div></div>
+                    </div>
+                    <h4 class="kyb-subsection-title kyb-subsection-title--sm">Summary &amp; Overall Score:</h4>
+                    <p class="kyb-insights-summary">Meridian Apex Consulting Ltd. is an active but commercially dormant private company with no verifiable operating footprint. The profile is consistent with a shell or pass-through entity rather than a trading consultancy.</p>
+                    <div class="kyb-score-cards">
+                      <article class="kyb-score-card-mini"><p class="kyb-score-card-mini__label">Overall risk</p><div class="kyb-score-card-mini__value-row"><p class="kyb-score-card-mini__value">79</p><p class="kyb-score-card-mini__suffix">/100</p></div></article>
+                      <article class="kyb-score-card-mini"><p class="kyb-score-card-mini__label">Registry match</p><div class="kyb-score-card-mini__value-row"><p class="kyb-score-card-mini__value">92</p><p class="kyb-score-card-mini__suffix">/100</p></div></article>
+                      <article class="kyb-score-card-mini"><p class="kyb-score-card-mini__label">Operational footprint</p><div class="kyb-score-card-mini__value-row"><p class="kyb-score-card-mini__value">18</p><p class="kyb-score-card-mini__suffix">/100</p></div></article>
+                    </div>
+                  </div>
+                  <hr class="kyb-section-divider">
+                  <h3 class="kyb-subsection-title kyb-subsection-title--sm">Company Overview:</h3>
+                  <div class="kyb-field-grid">
+                    <div class="tds-data-field"><p class="tds-data-field__label">Registered address</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Suite 4, 123 Formation House, London EC2A 4NE</p></div><p class="tds-data-field__description">Known formations-agent suite</p></div></div>
+                    <div class="tds-data-field"><p class="tds-data-field__label">Paid-up capital</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">£1</p></div></div></div>
+                    <div class="tds-data-field"><p class="tds-data-field__label">SIC code</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">70229 — Management consultancy</p></div></div></div>
+                    <div class="tds-data-field"><p class="tds-data-field__label">Last filing</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">30 Sep 2025</p></div></div></div>
+                    <div class="tds-data-field"><p class="tds-data-field__label">Parent entity</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Apex Holdings BVI Ltd.</p></div></div></div>
+                    <div class="tds-data-field"><p class="tds-data-field__label">Website</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">meridianapexconsulting.co.uk</p><span class="tds-tag tds-tag--sm tds-tag--negative">Expired</span></div></div></div>
+                  </div>
+                  <hr class="kyb-section-divider">
+                  <div class="kyb-field-grid">
+                    <div>
+                      <h3 class="kyb-subsection-title kyb-subsection-title--sm">Communication Records:</h3>
+                      <div class="tds-data-field kyb-stack-gap-md"><p class="tds-data-field__label">Telephone</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">+44 20 7946 0000</p></div></div></div>
+                      <div class="tds-data-field kyb-stack-gap-md"><p class="tds-data-field__label">Email</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">info@meridianapexconsulting.co.uk</p></div></div></div>
+                    </div>
+                    <div>
+                      <h3 class="kyb-subsection-title kyb-subsection-title--sm">News &amp; Alerts:</h3>
+                      <div class="kyb-tag-row kyb-stack-gap-md">
+                        <span class="tds-tag tds-tag--sm tds-tag--default">No adverse media</span>
+                        <span class="tds-tag tds-tag--sm tds-tag--intermediate">Dormant filing pattern</span>
+                        <span class="tds-tag tds-tag--sm tds-tag--default">No litigation found</span>
+                        <span class="tds-tag tds-tag--sm tds-tag--intermediate">Offshore parent entity</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Web Insights -->
+              <section class="kyb-section" id="kyb-presence" data-kyb-tab="presence" role="tabpanel" aria-labelledby="kyb-tab-presence" hidden>
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Web Insights</p>
+                    </div>
+                    <span class="tds-ai-tag tds-ai-tag--sm"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span>
+                  </div>
+                </div>
+                <div class="kyb-section__body">
+                  <div class="kyb-insights-intro">
+                    <h3 class="kyb-insights-intro__name">Meridian Apex Consulting Ltd.</h3>
+                    <div class="kyb-field-strip">
+                      <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">Domain status</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Expired</p></div></div></div></div>
+                      <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">Social presence</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">None found</p></div></div></div></div>
+                      <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">Digital ads</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">None found</p></div></div></div></div>
+                    </div>
+                  </div>
+                  <div class="kyb-subsection">
+                    <h3 class="kyb-subsection-title kyb-subsection-title--sm">Digital Presence</h3>
+                    <div class="kyb-web-layout">
+                    <div class="kyb-browser-mock">
+                      <div class="kyb-browser-mock__chrome"><span class="kyb-browser-mock__dot"></span><span class="kyb-browser-mock__dot"></span><span class="kyb-browser-mock__dot"></span></div>
+                      <div class="kyb-browser-mock__body">Website unavailable — domain expired</div>
+                    </div>
+                    <div>
+                      <div class="kyb-field-grid" style="grid-template-columns:1fr 1fr;">
+                        <div class="tds-data-field"><p class="tds-data-field__label">Primary domain</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">meridianapexconsulting.co.uk</p></div></div></div>
+                        <div class="tds-data-field"><p class="tds-data-field__label">SSL certificate</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Expired</p></div></div></div>
+                        <div class="tds-data-field"><p class="tds-data-field__label">Last crawl</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">14 Jan 2026</p></div></div></div>
+                        <div class="tds-data-field"><p class="tds-data-field__label">Indexed pages</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">0</p></div></div></div>
+                      </div>
+                      <hr class="kyb-section-divider">
+                      <div class="kyb-field-strip">
+                        <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">LinkedIn</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Not found</p></div></div></div></div>
+                        <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">Google Business</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Not found</p></div></div></div></div>
+                        <div class="kyb-field-strip__item"><div class="tds-data-field"><p class="tds-data-field__label">Reviews</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">None</p></div></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Financial Profile -->
+              <section class="kyb-section" id="kyb-financial" data-kyb-tab="financial" role="tabpanel" aria-labelledby="kyb-tab-financial" hidden>
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Financial Profile</p>
+                    </div>
+                    <span class="tds-ai-tag tds-ai-tag--sm"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span>
+                  </div>
+                </div>
+                <div class="kyb-section__body">
+                  <div class="kyb-subsection">
+                    <h3 class="kyb-subsection-title kyb-subsection-title--sm">Key Financial Findings</h3>
+                    <div class="kyb-stat-cards">
+                    <div class="tds-stat-card tds-stat-card--negative"><p class="tds-stat-card__label">Revenue (latest)</p><div class="tds-stat-card__value-group"><p class="tds-stat-card__value">£0</p><p class="tds-stat-card__sub-label">FY 2025</p></div><div class="tds-stat-card__footer"><span class="tds-stat-card__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span><p class="tds-stat-card__description">No trading activity reported</p></div></div>
+                    <div class="tds-stat-card tds-stat-card--negative"><p class="tds-stat-card__label">Net assets</p><div class="tds-stat-card__value-group"><p class="tds-stat-card__value">£1</p><p class="tds-stat-card__sub-label">Paid-up share capital</p></div><div class="tds-stat-card__footer"><span class="tds-stat-card__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span><p class="tds-stat-card__description">Minimal capitalisation</p></div></div>
+                    <div class="tds-stat-card tds-stat-card--positive"><p class="tds-stat-card__label">Debt obligations</p><div class="tds-stat-card__value-group"><p class="tds-stat-card__value">None</p><p class="tds-stat-card__sub-label">Latest filing</p></div><div class="tds-stat-card__footer"><span class="tds-stat-card__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p class="tds-stat-card__description">No registered charges</p></div></div>
+                    </div>
+                  </div>
+                  <div class="kyb-financial-columns">
+                    <div>
+                      <h3 class="kyb-subsection-title kyb-subsection-title--sm">Financial Stability Metrics</h3>
+                      <div class="tds-accordion tds-accordion--md tds-accordion--expanded">
+                        <button type="button" class="tds-accordion__header" aria-expanded="true"><span class="tds-accordion__leading"><span class="tds-accordion__title">Stability indicators</span></span><span class="tds-accordion__trailing"><span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span></span></button>
+                        <div class="tds-accordion__content">
+                          <div class="tds-accordion__data-field-list tds-accordion__data-field-list--compact">
+                            <div class="tds-data-field tds-data-field--horizontal"><div class="tds-data-field__label-row"><p class="tds-data-field__label">Cash flow trend</p></div><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Flat / zero</p></div></div></div>
+                            <hr class="tds-accordion__data-field-divider">
+                            <div class="tds-data-field tds-data-field--horizontal"><div class="tds-data-field__label-row"><p class="tds-data-field__label">Credit rating</p></div><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Not available</p></div></div></div>
+                            <hr class="tds-accordion__data-field-divider">
+                            <div class="tds-data-field tds-data-field--horizontal"><div class="tds-data-field__label-row"><p class="tds-data-field__label">Filing compliance</p></div><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Up to date</p><span class="tds-tag tds-tag--sm tds-tag--positive">Current</span></div></div></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 class="kyb-subsection-title kyb-subsection-title--sm">Supporting Evidence</h3>
+                      <div class="tds-accordion tds-accordion--md tds-accordion--expanded">
+                        <button type="button" class="tds-accordion__header" aria-expanded="true"><span class="tds-accordion__leading"><span class="tds-accordion__title">Source documents</span></span><span class="tds-accordion__trailing"><span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span></span></button>
+                        <div class="tds-accordion__content">
+                          <div class="tds-accordion__data-field-list tds-accordion__data-field-list--compact">
+                            <div class="tds-data-field tds-data-field--horizontal"><div class="tds-data-field__label-row"><p class="tds-data-field__label">Annual accounts</p></div><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Micro-entity · FY 2025</p></div></div></div>
+                            <hr class="tds-accordion__data-field-divider">
+                            <div class="tds-data-field tds-data-field--horizontal"><div class="tds-data-field__label-row"><p class="tds-data-field__label">Confirmation statement</p></div><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Filed 18 Jun 2025</p></div></div></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Monitoring -->
+              <section class="kyb-section" id="kyb-monitoring" data-kyb-tab="monitoring" role="tabpanel" aria-labelledby="kyb-tab-monitoring" hidden>
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Monitoring</p>
+                    </div>
+                    <span class="tds-ai-tag tds-ai-tag--sm"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span>
+                  </div>
+                </div>
+                <div class="kyb-section__body">
+                  <div class="kyb-toolbar">
+                    <div class="tds-filter-tabs" role="tablist" aria-label="Monitoring filters">
+                      <button type="button" class="tds-filter-tab tds-filter-tab--selected" role="tab" aria-selected="true">All alerts</button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Registry <span class="tds-counter tds-counter--secondary tds-counter--sm">2</span></button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Financial</button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Adverse media</button>
+                    </div>
+                    <div class="kyb-toolbar__filters">
+                      <div class="tds-filter-button"><button type="button" class="tds-btn tds-btn--md tds-btn--secondary"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>Filter</button></div>
+                      <div class="tds-sort-button"><button type="button" class="tds-btn tds-btn--md tds-btn--secondary"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span>Sort</button></div>
+                    </div>
+                  </div>
+                  <div class="tds-data-table-container">
+                    <div class="tds-data-table__wrapper">
+                      <table class="tds-data-table">
+                        <thead><tr><th aria-sort="none">Alert</th><th aria-sort="none">Category</th><th aria-sort="none">Detected</th><th aria-sort="none">Severity</th></tr></thead>
+                        <tbody>
+                          <tr><td class="tds-data-table__text-cell">Domain expiration</td><td class="tds-data-table__text-cell">Digital presence</td><td class="tds-data-table__text-cell">12 Nov 2025</td><td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--intermediate">Medium</span></span></td></tr>
+                          <tr><td class="tds-data-table__text-cell">Officer change filed</td><td class="tds-data-table__text-cell">Registry</td><td class="tds-data-table__text-cell">03 Feb 2026</td><td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--default">Info</span></span></td></tr>
+                          <tr><td class="tds-data-table__text-cell">Micro-entity accounts filed</td><td class="tds-data-table__text-cell">Financial</td><td class="tds-data-table__text-cell">30 Sep 2025</td><td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--default">Info</span></span></td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Raw Data -->
+              <section class="kyb-section" id="kyb-raw-data" data-kyb-tab="raw-data" role="tabpanel" aria-labelledby="kyb-tab-raw-data" hidden>
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Raw Data</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="kyb-section__body">
+                  <div class="bv-raw-panel">
+                    <div class="bv-raw-panel__header"><span class="bv-raw-panel__lang">json</span><button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" id="kyb-raw-copy"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 5.5V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg></span>Copy</button></div>
+                    <div class="bv-raw-panel__body"><pre class="bv-raw-panel__pre" id="kyb-raw-pre">{
+  "StandardizedBusinessNames": {
+    "StandardizedBusinessName": [
+      { "Name": "Meridian Apex Consulting Ltd.", "Type": "Input Business Name", "UsedForMatching": true },
+      { "Name": "Meridian Apex Consulting Limited", "Type": "Returned Registered Name", "UsedForMatching": true }
+    ]
+  },
+  "StandardizedCommunication": {
+    "StandardizedCommunication": [
+      { "Value": "+44 20 7946 0000", "Type": "Telephone" },
+      { "Value": "info@meridianapexconsulting.co.uk", "Type": "Primary business email" }
+    ]
+  },
+  "MatchScore": 79,
+  "RiskLevel": "Low"
+}</pre></div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Sources -->
+              <section class="kyb-section" id="kyb-sources" data-kyb-tab="sources" role="tabpanel" aria-labelledby="kyb-tab-sources" hidden>
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Sources</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="kyb-section__body kyb-sources-body">
+                  <div class="tds-data-table-container">
+                    <div class="tds-data-table__wrapper">
+                      <table class="tds-data-table tds-data-table--comfort kyb-sources-capabilities">
+                        <colgroup>
+                          <col class="kyb-sources-capabilities__col-main">
+                          <col class="kyb-sources-capabilities__col-tags">
+                        </colgroup>
+                        <tbody>
+                          <tr>
+                            <td class="tds-data-table__text-cell tds-data-table__text-cell--subtext">
+                              <span class="tds-data-table__cell-inner">
+                                <span class="tds-data-table__cell-leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><circle cx="5.5" cy="5.5" r="2"/><circle cx="10.5" cy="5.5" r="2"/><path d="M2.5 12.5c.8-1.5 2-2.5 3-2.5s2.2 1 3 2.5M8.5 10c.8-1.5 2-2.5 3-2.5s2.2 1 3 2.5"/></svg></span>
+                                <span class="tds-data-table__cell-text-stack">
+                                  <span>Ownership &amp; UBO Analysis</span>
+                                  <span class="tds-data-table__cell-subtext">Makes complex ownership structures understandable at a glance.</span>
+                                </span>
+                              </span>
+                            </td>
+                            <td data-align="right">
+                              <span class="tds-data-table__label-cell">
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Ownership</span>
+                                <span class="tds-tag tds-tag--sm tds-tag--default">UBO</span>
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Control</span>
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="tds-data-table__text-cell tds-data-table__text-cell--subtext">
+                              <span class="tds-data-table__cell-inner">
+                                <span class="tds-data-table__cell-leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg></span>
+                                <span class="tds-data-table__cell-text-stack">
+                                  <span>Business Intelligence Search</span>
+                                  <span class="tds-data-table__cell-subtext">Conduct deep, multi-dimensional business research across officer details, address information, and adverse media.</span>
+                                </span>
+                              </span>
+                            </td>
+                            <td data-align="right">
+                              <span class="tds-data-table__label-cell">
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Signals</span>
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Intelligence</span>
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Media</span>
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="tds-data-table__text-cell tds-data-table__text-cell--subtext">
+                              <span class="tds-data-table__cell-inner">
+                                <span class="tds-data-table__cell-leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><path d="M4 2h6l3 3v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M10 2v3h3M6.5 9.5 8 11l2-2.5"/></svg></span>
+                                <span class="tds-data-table__cell-text-stack">
+                                  <span>Policy Review</span>
+                                  <span class="tds-data-table__cell-subtext">Streamline policy management with an AI-powered assistant that helps you review, understand, and manage policies more efficiently.</span>
+                                </span>
+                              </span>
+                            </td>
+                            <td data-align="right">
+                              <span class="tds-data-table__label-cell">
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Policy</span>
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Decision</span>
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Compliance</span>
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="tds-data-table__text-cell tds-data-table__text-cell--subtext">
+                              <span class="tds-data-table__cell-inner">
+                                <span class="tds-data-table__cell-leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><path d="M3 13.5V6.5l5-3.5 5 3.5v7"/><path d="M6.5 13.5V9h3v4.5"/><path d="M11.5 5.5l1.5 1.5-2 2"/></svg></span>
+                                <span class="tds-data-table__cell-text-stack">
+                                  <span>KYB Verification</span>
+                                  <span class="tds-data-table__cell-subtext">Gain comprehensive insight into critical business data for confident decision making.</span>
+                                </span>
+                              </span>
+                            </td>
+                            <td data-align="right">
+                              <span class="tds-data-table__label-cell">
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Verification</span>
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Registration</span>
+                                <span class="tds-tag tds-tag--sm tds-tag--default">Compliance</span>
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="tds-data-table-container">
+                    <div class="tds-data-table__header">
+                      <div class="tds-data-table__header-text">
+                        <div class="tds-data-table__header-title">Online Sources</div>
+                      </div>
+                    </div>
+                    <div class="tds-data-table__wrapper">
+                      <table class="tds-data-table tds-data-table--comfort kyb-sources-online">
+                        <thead>
+                          <tr>
+                            <th aria-sort="none">Sources</th>
+                            <th aria-sort="none">Description</th>
+                            <th aria-sort="none">URL</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td class="tds-data-table__text-cell">Companies House</td>
+                            <td class="tds-data-table__text-cell">Company filings</td>
+                            <td class="tds-data-table__text-cell"><a class="kyb-sources-url" href="https://find-and-update.company-information.service.gov.uk/company/11876542">https://find-and-update.company-information.service.gov.uk/company/11876542</a></td>
+                          </tr>
+                          <tr>
+                            <td class="tds-data-table__text-cell">Companies House</td>
+                            <td class="tds-data-table__text-cell">Persons with significant control</td>
+                            <td class="tds-data-table__text-cell"><a class="kyb-sources-url" href="https://find-and-update.company-information.service.gov.uk/company/11876542">https://find-and-update.company-information.service.gov.uk/company/11876542</a></td>
+                          </tr>
+                          <tr>
+                            <td class="tds-data-table__text-cell">WHOIS</td>
+                            <td class="tds-data-table__text-cell">Domain registration record</td>
+                            <td class="tds-data-table__text-cell"><a class="kyb-sources-url" href="https://find-and-update.company-information.service.gov.uk/company/11876542">https://find-and-update.company-information.service.gov.uk/company/11876542</a></td>
+                          </tr>
+                          <tr>
+                            <td class="tds-data-table__text-cell">BVI Financial Services Commission</td>
+                            <td class="tds-data-table__text-cell">Registry (no public disclosure)</td>
+                            <td class="tds-data-table__text-cell"><a class="kyb-sources-url" href="https://find-and-update.company-information.service.gov.uk/company/11876542">https://find-and-update.company-information.service.gov.uk/company/11876542</a></td>
+                          </tr>
+                          <tr>
+                            <td class="tds-data-table__text-cell">Trulioo Business Verification</td>
+                            <td class="tds-data-table__text-cell">Internal record</td>
+                            <td class="tds-data-table__text-cell"><a class="kyb-sources-url" href="https://find-and-update.company-information.service.gov.uk/company/11876542">https://find-and-update.company-information.service.gov.uk/company/11876542</a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../Components/score-gauge/score-gauge.js"></script>
+  <script src="kyb-results.js"></script>
+  <script src="../../Components/side-nav/side-nav.js"></script>
+  <script>TdsSideNav.init();</script>
+</body>
+</html>
