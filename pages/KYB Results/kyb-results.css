@@ -671,11 +671,15 @@
 
 /* --- Sources tab (Figma 1833:35294) --- */
 
+#kyb-sources > .tds-section-header {
+  padding-bottom: var(--padding-md);
+}
+
 .kyb-sources-body {
   display: flex;
   flex-direction: column;
   gap: var(--gap-xl);
-  padding: var(--padding-xl);
+  padding: var(--padding-md) var(--padding-xl) var(--padding-xl);
 }
 
 .kyb-sources-body .tds-data-table-container + .tds-data-table-container {
