@@ -54,6 +54,42 @@
     });
   }
 
+  function setAccordionExpanded(accordion, expanded) {
+    var header = accordion.querySelector(".tds-accordion__header");
+    var content = accordion.querySelector(".tds-accordion__content");
+    if (!header || !content) return;
+    header.setAttribute("aria-expanded", expanded ? "true" : "false");
+    accordion.classList.toggle("tds-accordion--expanded", expanded);
+    content.hidden = !expanded;
+  }
+
+  function openSignalCategory(categoryId) {
+    setActiveTab("signals");
+
+    document.querySelectorAll(".kyb-signal-category[data-kyb-signal-category]").forEach(function (accordion) {
+      var isTarget = accordion.getAttribute("data-kyb-signal-category") === categoryId;
+      setAccordionExpanded(accordion, isTarget);
+    });
+
+    var target = document.querySelector('.kyb-signal-category[data-kyb-signal-category="' + categoryId + '"]');
+    if (!target) return;
+
+    window.requestAnimationFrame(function () {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function initRiskCategoryCards() {
+    document.querySelectorAll(".kyb-risk-category-card[data-kyb-signal-category]").forEach(function (card) {
+      if (card.dataset.kybBound) return;
+      card.dataset.kybBound = "1";
+
+      card.addEventListener("click", function () {
+        openSignalCategory(card.getAttribute("data-kyb-signal-category"));
+      });
+    });
+  }
+
   function initScoreBreakdownLink() {
     document.querySelectorAll("[data-kyb-jump-tab]").forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -76,6 +112,9 @@
       var isActive = tab.getAttribute("data-kyb-tab") === tabId;
       tab.classList.toggle("tds-tab-item--active", isActive);
       tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      if (isActive) {
+        tab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+      }
     });
   }
 
@@ -90,6 +129,44 @@
     });
 
     setActiveTab(shell.getAttribute("data-active-tab") || "ownership");
+  }
+
+  function initTabsScroll() {
+    document.querySelectorAll(".tds-tabs:has(.tds-tabs__overflow-btn), [data-tabs-scrollable]").forEach(function (tabs) {
+      var list = tabs.querySelector(".tds-tabs__list");
+      var leftBtn = tabs.querySelector('[data-tabs-scroll="left"]');
+      var rightBtn = tabs.querySelector('[data-tabs-scroll="right"]');
+      if (!list || !leftBtn || !rightBtn) return;
+
+      function updateOverflowButtons() {
+        var canScrollLeft = list.scrollLeft > 1;
+        var canScrollRight = list.scrollLeft + list.clientWidth < list.scrollWidth - 1;
+        leftBtn.classList.toggle("tds-tabs__overflow-btn--visible", canScrollLeft);
+        rightBtn.classList.toggle("tds-tabs__overflow-btn--visible", canScrollRight);
+        leftBtn.tabIndex = canScrollLeft ? 0 : -1;
+        rightBtn.tabIndex = canScrollRight ? 0 : -1;
+      }
+
+      function scrollTabs(direction) {
+        list.scrollBy({
+          left: direction === "left" ? -list.clientWidth * 0.6 : list.clientWidth * 0.6,
+          behavior: "smooth",
+        });
+      }
+
+      leftBtn.addEventListener("click", function () {
+        scrollTabs("left");
+      });
+      rightBtn.addEventListener("click", function () {
+        scrollTabs("right");
+      });
+      list.addEventListener("scroll", updateOverflowButtons, { passive: true });
+      window.addEventListener("resize", updateOverflowButtons);
+      if (typeof ResizeObserver !== "undefined") {
+        new ResizeObserver(updateOverflowButtons).observe(list);
+      }
+      updateOverflowButtons();
+    });
   }
 
   function initSignalRows() {
@@ -119,13 +196,32 @@
     });
   }
 
+  function kybRiskFromScore(score) {
+    if (score < 30) return { risk: "low", label: "Low Risk" };
+    if (score <= 60) return { risk: "medium", label: "Medium Risk" };
+    return { risk: "high", label: "High Risk" };
+  }
+
+  function initKybScoreGauge() {
+    document.querySelectorAll(".kyb-score-card .dv-di-gauge[data-score]").forEach(function (el) {
+      var score = parseFloat(el.getAttribute("data-score") || "0");
+      var tier = kybRiskFromScore(score);
+      el.setAttribute("data-risk", tier.risk);
+      el.setAttribute("data-label", tier.label);
+      el.setAttribute("data-show-percent", "false");
+    });
+  }
+
   function init() {
     initTabs();
+    initTabsScroll();
     initAccordions(document);
     initSignalRows();
+    initRiskCategoryCards();
     initSidebarToggle();
     initScoreBreakdownLink();
     initRawCopy();
+    initKybScoreGauge();
     if (window.ScoreGauge) ScoreGauge.renderAll(document);
   }
 
