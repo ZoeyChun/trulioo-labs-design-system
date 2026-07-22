@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../../tokens/tokens.css">
   <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/button-menu/button-menu.css">
   <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
@@ -24,6 +25,9 @@
   <link rel="stylesheet" href="../../Components/stat-card/stat-card.css">
   <link rel="stylesheet" href="../../Components/filter-tab/filter-tab.css">
   <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
+  <link rel="stylesheet" href="../../Components/data-table/sort-button/sort-button.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
   <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
   <link rel="stylesheet" href="../../Components/risk-category-card/risk-category-card.css">
   <link rel="stylesheet" href="../../Components/dismiss-action/dismiss-action.css">
@@ -177,12 +181,19 @@
             <span class="tds-tag tds-tag--intermediate tds-tag--md">Review</span>
           </div>
           <div class="dv-header__actions">
-            <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
-              <span class="tds-btn__leading-icon">
-                <svg viewBox="0 0 576 512" fill="currentColor" aria-hidden="true"><path d="M96.5 0c-35.3 0-64 28.7-64 64l0 384c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-96 78.1 0-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l72-72c9.4-9.4 9.4-24.6 0-33.9l-72-72c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-78.1 0 0-133.5c0-17-6.7-33.3-18.7-45.3L291.2 18.7C279.2 6.7 263 0 246 0L96.5 0zM358 176l-93.5 0c-13.3 0-24-10.7-24-24L240.5 58.5 358 176zM224.5 328c0-13.3 10.7-24 24-24l104 0 0 48-104 0c-13.3 0-24-10.7-24-24z"/></svg>
-              </span>
-              Export
-            </button>
+            <div class="tds-button-menu" data-dropdown-align="end">
+              <button type="button" class="tds-btn tds-btn--secondary tds-btn--lg" aria-expanded="false" aria-haspopup="menu">
+                <span class="tds-btn__leading-icon" aria-hidden="true">
+                  <svg viewBox="0 0 576 512" fill="currentColor"><path d="M96.5 0c-35.3 0-64 28.7-64 64l0 384c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-96 78.1 0-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l72-72c9.4-9.4 9.4-24.6 0-33.9l-72-72c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-78.1 0 0-133.5c0-17-6.7-33.3-18.7-45.3L291.2 18.7C279.2 6.7 263 0 246 0L96.5 0zM358 176l-93.5 0c-13.3 0-24-10.7-24-24L240.5 58.5 358 176zM224.5 328c0-13.3 10.7-24 24-24l104 0 0 48-104 0c-13.3 0-24-10.7-24-24z"/></svg>
+                </span>
+                Export
+              </button>
+              <div class="tds-dropdown-panel" role="menu" hidden>
+                <div class="tds-dropdown-panel__header">Export as:</div>
+                <button type="button" class="tds-action-list-item" role="menuitem">.pdf</button>
+                <button type="button" class="tds-action-list-item" role="menuitem">.csv</button>
+              </div>
+            </div>
             <button class="app-truai-btn" type="button">
               <span class="app-truai-btn__icon">
                 <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
@@ -490,19 +501,45 @@
                   </div>
                 </div>
                 <div class="kyb-section__body">
-                  <div class="kyb-toolbar">
+                  <div class="kyb-toolbar" data-kyb-signals-toolbar>
                     <div class="tds-filter-tabs" role="tablist" aria-label="Signal filters">
-                      <button type="button" class="tds-filter-tab tds-filter-tab--selected" role="tab" aria-selected="true">All <span class="tds-counter tds-counter--secondary tds-counter--sm">38</span></button>
-                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Negative <span class="tds-counter tds-counter--secondary tds-counter--sm">8</span></button>
-                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Positive <span class="tds-counter tds-counter--secondary tds-counter--sm">24</span></button>
-                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Neutral <span class="tds-counter tds-counter--secondary tds-counter--sm">6</span></button>
+                      <button type="button" class="tds-filter-tab tds-filter-tab--selected" role="tab" aria-selected="true" data-kyb-impact-filter="all">All <span class="tds-counter tds-counter--secondary tds-counter--sm" data-kyb-impact-count="all">38</span></button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-kyb-impact-filter="negative">Negative <span class="tds-counter tds-counter--secondary tds-counter--sm" data-kyb-impact-count="negative">8</span></button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-kyb-impact-filter="positive">Positive <span class="tds-counter tds-counter--secondary tds-counter--sm" data-kyb-impact-count="positive">24</span></button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-kyb-impact-filter="neutral">Neutral <span class="tds-counter tds-counter--secondary tds-counter--sm" data-kyb-impact-count="neutral">6</span></button>
                     </div>
                     <div class="kyb-toolbar__filters">
-                      <div class="tds-filter-button">
-                        <button type="button" class="tds-btn tds-btn--md tds-btn--secondary"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>Filter</button>
+                      <div class="tds-filter-button" data-kyb-signals-filter>
+                        <button type="button" class="tds-btn tds-btn--md tds-btn--secondary" aria-expanded="false" aria-haspopup="menu"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span><span class="tds-filter-button__trigger-default">Filter</span><span class="tds-filter-button__trigger-value" data-kyb-filter-value></span><span class="tds-counter tds-counter--primary tds-counter--sm tds-filter-button__counter" data-kyb-filter-count></span><span class="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></button>
+                        <div class="tds-dropdown-panel" role="menu" hidden>
+                          <div class="tds-dropdown-panel__header">Applicable</div>
+                          <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" checked data-kyb-filter-applicable="yes"><span>Yes</span></label>
+                          <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" checked data-kyb-filter-applicable="no"><span>No</span></label>
+                          <div class="tds-dropdown-panel__divider"></div>
+                          <div class="tds-dropdown-panel__header">Data</div>
+                          <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" checked data-kyb-filter-data="present"><span>Present</span></label>
+                          <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" checked data-kyb-filter-data="missing"><span>Missing</span></label>
+                          <div class="tds-dropdown-panel__divider"></div>
+                          <div class="tds-dropdown-panel__header">Category</div>
+                          <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" checked data-kyb-filter-category="business-model"><span>Business Model</span></label>
+                          <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" checked data-kyb-filter-category="financial-health"><span>Financial Health</span></label>
+                          <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" checked data-kyb-filter-category="fraud-financial-crimes"><span>Fraud &amp; Financial Crimes</span></label>
+                          <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" checked data-kyb-filter-category="governance-compliance"><span>Governance &amp; Compliance</span></label>
+                          <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" checked data-kyb-filter-category="third-party-market"><span>Third-Party &amp; Market</span></label>
+                        </div>
                       </div>
-                      <div class="tds-sort-button">
-                        <button type="button" class="tds-btn tds-btn--md tds-btn--secondary"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span>Sort</button>
+                      <div class="tds-sort-button tds-sort-button--selected" data-kyb-signals-sort>
+                        <button type="button" class="tds-btn tds-btn--md tds-btn--secondary" aria-expanded="false" aria-haspopup="menu"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span><span class="tds-sort-button__trigger-label"><span class="tds-sort-button__trigger-prefix">Sort:</span><span class="tds-sort-button__trigger-value" data-kyb-sort-label>Impact (low-high)</span></span></button>
+                        <div class="tds-dropdown-panel" role="menu" hidden>
+                          <button type="button" class="tds-action-list-item tds-action-list-item--selected" role="menuitemradio" aria-checked="true" data-kyb-signal-sort="impact-low-high"><span class="tds-action-list-item__label">Impact (low-high)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-signal-sort="impact-high-low"><span class="tds-action-list-item__label">Impact (high-low)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-signal-sort="applicable-yes-no"><span class="tds-action-list-item__label">Applicable (yes-no)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-signal-sort="applicable-no-yes"><span class="tds-action-list-item__label">Applicable (no-yes)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-signal-sort="data-present-missing"><span class="tds-action-list-item__label">Data (present-missing)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-signal-sort="data-missing-present"><span class="tds-action-list-item__label">Data (missing-present)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-signal-sort="category-asc"><span class="tds-action-list-item__label">Category (a-z)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-signal-sort="category-desc"><span class="tds-action-list-item__label">Category (z-a)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1045,24 +1082,42 @@
                 <div class="kyb-section__body">
                   <div class="kyb-toolbar">
                     <div class="tds-filter-tabs" role="tablist" aria-label="Monitoring filters">
-                      <button type="button" class="tds-filter-tab tds-filter-tab--selected" role="tab" aria-selected="true">All alerts</button>
-                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Registry <span class="tds-counter tds-counter--secondary tds-counter--sm">2</span></button>
-                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Financial</button>
-                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false">Adverse media</button>
+                      <button type="button" class="tds-filter-tab tds-filter-tab--selected" role="tab" aria-selected="true" data-kyb-monitoring-tab="all">All alerts</button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-kyb-monitoring-tab="registry">Registry <span class="tds-counter tds-counter--secondary tds-counter--sm" data-kyb-monitoring-tab-count="registry">2</span></button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-kyb-monitoring-tab="financial">Financial</button>
+                      <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-kyb-monitoring-tab="adverse-media">Adverse media</button>
                     </div>
                     <div class="kyb-toolbar__filters">
-                      <div class="tds-filter-button"><button type="button" class="tds-btn tds-btn--md tds-btn--secondary"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>Filter</button></div>
-                      <div class="tds-sort-button"><button type="button" class="tds-btn tds-btn--md tds-btn--secondary"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span>Sort</button></div>
+                      <div class="tds-filter-button" data-kyb-monitoring-filter>
+                        <button type="button" class="tds-btn tds-btn--md tds-btn--secondary" aria-expanded="false" aria-haspopup="menu"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span><span class="tds-filter-button__trigger-default">Filter</span><span class="tds-filter-button__trigger-value" data-kyb-monitoring-filter-value></span><span class="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></button>
+                        <div class="tds-dropdown-panel" role="menu" hidden>
+                          <button type="button" class="tds-action-list-item tds-action-list-item--selected" role="menuitemradio" aria-checked="true" data-kyb-monitoring-status="all" data-tds-filter-default><span class="tds-action-list-item__label">All statuses</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-monitoring-status="verified"><span class="tds-action-list-item__label">Verified</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-monitoring-status="pending"><span class="tds-action-list-item__label">Pending</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-monitoring-status="failed"><span class="tds-action-list-item__label">Failed</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-monitoring-status="flagged"><span class="tds-action-list-item__label">Flagged</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                        </div>
+                      </div>
+                      <div class="tds-sort-button tds-sort-button--selected" data-kyb-monitoring-sort>
+                        <button type="button" class="tds-btn tds-btn--md tds-btn--secondary" aria-expanded="false" aria-haspopup="menu"><span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span><span class="tds-sort-button__trigger-label"><span class="tds-sort-button__trigger-prefix">Sort:</span><span class="tds-sort-button__trigger-value" data-kyb-monitoring-sort-label>Date (Newest)</span></span></button>
+                        <div class="tds-dropdown-panel" role="menu" hidden>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-monitoring-sort-option="name-asc"><span class="tds-action-list-item__label">Name A → Z</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-monitoring-sort-option="name-desc"><span class="tds-action-list-item__label">Name Z → A</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item tds-action-list-item--selected" role="menuitemradio" aria-checked="true" data-kyb-monitoring-sort-option="date-newest"><span class="tds-action-list-item__label">Date (Newest)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-monitoring-sort-option="date-oldest"><span class="tds-action-list-item__label">Date (Oldest)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                          <button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" data-kyb-monitoring-sort-option="risk-level"><span class="tds-action-list-item__label">Risk level</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="tds-data-table-container">
+                  <div class="tds-data-table-container" data-kyb-monitoring-table>
                     <div class="tds-data-table__wrapper">
                       <table class="tds-data-table">
                         <thead><tr><th aria-sort="none">Alert</th><th aria-sort="none">Category</th><th aria-sort="none">Detected</th><th aria-sort="none">Severity</th></tr></thead>
                         <tbody>
-                          <tr><td class="tds-data-table__text-cell">Domain expiration</td><td class="tds-data-table__text-cell">Digital presence</td><td class="tds-data-table__text-cell">12 Nov 2025</td><td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--intermediate">Medium</span></span></td></tr>
-                          <tr><td class="tds-data-table__text-cell">Officer change filed</td><td class="tds-data-table__text-cell">Registry</td><td class="tds-data-table__text-cell">03 Feb 2026</td><td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--default">Info</span></span></td></tr>
-                          <tr><td class="tds-data-table__text-cell">Micro-entity accounts filed</td><td class="tds-data-table__text-cell">Financial</td><td class="tds-data-table__text-cell">30 Sep 2025</td><td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--default">Info</span></span></td></tr>
+                          <tr data-kyb-monitoring-row data-kyb-monitoring-category="digital-presence" data-kyb-monitoring-status="flagged" data-kyb-monitoring-date="2025-11-12" data-kyb-monitoring-severity="medium"><td class="tds-data-table__text-cell">Domain expiration</td><td class="tds-data-table__text-cell">Digital presence</td><td class="tds-data-table__text-cell">12 Nov 2025</td><td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--intermediate">Medium</span></span></td></tr>
+                          <tr data-kyb-monitoring-row data-kyb-monitoring-category="registry" data-kyb-monitoring-status="verified" data-kyb-monitoring-date="2026-02-03" data-kyb-monitoring-severity="info"><td class="tds-data-table__text-cell">Officer change filed</td><td class="tds-data-table__text-cell">Registry</td><td class="tds-data-table__text-cell">03 Feb 2026</td><td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--default">Info</span></span></td></tr>
+                          <tr data-kyb-monitoring-row data-kyb-monitoring-category="financial" data-kyb-monitoring-status="verified" data-kyb-monitoring-date="2025-09-30" data-kyb-monitoring-severity="info"><td class="tds-data-table__text-cell">Micro-entity accounts filed</td><td class="tds-data-table__text-cell">Financial</td><td class="tds-data-table__text-cell">30 Sep 2025</td><td><span class="tds-data-table__label-cell"><span class="tds-tag tds-tag--sm tds-tag--default">Info</span></span></td></tr>
                         </tbody>
                       </table>
                     </div>
@@ -1252,6 +1307,7 @@
     </main>
   </div>
 
+  <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
   <script src="../../Components/score-gauge/score-gauge.js"></script>
   <script src="kyb-results.js"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>

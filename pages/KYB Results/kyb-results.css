@@ -495,6 +495,35 @@
   flex-shrink: 0;
 }
 
+.kyb-signal-category__empty {
+  margin: 0;
+  padding: var(--padding-xl) var(--padding-md);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-description);
+  text-align: center;
+}
+
+[data-kyb-signal-row][hidden],
+.kyb-signal-detail-row[hidden],
+.kyb-signal-category[hidden],
+[data-kyb-monitoring-row][hidden] {
+  display: none;
+}
+
+.kyb-monitoring-empty {
+  margin: 0;
+  padding: var(--padding-xl) var(--padding-md);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-description);
+  text-align: center;
+}
+
 /* --- Officer block --- */
 
 .kyb-officer-block {

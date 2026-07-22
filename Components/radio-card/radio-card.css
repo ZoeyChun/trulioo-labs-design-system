@@ -1,10 +1,13 @@
 @import '../_shared/radio/radio.css';
+@import '../checkbox/checkbox.css';
 
 /* ============================================================
    RadioCard
+   Types: single-selection (radio) | multi-selection (checkbox)
    States: selected | unselected
    Options: showDescription
-   Layout: [radio] [content: label-row (icon + label) + description?]
+   Layout: [control] [content: label-row (icon + label) + description?]
+   Figma: RadioCard (359:3332)
    ============================================================ */
 
 .tds-radio-card {
@@ -29,15 +32,22 @@
 
 .tds-radio-card--selected {
   background-color: var(--surface-selected);
-  border-color: var(--border-interactive);
+  border-color: var(--border-selected);
 }
 
 .tds-radio-card--selected:hover {
   background-color: var(--surface-selected);
 }
 
-.tds-radio-card .tds-radio {
+.tds-radio-card .tds-radio,
+.tds-radio-card .tds-checkbox {
   flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tds-radio-card:not(:has(.tds-radio-card__description)) .tds-radio,
+.tds-radio-card:not(:has(.tds-radio-card__description)) .tds-checkbox {
+  margin-top: 0;
 }
 
 .tds-radio-card__content {

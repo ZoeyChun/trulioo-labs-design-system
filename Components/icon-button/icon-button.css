@@ -5,7 +5,10 @@
    Sizes:    small (28px) | medium (32px) | large (40px)
    Shapes:   square | circular
    States:   rest | hover | focus | pressed | disabled | inactive | loading
+   Loading replaces the icon with .tds-spinner--xs
    ============================================================ */
+
+@import '../spinner/spinner.css';
 
 .tds-icon-btn {
   display: inline-flex;
@@ -239,17 +242,28 @@
 
 .tds-icon-btn--loading,
 .tds-icon-btn[aria-busy="true"] {
-  opacity: 0.5;
-  color: var(--icon-muted);
   cursor: wait;
   pointer-events: none;
 }
 
-.tds-icon-btn--loading:hover,
-.tds-icon-btn--loading:active,
-.tds-icon-btn--loading:focus-visible,
-.tds-icon-btn[aria-busy="true"]:hover,
-.tds-icon-btn[aria-busy="true"]:active,
-.tds-icon-btn[aria-busy="true"]:focus-visible {
-  opacity: 0.5;
+.tds-icon-btn--loading .tds-icon-btn__icon,
+.tds-icon-btn[aria-busy="true"] .tds-icon-btn__icon {
+  display: none;
+}
+
+.tds-icon-btn--loading .tds-spinner,
+.tds-icon-btn[aria-busy="true"] .tds-spinner {
+  flex-shrink: 0;
+}
+
+.tds-icon-btn--primary.tds-icon-btn--loading .tds-spinner,
+.tds-icon-btn--primary[aria-busy="true"] .tds-spinner {
+  --spinner-track: color-mix(in srgb, var(--icon-inverse) 35%, transparent);
+  --spinner-accent: var(--icon-inverse);
+}
+
+.tds-icon-btn--danger.tds-icon-btn--loading .tds-spinner,
+.tds-icon-btn--danger[aria-busy="true"] .tds-spinner {
+  --spinner-track: var(--surface-negative);
+  --spinner-accent: var(--icon-negative);
 }

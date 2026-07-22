@@ -12,7 +12,7 @@ components:
     classPrefixes:
       - tds-btn
     figmaNodeId: "96:2225"
-    notes: 4 variants x 3 sizes x 5 states + alignment
+    notes: 4 variants x 3 sizes x 5 states + alignment; loading boolean with spinner
   -
     id: icon-button
     name: IconButton
@@ -23,7 +23,31 @@ components:
     classPrefixes:
       - tds-icon-btn
     figmaNodeId: "1371:22653"
-    notes: 4 variants x 3 sizes x 7 states x 2 shapes
+    notes: 4 variants x 3 sizes x 7 states x 2 shapes; loading swaps icon for .tds-spinner--xs
+  -
+    id: button-group
+    name: ButtonGroup
+    category: Core Controls
+    figmaStatus: Done
+    figmaVariants: 15
+    cssFile: button-group/button-group.css
+    classPrefixes:
+      - tds-button-group
+    subComponents: Button, IconButton
+    figmaNodeId: "1952:33320"
+    notes: Segmented control; iconButtons, buttons, or mixed; count 2–5
+  -
+    id: spinner
+    name: Spinner
+    category: Core Controls
+    figmaStatus: Done
+    figmaVariants: 8
+    cssFile: spinner/spinner.css
+    classPrefixes:
+      - tds-spinner
+      - tds-spinner-block
+    figmaNodeId: "2092:18230"
+    notes: 5 sizes (xs–xl); optional label block; used by Button and IconButton loading
   -
     id: button-menu
     name: ButtonMenu
@@ -134,8 +158,9 @@ components:
     cssFile: radio-card/radio-card.css
     classPrefixes:
       - tds-radio-card
-    subComponents: Radio
+    subComponents: Radio, Checkbox
     figmaNodeId: "359:3332"
+    notes: single-selection (radio) or multi-selection (checkbox)
   -
     id: field-label
     name: FieldLabel
@@ -190,7 +215,7 @@ components:
       - tds-dropdown-panel
     subComponents: ActionListItem
     figmaNodeId: "320:21652"
-    notes: Used by Select, ButtonMenu, FilterButton, SortButton
+    notes: "Positioning rules — (1) content-sized, (2) start/end align with auto-flip, (3) min-width = trigger, (4) viewport overflow clamp. Used by Select, ButtonMenu, FilterButton, SortButton"
   -
     id: tag
     name: Tag
@@ -496,12 +521,13 @@ components:
     name: FilterButton
     category: Utility
     figmaStatus: Done
-    figmaVariants: 2
+    figmaVariants: 6
     cssFile: filter-button/filter-button.css
     classPrefixes:
       - tds-filter-button
-    subComponents: DropdownPanel
+    subComponents: DropdownPanel, CounterLabel
     figmaNodeId: "836:13511"
+    notes: Selected trigger shows value + xmark clear; counter only with 2+ active filters (+N); clear resets all selections via tds-filter-clear
   -
     id: sort-button
     name: SortButton

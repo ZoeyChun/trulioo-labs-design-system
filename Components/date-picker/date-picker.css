@@ -9,8 +9,7 @@
           _Date picker calendar (1599:32650)
           _Date picker calendar day item (1632:29116)
    Sizes:  small | medium (default) | large
-   States: enabled | focus | active | open | disabled | read-only
-           error | warning
+   States: enabled | focus | active | open | disabled | read-only | error
    ============================================================ */
 
 .tds-date-picker {
@@ -19,7 +18,7 @@
   gap: var(--gap-xs);
   font-family: var(--font-family);
   position: relative;
-  width: 288px;
+  width: 100%;
   max-width: 100%;
   isolation: isolate;
 }
@@ -33,8 +32,8 @@
 .tds-date-picker-range {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-2);
-  width: 288px;
+  gap: var(--spacing-8);
+  width: 100%;
   max-width: 100%;
 }
 
@@ -120,7 +119,7 @@
 .tds-date-picker__field:focus-visible,
 .tds-date-picker__field--focus,
 .tds-date-picker--open .tds-date-picker__field {
-  border-color: var(--border-interactive);
+  border-color: var(--border-focus);
   border-width: 2px;
   box-shadow: none;
   outline: none;
@@ -174,10 +173,6 @@
   border-color: var(--border-negative);
 }
 
-.tds-date-picker--warning .tds-date-picker__field {
-  border-color: var(--border-intermediate);
-}
-
 .tds-date-picker__calendar[hidden] {
   display: none;
 }
@@ -189,8 +184,9 @@
 
 .tds-date-picker-range__calendar {
   flex: 0 0 100%;
-  width: 100%;
-  max-width: 288px;
+  align-self: flex-start;
+  width: 288px;
+  max-width: min(288px, 100%);
 }
 
 .tds-date-picker-range--disabled .tds-field-label,
@@ -225,10 +221,6 @@
   border-color: var(--border-negative);
 }
 
-.tds-date-picker-range--warning .tds-date-picker__field {
-  border-color: var(--border-intermediate);
-}
-
 /* --- Calendar popover --- */
 
 .tds-date-picker__calendar {
@@ -237,7 +229,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--gap-xs);
-  width: 100%;
+  width: 288px;
+  max-width: min(288px, 100%);
   margin-top: var(--gap-xs);
   padding: var(--padding-xs) var(--padding-xs) var(--padding-sm);
   background-color: var(--surface-neutral-01);
@@ -307,6 +300,7 @@
 .tds-date-picker__week {
   display: flex;
   align-items: flex-start;
+  width: fit-content;
 }
 
 .tds-date-picker__weeks {
@@ -372,7 +366,7 @@
 
 .tds-date-picker__day--today {
   font-weight: var(--font-weight-semibold);
-  color: var(--text-link);
+  color: var(--interactive-default);
 }
 
 .tds-date-picker__day--today::after {
@@ -383,7 +377,7 @@
   width: 4px;
   height: 4px;
   border-radius: var(--radius-full);
-  background-color: var(--text-link);
+  background-color: var(--interactive-default);
   transform: translateX(-50%);
 }
 
@@ -415,4 +409,11 @@
 
 .tds-date-picker__day--range-end {
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+/* Footer: validation message first, caption second. */
+.tds-date-picker__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
 }

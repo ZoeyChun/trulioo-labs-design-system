@@ -3,8 +3,10 @@
    Figma: Button (96:2225)
    Variants: primary | secondary | danger | invisible
    Sizes:    small (24px) | medium (32px) | large (42px)
-   States:   rest | hover | focus | pressed | disabled | inactive
+   States:   rest | hover | focus | pressed | disabled | inactive | loading
    ============================================================ */
+
+@import '../spinner/spinner.css';
 
 .tds-btn {
   display: inline-flex;
@@ -81,7 +83,7 @@
 .tds-btn--secondary.tds-btn--focus,
 .tds-btn:not([class*="tds-btn--primary"]):not([class*="tds-btn--danger"]):not([class*="tds-btn--invisible"]):focus-visible,
 .tds-btn:not([class*="tds-btn--primary"]):not([class*="tds-btn--danger"]):not([class*="tds-btn--invisible"]).tds-btn--focus {
-  border-color: var(--border-interactive);
+  border-color: var(--border-focus);
   border-width: 2px;
   outline: none;
   box-shadow: none;
@@ -122,7 +124,7 @@
 
 .tds-btn--primary:focus-visible,
 .tds-btn--primary.tds-btn--focus {
-  border-color: var(--border-interactive);
+  border-color: var(--border-focus);
   border-width: 2px;
   outline: none;
 }
@@ -160,7 +162,7 @@
 
 .tds-btn--danger:focus-visible,
 .tds-btn--danger.tds-btn--focus {
-  border-color: var(--border-interactive);
+  border-color: var(--border-focus);
   border-width: 2px;
   outline: none;
 }
@@ -199,7 +201,7 @@
 .tds-btn--invisible:focus-visible,
 .tds-btn--invisible.tds-btn--focus {
   background-color: var(--surface-neutral-01);
-  border-color: var(--border-interactive);
+  border-color: var(--border-focus);
   border-width: 2px;
   outline: none;
 }
@@ -272,13 +274,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 18px;
-  padding: 0 6px;
+  min-height: 18px;
+  padding: 0 var(--padding-xs);
   border-radius: var(--radius-full);
   font-weight: var(--font-weight-figma);
   font-variation-settings: var(--font-variation-figma-medium);
-  background-color: var(--interactive-subtle);
-  border: 1px solid var(--border-subtle);
+  background-color: var(--surface-neutral-03);
+  border: none;
   color: var(--text-default);
 }
 
@@ -299,5 +301,24 @@
 }
 
 .tds-btn--primary .tds-btn__counter {
-  border-color: transparent;
+  background-color: var(--surface-neutral-03);
+}
+
+/* --- Loading --- */
+
+.tds-btn--loading,
+.tds-btn[aria-busy="true"] {
+  cursor: wait;
+  pointer-events: none;
+}
+
+.tds-btn--loading .tds-spinner,
+.tds-btn[aria-busy="true"] .tds-spinner {
+  flex-shrink: 0;
+}
+
+.tds-btn--danger.tds-btn--loading .tds-spinner,
+.tds-btn--danger[aria-busy="true"] .tds-spinner {
+  --spinner-track: var(--surface-negative);
+  --spinner-accent: var(--icon-negative);
 }

@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../../Components/announcement/announcement.css">
   <link rel="stylesheet" href="../../Components/breadcrumb/breadcrumb.css">
   <link rel="stylesheet" href="../../Components/button-menu/button-menu.css">
+  <link rel="stylesheet" href="../../Components/button-group/button-group.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
   <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
   <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
@@ -36,6 +37,7 @@
   <link rel="stylesheet" href="../../Components/select/combobox.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
+  <link rel="stylesheet" href="../../Components/spinner/spinner.css">
   <link rel="stylesheet" href="../../Components/stat-card/stat-card.css">
   <link rel="stylesheet" href="../../Components/switch/switch.css">
   <link rel="stylesheet" href="../../Components/tabs/tabs.css">
@@ -328,6 +330,88 @@ body {
 
       <article class="ds-showcase">
         <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Loading</h3>
+          <p class="ds-showcase__desc">Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225).</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-btn--loading · .tds-spinner--sm</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas">
+<div class="row">
+        <button class="tds-btn tds-btn--lg tds-btn--secondary tds-btn--loading" aria-busy="true">
+          Button
+          <span class="tds-spinner tds-spinner--sm" aria-hidden="true"></span>
+        </button>
+        <button class="tds-btn tds-btn--md tds-btn--primary tds-btn--loading" aria-busy="true">
+          Button
+          <span class="tds-spinner tds-spinner--sm" aria-hidden="true"></span>
+        </button>
+        <button class="tds-btn tds-btn--sm tds-btn--danger tds-btn--loading" aria-busy="true">
+          Button
+          <span class="tds-spinner tds-spinner--sm" aria-hidden="true"></span>
+        </button>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Button group</h3>
+          <p class="ds-showcase__desc">Segmented control on a neutral track — iconButtons, buttons, and mixed types (Figma 1952:33320).</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-button-group · count 2–5</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="ds-state-grid" style="grid-template-columns: 1fr; gap: var(--spacing-16);">
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Icon buttons · 3</span>
+<div class="tds-button-group" role="group" aria-label="Icon button group">
+  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--secondary" aria-label="First"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button>
+  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible" aria-label="Selected"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button>
+  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--secondary" aria-label="Third"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button>
+</div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Buttons · 3</span>
+<div class="tds-button-group" role="group" aria-label="Button group">
+  <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary">Button</button>
+  <button type="button" class="tds-btn tds-btn--sm tds-btn--invisible">Button</button>
+  <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary">Button</button>
+</div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Mixed · 2</span>
+<div class="tds-button-group" role="group" aria-label="Mixed button group">
+  <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary">Button</button>
+  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible" aria-label="Selected"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button>
+</div></div>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Spinner</h3>
+          <p class="ds-showcase__desc">Standalone loading indicator — four sizes with optional label (Figma 2092:18230).</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-spinner--{xs|sm|md|lg|xl} · .tds-spinner--negative · .tds-spinner-block</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="ds-state-grid">
+        <div class="ds-state-demo"><span class="ds-state-demo__label">XSmall</span><span class="tds-spinner tds-spinner--xs" role="status" aria-label="Loading"></span></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Small</span><span class="tds-spinner tds-spinner--sm" role="status" aria-label="Loading"></span></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Medium</span><span class="tds-spinner tds-spinner--md" role="status" aria-label="Loading"></span></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Large</span><span class="tds-spinner tds-spinner--lg" role="status" aria-label="Loading"></span></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">XLarge</span><span class="tds-spinner tds-spinner--xl" role="status" aria-label="Loading"></span></div>
+        <div class="ds-state-demo" style="grid-column: 1 / -1;"><span class="ds-state-demo__label">Negative tone</span><span class="tds-spinner tds-spinner--md tds-spinner--negative" role="status" aria-label="Loading"></span></div>
+        <div class="ds-state-demo" style="grid-column: 1 / -1;"><span class="ds-state-demo__label">With label</span>
+<div class="tds-spinner-block tds-spinner-block--md">
+  <span class="tds-spinner tds-spinner--md" aria-hidden="true"></span>
+  <span class="tds-spinner-block__label">Loading…</span>
+</div></div>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Button menu</h3>
           <p class="ds-showcase__desc">Button trigger with action list dropdown — 4px gap to panel (Figma 832:13390).</p>
           <div class="ds-showcase__meta"><code class="ds-api">.tds-button-menu</code></div>
@@ -362,31 +446,133 @@ body {
       <article class="ds-showcase">
         <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Sort &amp; filter buttons</h3>
-          <p class="ds-showcase__desc">Toolbar controls with leading icons and sort/filter dropdown panels (Figma 836:12519 · 836:13511).</p>
-          <div class="ds-showcase__meta"><code class="ds-api">.tds-sort-button · .tds-filter-button</code></div>
+          <p class="ds-showcase__desc">Toolbar controls with leading icons and sort/filter dropdown panels (Figma 836:12519 · 836:13511). Filter selected state shows the active value with a clear icon; multi-select adds a +N counter badge.</p>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-sort-button · .tds-filter-button · .tds-filter-button--{selected|multi|open}</code></div>
         </div>
         <div class="ds-showcase__canvas ds-showcase__canvas--grid">
-<div class="ds-state-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-24);">
+<div class="ds-state-grid ds-state-grid--dropdown-specimens">
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Sort · default</span>
+<div class="tds-sort-button">
+  <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
+    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span>
+    <span class="tds-sort-button__trigger-default">Sort</span>
+  </button>
+</div></div>
         <div class="ds-state-demo"><span class="ds-state-demo__label">Sort · open</span>
 <div class="tds-sort-button">
   <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
     <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span>
-    Sort
+    <span class="tds-sort-button__trigger-default">Sort</span>
   </button>
   <div class="tds-dropdown-panel" role="menu">
-    <button type="button" class="tds-action-list-item" role="menuitem">Name A → Z</button>
-    <button type="button" class="tds-action-list-item" role="menuitem">Name Z → A</button>
-    <button type="button" class="tds-action-list-item" role="menuitem">Date (Newest)</button>
-    <button type="button" class="tds-action-list-item" role="menuitem">Date (Oldest)</button>
-    <button type="button" class="tds-action-list-item" role="menuitem">Risk level</button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Name A → Z</span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Name Z → A</span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Date (Newest)</span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Date (Oldest)</span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Risk level</span></button>
   </div>
 </div></div>
-        <div class="ds-state-demo"><span class="ds-state-demo__label">Filter · closed</span>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Sort · selected</span>
+<div class="tds-sort-button tds-sort-button--selected">
+  <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
+    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span>
+    <span class="tds-sort-button__trigger-label"><span class="tds-sort-button__trigger-prefix">Sort:</span><span class="tds-sort-button__trigger-value">Name A → Z</span></span>
+  </button>
+</div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Sort · selected · open</span>
+<div class="tds-sort-button tds-sort-button--selected">
+  <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
+    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6h8M4 10h8M6 3v10M10 3v10"/></svg></span>
+    <span class="tds-sort-button__trigger-label"><span class="tds-sort-button__trigger-prefix">Sort:</span><span class="tds-sort-button__trigger-value">Name A → Z</span></span>
+  </button>
+  <div class="tds-dropdown-panel" role="menu">
+    <button type="button" class="tds-action-list-item tds-action-list-item--selected" role="menuitem"><span class="tds-action-list-item__label">Name A → Z</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Name Z → A</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Date (Newest)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Date (Oldest)</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Risk level</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+  </div>
+</div></div>
+      </div>
+      <div class="spacer--md"></div>
+<div class="ds-state-grid ds-state-grid--dropdown-specimens">
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Filter · default</span>
 <div class="tds-filter-button">
   <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
     <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>
-    Filter
+    <span class="tds-filter-button__trigger-default">Filter</span>
+    <span class="tds-filter-button__trigger-value">Verified</span>
   </button>
+</div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Filter · open</span>
+<div class="tds-filter-button tds-filter-button--open">
+  <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
+    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>
+    <span class="tds-filter-button__trigger-default">Filter</span>
+    <span class="tds-filter-button__trigger-value">Verified</span>
+  </button>
+  <div class="tds-dropdown-panel" role="menu">
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">All statuses</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Verified</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Pending</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Failed</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Flagged</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+  </div>
+</div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Filter · selected</span>
+<div class="tds-filter-button tds-filter-button--selected">
+  <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
+    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>
+    <span class="tds-filter-button__trigger-default">Filter</span>
+    <span class="tds-filter-button__trigger-value">Verified</span>
+    <span class="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+  </button>
+</div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Filter · selected · open</span>
+<div class="tds-filter-button tds-filter-button--selected tds-filter-button--open">
+  <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
+    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>
+    <span class="tds-filter-button__trigger-default">Filter</span>
+    <span class="tds-filter-button__trigger-value">Verified</span>
+    <span class="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+  </button>
+  <div class="tds-dropdown-panel" role="menu">
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">All statuses</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item tds-action-list-item--selected" role="menuitem" aria-checked="true"><span class="tds-action-list-item__label">Verified</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Pending</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Failed</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Flagged</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+  </div>
+</div></div>
+      </div>
+      <div class="spacer--md"></div>
+<div class="ds-state-grid ds-state-grid--dropdown-specimens">
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Filter · multi</span>
+<div class="tds-filter-button tds-filter-button--selected tds-filter-button--multi">
+  <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
+    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>
+    <span class="tds-filter-button__trigger-default">Filter</span>
+    <span class="tds-filter-button__trigger-value">Verified</span>
+    <span class="tds-counter tds-counter--primary tds-counter--sm tds-filter-button__counter">+1</span>
+    <span class="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+  </button>
+</div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Filter · multi · open</span>
+<div class="tds-filter-button tds-filter-button--selected tds-filter-button--multi tds-filter-button--open">
+  <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">
+    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>
+    <span class="tds-filter-button__trigger-default">Filter</span>
+    <span class="tds-filter-button__trigger-value">Verified</span>
+    <span class="tds-counter tds-counter--primary tds-counter--sm tds-filter-button__counter">+1</span>
+    <span class="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+  </button>
+  <div class="tds-dropdown-panel" role="menu">
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">All statuses</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item tds-action-list-item--selected" role="menuitem" aria-checked="true"><span class="tds-action-list-item__label">Verified</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item tds-action-list-item--selected" role="menuitem" aria-checked="true"><span class="tds-action-list-item__label">Pending</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Failed</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Flagged</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span></button>
+  </div>
 </div></div>
       </div>
         </div>
@@ -421,9 +607,9 @@ body {
       <article class="ds-showcase">
         <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Icon button states</h3>
-          <p class="ds-showcase__desc">Disabled blocks interaction. Inactive shows a muted selected state. Loading reduces opacity and sets <code>aria-busy</code>.</p>
+          <p class="ds-showcase__desc">Disabled blocks interaction. Inactive shows a muted selected state. Loading swaps the icon for <code>.tds-spinner--xs</code> and sets <code>aria-busy</code>.</p>
           <div class="ds-showcase__meta">
-            <code class="ds-api">.tds-icon-btn--focus · .tds-icon-btn--inactive · .tds-icon-btn--loading · :disabled</code>
+            <code class="ds-api">.tds-icon-btn--focus · .tds-icon-btn--inactive · .tds-icon-btn--loading · .tds-spinner--xs</code>
           </div>
         </div>
         <div class="ds-showcase__canvas">
@@ -440,28 +626,28 @@ body {
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary tds-icon-btn--focus" aria-label="Primary focused"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary" disabled aria-label="Primary disabled"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary tds-icon-btn--inactive" aria-label="Primary inactive"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
-  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary tds-icon-btn--loading" aria-busy="true" aria-label="Primary loading"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--primary tds-icon-btn--loading" aria-busy="true" aria-label="Primary loading"><span class="tds-spinner tds-spinner--xs" aria-hidden="true"></span></button></span>
 
   <span class="ds-matrix__rowhead">Secondary</span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary" aria-label="Secondary default"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--focus" aria-label="Secondary focused"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary" disabled aria-label="Secondary disabled"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--inactive" aria-label="Secondary inactive"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
-  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--loading" aria-busy="true" aria-label="Secondary loading"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary tds-icon-btn--loading" aria-busy="true" aria-label="Secondary loading"><span class="tds-spinner tds-spinner--xs" aria-hidden="true"></span></button></span>
 
   <span class="ds-matrix__rowhead">Danger</span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--danger" aria-label="Danger"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--danger tds-icon-btn--focus" aria-label="Danger focused"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--danger" disabled aria-label="Danger disabled"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--danger tds-icon-btn--inactive" aria-label="Danger inactive"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
-  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--danger tds-icon-btn--loading" aria-busy="true" aria-label="Danger loading"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--danger tds-icon-btn--loading" aria-busy="true" aria-label="Danger loading"><span class="tds-spinner tds-spinner--xs" aria-hidden="true"></span></button></span>
 
   <span class="ds-matrix__rowhead">Invisible</span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--invisible" aria-label="Invisible"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--invisible tds-icon-btn--focus" aria-label="Invisible focused"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--invisible" disabled aria-label="Invisible disabled"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
   <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--invisible tds-icon-btn--inactive" aria-label="Invisible inactive"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
-  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--invisible tds-icon-btn--loading" aria-busy="true" aria-label="Invisible loading"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span></button></span>
+  <span class="ds-matrix__cell"><button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--invisible tds-icon-btn--loading" aria-busy="true" aria-label="Invisible loading"><span class="tds-spinner tds-spinner--xs" aria-hidden="true"></span></button></span>
 </div>
         </div>
       </article>
@@ -577,7 +763,7 @@ body {
       <article class="ds-showcase">
         <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">States</h3>
-          <p class="ds-showcase__desc">Rest, focus, filled, validation, disabled, and read-only at large (40px) field height.</p>
+          <p class="ds-showcase__desc">Rest, focus, filled, validation, disabled, and read-only at large (40px) field height. Caption can appear alongside validation when both helper text and an error apply.</p>
           <div class="ds-showcase__meta">
             <code class="ds-api">.tds-text-input__field--lg · --invalid · --success</code>
             <span class="ds-tag">Recommended</span>
@@ -623,6 +809,22 @@ body {
             <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM5.5 8.625C5.11328 8.625 4.8125 8.32422 4.8125 7.9375C4.8125 7.55078 5.11328 7.25 5.5 7.25C5.88672 7.25 6.1875 7.55078 6.1875 7.9375C6.1875 8.32422 5.88672 8.625 5.5 8.625ZM5.5 3.125C5.88672 3.125 6.20898 3.46875 6.16602 3.85547L6.01562 6.08984C5.99414 6.34766 5.7793 6.5625 5.5 6.5625C5.24219 6.5625 5.00586 6.34766 4.98438 6.08984L4.83398 3.85547C4.79102 3.46875 5.11328 3.125 5.5 3.125Z" fill="currentColor"/></svg></span>
             Validation message
           </span>
+        </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Invalid + caption</span>
+          <div class="tds-text-input tds-text-input--invalid">
+          <label class="tds-field-label">Label text</label>
+          <div class="tds-text-input__field tds-text-input__field--lg">
+            <input class="tds-text-input__native" type="text" placeholder="Placeholder" aria-invalid="true" aria-describedby="text-input-invalid-error text-input-invalid-caption">
+          </div>
+          <div class="tds-text-input__footer">
+          <span class="tds-field-validation tds-field-validation--error" id="text-input-invalid-error">
+            <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM5.5 8.625C5.11328 8.625 4.8125 8.32422 4.8125 7.9375C4.8125 7.55078 5.11328 7.25 5.5 7.25C5.88672 7.25 6.1875 7.55078 6.1875 7.9375C6.1875 8.32422 5.88672 8.625 5.5 8.625ZM5.5 3.125C5.88672 3.125 6.20898 3.46875 6.16602 3.85547L6.01562 6.08984C5.99414 6.34766 5.7793 6.5625 5.5 6.5625C5.24219 6.5625 5.00586 6.34766 4.98438 6.08984L4.83398 3.85547C4.79102 3.46875 5.11328 3.125 5.5 3.125Z" fill="currentColor"/></svg></span>
+            Validation message
+          </span>
+          <span class="tds-field-caption" id="text-input-invalid-caption">Caption text</span>
+          </div>
         </div>
         </div>
         <div class="ds-state-demo">
@@ -807,6 +1009,23 @@ body {
             <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM5.5 8.625C5.11328 8.625 4.8125 8.32422 4.8125 7.9375C4.8125 7.55078 5.11328 7.25 5.5 7.25C5.88672 7.25 6.1875 7.55078 6.1875 7.9375C6.1875 8.32422 5.88672 8.625 5.5 8.625ZM5.5 3.125C5.88672 3.125 6.20898 3.46875 6.16602 3.85547L6.01562 6.08984C5.99414 6.34766 5.7793 6.5625 5.5 6.5625C5.24219 6.5625 5.00586 6.34766 4.98438 6.08984L4.83398 3.85547C4.79102 3.46875 5.11328 3.125 5.5 3.125Z" fill="currentColor"/></svg></span>
             Validation message
           </span>
+        </div>
+        </div>
+        <div class="ds-state-demo">
+          <span class="ds-state-demo__label">Invalid + caption</span>
+          <div class="tds-select tds-select--invalid">
+          <label class="tds-field-label">Label text</label>
+          <div class="tds-select__trigger tds-select__trigger--lg" role="combobox" aria-expanded="false" aria-invalid="true" aria-describedby="select-invalid-error select-invalid-caption">
+            <span class="tds-select__value">Selected value</span>
+            <div class="tds-select__trailing-group"><span class="tds-caret tds-caret--default" aria-hidden="true"><svg viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.073724 3.46966L3.4702 0.0732225C3.56783 -0.0244075 3.72612 -0.0244075 3.82375 0.0732225L7.22014 3.46966C7.37764 3.62716 7.26614 3.89644 7.04334 3.89644H0.250504C0.0277738 3.89644 -0.083766 3.62715 0.073724 3.46966Z" fill="currentColor"/><path d="M0.073724 7.32322L3.4702 10.7197C3.56783 10.8173 3.72612 10.8173 3.82375 10.7197L7.22014 7.32322C7.37764 7.16572 7.26614 6.89644 7.04334 6.89644H0.250504C0.0277738 6.89644 -0.083766 7.16573 0.073724 7.32322Z" fill="currentColor"/></svg></span></div>
+          </div>
+          <div class="tds-select__footer">
+          <span class="tds-field-validation tds-field-validation--error" id="select-invalid-error">
+            <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM5.5 8.625C5.11328 8.625 4.8125 8.32422 4.8125 7.9375C4.8125 7.55078 5.11328 7.25 5.5 7.25C5.88672 7.25 6.1875 7.55078 6.1875 7.9375C6.1875 8.32422 5.88672 8.625 5.5 8.625ZM5.5 3.125C5.88672 3.125 6.20898 3.46875 6.16602 3.85547L6.01562 6.08984C5.99414 6.34766 5.7793 6.5625 5.5 6.5625C5.24219 6.5625 5.00586 6.34766 4.98438 6.08984L4.83398 3.85547C4.79102 3.46875 5.11328 3.125 5.5 3.125Z" fill="currentColor"/></svg></span>
+            Validation message
+          </span>
+          <span class="tds-field-caption" id="select-invalid-caption">Caption text</span>
+          </div>
         </div>
         </div>
         <div class="ds-state-demo">
@@ -1100,7 +1319,7 @@ body {
       <article class="ds-showcase">
         <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Date picker — single calendar</h3>
-          <p class="ds-showcase__desc">Click the field to open the calendar and select a date. States match Figma 1632:29292 — enabled, filled, error, warning, disabled, read-only.</p>
+          <p class="ds-showcase__desc">Click the field to open the calendar and select a date. States match Figma 1632:29292 — enabled, filled, error, disabled, read-only.</p>
           <div class="ds-showcase__meta">
             <code class="ds-api">.tds-date-picker · .tds-date-picker--open · .tds-date-picker__calendar</code>
             <span class="ds-tag">Interactive</span>
@@ -1137,16 +1356,6 @@ body {
               <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
             </button>
             <span class="tds-field-validation tds-field-validation--error"><span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM5.5 8.625C5.11328 8.625 4.8125 8.32422 4.8125 7.9375C4.8125 7.55078 5.11328 7.25 5.5 7.25C5.88672 7.25 6.1875 7.55078 6.1875 7.9375C6.1875 8.32422 5.88672 8.625 5.5 8.625ZM5.5 3.125C5.88672 3.125 6.20898 3.46875 6.16602 3.85547L6.01562 6.08984C5.99414 6.34766 5.7793 6.5625 5.5 6.5625C5.24219 6.5625 5.00586 6.34766 4.98438 6.08984L4.83398 3.85547C4.79102 3.46875 5.11328 3.125 5.5 3.125Z" fill="currentColor"/></svg></span>Validation message</span>
-          </div>
-        </div>
-        <div class="ds-state-demo">
-          <span class="ds-state-demo__label">Warning</span>
-          <div class="tds-date-picker tds-date-picker--warning" data-date-picker data-size="lg">
-            <label class="tds-field-label">Label</label>
-            <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
-              <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
-              <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
-            </button>
           </div>
         </div>
         <div class="ds-state-demo">
@@ -1565,6 +1774,40 @@ body {
               <span class="tds-radio-card__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
               <div class="tds-radio-card__label">Manual review</div>
             </div>
+          </div>
+        </div>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Radio card multi-selection</h3>
+          <p class="ds-showcase__desc">Checkbox control for multi-select lists — same card layout as single-selection (Figma 359:3332).</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-radio-card · .tds-checkbox</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="grid-2">
+        <div class="tds-radio-card tds-radio-card--selected" onclick="this.classList.toggle('tds-radio-card--selected');this.querySelector('input').checked=!this.querySelector('input').checked;">
+          <input type="checkbox" class="tds-checkbox" checked>
+          <div class="tds-radio-card__content">
+            <div class="tds-radio-card__label-row">
+              <span class="tds-radio-card__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+              <div class="tds-radio-card__label">Document verification</div>
+            </div>
+            <div class="tds-radio-card__description">Verify identity documents against trusted sources</div>
+          </div>
+        </div>
+        <div class="tds-radio-card" onclick="this.classList.toggle('tds-radio-card--selected');this.querySelector('input').checked=!this.querySelector('input').checked;">
+          <input type="checkbox" class="tds-checkbox">
+          <div class="tds-radio-card__content">
+            <div class="tds-radio-card__label-row">
+              <span class="tds-radio-card__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 10.5c.8 1.2 2 1.8 3 1.8s2.2-.6 3-1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+              <div class="tds-radio-card__label">AML screening</div>
+            </div>
+            <div class="tds-radio-card__description">Screen against sanctions, PEP, and adverse media lists</div>
           </div>
         </div>
       </div>
@@ -5256,6 +5499,7 @@ body {
     </div>
   </main>
 </div>
+<script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
 <script src="../../Components/date-picker/date-picker.js"></script>
 <script>
 function toggleAccordion(header) {
@@ -5556,7 +5800,10 @@ function closeAllSelectMenus(except) {
       trigger.setAttribute('aria-expanded', 'false');
       trigger.classList.remove('tds-select__trigger--focus');
     }
-    if (menu) menu.setAttribute('hidden', '');
+    if (menu) {
+      menu.setAttribute('hidden', '');
+      if (window.TdsDropdownPanel) TdsDropdownPanel.close(menu);
+    }
   });
 }
 
@@ -5578,14 +5825,28 @@ document.querySelectorAll('.tds-select--interactive').forEach(select => {
       trigger.setAttribute('aria-expanded', 'true');
       trigger.classList.add('tds-select__trigger--focus');
       menu.removeAttribute('hidden');
+      if (window.TdsDropdownPanel) {
+        TdsDropdownPanel.open(trigger, menu, {
+          align: 'start',
+          onClose: () => {
+            select.classList.remove('tds-select--open');
+            trigger.setAttribute('aria-expanded', 'false');
+            trigger.classList.remove('tds-select__trigger--focus');
+            menu.setAttribute('hidden', '');
+          },
+        });
+      }
     }
   });
 
   function closeSelectMenu() {
-    select.classList.remove('tds-select--open');
-    trigger.setAttribute('aria-expanded', 'false');
-    trigger.classList.remove('tds-select__trigger--focus');
-    menu.setAttribute('hidden', '');
+    if (window.TdsDropdownPanel) TdsDropdownPanel.close(menu);
+    else {
+      select.classList.remove('tds-select--open');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.classList.remove('tds-select__trigger--focus');
+      menu.setAttribute('hidden', '');
+    }
   }
 
   function syncSelectTriggerTag(item) {

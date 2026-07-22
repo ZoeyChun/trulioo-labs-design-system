@@ -136,12 +136,20 @@
    The floating menu for Select, ActionList, NavList, etc.
    MenuType: text | multiSelect
    Options: showHeader
+
+   Positioning rules (dropdown-panel.js):
+   1. Content sizing — width: max-content by default.
+   2. Alignment — start or end edge of trigger; auto-flip to fit viewport.
+   3. Minimum width — never narrower than the triggering component.
+   4. Overflow — clamp to viewport width; keep min-width; flip alignment.
    ============================================================ */
 
 .tds-dropdown-panel {
   display: flex;
   flex-direction: column;
-  min-width: 172px;
+  width: max-content;
+  min-width: 0;
+  max-width: calc(100vw - var(--spacing-32));
   max-height: 316px;
   padding: var(--spacing-8);
   background-color: var(--surface-neutral-01);
@@ -149,6 +157,48 @@
   border-radius: var(--radius-modal);
   box-shadow: var(--elevation-xl);
   overflow-y: auto;
+}
+
+/*
+ * Select / Combobox menu shells (fields are full width by default):
+ *   min-width matches trigger; panel grows for wider list items.
+ */
+
+.tds-select--full-width .tds-select__menu.tds-dropdown-panel--viewport,
+.tds-combobox--full-width .tds-combobox__menu.tds-dropdown-panel--viewport {
+  width: auto;
+  max-width: none;
+}
+
+.tds-dropdown-panel[hidden] {
+  display: none !important;
+}
+
+/* Viewport-aware floating position (applied by dropdown-panel.js) */
+.tds-dropdown-panel.tds-dropdown-panel--viewport,
+.tds-select__menu.tds-dropdown-panel--viewport,
+.tds-combobox__menu.tds-dropdown-panel--viewport {
+  position: fixed;
+  z-index: 100;
+}
+
+/*
+ * Horizontal alignment to trigger edge (static fallback + JS mirror):
+ *   data-dropdown-align="start" — panel left edge aligns to trigger left
+ *   data-dropdown-align="end"   — panel right edge aligns to trigger right
+ * Defaults: ButtonMenu/FilterButton = start, SortButton = end
+ */
+
+.tds-dropdown-panel .tds-action-list-item {
+  white-space: nowrap;
+  width: auto;
+  min-width: 100%;
+  align-self: stretch;
+}
+
+.tds-dropdown-panel .tds-action-list-item__label {
+  overflow: visible;
+  text-overflow: clip;
 }
 
 /* --- Header --- */

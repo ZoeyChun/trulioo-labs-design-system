@@ -4,6 +4,7 @@
    SortButton
    Figma: SortButton (836:12519)
    Composes: Button (arrow-down-arrow-up leading icon) + DropdownPanel
+   States: default | selected | open
    ============================================================ */
 
 .tds-sort-button {
@@ -15,5 +16,64 @@
 }
 
 .tds-sort-button .tds-dropdown-panel {
-  width: 172px;
+  position: absolute;
+  top: calc(100% + var(--spacing-4));
+  right: 0;
+  left: auto;
+  z-index: 100;
+}
+
+.tds-sort-button[data-dropdown-align="start"] .tds-dropdown-panel {
+  left: 0;
+  right: auto;
+}
+
+/* --- Trigger label: default vs selected --- */
+
+.tds-sort-button__trigger-label {
+  display: none;
+  align-items: center;
+  gap: var(--spacing-4);
+  height: 16px;
+  white-space: nowrap;
+}
+
+.tds-sort-button__trigger-prefix {
+  color: var(--text-description);
+  font-weight: var(--font-weight-regular);
+}
+
+.tds-sort-button__trigger-value {
+  color: var(--text-default);
+  font-weight: var(--font-weight-medium);
+}
+
+.tds-sort-button--selected .tds-sort-button__trigger-default {
+  display: none;
+}
+
+.tds-sort-button--selected .tds-sort-button__trigger-label {
+  display: inline-flex;
+}
+
+/* --- Dropdown menu items (body/sm, trailing check when selected) --- */
+
+.tds-sort-button .tds-action-list-item {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.tds-sort-button .tds-action-list-item__trailing-visual {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-left: auto;
+  width: 16px;
+  color: var(--icon-default);
+  visibility: hidden;
+}
+
+.tds-sort-button .tds-action-list-item--selected .tds-action-list-item__trailing-visual,
+.tds-sort-button .tds-action-list-item[aria-selected="true"] .tds-action-list-item__trailing-visual,
+.tds-sort-button .tds-action-list-item[aria-checked="true"] .tds-action-list-item__trailing-visual {
+  visibility: visible;
 }

@@ -11,7 +11,7 @@
    Sizes:  small | medium (default) | large
    States: rest | focus | disabled
    Validation: none | invalid | success
-   Options: fullWidth, icon, countryFlag, tag, subtext, caption, label
+   Options: icon, countryFlag, tag, subtext, caption, label (full width by default)
    ============================================================ */
 
 .tds-select {
@@ -20,8 +20,11 @@
   gap: var(--gap-xs);
   font-family: var(--font-family);
   position: relative;
+  width: 100%;
+  max-width: 100%;
 }
 
+/* Alias — fields are full width by default */
 .tds-select--full-width {
   width: 100%;
 }
@@ -42,6 +45,12 @@
   border-radius: var(--radius-button);
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Alias — triggers are full width by default */
+.tds-select--full-width .tds-select__trigger {
   width: 100%;
 }
 
@@ -98,8 +107,8 @@
 }
 
 .tds-select__subtext {
-  font-size: 10px;
-  line-height: normal;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
   color: var(--text-placeholder);
 }
 
@@ -154,7 +163,7 @@
 .tds-select__trigger:focus-visible,
 .tds-select--open .tds-select__trigger,
 .tds-select__trigger--focus {
-  border-color: var(--border-interactive);
+  border-color: var(--border-focus);
   border-width: 2px;
   outline: none;
 }
@@ -212,9 +221,10 @@
   position: absolute;
   top: calc(100% + var(--gap-xs));
   left: 0;
-  right: 0;
   z-index: 100;
   min-width: 100%;
+  width: max-content;
+  max-width: calc(100vw - var(--spacing-32));
 }
 
 .tds-select--open .tds-select__menu {
@@ -222,7 +232,9 @@
 }
 
 .tds-select__menu .tds-dropdown-panel {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
+  max-width: inherit;
 }
 
 .tds-select--interactive .tds-select__trigger {
@@ -236,4 +248,11 @@
 
 .tds-select__menu[hidden] {
   display: none !important;
+}
+
+/* Footer: validation message first, caption second. */
+.tds-select__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
 }

@@ -7,7 +7,7 @@
    Sizes:  small | medium (default) | large
    States: rest | focus | disabled | read-only | filled
    Validation: none | invalid | success
-   Options: fullWidth, inset, leadingVisual, trailingAction, caption
+   Options: inset, leadingVisual, trailingAction, caption (full width by default)
    Figma: TextInput (96:3268)
    ============================================================ */
 
@@ -16,8 +16,11 @@
   flex-direction: column;
   gap: var(--gap-xs);
   font-family: var(--font-family);
+  width: 100%;
+  max-width: 100%;
 }
 
+/* Alias — fields are full width by default */
 .tds-text-input--full-width {
   width: 100%;
 }
@@ -28,6 +31,8 @@
   display: flex;
   align-items: center;
   gap: var(--gap-sm);
+  width: 100%;
+  box-sizing: border-box;
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
@@ -79,7 +84,7 @@
 /* Focus */
 .tds-text-input__field:focus-within,
 .tds-text-input__field--focus {
-  border-color: var(--border-interactive);
+  border-color: var(--border-focus);
   border-width: 2px;
   box-shadow: none;
 }
@@ -149,7 +154,7 @@
 .tds-text-input--inset .tds-text-input__field:focus-within,
 .tds-text-input--inset .tds-text-input__field--focus {
   background-color: var(--surface-neutral-02);
-  border-color: var(--border-interactive);
+  border-color: var(--border-focus);
 }
 
 /* --- Leading icon --- */
@@ -192,4 +197,11 @@
 
 .tds-text-input__trailing-action:hover {
   color: var(--icon-default);
+}
+
+/* Footer: validation message first, caption second. */
+.tds-text-input__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
 }

@@ -1,28 +1,28 @@
 {
-  "lastBuiltAt": "2026-07-22T18:54:15.120Z",
+  "lastBuiltAt": "2026-07-22T23:01:46.611Z",
   "summary": {
-    "totalComponents": 47,
-    "cssDone": 43,
+    "totalComponents": 49,
+    "cssDone": 45,
     "cssPartial": 0,
     "cssNotStarted": 3,
-    "figmaDone": 47,
-    "figmaEligible": 47,
+    "figmaDone": 49,
+    "figmaEligible": 49,
     "figmaDonePercent": 100,
     "adoption": {
       "preview": {
-        "used": 39,
-        "total": 42,
+        "used": 41,
+        "total": 44,
         "percent": 93
       },
       "bv": {
         "used": 14,
-        "total": 42,
-        "percent": 33
+        "total": 44,
+        "percent": 32
       },
       "dv": {
         "used": 9,
-        "total": 42,
-        "percent": 21
+        "total": 44,
+        "percent": 20
       }
     }
   },
@@ -38,7 +38,7 @@
         "tds-btn"
       ],
       "figmaNodeId": "96:2225",
-      "notes": "4 variants x 3 sizes x 5 states + alignment",
+      "notes": "4 variants x 3 sizes x 5 states + alignment; loading boolean with spinner",
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": true,
@@ -55,7 +55,43 @@
         "tds-icon-btn"
       ],
       "figmaNodeId": "1371:22653",
-      "notes": "4 variants x 3 sizes x 7 states x 2 shapes",
+      "notes": "4 variants x 3 sizes x 7 states x 2 shapes; loading swaps icon for .tds-spinner--xs",
+      "cssStatus": "Done",
+      "usedInPreview": true,
+      "usedInBV": false,
+      "usedInDV": false
+    },
+    {
+      "id": "button-group",
+      "name": "ButtonGroup",
+      "category": "Core Controls",
+      "figmaStatus": "Done",
+      "figmaVariants": 15,
+      "cssFile": "button-group/button-group.css",
+      "classPrefixes": [
+        "tds-button-group"
+      ],
+      "subComponents": "Button, IconButton",
+      "figmaNodeId": "1952:33320",
+      "notes": "Segmented control; iconButtons, buttons, or mixed; count 2–5",
+      "cssStatus": "Done",
+      "usedInPreview": true,
+      "usedInBV": false,
+      "usedInDV": false
+    },
+    {
+      "id": "spinner",
+      "name": "Spinner",
+      "category": "Core Controls",
+      "figmaStatus": "Done",
+      "figmaVariants": 8,
+      "cssFile": "spinner/spinner.css",
+      "classPrefixes": [
+        "tds-spinner",
+        "tds-spinner-block"
+      ],
+      "figmaNodeId": "2092:18230",
+      "notes": "5 sizes (xs–xl); optional label block; used by Button and IconButton loading",
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": false,
@@ -226,8 +262,9 @@
       "classPrefixes": [
         "tds-radio-card"
       ],
-      "subComponents": "Radio",
+      "subComponents": "Radio, Checkbox",
       "figmaNodeId": "359:3332",
+      "notes": "single-selection (radio) or multi-selection (checkbox)",
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": true,
@@ -312,7 +349,7 @@
       ],
       "subComponents": "ActionListItem",
       "figmaNodeId": "320:21652",
-      "notes": "Used by Select, ButtonMenu, FilterButton, SortButton",
+      "notes": "Positioning rules — (1) content-sized, (2) start/end align with auto-flip, (3) min-width = trigger, (4) viewport overflow clamp. Used by Select, ButtonMenu, FilterButton, SortButton",
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": true,
@@ -787,13 +824,14 @@
       "name": "FilterButton",
       "category": "Utility",
       "figmaStatus": "Done",
-      "figmaVariants": 2,
+      "figmaVariants": 6,
       "cssFile": "filter-button/filter-button.css",
       "classPrefixes": [
         "tds-filter-button"
       ],
-      "subComponents": "DropdownPanel",
+      "subComponents": "DropdownPanel, CounterLabel",
       "figmaNodeId": "836:13511",
+      "notes": "Selected trigger shows value + xmark clear; multi adds +N counter; open multi reverts label to Filter",
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": false,

@@ -609,6 +609,34 @@
   .ds-state-grid { grid-template-columns: 1fr; }
 }
 
+/* Static open-state specimens for SortButton / FilterButton — in-flow panels avoid grid overlap */
+.ds-state-grid--dropdown-specimens {
+  align-items: start;
+}
+
+.ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-sort-button,
+.ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-filter-button {
+  width: max-content;
+  max-width: 100%;
+}
+
+.ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-dropdown-panel {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+}
+
+.ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-sort-button .tds-dropdown-panel {
+  width: 172px;
+  min-width: 172px;
+}
+
+.ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-filter-button .tds-dropdown-panel {
+  width: 156px;
+  min-width: 156px;
+}
+
 /* --- Demo utilities --- */
 
 .row { display: flex; align-items: center; gap: var(--spacing-16); flex-wrap: wrap; }

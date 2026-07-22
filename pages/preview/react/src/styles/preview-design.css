@@ -954,6 +954,33 @@ body {
   letter-spacing: 0.02em;
 }
 
+.tds-preview__demos .ds-state-grid--dropdown-specimens {
+  align-items: start;
+}
+
+.tds-preview__demos .ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-sort-button,
+.tds-preview__demos .ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-filter-button {
+  width: max-content;
+  max-width: 100%;
+}
+
+.tds-preview__demos .ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-dropdown-panel {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+}
+
+.tds-preview__demos .ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-sort-button .tds-dropdown-panel {
+  width: 172px;
+  min-width: 172px;
+}
+
+.tds-preview__demos .ds-state-grid--dropdown-specimens .ds-state-demo:has(.tds-dropdown-panel:not([hidden])) .tds-filter-button .tds-dropdown-panel {
+  width: 156px;
+  min-width: 156px;
+}
+
 /* --- Typography specimens --- */
 
 .tds-preview__demos .type-specimen { display: flex; flex-direction: column; }

@@ -3,7 +3,8 @@
 /* ============================================================
    FilterButton
    Figma: FilterButton (836:13511)
-   Composes: Button (bars-filter leading icon) + DropdownPanel
+   Composes: Button (bars-filter leading icon) + CounterLabel + DropdownPanel
+   States: default | selected (single value) | multi (+N overflow) | open
    ============================================================ */
 
 .tds-filter-button {
@@ -15,5 +16,80 @@
 }
 
 .tds-filter-button .tds-dropdown-panel {
-  width: 172px;
+  position: absolute;
+  top: calc(100% + var(--spacing-4));
+  left: 0;
+  right: auto;
+  z-index: 100;
+}
+
+.tds-filter-button[data-dropdown-align="end"] .tds-dropdown-panel {
+  left: auto;
+  right: 0;
+}
+
+/* --- Trigger label: default vs selected value --- */
+
+.tds-filter-button__trigger-value {
+  display: none;
+  white-space: nowrap;
+}
+
+.tds-filter-button--selected .tds-filter-button__trigger-default {
+  display: none;
+}
+
+.tds-filter-button--selected .tds-filter-button__trigger-value {
+  display: inline;
+}
+
+/* Multi-select: closed shows primary value; open reverts to "Filter" */
+.tds-filter-button--multi.tds-filter-button--open .tds-filter-button__trigger-value {
+  display: none;
+}
+
+.tds-filter-button--multi.tds-filter-button--open .tds-filter-button__trigger-default {
+  display: inline;
+}
+
+/* --- Clear affordance (xmark trailing icon) --- */
+
+.tds-filter-button__clear {
+  display: none;
+}
+
+.tds-filter-button--selected .tds-filter-button__clear {
+  display: inline-flex;
+}
+
+/* --- Overflow counter (+N); only when 2+ filters are active --- */
+
+.tds-filter-button__counter {
+  display: none;
+}
+
+.tds-filter-button--selected.tds-filter-button--multi .tds-filter-button__counter {
+  display: inline-flex;
+}
+
+/* --- Dropdown menu items (body/sm, trailing check when selected) --- */
+
+.tds-filter-button .tds-action-list-item {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.tds-filter-button .tds-action-list-item__trailing-visual {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-left: auto;
+  width: 16px;
+  color: var(--icon-default);
+  visibility: hidden;
+}
+
+.tds-filter-button .tds-action-list-item--selected .tds-action-list-item__trailing-visual,
+.tds-filter-button .tds-action-list-item[aria-selected="true"] .tds-action-list-item__trailing-visual,
+.tds-filter-button .tds-action-list-item[aria-checked="true"] .tds-action-list-item__trailing-visual {
+  visibility: visible;
 }

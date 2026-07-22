@@ -32,6 +32,8 @@
   gap: var(--gap-xs);
   font-family: var(--font-family);
   position: relative;
+  width: 100%;
+  max-width: 100%;
 }
 
 .tds-combobox--full-width {
@@ -49,6 +51,7 @@
   align-items: center;
   gap: var(--gap-sm);
   width: 100%;
+  box-sizing: border-box;
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
@@ -133,7 +136,7 @@
 .tds-combobox__field:focus-within,
 .tds-combobox--open .tds-combobox__field,
 .tds-combobox__field--focus {
-  border-color: var(--border-interactive);
+  border-color: var(--border-focus);
   border-width: 2px;
   outline: none;
 }
@@ -192,9 +195,10 @@
   position: absolute;
   top: calc(100% + var(--gap-xs));
   left: 0;
-  right: 0;
   z-index: 100;
   min-width: 100%;
+  width: max-content;
+  max-width: calc(100vw - var(--spacing-32));
 }
 
 .tds-combobox--open .tds-combobox__menu {
@@ -206,7 +210,9 @@
 }
 
 .tds-combobox__menu .tds-dropdown-panel {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
+  max-width: inherit;
 }
 
 /* --- Options --- */
