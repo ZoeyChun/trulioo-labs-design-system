@@ -17,6 +17,11 @@ Then open:
 - Home: [http://localhost:8765/pages/unified-intelligence-home/](http://localhost:8765/pages/unified-intelligence-home/)
 - KYB Results: [http://localhost:8765/pages/KYB%20Results/index.html](http://localhost:8765/pages/KYB%20Results/index.html)
 
+## Share
+
+- Home: https://zoeychun.github.io/trulioo-labs-design-system/pages/unified-intelligence-home/
+- KYB Results: https://zoeychun.github.io/trulioo-labs-design-system/pages/KYB%20Results/index.html
+
 Use **Start assessment** on the home plan screen to navigate to KYB Results with the selected entity. The Home nav on KYB Results returns here.
 
 ## Notes
