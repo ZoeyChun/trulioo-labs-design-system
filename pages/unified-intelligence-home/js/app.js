@@ -615,6 +615,16 @@
     window.location.href = buildKybResultsUrl();
   }
 
+  function submitPersonAssessment() {
+    if (!selPersonService) return;
+    var url = personServiceUrls[selPersonService];
+    if (url) {
+      window.location.href = url;
+      return;
+    }
+    alert('Person assessment flow — coming soon.');
+  }
+
   function activeInput() {
     return els.searchInput;
   }
@@ -718,10 +728,7 @@
   }
 
   if (els.personStartAssessmentBtn) {
-    els.personStartAssessmentBtn.addEventListener('click', function () {
-      if (!selPersonService) return;
-      alert('Person assessment flow — coming soon.');
-    });
+    els.personStartAssessmentBtn.addEventListener('click', submitPersonAssessment);
   }
 
   document.querySelectorAll('.sample-chip').forEach(function (chip) {

@@ -100,11 +100,8 @@ var sampleEntities = {
   },
 };
 
-var kybResultsUrl = (function () {
-  var relativeUrl = '../KYB Results/index.html';
-  var githubUrl = 'https://zoeychun.github.io/trulioo-labs-design-system/pages/KYB%20Results/index.html';
+function resolvePageUrl(relativeUrl, githubUrl) {
   if (typeof window === 'undefined') return githubUrl;
-
   if (window.location.protocol === 'file:') return relativeUrl;
 
   try {
@@ -112,7 +109,23 @@ var kybResultsUrl = (function () {
   } catch (e) {
     return githubUrl;
   }
-})();
+}
+
+var kybResultsUrl = resolvePageUrl(
+  '../KYB Results/index.html',
+  'https://zoeychun.github.io/trulioo-labs-design-system/pages/KYB%20Results/index.html'
+);
+
+var personServiceUrls = {
+  'document-verification': resolvePageUrl(
+    '../document-verification/index.html',
+    'https://zoeychun.github.io/trulioo-labs-design-system/pages/document-verification/index.html'
+  ),
+  'bank-verification': resolvePageUrl(
+    '../bank-verification/index.html',
+    'https://zoeychun.github.io/trulioo-labs-design-system/pages/bank-verification/index.html'
+  ),
+};
 
 var kybHomeUrl = (function () {
   if (typeof window === 'undefined') return 'index.html';

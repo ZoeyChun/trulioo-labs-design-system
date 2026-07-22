@@ -68,6 +68,14 @@
     });
   }
 
+  function getHomeUrl() {
+    try {
+      return new URL("../unified-intelligence-home/index.html", window.location.href).href;
+    } catch (e) {
+      return "../unified-intelligence-home/index.html";
+    }
+  }
+
   function initNav() {
     var next = byId("dv-flow-next");
     var step1Back = byId("dv-flow-step1-back");
@@ -75,6 +83,7 @@
     var skip = byId("dv-flow-skip");
     var homeBack = byId("dv-flow-home-back");
     var resultBack = byId("dv-result-back");
+    var homeUrl = getHomeUrl();
 
     if (next) next.addEventListener("click", function () { goStep(2); });
     if (step2Back) step2Back.addEventListener("click", function () { goStep(1); });
@@ -83,9 +92,10 @@
     }
     if (skip) skip.addEventListener("click", showResultView);
 
-    /* Flow header back — placeholder (future: navigate to home / labs landing). */
     if (homeBack) {
-      homeBack.addEventListener("click", function () {});
+      homeBack.addEventListener("click", function () {
+        window.location.href = homeUrl;
+      });
     }
     /* Result header back — return to the capture flow. */
     if (resultBack) {
