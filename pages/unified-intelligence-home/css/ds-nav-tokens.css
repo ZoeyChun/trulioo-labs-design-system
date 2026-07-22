@@ -1,0 +1,67 @@
+/* Design-system tokens required by TDS SideNav + app shell */
+
+:root {
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --text-default: #172d2d;
+  --text-description: #526660;
+  --text-inverse: #ffffff;
+
+  --surface-neutral-01: #ffffff;
+  --surface-neutral-02: #f4f6f4;
+  --surface-neutral-03: #e8ede8;
+  --surface-inverse: #172d2d;
+  --surface-overlay: rgba(23, 28, 26, 0.5);
+
+  --border-subtle: #dde2de;
+  --border-focus: #0e8a78;
+
+  --interactive-default: #004c45;
+  --icon-faint: #617269;
+  --icon-inverse: #ffffff;
+
+  --spacing-2: 0.125rem;
+  --spacing-4: 0.25rem;
+  --spacing-8: 0.5rem;
+  --spacing-12: 0.75rem;
+  --spacing-16: 1rem;
+  --spacing-24: 1.5rem;
+  --spacing-40: 2.5rem;
+
+  --padding-xs: var(--spacing-4);
+  --padding-sm: var(--spacing-8);
+  --padding-md: var(--spacing-12);
+  --padding-lg: var(--spacing-16);
+  --padding-xl: var(--spacing-24);
+
+  --gap-xs: var(--spacing-4);
+  --gap-sm: var(--spacing-8);
+  --gap-md: var(--spacing-12);
+  --gap-lg: var(--spacing-16);
+
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-card: 0.75rem;
+  --radius-full: 9999px;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --line-height-xs: 1rem;
+  --line-height-sm: 1.125rem;
+
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-figma: 500;
+  --font-variation-figma-medium: "wght" 500;
+
+  --elevation-xs: 0 1px 2px rgba(23, 45, 45, 0.06);
+  --elevation-md: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+.text-label-sm-uppercase {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

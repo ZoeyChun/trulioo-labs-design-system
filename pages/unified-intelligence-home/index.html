@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trulioo Home — Unified Intelligence</title>
+
+  <link rel="preload" href="fonts/tobias-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/ds-nav-tokens.css">
+  <link rel="stylesheet" href="css/side-nav.css">
+  <link rel="stylesheet" href="css/app-shell.css">
+  <link rel="stylesheet" href="css/glass.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/mcp.css">
+</head>
+<body>
+<div class="app-shell" id="app-shell">
+
+  <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
+
+    <aside class="tds-side-nav tds-side-nav--collapsed" id="app-sidenav" aria-label="Primary">
+
+      <div class="tds-side-nav__header">
+        <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+          <span class="tds-side-nav__logo">
+            <img src="assets/trulioo-logo-mark.svg" alt="" width="40" height="40">
+          </span>
+        </button>
+      </div>
+
+      <div class="tds-side-nav__main">
+        <div class="tds-side-nav__nav-stack">
+          <div>
+            <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-current="page">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg></span>
+                <span class="tds-side-nav__nav-item-text">Home</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="tds-side-nav__nav-group">
+            <button type="button" class="tds-side-nav__nav-item" aria-expanded="false">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon tds-labs-icon tds-labs-icon--onlight" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="#617269"/></svg><svg class="icon tds-labs-icon tds-labs-icon--ondark" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="white"/></svg></span>
+                <span class="tds-side-nav__nav-item-text">Labs</span>
+              </span>
+              <span class="tds-side-nav__nav-item-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></span>
+            </button>
+
+            <div class="tds-side-nav__sub-nav" style="display:none">
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYB</div>
+                <div class="tds-side-nav__section-items">
+                              <button type="button" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.5" cy="5" r="2.5"/><path d="M1 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="11.5" cy="5.5" r="2"/><path d="M15 13c0-2 1.5-3 0-3-1 0-2.5 1-2.5 3"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">UBO Agent</span>
+            </button>
+                              <button type="button" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1.5h8a1 1 0 0 1 1 1v12l-5-2.5-5 2.5v-12a1 1 0 0 1 1-1z"/><path d="M6 6l1.5 1.5L10 5"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Policy Review</span>
+            </button>
+                              <button type="button" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Deep Search</span>
+            </button>
+                </div>
+              </div>
+
+              <hr class="tds-side-nav__divider">
+
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYC</div>
+                <div class="tds-side-nav__section-items">
+                              <a href="#" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><circle cx="6" cy="7.5" r="1.5"/><path d="M3.5 11.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5"/><path d="M10 7h2.5M10 9.5h2.5"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Document Verification</span>
+            </a>
+                              <a href="#" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v8H2z"/><path d="M5 7v2M8 6v4M11 7v2M4 4V2h8v2"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Bank Verification</span>
+            </a>
+                              <button type="button" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Electronic ID</span>
+            </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tds-side-nav__icon-rail" aria-hidden="false">
+          <button type="button" class="tds-side-nav__icon-button tds-side-nav__icon-button--active" aria-current="page" aria-label="Home">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Home</span>
+            </span>
+          </button>
+          <button type="button" class="tds-side-nav__icon-button" aria-label="Labs">
+            <svg class="icon tds-labs-icon tds-labs-icon--onlight" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="#617269"/></svg><svg class="icon tds-labs-icon tds-labs-icon--ondark" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="white"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Labs</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="tds-side-nav__collapse-bar" id="sidenav-collapse" aria-label="Expand sidebar" aria-expanded="false">
+        <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4M10 4l4 4-4 4"/></svg>
+        <span class="tds-side-nav__collapse-label text-label-sm-uppercase">Hide Sidebar</span>
+      </button>
+
+      <div class="tds-side-nav__footer">
+        <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" aria-label="Jane Doe, janedoe@trulioo.com">
+          <span class="tds-side-nav__avatar">JD</span>
+          <span class="tds-side-nav__profile-info">
+            <span class="tds-side-nav__profile-name-row">
+              <span class="tds-side-nav__profile-name">Jane Doe</span>
+              <span class="tds-side-nav__profile-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg></span>
+            </span>
+            <span class="tds-side-nav__profile-email">janedoe@trulioo.com</span>
+          </span>
+        </button>
+      </div>
+
+    </aside>
+  <main class="app-main">
+
+    <section class="hero-zone">
+      <button class="truai-btn" type="button"><span aria-hidden="true">✦</span> TruAI</button>
+
+      <div class="hero-inner">
+        <div class="brand-pill glass-frosted">
+          <svg class="labs-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="currentColor"/></svg>
+          Trulioo Labs
+        </div>
+
+        <h1 class="hero-title">Turn verification signals into actionable risk intelligence.</h1>
+        <p class="hero-sub">Assess risk, uncover relationships, investigate signals, and monitor change from a single experience.</p>
+
+        <div class="hero-card glass-frosted" id="heroCard">
+          <div class="tab-switch glass-frosted" role="tablist">
+            <button class="tab-switch-btn active" id="tabBusiness" type="button" role="tab" aria-selected="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="4" width="12" height="10" rx="1"/><path d="M5 4V3a3 3 0 0 1 6 0v1"/></svg>
+              Business
+            </button>
+            <button class="tab-switch-btn" id="tabPerson" type="button" role="tab" aria-selected="false">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 14c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg>
+              Person
+            </button>
+          </div>
+
+          <div class="block-search" id="blockSearch">
+            <div class="search-row glass-solid" id="searchRow">
+              <svg class="search-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="5.5"/><path d="M14 14l3 3" stroke-linecap="round"/></svg>
+              <div class="search-main">
+                <input class="search-input" id="searchInput" type="text" placeholder="Search company or country..." autocomplete="off">
+                <div class="search-entity-chip" id="searchEntityChip" hidden>
+                  <svg class="search-entity-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="4" width="12" height="10" rx="1"/><path d="M5 4V3a3 3 0 0 1 6 0v1"/></svg>
+                  <span class="search-entity-name" id="searchEntityName"></span>
+                  <button class="search-entity-clear" type="button" id="searchEntityClear" aria-label="Clear selection">
+                    <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="search-actions">
+                <button class="icon-btn voice-btn" type="button" aria-label="Voice search"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="6" height="10" rx="3"/><path d="M5 9a5 5 0 0 0 10 0M10 14v3"/></svg></button>
+                <button class="submit-btn" id="searchSubmit" type="button" aria-label="Submit"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9h10M9 4l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+              <div class="smart-drop" id="smartDrop"></div>
+            </div>
+
+            <div class="prefill-section" id="prefillSection">
+              <div class="prefill-badge">
+                <svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="5.5" cy="5.5" r="4.5"/><path d="M3.5 5.5l1.5 1.5L7.8 4.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Pre-filled
+              </div>
+              <div class="prefill-grid">
+                <div class="prefill-field">
+                  <div class="prefill-label">BRN</div>
+                  <div class="prefill-value"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="6.5" r="5"/><path d="M4.2 6.5l1.6 1.6L9 4.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="pfBrn"></span></div>
+                </div>
+                <div class="prefill-field">
+                  <div class="prefill-label">Address 1</div>
+                  <div class="prefill-value"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="6.5" r="5"/><path d="M4.2 6.5l1.6 1.6L9 4.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="pfAddress1"></span></div>
+                </div>
+                <div class="prefill-field">
+                  <div class="prefill-label">City</div>
+                  <div class="prefill-value"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="6.5" r="5"/><path d="M4.2 6.5l1.6 1.6L9 4.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="pfCity"></span></div>
+                </div>
+                <div class="prefill-field">
+                  <div class="prefill-label">State / Province</div>
+                  <div class="prefill-value"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="6.5" r="5"/><path d="M4.2 6.5l1.6 1.6L9 4.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="pfState"></span></div>
+                </div>
+                <div class="prefill-field">
+                  <div class="prefill-label">Postal Code</div>
+                  <div class="prefill-value"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="6.5" r="5"/><path d="M4.2 6.5l1.6 1.6L9 4.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="pfPostal"></span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="try-sample" id="trySample">
+              <div class="try-sample-label">Try a sample</div>
+              <div class="sample-chips">
+                <button class="sample-chip glass-frosted" type="button" data-sample="standard">Standard business</button>
+                <button class="sample-chip glass-frosted" type="button" data-sample="complex">Complex ownership</button>
+                <button class="sample-chip glass-frosted" type="button" data-sample="elevated">Elevated risk</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="block-analyzing" id="blockAnalyzing" aria-live="polite">
+            <div class="entity-chip-row">
+              <span class="entity-chip-caption" id="analyzingEntityCaption">Selected Business</span>
+              <div class="entity-chip">
+                <span class="entity-chip-label" id="analyzingEntityLabel"></span>
+                <button class="entity-chip-edit" type="button" aria-label="Edit selection" id="analyzingEntityEdit">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="intel-loading">
+              <p class="intel-loading-head">Analyzing available intelligence...</p>
+
+              <div class="intel-steps" id="intelSteps">
+                <div class="intel-step" data-step="0">
+                  <span class="intel-step-icon" aria-hidden="true">
+                    <svg class="intel-step-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 7.2l2.3 2.3L10.8 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="intel-step-pulse"></span>
+                  </span>
+                  <span class="intel-step-label">Identity</span>
+                </div>
+                <div class="intel-step" data-step="1">
+                  <span class="intel-step-icon" aria-hidden="true">
+                    <svg class="intel-step-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 7.2l2.3 2.3L10.8 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="intel-step-pulse"></span>
+                  </span>
+                  <span class="intel-step-label">Ownership</span>
+                </div>
+                <div class="intel-step" data-step="2">
+                  <span class="intel-step-icon" aria-hidden="true">
+                    <svg class="intel-step-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 7.2l2.3 2.3L10.8 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="intel-step-pulse"></span>
+                  </span>
+                  <span class="intel-step-label">Risk Signals</span>
+                </div>
+              </div>
+
+              <div class="intel-progress">
+                <div class="intel-progress-track">
+                  <div class="intel-progress-fill" id="intelProgressFill"></div>
+                </div>
+                <p class="intel-progress-label" id="intelProgressLabel">Processing 1 of 3 steps...</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="block-configured" id="blockConfigured">
+            <div class="entity-chip-row">
+              <span class="entity-chip-caption" id="planEntityCaption">Selected Business</span>
+              <div class="entity-chip">
+                <span class="entity-chip-label" id="entityChipLabel"></span>
+                <button class="entity-chip-edit" type="button" aria-label="Edit selection" id="entityChipEdit">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="plan-intro">
+              <h3 class="plan-intro-title">Assessment Plan Ready</h3>
+              <p class="plan-intro-message" id="planIntroMessage">I've prepared from available entity intelligence for this business. Review or customize before starting.</p>
+            </div>
+
+            <div class="assessment-plan-card">
+              <div class="assessment-plan-inner">
+                <div class="assessment-plan-head">
+                  <h4 class="assessment-plan-title">Recommended Assessment</h4>
+                  <span class="assessment-plan-time" id="planEstimatedTime">Estimated time: 38s</span>
+                </div>
+
+                <div class="plan-section">
+                  <div class="plan-section-label">Required</div>
+                  <div class="plan-check-row">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M5.5 8l1.8 1.8L10.8 6.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="plan-check-label">Business verification</span>
+                  </div>
+                </div>
+
+                <div class="plan-section">
+                  <div class="plan-section-head">
+                    <div class="plan-section-label">AI will perform</div>
+                    <button class="plan-customize-btn" type="button" id="customizePlanBtn">Customize</button>
+                  </div>
+                  <div class="plan-features" id="planFeatures"></div>
+                </div>
+
+                <div class="plan-section">
+                  <div class="plan-section-label">Based on</div>
+                  <div class="plan-based-list" id="planBasedOn"></div>
+                </div>
+
+                <div class="assessment-plan-foot">
+                  <button class="plan-start-over" type="button" id="planStartOverBtn">↻ Start over</button>
+                  <button class="btn-assessment" id="startAssessmentBtn" type="button">Start assessment</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="person-panel" id="personPanel">
+            <div class="search-row glass-solid" id="personSearchRow">
+              <svg class="search-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="5.5"/><path d="M14 14l3 3" stroke-linecap="round"/></svg>
+              <input class="search-input" id="personInput" type="text" placeholder="Search country..." autocomplete="off">
+              <div class="search-actions">
+                <button class="icon-btn voice-btn" type="button" aria-label="Voice search"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="6" height="10" rx="3"/><path d="M5 9a5 5 0 0 0 10 0M10 14v3"/></svg></button>
+                <button class="submit-btn" id="personSubmit" type="button" aria-label="Submit"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9h10M9 4l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+              <div class="smart-drop" id="personDrop"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mcp-section" aria-label="MCP workflow">
+        <div class="mcp-copy">
+          <h2 class="mcp-title">Bring Trulioo to your AI workflow</h2>
+          <p class="mcp-sub">Connect your AI assistant to Trulioo verification, risk, and ownership capabilities through MCP.</p>
+          <button class="mcp-learn-btn" type="button">Learn more</button>
+        </div>
+
+        <div class="terminal-card">
+          <div class="terminal-chrome">
+            <div class="terminal-controls" aria-hidden="true"></div>
+            <span class="terminal-title">capabilities --config</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-prompt">
+              <span class="terminal-prompt-dollar">$</span>
+              <span class="terminal-prompt-cmd">choose_capabilities</span>
+              <span class="terminal-prompt-meta">[required]</span>
+            </div>
+            <div class="terminal-capabilities">
+              <div class="terminal-cap on">
+                <span class="terminal-cap-mark">[x]</span>
+                <div class="terminal-cap-copy">
+                  <div class="terminal-cap-name">Business verification</div>
+                  <div class="terminal-cap-desc">Verify corporate entity records and registry data automatically.</div>
+                </div>
+              </div>
+              <div class="terminal-cap on">
+                <span class="terminal-cap-mark">[x]</span>
+                <div class="terminal-cap-copy">
+                  <div class="terminal-cap-name">UBO discovery</div>
+                  <div class="terminal-cap-desc">Map ultimate beneficial owners and verify their identities.</div>
+                </div>
+              </div>
+              <div class="terminal-cap">
+                <span class="terminal-cap-mark">[ ]</span>
+                <div class="terminal-cap-copy">
+                  <div class="terminal-cap-name">Risk assessment</div>
+                  <div class="terminal-cap-desc">Run custom AML/KYC risk profiling on selected entities.</div>
+                </div>
+              </div>
+              <div class="terminal-cap">
+                <span class="terminal-cap-mark">[ ]</span>
+                <div class="terminal-cap-copy">
+                  <div class="terminal-cap-name">Policy review</div>
+                  <div class="terminal-cap-desc">Manually approve compliance overrides and documentation.</div>
+                </div>
+              </div>
+            </div>
+            <div class="terminal-continue">continue_to_keys →</div>
+          </div>
+        </div>
+      </section>
+  
+  </main>
+
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/side-nav.js"></script>
+<script>TdsSideNav.init();</script>
+</body>
+</html>
+

@@ -1,0 +1,128 @@
+/* Glass system — Figma Glass plugin mapped to CSS tokens */
+
+.glass-frosted {
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-frosted-bg);
+  border: 1px solid var(--glass-frosted-border);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+
+.glass-frosted::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--glass-light-gradient);
+  box-shadow:
+    var(--glass-rim-inset),
+    var(--glass-depth-inset),
+    var(--glass-rim-inner);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glass-frosted > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-elevated {
+  position: relative;
+  background: var(--surface-card-solid);
+  border: 1px solid var(--glass-frosted-border);
+  box-shadow: var(--shadow-tab-active);
+}
+
+.glass-solid {
+  position: relative;
+  background: var(--surface-card-solid);
+  border: none;
+  box-shadow: none;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-frosted {
+    background: var(--glass-fallback-bg);
+  }
+
+  .sample-chip.glass-frosted {
+    background: var(--glass-fallback-bg);
+  }
+
+  .tab-switch.glass-frosted {
+    background: var(--glass-fallback-bg);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-frosted {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--glass-fallback-bg);
+  }
+
+  .glass-frosted::before {
+    background: none;
+    box-shadow: none;
+  }
+
+  .sample-chip.glass-frosted {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--glass-fallback-bg);
+  }
+
+  .tab-switch.glass-frosted {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: var(--glass-tab-track-inset);
+  }
+
+  .tab-switch.glass-frosted::before {
+    background: var(--glass-light-gradient-soft);
+  }
+}
+
+button.glass-frosted::before {
+  border-radius: inherit;
+}
+
+/* Tab track — light frosted glass inset; white highlights, not dark fill */
+.tab-switch.glass-frosted {
+  border: none;
+  background: var(--glass-tab-track-bg);
+  box-shadow: var(--glass-tab-track-inset);
+  backdrop-filter: blur(var(--glass-tab-track-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-tab-track-blur)) saturate(var(--glass-saturate));
+}
+
+.tab-switch.glass-frosted::before {
+  background: var(--glass-light-gradient-soft);
+  box-shadow: var(--glass-rim-inset-soft);
+}
+
+.hero-card.glass-frosted,
+.sample-chip.glass-frosted {
+  border: 1px solid var(--glass-frosted-border);
+  background: var(--glass-frosted-bg);
+}
+
+.hero-card.glass-frosted {
+  box-shadow: var(--shadow-card), var(--glass-dispersion-shadow);
+}
+
+.sample-chip.glass-frosted::before {
+  background: var(--glass-light-gradient-soft);
+  box-shadow:
+    var(--glass-rim-inset-soft),
+    var(--glass-depth-inset),
+    var(--glass-rim-inner-soft);
+}
+
+.brand-pill.glass-frosted {
+  border: 1px solid var(--border-brand-pill);
+  background: var(--glass-frosted-bg);
+}

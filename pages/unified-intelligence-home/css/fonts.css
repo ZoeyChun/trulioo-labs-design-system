@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "Tobias";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url("../fonts/tobias-regular.woff2") format("woff2"),
+    url("../fonts/tobias-regular.otf") format("opentype");
+}
