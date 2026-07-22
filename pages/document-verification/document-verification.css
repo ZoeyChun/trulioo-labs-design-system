@@ -1176,25 +1176,163 @@ button.tds-side-nav__nav-item,
   height: auto;
 }
 
-/* Secondary "known match" selfies — a grid below the main selfie. Each cell is
-   50% of the column width (two per row); a single match sits in one 50% cell. */
-.dv-known-face-viewer {
+/* Captured selfie — no caption bar; expand control floats over the image. */
+.dv-doc-image--selfie {
+  position: relative;
+}
+
+.dv-doc-image__expand {
+  position: absolute;
+  top: var(--spacing-12);
+  right: var(--spacing-12);
+  z-index: 1;
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-button-elevated);
+}
+
+/* "Matched against N faces" thumbnail grid (right column, under the selfie). */
+.dv-matched-faces {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+
+.dv-matched-faces[hidden] { display: none; }
+
+.dv-matched-faces__label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+}
+
+.dv-matched-faces__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-8);
-  align-items: start;
+  gap: var(--spacing-12);
 }
 
-.dv-known-face-viewer[hidden] { display: none; }
-
-.dv-doc-image--secondary {
-  width: 100%;
+.dv-matched-faces__thumb {
+  position: relative;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background-color: var(--surface-neutral-01);
 }
 
-.dv-doc-image--secondary .dv-doc-image__caption {
-  padding: var(--spacing-8) var(--spacing-12);
+.dv-matched-faces__badge {
+  position: absolute;
+  top: var(--spacing-8);
+  left: var(--spacing-8);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--spacing-4);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-button-elevated);
   font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.dv-matched-faces__media {
+  display: block;
+  aspect-ratio: 1 / 1;
+}
+
+.dv-matched-faces__media svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dv-matched-faces__more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-4);
+  aspect-ratio: 1 / 1;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-card);
+  background-color: var(--surface-neutral-01);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-description);
+}
+
+.dv-matched-faces__more-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.dv-matched-faces__more-icon svg { width: 16px; height: 16px; }
+
+/* Known Faces group body — intro + matched-transactions table. */
+.dv-kf {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+
+.dv-kf__intro {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-md);
+  color: var(--text-description);
+}
+
+.dv-kf-table {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+}
+
+.dv-kf-table__row {
+  display: grid;
+  grid-template-columns: 2rem minmax(9rem, 2fr) minmax(6rem, 1fr) minmax(5rem, 1fr) minmax(6rem, 1fr);
+  align-items: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-12) var(--spacing-8);
+  border-bottom: 1px solid var(--border-divider);
+}
+
+.dv-kf-table__head {
+  padding-top: var(--spacing-8);
+  padding-bottom: var(--spacing-8);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
   color: var(--text-caption);
+}
+
+.dv-kf-table__row:last-child {
+  border-bottom: none;
+}
+
+.dv-kf-table__cell {
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+}
+
+.dv-kf-table__num {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-description);
 }
 
 /* Narrow / stacked layouts: scale image down and letterbox with dark background */

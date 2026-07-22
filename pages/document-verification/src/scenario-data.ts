@@ -570,8 +570,8 @@ const scenarioOverrides: Record<
     id: "expired-document",
     label: "Expired document",
     selectDesc: "Document expired; auto-decline.",
-    overallStatus: "Declined",
-    overallTone: "negative",
+    overallStatus: "Review",
+    overallTone: "intermediate",
     defaultTab: "document",
     transactionId: "91e0b2c4-55aa-4c11-9f20-12ab34cd56ef",
     truAiSummary:
@@ -701,8 +701,8 @@ const scenarioOverrides: Record<
     id: "dob-mismatch",
     label: "DOB mismatch",
     selectDesc: "Applicant DOB conflicts with document OCR.",
-    overallStatus: "Review",
-    overallTone: "intermediate",
+    overallStatus: "Declined",
+    overallTone: "negative",
     defaultTab: "data-match",
     transactionId: "c0ffee12-3456-4abc-9def-112233445566",
     truAiSummary:
@@ -807,30 +807,36 @@ const scenarioOverrides: Record<
         {
           key: "known-faces",
           label: "Known Faces",
-          countLabel: "1 Match",
-          rows: [
-            {
-              title: "Known face match",
-              sub: "This face matches a previously declined identity associated with confirmed fraud.",
-              result: "Match",
-              kind: "declined",
-              hideStatusIcon: true,
-              details: [
-                { label: "Similarity", value: "96.8%" },
-                { label: "Previous name", value: "John Smith" },
-                {
-                  label: "Previous document",
-                  value: "TX Driver’s License",
-                },
-                { label: "Previous decision", value: "Declined" },
-                { label: "Previous event", value: "14 September 2025" },
-                {
-                  label: "Reason",
-                  value: "Identity fraud — multiple identities",
-                },
-              ],
-            },
-          ],
+          countLabel: "3 Matches",
+          rows: [],
+          knownFaces: {
+            message:
+              "This face matches a previously declined identity associated with confirmed fraud.",
+            matchedCount: 5,
+            matches: [
+              {
+                date: "13 Nov 2022, 2:56 PM",
+                id: "0bbb93aa-4964-457c-8523-62b48b39cc83",
+                status: "Declined",
+                similarity: "96.8%",
+                previousName: "Jane Doe",
+              },
+              {
+                date: "12 Nov 2022, 2:00 PM",
+                id: "0bbb93aa-4964-457c-8523-62b48b39cc83",
+                status: "Declined",
+                similarity: "90.2%",
+                previousName: "Jane Doe",
+              },
+              {
+                date: "12 Nov 2022, 2:00 PM",
+                id: "0bbb93aa-4964-457c-8523-62b48b39cc83",
+                status: "Declined",
+                similarity: "90.2%",
+                previousName: "Jane Doe",
+              },
+            ],
+          },
         },
         {
           key: "not-detected",

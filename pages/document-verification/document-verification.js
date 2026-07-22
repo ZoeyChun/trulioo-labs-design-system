@@ -776,8 +776,8 @@
       id: "expired-document",
       label: "Expired document",
       selectDesc: "Document expired; auto-decline.",
-      overallStatus: "Declined",
-      overallTone: "negative",
+      overallStatus: "Review",
+      overallTone: "intermediate",
       defaultTab: "document",
       transactionId: "91e0b2c4-55aa-4c11-9f20-12ab34cd56ef",
       truAiSummary: "Jane Doe\u2019s document is authentic, but it has expired. A valid, non-expired document is required.",
@@ -899,8 +899,8 @@
       id: "dob-mismatch",
       label: "DOB mismatch",
       selectDesc: "Applicant DOB conflicts with document OCR.",
-      overallStatus: "Review",
-      overallTone: "intermediate",
+      overallStatus: "Declined",
+      overallTone: "negative",
       defaultTab: "data-match",
       transactionId: "c0ffee12-3456-4abc-9def-112233445566",
       truAiSummary: "The date of birth entered by the applicant does not match the date extracted from the document. Manual review is recommended.",
@@ -999,30 +999,35 @@
           {
             key: "known-faces",
             label: "Known Faces",
-            countLabel: "1 Match",
-            rows: [
-              {
-                title: "Known face match",
-                sub: "This face matches a previously declined identity associated with confirmed fraud.",
-                result: "Match",
-                kind: "declined",
-                hideStatusIcon: true,
-                details: [
-                  { label: "Similarity", value: "96.8%" },
-                  { label: "Previous name", value: "John Smith" },
-                  {
-                    label: "Previous document",
-                    value: "TX Driver\u2019s License"
-                  },
-                  { label: "Previous decision", value: "Declined" },
-                  { label: "Previous event", value: "14 September 2025" },
-                  {
-                    label: "Reason",
-                    value: "Identity fraud \u2014 multiple identities"
-                  }
-                ]
-              }
-            ]
+            countLabel: "3 Matches",
+            rows: [],
+            knownFaces: {
+              message: "This face matches a previously declined identity associated with confirmed fraud.",
+              matchedCount: 5,
+              matches: [
+                {
+                  date: "13 Nov 2022, 2:56 PM",
+                  id: "0bbb93aa-4964-457c-8523-62b48b39cc83",
+                  status: "Declined",
+                  similarity: "96.8%",
+                  previousName: "Jane Doe"
+                },
+                {
+                  date: "12 Nov 2022, 2:00 PM",
+                  id: "0bbb93aa-4964-457c-8523-62b48b39cc83",
+                  status: "Declined",
+                  similarity: "90.2%",
+                  previousName: "Jane Doe"
+                },
+                {
+                  date: "12 Nov 2022, 2:00 PM",
+                  id: "0bbb93aa-4964-457c-8523-62b48b39cc83",
+                  status: "Declined",
+                  similarity: "90.2%",
+                  previousName: "Jane Doe"
+                }
+              ]
+            }
           },
           {
             key: "not-detected",
@@ -1352,7 +1357,10 @@
       }
     }
     const knownFaces = groups.find(
-      (g) => (g.key === "known-faces" || g.key === "match") && g.rows.length > 0
+      (g) => {
+        var _a, _b;
+        return (g.key === "known-faces" || g.key === "match") && (g.rows.length > 0 || ((_b = (_a = g.knownFaces) == null ? void 0 : _a.matches.length) != null ? _b : 0) > 0);
+      }
     );
     if (knownFaces) open.add(knownFaces.key);
     return open;
@@ -1382,6 +1390,32 @@
   function isVisibleIndicatorGroup(group) {
     return group.rows.length > 0 || group.key === "known-faces";
   }
+  function renderKnownFacesBody(kf) {
+    const head = `<div class="dv-kf-table__row dv-kf-table__head" role="row">
+    <span class="dv-kf-table__cell">#</span>
+    <span class="dv-kf-table__cell">Transaction</span>
+    <span class="dv-kf-table__cell">Status</span>
+    <span class="dv-kf-table__cell">Similarity</span>
+    <span class="dv-kf-table__cell">Previous name</span>
+  </div>`;
+    const rows = kf.matches.map((m, i) => {
+      const isDeclined = m.status === "Declined";
+      const icon = isDeclined ? ICON_DECLINED : ICON_ACCEPTED;
+      const iconClass = isDeclined ? "dv-txn-result__icon dv-txn-result__icon--negative" : "dv-txn-result__icon dv-txn-result__icon--positive";
+      const idHtml = m.id ? `<span class="dv-txn-id">${escapeHtml(m.id)}</span>` : "";
+      return `<div class="dv-kf-table__row" role="row">
+    <span class="dv-kf-table__cell dv-kf-table__num">${i + 1}</span>
+    <span class="dv-kf-table__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">${escapeHtml(m.date)}</a>${idHtml}</span></span>
+    <span class="dv-kf-table__cell"><span class="dv-txn-result"><span class="${iconClass}">${icon}</span>${escapeHtml(m.status)}</span></span>
+    <span class="dv-kf-table__cell dv-kf-table__num">${escapeHtml(m.similarity)}</span>
+    <span class="dv-kf-table__cell">${escapeHtml(m.previousName)}</span>
+  </div>`;
+    }).join("");
+    return `<div class="dv-kf">
+  <p class="dv-kf__intro">${escapeHtml(kf.message)}</p>
+  <div class="dv-kf-table" role="table">${head}${rows}</div>
+</div>`;
+  }
   function renderIndicatorGroups(groups, options) {
     const sorted = sortIndicatorGroups(groups).filter(isVisibleIndicatorGroup);
     const openKeys = defaultOpenKeys(sorted, options);
@@ -1390,7 +1424,7 @@
       const isOpen = openKeys.has(group.key);
       const detailColumns = collectDetailColumns(group.rows);
       const gridStyle = ` style="--dv-table-cols: ${tableGridTemplate(detailColumns.length)}"`;
-      const body = group.rows.length > 0 ? `<div class="dv-table" role="table"${gridStyle}>${renderTableHead(tableCheckLabel(group.key), detailColumns)}${group.rows.map((row) => renderCheckRow(row, detailColumns)).join("")}</div>` : `<p class="dv-empty">${escapeHtml((_a = group.emptyState) != null ? _a : "No items.")}</p>`;
+      const body = group.knownFaces ? renderKnownFacesBody(group.knownFaces) : group.rows.length > 0 ? `<div class="dv-table" role="table"${gridStyle}>${renderTableHead(tableCheckLabel(group.key), detailColumns)}${group.rows.map((row) => renderCheckRow(row, detailColumns)).join("")}</div>` : `<p class="dv-empty">${escapeHtml((_a = group.emptyState) != null ? _a : "No items.")}</p>`;
       return `<div class="dv-group dv-collapsible${isOpen ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${isOpen ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
@@ -1711,25 +1745,27 @@ ${evidence}`;
   function isScenarioId(value) {
     return Object.prototype.hasOwnProperty.call(scenarioData, value);
   }
-  var ICON_EXPAND_CORNERS = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>';
-  var KNOWN_FACE_SELFIE_PLACEHOLDER = '<svg viewBox="0 0 293 320" role="img" aria-label="Known match selfie placeholder" preserveAspectRatio="xMidYMid meet"><rect width="293" height="320" fill="transparent"/><circle cx="146" cy="130" r="62" fill="var(--border-strong)"/><path d="M44 300c0-52 46-84 102-84s102 32 102 84z" fill="var(--border-strong)"/></svg>';
-  function findKnownFaceMatches(groups) {
-    var _a;
+  var MATCHED_FACE_PLACEHOLDER = '<svg viewBox="0 0 120 132" role="img" aria-label="Matched face placeholder" preserveAspectRatio="xMidYMid meet"><rect width="120" height="132" fill="transparent"/><circle cx="60" cy="52" r="26" fill="var(--border-strong)"/><path d="M18 124c0-22 19-36 42-36s42 14 42 36z" fill="var(--border-strong)"/></svg>';
+  function findKnownFacesInfo(groups) {
     const group = groups.find(
-      (g) => (g.key === "known-faces" || g.key === "match") && g.rows.length > 0
+      (g) => {
+        var _a, _b;
+        return (g.key === "known-faces" || g.key === "match") && ((_b = (_a = g.knownFaces) == null ? void 0 : _a.matches.length) != null ? _b : 0) > 0;
+      }
     );
-    return (_a = group == null ? void 0 : group.rows) != null ? _a : [];
+    return group == null ? void 0 : group.knownFaces;
   }
-  function renderKnownFaceSelfie(match) {
-    var _a, _b;
-    const similarity = (_b = (_a = match.details) == null ? void 0 : _a.find(
-      (d) => d.label.toLowerCase() === "similarity"
-    )) == null ? void 0 : _b.value;
-    const caption = similarity ? `Known Match \xB7 ${escapeHtml(similarity)}` : "Known Match";
-    return `<figure class="dv-doc-image dv-doc-image--secondary">
-  <figcaption class="dv-doc-image__caption">${caption}<button class="dv-icon-btn" type="button" aria-label="Expand known match selfie">${ICON_EXPAND_CORNERS}</button></figcaption>
-  <div class="dv-doc-image__media">${KNOWN_FACE_SELFIE_PLACEHOLDER}</div>
-</figure>`;
+  function renderMatchedFaces(kf) {
+    const thumbs = kf.matches.map(
+      (m, i) => `<div class="dv-matched-faces__thumb">
+    <span class="dv-matched-faces__badge">${i + 1}</span>
+    <div class="dv-matched-faces__media" aria-label="Matched face ${i + 1}, ${escapeHtml(m.similarity)} similar">${MATCHED_FACE_PLACEHOLDER}</div>
+  </div>`
+    ).join("");
+    const remaining = kf.matchedCount - kf.matches.length;
+    const more = remaining > 0 ? `<div class="dv-matched-faces__more"><span class="dv-matched-faces__more-icon" aria-hidden="true">${ICON_PLUS}</span>${remaining} more</div>` : "";
+    return `<p class="dv-matched-faces__label">Matched against ${kf.matchedCount} faces</p>
+<div class="dv-matched-faces__grid">${thumbs}${more}</div>`;
   }
   function applyScenario(root, config) {
     var _a, _b;
@@ -1781,15 +1817,15 @@ ${evidence}`;
       q("#dv-biometrics-badges"),
       renderHeaderBadges(deriveHeaderBadges(config.biometrics.groups))
     );
-    const knownFaceViewer = q("#dv-known-face-viewer");
-    if (knownFaceViewer instanceof HTMLElement) {
-      const matches = findKnownFaceMatches(config.biometrics.groups);
-      if (matches.length > 0) {
-        knownFaceViewer.innerHTML = matches.map(renderKnownFaceSelfie).join("");
-        knownFaceViewer.hidden = false;
+    const matchedFaces = q("#dv-matched-faces");
+    if (matchedFaces instanceof HTMLElement) {
+      const kf = findKnownFacesInfo(config.biometrics.groups);
+      if (kf && kf.matches.length > 0) {
+        matchedFaces.innerHTML = renderMatchedFaces(kf);
+        matchedFaces.hidden = false;
       } else {
-        knownFaceViewer.innerHTML = "";
-        knownFaceViewer.hidden = true;
+        matchedFaces.innerHTML = "";
+        matchedFaces.hidden = true;
       }
     }
     setHtml(
