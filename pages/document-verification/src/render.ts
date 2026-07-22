@@ -7,8 +7,12 @@ import {
 } from "./badges";
 import {
   ICON_ACCEPTED,
+  ICON_ARROW_RIGHT,
   ICON_CHEVRON,
   ICON_CHEVRON_DOWN,
+  ICON_CIRCLE_CHECK,
+  ICON_CIRCLE_INFO,
+  ICON_DIAMOND_EXCLAMATION,
   ICON_DECLINED,
   ICON_FLAG,
   ICON_MINUS,
@@ -29,6 +33,8 @@ import type {
   IndicatorGroup,
   NiConfig,
   NiInsight,
+  NiSummary,
+  NiSummaryDriver,
   NiTransaction,
   ScenarioConfig,
   ScenarioId,
@@ -199,11 +205,20 @@ export function sortIndicatorGroups(
   });
 }
 
+/**
+ * Keep "Known Faces" even when empty — its "No matches" state is a security
+ * confirmation that the face isn't a known fraud identity; hiding it could read
+ * as "not checked". Every other group is hidden when it has no rows.
+ */
+function isVisibleIndicatorGroup(group: IndicatorGroup): boolean {
+  return group.rows.length > 0 || group.key === "known-faces";
+}
+
 export function renderIndicatorGroups(
   groups: IndicatorGroup[],
   options?: { defaultOpenKey?: string },
 ): string {
-  const sorted = sortIndicatorGroups(groups);
+  const sorted = sortIndicatorGroups(groups).filter(isVisibleIndicatorGroup);
   const openKeys = defaultOpenKeys(sorted, options);
   return sorted
     .map((group) => {
@@ -304,9 +319,6 @@ export function renderNiInsight(
   // When transaction rows exist, start expanded so the list is visible
   // (matches Figma Flagged / Synthetic identity: "Hide transactions" + table).
   const transactions = insight.transactions ?? [];
-  const evidenceEmptyMessage =
-    insight.evidenceEmptyMessage ??
-    "No related transactions were found for this signal.";
   const showLabel = insight.showTransactionsLabel ?? "View transactions";
   const hideLabel = showLabel
     .replace(/^Show\s+/i, "Hide ")
@@ -333,10 +345,7 @@ export function renderNiInsight(
     ${txnRows}
   </div>
 </div>`
-      : `<div class="dv-ni2-evidence">
-  <span class="dv-ni2-evidence-label">Evidence</span>
-  <p class="dv-empty dv-ni2-evidence-empty">${escapeHtml(evidenceEmptyMessage)}</p>
-</div>`;
+      : "";
 
   return `<div class="dv-acc dv-collapsible${isOpen ? " dv-collapsible--open" : ""}" data-insight-id="${escapeHtml(insight.id)}">
   <button class="dv-acc__header dv-collapsible__header" type="button" aria-expanded="${isOpen ? "true" : "false"}">
@@ -390,34 +399,91 @@ function renderNiGroup(
 </div>`;
 }
 
-const NI_GROUP_SEVERITY: Record<string, number> = {
-  Flagged: 0,
-  Clean: 1,
+/** Map the summary status to the design-system Announcement variant + icon. */
+const NI_SUMMARY_VARIANT: Record<NiSummary["status"], string> = {
+  clear: "success",
+  info: "info",
+  flagged: "error",
 };
 
-function sortNiGroups(
-  groups: { label: string; insights: NiInsight[] }[],
-): { label: string; insights: NiInsight[] }[] {
-  return [...groups].sort((a, b) => {
-    const aHasRows = a.insights.length > 0 ? 0 : 1;
-    const bHasRows = b.insights.length > 0 ? 0 : 1;
-    if (aHasRows !== bHasRows) return aHasRows - bHasRows;
-    return (NI_GROUP_SEVERITY[a.label] ?? 99) - (NI_GROUP_SEVERITY[b.label] ?? 99);
-  });
+const NI_SUMMARY_ICON: Record<NiSummary["status"], string> = {
+  clear: ICON_CIRCLE_CHECK,
+  info: ICON_CIRCLE_INFO,
+  flagged: ICON_DIAMOND_EXCLAMATION,
+};
+
+function renderNiSummaryDriver(driver: NiSummaryDriver): string {
+  const text = `<span class="dv-ni-summary__driver-text">${escapeHtml(driver.text)}</span>`;
+  if (!driver.targetId) {
+    return `<div class="dv-ni-summary__driver">${text}</div>`;
+  }
+  // "Go to section" label is hidden by default and revealed on hover/focus (see CSS).
+  const action = `<span class="dv-ni-summary__driver-action"><span class="dv-ni-summary__link">${escapeHtml(driver.linkLabel ?? "Go to section")}</span><span class="dv-ni-summary__arrow" aria-hidden="true">${ICON_ARROW_RIGHT}</span></span>`;
+  return `<button type="button" class="dv-ni-summary__driver dv-ni-summary__driver--link" data-ni-target="${escapeHtml(driver.targetId)}" title="${escapeHtml(driver.text)}" aria-label="${escapeHtml(driver.text)} — go to section">${text}${action}</button>`;
+}
+
+/**
+ * Result summary = the Announcement banner, plus a Key Drivers grid.
+ * Key Drivers only surface non-clean signals: drivers that point at a "clean"
+ * insight are dropped (the Clean section itself isn't shown). When nothing but
+ * clean drivers remain, only the Announcement renders — no Key Drivers, no card.
+ */
+function renderNiSummary(summary: NiSummary, cleanIds: Set<string>): string {
+  const announcement = `<div class="tds-announcement tds-announcement--${NI_SUMMARY_VARIANT[summary.status]}">
+  <span class="tds-announcement__icon" aria-hidden="true">${NI_SUMMARY_ICON[summary.status]}</span>
+  <div class="tds-announcement__content">
+    <p class="tds-announcement__title">${escapeHtml(summary.title)}</p>
+    <p class="tds-announcement__message">${escapeHtml(summary.message)}</p>
+  </div>
+</div>`;
+
+  const drivers = summary.drivers.filter(
+    (d) => !d.targetId || !cleanIds.has(d.targetId),
+  );
+  if (drivers.length === 0) return announcement;
+
+  const cards = drivers.map(renderNiSummaryDriver).join("");
+  return `${announcement}
+<div class="dv-ni-summary__drivers">
+  <p class="dv-ni-summary__drivers-title">Key Drivers</p>
+  <div class="dv-ni-summary__grid">${cards}</div>
+</div>`;
+}
+
+/** Transparency list for the clean case — the categories network intelligence reviewed. */
+const NI_CLEAN_CHECKS = [
+  "Transactions Checked",
+  "Identities Compared",
+  "Documents Cross-Referenced",
+  "Devices Reviewed",
+];
+
+function renderNiWhatWeChecked(): string {
+  const rows = NI_CLEAN_CHECKS.map((label, index) => {
+    const divider =
+      index < NI_CLEAN_CHECKS.length - 1
+        ? " tds-action-list-item--divider"
+        : "";
+    return `<div class="tds-action-list-item tds-action-list-item--md${divider} dv-ni-checked__row">
+    <span class="tds-action-list-item__content"><span class="tds-action-list-item__label">${escapeHtml(label)}</span></span>
+  </div>`;
+  }).join("");
+  return `<section class="dv-ni-checked" aria-label="What we checked">
+  <p class="dv-ni-checked__header">What we checked</p>
+  <div class="dv-ni-checked__list">${rows}</div>
+</section>`;
 }
 
 export function renderNetworkInsights(ni: NiConfig): string {
-  const groups = sortNiGroups([
-    { label: "Flagged", insights: ni.flagged },
-    { label: "Clean", insights: ni.clean },
-  ]);
-  const firstWithContent = groups.findIndex((group) => group.insights.length > 0);
-  const openIndex = firstWithContent >= 0 ? firstWithContent : 0;
-  return groups
-    .map((group, index) =>
-      renderNiGroup(group.label, group.insights, index === openIndex),
-    )
-    .join("");
+  const cleanIds = new Set(ni.clean.map((insight) => insight.id));
+  const summary = ni.summary ? renderNiSummary(ni.summary, cleanIds) : "";
+  // Flagged entity: result summary + Key Drivers + the flagged detail accordions.
+  if (ni.flagged.length > 0) {
+    return summary + renderNiGroup("Flagged", ni.flagged, true);
+  }
+  // Clean entity: result summary + a "What we checked" transparency list. There
+  // are no expandable sections, so the Expand-all button is hidden (applyScenario).
+  return summary + renderNiWhatWeChecked();
 }
 
 function diInsightMarkup(row: DiEvidenceRow): string {
@@ -484,9 +550,11 @@ export function renderDeviceIntelligence(di: DiConfig): string {
         `<div class="dv-detail-row"><span class="dv-detail-label">${escapeHtml(d.label)}</span><span class="dv-detail-value">${escapeHtml(d.value)}</span></div>`,
     )
     .join("");
-  const evidenceGroups = normalizeDiEvidence(di.evidence);
-  const defaultOpenIndex = evidenceGroups.findIndex((group) => group.rows.length > 0);
-  const openIndex = defaultOpenIndex >= 0 ? defaultOpenIndex : 0;
+  // Drop evidence categories with no signals rather than showing an empty group.
+  const evidenceGroups = normalizeDiEvidence(di.evidence).filter(
+    (group) => group.rows.length > 0,
+  );
+  const openIndex = 0;
   const evidence = evidenceGroups
     .map((group, index) => renderDiEvidenceGroup(group, index === openIndex))
     .join("");
@@ -591,6 +659,34 @@ function isScenarioId(value: string): value is ScenarioId {
   return Object.prototype.hasOwnProperty.call(scenarioData, value);
 }
 
+const ICON_EXPAND_CORNERS =
+  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>';
+
+const KNOWN_FACE_SELFIE_PLACEHOLDER =
+  '<svg viewBox="0 0 293 320" role="img" aria-label="Known match selfie placeholder" preserveAspectRatio="xMidYMid meet"><rect width="293" height="320" fill="transparent"/><circle cx="146" cy="130" r="62" fill="var(--border-strong)"/><path d="M44 300c0-52 46-84 102-84s102 32 102 84z" fill="var(--border-strong)"/></svg>';
+
+/** All populated Known Faces rows (matches) for a scenario. */
+function findKnownFaceMatches(groups: IndicatorGroup[]): CheckRow[] {
+  const group = groups.find(
+    (g) => (g.key === "known-faces" || g.key === "match") && g.rows.length > 0,
+  );
+  return group?.rows ?? [];
+}
+
+/** Secondary, less-prominent selfie for a known-face match (placeholder image). */
+function renderKnownFaceSelfie(match: CheckRow): string {
+  const similarity = match.details?.find(
+    (d) => d.label.toLowerCase() === "similarity",
+  )?.value;
+  const caption = similarity
+    ? `Known Match · ${escapeHtml(similarity)}`
+    : "Known Match";
+  return `<figure class="dv-doc-image dv-doc-image--secondary">
+  <figcaption class="dv-doc-image__caption">${caption}<button class="dv-icon-btn" type="button" aria-label="Expand known match selfie">${ICON_EXPAND_CORNERS}</button></figcaption>
+  <div class="dv-doc-image__media">${KNOWN_FACE_SELFIE_PLACEHOLDER}</div>
+</figure>`;
+}
+
 export function applyScenario(
   root: Document | HTMLElement,
   config: ScenarioConfig,
@@ -655,6 +751,18 @@ export function applyScenario(
     renderHeaderBadges(deriveHeaderBadges(config.biometrics.groups)),
   );
 
+  const knownFaceViewer = q("#dv-known-face-viewer");
+  if (knownFaceViewer instanceof HTMLElement) {
+    const matches = findKnownFaceMatches(config.biometrics.groups);
+    if (matches.length > 0) {
+      knownFaceViewer.innerHTML = matches.map(renderKnownFaceSelfie).join("");
+      knownFaceViewer.hidden = false;
+    } else {
+      knownFaceViewer.innerHTML = "";
+      knownFaceViewer.hidden = true;
+    }
+  }
+
   setHtml(
     q("#dv-datamatch-indicators"),
     renderIndicatorGroups(config.dataMatch.groups),
@@ -669,6 +777,13 @@ export function applyScenario(
   if (networkBadge instanceof HTMLElement) {
     networkBadge.className = `${toneClass(config.networkInsights.headerTone)} dv-ni-pill`;
     networkBadge.innerHTML = renderNetworkHeaderBadge(config.networkInsights);
+  }
+  // Clean entities have no expandable sections — hide the Network Insights "Expand all".
+  const niExpandBtn = q(
+    '.dv-tabpanel[data-tab="network-insights"] .dv-expand-all',
+  );
+  if (niExpandBtn instanceof HTMLElement) {
+    niExpandBtn.hidden = config.networkInsights.flagged.length === 0;
   }
 
   const deviceBody = q("#dv-device-body");

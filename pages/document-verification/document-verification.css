@@ -910,12 +910,10 @@ button.tds-side-nav__nav-item,
   max-width: none;
   flex: none;
   border-left: none;
-  position: sticky;
-  top: var(--dv-sidebar-sticky-top);
   align-self: start;
-  max-height: var(--dv-split-pane-max-height);
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  /* Hug the content — no inner scroll; the page scrolls if the column is tall. */
+  max-height: none;
+  overflow: visible;
 }
 
 /* Indicators column — flexes to fill extra width on larger screens */
@@ -1178,6 +1176,27 @@ button.tds-side-nav__nav-item,
   height: auto;
 }
 
+/* Secondary "known match" selfies — a grid below the main selfie. Each cell is
+   50% of the column width (two per row); a single match sits in one 50% cell. */
+.dv-known-face-viewer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-8);
+  align-items: start;
+}
+
+.dv-known-face-viewer[hidden] { display: none; }
+
+.dv-doc-image--secondary {
+  width: 100%;
+}
+
+.dv-doc-image--secondary .dv-doc-image__caption {
+  padding: var(--spacing-8) var(--spacing-12);
+  font-size: var(--font-size-xs);
+  color: var(--text-caption);
+}
+
 /* Narrow / stacked layouts: scale image down and letterbox with dark background */
 @media (max-width: 1200px) {
   .dv-doc-image__media {
@@ -1195,30 +1214,8 @@ button.tds-side-nav__nav-item,
     max-height: min(240px, 38dvh);
   }
 
-  .dv-viewer:not(:has(.dv-doc-image ~ .dv-doc-image)) .dv-doc-image__media svg {
+  .dv-viewer:not(:has(> .dv-doc-image ~ .dv-doc-image)) .dv-doc-image__media svg {
     max-height: min(360px, 52dvh);
-  }
-}
-
-/* Side-by-side split with a short viewport: avoid bottom crop in the viewer column */
-@media (max-height: 900px) and (min-width: 1201px) {
-  .dv-split-pane > .dv-split-pane__end.dv-viewer .dv-doc-image__media {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--surface-inverse);
-    padding: var(--spacing-12);
-  }
-
-  .dv-split-pane > .dv-split-pane__end.dv-viewer .dv-doc-image__media svg {
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: min(200px, 22dvh);
-  }
-
-  .dv-split-pane > .dv-split-pane__end.dv-viewer:not(:has(.dv-doc-image ~ .dv-doc-image)) .dv-doc-image__media svg {
-    max-height: min(320px, 45dvh);
   }
 }
 
@@ -1501,6 +1498,155 @@ button.tds-side-nav__nav-item,
   gap: var(--spacing-16);
   padding: var(--spacing-16);
   width: 100%;
+  container-type: inline-size;
+}
+
+/* Network Insights summary: the Announcement banner (.tds-announcement) sits
+   directly in the panel body — no wrapping card — followed by Key Drivers. */
+
+/* Force-hide the Expand-all button when hidden (the .tds-btn display rule would
+   otherwise win over the [hidden] attribute's default display:none). */
+.dv-expand-all[hidden] { display: none; }
+
+/* "What we checked" — clean-case transparency list (reuses .tds-action-list-item). */
+.dv-ni-checked {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.dv-ni-checked__header {
+  margin: 0;
+  padding: var(--spacing-12);
+  background-color: var(--surface-neutral-02);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+.dv-ni-checked__list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adapt the interactive list item to a static, roomier informational row.
+   Specificity intentionally matches the component's size rule (0,3,0) so this
+   later-loaded stylesheet wins the padding/cursor overrides. */
+.dv-ni-checked .tds-action-list-item.dv-ni-checked__row {
+  padding: var(--spacing-16) var(--spacing-12);
+  border-radius: 0;
+  cursor: default;
+  color: var(--text-default);
+}
+
+.dv-ni-checked .tds-action-list-item.dv-ni-checked__row:hover {
+  background-color: transparent;
+}
+
+.dv-ni-checked__row .tds-action-list-item__label {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+}
+
+.dv-ni-summary__drivers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.dv-ni-summary__drivers-title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.dv-ni-summary__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-8);
+}
+
+.dv-ni-summary__driver {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-12);
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  text-align: left;
+  font-family: inherit;
+}
+
+.dv-ni-summary__driver-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-md);
+  color: var(--text-default);
+}
+
+.dv-ni-summary__driver-action {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+/* "Go to section" label is hidden at rest, revealed on hover / keyboard focus. */
+.dv-ni-summary__link {
+  display: none;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.dv-ni-summary__driver--link:hover .dv-ni-summary__link,
+.dv-ni-summary__driver--link:focus-visible .dv-ni-summary__link {
+  display: inline;
+}
+
+.dv-ni-summary__arrow {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  color: var(--icon-muted);
+}
+
+.dv-ni-summary__arrow svg { width: 1rem; height: 1rem; }
+
+.dv-ni-summary__driver--link {
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.dv-ni-summary__driver--link:hover {
+  background-color: var(--surface-neutral-02);
+  border-color: var(--border-strong);
+}
+
+.dv-ni-summary__driver--link:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+@container (max-width: 540px) {
+  .dv-ni-summary__grid { grid-template-columns: 1fr; }
 }
 
 .dv-ni2-counts {

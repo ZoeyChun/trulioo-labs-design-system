@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="../../tokens/tokens.css">
   <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/tag/tag.css">
+  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
@@ -396,6 +399,8 @@
                     <svg viewBox="0 0 293 320" role="img" aria-label="Selfie placeholder" preserveAspectRatio="xMidYMid meet"><rect width="293" height="320" fill="transparent"/><circle cx="146" cy="130" r="62" fill="var(--border-strong)"/><path d="M44 300c0-52 46-84 102-84s102 32 102 84z" fill="var(--border-strong)"/></svg>
                   </div>
                 </figure>
+                <!-- Secondary "known match" selfie — populated by JS only when a known face is matched -->
+                <div id="dv-known-face-viewer" class="dv-known-face-viewer" hidden></div>
               </div>
             </div>
           </section>

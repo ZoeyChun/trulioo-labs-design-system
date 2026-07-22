@@ -95,9 +95,27 @@ export interface NiInsight {
   evidenceEmptyMessage?: string;
 }
 
+export interface NiSummaryDriver {
+  /** Short description of the signal driving the assessment. */
+  text: string;
+  /** Insight id to open and scroll to when the card is activated. */
+  targetId?: string;
+  /** Optional visible "Go to section" affordance label. */
+  linkLabel?: string;
+}
+
+export interface NiSummary {
+  /** Visual status variant. clear = all-clear, info = clean but not the pass reason, flagged = network risk. */
+  status: "clear" | "info" | "flagged";
+  title: string;
+  message: string;
+  drivers: NiSummaryDriver[];
+}
+
 export interface NiConfig {
   headerStatus: "Clean" | "Flagged";
   headerTone: Tone;
+  summary?: NiSummary;
   flagged: NiInsight[];
   clean: NiInsight[];
 }

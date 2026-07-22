@@ -7,6 +7,8 @@ import type {
   IndicatorGroup,
   NiConfig,
   NiInsight,
+  NiSummary,
+  NiSummaryDriver,
   ScenarioConfig,
   ScenarioId,
   SummaryRow,
@@ -161,11 +163,29 @@ const happyNiMetrics: NiInsight["metrics"] = [
   { label: "Most recent", value: "Current transaction" },
 ];
 
+/** Shared "all clear" Key Drivers — one card per network signal, linking to its section. */
+const cleanNiDrivers: NiSummaryDriver[] = [
+  {
+    text: "No synthetic identity reuse: this face has not been seen with other identities",
+    targetId: "synthetic-identity",
+  },
+  {
+    text: "No document conflicts across previous transactions",
+    targetId: "document-conflict",
+  },
+  {
+    text: "IP and transaction velocity within normal range",
+    targetId: "ip-velocity",
+  },
+];
+
 const cleanNetworkInsights = (
   messages?: Partial<Record<"synthetic" | "document" | "ip", string>>,
+  summary?: NiSummary,
 ): NiConfig => ({
   headerStatus: "Clean",
   headerTone: "positive",
+  summary,
   flagged: [],
   clean: [
     {
@@ -308,6 +328,25 @@ const happySummary: SummaryRow[] = [
   { label: "Device Intelligence", value: "Low Risk", tone: "positive" },
 ];
 
+const happyNiSummary: NiSummary = {
+  status: "clear",
+  title: "No network risk detected",
+  message:
+    "This identity shows no cross-transaction fraud signals. Face, document and IP activity are all consistent with a single, legitimate identity.",
+  drivers: cleanNiDrivers,
+};
+
+/**
+ * Network is clean, but the transaction failed or needs review for reasons in
+ * another tab — an informational (not all-clear) state.
+ */
+const infoNiSummary = (message: string): NiSummary => ({
+  status: "info",
+  title: "No network risk detected",
+  message,
+  drivers: cleanNiDrivers,
+});
+
 const happyPath: ScenarioConfig = {
   id: "happy-path",
   label: "Happy path",
@@ -345,7 +384,7 @@ const happyPath: ScenarioConfig = {
       partialMatchEmpty,
     ],
   },
-  networkInsights: cleanNetworkInsights(),
+  networkInsights: cleanNetworkInsights(undefined, happyNiSummary),
   deviceIntelligence: lowRiskDevice(
     "Device activity is consistent with a normal verification session. No suspicious device, network or behavioral indicators were detected.",
     4,
@@ -562,6 +601,12 @@ const scenarioOverrides: Record<
       helper:
         "Data can match exactly even when the document itself is no longer valid.",
     },
+    networkInsights: cleanNetworkInsights(
+      undefined,
+      infoNiSummary(
+        "Network intelligence found no fraud signals. This transaction was declined because the document has expired — not because of network activity.",
+      ),
+    ),
     deviceIntelligence: {
       score: 11,
       summary:
@@ -635,12 +680,17 @@ const scenarioOverrides: Record<
       helper:
         "Identity data is consistent. The decline is caused by biometric mismatch, not data inconsistency.",
     },
-    networkInsights: cleanNetworkInsights({
-      synthetic:
-        "No evidence that this face has been reused across different identities.",
-      document: "No conflicting identity or document records were found.",
-      ip: "No unusual IP or transaction velocity was detected.",
-    }),
+    networkInsights: cleanNetworkInsights(
+      {
+        synthetic:
+          "No evidence that this face has been reused across different identities.",
+        document: "No conflicting identity or document records were found.",
+        ip: "No unusual IP or transaction velocity was detected.",
+      },
+      infoNiSummary(
+        "Network intelligence found no fraud signals. The decline is caused by a biometric face mismatch, not by network activity.",
+      ),
+    ),
     deviceIntelligence: lowRiskDevice(
       "The device and network appear normal. The transaction was declined because of the face mismatch, not device risk.",
       17,
@@ -715,7 +765,12 @@ const scenarioOverrides: Record<
         },
       ],
     },
-    networkInsights: cleanNetworkInsights(),
+    networkInsights: cleanNetworkInsights(
+      undefined,
+      infoNiSummary(
+        "Network intelligence found no fraud signals. This transaction is under manual review for a date-of-birth discrepancy, not for network activity.",
+      ),
+    ),
     deviceIntelligence: {
       score: 23,
       summary:
@@ -791,6 +846,30 @@ const scenarioOverrides: Record<
     networkInsights: {
       headerStatus: "Flagged",
       headerTone: "negative",
+      summary: {
+        status: "flagged",
+        title: "Network fraud signals detected",
+        message:
+          "This face is linked to multiple identities and a previously declined fraud record. The current transaction matches historical activity associated with confirmed fraud.",
+        drivers: [
+          {
+            text: "Synthetic identity: same face seen across 3 different identities",
+            targetId: "synthetic-identity",
+          },
+          {
+            text: "Document conflict: same face linked to multiple document numbers",
+            targetId: "document-conflict",
+          },
+          {
+            text: "4 related transactions found — 3 previously declined",
+            targetId: "synthetic-identity",
+          },
+          {
+            text: "IP and transaction velocity within normal range",
+            targetId: "ip-velocity",
+          },
+        ],
+      },
       flagged: [
         {
           id: "synthetic-identity",
@@ -945,12 +1024,17 @@ const scenarioOverrides: Record<
       helper:
         "Identity data is consistent. The decline is caused by biometric capture integrity.",
     },
-    networkInsights: cleanNetworkInsights({
-      synthetic: "No cross-transaction identity reuse was found.",
-      document:
-        "No conflicting historical documents or identity records were found.",
-      ip: "No unusual IP or transaction velocity was detected.",
-    }),
+    networkInsights: cleanNetworkInsights(
+      {
+        synthetic: "No cross-transaction identity reuse was found.",
+        document:
+          "No conflicting historical documents or identity records were found.",
+        ip: "No unusual IP or transaction velocity was detected.",
+      },
+      infoNiSummary(
+        "Network intelligence found no cross-transaction identity reuse. The decline stems from a synthetic (deepfake) capture and device risk — see Device Intelligence for details.",
+      ),
+    ),
     deviceIntelligence: {
       score: 88,
       risk: "high",
