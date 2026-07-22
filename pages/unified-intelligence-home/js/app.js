@@ -5,7 +5,7 @@
   var bizPhase = 'search';
   var selCo = null;
   var selCmp = null;
-  var selPersonCountry = null;
+  var selPersonService = null;
   var activeSample = 'standard';
   var selFromSample = false;
   var sampleChipLabel = '';
@@ -52,9 +52,8 @@
     startAssessmentBtn: document.getElementById('startAssessmentBtn'),
     planStartOverBtn: document.getElementById('planStartOverBtn'),
     customizePlanBtn: document.getElementById('customizePlanBtn'),
-    personInput: document.getElementById('personInput'),
-    personDrop: document.getElementById('personDrop'),
-    personSubmit: document.getElementById('personSubmit'),
+    personServicesGrid: document.getElementById('personServicesGrid'),
+    personStartAssessmentBtn: document.getElementById('personStartAssessmentBtn'),
     pfBrn: document.getElementById('pfBrn'),
     pfAddress1: document.getElementById('pfAddress1'),
     pfCity: document.getElementById('pfCity'),
@@ -157,11 +156,6 @@
     return { countries: matchCo, companies: matchCm };
   }
 
-  function getPersonMatches(q) {
-    var ql = q.toLowerCase().trim();
-    return ql ? countries.filter(function (c) { return c.name.toLowerCase().indexOf(ql) >= 0; }) : countries.slice();
-  }
-
   function voiceHintText(count) {
     if (count === 1) return 'One match found — confirming…';
     return '<strong>' + count + ' matches</strong> — Say "1", "2", "the first" · Tap a row · Enter = 1 · Listening again…';
@@ -170,7 +164,12 @@
   function setReady(ready) {
     var bizReady = curType === 'business' && bizPhase === 'entity';
     els.searchSubmit.classList.toggle('ready', bizReady);
-    els.personSubmit.classList.toggle('ready', !!selPersonCountry);
+
+    if (els.personStartAssessmentBtn) {
+      var personReady = curType === 'person' && !!selPersonService;
+      els.personStartAssessmentBtn.disabled = !personReady;
+      els.personStartAssessmentBtn.classList.toggle('btn-assessment--disabled', !personReady);
+    }
   }
 
   function renderPrefill(company) {
@@ -326,7 +325,6 @@
     clearVoicePickList();
     if (entry.kind === 'country') pickCountry(entry.data);
     else if (entry.kind === 'company') pickCompany(entry.data);
-    else if (entry.kind === 'kyc') pickPersonCountry(entry.data);
   }
 
   function tryResolveVoicePickByNumber(transcript) {
@@ -418,49 +416,6 @@
     }
   }
 
-  function buildPersonDrop(q, opts) {
-    opts = opts || {};
-    els.personDrop.innerHTML = '';
-    clearVoicePickList();
-    var list = getPersonMatches(q);
-    if (!list.length) {
-      els.personDrop.classList.remove('open');
-      return;
-    }
-
-    if (opts.voice) {
-      voicePickList = list.map(function (c) { return { kind: 'kyc', data: c }; });
-      voicePickPending = list.length > 1;
-      var hint = document.createElement('div');
-      hint.className = 'sdrop-voice-hint';
-      hint.innerHTML = voiceHintText(list.length);
-      els.personDrop.appendChild(hint);
-    }
-
-    var sec = document.createElement('div');
-    sec.className = 'sdrop-section';
-    list.forEach(function (c, idx) {
-      var item = document.createElement('div');
-      item.className = 'sdrop-item' + (opts.voice ? ' voice-pick' : '');
-      var numHtml = opts.voice ? '<span class="sdrop-num">' + (idx + 1) + '</span>' : '';
-      item.innerHTML = numHtml + '<span class="sdrop-flag">' + c.flag + '</span><div class="sdrop-main"><div class="sdrop-name">' + c.name + '</div></div>';
-      item.addEventListener('mousedown', function (e) {
-        e.preventDefault();
-        if (opts.voice && voicePickList[idx]) applyVoicePick(voicePickList[idx]);
-        else pickPersonCountry(c);
-      });
-      sec.appendChild(item);
-    });
-    els.personDrop.appendChild(sec);
-    els.personDrop.classList.add('open');
-
-    if (opts.voice && list.length === 1) {
-      setTimeout(function () { applyVoicePick(voicePickList[0]); }, 450);
-    } else if (opts.voice && list.length > 1) {
-      setTimeout(function () { startVoiceSelectionListen(); }, 600);
-    }
-  }
-
   function pickTopDropMatch() {
     if (voicePickList.length) {
       applyVoicePick(voicePickList[0]);
@@ -512,14 +467,7 @@
 
     var nq = normalize(q);
 
-    if (curType === 'person') {
-      var kycList = getPersonMatches(q);
-      var exactKyc = kycList.find(function (c) { return normalize(c.name) === nq; });
-      if (exactKyc) { pickPersonCountry(exactKyc); return; }
-      if (kycList.length === 1) { pickPersonCountry(kycList[0]); return; }
-      buildPersonDrop(q, { voice: true });
-      return;
-    }
+    if (curType === 'person') return;
 
     if (bizPhase !== 'search') return;
 
@@ -584,11 +532,15 @@
     startAnalyzing();
   }
 
-  function pickPersonCountry(c) {
-    clearVoicePickList();
-    selPersonCountry = c;
-    els.personInput.value = c.name;
-    els.personDrop.classList.remove('open');
+  function pickPersonService(serviceId) {
+    selPersonService = serviceId;
+    if (els.personServicesGrid) {
+      els.personServicesGrid.querySelectorAll('.person-service-option').forEach(function (btn) {
+        var selected = btn.getAttribute('data-service') === serviceId;
+        btn.classList.toggle('is-selected', selected);
+        btn.setAttribute('aria-checked', selected ? 'true' : 'false');
+      });
+    }
     setReady(true);
   }
 
@@ -609,9 +561,13 @@
   }
 
   function resetPerson() {
-    selPersonCountry = null;
-    els.personInput.value = '';
-    els.personDrop.classList.remove('open');
+    selPersonService = null;
+    if (els.personServicesGrid) {
+      els.personServicesGrid.querySelectorAll('.person-service-option').forEach(function (btn) {
+        btn.classList.remove('is-selected');
+        btn.setAttribute('aria-checked', 'false');
+      });
+    }
     setReady(false);
   }
 
@@ -660,7 +616,7 @@
   }
 
   function activeInput() {
-    return curType === 'person' ? els.personInput : els.searchInput;
+    return els.searchInput;
   }
 
   function setListening(on) {
@@ -753,16 +709,20 @@
     alert('Customize flow — coming in next frame.');
   });
 
-  els.personInput.addEventListener('input', function () {
-    clearVoicePickList();
-    var q = els.personInput.value.trim();
-    if (q.length >= 1) buildPersonDrop(q);
-    else els.personDrop.classList.remove('open');
-  });
+  if (els.personServicesGrid) {
+    els.personServicesGrid.querySelectorAll('.person-service-option').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        pickPersonService(btn.getAttribute('data-service'));
+      });
+    });
+  }
 
-  els.personInput.addEventListener('blur', function () {
-    setTimeout(function () { els.personDrop.classList.remove('open'); }, 200);
-  });
+  if (els.personStartAssessmentBtn) {
+    els.personStartAssessmentBtn.addEventListener('click', function () {
+      if (!selPersonService) return;
+      alert('Person assessment flow — coming soon.');
+    });
+  }
 
   document.querySelectorAll('.sample-chip').forEach(function (chip) {
     chip.addEventListener('click', function () {
@@ -807,9 +767,8 @@
           return;
         }
         resolveVoiceInput(finalText.trim());
-      } else if (interim.trim().length >= 2 && !voicePickPending && bizPhase === 'search') {
-        if (curType === 'person') buildPersonDrop(interim.trim());
-        else buildDrop(interim.trim());
+      } else if (interim.trim().length >= 2 && !voicePickPending && bizPhase === 'search' && curType === 'business') {
+        buildDrop(interim.trim());
       }
     };
 
@@ -820,7 +779,7 @@
           stopVoiceSearch();
           return;
         }
-        if (curType === 'business' && bizPhase !== 'search') return;
+        if (curType !== 'business' || bizPhase !== 'search') return;
         activeInput().focus();
         try { recognition.start(); } catch (err) { /* noop */ }
       });

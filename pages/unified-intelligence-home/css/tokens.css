@@ -110,11 +110,13 @@
   --font-40: 40px;
   --font-56: 56px;
 
-  /* Display XL — design system */
+  /* Display — design system */
+  --font-size-display-md: 2.625rem;
+  --line-height-display-md: 3.125rem;
   --font-size-display-xl: 3.375rem;
   --line-height-display-xl: 4rem;
 
-  --hero-bg-image: url('https://www.figma.com/api/mcp/asset/2796fd14-bae7-4cd1-9bcf-2eae5ce61240');
+  --hero-bg-image: url('../assets/hero-bg.png');
   --sidenav-logo-image: url('https://www.figma.com/api/mcp/asset/8d5e3b90-3b99-4ab6-896d-d844ec9e3139');
   --terminal-controls-image: url('https://www.figma.com/api/mcp/asset/046cd2e8-0e2f-4c0d-b575-dd84537a9ed6');
 
@@ -128,4 +130,11 @@
   --terminal-muted: #94a3b8;
   --terminal-accent: #22c55e;
   --terminal-prompt: #f97316;
+}
+
+.text-display-md {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display-md);
+  line-height: var(--line-height-display-md);
+  font-weight: 400;
 }

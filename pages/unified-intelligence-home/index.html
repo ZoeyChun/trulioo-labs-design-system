@@ -6,6 +6,15 @@
   <title>Trulioo Home — Unified Intelligence</title>
 
   <link rel="preload" href="fonts/tobias-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/hero-bg.png" as="image">
+  <style>
+    .mcp-copy > .text-display-md {
+      font-family: "Tobias", Georgia, "Times New Roman", serif;
+      font-size: 42px;
+      line-height: 50px;
+      font-weight: 400;
+    }
+  </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,6 +27,7 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/hero-headline.css">
   <link rel="stylesheet" href="css/mcp.css">
 </head>
 <body>
@@ -145,7 +155,7 @@
           Trulioo Labs
         </div>
 
-        <h1 class="hero-title">Turn verification signals into actionable risk intelligence.</h1>
+        <h1 class="hero-title" id="heroTitle">Turn verification signals into actionable risk intelligence.</h1>
         <p class="hero-sub">Assess risk, uncover relationships, investigate signals, and monitor change from a single experience.</p>
 
         <div class="hero-card glass-frosted" id="heroCard">
@@ -319,14 +329,37 @@
           </div>
 
           <div class="person-panel" id="personPanel">
-            <div class="search-row glass-solid" id="personSearchRow">
-              <svg class="search-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="5.5"/><path d="M14 14l3 3" stroke-linecap="round"/></svg>
-              <input class="search-input" id="personInput" type="text" placeholder="Search country..." autocomplete="off">
-              <div class="search-actions">
-                <button class="icon-btn voice-btn" type="button" aria-label="Voice search"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="6" height="10" rx="3"/><path d="M5 9a5 5 0 0 0 10 0M10 14v3"/></svg></button>
-                <button class="submit-btn" id="personSubmit" type="button" aria-label="Submit"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9h10M9 4l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <p class="person-panel-caption">Please select a service to begin.</p>
+
+            <div class="person-services-card">
+              <div class="person-services-inner">
+                <div class="person-services-grid" id="personServicesGrid" role="radiogroup" aria-label="Person verification services">
+                  <button type="button" class="person-service-option" data-service="document-verification" role="radio" aria-checked="false">
+                    <span class="person-service-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><circle cx="6" cy="7.5" r="1.5"/><path d="M3.5 11.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5"/><path d="M10 7h2.5M10 9.5h2.5"/></svg></span>
+                    <span class="person-service-label">Document Verification</span>
+                    <span class="person-service-radio" aria-hidden="true"></span>
+                  </button>
+                  <button type="button" class="person-service-option" data-service="electronic-id" role="radio" aria-checked="false">
+                    <span class="person-service-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg></span>
+                    <span class="person-service-label">Electronic ID</span>
+                    <span class="person-service-radio" aria-hidden="true"></span>
+                  </button>
+                  <button type="button" class="person-service-option" data-service="bank-verification" role="radio" aria-checked="false">
+                    <span class="person-service-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v8H2z"/><path d="M5 7v2M8 6v4M11 7v2M4 4V2h8v2"/></svg></span>
+                    <span class="person-service-label">Bank Verification</span>
+                    <span class="person-service-radio" aria-hidden="true"></span>
+                  </button>
+                  <button type="button" class="person-service-option" data-service="device-intelligence" role="radio" aria-checked="false">
+                    <span class="person-service-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="10" height="12" rx="1.5"/><path d="M6.5 12.5h3"/></svg></span>
+                    <span class="person-service-label">Device intelligence</span>
+                    <span class="person-service-radio" aria-hidden="true"></span>
+                  </button>
+                </div>
+
+                <div class="person-services-foot">
+                  <button class="btn-assessment btn-assessment--disabled" id="personStartAssessmentBtn" type="button" disabled>Start assessment</button>
+                </div>
               </div>
-              <div class="smart-drop" id="personDrop"></div>
             </div>
           </div>
         </div>
@@ -335,7 +368,7 @@
 
     <section class="mcp-section" aria-label="MCP workflow">
         <div class="mcp-copy">
-          <h2 class="mcp-title">Bring Trulioo to your AI workflow</h2>
+          <h2 class="text-display-md">Bring Trulioo to your AI workflow</h2>
           <p class="mcp-sub">Connect your AI assistant to Trulioo verification, risk, and ownership capabilities through MCP.</p>
           <button class="mcp-learn-btn" type="button">Learn more</button>
         </div>
@@ -391,6 +424,7 @@
 </div>
 
 <script src="js/data.js"></script>
+<script src="js/hero-headline.js"></script>
 <script src="js/app.js"></script>
 <script src="js/side-nav.js"></script>
 <script>TdsSideNav.init();</script>

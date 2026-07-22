@@ -15,12 +15,8 @@
   gap: 24px;
 }
 
-.mcp-title {
-  font-family: "Tobias", Georgia, "Times New Roman", serif;
-  font-size: var(--font-size-display-xl);
-  font-weight: 400;
-  line-height: var(--line-height-display-xl);
-  letter-spacing: -0.4px;
+.mcp-copy > .text-display-md {
+  letter-spacing: -0.3px;
   color: var(--text-primary);
 }
 
@@ -179,6 +175,9 @@
 
 @media (max-width: 760px) {
   .mcp-section { padding: 32px 16px 48px; }
-  .hero-title,
-  .mcp-title { font-size: clamp(2.25rem, 8vw, var(--font-size-display-xl)); line-height: 1.15; }
+  .hero-title { font-size: clamp(2.25rem, 8vw, var(--font-size-display-xl)); line-height: 1.15; }
+  .mcp-copy > .text-display-md {
+    font-size: clamp(2rem, 6vw, 42px);
+    line-height: 1.15;
+  }
 }
