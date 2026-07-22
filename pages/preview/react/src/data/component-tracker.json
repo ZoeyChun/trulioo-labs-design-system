@@ -1,5 +1,5 @@
 {
-  "lastBuiltAt": "2026-07-20T22:08:44.984Z",
+  "lastBuiltAt": "2026-07-22T18:54:15.120Z",
   "summary": {
     "totalComponents": 47,
     "cssDone": 43,
@@ -408,7 +408,7 @@
       "name": "Tabs",
       "category": "Navigation",
       "figmaStatus": "Done",
-      "figmaVariants": 6,
+      "figmaVariants": 10,
       "cssFile": "tabs/tabs.css",
       "classPrefixes": [
         "tds-tabs"

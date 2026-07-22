@@ -347,8 +347,8 @@
 .text-display-md  { font-family: var(--font-family-display); font-size: var(--font-size-display-md);  line-height: 3.125rem; font-weight: var(--font-weight-regular); }
 .text-display-lg  { font-family: var(--font-family-display); font-size: var(--font-size-display-lg);  line-height: 3.5rem;   font-weight: var(--font-weight-regular); }
 .text-display-xl  { font-family: var(--font-family-display); font-size: var(--font-size-display-xl);  line-height: 4rem;     font-weight: var(--font-weight-regular); }
-.text-display-2xl { font-family: var(--font-family-display); font-size: var(--font-size-display-2xl); line-height: 4.375rem; font-weight: var(--font-weight-medium); }
-.text-display-3xl { font-family: var(--font-family-display); font-size: var(--font-size-display-3xl); line-height: 5.375rem; font-weight: var(--font-weight-medium); }
+.text-display-2xl { font-family: var(--font-family-display); font-size: var(--font-size-display-2xl); line-height: 4.375rem; font-weight: var(--font-weight-regular); }
+.text-display-3xl { font-family: var(--font-family-display); font-size: var(--font-size-display-3xl); line-height: 5.375rem; font-weight: var(--font-weight-regular); }
 
 /* Numbers */
 .text-numbers-xl  { font-size: 4rem; line-height: 3.8125rem; font-weight: var(--font-weight-regular); }  /* 64px / 61px */
