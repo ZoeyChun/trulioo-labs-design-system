@@ -39,5 +39,17 @@ export const ICON_SIDEBAR =
 export const ICON_FLAG =
   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 14V2.5h7l-1.6 2.6L11 8H4"/></svg>';
 
+export const ICON_CIRCLE_CHECK =
+  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M5.4 8l1.8 1.8 3.4-3.8"/></svg>';
+
+export const ICON_CIRCLE_INFO =
+  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v3.4M8 5.1h.01"/></svg>';
+
+export const ICON_DIAMOND_EXCLAMATION =
+  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M8 1.5 14.5 8 8 14.5 1.5 8Z"/><path d="M8 5v3.4M8 10.8h.01"/></svg>';
+
+export const ICON_ARROW_RIGHT =
+  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5"/></svg>';
+
 export const ICON_NOTE_THUMB =
   '<svg viewBox="0 0 93 93" aria-hidden="true"><rect width="93" height="93" fill="var(--surface-neutral-03)"/><circle cx="46" cy="38" r="18" fill="var(--border-strong)"/><path d="M16 90c0-17 13-27 30-27s30 10 30 27z" fill="var(--border-strong)"/></svg>';

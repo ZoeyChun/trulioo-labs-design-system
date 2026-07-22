@@ -1,0 +1,334 @@
+/* ============================================================
+   Document Verification — capture flow (form view)
+   Two-step wizard (Configuration setup → ID capture experience).
+   Mirrors the bank-verification form chrome; the result view reuses
+   the existing .dv-panel result styles. Page-local, token-driven.
+   Composes DS components: progress-indicator, radio-card, switch, button.
+   ============================================================ */
+
+.app-main:has(> .dv-flow-view:not([hidden])) {
+  /* flow view provides its own panel chrome */
+}
+
+/* --- View switching — only one panel visible at a time --- */
+.dv-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.dv-view[hidden] {
+  display: none !important;
+}
+
+.dv-flow-view *,
+.dv-flow-view *::before,
+.dv-flow-view *::after {
+  box-sizing: border-box;
+}
+
+/* --- Flow panel (neutral-02 rounded card holding header + content) --- */
+.dv-flow-view {
+  align-items: center;
+  gap: var(--spacing-40);
+  padding: var(--padding-xl);
+  background-color: var(--surface-neutral-02);
+  border-radius: var(--radius-section);
+  box-shadow: var(--elevation-md);
+}
+
+/* --- Back button (shared by flow header and result header) --- */
+.dv-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-neutral-01);
+  color: var(--icon-interactive);
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--shadow-button-elevated);
+}
+
+.dv-back-btn:hover {
+  background-color: var(--surface-neutral-02);
+}
+
+.dv-back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* --- Header --- */
+.dv-flow-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-lg);
+  width: 100%;
+}
+
+.dv-flow-header__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-lg);
+  min-width: 0;
+}
+
+.dv-flow-header__title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.dv-flow-truai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-md) var(--padding-lg);
+  border: none;
+  border-radius: var(--radius-modal);
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dv-flow-truai-btn__icon,
+.dv-flow-truai-btn__icon svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-16);
+  height: var(--spacing-16);
+}
+
+/* --- Content: centered step (progress + card) --- */
+.dv-flow-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-32);
+}
+
+.dv-flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-2xl);
+  width: 100%;
+  max-width: 896px;
+}
+
+.dv-flow-step[hidden] {
+  display: none;
+}
+
+.dv-flow-step .tds-progress-indicator {
+  width: 100%;
+}
+
+/* --- Card --- */
+.dv-flow-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: var(--surface-neutral-01);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--elevation-sm);
+  overflow: hidden;
+}
+
+.dv-flow-card__header {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-32);
+}
+
+.dv-flow-card__title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+/* --- Card sections (radio groups) --- */
+.dv-flow-section__label {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-12) var(--spacing-32);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.dv-flow-section__body {
+  padding: 0 var(--spacing-32) var(--spacing-24);
+}
+
+.dv-flow-radio-row {
+  display: flex;
+  gap: var(--spacing-12);
+}
+
+.dv-flow-radio-row .tds-radio-card {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* --- Device Intelligence row --- */
+.dv-flow-device {
+  border-top: 1px solid var(--border-subtle);
+  padding: var(--spacing-24) var(--spacing-32);
+}
+
+.dv-flow-device__box {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+  padding: var(--spacing-16);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.dv-flow-device__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  flex: 1;
+  min-width: 0;
+}
+
+.dv-flow-device__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.dv-flow-device__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.dv-flow-device__title {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.dv-flow-device__desc {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+/* --- ID capture (QR) step --- */
+.dv-flow-capture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-32);
+  padding: var(--spacing-32) 0 calc(var(--spacing-32) + var(--spacing-24));
+}
+
+.dv-flow-qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  padding: var(--spacing-16);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-neutral-01);
+}
+
+.dv-flow-qr svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.dv-flow-capture__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-12);
+}
+
+.dv-flow-capture__text {
+  margin: 0;
+  max-width: 441px;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  color: var(--text-description);
+  text-align: center;
+}
+
+.dv-flow-capture__or {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-32);
+}
+
+.dv-flow-capture__or::before,
+.dv-flow-capture__or::after {
+  content: "";
+  width: 120px;
+  height: 1px;
+  background-color: var(--border-subtle);
+}
+
+.dv-flow-capture__or-label {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-description);
+}
+
+/* --- Footer --- */
+.dv-flow-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-16) var(--spacing-32);
+  background-color: var(--surface-neutral-03);
+}
+
+@media (max-width: 720px) {
+  .dv-flow-content {
+    padding: 0;
+  }
+  .dv-flow-radio-row {
+    flex-direction: column;
+  }
+}

@@ -370,6 +370,33 @@ function wireExpandAll(): void {
   });
 }
 
+function wireNiSummaryDrivers(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const card = target.closest("[data-ni-target]");
+    if (!(card instanceof HTMLElement)) return;
+
+    const id = card.getAttribute("data-ni-target");
+    if (!id) return;
+
+    const acc = document.querySelector(
+      `.dv-acc[data-insight-id="${CSS.escape(id)}"]`,
+    );
+    if (!(acc instanceof HTMLElement)) return;
+
+    const group = acc.closest(".dv-group.dv-collapsible");
+    if (group) setCollapsibleOpen(group, true);
+    setCollapsibleOpen(acc, true);
+
+    const panel = acc.closest(".dv-tabpanel");
+    const expandBtn = panel?.querySelector(".dv-expand-all");
+    if (expandBtn) updateExpandAllButton(expandBtn);
+
+    acc.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 function wireTxnToggles(): void {
   document.addEventListener("click", (event) => {
     const target = event.target;
@@ -695,6 +722,7 @@ document.addEventListener("DOMContentLoaded", () => {
   wireTabs();
   wireCollapsibles();
   wireExpandAll();
+  wireNiSummaryDrivers();
   wireTxnToggles();
   wireDataTableSort();
   wireDeviceInfoToggle();

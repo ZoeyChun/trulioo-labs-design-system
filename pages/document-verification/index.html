@@ -12,12 +12,19 @@
   <link rel="stylesheet" href="../../tokens/tokens.css">
   <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/progress-indicator/progress-indicator.css">
+  <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
+  <link rel="stylesheet" href="../../Components/switch/switch.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../shared/flag-icons.css">
   <link rel="stylesheet" href="../shared/app-shell.css">
   <link rel="stylesheet" href="document-verification.css">
+  <link rel="stylesheet" href="document-verification-flow.css">
   <style>
     /* Nav item spec — inlined because Cursor preview often skips ../../ component CSS */
     button.tds-side-nav__nav-item,
@@ -155,7 +162,7 @@
 
     </aside>
 
-    <main class="app-main dv-panel">
+    <main class="app-main">
 
       <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -163,9 +170,217 @@
         </svg>
       </button>
 
+      <!-- ============ Capture flow (form view) ============ -->
+      <div class="dv-view dv-flow-view" id="dv-form-view">
+
+        <header class="dv-flow-header">
+          <div class="dv-flow-header__title-group">
+            <button type="button" class="dv-back-btn" id="dv-flow-home-back" aria-label="Back to home">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+            </button>
+            <h1 class="dv-flow-header__title">Document Verification</h1>
+          </div>
+          <button class="dv-flow-truai-btn" type="button">
+            <span class="dv-flow-truai-btn__icon">
+              <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
+            </span>
+            TruAI
+          </button>
+        </header>
+
+        <div class="dv-flow-content">
+
+          <!-- Step 1: Configuration setup -->
+          <section class="dv-flow-step" id="dv-flow-step-1" aria-label="Configuration setup">
+            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" aria-label="Progress">
+              <li class="tds-progress-indicator__item tds-progress-indicator__item--current">
+                <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+                <div class="tds-progress-indicator__content">
+                  <div class="tds-progress-indicator__label-row">
+                    <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">1</span></span>
+                    <span class="tds-progress-indicator__title">Configuration setup</span>
+                  </div>
+                </div>
+              </li>
+              <li class="tds-progress-indicator__item tds-progress-indicator__item--incomplete">
+                <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+                <div class="tds-progress-indicator__content">
+                  <div class="tds-progress-indicator__label-row">
+                    <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">2</span></span>
+                    <span class="tds-progress-indicator__title">ID capture experience</span>
+                  </div>
+                </div>
+              </li>
+            </ol>
+
+            <section class="dv-flow-card" aria-labelledby="dv-flow-step1-title">
+              <div class="dv-flow-card__header">
+                <h2 class="dv-flow-card__title" id="dv-flow-step1-title">Configuration setup</h2>
+              </div>
+
+              <div class="dv-flow-section__label">Capture Mode</div>
+              <div class="dv-flow-section__body">
+                <div class="dv-flow-radio-row">
+                  <label class="tds-radio-card tds-radio-card--selected">
+                    <input class="tds-radio" type="radio" name="dv-capture-mode" value="doc-selfie" checked>
+                    <span class="tds-radio-card__content">
+                      <span class="tds-radio-card__label-row">
+                        <span class="tds-radio-card__icon">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 5V3.5A1.5 1.5 0 0 1 3.5 2H5M11 2h1.5A1.5 1.5 0 0 1 14 3.5V5M14 11v1.5a1.5 1.5 0 0 1-1.5 1.5H11M5 14H3.5A1.5 1.5 0 0 1 2 12.5V11"/><circle cx="8" cy="7" r="1.8"/><path d="M5 11.4c.5-1.4 1.6-2 3-2s2.5.6 3 2"/></svg>
+                        </span>
+                        <span class="tds-radio-card__label">Document + Selfie</span>
+                      </span>
+                      <span class="tds-radio-card__description">Enables face match &amp; liveness</span>
+                    </span>
+                  </label>
+                  <label class="tds-radio-card">
+                    <input class="tds-radio" type="radio" name="dv-capture-mode" value="doc-only">
+                    <span class="tds-radio-card__content">
+                      <span class="tds-radio-card__label-row">
+                        <span class="tds-radio-card__icon">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><circle cx="5.5" cy="7.5" r="1.3"/><path d="M3.5 11c.3-1.1 1.1-1.6 2-1.6s1.7.5 2 1.6"/><path d="M9.5 6.5H13M9.5 9H12"/></svg>
+                        </span>
+                        <span class="tds-radio-card__label">Document only</span>
+                      </span>
+                      <span class="tds-radio-card__description">Front + Back, no selfie</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="dv-flow-section__label">Verification Mode</div>
+              <div class="dv-flow-section__body">
+                <div class="dv-flow-radio-row">
+                  <label class="tds-radio-card tds-radio-card--selected">
+                    <input class="tds-radio" type="radio" name="dv-verification-mode" value="auto" checked>
+                    <span class="tds-radio-card__content">
+                      <span class="tds-radio-card__label-row">
+                        <span class="tds-radio-card__icon">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H8.5l.5-5.5z"/></svg>
+                        </span>
+                        <span class="tds-radio-card__label">Auto</span>
+                      </span>
+                      <span class="tds-radio-card__description">Fully automated mode</span>
+                    </span>
+                  </label>
+                  <label class="tds-radio-card">
+                    <input class="tds-radio" type="radio" name="dv-verification-mode" value="hybrid">
+                    <span class="tds-radio-card__content">
+                      <span class="tds-radio-card__label-row">
+                        <span class="tds-radio-card__icon">
+                          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.71349 4.85714C3.71349 3.12139 5.1206 1.71429 6.85634 1.71429C8.59209 1.71429 9.9992 3.12139 9.9992 4.85714C9.9992 5.17061 9.95358 5.47189 9.86917 5.7555C9.73413 6.20922 9.99248 6.6865 10.4462 6.82153C10.8999 6.95656 11.3772 6.69822 11.5122 6.2445C11.6433 5.80387 11.7135 5.33794 11.7135 4.85714C11.7135 2.17462 9.53887 0 6.85634 0C4.17382 0 1.9992 2.17462 1.9992 4.85714C1.9992 5.33794 2.06932 5.80387 2.20046 6.2445C2.33549 6.69822 2.81277 6.95656 3.26649 6.82153C3.72021 6.6865 3.97855 6.20922 3.84352 5.7555C3.75911 5.47189 3.71349 5.17061 3.71349 4.85714ZM2.70084 12.1622C2.52098 11.9374 2.53893 11.6133 2.74252 11.4097C2.96318 11.189 3.32094 11.189 3.5416 11.4097L4.9227 12.7907C5.12698 12.9951 5.43421 13.0562 5.70112 12.9456C5.96802 12.8351 6.14206 12.5746 6.14206 12.2857V5.57143C6.14206 5.17694 6.46185 4.85714 6.85634 4.85714C7.25084 4.85714 7.57063 5.17694 7.57063 5.57143V9.53945C7.57063 9.73119 7.6477 9.91487 7.78453 10.0492C7.92135 10.1835 8.10641 10.2572 8.29812 10.2536L10.9964 10.2037C12.3277 10.1792 13.3826 11.3207 13.2534 12.6458L13.0025 15.2163C12.9642 15.609 13.2516 15.9583 13.6441 15.9966C14.0367 16.035 14.3861 15.7477 14.4244 15.3551L14.6752 12.7846C14.8874 10.6091 13.1554 8.73504 10.97 8.77543L8.9992 8.81185V5.57143C8.9992 4.38795 8.03981 3.42857 6.85634 3.42857C5.67287 3.42857 4.71349 4.38795 4.71349 5.57143V10.5613L4.55175 10.3995C3.7732 9.62098 2.51092 9.62098 1.73237 10.3995C1.01406 11.1179 0.950721 12.2614 1.58532 13.0546L3.72714 15.7319C3.97359 16.04 4.42308 16.0899 4.73112 15.8434C5.03917 15.597 5.08911 15.1475 4.84268 14.8395L2.70084 12.1622Z" fill="currentColor"/></svg>
+                        </span>
+                        <span class="tds-radio-card__label">Hybrid</span>
+                      </span>
+                      <span class="tds-radio-card__description">Auto + manual mode</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="dv-flow-device">
+                <div class="dv-flow-device__box">
+                  <div class="dv-flow-device__text">
+                    <div class="dv-flow-device__title-row">
+                      <span class="dv-flow-device__icon">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><path d="M7 12.5h2"/></svg>
+                      </span>
+                      <span class="dv-flow-device__title">Device Intelligence</span>
+                    </div>
+                    <p class="dv-flow-device__desc">Collect device signals for fraud detection</p>
+                  </div>
+                  <label class="tds-switch">
+                    <span class="tds-switch__label-group">Enable</span>
+                    <button type="button" class="tds-switch__track tds-switch__track--sm tds-switch__track--on" role="switch" aria-checked="true" aria-label="Enable Device Intelligence">
+                      <span class="tds-switch__indicator" aria-hidden="true"></span>
+                      <span class="tds-switch__handle" aria-hidden="true"></span>
+                    </button>
+                  </label>
+                </div>
+              </div>
+
+              <div class="dv-flow-card__footer">
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="dv-flow-step1-back">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="dv-flow-next">Next</button>
+              </div>
+            </section>
+          </section>
+
+          <!-- Step 2: ID capture experience -->
+          <section class="dv-flow-step" id="dv-flow-step-2" aria-label="ID capture experience" hidden>
+            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" aria-label="Progress">
+              <li class="tds-progress-indicator__item tds-progress-indicator__item--completed">
+                <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+                <div class="tds-progress-indicator__content">
+                  <div class="tds-progress-indicator__label-row">
+                    <span class="tds-progress-indicator__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg></span>
+                    <span class="tds-progress-indicator__title">Configuration setup</span>
+                  </div>
+                </div>
+              </li>
+              <li class="tds-progress-indicator__item tds-progress-indicator__item--current">
+                <div class="tds-progress-indicator__line" aria-hidden="true"></div>
+                <div class="tds-progress-indicator__content">
+                  <div class="tds-progress-indicator__label-row">
+                    <span class="tds-progress-indicator__icon" aria-hidden="true"><span class="tds-progress-indicator__icon-badge">2</span></span>
+                    <span class="tds-progress-indicator__title">ID capture experience</span>
+                  </div>
+                </div>
+              </li>
+            </ol>
+
+            <section class="dv-flow-card" aria-labelledby="dv-flow-step2-title">
+              <div class="dv-flow-card__header">
+                <h2 class="dv-flow-card__title" id="dv-flow-step2-title">ID capture experience</h2>
+              </div>
+              <div class="dv-flow-capture">
+                <div class="dv-flow-qr" role="img" aria-label="QR code placeholder">
+                  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect width="100" height="100" fill="var(--surface-neutral-01)"/>
+                    <g fill="var(--text-default)">
+                      <path fill-rule="evenodd" d="M8 8h22v22H8V8zm5 5v12h12V13H13z"/>
+                      <rect x="16" y="16" width="6" height="6"/>
+                      <path fill-rule="evenodd" d="M70 8h22v22H70V8zm5 5v12h12V13H75z"/>
+                      <rect x="78" y="16" width="6" height="6"/>
+                      <path fill-rule="evenodd" d="M8 70h22v22H8V70zm5 5v12h12V75H13z"/>
+                      <rect x="16" y="78" width="6" height="6"/>
+                      <rect x="38" y="8" width="6" height="6"/><rect x="50" y="8" width="6" height="6"/><rect x="38" y="20" width="6" height="6"/>
+                      <rect x="8" y="38" width="6" height="6"/><rect x="20" y="38" width="6" height="6"/><rect x="8" y="50" width="6" height="6"/>
+                      <rect x="38" y="38" width="6" height="6"/><rect x="50" y="44" width="6" height="6"/><rect x="62" y="38" width="6" height="6"/>
+                      <rect x="74" y="38" width="6" height="6"/><rect x="86" y="44" width="6" height="6"/>
+                      <rect x="44" y="50" width="6" height="6"/><rect x="56" y="56" width="6" height="6"/><rect x="68" y="50" width="6" height="6"/>
+                      <rect x="38" y="62" width="6" height="6"/><rect x="50" y="68" width="6" height="6"/><rect x="62" y="62" width="6" height="6"/>
+                      <rect x="74" y="62" width="6" height="6"/><rect x="86" y="68" width="6" height="6"/>
+                      <rect x="38" y="74" width="6" height="6"/><rect x="50" y="80" width="6" height="6"/><rect x="62" y="74" width="6" height="6"/>
+                      <rect x="74" y="74" width="6" height="6"/><rect x="80" y="86" width="6" height="6"/><rect x="44" y="86" width="6" height="6"/>
+                    </g>
+                  </svg>
+                </div>
+                <div class="dv-flow-capture__copy">
+                  <p class="dv-flow-capture__text">Use your phone to scan the secure QR code</p>
+                  <div class="dv-flow-capture__or"><span class="dv-flow-capture__or-label">Or</span></div>
+                  <p class="dv-flow-capture__text">Skip to see the sample results</p>
+                </div>
+              </div>
+              <div class="dv-flow-card__footer">
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="dv-flow-step2-back">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="dv-flow-skip">Skip</button>
+              </div>
+            </section>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- ============ Result view (Jane Doe) ============ -->
+      <div class="dv-view dv-panel" id="dv-result-view" hidden>
+
       <div class="dv-header">
         <div class="dv-header__top">
           <div class="dv-header__title-group">
+            <button type="button" class="dv-back-btn" id="dv-result-back" aria-label="Back to document capture">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+            </button>
             <h1 class="dv-title">Jane Doe</h1>
             <span id="dv-overall-status"></span>
             <span id="dv-secondary-status" hidden></span>
@@ -384,18 +599,17 @@
               </div>
               <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
               <div class="dv-viewer dv-split-pane__end">
-                <h3 class="dv-section-title">Selfie</h3>
-                <figure class="dv-doc-image">
-                  <figcaption class="dv-doc-image__caption">
-                    Selfie
-                    <button class="dv-icon-btn" type="button" aria-label="Expand selfie">
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
-                    </button>
-                  </figcaption>
+                <h3 class="dv-section-title">Captured selfie</h3>
+                <figure class="dv-doc-image dv-doc-image--selfie">
+                  <button class="dv-icon-btn dv-doc-image__expand" type="button" aria-label="Expand captured selfie">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                  </button>
                   <div class="dv-doc-image__media">
-                    <svg viewBox="0 0 293 320" role="img" aria-label="Selfie placeholder" preserveAspectRatio="xMidYMid meet"><rect width="293" height="320" fill="transparent"/><circle cx="146" cy="130" r="62" fill="var(--border-strong)"/><path d="M44 300c0-52 46-84 102-84s102 32 102 84z" fill="var(--border-strong)"/></svg>
+                    <svg viewBox="0 0 293 320" role="img" aria-label="Captured selfie placeholder" preserveAspectRatio="xMidYMid meet"><rect width="293" height="320" fill="transparent"/><circle cx="146" cy="130" r="62" fill="var(--border-strong)"/><path d="M44 300c0-52 46-84 102-84s102 32 102 84z" fill="var(--border-strong)"/></svg>
                   </div>
                 </figure>
+                <!-- "Matched against N faces" thumbnail grid — populated by JS only when known faces matched -->
+                <div id="dv-matched-faces" class="dv-matched-faces" hidden></div>
               </div>
             </div>
           </section>
@@ -471,6 +685,7 @@
 
         </div>
       </div>
+      </div><!-- /#dv-result-view -->
     </main>
   </div>
 
@@ -488,6 +703,7 @@
   </div>
 
   <script src="document-verification.js"></script>
+  <script src="document-verification-flow.js"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>
   <script>TdsSideNav.init();</script>
 </body>

@@ -144,6 +144,10 @@
   var ICON_MINUS = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8h10"/></svg>';
   var ICON_SORT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3"/></svg>';
   var ICON_FLAG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 14V2.5h7l-1.6 2.6L11 8H4"/></svg>';
+  var ICON_CIRCLE_CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M5.4 8l1.8 1.8 3.4-3.8"/></svg>';
+  var ICON_CIRCLE_INFO = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v3.4M8 5.1h.01"/></svg>';
+  var ICON_DIAMOND_EXCLAMATION = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M8 1.5 14.5 8 8 14.5 1.5 8Z"/><path d="M8 5v3.4M8 10.8h.01"/></svg>';
+  var ICON_ARROW_RIGHT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5"/></svg>';
   var ICON_NOTE_THUMB = '<svg viewBox="0 0 93 93" aria-hidden="true"><rect width="93" height="93" fill="var(--surface-neutral-03)"/><circle cx="46" cy="38" r="18" fill="var(--border-strong)"/><path d="M16 90c0-17 13-27 30-27s30 10 30 27z" fill="var(--border-strong)"/></svg>';
 
   // src/badges.ts
@@ -400,11 +404,26 @@
     { label: "First seen", value: "Current transaction" },
     { label: "Most recent", value: "Current transaction" }
   ];
-  var cleanNetworkInsights = (messages) => {
+  var cleanNiDrivers = [
+    {
+      text: "No synthetic identity reuse: this face has not been seen with other identities",
+      targetId: "synthetic-identity"
+    },
+    {
+      text: "No document conflicts across previous transactions",
+      targetId: "document-conflict"
+    },
+    {
+      text: "IP and transaction velocity within normal range",
+      targetId: "ip-velocity"
+    }
+  ];
+  var cleanNetworkInsights = (messages, summary) => {
     var _a, _b, _c;
     return {
       headerStatus: "Clean",
       headerTone: "positive",
+      summary,
       flagged: [],
       clean: [
         {
@@ -532,6 +551,18 @@
     { label: "Data Match", value: "6 Exact Matches", tone: "positive" },
     { label: "Device Intelligence", value: "Low Risk", tone: "positive" }
   ];
+  var happyNiSummary = {
+    status: "clear",
+    title: "No network risk detected",
+    message: "This identity shows no cross-transaction fraud signals. Face, document and IP activity are all consistent with a single, legitimate identity.",
+    drivers: cleanNiDrivers
+  };
+  var infoNiSummary = (message) => ({
+    status: "info",
+    title: "No network risk detected",
+    message,
+    drivers: cleanNiDrivers
+  });
   var happyPath = {
     id: "happy-path",
     label: "Happy path",
@@ -568,7 +599,7 @@
         partialMatchEmpty
       ]
     },
-    networkInsights: cleanNetworkInsights(),
+    networkInsights: cleanNetworkInsights(void 0, happyNiSummary),
     deviceIntelligence: lowRiskDevice(
       "Device activity is consistent with a normal verification session. No suspicious device, network or behavioral indicators were detected.",
       4
@@ -745,8 +776,8 @@
       id: "expired-document",
       label: "Expired document",
       selectDesc: "Document expired; auto-decline.",
-      overallStatus: "Declined",
-      overallTone: "negative",
+      overallStatus: "Review",
+      overallTone: "intermediate",
       defaultTab: "document",
       transactionId: "91e0b2c4-55aa-4c11-9f20-12ab34cd56ef",
       truAiSummary: "Jane Doe\u2019s document is authentic, but it has expired. A valid, non-expired document is required.",
@@ -774,6 +805,12 @@
       dataMatch: {
         helper: "Data can match exactly even when the document itself is no longer valid."
       },
+      networkInsights: cleanNetworkInsights(
+        void 0,
+        infoNiSummary(
+          "Network intelligence found no fraud signals. This transaction was declined because the document has expired \u2014 not because of network activity."
+        )
+      ),
       deviceIntelligence: {
         score: 11,
         summary: "The device and session appear legitimate. The decline is caused only by the expired document."
@@ -843,11 +880,16 @@
       dataMatch: {
         helper: "Identity data is consistent. The decline is caused by biometric mismatch, not data inconsistency."
       },
-      networkInsights: cleanNetworkInsights({
-        synthetic: "No evidence that this face has been reused across different identities.",
-        document: "No conflicting identity or document records were found.",
-        ip: "No unusual IP or transaction velocity was detected."
-      }),
+      networkInsights: cleanNetworkInsights(
+        {
+          synthetic: "No evidence that this face has been reused across different identities.",
+          document: "No conflicting identity or document records were found.",
+          ip: "No unusual IP or transaction velocity was detected."
+        },
+        infoNiSummary(
+          "Network intelligence found no fraud signals. The decline is caused by a biometric face mismatch, not by network activity."
+        )
+      ),
       deviceIntelligence: lowRiskDevice(
         "The device and network appear normal. The transaction was declined because of the face mismatch, not device risk.",
         17
@@ -857,8 +899,8 @@
       id: "dob-mismatch",
       label: "DOB mismatch",
       selectDesc: "Applicant DOB conflicts with document OCR.",
-      overallStatus: "Review",
-      overallTone: "intermediate",
+      overallStatus: "Declined",
+      overallTone: "negative",
       defaultTab: "data-match",
       transactionId: "c0ffee12-3456-4abc-9def-112233445566",
       truAiSummary: "The date of birth entered by the applicant does not match the date extracted from the document. Manual review is recommended.",
@@ -919,7 +961,12 @@
           }
         ]
       },
-      networkInsights: cleanNetworkInsights(),
+      networkInsights: cleanNetworkInsights(
+        void 0,
+        infoNiSummary(
+          "Network intelligence found no fraud signals. This transaction is under manual review for a date-of-birth discrepancy, not for network activity."
+        )
+      ),
       deviceIntelligence: {
         score: 23,
         summary: "No suspicious device or network activity was detected. Manual review is required only for the DOB discrepancy."
@@ -952,30 +999,35 @@
           {
             key: "known-faces",
             label: "Known Faces",
-            countLabel: "1 Match",
-            rows: [
-              {
-                title: "Known face match",
-                sub: "This face matches a previously declined identity associated with confirmed fraud.",
-                result: "Match",
-                kind: "declined",
-                hideStatusIcon: true,
-                details: [
-                  { label: "Similarity", value: "96.8%" },
-                  { label: "Previous name", value: "John Smith" },
-                  {
-                    label: "Previous document",
-                    value: "TX Driver\u2019s License"
-                  },
-                  { label: "Previous decision", value: "Declined" },
-                  { label: "Previous event", value: "14 September 2025" },
-                  {
-                    label: "Reason",
-                    value: "Identity fraud \u2014 multiple identities"
-                  }
-                ]
-              }
-            ]
+            countLabel: "3 Matches",
+            rows: [],
+            knownFaces: {
+              message: "This face matches a previously declined identity associated with confirmed fraud.",
+              matchedCount: 5,
+              matches: [
+                {
+                  date: "13 Nov 2022, 2:56 PM",
+                  id: "0bbb93aa-4964-457c-8523-62b48b39cc83",
+                  status: "Declined",
+                  similarity: "96.8%",
+                  previousName: "Jane Doe"
+                },
+                {
+                  date: "12 Nov 2022, 2:00 PM",
+                  id: "0bbb93aa-4964-457c-8523-62b48b39cc83",
+                  status: "Declined",
+                  similarity: "90.2%",
+                  previousName: "Jane Doe"
+                },
+                {
+                  date: "12 Nov 2022, 2:00 PM",
+                  id: "0bbb93aa-4964-457c-8523-62b48b39cc83",
+                  status: "Declined",
+                  similarity: "90.2%",
+                  previousName: "Jane Doe"
+                }
+              ]
+            }
           },
           {
             key: "not-detected",
@@ -990,6 +1042,29 @@
       networkInsights: {
         headerStatus: "Flagged",
         headerTone: "negative",
+        summary: {
+          status: "flagged",
+          title: "Network fraud signals detected",
+          message: "This face is linked to multiple identities and a previously declined fraud record. The current transaction matches historical activity associated with confirmed fraud.",
+          drivers: [
+            {
+              text: "Synthetic identity: same face seen across 3 different identities",
+              targetId: "synthetic-identity"
+            },
+            {
+              text: "Document conflict: same face linked to multiple document numbers",
+              targetId: "document-conflict"
+            },
+            {
+              text: "4 related transactions found \u2014 3 previously declined",
+              targetId: "synthetic-identity"
+            },
+            {
+              text: "IP and transaction velocity within normal range",
+              targetId: "ip-velocity"
+            }
+          ]
+        },
         flagged: [
           {
             id: "synthetic-identity",
@@ -1135,11 +1210,16 @@
       dataMatch: {
         helper: "Identity data is consistent. The decline is caused by biometric capture integrity."
       },
-      networkInsights: cleanNetworkInsights({
-        synthetic: "No cross-transaction identity reuse was found.",
-        document: "No conflicting historical documents or identity records were found.",
-        ip: "No unusual IP or transaction velocity was detected."
-      }),
+      networkInsights: cleanNetworkInsights(
+        {
+          synthetic: "No cross-transaction identity reuse was found.",
+          document: "No conflicting historical documents or identity records were found.",
+          ip: "No unusual IP or transaction velocity was detected."
+        },
+        infoNiSummary(
+          "Network intelligence found no cross-transaction identity reuse. The decline stems from a synthetic (deepfake) capture and device risk \u2014 see Device Intelligence for details."
+        )
+      ),
       deviceIntelligence: {
         score: 88,
         risk: "high",
@@ -1277,7 +1357,10 @@
       }
     }
     const knownFaces = groups.find(
-      (g) => (g.key === "known-faces" || g.key === "match") && g.rows.length > 0
+      (g) => {
+        var _a, _b;
+        return (g.key === "known-faces" || g.key === "match") && (g.rows.length > 0 || ((_b = (_a = g.knownFaces) == null ? void 0 : _a.matches.length) != null ? _b : 0) > 0);
+      }
     );
     if (knownFaces) open.add(knownFaces.key);
     return open;
@@ -1304,15 +1387,44 @@
       return groupSeverityRank(a.key) - groupSeverityRank(b.key);
     });
   }
+  function isVisibleIndicatorGroup(group) {
+    return group.rows.length > 0 || group.key === "known-faces";
+  }
+  function renderKnownFacesBody(kf) {
+    const head = `<div class="dv-kf-table__row dv-kf-table__head" role="row">
+    <span class="dv-kf-table__cell">#</span>
+    <span class="dv-kf-table__cell">Transaction</span>
+    <span class="dv-kf-table__cell">Status</span>
+    <span class="dv-kf-table__cell">Similarity</span>
+    <span class="dv-kf-table__cell">Previous name</span>
+  </div>`;
+    const rows = kf.matches.map((m, i) => {
+      const isDeclined = m.status === "Declined";
+      const icon = isDeclined ? ICON_DECLINED : ICON_ACCEPTED;
+      const iconClass = isDeclined ? "dv-txn-result__icon dv-txn-result__icon--negative" : "dv-txn-result__icon dv-txn-result__icon--positive";
+      const idHtml = m.id ? `<span class="dv-txn-id">${escapeHtml(m.id)}</span>` : "";
+      return `<div class="dv-kf-table__row" role="row">
+    <span class="dv-kf-table__cell dv-kf-table__num">${i + 1}</span>
+    <span class="dv-kf-table__cell"><span class="dv-txn-tx"><a class="dv-txn-date" href="#">${escapeHtml(m.date)}</a>${idHtml}</span></span>
+    <span class="dv-kf-table__cell"><span class="dv-txn-result"><span class="${iconClass}">${icon}</span>${escapeHtml(m.status)}</span></span>
+    <span class="dv-kf-table__cell dv-kf-table__num">${escapeHtml(m.similarity)}</span>
+    <span class="dv-kf-table__cell">${escapeHtml(m.previousName)}</span>
+  </div>`;
+    }).join("");
+    return `<div class="dv-kf">
+  <p class="dv-kf__intro">${escapeHtml(kf.message)}</p>
+  <div class="dv-kf-table" role="table">${head}${rows}</div>
+</div>`;
+  }
   function renderIndicatorGroups(groups, options) {
-    const sorted = sortIndicatorGroups(groups);
+    const sorted = sortIndicatorGroups(groups).filter(isVisibleIndicatorGroup);
     const openKeys = defaultOpenKeys(sorted, options);
     return sorted.map((group) => {
       var _a;
       const isOpen = openKeys.has(group.key);
       const detailColumns = collectDetailColumns(group.rows);
       const gridStyle = ` style="--dv-table-cols: ${tableGridTemplate(detailColumns.length)}"`;
-      const body = group.rows.length > 0 ? `<div class="dv-table" role="table"${gridStyle}>${renderTableHead(tableCheckLabel(group.key), detailColumns)}${group.rows.map((row) => renderCheckRow(row, detailColumns)).join("")}</div>` : `<p class="dv-empty">${escapeHtml((_a = group.emptyState) != null ? _a : "No items.")}</p>`;
+      const body = group.knownFaces ? renderKnownFacesBody(group.knownFaces) : group.rows.length > 0 ? `<div class="dv-table" role="table"${gridStyle}>${renderTableHead(tableCheckLabel(group.key), detailColumns)}${group.rows.map((row) => renderCheckRow(row, detailColumns)).join("")}</div>` : `<p class="dv-empty">${escapeHtml((_a = group.emptyState) != null ? _a : "No items.")}</p>`;
       return `<div class="dv-group dv-collapsible${isOpen ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${isOpen ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
@@ -1367,7 +1479,7 @@
     return parts.join("");
   }
   function renderNiInsight(insight, options) {
-    var _a, _b, _c;
+    var _a, _b;
     const isOpen = (options == null ? void 0 : options.open) === true;
     const trendBadge = insight.trendBadge ? renderTag(insight.trendBadge, "default") : "";
     const supporting = insight.supportingMessage ? `<p class="dv-ni2-trend__sub">${escapeHtml(insight.supportingMessage)}</p>` : "";
@@ -1375,8 +1487,7 @@
       (m) => `<div class="dv-detail-row"><span class="dv-detail-label">${escapeHtml(m.label)}</span><span class="dv-detail-value">${escapeHtml(m.value)}</span></div>`
     );
     const transactions = (_a = insight.transactions) != null ? _a : [];
-    const evidenceEmptyMessage = (_b = insight.evidenceEmptyMessage) != null ? _b : "No related transactions were found for this signal.";
-    const showLabel = (_c = insight.showTransactionsLabel) != null ? _c : "View transactions";
+    const showLabel = (_b = insight.showTransactionsLabel) != null ? _b : "View transactions";
     const hideLabel = showLabel.replace(/^Show\s+/i, "Hide ").replace(/^View\s+/i, "Hide ");
     const evidenceOpen = transactions.length > 0 && (options == null ? void 0 : options.open) === true;
     const txnRows = transactions.map(renderTxnRow).join("");
@@ -1397,10 +1508,7 @@
     ])}
     ${txnRows}
   </div>
-</div>` : `<div class="dv-ni2-evidence">
-  <span class="dv-ni2-evidence-label">Evidence</span>
-  <p class="dv-empty dv-ni2-evidence-empty">${escapeHtml(evidenceEmptyMessage)}</p>
-</div>`;
+</div>` : "";
     return `<div class="dv-acc dv-collapsible${isOpen ? " dv-collapsible--open" : ""}" data-insight-id="${escapeHtml(insight.id)}">
   <button class="dv-acc__header dv-collapsible__header" type="button" aria-expanded="${isOpen ? "true" : "false"}">
     <span class="dv-acc__title">${escapeHtml(insight.title)}</span>
@@ -1441,29 +1549,69 @@
   <div class="dv-collapsible__body"${open ? "" : " hidden"}>${body}</div>
 </div>`;
   }
-  var NI_GROUP_SEVERITY = {
-    Flagged: 0,
-    Clean: 1
+  var NI_SUMMARY_VARIANT = {
+    clear: "success",
+    info: "info",
+    flagged: "error"
   };
-  function sortNiGroups(groups) {
-    return [...groups].sort((a, b) => {
-      var _a, _b;
-      const aHasRows = a.insights.length > 0 ? 0 : 1;
-      const bHasRows = b.insights.length > 0 ? 0 : 1;
-      if (aHasRows !== bHasRows) return aHasRows - bHasRows;
-      return ((_a = NI_GROUP_SEVERITY[a.label]) != null ? _a : 99) - ((_b = NI_GROUP_SEVERITY[b.label]) != null ? _b : 99);
-    });
+  var NI_SUMMARY_ICON = {
+    clear: ICON_CIRCLE_CHECK,
+    info: ICON_CIRCLE_INFO,
+    flagged: ICON_DIAMOND_EXCLAMATION
+  };
+  function renderNiSummaryDriver(driver) {
+    var _a;
+    const text = `<span class="dv-ni-summary__driver-text">${escapeHtml(driver.text)}</span>`;
+    if (!driver.targetId) {
+      return `<div class="dv-ni-summary__driver">${text}</div>`;
+    }
+    const action = `<span class="dv-ni-summary__driver-action"><span class="dv-ni-summary__link">${escapeHtml((_a = driver.linkLabel) != null ? _a : "Go to section")}</span><span class="dv-ni-summary__arrow" aria-hidden="true">${ICON_ARROW_RIGHT}</span></span>`;
+    return `<button type="button" class="dv-ni-summary__driver dv-ni-summary__driver--link" data-ni-target="${escapeHtml(driver.targetId)}" title="${escapeHtml(driver.text)}" aria-label="${escapeHtml(driver.text)} \u2014 go to section">${text}${action}</button>`;
+  }
+  function renderNiSummary(summary, cleanIds) {
+    const announcement = `<div class="tds-announcement tds-announcement--${NI_SUMMARY_VARIANT[summary.status]}">
+  <span class="tds-announcement__icon" aria-hidden="true">${NI_SUMMARY_ICON[summary.status]}</span>
+  <div class="tds-announcement__content">
+    <p class="tds-announcement__title">${escapeHtml(summary.title)}</p>
+    <p class="tds-announcement__message">${escapeHtml(summary.message)}</p>
+  </div>
+</div>`;
+    const drivers = summary.drivers.filter(
+      (d) => !d.targetId || !cleanIds.has(d.targetId)
+    );
+    if (drivers.length === 0) return announcement;
+    const cards = drivers.map(renderNiSummaryDriver).join("");
+    return `${announcement}
+<div class="dv-ni-summary__drivers">
+  <p class="dv-ni-summary__drivers-title">Key Drivers</p>
+  <div class="dv-ni-summary__grid">${cards}</div>
+</div>`;
+  }
+  var NI_CLEAN_CHECKS = [
+    "Transactions Checked",
+    "Identities Compared",
+    "Documents Cross-Referenced",
+    "Devices Reviewed"
+  ];
+  function renderNiWhatWeChecked() {
+    const rows = NI_CLEAN_CHECKS.map((label, index) => {
+      const divider = index < NI_CLEAN_CHECKS.length - 1 ? " tds-action-list-item--divider" : "";
+      return `<div class="tds-action-list-item tds-action-list-item--md${divider} dv-ni-checked__row">
+    <span class="tds-action-list-item__content"><span class="tds-action-list-item__label">${escapeHtml(label)}</span></span>
+  </div>`;
+    }).join("");
+    return `<section class="dv-ni-checked" aria-label="What we checked">
+  <p class="dv-ni-checked__header">What we checked</p>
+  <div class="dv-ni-checked__list">${rows}</div>
+</section>`;
   }
   function renderNetworkInsights(ni) {
-    const groups = sortNiGroups([
-      { label: "Flagged", insights: ni.flagged },
-      { label: "Clean", insights: ni.clean }
-    ]);
-    const firstWithContent = groups.findIndex((group) => group.insights.length > 0);
-    const openIndex = firstWithContent >= 0 ? firstWithContent : 0;
-    return groups.map(
-      (group, index) => renderNiGroup(group.label, group.insights, index === openIndex)
-    ).join("");
+    const cleanIds = new Set(ni.clean.map((insight) => insight.id));
+    const summary = ni.summary ? renderNiSummary(ni.summary, cleanIds) : "";
+    if (ni.flagged.length > 0) {
+      return summary + renderNiGroup("Flagged", ni.flagged, true);
+    }
+    return summary + renderNiWhatWeChecked();
   }
   function diInsightMarkup(row) {
     if (row.insight === "Risk") {
@@ -1514,9 +1662,10 @@
     const detailsRows = di.deviceDetails.map(
       (d) => `<div class="dv-detail-row"><span class="dv-detail-label">${escapeHtml(d.label)}</span><span class="dv-detail-value">${escapeHtml(d.value)}</span></div>`
     ).join("");
-    const evidenceGroups = normalizeDiEvidence(di.evidence);
-    const defaultOpenIndex = evidenceGroups.findIndex((group) => group.rows.length > 0);
-    const openIndex = defaultOpenIndex >= 0 ? defaultOpenIndex : 0;
+    const evidenceGroups = normalizeDiEvidence(di.evidence).filter(
+      (group) => group.rows.length > 0
+    );
+    const openIndex = 0;
     const evidence = evidenceGroups.map((group, index) => renderDiEvidenceGroup(group, index === openIndex)).join("");
     return `<div class="dv-di-top">
   <div class="dv-di-summary">
@@ -1596,6 +1745,28 @@ ${evidence}`;
   function isScenarioId(value) {
     return Object.prototype.hasOwnProperty.call(scenarioData, value);
   }
+  var MATCHED_FACE_PLACEHOLDER = '<svg viewBox="0 0 120 132" role="img" aria-label="Matched face placeholder" preserveAspectRatio="xMidYMid meet"><rect width="120" height="132" fill="transparent"/><circle cx="60" cy="52" r="26" fill="var(--border-strong)"/><path d="M18 124c0-22 19-36 42-36s42 14 42 36z" fill="var(--border-strong)"/></svg>';
+  function findKnownFacesInfo(groups) {
+    const group = groups.find(
+      (g) => {
+        var _a, _b;
+        return (g.key === "known-faces" || g.key === "match") && ((_b = (_a = g.knownFaces) == null ? void 0 : _a.matches.length) != null ? _b : 0) > 0;
+      }
+    );
+    return group == null ? void 0 : group.knownFaces;
+  }
+  function renderMatchedFaces(kf) {
+    const thumbs = kf.matches.map(
+      (m, i) => `<div class="dv-matched-faces__thumb">
+    <span class="dv-matched-faces__badge">${i + 1}</span>
+    <div class="dv-matched-faces__media" aria-label="Matched face ${i + 1}, ${escapeHtml(m.similarity)} similar">${MATCHED_FACE_PLACEHOLDER}</div>
+  </div>`
+    ).join("");
+    const remaining = kf.matchedCount - kf.matches.length;
+    const more = remaining > 0 ? `<div class="dv-matched-faces__more"><span class="dv-matched-faces__more-icon" aria-hidden="true">${ICON_PLUS}</span>${remaining} more</div>` : "";
+    return `<p class="dv-matched-faces__label">Matched against ${kf.matchedCount} faces</p>
+<div class="dv-matched-faces__grid">${thumbs}${more}</div>`;
+  }
   function applyScenario(root, config) {
     var _a, _b;
     const q = (sel) => root.querySelector(sel);
@@ -1646,6 +1817,17 @@ ${evidence}`;
       q("#dv-biometrics-badges"),
       renderHeaderBadges(deriveHeaderBadges(config.biometrics.groups))
     );
+    const matchedFaces = q("#dv-matched-faces");
+    if (matchedFaces instanceof HTMLElement) {
+      const kf = findKnownFacesInfo(config.biometrics.groups);
+      if (kf && kf.matches.length > 0) {
+        matchedFaces.innerHTML = renderMatchedFaces(kf);
+        matchedFaces.hidden = false;
+      } else {
+        matchedFaces.innerHTML = "";
+        matchedFaces.hidden = true;
+      }
+    }
     setHtml(
       q("#dv-datamatch-indicators"),
       renderIndicatorGroups(config.dataMatch.groups)
@@ -1659,6 +1841,12 @@ ${evidence}`;
     if (networkBadge instanceof HTMLElement) {
       networkBadge.className = `${toneClass(config.networkInsights.headerTone)} dv-ni-pill`;
       networkBadge.innerHTML = renderNetworkHeaderBadge(config.networkInsights);
+    }
+    const niExpandBtn = q(
+      '.dv-tabpanel[data-tab="network-insights"] .dv-expand-all'
+    );
+    if (niExpandBtn instanceof HTMLElement) {
+      niExpandBtn.hidden = config.networkInsights.flagged.length === 0;
     }
     const deviceBody = q("#dv-device-body");
     if (deviceBody instanceof HTMLElement) {
@@ -1970,6 +2158,27 @@ ${evidence}`;
       updateExpandAllButton(btn);
     });
   }
+  function wireNiSummaryDrivers() {
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const card = target.closest("[data-ni-target]");
+      if (!(card instanceof HTMLElement)) return;
+      const id = card.getAttribute("data-ni-target");
+      if (!id) return;
+      const acc = document.querySelector(
+        `.dv-acc[data-insight-id="${CSS.escape(id)}"]`
+      );
+      if (!(acc instanceof HTMLElement)) return;
+      const group = acc.closest(".dv-group.dv-collapsible");
+      if (group) setCollapsibleOpen(group, true);
+      setCollapsibleOpen(acc, true);
+      const panel = acc.closest(".dv-tabpanel");
+      const expandBtn = panel == null ? void 0 : panel.querySelector(".dv-expand-all");
+      if (expandBtn) updateExpandAllButton(expandBtn);
+      acc.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
   function wireTxnToggles() {
     document.addEventListener("click", (event) => {
       const target = event.target;
@@ -2235,6 +2444,7 @@ ${evidence}`;
     wireTabs();
     wireCollapsibles();
     wireExpandAll();
+    wireNiSummaryDrivers();
     wireTxnToggles();
     wireDataTableSort();
     wireDeviceInfoToggle();
