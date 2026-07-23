@@ -28,6 +28,7 @@ import "../../../../../Components/progress-indicator/progress-indicator.css";
 import "../../../../../Components/radio-card/radio-card.css";
 import "../../../../../Components/radio-group/radio-group.css";
 import "../../../../../Components/risk-category-card/risk-category-card.css";
+import "../../../../../Components/risk-category-strip/risk-category-strip.css";
 import "../../../../../Components/score-gauge/score-gauge.css";
 import "../../../../../Components/section-header/section-header.css";
 import "../../../../../Components/select/combobox.css";

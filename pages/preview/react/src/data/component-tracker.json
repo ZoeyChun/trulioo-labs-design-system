@@ -1,5 +1,5 @@
 {
-  "lastBuiltAt": "2026-07-22T23:01:46.611Z",
+  "lastBuiltAt": "2026-07-23T19:54:52.519Z",
   "summary": {
     "totalComponents": 49,
     "cssDone": 45,
@@ -20,9 +20,9 @@
         "percent": 32
       },
       "dv": {
-        "used": 9,
+        "used": 15,
         "total": 44,
-        "percent": 20
+        "percent": 34
       }
     }
   },
@@ -129,7 +129,7 @@
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": true,
-      "usedInDV": false
+      "usedInDV": true
     },
     {
       "id": "checkbox",
@@ -233,7 +233,7 @@
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": true,
-      "usedInDV": false
+      "usedInDV": true
     },
     {
       "id": "radio-group",
@@ -268,7 +268,7 @@
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": true,
-      "usedInDV": false
+      "usedInDV": true
     },
     {
       "id": "field-label",
@@ -639,7 +639,7 @@
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": false,
-      "usedInDV": false
+      "usedInDV": true
     },
     {
       "id": "stat-card",
@@ -689,7 +689,7 @@
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": false,
-      "usedInDV": false
+      "usedInDV": true
     },
     {
       "id": "accordion",
@@ -725,7 +725,7 @@
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": false,
-      "usedInDV": false
+      "usedInDV": true
     },
     {
       "id": "step-progress",
@@ -831,7 +831,7 @@
       ],
       "subComponents": "DropdownPanel, CounterLabel",
       "figmaNodeId": "836:13511",
-      "notes": "Selected trigger shows value + xmark clear; multi adds +N counter; open multi reverts label to Filter",
+      "notes": "Selected trigger shows value + xmark clear; counter only with 2+ active filters (+N); clear resets all selections via tds-filter-clear",
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": false,
@@ -842,14 +842,14 @@
       "name": "SortButton",
       "category": "Utility",
       "figmaStatus": "Done",
-      "figmaVariants": 2,
+      "figmaVariants": 4,
       "cssFile": "data-table/sort-button/sort-button.css",
       "classPrefixes": [
         "tds-sort-button"
       ],
       "subComponents": "DropdownPanel",
-      "figmaNodeId": "836:12519",
-      "notes": "Nested under data-table/",
+      "figmaNodeId": "2191:46183",
+      "notes": "Selected trigger shows sort value + xmark clear; open selected reverts label to Sort; clear resets via tds-sort-clear",
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": false,
@@ -1008,5 +1008,7 @@
       "notes": "For nested entity structures"
     }
   ],
-  "warnings": []
+  "warnings": [
+    "Unlisted component folder in Components/: risk-category-strip"
+  ]
 }

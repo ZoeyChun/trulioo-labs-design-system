@@ -8,14 +8,31 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+ICONS_DIR = ROOT / "Components/side-nav/icons"
 
-DOC_ICON = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><circle cx="6" cy="7.5" r="1.5"/><path d="M3.5 11.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5"/><path d="M10 7h2.5M10 9.5h2.5"/></svg>'
-BANK_ICON = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v8H2z"/><path d="M5 7v2M8 6v4M11 7v2M4 4V2h8v2"/></svg>'
-EID_ICON = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg>'
+
+def load_icon(filename: str) -> str:
+    """Load a sidebar sub-item icon SVG from Components/side-nav/icons/."""
+    return re.sub(r"\s+", " ", ICONS_DIR.joinpath(filename).read_text().strip())
+
+
+DOC_ICON = load_icon("document-verification.svg")
+BANK_ICON = load_icon("bank-verification.svg")
+EID_ICON = load_icon("electronic-id.svg")
 HOME_ICON = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>'
-UBO_ICON = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.5" cy="5" r="2.5"/><path d="M1 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="11.5" cy="5.5" r="2"/><path d="M15 13c0-2 1.5-3 0-3-1 0-2.5 1-2.5 3"/></svg>'
-POLICY_ICON = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1.5h8a1 1 0 0 1 1 1v12l-5-2.5-5 2.5v-12a1 1 0 0 1 1-1z"/><path d="M6 6l1.5 1.5L10 5"/></svg>'
-SEARCH_ICON = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>'
+UBO_ICON = load_icon("ubo-agent.svg")
+POLICY_ICON = load_icon("policy-review.svg")
+SEARCH_ICON = load_icon("deep-search.svg")
+
+SUB_ITEM_ICON_BY_LABEL = {
+    "UBO Agent": UBO_ICON,
+    "Policy Review": POLICY_ICON,
+    "Deep Search": SEARCH_ICON,
+    "Document Verification": DOC_ICON,
+    "Bank Verification": BANK_ICON,
+    "Electronic ID": EID_ICON,
+}
+
 CHEVRON_UP = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg>'
 CHEVRON_RIGHT = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>'
 CHEVRONS_LEFT = '<svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 4 6 8l4 4M6 4 2 8l4 4"/></svg>'
@@ -208,6 +225,22 @@ def replace_sidenav(html: str, markup: str) -> str:
     raise ValueError("TDS SideNav block not found")
 
 
+def sync_sub_item_icons(html: str) -> str:
+    for label, icon in SUB_ITEM_ICON_BY_LABEL.items():
+        pat = (
+            rf'(<span class="tds-side-nav__sub-item-icon"(?: aria-hidden="true")?>)'
+            rf'\s*<svg[^>]*>(?:(?!</span>)[\s\S])*?</svg>'
+            rf'(\s*</span>\s*<span class="tds-side-nav__sub-item-text">{re.escape(label)}</span>)'
+        )
+        html = re.sub(
+            pat,
+            lambda m, ic=icon: m.group(1) + ic + m.group(2),
+            html,
+            flags=re.DOTALL,
+        )
+    return html
+
+
 def sync_pages() -> None:
     pages = {
         "document-verification": ROOT / "pages/document-verification/index.html",
@@ -218,6 +251,20 @@ def sync_pages() -> None:
         markup = build(active_page=active, collapsed=True, kyc_links=True)
         path.write_text(replace_sidenav(html, markup))
         print(f"synced {path.relative_to(ROOT)}")
+
+    extra_pages = [
+        ROOT / "pages/document-verification/index_v2.html",
+        ROOT / "pages/KYB Results/index.html",
+        ROOT / "pages/unified-intelligence-home/index.html",
+        ROOT / "pages/unified-intelligence-home/partials/global-nav.html",
+        ROOT / "pages/preview/index.html",
+    ]
+    for path in extra_pages:
+        if not path.exists():
+            continue
+        html = sync_sub_item_icons(path.read_text())
+        path.write_text(html)
+        print(f"synced icons in {path.relative_to(ROOT)}")
 
 
 def sync_preview() -> None:

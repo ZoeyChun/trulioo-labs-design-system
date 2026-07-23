@@ -224,15 +224,18 @@
     window.addEventListener("scroll", repositionAll, true);
   }
 
-  function setFilterButtonOpenState(menu, isOpen) {
+  function setToolbarMenuOpenState(menu, isOpen) {
     if (menu && menu.classList.contains("tds-filter-button")) {
       menu.classList.toggle("tds-filter-button--open", isOpen);
+    }
+    if (menu && menu.classList.contains("tds-sort-button")) {
+      menu.classList.toggle("tds-sort-button--open", isOpen);
     }
   }
 
   function resetFilterButtonSelections(menu, panel) {
     menu.classList.remove("tds-filter-button--selected", "tds-filter-button--multi");
-    setFilterButtonOpenState(menu, false);
+    setToolbarMenuOpenState(menu, false);
 
     var defaultItem = panel.querySelector("[data-tds-filter-default]");
     var menuButtons = panel.querySelectorAll("button.tds-action-list-item");
@@ -253,12 +256,39 @@
     });
   }
 
+  function resetSortButtonSelections(menu, panel) {
+    menu.classList.remove("tds-sort-button--selected");
+    setToolbarMenuOpenState(menu, false);
+
+    var defaultItem = panel.querySelector("[data-tds-sort-default]");
+    var menuButtons = panel.querySelectorAll("button.tds-action-list-item");
+
+    menuButtons.forEach(function (item) {
+      var selected = defaultItem ? item === defaultItem : item === menuButtons[0];
+      item.classList.toggle("tds-action-list-item--selected", selected);
+      if (item.hasAttribute("aria-checked")) {
+        item.setAttribute("aria-checked", selected ? "true" : "false");
+      }
+      if (item.hasAttribute("aria-selected")) {
+        item.setAttribute("aria-selected", selected ? "true" : "false");
+      }
+    });
+  }
+
   function handleFilterButtonClear(event, menu, panel) {
     event.preventDefault();
     event.stopPropagation();
     close(panel);
     resetFilterButtonSelections(menu, panel);
     menu.dispatchEvent(new CustomEvent("tds-filter-clear", { bubbles: true }));
+  }
+
+  function handleSortButtonClear(event, menu, panel) {
+    event.preventDefault();
+    event.stopPropagation();
+    close(panel);
+    resetSortButtonSelections(menu, panel);
+    menu.dispatchEvent(new CustomEvent("tds-sort-clear", { bubbles: true }));
   }
 
   function initMenus(root, options) {
@@ -277,7 +307,7 @@
       trigger.setAttribute("aria-expanded", "false");
 
       trigger.addEventListener("click", function (event) {
-        if (event.target.closest(".tds-filter-button__clear")) return;
+        if (event.target.closest(".tds-filter-button__clear, .tds-sort-button__clear")) return;
         event.stopPropagation();
         var isOpen = !panel.hidden;
 
@@ -294,7 +324,7 @@
 
         panel.hidden = false;
         trigger.setAttribute("aria-expanded", "true");
-        setFilterButtonOpenState(menu, true);
+        setToolbarMenuOpenState(menu, true);
         open(trigger, panel, {
           align: getAlign(menu),
           viewportPad: options.viewportPad,
@@ -303,7 +333,7 @@
           onClose: function () {
             panel.hidden = true;
             trigger.setAttribute("aria-expanded", "false");
-            setFilterButtonOpenState(menu, false);
+            setToolbarMenuOpenState(menu, false);
           },
         });
       });
@@ -315,14 +345,27 @@
       });
 
       if (menu.classList.contains("tds-filter-button")) {
-        var clearEl = menu.querySelector(".tds-filter-button__clear");
-        if (clearEl && !clearEl.dataset.tdsClearBound) {
-          clearEl.dataset.tdsClearBound = "1";
-          clearEl.addEventListener("mousedown", function (event) {
+        var filterClearEl = menu.querySelector(".tds-filter-button__clear");
+        if (filterClearEl && !filterClearEl.dataset.tdsClearBound) {
+          filterClearEl.dataset.tdsClearBound = "1";
+          filterClearEl.addEventListener("mousedown", function (event) {
             event.stopPropagation();
           });
-          clearEl.addEventListener("click", function (event) {
+          filterClearEl.addEventListener("click", function (event) {
             handleFilterButtonClear(event, menu, panel);
+          });
+        }
+      }
+
+      if (menu.classList.contains("tds-sort-button")) {
+        var sortClearEl = menu.querySelector(".tds-sort-button__clear");
+        if (sortClearEl && !sortClearEl.dataset.tdsClearBound) {
+          sortClearEl.dataset.tdsClearBound = "1";
+          sortClearEl.addEventListener("mousedown", function (event) {
+            event.stopPropagation();
+          });
+          sortClearEl.addEventListener("click", function (event) {
+            handleSortButtonClear(event, menu, panel);
           });
         }
       }

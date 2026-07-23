@@ -533,13 +533,13 @@ components:
     name: SortButton
     category: Utility
     figmaStatus: Done
-    figmaVariants: 2
+    figmaVariants: 4
     cssFile: data-table/sort-button/sort-button.css
     classPrefixes:
       - tds-sort-button
     subComponents: DropdownPanel
-    figmaNodeId: "836:12519"
-    notes: Nested under data-table/
+    figmaNodeId: "2191:46183"
+    notes: Selected trigger shows sort value + xmark clear; open selected reverts label to Sort; clear resets via tds-sort-clear
 
 planned:
   -

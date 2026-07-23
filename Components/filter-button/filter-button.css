@@ -64,11 +64,11 @@
 
 /* --- Overflow counter (+N); only when 2+ filters are active --- */
 
-.tds-filter-button__counter {
+.tds-filter-button .tds-filter-button__counter.tds-counter {
   display: none;
 }
 
-.tds-filter-button--selected.tds-filter-button--multi .tds-filter-button__counter {
+.tds-filter-button--selected.tds-filter-button--multi .tds-filter-button__counter.tds-counter {
   display: inline-flex;
 }
 

@@ -66,6 +66,16 @@
   function openSignalCategory(categoryId) {
     setActiveTab("signals");
 
+    document.querySelectorAll(".tds-risk-category-strip-card[data-kyb-signal-category]").forEach(function (card) {
+      var isTarget = card.getAttribute("data-kyb-signal-category") === categoryId;
+      card.classList.toggle("tds-risk-category-strip-card--selected", isTarget);
+      if (isTarget) {
+        card.setAttribute("aria-current", "true");
+      } else {
+        card.removeAttribute("aria-current");
+      }
+    });
+
     document.querySelectorAll(".kyb-signal-category[data-kyb-signal-category]").forEach(function (accordion) {
       var isTarget = accordion.getAttribute("data-kyb-signal-category") === categoryId;
       setAccordionExpanded(accordion, isTarget);
@@ -80,7 +90,7 @@
   }
 
   function initRiskCategoryCards() {
-    document.querySelectorAll(".kyb-risk-category-card[data-kyb-signal-category]").forEach(function (card) {
+    document.querySelectorAll("[data-kyb-signal-category].kyb-risk-category-card, [data-kyb-signal-category].kyb-signal-category-card").forEach(function (card) {
       if (card.dataset.kybBound) return;
       card.dataset.kybBound = "1";
 
@@ -128,7 +138,7 @@
       });
     });
 
-    setActiveTab(shell.getAttribute("data-active-tab") || "ownership");
+    setActiveTab(shell.getAttribute("data-active-tab") || "signals");
   }
 
   function initTabsScroll() {
@@ -566,6 +576,8 @@
   var SIGNAL_IMPACT_SEVERITY = { positive: 0, neutral: 1, negative: 2 };
   var SIGNAL_APPLICABLE_ORDER = { yes: 0, no: 1, unknown: 2 };
   var SIGNAL_DATA_ORDER = { present: 0, missing: 1 };
+  var SIGNALS_DEFAULT_SORT = "impact-low-high";
+  var MONITORING_DEFAULT_SORT = "date-newest";
 
   function createDefaultSignalFilters() {
     return {
@@ -581,28 +593,39 @@
     };
   }
 
-  function getActiveSignalFilterLabels(section, filters) {
+  function getSelectedSignalFilterLabels(section) {
     var labels = [];
+    var panel = section.querySelector("[data-kyb-signals-filter] .tds-dropdown-panel");
+    if (!panel) return labels;
 
-    section.querySelectorAll("[data-kyb-filter-applicable]").forEach(function (input) {
-      if (input.checked) return;
-      var label = input.closest(".tds-action-list-item");
-      labels.push(label ? label.textContent.trim() : input.getAttribute("data-kyb-filter-applicable"));
-    });
+    var currentGroup = "";
+    Array.from(panel.children).forEach(function (child) {
+      if (child.classList.contains("tds-dropdown-panel__header")) {
+        currentGroup = child.textContent.trim();
+        return;
+      }
+      if (child.classList.contains("tds-dropdown-panel__divider")) return;
+      if (!child.classList.contains("tds-action-list-item")) return;
 
-    section.querySelectorAll("[data-kyb-filter-data]").forEach(function (input) {
-      if (input.checked) return;
-      var label = input.closest(".tds-action-list-item");
-      labels.push(label ? label.textContent.trim() : input.getAttribute("data-kyb-filter-data"));
-    });
+      var input = child.querySelector("input[type='checkbox']");
+      if (!input || !input.checked) return;
 
-    section.querySelectorAll("[data-kyb-filter-category]").forEach(function (input) {
-      if (input.checked) return;
-      var label = input.closest(".tds-action-list-item");
-      labels.push(label ? label.textContent.trim() : input.getAttribute("data-kyb-filter-category"));
+      var optionNode = child.querySelector("span");
+      var optionText = optionNode ? optionNode.textContent.trim() : "";
+      if (!optionText) return;
+
+      labels.push(currentGroup ? currentGroup + ": " + optionText : optionText);
     });
 
     return labels;
+  }
+
+  function isDefaultSignalFilters(section) {
+    var isDefault = true;
+    section.querySelectorAll("[data-kyb-filter-applicable], [data-kyb-filter-data], [data-kyb-filter-category]").forEach(function (input) {
+      if (!input.checked) isDefault = false;
+    });
+    return isDefault;
   }
 
   function resetSignalFilters(section, state) {
@@ -612,34 +635,54 @@
     });
   }
 
+  function resetSignalSort(section, state) {
+    state.sort = SIGNALS_DEFAULT_SORT;
+    state.sortActive = false;
+    section.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
+      var isDefault = item.hasAttribute("data-tds-sort-default");
+      item.classList.toggle("tds-action-list-item--selected", isDefault);
+      item.setAttribute("aria-checked", isDefault ? "true" : "false");
+    });
+  }
+
   function updateSignalsToolbarControls(section, state) {
     var filterButton = section.querySelector("[data-kyb-signals-filter]");
     if (filterButton) {
-      var activeLabels = getActiveSignalFilterLabels(section, state.filters);
-      var activeCount = activeLabels.length;
+      var isDefault = isDefaultSignalFilters(section);
+      var selectedLabels = isDefault ? [] : getSelectedSignalFilterLabels(section);
+      var selectedCount = selectedLabels.length;
+      var hasActiveFilters = !isDefault && selectedCount > 0;
 
-      filterButton.classList.toggle("tds-filter-button--selected", activeCount > 0);
-      filterButton.classList.toggle("tds-filter-button--multi", activeCount > 1);
+      filterButton.classList.toggle("tds-filter-button--selected", hasActiveFilters);
+      filterButton.classList.toggle("tds-filter-button--multi", hasActiveFilters && selectedCount > 1);
 
       var valueLabel = filterButton.querySelector("[data-kyb-filter-value]");
-      if (valueLabel) valueLabel.textContent = activeLabels[0] || "Filter";
+      if (valueLabel) valueLabel.textContent = hasActiveFilters ? selectedLabels[0] : "";
 
       var counter = filterButton.querySelector("[data-kyb-filter-count]");
-      if (counter && activeCount > 1) {
-        counter.textContent = "+" + (activeCount - 1);
+      if (counter) {
+        counter.textContent = hasActiveFilters && selectedCount > 1 ? "+" + (selectedCount - 1) : "";
       }
     }
 
     var sortButton = section.querySelector("[data-kyb-signals-sort]");
     if (sortButton) {
+      sortButton.classList.toggle("tds-sort-button--selected", state.sortActive);
+
       var selectedOption = section.querySelector(
         '[data-kyb-signal-sort="' + state.sort + '"] .tds-action-list-item__label'
       );
-      var sortLabel = section.querySelector("[data-kyb-sort-label]");
-      if (sortLabel && selectedOption) {
-        sortLabel.textContent = selectedOption.textContent.trim();
+      var sortLabel = sortButton.querySelector("[data-kyb-sort-label]");
+      if (sortLabel) {
+        sortLabel.textContent =
+          state.sortActive && selectedOption ? selectedOption.textContent.trim() : "";
       }
-      sortButton.classList.add("tds-sort-button--selected");
+
+      section.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
+        var selected = state.sortActive && item.getAttribute("data-kyb-signal-sort") === state.sort;
+        item.classList.toggle("tds-action-list-item--selected", selected);
+        item.setAttribute("aria-checked", selected ? "true" : "false");
+      });
     }
   }
 
@@ -892,7 +935,8 @@
 
     var state = {
       impactFilter: "all",
-      sort: "impact-low-high",
+      sort: SIGNALS_DEFAULT_SORT,
+      sortActive: false,
       filters: createDefaultSignalFilters(),
     };
 
@@ -961,16 +1005,21 @@
       });
     }
 
+    var signalsSortButton = section.querySelector("[data-kyb-signals-sort]");
+    if (signalsSortButton && !signalsSortButton.dataset.kybSortClearBound) {
+      signalsSortButton.dataset.kybSortClearBound = "1";
+      signalsSortButton.addEventListener("tds-sort-clear", function () {
+        resetSignalSort(section, state);
+        applySignalsView(section, state);
+      });
+    }
+
     section.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
       if (item.dataset.kybBound) return;
       item.dataset.kybBound = "1";
       item.addEventListener("click", function () {
-        state.sort = item.getAttribute("data-kyb-signal-sort") || "impact-low-high";
-        section.querySelectorAll("[data-kyb-signal-sort]").forEach(function (option) {
-          var selected = option === item;
-          option.classList.toggle("tds-action-list-item--selected", selected);
-          option.setAttribute("aria-checked", selected ? "true" : "false");
-        });
+        state.sortActive = true;
+        state.sort = item.getAttribute("data-kyb-signal-sort") || SIGNALS_DEFAULT_SORT;
         applySignalsView(section, state);
       });
     });
@@ -1038,21 +1087,30 @@
     var tableContainer = section.querySelector("[data-kyb-monitoring-table]");
     if (!tableContainer) return;
 
-    var empty = section.querySelector(".kyb-monitoring-empty");
+    var tbody = tableContainer.querySelector("tbody");
+    if (!tbody) return;
+
+    section.querySelectorAll("p.kyb-monitoring-empty").forEach(function (node) {
+      node.remove();
+    });
+
+    var emptyRow = tbody.querySelector("[data-kyb-monitoring-empty-row]");
     if (visibleCount === 0) {
-      tableContainer.hidden = true;
-      if (!empty) {
-        empty = document.createElement("p");
-        empty.className = "kyb-monitoring-empty";
-        empty.textContent = "No alerts match this filter";
-        tableContainer.insertAdjacentElement("afterend", empty);
+      if (!emptyRow) {
+        emptyRow = document.createElement("tr");
+        emptyRow.setAttribute("data-kyb-monitoring-empty-row", "");
+        var cell = document.createElement("td");
+        cell.colSpan = 4;
+        cell.className = "kyb-monitoring-empty";
+        cell.textContent = "No alerts match this filter";
+        emptyRow.appendChild(cell);
       }
-      empty.hidden = false;
+      emptyRow.hidden = false;
+      tbody.appendChild(emptyRow);
       return;
     }
 
-    tableContainer.hidden = false;
-    if (empty) empty.hidden = true;
+    if (emptyRow) emptyRow.hidden = true;
   }
 
   function setSelectedMonitoringTab(section, activeTab) {
@@ -1060,6 +1118,25 @@
       var isActive = tab === activeTab;
       tab.classList.toggle("tds-filter-tab--selected", isActive);
       tab.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+  }
+
+  function resetMonitoringFilter(section, state) {
+    state.statusFilter = "all";
+    section.querySelectorAll("[data-kyb-monitoring-filter] [data-kyb-monitoring-status]").forEach(function (item) {
+      var isDefault = item.hasAttribute("data-tds-filter-default");
+      item.classList.toggle("tds-action-list-item--selected", isDefault);
+      item.setAttribute("aria-checked", isDefault ? "true" : "false");
+    });
+  }
+
+  function resetMonitoringSort(section, state) {
+    state.sort = MONITORING_DEFAULT_SORT;
+    state.sortActive = false;
+    section.querySelectorAll("[data-kyb-monitoring-sort-option]").forEach(function (item) {
+      var isDefault = item.hasAttribute("data-tds-sort-default");
+      item.classList.toggle("tds-action-list-item--selected", isDefault);
+      item.setAttribute("aria-checked", isDefault ? "true" : "false");
     });
   }
 
@@ -1074,8 +1151,8 @@
         '[data-kyb-monitoring-status="' + state.statusFilter + '"] .tds-action-list-item__label'
       );
       var valueLabel = filterButton.querySelector("[data-kyb-monitoring-filter-value]");
-      if (valueLabel && selectedOption && isFiltered) {
-        valueLabel.textContent = selectedOption.textContent.trim();
+      if (valueLabel) {
+        valueLabel.textContent = isFiltered && selectedOption ? selectedOption.textContent.trim() : "";
       }
     }
 
@@ -1087,18 +1164,20 @@
 
     var sortButton = section.querySelector("[data-kyb-monitoring-sort]");
     if (sortButton) {
+      sortButton.classList.toggle("tds-sort-button--selected", state.sortActive);
+
       var selectedOption = section.querySelector(
         '[data-kyb-monitoring-sort-option="' + state.sort + '"] .tds-action-list-item__label'
       );
-      var sortLabel = section.querySelector("[data-kyb-monitoring-sort-label]");
-      if (sortLabel && selectedOption) {
-        sortLabel.textContent = selectedOption.textContent.trim();
+      var sortLabel = sortButton.querySelector("[data-kyb-monitoring-sort-label]");
+      if (sortLabel) {
+        sortLabel.textContent =
+          state.sortActive && selectedOption ? selectedOption.textContent.trim() : "";
       }
-      sortButton.classList.add("tds-sort-button--selected");
     }
 
     section.querySelectorAll("[data-kyb-monitoring-sort-option]").forEach(function (item) {
-      var selected = item.getAttribute("data-kyb-monitoring-sort-option") === state.sort;
+      var selected = state.sortActive && item.getAttribute("data-kyb-monitoring-sort-option") === state.sort;
       item.classList.toggle("tds-action-list-item--selected", selected);
       item.setAttribute("aria-checked", selected ? "true" : "false");
     });
@@ -1131,7 +1210,8 @@
     var state = {
       categoryTab: "all",
       statusFilter: "all",
-      sort: "date-newest",
+      sort: MONITORING_DEFAULT_SORT,
+      sortActive: false,
     };
 
     var order = 0;
@@ -1165,7 +1245,16 @@
     if (monitoringFilterButton && !monitoringFilterButton.dataset.kybFilterClearBound) {
       monitoringFilterButton.dataset.kybFilterClearBound = "1";
       monitoringFilterButton.addEventListener("tds-filter-clear", function () {
-        state.statusFilter = "all";
+        resetMonitoringFilter(section, state);
+        applyMonitoringView(section, state);
+      });
+    }
+
+    var monitoringSortButton = section.querySelector("[data-kyb-monitoring-sort]");
+    if (monitoringSortButton && !monitoringSortButton.dataset.kybSortClearBound) {
+      monitoringSortButton.dataset.kybSortClearBound = "1";
+      monitoringSortButton.addEventListener("tds-sort-clear", function () {
+        resetMonitoringSort(section, state);
         applyMonitoringView(section, state);
       });
     }
@@ -1174,7 +1263,8 @@
       if (item.dataset.kybBound) return;
       item.dataset.kybBound = "1";
       item.addEventListener("click", function () {
-        state.sort = item.getAttribute("data-kyb-monitoring-sort-option") || "date-newest";
+        state.sortActive = true;
+        state.sort = item.getAttribute("data-kyb-monitoring-sort-option") || MONITORING_DEFAULT_SORT;
         applyMonitoringView(section, state);
       });
     });
