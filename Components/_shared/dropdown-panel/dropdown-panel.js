@@ -67,6 +67,38 @@
     return null;
   }
 
+  /** Ancestors with filter/transform/backdrop-filter make fixed coords relative to them, not the viewport. */
+  function getFixedContainingBlock(element) {
+    var node = element.parentElement;
+    while (node && node !== document.documentElement) {
+      var style = getComputedStyle(node);
+      if (
+        style.transform !== "none" ||
+        style.perspective !== "none" ||
+        style.filter !== "none" ||
+        (style.backdropFilter && style.backdropFilter !== "none") ||
+        (style.webkitBackdropFilter && style.webkitBackdropFilter !== "none") ||
+        style.contain === "paint" ||
+        style.contain === "strict" ||
+        style.contain === "content"
+      ) {
+        return node;
+      }
+      node = node.parentElement;
+    }
+    return null;
+  }
+
+  function toFixedPositionCoords(viewportLeft, viewportTop, element) {
+    var block = getFixedContainingBlock(element);
+    if (!block) return { left: viewportLeft, top: viewportTop };
+    var rect = block.getBoundingClientRect();
+    return {
+      left: viewportLeft - rect.left,
+      top: viewportTop - rect.top,
+    };
+  }
+
   function resetSizing(element) {
     if (!element) return;
     element.style.width = "";
@@ -145,18 +177,20 @@
       sizeEl.style.width = "";
     }
 
-    element.style.left = Math.round(left) + "px";
-    element.style.top = Math.round(topBelow) + "px";
-
     var panelHeight = element.offsetHeight;
+    var viewportTop = topBelow;
     if (panelHeight > availableBelow && availableAbove > availableBelow) {
       maxH = Math.min(maxHeight, Math.max(MIN_HEIGHT, availableAbove));
       sizeEl.style.maxHeight = Math.round(maxH) + "px";
       panelHeight = Math.min(element.offsetHeight, maxH);
-      element.style.top = Math.round(Math.max(viewportPad, triggerRect.top - gap - panelHeight)) + "px";
+      viewportTop = Math.max(viewportPad, triggerRect.top - gap - panelHeight);
     } else {
       sizeEl.style.maxHeight = Math.round(maxH) + "px";
     }
+
+    var coords = toFixedPositionCoords(left, viewportTop, element);
+    element.style.left = Math.round(coords.left) + "px";
+    element.style.top = Math.round(coords.top) + "px";
 
     element.style.visibility = "";
   }

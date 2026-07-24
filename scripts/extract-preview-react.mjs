@@ -62,8 +62,18 @@ function extractSection(html, id) {
     id,
     title: sansEmDash(title),
     desc: sansEmDash(desc),
-    html: sansEmDash(chunk),
+    html: cleanSectionHtml(sansEmDash(chunk), id),
   };
+}
+
+/** Drop tab-panel attrs duplicated by the React shell (panel wrapper + visibility). */
+function cleanSectionHtml(html, id) {
+  return html.replace(
+    new RegExp(
+      `<section class="ds-chapter ds-tab-panel(?: is-active)?" id="${id}" role="tabpanel" aria-labelledby="tab-${id}"(?: hidden)?>`
+    ),
+    '<section class="ds-chapter ds-tab-panel">'
+  );
 }
 
 function extractScript(html) {

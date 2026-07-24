@@ -66,7 +66,7 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  usePreviewInteractions();
+  usePreviewInteractions(activeTab);
 
   return (
     <div

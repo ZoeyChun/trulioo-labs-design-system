@@ -1,0 +1,163 @@
+/* ============================================================
+   RiskCategoryStrip
+   Horizontal row of compact category summary cards for Signals
+   and other wide layouts. Composes: Tag + warning icon.
+
+   Container:
+   <div class="tds-risk-category-strip" role="list">
+
+   Card (interactive):
+   <button type="button" class="tds-risk-category-strip-card" role="listitem">
+     <p class="tds-risk-category-strip-card__title">Category</p>
+     <div class="tds-risk-category-strip-card__score">
+       <span class="tds-risk-category-strip-card__score-value">84</span>
+       <span class="tds-risk-category-strip-card__score-suffix">/100</span>
+     </div>
+     <div class="tds-risk-category-strip-card__meta">
+       <span class="tds-tag tds-tag--sm tds-tag--negative">High Risk</span>
+       <span class="tds-risk-category-strip-card__signals">
+         <span class="tds-risk-category-strip-card__icon" aria-hidden="true">…</span>
+         <span class="tds-risk-category-strip-card__signal-count" aria-label="3 negative signals">3</span>
+       </span>
+     </div>
+   </button>
+   ============================================================ */
+
+.tds-risk-category-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--gap-md);
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 72rem) {
+  .tds-risk-category-strip {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding-bottom: var(--spacing-2);
+  }
+
+  .tds-risk-category-strip-card {
+    flex: 0 0 11.5rem;
+    scroll-snap-align: start;
+  }
+}
+
+/* --- Strip card --- */
+
+.tds-risk-category-strip-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--gap-sm);
+  min-width: 0;
+  margin: 0;
+  padding: var(--padding-md);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background-color: var(--surface-neutral-01);
+  font-family: var(--font-family);
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  color: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tds-risk-category-strip-card:hover {
+  border-color: var(--border-subtle);
+  background-color: var(--surface-neutral-02);
+}
+
+.tds-risk-category-strip-card:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.tds-risk-category-strip-card--selected,
+.tds-risk-category-strip-card[aria-current="true"] {
+  border-color: var(--border-focus);
+  background-color: var(--surface-neutral-02);
+  box-shadow: 0 0 0 1px var(--border-focus);
+}
+
+.tds-risk-category-strip-card__title {
+  margin: 0;
+  min-width: 0;
+  min-height: calc(var(--line-height-sm) * 2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-variation-figma-semibold);
+  color: var(--text-default);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.tds-risk-category-strip-card__score {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.tds-risk-category-strip-card__score-value {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+  font-variation-settings: var(--font-variation-figma-semibold);
+  color: var(--text-default);
+}
+
+.tds-risk-category-strip-card__score-suffix {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-caption);
+}
+
+.tds-risk-category-strip-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  min-width: 0;
+  width: 100%;
+}
+
+.tds-risk-category-strip-card__signals {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  flex-shrink: 0;
+}
+
+.tds-risk-category-strip-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-negative);
+}
+
+.tds-risk-category-strip-card__icon svg,
+.tds-risk-category-strip-card__icon .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.tds-risk-category-strip-card__signal-count {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-description);
+}

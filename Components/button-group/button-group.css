@@ -1,0 +1,37 @@
+/* ============================================================
+   ButtonGroup
+   Figma: ButtonGroup (1952:33320)
+   Types: iconButtons | buttons | mixed
+   Count: 2–5 segments on a neutral track
+   Compose with .tds-btn and .tds-icon-btn children.
+   ============================================================ */
+
+.tds-button-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--padding-xs);
+  background-color: var(--surface-neutral-02);
+  border-radius: var(--radius-card);
+}
+
+.tds-button-group > .tds-icon-btn--secondary {
+  border-color: var(--border-subtle);
+  background-color: var(--surface-neutral-01);
+}
+
+.tds-button-group > .tds-icon-btn--invisible,
+.tds-button-group > .tds-btn--invisible {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.tds-button-group > .tds-btn--secondary {
+  box-shadow: var(--shadow-button-resting);
+}
+
+.tds-button-group > .tds-btn--invisible:hover,
+.tds-button-group > .tds-icon-btn--invisible:hover {
+  background-color: var(--surface-neutral-01);
+}

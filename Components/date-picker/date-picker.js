@@ -15,6 +15,7 @@
     '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11 8L6 3L5.3 3.7L9.6 8L5.3 12.3L6 13L11 8Z" fill="currentColor"/></svg>';
 
   var openContext = null;
+  var globalBound = false;
 
   function pad(n) {
     return String(n).padStart(2, "0");
@@ -218,12 +219,16 @@
   }
 
   function initSinglePicker(picker) {
+    if (picker.dataset.datePickerBound) return;
+
     if (
       picker.classList.contains("tds-date-picker--disabled") ||
       picker.classList.contains("tds-date-picker--readonly")
     ) {
       return;
     }
+
+    picker.dataset.datePickerBound = "1";
 
     var field = picker.querySelector(".tds-date-picker__field");
     var valueEl = picker.querySelector(".tds-date-picker__value");
@@ -309,12 +314,16 @@
   }
 
   function initRangePicker(range) {
+    if (range.dataset.datePickerRangeBound) return;
+
     if (
       range.classList.contains("tds-date-picker-range--disabled") ||
       range.classList.contains("tds-date-picker-range--readonly")
     ) {
       return;
     }
+
+    range.dataset.datePickerRangeBound = "1";
 
     var startPicker = range.querySelector('[data-date-picker-part="start"]');
     var endPicker = range.querySelector('[data-date-picker-part="end"]');
@@ -469,11 +478,15 @@
   document.querySelectorAll("[data-date-picker]").forEach(initSinglePicker);
   document.querySelectorAll("[data-date-picker-range]").forEach(initRangePicker);
 
-  document.addEventListener("click", function () {
-    closeOpenPicker();
-  });
+  if (!globalBound) {
+    globalBound = true;
 
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeOpenPicker();
-  });
+    document.addEventListener("click", function () {
+      closeOpenPicker();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeOpenPicker();
+    });
+  }
 })();

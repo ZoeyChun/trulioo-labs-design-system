@@ -223,6 +223,10 @@
 
 /* --- Calendar popover --- */
 
+.tds-date-picker--open .tds-date-picker__calendar {
+  z-index: 20;
+}
+
 .tds-date-picker__calendar {
   position: relative;
   z-index: 1;

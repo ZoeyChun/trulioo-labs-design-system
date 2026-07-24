@@ -838,6 +838,10 @@ body {
   padding: 28px 32px;
 }
 
+.tds-preview__demos .ds-showcase__canvas--grid {
+  overflow: visible;
+}
+
 .tds-preview__demos .ds-showcase__canvas--menu {
   min-height: 280px;
   padding: 28px 32px 200px;

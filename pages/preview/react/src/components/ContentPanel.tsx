@@ -7,6 +7,8 @@ type ContentPanelProps = {
 };
 
 export function ContentPanel({ section, active }: ContentPanelProps) {
+  const html = section.html.replace(/\.\.\/\.\.\/assets\//g, "/assets/");
+
   return (
     <div
       className={`tds-preview__panel${active ? " is-active" : ""}`}
@@ -18,7 +20,7 @@ export function ContentPanel({ section, active }: ContentPanelProps) {
       <ChapterHeader title={section.title} desc={section.desc} />
       <div
         className="tds-preview__demos"
-        dangerouslySetInnerHTML={{ __html: section.html }}
+        dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>
   );

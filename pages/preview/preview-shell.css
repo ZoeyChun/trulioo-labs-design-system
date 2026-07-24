@@ -525,6 +525,7 @@
 
 .ds-showcase__canvas--grid {
   display: block;
+  overflow: visible;
 }
 
 .ds-showcase__canvas--grid > * {
