@@ -1,4 +1,3 @@
-import { Handle, Position } from '@xyflow/react';
 import type { NodeProps } from '@xyflow/react';
 import { Building2 } from 'lucide-react';
 import { useGraphStore } from '../../../store/graphStore';

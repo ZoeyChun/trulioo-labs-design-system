@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { DEFAULT_COMPLEXITY_PRESET } from '../data/graphPresets';
-import type { GraphStore, GraphEdge, GraphNodeData, ComplexityPresetId } from '../types/graph';
+import type { GraphStore, GraphEdge, ComplexityPresetId } from '../types/graph';
 
 function buildAdjacency(edges: GraphEdge[]) {
   const adjacencyMap = new Map<string, Set<string>>();

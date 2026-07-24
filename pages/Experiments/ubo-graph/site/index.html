@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/trulioo-labs-design-system/pages/Experiments/ubo-graph/site/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script>
+      (function () {
+        var theme = 'dark';
+        try {
+          var stored = localStorage.getItem('ubo-graph-theme');
+          if (stored) {
+            var parsed = JSON.parse(stored);
+            if (parsed.state && (parsed.state.theme === 'light' || parsed.state.theme === 'dark')) {
+              theme = parsed.state.theme;
+            }
+          } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+            theme = 'light';
+          }
+        } catch (e) {}
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+    <title>KYB Investigation — Relationship Network</title>
+    <script type="module" crossorigin src="/trulioo-labs-design-system/pages/Experiments/ubo-graph/site/assets/index-C5JpMi_C.js"></script>
+    <link rel="stylesheet" crossorigin href="/trulioo-labs-design-system/pages/Experiments/ubo-graph/site/assets/index-ZupXxtFq.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

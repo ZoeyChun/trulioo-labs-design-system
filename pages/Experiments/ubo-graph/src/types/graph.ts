@@ -80,13 +80,13 @@ export type GraphNodeData =
 
 export type GraphNode = Node<GraphNodeData>;
 
-export interface GraphEdgeData {
+export type GraphEdgeData = {
   relationshipType: RelationshipType;
   label?: string;
   percentage?: number;
   role?: string;
   riskLevel?: RiskLevel;
-}
+} & Record<string, unknown>;
 
 export type GraphEdge = Edge<GraphEdgeData>;
 

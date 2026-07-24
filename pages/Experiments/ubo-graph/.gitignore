@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+# Built GitHub Pages output is committed intentionally (site/)
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

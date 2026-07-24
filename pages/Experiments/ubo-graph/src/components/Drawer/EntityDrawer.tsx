@@ -55,7 +55,9 @@ export function EntityDrawer() {
   if (!selectedNodeData || !selectedNodeId) return null;
 
   const Icon = entityIcons[selectedNodeData.entityType];
-  const riskLevel = getRiskLevel(selectedNodeData as { entityType: string; entity: Record<string, unknown> });
+  const riskLevel = getRiskLevel(
+    selectedNodeData as unknown as { entityType: string; entity: Record<string, unknown> },
+  );
 
   return (
     <AnimatePresence>
