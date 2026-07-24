@@ -74,12 +74,15 @@
 
 /* --- Dropdown menu items (body/sm, trailing check when selected) --- */
 
-.tds-filter-button .tds-action-list-item {
+.tds-filter-button .tds-action-list-item,
+.tds-dropdown-panel--filter-menu .tds-action-list-item {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
 }
 
-.tds-filter-button .tds-action-list-item__trailing-visual {
+/* Panel is portaled to body when open; keep single-select check rules on the panel class too. */
+.tds-filter-button .tds-action-list-item__trailing-visual,
+.tds-dropdown-panel--filter-menu .tds-action-list-item__trailing-visual {
   display: inline-flex;
   flex-shrink: 0;
   margin-left: auto;
@@ -90,6 +93,9 @@
 
 .tds-filter-button .tds-action-list-item--selected .tds-action-list-item__trailing-visual,
 .tds-filter-button .tds-action-list-item[aria-selected="true"] .tds-action-list-item__trailing-visual,
-.tds-filter-button .tds-action-list-item[aria-checked="true"] .tds-action-list-item__trailing-visual {
+.tds-filter-button .tds-action-list-item[aria-checked="true"] .tds-action-list-item__trailing-visual,
+.tds-dropdown-panel--filter-menu .tds-action-list-item--selected .tds-action-list-item__trailing-visual,
+.tds-dropdown-panel--filter-menu .tds-action-list-item[aria-selected="true"] .tds-action-list-item__trailing-visual,
+.tds-dropdown-panel--filter-menu .tds-action-list-item[aria-checked="true"] .tds-action-list-item__trailing-visual {
   visibility: visible;
 }

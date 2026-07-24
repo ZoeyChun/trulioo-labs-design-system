@@ -368,17 +368,13 @@
     menu.classList.remove("tds-sort-button--selected");
     setToolbarMenuOpenState(menu, false);
 
-    var defaultItem = panel.querySelector("[data-tds-sort-default]");
-    var menuButtons = panel.querySelectorAll("button.tds-action-list-item");
-
-    menuButtons.forEach(function (item) {
-      var selected = defaultItem ? item === defaultItem : item === menuButtons[0];
-      item.classList.toggle("tds-action-list-item--selected", selected);
+    panel.querySelectorAll("button.tds-action-list-item").forEach(function (item) {
+      item.classList.remove("tds-action-list-item--selected");
       if (item.hasAttribute("aria-checked")) {
-        item.setAttribute("aria-checked", selected ? "true" : "false");
+        item.setAttribute("aria-checked", "false");
       }
       if (item.hasAttribute("aria-selected")) {
-        item.setAttribute("aria-selected", selected ? "true" : "false");
+        item.setAttribute("aria-selected", "false");
       }
     });
   }
@@ -410,7 +406,18 @@
       var panel = menu.querySelector(".tds-dropdown-panel");
       if (!trigger || !panel) return;
 
+      /* Preserve static open-state specimens in the component docs grid. */
+      if (menu.closest(".ds-state-grid--dropdown-specimens") && !panel.hasAttribute("hidden")) {
+        return;
+      }
+
       menu.dataset.tdsDropdownBound = "1";
+      if (menu.classList.contains("tds-sort-button")) {
+        panel.classList.add("tds-dropdown-panel--sort-menu");
+      }
+      if (menu.classList.contains("tds-filter-button")) {
+        panel.classList.add("tds-dropdown-panel--filter-menu");
+      }
       panel.hidden = true;
       trigger.setAttribute("aria-expanded", "false");
 

@@ -366,12 +366,15 @@
 .kyb-section-divider + .kyb-field-grid,
 .kyb-section-divider + .kyb-subsection-title,
 .kyb-toolbar + .tds-data-table-container,
-.tds-risk-category-strip + .kyb-toolbar,
 .kyb-toolbar + .kyb-signal-categories,
 .kyb-toolbar + .tds-accordion,
 .tds-data-table-container + .tds-data-table-container,
 .kyb-section__body > .kyb-field-grid + .kyb-field-grid {
   margin-top: var(--kyb-block-gap);
+}
+
+.tds-risk-category-strip + .kyb-toolbar {
+  margin-top: var(--padding-2xl);
 }
 
 .kyb-section-divider {
@@ -814,11 +817,6 @@
 
 .kyb-signal-category .tds-data-table-container {
   width: 100%;
-}
-
-.kyb-signal-category .tds-data-table__signals,
-.kyb-signal-category .tds-data-table__signals-icon {
-  color: var(--text-default);
 }
 
 .kyb-signal-category tr[data-kyb-signal-row] {

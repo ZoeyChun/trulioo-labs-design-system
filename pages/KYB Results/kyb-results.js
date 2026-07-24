@@ -90,7 +90,9 @@
   }
 
   function initRiskCategoryCards() {
-    document.querySelectorAll("[data-kyb-signal-category].kyb-risk-category-card, [data-kyb-signal-category].kyb-signal-category-card").forEach(function (card) {
+    document.querySelectorAll(
+      "[data-kyb-signal-category].kyb-risk-category-card, [data-kyb-signal-category].kyb-signal-category-card, [data-kyb-signal-category].tds-risk-category-strip-card"
+    ).forEach(function (card) {
       if (card.dataset.kybBound) return;
       card.dataset.kybBound = "1";
 
@@ -639,9 +641,8 @@
     state.sort = SIGNALS_DEFAULT_SORT;
     state.sortActive = false;
     section.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
-      var isDefault = item.hasAttribute("data-tds-sort-default");
-      item.classList.toggle("tds-action-list-item--selected", isDefault);
-      item.setAttribute("aria-checked", isDefault ? "true" : "false");
+      item.classList.remove("tds-action-list-item--selected");
+      item.setAttribute("aria-checked", "false");
     });
   }
 
@@ -651,7 +652,7 @@
       var isDefault = isDefaultSignalFilters(section);
       var selectedLabels = isDefault ? [] : getSelectedSignalFilterLabels(section);
       var selectedCount = selectedLabels.length;
-      var hasActiveFilters = !isDefault && selectedCount > 0;
+      var hasActiveFilters = !isDefault;
 
       filterButton.classList.toggle("tds-filter-button--selected", hasActiveFilters);
       filterButton.classList.toggle("tds-filter-button--multi", hasActiveFilters && selectedCount > 1);
@@ -687,6 +688,19 @@
   }
 
   function getSignalImpact(row) {
+    var storedImpact = row.getAttribute("data-kyb-signal-impact");
+    if (storedImpact) return storedImpact;
+
+    var impactCell = row.cells && row.cells[0];
+    if (impactCell) {
+      var signals = impactCell.querySelector(".tds-data-table__signals");
+      if (signals) {
+        if (signals.classList.contains("tds-data-table__signals--negative")) return "negative";
+        if (signals.classList.contains("tds-data-table__signals--positive")) return "positive";
+        if (signals.classList.contains("tds-data-table__signals--intermediate")) return "neutral";
+      }
+    }
+
     var tag = row.querySelector(".tds-tag");
     if (!tag) return "neutral";
     if (tag.classList.contains("tds-tag--negative")) return "negative";
@@ -766,6 +780,15 @@
     return ascending ? valueA - valueB : valueB - valueA;
   }
 
+  function sortSignalPairsByOriginalOrder(pairs) {
+    pairs.sort(function (a, b) {
+      return (
+        (parseInt(a.row.getAttribute("data-kyb-signal-order"), 10) || 0) -
+        (parseInt(b.row.getAttribute("data-kyb-signal-order"), 10) || 0)
+      );
+    });
+  }
+
   function sortSignalPairs(pairs, sortKey) {
     pairs.sort(function (a, b) {
       var fallback =
@@ -836,6 +859,15 @@
     if (empty) empty.hidden = true;
   }
 
+  function syncSignalCategoryAccordionsForImpactFilter(state, categoryEntries) {
+    if (state.impactFilter === "all") return;
+
+    categoryEntries.forEach(function (entry) {
+      var shouldExpand = !entry.accordion.hidden && entry.visibleCount > 0;
+      setAccordionExpanded(entry.accordion, shouldExpand);
+    });
+  }
+
   function applySignalsView(section, state) {
     var container = section.querySelector(".kyb-signal-categories");
     if (!container) return;
@@ -863,7 +895,11 @@
       accordion.hidden = false;
 
       var pairs = getSignalRowPairs(tbody);
-      sortSignalPairs(pairs, state.sort);
+      if (state.sortActive) {
+        sortSignalPairs(pairs, state.sort);
+      } else {
+        sortSignalPairsByOriginalOrder(pairs);
+      }
 
       pairs.forEach(function (pair) {
         var visible =
@@ -902,7 +938,7 @@
         }
       }
 
-      if (state.sort === "category-asc" || state.sort === "category-desc") {
+      if (state.sortActive && (state.sort === "category-asc" || state.sort === "category-desc")) {
         var labelA = getCategoryRiskDomainLabel(a.categoryId);
         var labelB = getCategoryRiskDomainLabel(b.categoryId);
         var domainCmp = labelA.localeCompare(labelB);
@@ -918,6 +954,7 @@
       container.appendChild(entry.accordion);
     });
 
+    syncSignalCategoryAccordionsForImpactFilter(state, categoryEntries);
     updateSignalsToolbarControls(section, state);
   }
 
@@ -1134,9 +1171,8 @@
     state.sort = MONITORING_DEFAULT_SORT;
     state.sortActive = false;
     section.querySelectorAll("[data-kyb-monitoring-sort-option]").forEach(function (item) {
-      var isDefault = item.hasAttribute("data-tds-sort-default");
-      item.classList.toggle("tds-action-list-item--selected", isDefault);
-      item.setAttribute("aria-checked", isDefault ? "true" : "false");
+      item.classList.remove("tds-action-list-item--selected");
+      item.setAttribute("aria-checked", "false");
     });
   }
 
@@ -1188,7 +1224,16 @@
     if (!tbody) return;
 
     var rows = Array.from(section.querySelectorAll("[data-kyb-monitoring-row]"));
-    sortMonitoringRows(rows, state.sort);
+    if (state.sortActive) {
+      sortMonitoringRows(rows, state.sort);
+    } else {
+      rows.sort(function (a, b) {
+        return (
+          (parseInt(a.getAttribute("data-kyb-monitoring-order"), 10) || 0) -
+          (parseInt(b.getAttribute("data-kyb-monitoring-order"), 10) || 0)
+        );
+      });
+    }
 
     var visibleCount = 0;
     rows.forEach(function (row) {
