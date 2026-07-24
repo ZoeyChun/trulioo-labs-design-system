@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+@theme {
+  --color-risk-low: #34d399;
+  --color-risk-medium: #fbbf24;
+  --color-risk-high: #fb923c;
+  --color-risk-critical: #f87171;
+
+  --color-edge-ownership: #818cf8;
+  --color-edge-director: #71717a;
+  --color-edge-shared: #52525b;
+  --color-edge-risk: #fb923c;
+
+  --color-surface: #09090b;
+  --color-surface-raised: #131316;
+  --color-surface-overlay: #1c1c21;
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-default: rgba(255, 255, 255, 0.1);
+  --color-hover: rgba(255, 255, 255, 0.06);
+  --color-divider: rgba(255, 255, 255, 0.06);
+
+  --color-accent: #818cf8;
+  --color-accent-muted: #6366f1;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #d4d4d8;
+  --color-text-muted: #71717a;
+
+  --color-glass-bg: rgba(19, 19, 22, 0.72);
+  --color-glass-border: rgba(255, 255, 255, 0.06);
+  --color-glass-shadow: rgba(0, 0, 0, 0.32);
+
+  --color-node-gradient-from: #27272a;
+  --color-node-gradient-to: #18181b;
+  --color-node-border: rgba(255, 255, 255, 0.08);
+  --color-node-shadow: rgba(0, 0, 0, 0.4);
+  --color-node-individual-from: rgba(49, 46, 129, 0.8);
+  --color-node-individual-to: #18181b;
+  --color-node-individual-border: rgba(99, 102, 241, 0.25);
+  --color-node-icon: #d4d4d8;
+  --color-node-icon-muted: #71717a;
+  --color-node-individual-icon: #a5b4fc;
+
+  --color-scrollbar: rgba(255, 255, 255, 0.1);
+  --color-scrollbar-hover: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --page-glow-gradient: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99, 102, 241, 0.08), transparent);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --page-glow-gradient: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99, 102, 241, 0.06), transparent);
+
+  --color-edge-ownership: #6366f1;
+  --color-edge-director: #a1a1aa;
+  --color-edge-shared: #d4d4d8;
+  --color-edge-risk: #ea580c;
+
+  --color-surface: #f4f4f5;
+  --color-surface-raised: #ffffff;
+  --color-surface-overlay: #fafafa;
+  --color-border-subtle: rgba(0, 0, 0, 0.06);
+  --color-border-default: rgba(0, 0, 0, 0.1);
+  --color-hover: rgba(0, 0, 0, 0.04);
+  --color-divider: rgba(0, 0, 0, 0.08);
+
+  --color-accent: #6366f1;
+  --color-accent-muted: #4f46e5;
+  --color-text-primary: #18181b;
+  --color-text-secondary: #3f3f46;
+  --color-text-muted: #71717a;
+
+  --color-glass-bg: rgba(255, 255, 255, 0.82);
+  --color-glass-border: rgba(0, 0, 0, 0.06);
+  --color-glass-shadow: rgba(0, 0, 0, 0.08);
+
+  --color-node-gradient-from: #ffffff;
+  --color-node-gradient-to: #f4f4f5;
+  --color-node-border: rgba(0, 0, 0, 0.08);
+  --color-node-shadow: rgba(0, 0, 0, 0.08);
+  --color-node-individual-from: #eef2ff;
+  --color-node-individual-to: #f4f4f5;
+  --color-node-individual-border: rgba(99, 102, 241, 0.3);
+  --color-node-icon: #52525b;
+  --color-node-icon-muted: #a1a1aa;
+  --color-node-individual-icon: #6366f1;
+
+  --color-scrollbar: rgba(0, 0, 0, 0.12);
+  --color-scrollbar-hover: rgba(0, 0, 0, 0.2);
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-hover);
+}
+
+.glass-panel {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 8px 32px var(--color-glass-shadow);
+}
+
+.node-card {
+  background: linear-gradient(to bottom right, var(--color-node-gradient-from), var(--color-node-gradient-to));
+  border: 1px solid var(--color-node-border);
+  box-shadow: 0 4px 24px var(--color-node-shadow);
+}
+
+.node-card-individual {
+  background: linear-gradient(to bottom right, var(--color-node-individual-from), var(--color-node-individual-to));
+  border: 1px solid var(--color-node-individual-border);
+  box-shadow: 0 4px 20px var(--color-node-shadow);
+}
+
+.page-glow {
+  background: var(--page-glow-gradient);
+}
+
+.react-flow__attribution {
+  display: none !important;
+}
+
+.react-flow__minimap {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-glass-border) !important;
+  background: var(--color-glass-bg) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px var(--color-glass-shadow);
+}
+
+.react-flow__controls {
+  display: none;
+}
+
+.react-flow__pane {
+  cursor: grab;
+}
+.react-flow__pane:active {
+  cursor: grabbing;
+}
+
+.graph-canvas {
+  --xy-background-color: var(--color-surface);
+  background-color: var(--color-surface);
+}
+
+.graph-canvas .react-flow__background {
+  background-color: var(--color-surface);
+}
+
+.graph-canvas .react-flow__background-pattern.dots {
+  opacity: 1;
+}
