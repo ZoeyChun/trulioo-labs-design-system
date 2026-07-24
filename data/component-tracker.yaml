@@ -445,6 +445,18 @@ components:
     figmaNodeId: "810:5659"
     notes: Complex component with many states
   -
+    id: dialog
+    name: Dialog
+    category: Feedback
+    figmaStatus: Done
+    figmaVariants: 35
+    cssFile: dialog/dialog.css
+    classPrefixes:
+      - tds-dialog
+    subComponents: Button, IconButton
+    figmaNodeId: "1654:27850"
+    notes: Center sizes sm–xl, left/right drawers, bottom sheet, full screen; header badge + trailing slots; footer label/caption + up to 3 buttons
+  -
     id: progress-indicator
     name: ProgressIndicator
     category: Progress
@@ -542,13 +554,6 @@ components:
     notes: Selected trigger shows sort value + xmark clear; open selected reverts label to Sort; clear resets via tds-sort-clear
 
 planned:
-  -
-    name: Dialog / Modal
-    category: Feedback
-    priority: High
-    description: Overlay dialog with backdrop, header, body, footer actions
-    dependsOn: Button, DismissAction
-    notes: Common pattern in KYB flows
   -
     name: Toast / Snackbar
     category: Feedback

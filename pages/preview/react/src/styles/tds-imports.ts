@@ -18,6 +18,7 @@ import "../../../../../Components/counter-label/counter-label.css";
 import "../../../../../Components/data-field/data-field.css";
 import "../../../../../Components/data-table/data-table.css";
 import "../../../../../Components/date-picker/date-picker.css";
+import "../../../../../Components/dialog/dialog.css";
 import "../../../../../Components/dismiss-action/dismiss-action.css";
 import "../../../../../Components/dismiss-issue-badge/dismiss-issue-badge.css";
 import "../../../../../Components/filter-button/filter-button.css";

@@ -16,6 +16,126 @@
 
   var openContext = null;
   var globalBound = false;
+  var FLOATING_CLASS = "tds-date-picker__calendar--floating";
+  var CALENDAR_GAP = 4;
+  var VIEWPORT_PAD = 16;
+  var portalHosts = new WeakMap();
+
+  function portalCalendar(calendar, host) {
+    if (portalHosts.has(calendar)) return;
+    portalHosts.set(calendar, {
+      host: host,
+      nextSibling: calendar.nextSibling,
+    });
+    document.body.appendChild(calendar);
+  }
+
+  function restoreCalendarPortal(calendar) {
+    var state = portalHosts.get(calendar);
+    if (!state) return;
+    var parent = state.host;
+    if (state.nextSibling && state.nextSibling.parentNode === parent) {
+      parent.insertBefore(calendar, state.nextSibling);
+    } else {
+      parent.appendChild(calendar);
+    }
+    portalHosts.delete(calendar);
+  }
+
+  function getScrollAncestors(el) {
+    var ancestors = [];
+    var node = el.parentElement;
+    while (node && node !== document.documentElement) {
+      var style = getComputedStyle(node);
+      var overflow = style.overflow + style.overflowX + style.overflowY;
+      if (/auto|scroll|overlay/.test(overflow)) {
+        ancestors.push(node);
+      }
+      node = node.parentElement;
+    }
+    return ancestors;
+  }
+
+  function positionFloatingCalendar(anchor, calendar) {
+    var rect = anchor.getBoundingClientRect();
+    calendar.style.position = "fixed";
+    calendar.style.visibility = "hidden";
+    calendar.style.left = "-9999px";
+    calendar.style.top = "0px";
+    var calWidth = calendar.offsetWidth || 288;
+    var calHeight = calendar.offsetHeight || 320;
+    var left = rect.left;
+    if (left + calWidth > window.innerWidth - VIEWPORT_PAD) {
+      left = window.innerWidth - VIEWPORT_PAD - calWidth;
+    }
+    if (left < VIEWPORT_PAD) left = VIEWPORT_PAD;
+    var top = rect.bottom + CALENDAR_GAP;
+    if (
+      top + calHeight > window.innerHeight - VIEWPORT_PAD &&
+      rect.top - CALENDAR_GAP - calHeight > VIEWPORT_PAD
+    ) {
+      top = rect.top - CALENDAR_GAP - calHeight;
+    }
+    if (top < VIEWPORT_PAD) top = VIEWPORT_PAD;
+    if (top + calHeight > window.innerHeight - VIEWPORT_PAD) {
+      top = Math.max(VIEWPORT_PAD, window.innerHeight - VIEWPORT_PAD - calHeight);
+    }
+    calendar.style.left = Math.round(left) + "px";
+    calendar.style.top = Math.round(top) + "px";
+    calendar.style.visibility = "";
+  }
+
+  function bindFloatingListeners(context) {
+    unbindFloatingListeners(context);
+    context.onScroll = function () {
+      positionFloatingCalendar(context.anchor, context.calendar);
+    };
+    context.scrollTargets = getScrollAncestors(context.anchor);
+    context.scrollTargets.forEach(function (node) {
+      node.addEventListener("scroll", context.onScroll, { passive: true });
+    });
+    window.addEventListener("resize", context.onScroll);
+  }
+
+  function unbindFloatingListeners(context) {
+    if (!context || !context.onScroll) return;
+    if (context.scrollTargets) {
+      context.scrollTargets.forEach(function (node) {
+        node.removeEventListener("scroll", context.onScroll);
+      });
+    }
+    window.removeEventListener("resize", context.onScroll);
+    context.onScroll = null;
+    context.scrollTargets = null;
+  }
+
+  function showFloatingCalendar(anchor, calendar, host, closeFn) {
+    portalCalendar(calendar, host);
+    calendar.classList.add(FLOATING_CLASS);
+    calendar.hidden = false;
+    positionFloatingCalendar(anchor, calendar);
+    requestAnimationFrame(function () {
+      if (!calendar.hidden) positionFloatingCalendar(anchor, calendar);
+    });
+    openContext = {
+      close: closeFn,
+      anchor: anchor,
+      calendar: calendar,
+      host: host,
+    };
+    bindFloatingListeners(openContext);
+  }
+
+  function hideFloatingCalendar(calendar, host) {
+    if (openContext) unbindFloatingListeners(openContext);
+    calendar.hidden = true;
+    calendar.classList.remove(FLOATING_CLASS);
+    calendar.style.position = "";
+    calendar.style.left = "";
+    calendar.style.top = "";
+    calendar.style.visibility = "";
+    restoreCalendarPortal(calendar);
+  }
 
   function pad(n) {
     return String(n).padStart(2, "0");
@@ -220,6 +340,7 @@
 
   function initSinglePicker(picker) {
     if (picker.dataset.datePickerBound) return;
+    if (picker.closest("[data-date-picker-range]")) return;
 
     if (
       picker.classList.contains("tds-date-picker--disabled") ||
@@ -276,9 +397,9 @@
       picker.classList.add("tds-date-picker--open");
       field.classList.add("tds-date-picker__field--focus");
       field.setAttribute("aria-expanded", "true");
-      calendar.hidden = false;
       if (state.selected) state.viewDate = new Date(state.selected);
       render();
+      calendar.hidden = false;
       openContext = { close: close };
     }
 
@@ -341,11 +462,18 @@
     if (rangeEnd) setFieldValue(endField, endValue, rangeEnd);
 
     var viewDate = rangeStart || rangeEnd || new Date();
+    var fieldsRow = range.querySelector(".tds-date-picker-range__fields");
     var calendar = range.querySelector(".tds-date-picker__calendar");
     if (!calendar) {
       calendar = createCalendar("Choose date range");
       calendar.classList.add("tds-date-picker-range__calendar");
-      range.appendChild(calendar);
+      if (fieldsRow && fieldsRow.nextSibling) {
+        range.insertBefore(calendar, fieldsRow.nextSibling);
+      } else if (fieldsRow) {
+        range.appendChild(calendar);
+      } else {
+        range.appendChild(calendar);
+      }
     }
 
     var activePart = "start";
@@ -419,11 +547,13 @@
 
     function open(part) {
       closeOpenPicker();
-      setActivePicker(part || activePart);
-      calendar.hidden = false;
-      if (part === "start" && state.rangeStart) state.viewDate = new Date(state.rangeStart);
-      if (part === "end" && state.rangeEnd) state.viewDate = new Date(state.rangeEnd);
+      var nextPart = part || activePart;
+      setActivePicker(nextPart);
+      if (nextPart === "start" && state.rangeStart) state.viewDate = new Date(state.rangeStart);
+      if (nextPart === "end" && state.rangeEnd) state.viewDate = new Date(state.rangeEnd);
       render();
+      calendar.hidden = false;
+      range.classList.add("tds-date-picker-range--open");
       openContext = { close: close };
     }
 
@@ -435,6 +565,7 @@
       startField.setAttribute("aria-expanded", "false");
       endField.setAttribute("aria-expanded", "false");
       calendar.hidden = true;
+      range.classList.remove("tds-date-picker-range--open");
       state.hoverEnd = null;
       if (openContext && openContext.close === close) openContext = null;
     }
@@ -442,13 +573,21 @@
     startField.addEventListener("click", function (e) {
       e.stopPropagation();
       if (!calendar.hidden && activePart === "start") close();
-      else open("start");
+      else if (!calendar.hidden && activePart === "end") {
+        setActivePicker("start");
+        if (state.rangeStart) state.viewDate = new Date(state.rangeStart);
+        render();
+      } else open("start");
     });
 
     endField.addEventListener("click", function (e) {
       e.stopPropagation();
       if (!calendar.hidden && activePart === "end") close();
-      else open("end");
+      else if (!calendar.hidden && activePart === "start") {
+        setActivePicker("end");
+        if (state.rangeEnd) state.viewDate = new Date(state.rangeEnd);
+        render();
+      } else open("end");
     });
 
     calendar.querySelector("[data-date-picker-prev]").addEventListener("click", function (e) {
@@ -475,13 +614,21 @@
     });
   }
 
-  document.querySelectorAll("[data-date-picker]").forEach(initSinglePicker);
-  document.querySelectorAll("[data-date-picker-range]").forEach(initRangePicker);
+  function initDatePickers(root) {
+    var scope = root || document;
+    scope.querySelectorAll("[data-date-picker]").forEach(initSinglePicker);
+    scope.querySelectorAll("[data-date-picker-range]").forEach(initRangePicker);
+  }
+
+  initDatePickers(document);
 
   if (!globalBound) {
     globalBound = true;
 
-    document.addEventListener("click", function () {
+    document.addEventListener("click", function (event) {
+      if (event.target.closest(".tds-date-picker, .tds-date-picker-range, .tds-date-picker__calendar")) {
+        return;
+      }
       closeOpenPicker();
     });
 
@@ -489,4 +636,6 @@
       if (e.key === "Escape") closeOpenPicker();
     });
   }
+
+  window.initDatePickers = initDatePickers;
 })();

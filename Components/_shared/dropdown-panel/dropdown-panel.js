@@ -22,6 +22,64 @@
 
   var openEntries = [];
   var globalBound = false;
+  var portalHosts = new WeakMap();
+
+  function portalToBody(element) {
+    if (portalHosts.has(element)) return;
+    var parent = element.parentNode;
+    if (!parent) return;
+    portalHosts.set(element, {
+      parent: parent,
+      nextSibling: element.nextSibling,
+    });
+    document.body.appendChild(element);
+  }
+
+  function restorePortal(element) {
+    var state = portalHosts.get(element);
+    if (!state) return;
+    if (state.nextSibling && state.nextSibling.parentNode === state.parent) {
+      state.parent.insertBefore(element, state.nextSibling);
+    } else {
+      state.parent.appendChild(element);
+    }
+    portalHosts.delete(element);
+  }
+
+  function getScrollAncestors(el) {
+    var ancestors = [];
+    var node = el.parentElement;
+    while (node && node !== document.documentElement) {
+      var style = getComputedStyle(node);
+      var overflow = style.overflow + style.overflowX + style.overflowY;
+      if (/auto|scroll|overlay/.test(overflow)) {
+        ancestors.push(node);
+      }
+      node = node.parentElement;
+    }
+    return ancestors;
+  }
+
+  function bindScrollListeners(entry) {
+    unbindScrollListeners(entry);
+    var nodes = getScrollAncestors(entry.trigger);
+    entry.scrollTargets = nodes;
+    entry.onScroll = function () {
+      positionInViewport(entry.trigger, entry.element, entry.options);
+    };
+    nodes.forEach(function (node) {
+      node.addEventListener("scroll", entry.onScroll, { passive: true });
+    });
+  }
+
+  function unbindScrollListeners(entry) {
+    if (!entry.scrollTargets || !entry.onScroll) return;
+    entry.scrollTargets.forEach(function (node) {
+      node.removeEventListener("scroll", entry.onScroll);
+    });
+    entry.scrollTargets = null;
+    entry.onScroll = null;
+  }
 
   function getAlign(menu) {
     if (menu.dataset.dropdownAlign === "start" || menu.dataset.dropdownAlign === "end") {
@@ -113,6 +171,7 @@
 
     element.classList.remove(VIEWPORT_CLASS);
     element.style.position = "";
+    element.style.display = "";
     element.style.top = "";
     element.style.left = "";
     element.style.right = "";
@@ -124,9 +183,12 @@
 
   function untrack(element) {
     openEntries = openEntries.filter(function (entry) {
-      return entry.element !== element;
+      if (entry.element !== element) return true;
+      unbindScrollListeners(entry);
+      resetPosition(entry.element);
+      restorePortal(entry.element);
+      return false;
     });
-    resetPosition(element);
   }
 
   function positionInViewport(trigger, element, options) {
@@ -147,6 +209,7 @@
 
     element.classList.add(VIEWPORT_CLASS);
     element.style.position = "fixed";
+    element.style.display = "block";
     element.style.visibility = "hidden";
     element.style.top = "0px";
     element.style.left = "0px";
@@ -188,27 +251,37 @@
       sizeEl.style.maxHeight = Math.round(maxH) + "px";
     }
 
-    var coords = toFixedPositionCoords(left, viewportTop, element);
-    element.style.left = Math.round(coords.left) + "px";
-    element.style.top = Math.round(coords.top) + "px";
+    if (portalHosts.has(element)) {
+      element.style.left = Math.round(left) + "px";
+      element.style.top = Math.round(viewportTop) + "px";
+    } else {
+      var coords = toFixedPositionCoords(left, viewportTop, element);
+      element.style.left = Math.round(coords.left) + "px";
+      element.style.top = Math.round(coords.top) + "px";
+    }
 
     element.style.visibility = "";
   }
 
   function open(trigger, element, options) {
     untrack(element);
+    portalToBody(element);
     positionInViewport(trigger, element, options);
-    openEntries.push({
+    var entry = {
       trigger: trigger,
       element: element,
       options: options || {},
       onClose: options.onClose,
-    });
+    };
+    bindScrollListeners(entry);
+    openEntries.push(entry);
   }
 
   function closeEntry(entry) {
+    unbindScrollListeners(entry);
     if (entry.onClose) entry.onClose();
     resetPosition(entry.element);
+    restorePortal(entry.element);
   }
 
   function close(element) {
@@ -247,6 +320,8 @@
       if (event.target.closest(MENU_SELECTOR)) return;
       if (event.target.closest(".tds-select--interactive")) return;
       if (event.target.closest(".tds-combobox--interactive")) return;
+      if (event.target.closest(".tds-select__menu, .tds-combobox__menu")) return;
+      if (event.target.closest(".tds-dropdown-panel--viewport")) return;
       closeAll();
     });
 
@@ -255,7 +330,6 @@
     });
 
     window.addEventListener("resize", repositionAll);
-    window.addEventListener("scroll", repositionAll, true);
   }
 
   function setToolbarMenuOpenState(menu, isOpen) {

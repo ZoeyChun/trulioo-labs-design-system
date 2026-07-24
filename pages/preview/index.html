@@ -14,14 +14,15 @@
   <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
   <link rel="stylesheet" href="../../Components/announcement/announcement.css">
   <link rel="stylesheet" href="../../Components/breadcrumb/breadcrumb.css">
-  <link rel="stylesheet" href="../../Components/button-menu/button-menu.css">
   <link rel="stylesheet" href="../../Components/button-group/button-group.css">
+  <link rel="stylesheet" href="../../Components/button-menu/button-menu.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
   <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
   <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
   <link rel="stylesheet" href="../../Components/data-field/data-field.css">
   <link rel="stylesheet" href="../../Components/data-table/data-table.css">
   <link rel="stylesheet" href="../../Components/date-picker/date-picker.css">
+  <link rel="stylesheet" href="../../Components/dialog/dialog.css">
   <link rel="stylesheet" href="../../Components/dismiss-action/dismiss-action.css">
   <link rel="stylesheet" href="../../Components/dismiss-issue-badge/dismiss-issue-badge.css">
   <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
@@ -32,6 +33,7 @@
   <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="../../Components/radio-group/radio-group.css">
   <link rel="stylesheet" href="../../Components/risk-category-card/risk-category-card.css">
+  <link rel="stylesheet" href="../../Components/risk-category-strip/risk-category-strip.css">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
   <link rel="stylesheet" href="../../Components/section-header/section-header.css">
   <link rel="stylesheet" href="../../Components/select/combobox.css">
@@ -1431,6 +1433,7 @@ body {
         <div class="ds-state-demo">
           <span class="ds-state-demo__label">Enabled · empty</span>
           <div class="tds-date-picker-range tds-date-picker-range--interactive" data-date-picker-range data-size="lg">
+            <div class="tds-date-picker-range__fields">
             <div class="tds-date-picker" data-date-picker-part="start">
               <label class="tds-field-label">Label</label>
               <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
@@ -1445,11 +1448,13 @@ body {
                 <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
               </button>
             </div>
+            </div>
           </div>
         </div>
         <div class="ds-state-demo">
           <span class="ds-state-demo__label">Filled</span>
           <div class="tds-date-picker-range tds-date-picker-range--interactive" data-date-picker-range data-size="lg" data-start="03/01/2021" data-end="03/20/2021">
+            <div class="tds-date-picker-range__fields">
             <div class="tds-date-picker" data-date-picker-part="start">
               <label class="tds-field-label">Label</label>
               <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
@@ -1464,11 +1469,13 @@ body {
                 <span class="tds-date-picker__value">03/20/2021</span>
               </button>
             </div>
+            </div>
           </div>
         </div>
         <div class="ds-state-demo">
           <span class="ds-state-demo__label">Error</span>
           <div class="tds-date-picker-range tds-date-picker-range--interactive tds-date-picker-range--invalid" data-date-picker-range data-size="lg">
+            <div class="tds-date-picker-range__fields">
             <div class="tds-date-picker" data-date-picker-part="start">
               <label class="tds-field-label">Label</label>
               <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false" aria-invalid="true">
@@ -1483,11 +1490,13 @@ body {
                 <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
               </button>
             </div>
+            </div>
           </div>
         </div>
         <div class="ds-state-demo">
           <span class="ds-state-demo__label">Disabled</span>
           <div class="tds-date-picker-range tds-date-picker-range--disabled">
+            <div class="tds-date-picker-range__fields">
             <div class="tds-date-picker tds-date-picker--disabled" data-date-picker-part="start">
               <label class="tds-field-label">Label</label>
               <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" disabled aria-haspopup="dialog" aria-expanded="false">
@@ -1502,11 +1511,13 @@ body {
                 <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
               </button>
             </div>
+            </div>
           </div>
         </div>
         <div class="ds-state-demo">
           <span class="ds-state-demo__label">Read-only</span>
           <div class="tds-date-picker-range tds-date-picker-range--readonly">
+            <div class="tds-date-picker-range__fields">
             <div class="tds-date-picker tds-date-picker--readonly" data-date-picker-part="start">
               <label class="tds-field-label">Label</label>
               <div class="tds-date-picker__field tds-date-picker__field--lg" aria-readonly="true">
@@ -1520,6 +1531,7 @@ body {
                 <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
                 <span class="tds-date-picker__value">03/20/2021</span>
               </div>
+            </div>
             </div>
           </div>
         </div>
@@ -2264,8 +2276,8 @@ body {
             
           </div>
         </div>
-        <div class="ds-showcase__canvas">
-<div class="card" style="max-width: 280px; padding: 8px;">
+        <div class="ds-showcase__canvas ds-showcase__canvas--white">
+<div class="tds-dropdown-panel" style="width: 280px;">
         <button type="button" class="tds-nav-item tds-nav-item--sm"><span>Small 30px</span></button>
         <button type="button" class="tds-nav-item tds-nav-item--md"><span>Medium 34px</span></button>
         <button type="button" class="tds-nav-item tds-nav-item--lg"><span>Large 38px</span></button>
@@ -2357,11 +2369,11 @@ body {
           <div class="tds-dropdown-panel__header">Select country</div>
           <div class="tds-action-list-item tds-action-list-item--selected">
             <span class="tds-action-list-item__check"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span>
-            <span>Canada</span>
+            <span class="tds-action-list-item__label">Canada</span>
           </div>
           <div class="tds-action-list-item">
             <span class="tds-action-list-item__check"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span>
-            <span>United States</span>
+            <span class="tds-action-list-item__label">United States</span>
           </div>
           <div class="tds-dropdown-panel__divider"></div>
           <div class="tds-action-list-item">
@@ -2373,7 +2385,7 @@ body {
           </div>
           <div class="tds-action-list-item tds-action-list-item--disabled">
             <span class="tds-action-list-item__check"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg></span>
-            <span>Australia (unavailable)</span>
+            <span class="tds-action-list-item__label">Australia (unavailable)</span>
           </div>
         </div>
       </div>
@@ -3147,6 +3159,202 @@ body {
         <hr class="tds-accordion__data-field-divider">
         <div class="tds-data-field tds-data-field--horizontal"><div class="tds-data-field__label-row"><p class="tds-data-field__label">Incorporated</p></div><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">12 Mar 2018</p></div></div></div>
       </div>
+    </div>
+  </div>
+</div>
+        </div>
+      </article>
+
+      <header class="ds-chapter__header">
+        <h2 class="ds-chapter__title">Dialog</h2>
+        <p class="ds-chapter__desc">Overlay panels with backdrop, header slots, scrollable body, and footer actions — centered modals, edge drawers, bottom sheets, and full-screen layouts for KYB confirmations and detail views.</p>
+      </header>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Anatomy</h3>
+          <p class="ds-showcase__desc">Header (title, optional badge, trailing actions, dismiss), scrollable body, and footer with optional label/caption plus up to three buttons.</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-dialog · __header · __body · __footer</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas">
+<div class="tds-dialog tds-dialog--inline tds-dialog--center tds-dialog--md" role="presentation">
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="dialog-anatomy-title">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md" aria-label="Information"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.25v3.5M8 5.5h.01" stroke-linecap="round"/></svg></span></button>
+          <h2 class="tds-dialog__title" id="dialog-anatomy-title">Dialog title</h2>
+          <span class="tds-dialog__badge">Badge</span>
+          <span class="tds-dialog__header-actions">
+            <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md" aria-label="More options"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="8" r="1.25"/><circle cx="8" cy="8" r="1.25"/><circle cx="12.5" cy="8" r="1.25"/></svg></span></button>
+            <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm">Button</button>
+            <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button>
+          </span>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <div class="tds-dialog__body">
+        <p class="tds-dialog__text">Dialog content goes here. Use the body slot for forms, entity summaries, or verification details.</p>
+      </div>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row">
+          <div class="tds-dialog__footer-meta">
+            <p class="tds-dialog__footer-label">Footer label</p>
+            <p class="tds-dialog__footer-caption">Optional caption text</p>
+          </div>
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--invisible tds-btn--md">Button</button>
+            <button type="button" class="tds-btn tds-btn--secondary tds-btn--md">Button</button>
+            <button type="button" class="tds-btn tds-btn--primary tds-btn--md">Button</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Center sizes</h3>
+          <p class="ds-showcase__desc">Small (320px), medium (480px), large (640px), and xlarge (960px) centered modals with 12px corner radius and elevation-xl shadow.</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-dialog--{sm|md|lg|xl}.tds-dialog--center</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="ds-state-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-24);">
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Small · 320px</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--center tds-dialog--sm" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-sm-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-sm-title">Dialog title</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Compact confirmation or alert copy.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--secondary tds-btn--md">Cancel</button><button type="button" class="tds-btn tds-btn--primary tds-btn--md">Confirm</button></div></div></footer></div></div></div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Medium · 480px</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--center tds-dialog--md" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-md-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-md-title">Dialog title</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Default size for forms and entity detail summaries.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--primary tds-btn--md">Save</button></div></div></footer></div></div></div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Large · 640px</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--center tds-dialog--lg" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-lg-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-lg-title">Dialog title</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Wider layout for multi-column content or data tables inside the dialog body.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--primary tds-btn--md">Continue</button></div></div></footer></div></div></div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Xlarge · 960px</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--center tds-dialog--xl" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-xl-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-xl-title">Dialog title</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Maximum width for rich workflows — document review, ownership graphs, or multi-step KYB flows.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--primary tds-btn--md">Review</button></div></div></footer></div></div></div></div>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Positions</h3>
+          <p class="ds-showcase__desc">Left/right drawers (296–640px by size), bottom sheet (full width), and full-screen takeover. Drawers are full viewport height with square corners.</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">.tds-dialog--{left|right|bottom|full|center}</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="ds-state-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-24);">
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Left drawer · sm</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--left tds-dialog--sm" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-left-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-left-title">Dialog title</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Filters or navigation panel anchored to the left edge.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--primary tds-btn--md">Apply</button></div></div></footer></div></div></div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Right drawer · md</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--right tds-dialog--md" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-right-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-right-title">Entity details</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Detail panel for UBO profiles, document metadata, or audit trails.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--secondary tds-btn--md">Close</button></div></div></footer></div></div></div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Bottom sheet</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--bottom tds-dialog--md" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-bottom-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-bottom-title">Consent required</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Mobile-friendly sheet anchored to the bottom with rounded top corners.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--primary tds-btn--md">Accept</button></div></div></footer></div></div></div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Full screen</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--full tds-dialog--full" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-full-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-full-title">Document review</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Immersive full-viewport layout for document viewers and multi-step wizards.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--primary tds-btn--md">Approve</button></div></div></footer></div></div></div></div>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">Header &amp; footer variants</h3>
+          <p class="ds-showcase__desc">Boolean slots from Figma — leading icon, badge, trailing icon/button; footer label, caption, and one to three action buttons.</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">__badge · __header-actions · __footer-meta · __actions</code>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas ds-showcase__canvas--grid">
+<div class="ds-state-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-24);">
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Title + dismiss only</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--center tds-dialog--sm" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-h1-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-h1-title">Dialog title</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Minimal header configuration.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--primary tds-btn--md">OK</button></div></div></footer></div></div></div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Title + badge</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--center tds-dialog--sm" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-h2-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-h2-title">Verification</h2><span class="tds-dialog__badge">Pending</span><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Status badge beside the title.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only"><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--primary tds-btn--md">Review</button></div></div></footer></div></div></div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Footer · 2 buttons</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--center tds-dialog--sm" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-f2-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-f2-title">Remove entity?</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">This action cannot be undone.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row"><div class="tds-dialog__footer-meta"><p class="tds-dialog__footer-label">Maple Leaf Logistics Inc.</p><p class="tds-dialog__footer-caption">Entity ID 8842-KYB</p></div><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--secondary tds-btn--md">Cancel</button><button type="button" class="tds-btn tds-btn--danger tds-btn--md">Remove</button></div></div></footer></div></div></div></div>
+        <div class="ds-state-demo"><span class="ds-state-demo__label">Footer · 3 buttons</span>
+<div class="tds-dialog tds-dialog--inline tds-dialog--center tds-dialog--md" role="presentation"><div class="tds-dialog__backdrop"><div class="tds-dialog__panel" role="dialog" aria-labelledby="dialog-f3-title"><header class="tds-dialog__header"><div class="tds-dialog__header-row"><h2 class="tds-dialog__title" id="dialog-f3-title">Submit verification</h2><button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div><div class="tds-dialog__divider" role="presentation"></div></header><div class="tds-dialog__body"><p class="tds-dialog__text">Save as draft, discard changes, or submit for review.</p></div><footer class="tds-dialog__footer"><div class="tds-dialog__divider" role="presentation"></div><div class="tds-dialog__footer-row"><div class="tds-dialog__footer-meta"><p class="tds-dialog__footer-label">3 checks pending</p><p class="tds-dialog__footer-caption">Ownership, address, and document match</p></div><div class="tds-dialog__actions"><button type="button" class="tds-btn tds-btn--invisible tds-btn--md">Discard</button><button type="button" class="tds-btn tds-btn--secondary tds-btn--md">Save draft</button><button type="button" class="tds-btn tds-btn--primary tds-btn--md">Submit</button></div></div></footer></div></div></div></div>
+      </div>
+        </div>
+      </article>
+
+      <article class="ds-showcase">
+        <div class="ds-showcase__head">
+          <h3 class="ds-showcase__title">KYB use cases</h3>
+          <p class="ds-showcase__desc">Live modal interaction — open from a trigger, dismiss via X, backdrop click, or Escape. Confirm destructive actions and review entity details in a right drawer.</p>
+          <div class="ds-showcase__meta">
+            <code class="ds-api">data-dialog-open · .tds-dialog__dismiss · Escape</code>
+            <span class="ds-tag">Interactive</span>
+          </div>
+        </div>
+        <div class="ds-showcase__canvas">
+<div style="display: flex; flex-wrap: wrap; gap: var(--spacing-12);">
+  <button type="button" class="tds-btn tds-btn--danger tds-btn--md" data-dialog-open="dialog-delete-entity">Delete entity</button>
+  <button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-dialog-open="dialog-entity-drawer">View entity details</button>
+</div>
+
+<div class="tds-dialog tds-dialog--center tds-dialog--sm" id="dialog-delete-entity" role="presentation" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="dialog-delete-title" tabindex="-1">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="dialog-delete-title">Delete entity?</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <div class="tds-dialog__body">
+        <p class="tds-dialog__text">Removing <strong>Maple Leaf Logistics Inc.</strong> will permanently delete all verification history, documents, and beneficial-owner records associated with this entity.</p>
+      </div>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row">
+          <div class="tds-dialog__footer-meta">
+            <p class="tds-dialog__footer-label">This action cannot be undone</p>
+            <p class="tds-dialog__footer-caption">Entity ID 8842-KYB · Created 12 Mar 2018</p>
+          </div>
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-dialog-close>Cancel</button>
+            <button type="button" class="tds-btn tds-btn--danger tds-btn--md" data-dialog-close>Delete entity</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div class="tds-dialog tds-dialog--right tds-dialog--md" id="dialog-entity-drawer" role="presentation" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="dialog-drawer-title" tabindex="-1">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="dialog-drawer-title">Maple Leaf Logistics Inc.</h2>
+          <span class="tds-dialog__badge">Verified</span>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <div class="tds-dialog__body">
+        <p class="tds-dialog__text"><strong>Legal name</strong><br>Maple Leaf Logistics Inc.</p>
+        <p class="tds-dialog__text"><strong>Jurisdiction</strong><br>Ontario, Canada</p>
+        <p class="tds-dialog__text"><strong>Business number</strong><br>123456789 RC0001</p>
+        <p class="tds-dialog__text"><strong>Beneficial owners</strong><br>4 UBOs screened — last updated 14 Jun 2026</p>
+      </div>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-dialog-close>Close</button>
+            <button type="button" class="tds-btn tds-btn--primary tds-btn--md">Open full profile</button>
+          </div>
+        </div>
+      </footer>
     </div>
   </div>
 </div>
@@ -5501,6 +5709,7 @@ body {
 </div>
 <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
 <script src="../../Components/date-picker/date-picker.js"></script>
+<script src="../../Components/dialog/dialog.js"></script>
 <script>
 (function initPreviewInteractionCore() {
   if (window.__tdsPreviewInteractionCoreInit) return;
@@ -5801,7 +6010,7 @@ function closeAllSelectMenus(except) {
     if (select === except) return;
     select.classList.remove('tds-select--open');
     const trigger = select.querySelector('.tds-select__trigger');
-    const menu = select.querySelector('.tds-select__menu');
+    const menu = select.__tdsSelectMenu || select.querySelector('.tds-select__menu');
     if (trigger) {
       trigger.setAttribute('aria-expanded', 'false');
       trigger.classList.remove('tds-select__trigger--focus');
@@ -5821,6 +6030,7 @@ function initPreviewSelects(root) {
 
   const trigger = select.querySelector('.tds-select__trigger');
   const menu = select.querySelector('.tds-select__menu');
+  select.__tdsSelectMenu = menu;
   const valueEl = select.querySelector('.tds-select__value');
   const menuType = select.dataset.menuType || 'text';
   const placeholder = valueEl?.dataset.placeholder || 'Placeholder';
@@ -5963,7 +6173,7 @@ window.initPreviewSelects = initPreviewSelects;
   window.__tdsPreviewSelectListeners = true;
 
   document.addEventListener('click', (e) => {
-    if (e.target.closest('.tds-select--interactive')) return;
+    if (e.target.closest('.tds-select--interactive, .tds-select__menu')) return;
     closeAllSelectMenus();
   });
   document.addEventListener('keydown', (e) => {
@@ -5972,6 +6182,14 @@ window.initPreviewSelects = initPreviewSelects;
 })();
 
 initPreviewSelects();
+
+function initPreviewDropdownMenus(root) {
+  if (window.TdsDropdownPanel) {
+    window.TdsDropdownPanel.initMenus(root || document);
+  }
+}
+window.initPreviewDropdownMenus = initPreviewDropdownMenus;
+initPreviewDropdownMenus();
 
 (function initPreviewInteractionTail() {
   if (window.__tdsPreviewInteractionTailInit) return;
@@ -6006,6 +6224,7 @@ document.querySelectorAll('#pagination-pages .tds-data-table__pagination-page').
 })();
 
 window.initPreviewSelects?.();
+window.initPreviewDropdownMenus?.();
 </script>
 
 

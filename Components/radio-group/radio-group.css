@@ -9,7 +9,7 @@
 .tds-radio-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-8);
+  gap: var(--spacing-16);
 }
 
 .tds-radio-group__item {
