@@ -1421,7 +1421,7 @@
   {
     "id": "tracker/dropdown-panel",
     "title": "DropdownPanel",
-    "description": "Positioning rules — (1) content-sized, (2) start/end align with auto-flip, (3) min-width = trigger, (4) viewport overflow clamp. Used by Select, ButtonMenu, FilterButton, SortButton",
+    "description": "MenuType text|multiSelect|icon|flag; GroupHeading caption header + optional Clear all link; 30px items at 4px inset. Positioning via dropdown-panel.js. Used by Select, ButtonMenu, FilterButton, SortButton",
     "section": "Getting Started",
     "sectionId": "getting-started",
     "pageId": "tracker",

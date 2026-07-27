@@ -434,11 +434,11 @@ body {
     Button
   </button>
   <div class="tds-dropdown-panel" role="menu">
-    <button type="button" class="tds-action-list-item" role="menuitem">Action list item</button>
-    <button type="button" class="tds-action-list-item" role="menuitem">Action list item</button>
-    <button type="button" class="tds-action-list-item" role="menuitem">Action list item</button>
-    <button type="button" class="tds-action-list-item" role="menuitem">Action list item</button>
-    <button type="button" class="tds-action-list-item" role="menuitem">Action list item</button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Action list item</span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Action list item</span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Action list item</span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Action list item</span></button>
+    <button type="button" class="tds-action-list-item" role="menuitem"><span class="tds-action-list-item__label">Action list item</span></button>
   </div>
 </div></div>
       </div>
@@ -1181,11 +1181,12 @@ body {
           </button>
           <div class="tds-select__menu" role="listbox" aria-multiselectable="true" hidden>
             <div class="tds-dropdown-panel">
-              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Active"><span>Active</span></label>
-              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Pending"><span>Pending</span></label>
-              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Suspended"><span>Suspended</span></label>
-              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Closed"><span>Closed</span></label>
-              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Under review"><span>Under review</span></label>
+              <button type="button" class="tds-dropdown-panel__header-link">Clear all</button>
+              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Active"><span class="tds-action-list-item__label">Active</span></label>
+              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Pending"><span class="tds-action-list-item__label">Pending</span></label>
+              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Suspended"><span class="tds-action-list-item__label">Suspended</span></label>
+              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Closed"><span class="tds-action-list-item__label">Closed</span></label>
+              <label class="tds-action-list-item"><input type="checkbox" class="tds-checkbox" value="Under review"><span class="tds-action-list-item__label">Under review</span></label>
             </div>
           </div>
         </div>
@@ -1201,23 +1202,23 @@ body {
             <div class="tds-dropdown-panel">
               <div class="tds-action-list-item" role="option" data-value="Business verification">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="12" height="10" rx="1" stroke="currentColor" stroke-width="1.25"/><path d="M5 4V3a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.25"/></svg></span>
-                <span>Business verification</span>
+                <span class="tds-action-list-item__label">Business verification</span>
               </div>
               <div class="tds-action-list-item" role="option" data-value="Identity check">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.25"/><path d="M3 13.5c0-2.5 2.2-4 5-4s5 1.5 5 4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
-                <span>Identity check</span>
+                <span class="tds-action-list-item__label">Identity check</span>
               </div>
               <div class="tds-action-list-item" role="option" data-value="Document review">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 2h6l3 3v9a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.25"/><path d="M10 2v3h3M6 8h4M6 11h4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
-                <span>Document review</span>
+                <span class="tds-action-list-item__label">Document review</span>
               </div>
               <div class="tds-action-list-item" role="option" data-value="AML screening">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.25"/><path d="M8 5v4M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
-                <span>AML screening</span>
+                <span class="tds-action-list-item__label">AML screening</span>
               </div>
               <div class="tds-action-list-item" role="option" data-value="Ongoing monitoring">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.25"/><path d="M8 4.5V8l2.5 1.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
-                <span>Ongoing monitoring</span>
+                <span class="tds-action-list-item__label">Ongoing monitoring</span>
               </div>
             </div>
           </div>
@@ -1234,23 +1235,23 @@ body {
             <div class="tds-dropdown-panel">
               <div class="tds-action-list-item" role="option" data-value="Canada">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-ca"></span></span>
-                <span>Canada</span>
+                <span class="tds-action-list-item__label">Canada</span>
               </div>
               <div class="tds-action-list-item" role="option" data-value="United States">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-us"></span></span>
-                <span>United States</span>
+                <span class="tds-action-list-item__label">United States</span>
               </div>
               <div class="tds-action-list-item" role="option" data-value="United Kingdom">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-gb"></span></span>
-                <span>United Kingdom</span>
+                <span class="tds-action-list-item__label">United Kingdom</span>
               </div>
               <div class="tds-action-list-item" role="option" data-value="France">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-fr"></span></span>
-                <span>France</span>
+                <span class="tds-action-list-item__label">France</span>
               </div>
               <div class="tds-action-list-item" role="option" data-value="Germany">
                 <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-de"></span></span>
-                <span>Germany</span>
+                <span class="tds-action-list-item__label">Germany</span>
               </div>
             </div>
           </div>
@@ -2405,10 +2406,10 @@ body {
         <div class="ds-showcase__canvas ds-showcase__canvas--white">
 <div class="row" style="align-items: flex-start; gap: 24px; flex-wrap: wrap;">
         <div class="tds-dropdown-panel" style="width: 200px;">
-          <div class="tds-action-list-item"><span>Dashboard</span></div>
-          <div class="tds-action-list-item"><span>Verifications</span></div>
-          <div class="tds-action-list-item"><span>Entities</span></div>
-          <div class="tds-action-list-item"><span>Reports</span></div>
+          <div class="tds-action-list-item"><span class="tds-action-list-item__label">Dashboard</span></div>
+          <div class="tds-action-list-item"><span class="tds-action-list-item__label">Verifications</span></div>
+          <div class="tds-action-list-item"><span class="tds-action-list-item__label">Entities</span></div>
+          <div class="tds-action-list-item"><span class="tds-action-list-item__label">Reports</span></div>
         </div>
       </div>
         </div>
@@ -2427,10 +2428,10 @@ body {
 <div class="row" style="align-items: flex-start; gap: 24px;">
         <div class="tds-dropdown-panel" style="width: 220px;">
           <div class="tds-dropdown-panel__header">Actions</div>
-          <div class="tds-action-list-item"><span>Edit profile</span></div>
-          <div class="tds-action-list-item"><span>View history</span></div>
+          <div class="tds-action-list-item"><span class="tds-action-list-item__label">Edit profile</span></div>
+          <div class="tds-action-list-item"><span class="tds-action-list-item__label">View history</span></div>
           <div class="tds-dropdown-panel__divider"></div>
-          <div class="tds-action-list-item" style="color: var(--text-negative);"><span>Delete</span></div>
+          <div class="tds-action-list-item" style="color: var(--text-negative);"><span class="tds-action-list-item__label">Delete</span></div>
         </div>
       </div>
         </div>
@@ -2486,22 +2487,23 @@ body {
         <div class="ds-showcase__canvas ds-showcase__canvas--white">
 <div class="row" style="align-items: flex-start; gap: 24px;">
         <div class="tds-dropdown-panel" style="width: 240px;">
+          <button type="button" class="tds-dropdown-panel__header-link">Clear all</button>
           <div class="tds-dropdown-panel__header">Filter by status</div>
           <label class="tds-action-list-item">
             <input type="checkbox" class="tds-checkbox" checked>
-            <span>Verified</span>
+            <span class="tds-action-list-item__label">Verified</span>
           </label>
           <label class="tds-action-list-item">
             <input type="checkbox" class="tds-checkbox" checked>
-            <span>Pending</span>
+            <span class="tds-action-list-item__label">Pending</span>
           </label>
           <label class="tds-action-list-item">
             <input type="checkbox" class="tds-checkbox">
-            <span>Rejected</span>
+            <span class="tds-action-list-item__label">Rejected</span>
           </label>
           <label class="tds-action-list-item">
             <input type="checkbox" class="tds-checkbox">
-            <span>Draft</span>
+            <span class="tds-action-list-item__label">Draft</span>
           </label>
         </div>
       </div>
@@ -2523,15 +2525,15 @@ body {
           <div class="tds-dropdown-panel__header">Sort by</div>
           <label class="tds-action-list-item tds-action-list-item--selected">
             <input type="radio" name="dd-radio" class="tds-radio" checked>
-            <span>Date created</span>
+            <span class="tds-action-list-item__label">Date created</span>
           </label>
           <label class="tds-action-list-item">
             <input type="radio" name="dd-radio" class="tds-radio">
-            <span>Name (A–Z)</span>
+            <span class="tds-action-list-item__label">Name (A–Z)</span>
           </label>
           <label class="tds-action-list-item">
             <input type="radio" name="dd-radio" class="tds-radio">
-            <span>Risk level</span>
+            <span class="tds-action-list-item__label">Risk level</span>
           </label>
         </div>
       </div>
@@ -2556,11 +2558,11 @@ body {
           </div>
           <div class="tds-action-list-item tds-action-list-item--selected">
             <span class="tds-action-list-item__leading-visual"><svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5.5 10h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
-            <span>Neutral</span>
+            <span class="tds-action-list-item__label">Neutral</span>
           </div>
           <div class="tds-action-list-item">
             <span class="tds-action-list-item__leading-visual"><svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="5.5" cy="6.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><path d="M5 11c.8-1.2 2-1.8 3-1.8s2.2.6 3 1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
-            <span>Sad</span>
+            <span class="tds-action-list-item__label">Sad</span>
           </div>
         </div>
       </div>
@@ -2582,23 +2584,23 @@ body {
           <div class="tds-dropdown-panel__header">Label color</div>
           <div class="tds-action-list-item tds-action-list-item--selected">
             <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-teal-60);"></span></span>
-            <span>Teal</span>
+            <span class="tds-action-list-item__label">Teal</span>
           </div>
           <div class="tds-action-list-item">
             <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-violet-60);"></span></span>
-            <span>Violet</span>
+            <span class="tds-action-list-item__label">Violet</span>
           </div>
           <div class="tds-action-list-item">
             <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-amber-border);"></span></span>
-            <span>Amber</span>
+            <span class="tds-action-list-item__label">Amber</span>
           </div>
           <div class="tds-action-list-item">
             <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-red-border);"></span></span>
-            <span>Red</span>
+            <span class="tds-action-list-item__label">Red</span>
           </div>
           <div class="tds-action-list-item">
             <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-green-border);"></span></span>
-            <span>Green</span>
+            <span class="tds-action-list-item__label">Green</span>
           </div>
         </div>
 
@@ -2606,15 +2608,15 @@ body {
           <div class="tds-dropdown-panel__header">Region</div>
           <div class="tds-action-list-item">
             <span class="tds-action-list-item__leading-visual"><span class="fi fi-ca"></span></span>
-            <span>Canada</span>
+            <span class="tds-action-list-item__label">Canada</span>
           </div>
           <div class="tds-action-list-item">
             <span class="tds-action-list-item__leading-visual"><span class="fi fi-us"></span></span>
-            <span>United States</span>
+            <span class="tds-action-list-item__label">United States</span>
           </div>
           <div class="tds-action-list-item">
             <span class="tds-action-list-item__leading-visual"><span class="fi fi-gb"></span></span>
-            <span>United Kingdom</span>
+            <span class="tds-action-list-item__label">United Kingdom</span>
           </div>
         </div>
       </div>
