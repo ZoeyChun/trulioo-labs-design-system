@@ -671,6 +671,17 @@
     "keywords": "Collapsible nav list .tds-nav-list__collapse-trigger navigation Expandable sections for grouped navigation."
   },
   {
+    "id": "components/navigation/dropdown-panel-figma-variants",
+    "title": "Dropdown panel: Figma variants",
+    "description": "DropdownPanel (320:21652) at 172px: menuType text, multiSelect, icon, and flag with section header and Clear all link.",
+    "section": "Components",
+    "sectionId": "components",
+    "pageId": "navigation",
+    "path": "#/components/navigation#dropdown-panel-figma-variants",
+    "category": "Navigation · variants",
+    "keywords": "Dropdown panel: Figma variants .tds-dropdown-panel · menuType navigation DropdownPanel (320:21652) at 172px: menuType text, multiSelect, icon, and flag with section header and Clear all link."
+  },
+  {
     "id": "components/navigation/dropdown-panel-plain-list",
     "title": "Dropdown panel: Plain list",
     "description": "Simple action menu: one tap per item.",

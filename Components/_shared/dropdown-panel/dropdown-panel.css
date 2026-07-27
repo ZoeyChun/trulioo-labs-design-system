@@ -1,8 +1,9 @@
 /* ============================================================
    DropdownPanel
+   Figma: DropdownPanel (320:21652)
    The floating menu for Select, ActionList, NavList, etc.
-   MenuType: text | multiSelect
-   Options: showHeader
+   MenuType: text | multiSelect | icon | flag
+   Options: showHeader, showHeaderLink
 
    Positioning rules (dropdown-panel.js):
    1. Content sizing — width: max-content by default.
@@ -17,11 +18,11 @@
   width: max-content;
   min-width: 0;
   max-width: calc(100vw - var(--spacing-32));
-  max-height: 316px;
-  padding: var(--spacing-8);
+  max-height: 466px;
+  padding: var(--padding-sm);
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-modal);
+  border-radius: var(--radius-xl);
   box-shadow: var(--elevation-xl);
   overflow-y: auto;
 }
@@ -69,7 +70,7 @@
   flex-shrink: 0;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
-  padding: 6px var(--spacing-8);
+  padding: 6px var(--padding-xs);
   box-sizing: border-box;
 }
 
@@ -93,6 +94,12 @@
   min-width: 100%;
   align-self: stretch;
   flex-shrink: 0;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  padding: 0 var(--padding-xs);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
 }
 
 .tds-dropdown-panel .icon {
@@ -107,21 +114,47 @@
   text-overflow: clip;
 }
 
-/* --- Header --- */
+/* --- Header (GroupHeading) --- */
 
 .tds-dropdown-panel__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-4) var(--spacing-8);
-  margin-bottom: var(--spacing-4);
+  padding: var(--padding-xs);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: var(--font-weight-regular);
   color: var(--text-caption);
+}
+
+/* --- Header link (Clear all) --- */
+
+.tds-dropdown-panel__header-link,
+.tds-dropdown-panel__toolbar .tds-btn--link {
+  display: block;
+  width: 100%;
+  padding: var(--padding-xs);
+  border: none;
+  background: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-link);
+  text-align: right;
+  cursor: pointer;
+  appearance: none;
+}
+
+.tds-dropdown-panel__header-link:hover,
+.tds-dropdown-panel__toolbar .tds-btn--link:hover {
+  text-decoration: underline;
+}
+
+/* --- Toolbar (legacy — prefer __header-link) --- */
+
+.tds-dropdown-panel__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0;
+  border-bottom: none;
 }
 
 /* --- Divider --- */

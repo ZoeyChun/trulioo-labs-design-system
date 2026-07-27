@@ -345,23 +345,26 @@
     menu.classList.remove("tds-filter-button--selected", "tds-filter-button--multi");
     setToolbarMenuOpenState(menu, false);
 
-    var defaultItem = panel.querySelector("[data-tds-filter-default]");
     var menuButtons = panel.querySelectorAll("button.tds-action-list-item");
 
     menuButtons.forEach(function (item) {
-      var selected = defaultItem ? item === defaultItem : item === menuButtons[0];
-      item.classList.toggle("tds-action-list-item--selected", selected);
+      item.classList.remove("tds-action-list-item--selected");
       if (item.hasAttribute("aria-checked")) {
-        item.setAttribute("aria-checked", selected ? "true" : "false");
+        item.setAttribute("aria-checked", "false");
       }
       if (item.hasAttribute("aria-selected")) {
-        item.setAttribute("aria-selected", selected ? "true" : "false");
+        item.setAttribute("aria-selected", "false");
       }
     });
 
     panel.querySelectorAll("input[type='checkbox']").forEach(function (input) {
-      input.checked = input.defaultChecked;
+      input.checked = false;
     });
+
+    var valueLabel = menu.querySelector(".tds-filter-button__trigger-value");
+    if (valueLabel) valueLabel.textContent = "";
+    var counter = menu.querySelector(".tds-filter-button__counter");
+    if (counter) counter.textContent = "";
   }
 
   function resetSortButtonSelections(menu, panel) {
@@ -426,11 +429,7 @@
         event.stopPropagation();
         var isOpen = !panel.hidden;
 
-        document.querySelectorAll(MENU_SELECTOR).forEach(function (other) {
-          if (other === menu) return;
-          var otherPanel = other.querySelector(".tds-dropdown-panel");
-          if (otherPanel) close(otherPanel);
-        });
+        closeAll();
 
         if (isOpen) {
           close(panel);

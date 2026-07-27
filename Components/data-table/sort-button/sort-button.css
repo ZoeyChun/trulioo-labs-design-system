@@ -2,7 +2,7 @@
 
 /* ============================================================
    SortButton
-   Figma: SortButton (2191:46183)
+   Figma: SortButton (836:12519)
    Composes: Button (arrow-down-arrow-up leading icon) + DropdownPanel
    States: default | selected | open
 
@@ -56,6 +56,10 @@
 .tds-sort-button--selected .tds-sort-button__trigger-value,
 .tds-sort-button--selected .tds-sort-button__trigger-label {
   display: inline;
+}
+
+.tds-sort-button--selected .tds-sort-button__trigger-prefix {
+  display: none;
 }
 
 /* Selected + open reverts label to "Sort" */

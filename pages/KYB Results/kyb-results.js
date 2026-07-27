@@ -597,26 +597,25 @@
 
   function getSelectedSignalFilterLabels(section) {
     var labels = [];
-    var panel = section.querySelector("[data-kyb-signals-filter] .tds-dropdown-panel");
-    if (!panel) return labels;
+    var categoryMap = {
+      "data-kyb-filter-applicable": "Applicable",
+      "data-kyb-filter-data": "Data",
+      "data-kyb-filter-category": "Category",
+    };
 
-    var currentGroup = "";
-    Array.from(panel.children).forEach(function (child) {
-      if (child.classList.contains("tds-dropdown-panel__header")) {
-        currentGroup = child.textContent.trim();
-        return;
-      }
-      if (child.classList.contains("tds-dropdown-panel__divider")) return;
-      if (!child.classList.contains("tds-action-list-item")) return;
-
-      var input = child.querySelector("input[type='checkbox']");
-      if (!input || !input.checked) return;
-
-      var optionNode = child.querySelector("span");
+    document.querySelectorAll("[data-kyb-filter-applicable], [data-kyb-filter-data], [data-kyb-filter-category]").forEach(function (input) {
+      if (!input.checked) return;
+      var label = input.closest(".tds-action-list-item");
+      if (!label) return;
+      var optionNode = label.querySelector("span");
       var optionText = optionNode ? optionNode.textContent.trim() : "";
       if (!optionText) return;
 
-      labels.push(currentGroup ? currentGroup + ": " + optionText : optionText);
+      var category = "";
+      for (var attr in categoryMap) {
+        if (input.hasAttribute(attr)) { category = categoryMap[attr]; break; }
+      }
+      labels.push(category ? category + ": " + optionText : optionText);
     });
 
     return labels;
@@ -624,7 +623,7 @@
 
   function isDefaultSignalFilters(section) {
     var isDefault = true;
-    section.querySelectorAll("[data-kyb-filter-applicable], [data-kyb-filter-data], [data-kyb-filter-category]").forEach(function (input) {
+    document.querySelectorAll("[data-kyb-filter-applicable], [data-kyb-filter-data], [data-kyb-filter-category]").forEach(function (input) {
       if (!input.checked) isDefault = false;
     });
     return isDefault;
@@ -632,15 +631,32 @@
 
   function resetSignalFilters(section, state) {
     state.filters = createDefaultSignalFilters();
-    section.querySelectorAll("[data-kyb-filter-applicable], [data-kyb-filter-data], [data-kyb-filter-category]").forEach(function (input) {
+    document.querySelectorAll("[data-kyb-filter-applicable], [data-kyb-filter-data], [data-kyb-filter-category]").forEach(function (input) {
       input.checked = true;
+    });
+  }
+
+  function clearAllSignalFilters(section, state) {
+    state.filters = {
+      applicable: { yes: false, no: false },
+      data: { present: false, missing: false },
+      categories: {
+        "business-model": false,
+        "financial-health": false,
+        "fraud-financial-crimes": false,
+        "governance-compliance": false,
+        "third-party-market": false,
+      },
+    };
+    document.querySelectorAll("[data-kyb-filter-applicable], [data-kyb-filter-data], [data-kyb-filter-category]").forEach(function (input) {
+      input.checked = false;
     });
   }
 
   function resetSignalSort(section, state) {
     state.sort = SIGNALS_DEFAULT_SORT;
     state.sortActive = false;
-    section.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
+    document.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
       item.classList.remove("tds-action-list-item--selected");
       item.setAttribute("aria-checked", "false");
     });
@@ -649,20 +665,19 @@
   function updateSignalsToolbarControls(section, state) {
     var filterButton = section.querySelector("[data-kyb-signals-filter]");
     if (filterButton) {
-      var isDefault = isDefaultSignalFilters(section);
-      var selectedLabels = isDefault ? [] : getSelectedSignalFilterLabels(section);
+      var selectedLabels = getSelectedSignalFilterLabels(section);
       var selectedCount = selectedLabels.length;
-      var hasActiveFilters = !isDefault;
+      var hasSelection = selectedCount > 0;
 
-      filterButton.classList.toggle("tds-filter-button--selected", hasActiveFilters);
-      filterButton.classList.toggle("tds-filter-button--multi", hasActiveFilters && selectedCount > 1);
+      filterButton.classList.toggle("tds-filter-button--selected", hasSelection);
+      filterButton.classList.toggle("tds-filter-button--multi", hasSelection && selectedCount > 1);
 
       var valueLabel = filterButton.querySelector("[data-kyb-filter-value]");
-      if (valueLabel) valueLabel.textContent = hasActiveFilters ? selectedLabels[0] : "";
+      if (valueLabel) valueLabel.textContent = hasSelection ? selectedLabels[0] : "";
 
       var counter = filterButton.querySelector("[data-kyb-filter-count]");
       if (counter) {
-        counter.textContent = hasActiveFilters && selectedCount > 1 ? "+" + (selectedCount - 1) : "";
+        counter.textContent = hasSelection && selectedCount > 1 ? "+" + (selectedCount - 1) : "";
       }
     }
 
@@ -670,16 +685,19 @@
     if (sortButton) {
       sortButton.classList.toggle("tds-sort-button--selected", state.sortActive);
 
-      var selectedOption = section.querySelector(
+      var selectedOption = document.querySelector(
         '[data-kyb-signal-sort="' + state.sort + '"] .tds-action-list-item__label'
       );
+      var sortPrefix = sortButton.querySelector(".tds-sort-button__trigger-prefix");
+      if (sortPrefix) sortPrefix.style.display = state.sortActive ? "none" : "";
+
       var sortLabel = sortButton.querySelector("[data-kyb-sort-label]");
       if (sortLabel) {
         sortLabel.textContent =
           state.sortActive && selectedOption ? selectedOption.textContent.trim() : "";
       }
 
-      section.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
+      document.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
         var selected = state.sortActive && item.getAttribute("data-kyb-signal-sort") === state.sort;
         item.classList.toggle("tds-action-list-item--selected", selected);
         item.setAttribute("aria-checked", selected ? "true" : "false");
@@ -1000,7 +1018,7 @@
       });
     });
 
-    section.querySelectorAll("[data-kyb-filter-applicable]").forEach(function (input) {
+    document.querySelectorAll("[data-kyb-filter-applicable]").forEach(function (input) {
       if (input.dataset.kybBound) return;
       input.dataset.kybBound = "1";
       input.addEventListener("change", function () {
@@ -1011,7 +1029,7 @@
       });
     });
 
-    section.querySelectorAll("[data-kyb-filter-data]").forEach(function (input) {
+    document.querySelectorAll("[data-kyb-filter-data]").forEach(function (input) {
       if (input.dataset.kybBound) return;
       input.dataset.kybBound = "1";
       input.addEventListener("change", function () {
@@ -1022,7 +1040,7 @@
       });
     });
 
-    section.querySelectorAll("[data-kyb-filter-category]").forEach(function (input) {
+    document.querySelectorAll("[data-kyb-filter-category]").forEach(function (input) {
       if (input.dataset.kybBound) return;
       input.dataset.kybBound = "1";
       input.addEventListener("change", function () {
@@ -1037,7 +1055,16 @@
     if (signalsFilterButton && !signalsFilterButton.dataset.kybFilterClearBound) {
       signalsFilterButton.dataset.kybFilterClearBound = "1";
       signalsFilterButton.addEventListener("tds-filter-clear", function () {
-        resetSignalFilters(section, state);
+        clearAllSignalFilters(section, state);
+        applySignalsView(section, state);
+      });
+    }
+
+    var clearAllBtn = document.querySelector("[data-kyb-filter-clear-all]");
+    if (clearAllBtn && !clearAllBtn.dataset.kybBound) {
+      clearAllBtn.dataset.kybBound = "1";
+      clearAllBtn.addEventListener("click", function () {
+        clearAllSignalFilters(section, state);
         applySignalsView(section, state);
       });
     }
@@ -1051,12 +1078,17 @@
       });
     }
 
-    section.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
+    document.querySelectorAll("[data-kyb-signal-sort]").forEach(function (item) {
       if (item.dataset.kybBound) return;
       item.dataset.kybBound = "1";
       item.addEventListener("click", function () {
-        state.sortActive = true;
-        state.sort = item.getAttribute("data-kyb-signal-sort") || SIGNALS_DEFAULT_SORT;
+        var sortKey = item.getAttribute("data-kyb-signal-sort") || SIGNALS_DEFAULT_SORT;
+        if (state.sortActive && state.sort === sortKey) {
+          resetSignalSort(section, state);
+        } else {
+          state.sortActive = true;
+          state.sort = sortKey;
+        }
         applySignalsView(section, state);
       });
     });
@@ -1160,7 +1192,7 @@
 
   function resetMonitoringFilter(section, state) {
     state.statusFilter = "all";
-    section.querySelectorAll("[data-kyb-monitoring-filter] [data-kyb-monitoring-status]").forEach(function (item) {
+    document.querySelectorAll("[data-kyb-monitoring-status].tds-action-list-item").forEach(function (item) {
       var isDefault = item.hasAttribute("data-tds-filter-default");
       item.classList.toggle("tds-action-list-item--selected", isDefault);
       item.setAttribute("aria-checked", isDefault ? "true" : "false");
@@ -1170,7 +1202,7 @@
   function resetMonitoringSort(section, state) {
     state.sort = MONITORING_DEFAULT_SORT;
     state.sortActive = false;
-    section.querySelectorAll("[data-kyb-monitoring-sort-option]").forEach(function (item) {
+    document.querySelectorAll("[data-kyb-monitoring-sort-option]").forEach(function (item) {
       item.classList.remove("tds-action-list-item--selected");
       item.setAttribute("aria-checked", "false");
     });
@@ -1183,7 +1215,7 @@
       filterButton.classList.toggle("tds-filter-button--selected", isFiltered);
       filterButton.classList.remove("tds-filter-button--multi");
 
-      var selectedOption = section.querySelector(
+      var selectedOption = document.querySelector(
         '[data-kyb-monitoring-status="' + state.statusFilter + '"] .tds-action-list-item__label'
       );
       var valueLabel = filterButton.querySelector("[data-kyb-monitoring-filter-value]");
@@ -1192,7 +1224,7 @@
       }
     }
 
-    section.querySelectorAll("[data-kyb-monitoring-filter] [data-kyb-monitoring-status]").forEach(function (item) {
+    document.querySelectorAll("[data-kyb-monitoring-status].tds-action-list-item").forEach(function (item) {
       var selected = item.getAttribute("data-kyb-monitoring-status") === state.statusFilter;
       item.classList.toggle("tds-action-list-item--selected", selected);
       item.setAttribute("aria-checked", selected ? "true" : "false");
@@ -1202,9 +1234,12 @@
     if (sortButton) {
       sortButton.classList.toggle("tds-sort-button--selected", state.sortActive);
 
-      var selectedOption = section.querySelector(
+      var selectedOption = document.querySelector(
         '[data-kyb-monitoring-sort-option="' + state.sort + '"] .tds-action-list-item__label'
       );
+      var sortPrefix = sortButton.querySelector(".tds-sort-button__trigger-prefix");
+      if (sortPrefix) sortPrefix.style.display = state.sortActive ? "none" : "";
+
       var sortLabel = sortButton.querySelector("[data-kyb-monitoring-sort-label]");
       if (sortLabel) {
         sortLabel.textContent =
@@ -1212,7 +1247,7 @@
       }
     }
 
-    section.querySelectorAll("[data-kyb-monitoring-sort-option]").forEach(function (item) {
+    document.querySelectorAll("[data-kyb-monitoring-sort-option]").forEach(function (item) {
       var selected = state.sortActive && item.getAttribute("data-kyb-monitoring-sort-option") === state.sort;
       item.classList.toggle("tds-action-list-item--selected", selected);
       item.setAttribute("aria-checked", selected ? "true" : "false");
@@ -1277,7 +1312,7 @@
       });
     });
 
-    section.querySelectorAll("[data-kyb-monitoring-filter] [data-kyb-monitoring-status]").forEach(function (item) {
+    document.querySelectorAll("[data-kyb-monitoring-filter] [data-kyb-monitoring-status]").forEach(function (item) {
       if (item.dataset.kybBound) return;
       item.dataset.kybBound = "1";
       item.addEventListener("click", function () {
@@ -1304,12 +1339,17 @@
       });
     }
 
-    section.querySelectorAll("[data-kyb-monitoring-sort-option]").forEach(function (item) {
+    document.querySelectorAll("[data-kyb-monitoring-sort-option]").forEach(function (item) {
       if (item.dataset.kybBound) return;
       item.dataset.kybBound = "1";
       item.addEventListener("click", function () {
-        state.sortActive = true;
-        state.sort = item.getAttribute("data-kyb-monitoring-sort-option") || MONITORING_DEFAULT_SORT;
+        var sortKey = item.getAttribute("data-kyb-monitoring-sort-option") || MONITORING_DEFAULT_SORT;
+        if (state.sortActive && state.sort === sortKey) {
+          resetMonitoringSort(section, state);
+        } else {
+          state.sortActive = true;
+          state.sort = sortKey;
+        }
         applyMonitoringView(section, state);
       });
     });

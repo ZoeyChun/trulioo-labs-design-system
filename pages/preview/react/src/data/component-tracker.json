@@ -1,5 +1,5 @@
 {
-  "lastBuiltAt": "2026-07-24T22:40:15.789Z",
+  "lastBuiltAt": "2026-07-27T17:59:14.415Z",
   "summary": {
     "totalComponents": 50,
     "cssDone": 46,
@@ -349,7 +349,7 @@
       ],
       "subComponents": "ActionListItem",
       "figmaNodeId": "320:21652",
-      "notes": "Positioning rules — (1) content-sized, (2) start/end align with auto-flip, (3) min-width = trigger, (4) viewport overflow clamp. Used by Select, ButtonMenu, FilterButton, SortButton",
+      "notes": "MenuType text|multiSelect|icon|flag; GroupHeading caption header + optional Clear all link; 30px items at 4px inset. Positioning via dropdown-panel.js. Used by Select, ButtonMenu, FilterButton, SortButton",
       "cssStatus": "Done",
       "usedInPreview": true,
       "usedInBV": true,
