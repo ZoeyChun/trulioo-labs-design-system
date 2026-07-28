@@ -11,7 +11,11 @@
   display: none;
 }
 
-/* --- Country combobox — align the flag + caret inside the field --- */
+/* --- Country combobox — half width (per Figma), full width on mobile --- */
+.eid-country {
+  width: 50%;
+}
+
 .eid-country .tds-combobox__leading-visual {
   display: inline-flex;
   align-items: center;
@@ -378,10 +382,17 @@
   margin-bottom: var(--spacing-12);
 }
 
+/* Clip the panel content to its rounded corners so the grey header
+   (and table header) don't overflow past the border radius. */
+#eid-result-view .dv-doc-panel {
+  overflow: hidden;
+}
+
 .eid-result-panel__body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-32);
+  gap: var(--spacing-16);
+  padding: var(--spacing-24) var(--spacing-24) var(--spacing-32);
 }
 
 /* --- Highlights --- */
@@ -389,7 +400,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-16);
-  padding: var(--padding-lg);
+  padding: var(--spacing-24);
   background-color: var(--surface-neutral-02);
   border-radius: var(--radius-xl);
 }
@@ -397,7 +408,7 @@
 .eid-highlights__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-16);
+  gap: var(--spacing-8);
 }
 
 .eid-highlight {
@@ -440,11 +451,12 @@
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: var(--spacing-16);
-  padding: var(--spacing-12) var(--spacing-16);
+  padding: var(--spacing-16);
   border-bottom: 1px solid var(--border-subtle);
 }
 
 .eid-idtable__head {
+  padding: var(--spacing-8) var(--spacing-16);
   background-color: var(--surface-neutral-02);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
