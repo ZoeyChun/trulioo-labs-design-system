@@ -131,6 +131,17 @@
   word-break: break-word;
 }
 
+.bv-result-te-select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dv-sidebar__entity-select {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .bv-result-te-select .tds-select__trigger {
   width: 100%;
   min-width: 0;
@@ -139,6 +150,58 @@
 
 .bv-result-te-select .tds-select__country-flag {
   flex-shrink: 0;
+}
+
+.bv-result-te-select .tds-select__text-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.bv-result-te-select .tds-select__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bv-result-te-select .tds-select__trailing-group {
+  flex-shrink: 0;
+}
+
+.bv-result-te-select .tds-select__menu {
+  left: 0;
+  right: 0;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.bv-result-te-select .tds-dropdown-panel {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.bv-result-te-select .bv-option {
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.bv-result-te-select .bv-option__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dv-sidebar__block--entity:has(.tds-select--open) {
+  overflow: visible;
+  z-index: 20;
+}
+
+.bv-result-shell .dv-sidebar:has(.bv-result-te-select.tds-select--open) {
+  overflow: visible;
 }
 
 /* Appended data — wrap labels/values; no horizontal scroll */
