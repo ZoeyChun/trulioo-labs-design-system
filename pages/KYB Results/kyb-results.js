@@ -1380,4 +1380,7 @@
   }
 
   window.toggleAccordion = toggleAccordion;
+  window.KybResults = {
+    setActiveTab: setActiveTab,
+  };
 })();

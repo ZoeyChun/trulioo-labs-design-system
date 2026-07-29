@@ -27,6 +27,8 @@
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../shared/flag-icons.css">
   <link rel="stylesheet" href="../shared/app-shell.css">
+  <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
+  <link rel="stylesheet" href="../shared/truai-chat.css">
   <link rel="stylesheet" href="../document-verification/document-verification.css">
   <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
   <link rel="stylesheet" href="electronic-id.css">
@@ -46,6 +48,8 @@
   </style>
 </head>
 <body>
+
+  <div class="labs-kyb-layout" id="labs-kyb-layout">
 
   <div class="app-shell" id="app-shell">
 
@@ -91,6 +95,10 @@
               <div class="tds-side-nav__section">
                 <div class="tds-side-nav__section-title">KYB</div>
                 <div class="tds-side-nav__section-items">
+                              <a href="../KYB Results/index.html" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="1.5" width="9" height="13"/><path d="M6 4.5h1.2M8.8 4.5H10M6 7.5h1.2M8.8 7.5H10M7 14.5v-3h2v3"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Business Verification</span>
+            </a>
                               <button type="button" class="tds-side-nav__sub-item">
               <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.5" cy="5" r="2.5"/><path d="M1 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="11.5" cy="5.5" r="2"/><path d="M15 13c0-2 1.5-3 0-3-1 0-2.5 1-2.5 3"/></svg></span>
               <span class="tds-side-nav__sub-item-text">UBO Agent</span>
@@ -167,7 +175,7 @@
 
     </aside>
 
-    <main class="app-main">
+    <main class="app-main kyb-panel">
 
       <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -185,7 +193,7 @@
             </button>
             <h1 class="dv-flow-header__title">Electronic ID</h1>
           </div>
-          <button class="dv-flow-truai-btn" type="button">
+          <button class="dv-flow-truai-btn" type="button" data-truai-toggle aria-expanded="false">
             <span class="dv-flow-truai-btn__icon">
               <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
             </span>
@@ -479,7 +487,7 @@
                 </span>
                 Export
               </button>
-              <button class="app-truai-btn" type="button">
+              <button class="app-truai-btn" id="app-truai-btn" type="button" data-truai-toggle aria-expanded="false">
                 <span class="app-truai-btn__icon">
                   <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
                 </span>
@@ -554,7 +562,7 @@
                     <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
                     TruAI
                   </span>
-                  <p class="dv-ai-text">Jane Doe&rsquo;s electronic ID has been verified. No additional steps required.</p>
+                  <p class="dv-ai-text" id="eid-truai-text">Jane Doe&rsquo;s electronic ID has been verified. No additional steps required.</p>
                 </div>
               </div>
 
@@ -637,6 +645,8 @@
     </main>
   </div>
 
+  </div>
+
   <!-- ============ Flow 1 · Provider flow overlay ============ -->
   <div class="eid-modal" id="eid-provider-modal" hidden role="dialog" aria-modal="true" aria-labelledby="eid-provider-modal-title">
     <div class="eid-modal__overlay" data-modal-close></div>
@@ -659,6 +669,8 @@
   <script src="../../Components/score-gauge/score-gauge.js"></script>
   <script src="electronic-id-result.js"></script>
   <script src="electronic-id-flow.js"></script>
+  <script src="truai-responses.js?v=1"></script>
+  <script src="../shared/truai-chat.js?v=1"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>
   <script>TdsSideNav.init();</script>
 </body>

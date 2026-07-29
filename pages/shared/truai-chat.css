@@ -1,0 +1,800 @@
+/* TruAI chat panel + layout — static labs pages */
+
+/* --- Layout shell --- */
+
+html,
+body {
+  height: 100%;
+  max-height: 100dvh;
+  margin: 0;
+}
+
+body:has(.labs-kyb-layout) {
+  overflow: hidden;
+}
+
+.labs-kyb-layout {
+  display: flex;
+  align-items: stretch;
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.labs-kyb-layout > .app-shell {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.labs-kyb-layout > .app-shell > .app-main {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.labs-kyb-layout > .app-shell .tds-side-nav {
+  top: 0;
+  align-self: stretch;
+  height: 100%;
+  max-height: 100%;
+}
+
+.labs-kyb-layout--chat-open .kyb-panel {
+  min-width: 0;
+}
+
+.labs-kyb-layout--chat-open .kyb-panel .dv-content,
+.labs-kyb-layout--chat-open .kyb-panel .dv-columns,
+.labs-kyb-layout--chat-open .kyb-panel .dv-main,
+.labs-kyb-layout--chat-open .kyb-panel .dv-flow-content,
+.labs-kyb-layout--chat-open .kyb-panel .bv-content {
+  min-width: 0;
+}
+
+.dv-flow-truai-btn.app-truai-btn--active,
+.bv-truai-btn.app-truai-btn--active {
+  box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+
+.labs-truai-chat-rail {
+  display: none;
+  flex-direction: column;
+  align-self: stretch;
+  flex-shrink: 0;
+  min-height: 0;
+  width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) 0;
+  background-color: var(--surface-neutral-03);
+  transition: width 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.labs-kyb-layout--chat-open .labs-truai-chat-rail {
+  width: 396px;
+}
+
+.labs-truai-chat-rail__inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 388px;
+  min-height: 0;
+  opacity: 0;
+  transform: translateX(16px);
+  transition:
+    opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.labs-kyb-layout--chat-open .labs-truai-chat-rail__inner {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.labs-truai-chat-rail__panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.app-truai-btn--active {
+  box-shadow:
+    0 0 0 2px var(--surface-neutral-03),
+    0 0 0 4px var(--surface-inverse);
+}
+
+/* Mobile drawer */
+.labs-truai-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  border: none;
+  padding: 0;
+  background-color: rgb(0 0 0 / 20%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  cursor: pointer;
+}
+
+.labs-truai-overlay--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 1023px) {
+  .labs-truai-chat-rail {
+    display: flex;
+    position: fixed;
+    inset-block: var(--spacing-8);
+    inset-inline: auto var(--spacing-8);
+    z-index: 50;
+    width: 0;
+    max-width: calc(100% - var(--spacing-16));
+    padding: 0;
+    background: transparent;
+  }
+
+  .labs-kyb-layout--chat-open .labs-truai-chat-rail {
+    width: min(24rem, calc(100% - var(--spacing-16)));
+  }
+
+  .labs-truai-chat-rail__inner {
+    flex: 1;
+    width: 100%;
+    max-width: 24rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .labs-truai-chat-rail {
+    display: flex;
+  }
+
+  .labs-truai-overlay {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .labs-truai-chat-rail,
+  .labs-truai-chat-rail__inner,
+  .labs-truai-overlay {
+    transition: none;
+  }
+}
+
+/* --- Panel --- */
+
+.labs-truai-panel {
+  --labs-truai-radius: var(--radius-section);
+  --labs-truai-surface-soft: var(--ai-surface);
+  --labs-truai-surface-muted: var(--surface-neutral-02);
+  --labs-truai-surface-inset: var(--surface-neutral-01);
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-self: stretch;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--labs-truai-radius);
+  background-color: var(--surface-neutral-01);
+  box-shadow: none;
+  font-family: var(--font-family);
+  color: var(--text-default);
+  box-sizing: border-box;
+}
+
+.labs-truai-panel *,
+.labs-truai-panel *::before,
+.labs-truai-panel *::after {
+  box-sizing: border-box;
+}
+
+.labs-truai-panel__header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  padding: var(--padding-lg) var(--padding-lg) var(--padding-md);
+}
+
+.labs-truai-panel__intro {
+  flex-shrink: 0;
+  overflow: hidden;
+  padding: 0 var(--padding-lg) var(--padding-xl);
+}
+
+.labs-truai-panel__intro[hidden] {
+  display: none;
+}
+
+.labs-truai-headline {
+  width: 100%;
+  overflow: hidden;
+}
+
+.labs-truai-headline__text {
+  font-family: var(--font-family-display);
+  font-size: calc(var(--font-size-display-md) - 8px);
+  line-height: calc(3.125rem - 8px);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: -0.02em;
+  color: var(--text-default);
+}
+
+.labs-truai-headline__line {
+  margin: 0;
+}
+
+.labs-truai-headline__topic-slot {
+  position: relative;
+  height: calc(3.125rem - 8px);
+  overflow: hidden;
+}
+
+.labs-truai-headline__topic {
+  position: absolute;
+  inset: 0;
+  display: block;
+  white-space: nowrap;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.labs-truai-headline__topic--enter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.labs-truai-headline__topic--exit {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.labs-truai-panel__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-40);
+  height: var(--spacing-40);
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-modal);
+  background-color: var(--surface-neutral-01);
+  color: var(--icon-default);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.labs-truai-panel__close:hover {
+  background-color: var(--surface-hover);
+}
+
+.labs-truai-panel__close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.labs-truai-panel__body {
+  display: flex;
+  flex: 1 1 0;
+  height: 0;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.labs-truai-panel__scroll {
+  display: flex;
+  flex: 1 1 0;
+  height: 0;
+  min-height: 0;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  overflow-y: auto;
+  padding: 0 var(--padding-lg) var(--padding-md);
+}
+
+.labs-truai-conversation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+}
+
+.labs-truai-panel__prompts {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding: 0 var(--padding-lg) var(--padding-md);
+}
+
+.labs-truai-panel__prompts[hidden] {
+  display: none;
+}
+
+.labs-truai-prompt {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+  padding: var(--padding-md) var(--padding-lg);
+  border: none;
+  border-radius: var(--labs-truai-radius);
+  background-color: var(--labs-truai-surface-muted);
+  color: var(--text-default);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.labs-truai-prompt:hover {
+  background-color: var(--surface-hover);
+}
+
+.labs-truai-prompt:active {
+  transform: scale(0.99);
+}
+
+.labs-truai-prompt:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.labs-truai-prompt__icon {
+  margin-top: 2px;
+  color: var(--ai-accent);
+}
+
+.labs-truai-prompt__icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.labs-truai-user-bubble {
+  margin-left: auto;
+  max-width: 88%;
+  padding: var(--padding-md) var(--padding-lg);
+  border-radius: var(--labs-truai-radius);
+  background-color: var(--labs-truai-surface-muted);
+}
+
+.labs-truai-user-bubble p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+
+.labs-truai-thinking {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  align-self: stretch;
+  padding: var(--padding-md) var(--padding-lg);
+  border-radius: var(--labs-truai-radius);
+  background-color: var(--labs-truai-surface-soft);
+}
+
+.labs-truai-thinking__icon {
+  color: var(--ai-accent);
+}
+
+.labs-truai-thinking__icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.labs-truai-thinking__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid color-mix(in srgb, var(--ai-accent) 25%, transparent);
+  border-top-color: var(--ai-accent);
+  border-radius: var(--radius-full);
+  animation: labs-truai-spin 0.8s linear infinite;
+}
+
+@keyframes labs-truai-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.labs-truai-thinking__text {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--ai-accent);
+}
+
+.labs-truai-response-block {
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+}
+
+.labs-truai-response {
+  width: 100%;
+  max-width: 100%;
+  padding: var(--padding-lg) var(--padding-xl);
+  border: none;
+  border-radius: var(--labs-truai-radius);
+  background-color: var(--labs-truai-surface-muted);
+}
+
+.labs-truai-response p,
+.labs-truai-response__lead {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.labs-truai-response--rich {
+  padding: var(--padding-xl);
+  background: var(--labs-truai-surface-soft);
+  box-shadow: none;
+}
+
+.labs-truai-response-block--rich {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+.labs-truai-source-count {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  margin: 0 0 var(--gap-md);
+  padding: 0 var(--padding-sm);
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.labs-truai-source-count__dot {
+  width: var(--radius-md);
+  height: var(--radius-md);
+  border-radius: var(--radius-full);
+  background-color: var(--ai-accent);
+  box-shadow: 0 0 0 var(--spacing-4) var(--labs-truai-surface-soft);
+}
+
+.labs-truai-rich-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  width: 100%;
+  margin-top: var(--gap-lg);
+}
+
+.labs-truai-rich-body[hidden] {
+  display: none;
+}
+
+.labs-truai-score {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-xl);
+  width: 100%;
+  padding: var(--padding-xl);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--labs-truai-radius);
+  background-color: var(--labs-truai-surface-inset);
+}
+
+.labs-truai-score--high {
+  border-color: var(--border-negative);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface-negative) 55%, var(--labs-truai-surface-inset)),
+    var(--labs-truai-surface-inset)
+  );
+}
+
+.labs-truai-score--medium {
+  border-color: var(--border-intermediate);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface-intermediate) 45%, var(--labs-truai-surface-inset)),
+    var(--labs-truai-surface-inset)
+  );
+}
+
+.labs-truai-score--low {
+  border-color: var(--border-positive);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface-positive) 45%, var(--labs-truai-surface-inset)),
+    var(--labs-truai-surface-inset)
+  );
+}
+
+.labs-truai-score__value-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-xs);
+}
+
+.labs-truai-score__value {
+  margin: 0;
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.03em;
+  color: var(--text-default);
+}
+
+.labs-truai-score__value--compact {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-xl);
+  letter-spacing: -0.02em;
+}
+
+.labs-truai-score__label {
+  color: var(--text-description);
+  font-size: var(--font-size-sm);
+}
+
+.labs-truai-score__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-4);
+}
+
+.labs-truai-score__meta-item {
+  margin: 0;
+  color: var(--text-description);
+  text-align: right;
+  font-size: var(--font-size-xs);
+}
+
+.labs-truai-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  width: 100%;
+}
+
+.labs-truai-section__title {
+  margin: 0;
+  padding: 0 var(--padding-md);
+  color: var(--text-caption);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.labs-truai-drivers {
+  margin: 0;
+  padding: var(--padding-lg) var(--padding-xl);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--labs-truai-radius);
+  background-color: var(--labs-truai-surface-inset);
+}
+
+.labs-truai-driver:not(:last-child) {
+  padding-bottom: var(--padding-lg);
+  margin-bottom: var(--padding-lg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.labs-truai-driver__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  margin-bottom: var(--gap-sm);
+}
+
+.labs-truai-driver__title {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.labs-truai-driver__detail {
+  margin: 0;
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+}
+
+.labs-truai-findings {
+  margin: 0;
+  padding: var(--padding-lg) var(--padding-xl);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--labs-truai-radius);
+  background-color: var(--labs-truai-surface-inset);
+}
+
+.labs-truai-findings li {
+  position: relative;
+  margin: 0;
+  padding: var(--padding-xs) 0 var(--padding-xs) calc(var(--spacing-12) + var(--spacing-8));
+  color: var(--text-default);
+  font-size: var(--font-size-xs);
+}
+
+.labs-truai-findings li::before {
+  content: "";
+  position: absolute;
+  top: 0.45em;
+  left: 0;
+  width: var(--radius-md);
+  height: var(--radius-md);
+  border-radius: var(--radius-full);
+  background-color: var(--ai-accent);
+}
+
+.labs-truai-primary-action,
+.labs-truai-secondary-action {
+  width: 100%;
+  justify-content: center;
+}
+
+.labs-truai-actions {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: var(--gap-md);
+  padding: var(--spacing-4) 0 0;
+}
+
+.labs-truai-response__cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background-color: var(--ai-accent);
+  animation: labs-truai-blink 0.8s ease-in-out infinite;
+}
+
+@keyframes labs-truai-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.labs-truai-composer-wrap {
+  flex-shrink: 0;
+  padding: 0 var(--padding-lg) var(--padding-lg);
+}
+
+.labs-truai-composer {
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-modal);
+  background-color: var(--surface-neutral-01);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.labs-truai-composer:focus-within {
+  border-color: var(--ai-accent);
+  box-shadow: 0 0 0 3px var(--ai-surface);
+}
+
+.labs-truai-composer__input-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  padding: var(--padding-md) var(--padding-md) var(--padding-lg);
+}
+
+.labs-truai-composer__field {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.labs-truai-composer__field svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--icon-faint);
+}
+
+.labs-truai-composer__field input {
+  min-width: 0;
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+  outline: none;
+}
+
+.labs-truai-composer__field input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.labs-truai-composer__send {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-neutral-03);
+  color: var(--icon-default);
+  cursor: pointer;
+}
+
+.labs-truai-composer__send svg {
+  width: 14px;
+  height: 14px;
+}
+
+.labs-truai-composer__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--padding-sm) var(--padding-md);
+  background-color: var(--surface-neutral-02);
+  font-size: var(--font-size-xs);
+}
+
+.labs-truai-composer__footer span {
+  color: var(--text-description);
+}
+
+.labs-truai-panel .tds-ai-tag--md {
+  padding: var(--padding-sm) var(--padding-md);
+  font-size: var(--font-size-sm);
+}

@@ -10,20 +10,54 @@
   --kyb-section-inset: var(--padding-lg);
   --kyb-layout-gap: var(--gap-xl);
   --kyb-block-gap: var(--gap-lg);
+
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  align-self: stretch;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  box-shadow: none;
 }
 
 /* --- Page layout rhythm (scoped overrides) --- */
 
 .kyb-panel .dv-header {
+  flex-shrink: 0;
   gap: var(--gap-xl);
 }
 
 .kyb-panel .dv-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   gap: var(--kyb-layout-gap);
 }
 
+.kyb-panel .dv-content > *:not(.dv-columns) {
+  flex-shrink: 0;
+}
+
 .kyb-panel .dv-columns {
+  flex: 1;
+  min-height: 0;
+  align-items: flex-start;
   gap: var(--gap-lg);
+}
+
+.kyb-panel .dv-sidebar {
+  top: 0;
+  max-height: 100%;
+}
+
+.kyb-panel .dv-main {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
 }
 
 .kyb-panel .tds-tabs {
@@ -87,6 +121,7 @@
   gap: 0;
   padding: 0;
   border-radius: var(--radius-section);
+  max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
