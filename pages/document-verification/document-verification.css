@@ -2528,6 +2528,13 @@ button.tds-side-nav__nav-item,
 .dv-te-option__desc { font-size: var(--font-size-xs); line-height: var(--line-height-xs); color: var(--text-caption); }
 .dv-te-option .tds-tag { flex-shrink: 0; }
 
+/* Match the option list width to the trigger (default is content-width). */
+.dv-te-select .tds-select__menu,
+.dv-te-select .tds-select__menu .tds-dropdown-panel {
+  width: 100%;
+  max-width: 100%;
+}
+
 /* Scenario-driven helpers / empty states / row details */
 .dv-helper {
   margin: 0 0 var(--spacing-12);
