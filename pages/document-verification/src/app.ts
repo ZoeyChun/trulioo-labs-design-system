@@ -370,6 +370,102 @@ function wireExpandAll(): void {
   });
 }
 
+function wireSignalsMenus(): void {
+  const FILTER_OPTIONS = [
+    "All signals",
+    "Declined only",
+    "Needs review only",
+    "Accepted only",
+  ];
+  const SORT_OPTIONS = [
+    "Severity: high to low",
+    "Severity: low to high",
+    "Name: A to Z",
+  ];
+  const CHECK_SVG =
+    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg>';
+
+  let openMenu: HTMLElement | null = null;
+  let openBtn: HTMLElement | null = null;
+
+  function close(): void {
+    if (openMenu) openMenu.remove();
+    if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+    openMenu = null;
+    openBtn = null;
+  }
+
+  function build(kind: "filter" | "sort"): HTMLElement {
+    const options = kind === "filter" ? FILTER_OPTIONS : SORT_OPTIONS;
+    const menu = document.createElement("div");
+    menu.className = "dv-menu-pop";
+    menu.setAttribute("role", "menu");
+
+    const label = document.createElement("p");
+    label.className = "dv-menu-pop__label";
+    label.textContent = kind === "filter" ? "Filter by" : "Sort by";
+    menu.appendChild(label);
+
+    options.forEach((text, index) => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className =
+        "dv-menu-pop__item" + (index === 0 ? " dv-menu-pop__item--active" : "");
+      item.setAttribute("role", "menuitemradio");
+      item.setAttribute("aria-checked", index === 0 ? "true" : "false");
+      item.innerHTML = `<span class="dv-menu-pop__text">${text}</span><span class="dv-menu-pop__check" aria-hidden="true">${CHECK_SVG}</span>`;
+      item.addEventListener("click", () => {
+        menu.querySelectorAll(".dv-menu-pop__item").forEach((el) => {
+          el.classList.remove("dv-menu-pop__item--active");
+          el.setAttribute("aria-checked", "false");
+        });
+        item.classList.add("dv-menu-pop__item--active");
+        item.setAttribute("aria-checked", "true");
+        close();
+      });
+      menu.appendChild(item);
+    });
+    return menu;
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const btn = target.closest(
+      ".dv-signals-bar__filter, .dv-signals-bar__sort",
+    );
+    if (btn instanceof HTMLElement) {
+      event.preventDefault();
+      const wasOpen = openBtn === btn;
+      close();
+      if (wasOpen) return;
+
+      const kind = btn.classList.contains("dv-signals-bar__filter")
+        ? "filter"
+        : "sort";
+      const controls = btn.parentElement;
+      if (!controls) return;
+      const menu = build(kind);
+      controls.appendChild(menu);
+      // Right-align the dropdown to the button within the toolbar row.
+      const right = controls.offsetWidth - (btn.offsetLeft + btn.offsetWidth);
+      menu.style.top = `${btn.offsetTop + btn.offsetHeight}px`;
+      menu.style.right = `${Math.max(right, 0)}px`;
+      btn.setAttribute("aria-expanded", "true");
+      openMenu = menu;
+      openBtn = btn;
+      return;
+    }
+
+    if (openMenu && !target.closest(".dv-menu-pop")) close();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") close();
+  });
+}
+
 function wireNiSummaryDrivers(): void {
   document.addEventListener("click", (event) => {
     const target = event.target;
@@ -394,6 +490,36 @@ function wireNiSummaryDrivers(): void {
     if (expandBtn) updateExpandAllButton(expandBtn);
 
     acc.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+/** Sidebar "TruAI" pill toggles the AI summary card. */
+function wireTruaiPanel(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const pill = target.closest("#dv-truai-pill");
+    if (!(pill instanceof HTMLElement)) return;
+    const card = document.getElementById("dv-truai-card");
+    if (!(card instanceof HTMLElement)) return;
+    const willOpen = card.hidden;
+    card.hidden = !willOpen;
+    pill.setAttribute("aria-expanded", String(willOpen));
+    pill.classList.toggle("dv-truai-pill--open", willOpen);
+  });
+}
+
+/** Collapsible Network Insights alert — chevron toggles the message. */
+function wireNiAnnounce(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const toggle = target.closest(".dv-ni-announce__toggle");
+    if (!(toggle instanceof HTMLElement)) return;
+    const announce = toggle.closest(".dv-ni-announce");
+    if (!announce) return;
+    const collapsed = announce.classList.toggle("dv-ni-announce--collapsed");
+    toggle.setAttribute("aria-expanded", String(!collapsed));
   });
 }
 
@@ -721,7 +847,10 @@ function wireTestEntitySelect(): void {
 document.addEventListener("DOMContentLoaded", () => {
   wireTabs();
   wireCollapsibles();
+  wireTruaiPanel();
+  wireNiAnnounce();
   wireExpandAll();
+  wireSignalsMenus();
   wireNiSummaryDrivers();
   wireTxnToggles();
   wireDataTableSort();

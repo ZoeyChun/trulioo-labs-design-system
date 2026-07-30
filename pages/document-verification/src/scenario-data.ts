@@ -324,7 +324,7 @@ const happySummary: SummaryRow[] = [
   { label: "Document", value: "Accepted", tone: "positive" },
   { label: "Biometrics", value: "Accepted", tone: "positive" },
   { label: "Known Faces", value: "No Match", tone: "default" },
-  { label: "Data Match", value: "6 Exact Matches", tone: "positive" },
+  { label: "Data Match", value: "6 Exact Matches", tone: "default" },
   { label: "Device Intelligence", value: "Low Risk", tone: "positive" },
 ];
 
@@ -355,6 +355,7 @@ const happyPath: ScenarioConfig = {
   overallTone: "positive",
   defaultTab: "document",
   transactionId: "8c2f4e7a-19bd-4f02-a6c1-77de42915b3a",
+  truAiTitle: "Jane Doe’s identity was verified",
   truAiSummary:
     "Jane Doe’s identity has been verified. All required checks passed and no additional review is needed.",
   summaryRows: happySummary,
@@ -574,6 +575,7 @@ const scenarioOverrides: Record<
     overallTone: "intermediate",
     defaultTab: "document",
     transactionId: "91e0b2c4-55aa-4c11-9f20-12ab34cd56ef",
+    truAiTitle: "Sent to review — the document has expired",
     truAiSummary:
       "Jane Doe’s document is authentic, but it has expired. A valid, non-expired document is required.",
     summaryRows: [
@@ -622,6 +624,7 @@ const scenarioOverrides: Record<
     overallTone: "negative",
     defaultTab: "biometrics",
     transactionId: "b7d1e9f0-22cc-4a88-81de-90fe12ab34cd",
+    truAiTitle: "Declined because of a face mismatch",
     truAiSummary:
       "The document is valid, but the selfie does not match the portrait on the document. Liveness passed and no spoofing was detected.",
     summaryRows: [
@@ -705,6 +708,7 @@ const scenarioOverrides: Record<
     overallTone: "negative",
     defaultTab: "data-match",
     transactionId: "c0ffee12-3456-4abc-9def-112233445566",
+    truAiTitle: "Declined because of a date-of-birth mismatch",
     truAiSummary:
       "The date of birth entered by the applicant does not match the date extracted from the document. Manual review is recommended.",
     summaryRows: [
@@ -714,7 +718,7 @@ const scenarioOverrides: Record<
       {
         label: "Data Match",
         value: "5 Exact · 1 Partial",
-        tone: "intermediate",
+        tone: "default",
       },
       happySummary[4],
     ],
@@ -788,6 +792,7 @@ const scenarioOverrides: Record<
     secondaryTone: "negative",
     defaultTab: "network-insights",
     transactionId: "d4e5f617-8901-4bcd-a123-998877665544",
+    truAiTitle: "Declined — face linked to a previously declined identity",
     truAiSummary:
       "Jane Doe’s document and selfie passed verification, but the face matches a previously declined identity associated with fraud.",
     summaryRows: [
@@ -956,6 +961,7 @@ const scenarioOverrides: Record<
     overallTone: "negative",
     defaultTab: "biometrics",
     transactionId: "e8f9a0b1-2345-4cde-b678-556677889900",
+    truAiTitle: "Declined — a synthetic selfie was detected",
     truAiSummary:
       "A synthetic selfie was detected. The document is valid and identity data matches, but the biometric capture cannot be trusted.",
     summaryRows: [

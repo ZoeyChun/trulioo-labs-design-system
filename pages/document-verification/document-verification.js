@@ -143,7 +143,7 @@
   var ICON_PLUS = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>';
   var ICON_MINUS = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8h10"/></svg>';
   var ICON_SORT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3"/></svg>';
-  var ICON_FLAG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 14V2.5h7l-1.6 2.6L11 8H4"/></svg>';
+  var ICON_FILTER = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg>';
   var ICON_CIRCLE_CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M5.4 8l1.8 1.8 3.4-3.8"/></svg>';
   var ICON_CIRCLE_INFO = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v3.4M8 5.1h.01"/></svg>';
   var ICON_DIAMOND_EXCLAMATION = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M8 1.5 14.5 8 8 14.5 1.5 8Z"/><path d="M8 5v3.4M8 10.8h.01"/></svg>';
@@ -198,57 +198,6 @@
       default:
         return ICON_NOT_DETECTED;
     }
-  }
-  function rowSignalTone(kind) {
-    switch (kind) {
-      case "accepted":
-      case "exact-match":
-      case "partial-match":
-      case "no-risk":
-      case "clean":
-        return "positive";
-      case "declined":
-      case "flagged":
-      case "risk":
-        return "negative";
-      case "review":
-      case "inconclusive":
-        return "intermediate";
-      case "match":
-        return "positive";
-      case "not-run":
-      case "not-detected":
-      default:
-        return "default";
-    }
-  }
-  function groupTone(group) {
-    switch (group.key) {
-      case "declined":
-        return "negative";
-      case "review":
-        return "intermediate";
-      case "accepted":
-      case "exact-match":
-      case "partial-match":
-        return "positive";
-      case "known-faces":
-        if (group.rows.length === 0) return "default";
-        return rowSignalTone(group.rows[0].kind);
-      case "not-run":
-      case "not-detected":
-      default:
-        return "default";
-    }
-  }
-  function deriveHeaderBadges(groups) {
-    const badges = [];
-    for (const group of groups) {
-      if (group.rows.length === 0) continue;
-      const text = group.countLabel !== void 0 ? group.countLabel : `${group.rows.length} ${group.label}`;
-      badges.push({ text, tone: groupTone(group) });
-    }
-    return badges;
   }
   function deriveDiGroupBadges(rows) {
     let risk2 = 0;
@@ -548,7 +497,7 @@
     { label: "Document", value: "Accepted", tone: "positive" },
     { label: "Biometrics", value: "Accepted", tone: "positive" },
     { label: "Known Faces", value: "No Match", tone: "default" },
-    { label: "Data Match", value: "6 Exact Matches", tone: "positive" },
+    { label: "Data Match", value: "6 Exact Matches", tone: "default" },
     { label: "Device Intelligence", value: "Low Risk", tone: "positive" }
   ];
   var happyNiSummary = {
@@ -571,6 +520,7 @@
     overallTone: "positive",
     defaultTab: "document",
     transactionId: "8c2f4e7a-19bd-4f02-a6c1-77de42915b3a",
+    truAiTitle: "Jane Doe\u2019s identity was verified",
     truAiSummary: "Jane Doe\u2019s identity has been verified. All required checks passed and no additional review is needed.",
     summaryRows: happySummary,
     documentInfo: {
@@ -780,6 +730,7 @@
       overallTone: "intermediate",
       defaultTab: "document",
       transactionId: "91e0b2c4-55aa-4c11-9f20-12ab34cd56ef",
+      truAiTitle: "Sent to review \u2014 the document has expired",
       truAiSummary: "Jane Doe\u2019s document is authentic, but it has expired. A valid, non-expired document is required.",
       summaryRows: [
         { label: "Document", value: "Declined", tone: "negative" },
@@ -824,6 +775,7 @@
       overallTone: "negative",
       defaultTab: "biometrics",
       transactionId: "b7d1e9f0-22cc-4a88-81de-90fe12ab34cd",
+      truAiTitle: "Declined because of a face mismatch",
       truAiSummary: "The document is valid, but the selfie does not match the portrait on the document. Liveness passed and no spoofing was detected.",
       summaryRows: [
         { label: "Document", value: "Accepted", tone: "positive" },
@@ -903,6 +855,7 @@
       overallTone: "negative",
       defaultTab: "data-match",
       transactionId: "c0ffee12-3456-4abc-9def-112233445566",
+      truAiTitle: "Declined because of a date-of-birth mismatch",
       truAiSummary: "The date of birth entered by the applicant does not match the date extracted from the document. Manual review is recommended.",
       summaryRows: [
         { label: "Document", value: "Review", tone: "intermediate" },
@@ -911,7 +864,7 @@
         {
           label: "Data Match",
           value: "5 Exact \xB7 1 Partial",
-          tone: "intermediate"
+          tone: "default"
         },
         happySummary[4]
       ],
@@ -982,6 +935,7 @@
       secondaryTone: "negative",
       defaultTab: "network-insights",
       transactionId: "d4e5f617-8901-4bcd-a123-998877665544",
+      truAiTitle: "Declined \u2014 face linked to a previously declined identity",
       truAiSummary: "Jane Doe\u2019s document and selfie passed verification, but the face matches a previously declined identity associated with fraud.",
       summaryRows: [
         { label: "Document", value: "Accepted", tone: "positive" },
@@ -1139,6 +1093,7 @@
       overallTone: "negative",
       defaultTab: "biometrics",
       transactionId: "e8f9a0b1-2345-4cde-b678-556677889900",
+      truAiTitle: "Declined \u2014 a synthetic selfie was detected",
       truAiSummary: "A synthetic selfie was detected. The document is valid and identity data matches, but the biometric capture cannot be trusted.",
       summaryRows: [
         { label: "Document", value: "Accepted", tone: "positive" },
@@ -1338,31 +1293,27 @@
   <div class="dv-table__label-cell"><span class="${kindToStatusClass(row.kind)}">${icon}${escapeHtml(row.result)}</span></div>
 </div>`;
   }
+  var GROUP_TAG_TONE = {
+    declined: "negative",
+    "partial-match": "negative",
+    review: "intermediate",
+    inconclusive: "intermediate",
+    accepted: "positive",
+    "exact-match": "positive",
+    "not-detected": "positive"
+  };
   function groupCountTag(group) {
+    var _a;
     const text = group.countLabel !== void 0 ? group.countLabel : String(group.rows.length);
-    return renderTag(text, "default");
+    return renderTag(text, (_a = GROUP_TAG_TONE[group.key]) != null ? _a : "default");
   }
   function defaultOpenKeys(groups, options) {
     const open = /* @__PURE__ */ new Set();
     if (options == null ? void 0 : options.defaultOpenKey) {
       open.add(options.defaultOpenKey);
-    } else {
-      const declined = groups.find((g) => g.key === "declined" && g.rows.length > 0);
-      const review = groups.find((g) => g.key === "review" && g.rows.length > 0);
-      if (declined) open.add(declined.key);
-      else if (review) open.add(review.key);
-      else {
-        const first = groups.find((g) => g.rows.length > 0);
-        if (first) open.add(first.key);
-      }
+    } else if (groups.length === 1 && groups[0]) {
+      open.add(groups[0].key);
     }
-    const knownFaces = groups.find(
-      (g) => {
-        var _a, _b;
-        return (g.key === "known-faces" || g.key === "match") && (g.rows.length > 0 || ((_b = (_a = g.knownFaces) == null ? void 0 : _a.matches.length) != null ? _b : 0) > 0);
-      }
-    );
-    if (knownFaces) open.add(knownFaces.key);
     return open;
   }
   var GROUP_SEVERITY_ORDER = {
@@ -1532,8 +1483,8 @@
   </div>
 </div>`;
   }
-  function niGroupTag(count) {
-    return renderTag(String(count), "default");
+  function niGroupTag(count, tone) {
+    return renderTag(String(count), tone);
   }
   function renderNiGroup(label, insights, open) {
     const openFirst = open && insights.length > 0;
@@ -1542,9 +1493,9 @@
     ).join("")}</div>` : `<p class="dv-empty">No ${escapeHtml(label.toLowerCase())} signals.</p>`;
     return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(label.toLowerCase())}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${open ? "true" : "false"}">
-    <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
+    <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON_DOWN}</span>
     <span class="dv-group__label">${escapeHtml(label)}</span>
-    ${niGroupTag(insights.length)}
+    ${niGroupTag(insights.length, label === "Flagged" ? "negative" : "positive")}
   </button>
   <div class="dv-collapsible__body"${open ? "" : " hidden"}>${body}</div>
 </div>`;
@@ -1568,21 +1519,25 @@
     const action = `<span class="dv-ni-summary__driver-action"><span class="dv-ni-summary__link">${escapeHtml((_a = driver.linkLabel) != null ? _a : "Go to section")}</span><span class="dv-ni-summary__arrow" aria-hidden="true">${ICON_ARROW_RIGHT}</span></span>`;
     return `<button type="button" class="dv-ni-summary__driver dv-ni-summary__driver--link" data-ni-target="${escapeHtml(driver.targetId)}" title="${escapeHtml(driver.text)}" aria-label="${escapeHtml(driver.text)} \u2014 go to section">${text}${action}</button>`;
   }
-  function renderNiSummary(summary, cleanIds) {
-    const announcement = `<div class="tds-announcement tds-announcement--${NI_SUMMARY_VARIANT[summary.status]}">
+  function renderNiAnnouncement(summary, collapsible) {
+    const toggle = collapsible ? `<button type="button" class="dv-ni-announce__toggle" aria-expanded="false" aria-label="Toggle details"><span class="dv-chevron dv-ni-announce__chevron" aria-hidden="true">${ICON_CHEVRON_DOWN}</span></button>` : "";
+    const mod = collapsible ? " dv-ni-announce dv-ni-announce--collapsible dv-ni-announce--collapsed" : "";
+    return `<div class="tds-announcement tds-announcement--${NI_SUMMARY_VARIANT[summary.status]}${mod}">
   <span class="tds-announcement__icon" aria-hidden="true">${NI_SUMMARY_ICON[summary.status]}</span>
   <div class="tds-announcement__content">
     <p class="tds-announcement__title">${escapeHtml(summary.title)}</p>
     <p class="tds-announcement__message">${escapeHtml(summary.message)}</p>
   </div>
+  ${toggle}
 </div>`;
+  }
+  function renderNiKeyDrivers(summary, cleanIds) {
     const drivers = summary.drivers.filter(
       (d) => !d.targetId || !cleanIds.has(d.targetId)
     );
-    if (drivers.length === 0) return announcement;
+    if (drivers.length === 0) return "";
     const cards = drivers.map(renderNiSummaryDriver).join("");
-    return `${announcement}
-<div class="dv-ni-summary__drivers">
+    return `<div class="dv-ni-summary__drivers">
   <p class="dv-ni-summary__drivers-title">Key Drivers</p>
   <div class="dv-ni-summary__grid">${cards}</div>
 </div>`;
@@ -1607,11 +1562,15 @@
   }
   function renderNetworkInsights(ni) {
     const cleanIds = new Set(ni.clean.map((insight) => insight.id));
-    const summary = ni.summary ? renderNiSummary(ni.summary, cleanIds) : "";
     if (ni.flagged.length > 0) {
-      return summary + renderNiGroup("Flagged", ni.flagged, true);
+      const announce2 = ni.summary ? renderNiAnnouncement(ni.summary, true) : "";
+      const drivers = ni.summary ? renderNiKeyDrivers(ni.summary, cleanIds) : "";
+      const flaggedAlone = ni.clean.length === 0;
+      const groups = renderNiGroup("Flagged", ni.flagged, flaggedAlone) + (ni.clean.length > 0 ? renderNiGroup("Clean", ni.clean, false) : "");
+      return `${announce2}${drivers}${renderSignalsToolbar()}<div class="dv-ni2-groups">${groups}</div>`;
     }
-    return summary + renderNiWhatWeChecked();
+    const announce = ni.summary ? renderNiAnnouncement(ni.summary, false) : "";
+    return `${announce}${renderNiWhatWeChecked()}`;
   }
   function diInsightMarkup(row) {
     if (row.insight === "Risk") {
@@ -1665,8 +1624,7 @@
     const evidenceGroups = normalizeDiEvidence(di.evidence).filter(
       (group) => group.rows.length > 0
     );
-    const openIndex = 0;
-    const evidence = evidenceGroups.map((group, index) => renderDiEvidenceGroup(group, index === openIndex)).join("");
+    const evidence = evidenceGroups.map((group) => renderDiEvidenceGroup(group, evidenceGroups.length === 1)).join("");
     return `<div class="dv-di-top">
   <div class="dv-di-summary">
     <div class="dv-di-score">
@@ -1689,8 +1647,8 @@
   </div>
   <div class="dv-di-details" id="dv-device-details" hidden>${detailsRows}</div>
 </div>
-<span class="dv-di-evidence-label">Evidence</span>
-${evidence}`;
+${renderSignalsToolbar()}
+<div class="dv-di-groups">${evidence}</div>`;
   }
   function renderSummaryList(rows) {
     return rows.map(
@@ -1705,21 +1663,14 @@ ${evidence}`;
   function renderDocumentInfo(info) {
     const expiry = info.expiryNote ? `${info.expiryDate} (${info.expiryNote})` : info.expiryDate;
     const rows = [
-      { label: "Document Type", value: info.documentType },
-      { label: "Document Number", value: info.documentNumber },
-      { label: "Issuing State", value: info.issuingState },
-      { label: "Expiry Date", value: expiry },
-      { label: "Document Status", value: info.documentStatus },
+      { label: "Document type", value: info.documentType },
+      { label: "Document number", value: info.documentNumber },
+      { label: "Issuing state", value: info.issuingState },
+      { label: "Expiry date", value: expiry },
+      { label: "Document status", value: info.documentStatus },
       { label: "Authenticity", value: info.authenticity }
     ];
     return renderDetailPairs(rows);
-  }
-  function renderHeaderBadges(badges) {
-    return badges.map((b) => renderTag(b.text, b.tone)).join("");
-  }
-  function renderNetworkHeaderBadge(ni) {
-    const icon = ni.headerStatus === "Flagged" ? `<span class="dv-tag-icon">${ICON_FLAG}</span>` : "";
-    return `${icon}${escapeHtml(ni.headerStatus)}`;
   }
   function diHeaderTone(di) {
     if (di.risk === "high") return "negative";
@@ -1767,25 +1718,71 @@ ${evidence}`;
     return `<p class="dv-matched-faces__label">Matched against ${kf.matchedCount} faces</p>
 <div class="dv-matched-faces__grid">${thumbs}${more}</div>`;
   }
+  var STAT_FAIL_KEYS = /* @__PURE__ */ new Set(["declined", "partial-match"]);
+  var STAT_REVIEW_KEYS = /* @__PURE__ */ new Set(["review", "inconclusive"]);
+  var STAT_PASS_KEYS = /* @__PURE__ */ new Set(["accepted", "exact-match", "not-detected"]);
+  var STAT_NOTRUN_KEYS = /* @__PURE__ */ new Set(["not-run"]);
+  function computeSignalStats(groups) {
+    let pass = 0;
+    let fail = 0;
+    let review = 0;
+    let notRun2 = 0;
+    for (const g of groups) {
+      const n = g.rows.length;
+      if (STAT_FAIL_KEYS.has(g.key)) fail += n;
+      else if (STAT_REVIEW_KEYS.has(g.key)) review += n;
+      else if (STAT_PASS_KEYS.has(g.key)) pass += n;
+      else if (STAT_NOTRUN_KEYS.has(g.key)) notRun2 += n;
+    }
+    const evaluated = pass + fail + review;
+    return {
+      signalsChecked: evaluated + notRun2,
+      passRate: evaluated > 0 ? Math.round(pass / evaluated * 100) : 0,
+      declinedChecks: fail
+    };
+  }
+  function renderStatRow(stats) {
+    const tile = (label, value, mod = "") => `<div class="dv-stat${mod}"><span class="dv-stat__label">${label}</span><span class="dv-stat__value">${escapeHtml(value)}</span></div>`;
+    return `${tile("Signals checked", String(stats.signalsChecked))}${tile(
+      "Pass rate",
+      `${stats.passRate}%`
+    )}${tile("Declined checks", String(stats.declinedChecks), " dv-stat--negative")}`;
+  }
+  function renderSignalsToolbar() {
+    return `<div class="dv-signals-bar">
+  <h3 class="dv-signals-bar__title">Signals</h3>
+  <div class="dv-signals-bar__controls">
+    <button class="tds-btn tds-btn--invisible tds-btn--sm dv-expand-all" type="button"><span class="tds-btn__leading-icon">${ICON_EXPAND_ALL}</span>Expand all</button>
+    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__filter" type="button"><span class="tds-btn__leading-icon">${ICON_FILTER}</span>Filter</button>
+    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__sort" type="button"><span class="tds-btn__leading-icon">${ICON_SORT}</span>Sort</button>
+  </div>
+</div>`;
+  }
+  var SUMMARY_GLYPH_CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6.5"/></svg>';
+  var SUMMARY_GLYPH_X = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>';
+  var SUMMARY_GLYPH_BANG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3.5v5.4M8 11.9h.01"/></svg>';
+  var SUMMARY_STATUS_ICON = {
+    positive: SUMMARY_GLYPH_CHECK,
+    negative: SUMMARY_GLYPH_X,
+    intermediate: SUMMARY_GLYPH_BANG,
+    default: SUMMARY_GLYPH_BANG
+  };
+  function renderSummaryStatus(status, tone) {
+    return `<span class="dv-summary-status__icon">${SUMMARY_STATUS_ICON[tone]}</span><span class="dv-summary-status__label">${escapeHtml(status)}</span>`;
+  }
   function applyScenario(root, config) {
     var _a, _b;
     const q = (sel) => root.querySelector(sel);
-    setHtml(q("#dv-overall-status"), renderTag(config.overallStatus, config.overallTone, "md"));
-    const secondary = q("#dv-secondary-status");
-    if (secondary instanceof HTMLElement) {
-      if (config.secondaryStatus && config.secondaryTone) {
-        secondary.hidden = false;
-        secondary.innerHTML = renderTag(
-          config.secondaryStatus,
-          config.secondaryTone,
-          "md"
-        );
-      } else {
-        secondary.hidden = true;
-        secondary.innerHTML = "";
-      }
+    const summaryStatus = q("#dv-summary-status");
+    if (summaryStatus instanceof HTMLElement) {
+      summaryStatus.className = `dv-summary-status dv-summary-status--${config.overallTone}`;
+      summaryStatus.innerHTML = renderSummaryStatus(
+        config.overallStatus,
+        config.overallTone
+      );
     }
     setText(q("#dv-transaction-id"), config.transactionId);
+    setText(q("#dv-truai-title"), config.truAiTitle);
     setText(q("#dv-truai-text"), config.truAiSummary);
     setHtml(q("#dv-summary-list"), renderSummaryList(config.summaryRows));
     setHtml(q("#dv-document-info"), renderDocumentInfo(config.documentInfo));
@@ -1793,29 +1790,30 @@ ${evidence}`;
     setHtml(teOptions, renderTeOptions(config.id));
     const teSelect = q("#dv-te-select");
     if (teSelect) {
-      const valueEl = (_a = teSelect.querySelector("#dv-te-value")) != null ? _a : teSelect.querySelector(".dv-te-value");
-      const tagEl = (_b = teSelect.querySelector("#dv-te-tag")) != null ? _b : teSelect.querySelector(".dv-te-tag");
-      setText(valueEl, config.label);
-      if (tagEl) {
-        tagEl.className = `${toneClass(config.overallTone)} dv-te-tag`;
-        tagEl.textContent = config.overallStatus;
-      }
+      setText(
+        (_a = teSelect.querySelector("#dv-te-value")) != null ? _a : teSelect.querySelector(".dv-te-value"),
+        config.label
+      );
+      setText(
+        (_b = teSelect.querySelector("#dv-te-subtext")) != null ? _b : teSelect.querySelector(".dv-te-subtext"),
+        config.overallStatus
+      );
     }
     setHtml(
       q("#dv-document-indicators"),
       renderIndicatorGroups(config.document.groups)
     );
     setHtml(
-      q("#dv-document-badges"),
-      renderHeaderBadges(deriveHeaderBadges(config.document.groups))
+      q("#dv-document-stats"),
+      renderStatRow(computeSignalStats(config.document.groups))
     );
     setHtml(
       q("#dv-biometrics-indicators"),
       renderIndicatorGroups(config.biometrics.groups)
     );
     setHtml(
-      q("#dv-biometrics-badges"),
-      renderHeaderBadges(deriveHeaderBadges(config.biometrics.groups))
+      q("#dv-biometrics-stats"),
+      renderStatRow(computeSignalStats(config.biometrics.groups))
     );
     const matchedFaces = q("#dv-matched-faces");
     if (matchedFaces instanceof HTMLElement) {
@@ -1833,15 +1831,10 @@ ${evidence}`;
       renderIndicatorGroups(config.dataMatch.groups)
     );
     setHtml(
-      q("#dv-datamatch-badges"),
-      renderHeaderBadges(deriveHeaderBadges(config.dataMatch.groups))
+      q("#dv-datamatch-stats"),
+      renderStatRow(computeSignalStats(config.dataMatch.groups))
     );
     setHtml(q("#dv-network-body"), renderNetworkInsights(config.networkInsights));
-    const networkBadge = q("#dv-network-header-badge");
-    if (networkBadge instanceof HTMLElement) {
-      networkBadge.className = `${toneClass(config.networkInsights.headerTone)} dv-ni-pill`;
-      networkBadge.innerHTML = renderNetworkHeaderBadge(config.networkInsights);
-    }
     const niExpandBtn = q(
       '.dv-tabpanel[data-tab="network-insights"] .dv-expand-all'
     );
@@ -2158,6 +2151,86 @@ ${evidence}`;
       updateExpandAllButton(btn);
     });
   }
+  function wireSignalsMenus() {
+    const FILTER_OPTIONS = [
+      "All signals",
+      "Declined only",
+      "Needs review only",
+      "Accepted only"
+    ];
+    const SORT_OPTIONS = [
+      "Severity: high to low",
+      "Severity: low to high",
+      "Name: A to Z"
+    ];
+    const CHECK_SVG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg>';
+    let openMenu = null;
+    let openBtn = null;
+    function close() {
+      if (openMenu) openMenu.remove();
+      if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+      openMenu = null;
+      openBtn = null;
+    }
+    function build(kind) {
+      const options = kind === "filter" ? FILTER_OPTIONS : SORT_OPTIONS;
+      const menu = document.createElement("div");
+      menu.className = "dv-menu-pop";
+      menu.setAttribute("role", "menu");
+      const label = document.createElement("p");
+      label.className = "dv-menu-pop__label";
+      label.textContent = kind === "filter" ? "Filter by" : "Sort by";
+      menu.appendChild(label);
+      options.forEach((text, index) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "dv-menu-pop__item" + (index === 0 ? " dv-menu-pop__item--active" : "");
+        item.setAttribute("role", "menuitemradio");
+        item.setAttribute("aria-checked", index === 0 ? "true" : "false");
+        item.innerHTML = `<span class="dv-menu-pop__text">${text}</span><span class="dv-menu-pop__check" aria-hidden="true">${CHECK_SVG}</span>`;
+        item.addEventListener("click", () => {
+          menu.querySelectorAll(".dv-menu-pop__item").forEach((el) => {
+            el.classList.remove("dv-menu-pop__item--active");
+            el.setAttribute("aria-checked", "false");
+          });
+          item.classList.add("dv-menu-pop__item--active");
+          item.setAttribute("aria-checked", "true");
+          close();
+        });
+        menu.appendChild(item);
+      });
+      return menu;
+    }
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const btn = target.closest(
+        ".dv-signals-bar__filter, .dv-signals-bar__sort"
+      );
+      if (btn instanceof HTMLElement) {
+        event.preventDefault();
+        const wasOpen = openBtn === btn;
+        close();
+        if (wasOpen) return;
+        const kind = btn.classList.contains("dv-signals-bar__filter") ? "filter" : "sort";
+        const controls = btn.parentElement;
+        if (!controls) return;
+        const menu = build(kind);
+        controls.appendChild(menu);
+        const right = controls.offsetWidth - (btn.offsetLeft + btn.offsetWidth);
+        menu.style.top = `${btn.offsetTop + btn.offsetHeight}px`;
+        menu.style.right = `${Math.max(right, 0)}px`;
+        btn.setAttribute("aria-expanded", "true");
+        openMenu = menu;
+        openBtn = btn;
+        return;
+      }
+      if (openMenu && !target.closest(".dv-menu-pop")) close();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") close();
+    });
+  }
   function wireNiSummaryDrivers() {
     document.addEventListener("click", (event) => {
       const target = event.target;
@@ -2177,6 +2250,32 @@ ${evidence}`;
       const expandBtn = panel == null ? void 0 : panel.querySelector(".dv-expand-all");
       if (expandBtn) updateExpandAllButton(expandBtn);
       acc.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+  function wireTruaiPanel() {
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const pill = target.closest("#dv-truai-pill");
+      if (!(pill instanceof HTMLElement)) return;
+      const card = document.getElementById("dv-truai-card");
+      if (!(card instanceof HTMLElement)) return;
+      const willOpen = card.hidden;
+      card.hidden = !willOpen;
+      pill.setAttribute("aria-expanded", String(willOpen));
+      pill.classList.toggle("dv-truai-pill--open", willOpen);
+    });
+  }
+  function wireNiAnnounce() {
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const toggle = target.closest(".dv-ni-announce__toggle");
+      if (!(toggle instanceof HTMLElement)) return;
+      const announce = toggle.closest(".dv-ni-announce");
+      if (!announce) return;
+      const collapsed = announce.classList.toggle("dv-ni-announce--collapsed");
+      toggle.setAttribute("aria-expanded", String(!collapsed));
     });
   }
   function wireTxnToggles() {
@@ -2443,7 +2542,10 @@ ${evidence}`;
   document.addEventListener("DOMContentLoaded", () => {
     wireTabs();
     wireCollapsibles();
+    wireTruaiPanel();
+    wireNiAnnounce();
     wireExpandAll();
+    wireSignalsMenus();
     wireNiSummaryDrivers();
     wireTxnToggles();
     wireDataTableSort();

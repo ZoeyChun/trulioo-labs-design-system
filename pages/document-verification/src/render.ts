@@ -14,6 +14,9 @@ import {
   ICON_CIRCLE_INFO,
   ICON_DIAMOND_EXCLAMATION,
   ICON_DECLINED,
+  ICON_EXPAND_ALL,
+  ICON_FILTER,
+  ICON_REVIEW,
   ICON_FLAG,
   ICON_MINUS,
   ICON_NOTE_THUMB,
@@ -146,37 +149,37 @@ export function renderCheckRow(
 </div>`;
 }
 
+/** Colour the group count to match the group's status. */
+const GROUP_TAG_TONE: Record<string, Tone> = {
+  declined: "negative",
+  "partial-match": "negative",
+  review: "intermediate",
+  inconclusive: "intermediate",
+  accepted: "positive",
+  "exact-match": "positive",
+  "not-detected": "positive",
+};
+
 function groupCountTag(group: IndicatorGroup): string {
   const text =
     group.countLabel !== undefined
       ? group.countLabel
       : String(group.rows.length);
-  return renderTag(text, "default");
+  return renderTag(text, GROUP_TAG_TONE[group.key] ?? "default");
 }
 
 function defaultOpenKeys(
   groups: IndicatorGroup[],
   options?: { defaultOpenKey?: string },
 ): Set<string> {
+  // All groups start collapsed, except when there is only a single group
+  // (e.g. only Accepted signals) — a lone accordion opens by default.
   const open = new Set<string>();
   if (options?.defaultOpenKey) {
     open.add(options.defaultOpenKey);
-  } else {
-    const declined = groups.find((g) => g.key === "declined" && g.rows.length > 0);
-    const review = groups.find((g) => g.key === "review" && g.rows.length > 0);
-    if (declined) open.add(declined.key);
-    else if (review) open.add(review.key);
-    else {
-      const first = groups.find((g) => g.rows.length > 0);
-      if (first) open.add(first.key);
-    }
+  } else if (groups.length === 1 && groups[0]) {
+    open.add(groups[0].key);
   }
-  const knownFaces = groups.find(
-    (g) =>
-      (g.key === "known-faces" || g.key === "match") &&
-      (g.rows.length > 0 || (g.knownFaces?.matches.length ?? 0) > 0),
-  );
-  if (knownFaces) open.add(knownFaces.key);
   return open;
 }
 
@@ -408,8 +411,8 @@ export function renderNiInsight(
 </div>`;
 }
 
-function niGroupTag(count: number): string {
-  return renderTag(String(count), "default");
+function niGroupTag(count: number, tone: Tone): string {
+  return renderTag(String(count), tone);
 }
 
 function renderNiGroup(
@@ -428,9 +431,9 @@ function renderNiGroup(
       : `<p class="dv-empty">No ${escapeHtml(label.toLowerCase())} signals.</p>`;
   return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(label.toLowerCase())}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${open ? "true" : "false"}">
-    <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
+    <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON_DOWN}</span>
     <span class="dv-group__label">${escapeHtml(label)}</span>
-    ${niGroupTag(insights.length)}
+    ${niGroupTag(insights.length, label === "Flagged" ? "negative" : "positive")}
   </button>
   <div class="dv-collapsible__body"${open ? "" : " hidden"}>${body}</div>
 </div>`;
@@ -459,29 +462,32 @@ function renderNiSummaryDriver(driver: NiSummaryDriver): string {
   return `<button type="button" class="dv-ni-summary__driver dv-ni-summary__driver--link" data-ni-target="${escapeHtml(driver.targetId)}" title="${escapeHtml(driver.text)}" aria-label="${escapeHtml(driver.text)} — go to section">${text}${action}</button>`;
 }
 
-/**
- * Result summary = the Announcement banner, plus a Key Drivers grid.
- * Key Drivers only surface non-clean signals: drivers that point at a "clean"
- * insight are dropped (the Clean section itself isn't shown). When nothing but
- * clean drivers remain, only the Announcement renders — no Key Drivers, no card.
- */
-function renderNiSummary(summary: NiSummary, cleanIds: Set<string>): string {
-  const announcement = `<div class="tds-announcement tds-announcement--${NI_SUMMARY_VARIANT[summary.status]}">
+/** DS Announcement banner; when collapsible, a chevron toggles the message (app.ts). */
+function renderNiAnnouncement(summary: NiSummary, collapsible: boolean): string {
+  const toggle = collapsible
+    ? `<button type="button" class="dv-ni-announce__toggle" aria-expanded="false" aria-label="Toggle details"><span class="dv-chevron dv-ni-announce__chevron" aria-hidden="true">${ICON_CHEVRON_DOWN}</span></button>`
+    : "";
+  const mod = collapsible
+    ? " dv-ni-announce dv-ni-announce--collapsible dv-ni-announce--collapsed"
+    : "";
+  return `<div class="tds-announcement tds-announcement--${NI_SUMMARY_VARIANT[summary.status]}${mod}">
   <span class="tds-announcement__icon" aria-hidden="true">${NI_SUMMARY_ICON[summary.status]}</span>
   <div class="tds-announcement__content">
     <p class="tds-announcement__title">${escapeHtml(summary.title)}</p>
     <p class="tds-announcement__message">${escapeHtml(summary.message)}</p>
   </div>
+  ${toggle}
 </div>`;
+}
 
+/** Key Drivers grid — only non-clean signals (drivers targeting a clean insight are dropped). */
+function renderNiKeyDrivers(summary: NiSummary, cleanIds: Set<string>): string {
   const drivers = summary.drivers.filter(
     (d) => !d.targetId || !cleanIds.has(d.targetId),
   );
-  if (drivers.length === 0) return announcement;
-
+  if (drivers.length === 0) return "";
   const cards = drivers.map(renderNiSummaryDriver).join("");
-  return `${announcement}
-<div class="dv-ni-summary__drivers">
+  return `<div class="dv-ni-summary__drivers">
   <p class="dv-ni-summary__drivers-title">Key Drivers</p>
   <div class="dv-ni-summary__grid">${cards}</div>
 </div>`;
@@ -513,14 +519,22 @@ function renderNiWhatWeChecked(): string {
 
 export function renderNetworkInsights(ni: NiConfig): string {
   const cleanIds = new Set(ni.clean.map((insight) => insight.id));
-  const summary = ni.summary ? renderNiSummary(ni.summary, cleanIds) : "";
-  // Flagged entity: result summary + Key Drivers + the flagged detail accordions.
+
+  // Flagged entity: collapsible alert + Key Drivers + Signals (Flagged + Clean groups, collapsed).
   if (ni.flagged.length > 0) {
-    return summary + renderNiGroup("Flagged", ni.flagged, true);
+    const announce = ni.summary ? renderNiAnnouncement(ni.summary, true) : "";
+    const drivers = ni.summary ? renderNiKeyDrivers(ni.summary, cleanIds) : "";
+    // Collapse both groups by default; only open Flagged when it stands alone.
+    const flaggedAlone = ni.clean.length === 0;
+    const groups =
+      renderNiGroup("Flagged", ni.flagged, flaggedAlone) +
+      (ni.clean.length > 0 ? renderNiGroup("Clean", ni.clean, false) : "");
+    return `${announce}${drivers}${renderSignalsToolbar()}<div class="dv-ni2-groups">${groups}</div>`;
   }
-  // Clean entity: result summary + a "What we checked" transparency list. There
-  // are no expandable sections, so the Expand-all button is hidden (applyScenario).
-  return summary + renderNiWhatWeChecked();
+
+  // Clean entity: alert + "What we checked" transparency list (no expandable sections).
+  const announce = ni.summary ? renderNiAnnouncement(ni.summary, false) : "";
+  return `${announce}${renderNiWhatWeChecked()}`;
 }
 
 function diInsightMarkup(row: DiEvidenceRow): string {
@@ -587,13 +601,12 @@ export function renderDeviceIntelligence(di: DiConfig): string {
         `<div class="dv-detail-row"><span class="dv-detail-label">${escapeHtml(d.label)}</span><span class="dv-detail-value">${escapeHtml(d.value)}</span></div>`,
     )
     .join("");
-  // Drop evidence categories with no signals rather than showing an empty group.
+  // Drop evidence categories with no signals; all groups start collapsed.
   const evidenceGroups = normalizeDiEvidence(di.evidence).filter(
     (group) => group.rows.length > 0,
   );
-  const openIndex = 0;
   const evidence = evidenceGroups
-    .map((group, index) => renderDiEvidenceGroup(group, index === openIndex))
+    .map((group) => renderDiEvidenceGroup(group, evidenceGroups.length === 1))
     .join("");
 
   return `<div class="dv-di-top">
@@ -618,8 +631,8 @@ export function renderDeviceIntelligence(di: DiConfig): string {
   </div>
   <div class="dv-di-details" id="dv-device-details" hidden>${detailsRows}</div>
 </div>
-<span class="dv-di-evidence-label">Evidence</span>
-${evidence}`;
+${renderSignalsToolbar()}
+<div class="dv-di-groups">${evidence}</div>`;
 }
 
 function renderSummaryList(rows: SummaryRow[]): string {
@@ -645,11 +658,11 @@ function renderDocumentInfo(info: DocumentInfo): string {
     ? `${info.expiryDate} (${info.expiryNote})`
     : info.expiryDate;
   const rows: DetailPair[] = [
-    { label: "Document Type", value: info.documentType },
-    { label: "Document Number", value: info.documentNumber },
-    { label: "Issuing State", value: info.issuingState },
-    { label: "Expiry Date", value: expiry },
-    { label: "Document Status", value: info.documentStatus },
+    { label: "Document type", value: info.documentType },
+    { label: "Document number", value: info.documentNumber },
+    { label: "Issuing state", value: info.issuingState },
+    { label: "Expiry date", value: expiry },
+    { label: "Document status", value: info.documentStatus },
     { label: "Authenticity", value: info.authenticity },
   ];
   return renderDetailPairs(rows);
@@ -729,30 +742,97 @@ function renderMatchedFaces(kf: KnownFacesInfo): string {
 <div class="dv-matched-faces__grid">${thumbs}${more}</div>`;
 }
 
+/* ---- Signal stat tiles (Document / Biometrics / Data Match) ---- */
+const STAT_FAIL_KEYS = new Set(["declined", "partial-match"]);
+const STAT_REVIEW_KEYS = new Set(["review", "inconclusive"]);
+const STAT_PASS_KEYS = new Set(["accepted", "exact-match", "not-detected"]);
+const STAT_NOTRUN_KEYS = new Set(["not-run"]);
+
+interface SignalStats {
+  signalsChecked: number;
+  passRate: number;
+  declinedChecks: number;
+}
+
+function computeSignalStats(groups: IndicatorGroup[]): SignalStats {
+  let pass = 0;
+  let fail = 0;
+  let review = 0;
+  let notRun = 0;
+  for (const g of groups) {
+    const n = g.rows.length;
+    if (STAT_FAIL_KEYS.has(g.key)) fail += n;
+    else if (STAT_REVIEW_KEYS.has(g.key)) review += n;
+    else if (STAT_PASS_KEYS.has(g.key)) pass += n;
+    else if (STAT_NOTRUN_KEYS.has(g.key)) notRun += n;
+  }
+  const evaluated = pass + fail + review;
+  return {
+    signalsChecked: evaluated + notRun,
+    passRate: evaluated > 0 ? Math.round((pass / evaluated) * 100) : 0,
+    declinedChecks: fail,
+  };
+}
+
+function renderStatRow(stats: SignalStats): string {
+  const tile = (label: string, value: string, mod = ""): string =>
+    `<div class="dv-stat${mod}"><span class="dv-stat__label">${label}</span><span class="dv-stat__value">${escapeHtml(value)}</span></div>`;
+  return `${tile("Signals checked", String(stats.signalsChecked))}${tile(
+    "Pass rate",
+    `${stats.passRate}%`,
+  )}${tile("Declined checks", String(stats.declinedChecks), " dv-stat--negative")}`;
+}
+
+/** "Signals" header + Expand all / Filter / Sort controls (shared across tabs). */
+function renderSignalsToolbar(): string {
+  return `<div class="dv-signals-bar">
+  <h3 class="dv-signals-bar__title">Signals</h3>
+  <div class="dv-signals-bar__controls">
+    <button class="tds-btn tds-btn--invisible tds-btn--sm dv-expand-all" type="button"><span class="tds-btn__leading-icon">${ICON_EXPAND_ALL}</span>Expand all</button>
+    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__filter" type="button"><span class="tds-btn__leading-icon">${ICON_FILTER}</span>Filter</button>
+    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__sort" type="button"><span class="tds-btn__leading-icon">${ICON_SORT}</span>Sort</button>
+  </div>
+</div>`;
+}
+
+// Solid white glyphs sit inside a filled, tone-colored rounded square.
+const SUMMARY_GLYPH_CHECK =
+  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6.5"/></svg>';
+const SUMMARY_GLYPH_X =
+  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>';
+const SUMMARY_GLYPH_BANG =
+  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3.5v5.4M8 11.9h.01"/></svg>';
+
+const SUMMARY_STATUS_ICON: Record<Tone, string> = {
+  positive: SUMMARY_GLYPH_CHECK,
+  negative: SUMMARY_GLYPH_X,
+  intermediate: SUMMARY_GLYPH_BANG,
+  default: SUMMARY_GLYPH_BANG,
+};
+
+/** Big summary status shown in the sidebar SUMMARY block. */
+function renderSummaryStatus(status: string, tone: Tone): string {
+  return `<span class="dv-summary-status__icon">${SUMMARY_STATUS_ICON[tone]}</span><span class="dv-summary-status__label">${escapeHtml(status)}</span>`;
+}
+
 export function applyScenario(
   root: Document | HTMLElement,
   config: ScenarioConfig,
 ): void {
   const q = (sel: string): Element | null => root.querySelector(sel);
 
-  setHtml(q("#dv-overall-status"), renderTag(config.overallStatus, config.overallTone, "md"));
-
-  const secondary = q("#dv-secondary-status");
-  if (secondary instanceof HTMLElement) {
-    if (config.secondaryStatus && config.secondaryTone) {
-      secondary.hidden = false;
-      secondary.innerHTML = renderTag(
-        config.secondaryStatus,
-        config.secondaryTone,
-        "md",
-      );
-    } else {
-      secondary.hidden = true;
-      secondary.innerHTML = "";
-    }
+  // Overall status now lives big in the sidebar SUMMARY block (header tag removed).
+  const summaryStatus = q("#dv-summary-status");
+  if (summaryStatus instanceof HTMLElement) {
+    summaryStatus.className = `dv-summary-status dv-summary-status--${config.overallTone}`;
+    summaryStatus.innerHTML = renderSummaryStatus(
+      config.overallStatus,
+      config.overallTone,
+    );
   }
 
   setText(q("#dv-transaction-id"), config.transactionId);
+  setText(q("#dv-truai-title"), config.truAiTitle);
   setText(q("#dv-truai-text"), config.truAiSummary);
   setHtml(q("#dv-summary-list"), renderSummaryList(config.summaryRows));
   setHtml(q("#dv-document-info"), renderDocumentInfo(config.documentInfo));
@@ -762,17 +842,16 @@ export function applyScenario(
 
   const teSelect = q("#dv-te-select");
   if (teSelect) {
-    const valueEl =
+    setText(
       teSelect.querySelector("#dv-te-value") ??
-      teSelect.querySelector(".dv-te-value");
-    const tagEl =
-      teSelect.querySelector("#dv-te-tag") ??
-      teSelect.querySelector(".dv-te-tag");
-    setText(valueEl, config.label);
-    if (tagEl) {
-      tagEl.className = `${toneClass(config.overallTone)} dv-te-tag`;
-      tagEl.textContent = config.overallStatus;
-    }
+        teSelect.querySelector(".dv-te-value"),
+      config.label,
+    );
+    setText(
+      teSelect.querySelector("#dv-te-subtext") ??
+        teSelect.querySelector(".dv-te-subtext"),
+      config.overallStatus,
+    );
   }
 
   setHtml(
@@ -780,8 +859,8 @@ export function applyScenario(
     renderIndicatorGroups(config.document.groups),
   );
   setHtml(
-    q("#dv-document-badges"),
-    renderHeaderBadges(deriveHeaderBadges(config.document.groups)),
+    q("#dv-document-stats"),
+    renderStatRow(computeSignalStats(config.document.groups)),
   );
 
   setHtml(
@@ -789,8 +868,8 @@ export function applyScenario(
     renderIndicatorGroups(config.biometrics.groups),
   );
   setHtml(
-    q("#dv-biometrics-badges"),
-    renderHeaderBadges(deriveHeaderBadges(config.biometrics.groups)),
+    q("#dv-biometrics-stats"),
+    renderStatRow(computeSignalStats(config.biometrics.groups)),
   );
 
   const matchedFaces = q("#dv-matched-faces");
@@ -810,16 +889,11 @@ export function applyScenario(
     renderIndicatorGroups(config.dataMatch.groups),
   );
   setHtml(
-    q("#dv-datamatch-badges"),
-    renderHeaderBadges(deriveHeaderBadges(config.dataMatch.groups)),
+    q("#dv-datamatch-stats"),
+    renderStatRow(computeSignalStats(config.dataMatch.groups)),
   );
 
   setHtml(q("#dv-network-body"), renderNetworkInsights(config.networkInsights));
-  const networkBadge = q("#dv-network-header-badge");
-  if (networkBadge instanceof HTMLElement) {
-    networkBadge.className = `${toneClass(config.networkInsights.headerTone)} dv-ni-pill`;
-    networkBadge.innerHTML = renderNetworkHeaderBadge(config.networkInsights);
-  }
   // Clean entities have no expandable sections — hide the Network Insights "Expand all".
   const niExpandBtn = q(
     '.dv-tabpanel[data-tab="network-insights"] .dv-expand-all',

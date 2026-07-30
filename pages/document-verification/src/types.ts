@@ -178,6 +178,7 @@ export interface ScenarioConfig {
   secondaryTone?: Tone;
   defaultTab: TabId;
   transactionId: string;
+  truAiTitle: string;
   truAiSummary: string;
   summaryRows: SummaryRow[];
   documentInfo: DocumentInfo;
