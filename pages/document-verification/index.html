@@ -15,6 +15,8 @@
   <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
   <link rel="stylesheet" href="../../Components/announcement/announcement.css">
   <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
+  <link rel="stylesheet" href="../../Components/data-table/sort-button/sort-button.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/progress-indicator/progress-indicator.css">
   <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
@@ -459,19 +461,21 @@
               </div>
             </div>
 
-            <div class="dv-sidebar__block dv-summary-block">
-              <span class="dv-summary-block__label">Summary</span>
-              <div class="dv-summary-block__row">
-                <span class="dv-summary-status dv-summary-status--negative" id="dv-summary-status"></span>
-                <button type="button" class="dv-truai-pill" id="dv-truai-pill" aria-expanded="false" aria-controls="dv-truai-card">
-                  <span class="dv-truai-pill__icon" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
-                  </span>
-                  TruAI
-                  <span class="dv-truai-pill__caret" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
-                  </span>
-                </button>
+            <div class="dv-sidebar__block dv-summary-block" id="dv-summary-block">
+              <div class="dv-summary-status-header" id="dv-summary-header">
+                <span class="dv-summary-block__label">Summary</span>
+                <div class="dv-summary-block__row">
+                  <span class="dv-summary-status dv-summary-status--negative" id="dv-summary-status"></span>
+                  <button type="button" class="dv-truai-pill" id="dv-truai-pill" aria-expanded="false" aria-controls="dv-truai-card">
+                    <span class="dv-truai-pill__icon" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
+                    </span>
+                    TruAI
+                    <span class="dv-truai-pill__caret" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+                    </span>
+                  </button>
+                </div>
               </div>
               <div class="dv-ai-card" id="dv-truai-card" hidden>
                 <p class="dv-ai-title" id="dv-truai-title"></p>
@@ -532,14 +536,7 @@
             <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
               <div class="dv-indicators dv-split-pane__start">
                 <div class="dv-stats" id="dv-document-stats"></div>
-                <div class="dv-signals-bar">
-                  <h3 class="dv-signals-bar__title">Signals</h3>
-                  <div class="dv-signals-bar__controls">
-                    <button class="tds-btn tds-btn--invisible tds-btn--sm dv-expand-all" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg></span>Expand all</button>
-                    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__filter" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg></span>Filter</button>
-                    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__sort" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3"/></svg></span>Sort</button>
-                  </div>
-                </div>
+                <div data-signals-toolbar></div>
                 <div id="dv-document-indicators" class="dv-indicators__list"></div>
               </div>
               <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
@@ -594,14 +591,7 @@
             <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
               <div class="dv-indicators dv-split-pane__start">
                 <div class="dv-stats" id="dv-biometrics-stats"></div>
-                <div class="dv-signals-bar">
-                  <h3 class="dv-signals-bar__title">Signals</h3>
-                  <div class="dv-signals-bar__controls">
-                    <button class="tds-btn tds-btn--invisible tds-btn--sm dv-expand-all" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg></span>Expand all</button>
-                    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__filter" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg></span>Filter</button>
-                    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__sort" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3"/></svg></span>Sort</button>
-                  </div>
-                </div>
+                <div data-signals-toolbar></div>
                 <div id="dv-biometrics-indicators" class="dv-indicators__list"></div>
               </div>
               <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
@@ -626,14 +616,7 @@
             <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
               <div class="dv-indicators dv-split-pane__start">
                 <div class="dv-stats" id="dv-datamatch-stats"></div>
-                <div class="dv-signals-bar">
-                  <h3 class="dv-signals-bar__title">Signals</h3>
-                  <div class="dv-signals-bar__controls">
-                    <button class="tds-btn tds-btn--invisible tds-btn--sm dv-expand-all" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg></span>Expand all</button>
-                    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__filter" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg></span>Filter</button>
-                    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__sort" type="button"><span class="tds-btn__leading-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3"/></svg></span>Sort</button>
-                  </div>
-                </div>
+                <div data-signals-toolbar></div>
                 <div id="dv-datamatch-indicators" class="dv-indicators__list"></div>
               </div>
               <div class="dv-split-pane__divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0"></div>
@@ -684,6 +667,7 @@
     </div>
   </div>
 
+  <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
   <script src="document-verification.js"></script>
   <script src="document-verification-flow.js"></script>
   <script src="truai-responses.js?v=1"></script>

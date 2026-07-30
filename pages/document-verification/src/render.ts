@@ -14,8 +14,10 @@ import {
   ICON_CIRCLE_INFO,
   ICON_DIAMOND_EXCLAMATION,
   ICON_DECLINED,
+  ICON_CLOSE_X,
   ICON_EXPAND_ALL,
   ICON_FILTER,
+  ICON_MENU_CHECK,
   ICON_REVIEW,
   ICON_FLAG,
   ICON_MINUS,
@@ -269,7 +271,7 @@ export function renderIndicatorGroups(
         : group.rows.length > 0
           ? `<div class="dv-table" role="table"${gridStyle}>${renderTableHead(tableCheckLabel(group.key), detailColumns)}${group.rows.map((row) => renderCheckRow(row, detailColumns)).join("")}</div>`
           : `<p class="dv-empty">${escapeHtml(group.emptyState ?? "No items.")}</p>`;
-      return `<div class="dv-group dv-collapsible${isOpen ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}">
+      return `<div class="dv-group dv-collapsible${isOpen ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}" data-group-tone="${GROUP_TAG_TONE[group.key] ?? "default"}" data-group-severity="${groupSeverityRank(group.key)}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${isOpen ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
     <span class="dv-group__label">${escapeHtml(group.label)}</span>
@@ -429,11 +431,12 @@ function renderNiGroup(
           )
           .join("")}</div>`
       : `<p class="dv-empty">No ${escapeHtml(label.toLowerCase())} signals.</p>`;
-  return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(label.toLowerCase())}">
+  const flagged = label === "Flagged";
+  return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(label.toLowerCase())}" data-group-tone="${flagged ? "negative" : "positive"}" data-group-severity="${flagged ? 0 : 2}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${open ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON_DOWN}</span>
     <span class="dv-group__label">${escapeHtml(label)}</span>
-    ${niGroupTag(insights.length, label === "Flagged" ? "negative" : "positive")}
+    ${niGroupTag(insights.length, flagged ? "negative" : "positive")}
   </button>
   <div class="dv-collapsible__body"${open ? "" : " hidden"}>${body}</div>
 </div>`;
@@ -570,7 +573,8 @@ function renderDiEvidenceGroup(
         .join("")}
     </div>`
       : `<p class="dv-empty">No signals in this category.</p>`;
-  return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}">
+  const hasRisk = group.rows.some((row) => row.insight === "Risk");
+  return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}" data-group-tone="${hasRisk ? "negative" : "positive"}" data-group-severity="${hasRisk ? 0 : 2}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${open ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
     <span class="dv-group__label">${escapeHtml(group.label)}</span>
@@ -783,36 +787,50 @@ function renderStatRow(stats: SignalStats): string {
   )}${tile("Declined checks", String(stats.declinedChecks), " dv-stat--negative")}`;
 }
 
-/** "Signals" header + Expand all / Filter / Sort controls (shared across tabs). */
-function renderSignalsToolbar(): string {
+/** DS FilterButton — single-select result filter (all / failed / review / passed). */
+function renderFilterButton(): string {
+  const item = (value: string, label: string, isDefault = false): string =>
+    `<button type="button" class="tds-action-list-item${isDefault ? " tds-action-list-item--selected" : ""}"${isDefault ? " data-signals-filter-default" : ""} role="menuitemradio" aria-checked="${isDefault ? "true" : "false"}" data-signals-filter="${value}"><span class="tds-action-list-item__label">${label}</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true">${ICON_MENU_CHECK}</span></button>`;
+  return `<div class="tds-filter-button dv-signals-bar__filter">
+    <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" aria-expanded="false" aria-haspopup="menu"><span class="tds-btn__leading-icon" aria-hidden="true">${ICON_FILTER}</span><span class="tds-filter-button__trigger-default">Filter</span><span class="tds-filter-button__trigger-value" data-signals-filter-value></span><span class="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true">${ICON_CLOSE_X}</span></button>
+    <div class="tds-dropdown-panel" role="menu" hidden>
+      ${item("all", "All signals", true)}
+      ${item("negative", "Failed")}
+      ${item("intermediate", "Needs review")}
+      ${item("positive", "Passed")}
+    </div>
+  </div>`;
+}
+
+/** DS SortButton — single-select ordering of the signal groups. */
+function renderSortButton(): string {
+  const item = (value: string, label: string, isDefault = false): string =>
+    `<button type="button" class="tds-action-list-item${isDefault ? " tds-action-list-item--selected" : ""}"${isDefault ? " data-signals-sort-default" : ""} role="menuitemradio" aria-checked="${isDefault ? "true" : "false"}" data-signals-sort="${value}"><span class="tds-action-list-item__label">${label}</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true">${ICON_MENU_CHECK}</span></button>`;
+  return `<div class="tds-sort-button dv-signals-bar__sort">
+    <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" aria-expanded="false" aria-haspopup="menu"><span class="tds-btn__leading-icon" aria-hidden="true">${ICON_SORT}</span><span class="tds-sort-button__trigger-default">Sort</span><span class="tds-sort-button__trigger-label"><span class="tds-sort-button__trigger-prefix">Sort:</span><span class="tds-sort-button__trigger-value" data-signals-sort-label></span></span><span class="tds-btn__trailing-icon tds-sort-button__clear" aria-hidden="true">${ICON_CLOSE_X}</span></button>
+    <div class="tds-dropdown-panel" role="menu" hidden>
+      ${item("severity-desc", "Severity: high to low", true)}
+      ${item("severity-asc", "Severity: low to high")}
+      ${item("name", "Name: A to Z")}
+    </div>
+  </div>`;
+}
+
+/** "Signals" header + Expand all + DS Filter / Sort controls (shared across tabs). */
+export function renderSignalsToolbar(): string {
   return `<div class="dv-signals-bar">
   <h3 class="dv-signals-bar__title">Signals</h3>
   <div class="dv-signals-bar__controls">
     <button class="tds-btn tds-btn--invisible tds-btn--sm dv-expand-all" type="button"><span class="tds-btn__leading-icon">${ICON_EXPAND_ALL}</span>Expand all</button>
-    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__filter" type="button"><span class="tds-btn__leading-icon">${ICON_FILTER}</span>Filter</button>
-    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__sort" type="button"><span class="tds-btn__leading-icon">${ICON_SORT}</span>Sort</button>
+    ${renderFilterButton()}
+    ${renderSortButton()}
   </div>
 </div>`;
 }
 
-// Solid white glyphs sit inside a filled, tone-colored rounded square.
-const SUMMARY_GLYPH_CHECK =
-  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6.5"/></svg>';
-const SUMMARY_GLYPH_X =
-  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>';
-const SUMMARY_GLYPH_BANG =
-  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3.5v5.4M8 11.9h.01"/></svg>';
-
-const SUMMARY_STATUS_ICON: Record<Tone, string> = {
-  positive: SUMMARY_GLYPH_CHECK,
-  negative: SUMMARY_GLYPH_X,
-  intermediate: SUMMARY_GLYPH_BANG,
-  default: SUMMARY_GLYPH_BANG,
-};
-
-/** Big summary status shown in the sidebar SUMMARY block. */
-function renderSummaryStatus(status: string, tone: Tone): string {
-  return `<span class="dv-summary-status__icon">${SUMMARY_STATUS_ICON[tone]}</span><span class="dv-summary-status__label">${escapeHtml(status)}</span>`;
+/** Big summary status shown in the sidebar SUMMARY block (tone-colored label, no icon). */
+function renderSummaryStatus(status: string): string {
+  return `<span class="dv-summary-status__label">${escapeHtml(status)}</span>`;
 }
 
 export function applyScenario(
@@ -822,13 +840,14 @@ export function applyScenario(
   const q = (sel: string): Element | null => root.querySelector(sel);
 
   // Overall status now lives big in the sidebar SUMMARY block (header tag removed).
+  const summaryHeader = q("#dv-summary-header");
+  if (summaryHeader instanceof HTMLElement) {
+    summaryHeader.className = `dv-summary-status-header dv-summary-status-header--${config.overallTone}`;
+  }
   const summaryStatus = q("#dv-summary-status");
   if (summaryStatus instanceof HTMLElement) {
     summaryStatus.className = `dv-summary-status dv-summary-status--${config.overallTone}`;
-    summaryStatus.innerHTML = renderSummaryStatus(
-      config.overallStatus,
-      config.overallTone,
-    );
+    summaryStatus.innerHTML = renderSummaryStatus(config.overallStatus);
   }
 
   setText(q("#dv-transaction-id"), config.transactionId);

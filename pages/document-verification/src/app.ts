@@ -5,6 +5,7 @@ import {
   isScenarioId,
   ICON_MINUS,
   ICON_PLUS,
+  renderSignalsToolbar,
 } from "./render";
 import { getScenario } from "./scenario-data";
 import type { ScenarioId, TabId } from "./types";
@@ -324,6 +325,8 @@ function setScenario(id: ScenarioId): void {
   initMoreButtons(document);
   initDataTableSort(document);
   syncExpandAllButtons(document);
+  resetAllSignalsToolbars();
+  initSignalsMenus();
 }
 
 function wireTabs(): void {
@@ -370,100 +373,167 @@ function wireExpandAll(): void {
   });
 }
 
-function wireSignalsMenus(): void {
-  const FILTER_OPTIONS = [
-    "All signals",
-    "Declined only",
-    "Needs review only",
-    "Accepted only",
-  ];
-  const SORT_OPTIONS = [
-    "Severity: high to low",
-    "Severity: low to high",
-    "Name: A to Z",
-  ];
-  const CHECK_SVG =
-    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg>';
+/* ---- Signals toolbar: DS FilterButton / SortButton (functional) ---- */
 
-  let openMenu: HTMLElement | null = null;
-  let openBtn: HTMLElement | null = null;
+declare const TdsDropdownPanel:
+  | { initMenus(root?: Document | HTMLElement): void }
+  | undefined;
 
-  function close(): void {
-    if (openMenu) openMenu.remove();
-    if (openBtn) openBtn.setAttribute("aria-expanded", "false");
-    openMenu = null;
-    openBtn = null;
+/** The single visible tab panel (tab switching toggles `hidden`). */
+function activeTabPanel(): HTMLElement | null {
+  const panel = document.querySelector(".dv-tabpanel:not([hidden])");
+  return panel instanceof HTMLElement ? panel : null;
+}
+
+/** Inject the shared DS toolbar into the static Document/Biometrics/Data Match slots. */
+function injectSignalsToolbars(): void {
+  document.querySelectorAll("[data-signals-toolbar]").forEach((slot) => {
+    if (slot.getAttribute("data-signals-toolbar") === "done") return;
+    slot.innerHTML = renderSignalsToolbar();
+    slot.setAttribute("data-signals-toolbar", "done");
+  });
+}
+
+/** Show only the groups whose tone matches the filter ("all" shows everything). */
+function applySignalsFilter(item: HTMLElement): void {
+  const value = item.getAttribute("data-signals-filter") ?? "all";
+  const menuPanel = item.closest(".tds-dropdown-panel");
+  menuPanel?.querySelectorAll("[data-signals-filter]").forEach((el) => {
+    const on = el.getAttribute("data-signals-filter") === value;
+    el.setAttribute("aria-checked", on ? "true" : "false");
+    el.classList.toggle("tds-action-list-item--selected", on);
+  });
+
+  const panel = activeTabPanel();
+  if (!panel) return;
+  const wrapper = panel.querySelector(".tds-filter-button");
+  if (wrapper instanceof HTMLElement) {
+    const selected = value !== "all";
+    wrapper.classList.toggle("tds-filter-button--selected", selected);
+    const valueLabel = wrapper.querySelector("[data-signals-filter-value]");
+    if (valueLabel) {
+      valueLabel.textContent = selected
+        ? (item.querySelector(".tds-action-list-item__label")?.textContent ?? "")
+        : "";
+    }
+  }
+  panel.querySelectorAll(".dv-group").forEach((group) => {
+    if (!(group instanceof HTMLElement)) return;
+    group.hidden = value !== "all" && group.getAttribute("data-group-tone") !== value;
+  });
+}
+
+/** Reorder the group accordions within the active tab. */
+function applySignalsSort(item: HTMLElement): void {
+  const value = item.getAttribute("data-signals-sort") ?? "severity-desc";
+  const menuPanel = item.closest(".tds-dropdown-panel");
+  menuPanel?.querySelectorAll("[data-signals-sort]").forEach((el) => {
+    const on = el.getAttribute("data-signals-sort") === value;
+    el.setAttribute("aria-checked", on ? "true" : "false");
+    el.classList.toggle("tds-action-list-item--selected", on);
+  });
+
+  const panel = activeTabPanel();
+  if (!panel) return;
+  const wrapper = panel.querySelector(".tds-sort-button");
+  if (wrapper instanceof HTMLElement) {
+    wrapper.classList.toggle("tds-sort-button--selected", value !== "severity-desc");
+    const valueLabel = wrapper.querySelector("[data-signals-sort-label]");
+    if (valueLabel) {
+      valueLabel.textContent =
+        item.querySelector(".tds-action-list-item__label")?.textContent ?? "";
+    }
   }
 
-  function build(kind: "filter" | "sort"): HTMLElement {
-    const options = kind === "filter" ? FILTER_OPTIONS : SORT_OPTIONS;
-    const menu = document.createElement("div");
-    menu.className = "dv-menu-pop";
-    menu.setAttribute("role", "menu");
+  const groups = Array.from(panel.querySelectorAll(".dv-group")).filter(
+    (g): g is HTMLElement => g instanceof HTMLElement,
+  );
+  if (groups.length < 2) return;
+  const parent = groups[0].parentElement;
+  if (!parent) return;
+  const severity = (g: HTMLElement): number =>
+    Number(g.getAttribute("data-group-severity") ?? "99");
+  const name = (g: HTMLElement): string =>
+    g.querySelector(".dv-group__label")?.textContent?.trim().toLowerCase() ?? "";
+  const sorted = groups.slice().sort((a, b) => {
+    if (value === "name") return name(a).localeCompare(name(b));
+    if (value === "severity-asc") return severity(b) - severity(a);
+    return severity(a) - severity(b); // severity-desc (default): most severe first
+  });
+  sorted.forEach((group) => parent.appendChild(group));
+}
 
-    const label = document.createElement("p");
-    label.className = "dv-menu-pop__label";
-    label.textContent = kind === "filter" ? "Filter by" : "Sort by";
-    menu.appendChild(label);
+/** Reset a toolbar's filter/sort trigger + re-check its default item. */
+function resetToolbarSelection(
+  wrapper: Element,
+  kind: "filter" | "sort",
+): void {
+  wrapper.classList.remove(`tds-${kind}-button--selected`);
+  const valueSel =
+    kind === "filter" ? "[data-signals-filter-value]" : "[data-signals-sort-label]";
+  const valueLabel = wrapper.querySelector(valueSel);
+  if (valueLabel) valueLabel.textContent = "";
+  const itemAttr = `[data-signals-${kind}]`;
+  wrapper.querySelectorAll(itemAttr).forEach((el) => {
+    const isDefault = el.hasAttribute(`data-signals-${kind}-default`);
+    el.setAttribute("aria-checked", isDefault ? "true" : "false");
+    el.classList.toggle("tds-action-list-item--selected", isDefault);
+  });
+}
 
-    options.forEach((text, index) => {
-      const item = document.createElement("button");
-      item.type = "button";
-      item.className =
-        "dv-menu-pop__item" + (index === 0 ? " dv-menu-pop__item--active" : "");
-      item.setAttribute("role", "menuitemradio");
-      item.setAttribute("aria-checked", index === 0 ? "true" : "false");
-      item.innerHTML = `<span class="dv-menu-pop__text">${text}</span><span class="dv-menu-pop__check" aria-hidden="true">${CHECK_SVG}</span>`;
-      item.addEventListener("click", () => {
-        menu.querySelectorAll(".dv-menu-pop__item").forEach((el) => {
-          el.classList.remove("dv-menu-pop__item--active");
-          el.setAttribute("aria-checked", "false");
-        });
-        item.classList.add("dv-menu-pop__item--active");
-        item.setAttribute("aria-checked", "true");
-        close();
-      });
-      menu.appendChild(item);
-    });
-    return menu;
-  }
-
+function wireSignalsFilterSort(): void {
   document.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-
-    const btn = target.closest(
-      ".dv-signals-bar__filter, .dv-signals-bar__sort",
-    );
-    if (btn instanceof HTMLElement) {
-      event.preventDefault();
-      const wasOpen = openBtn === btn;
-      close();
-      if (wasOpen) return;
-
-      const kind = btn.classList.contains("dv-signals-bar__filter")
-        ? "filter"
-        : "sort";
-      const controls = btn.parentElement;
-      if (!controls) return;
-      const menu = build(kind);
-      controls.appendChild(menu);
-      // Right-align the dropdown to the button within the toolbar row.
-      const right = controls.offsetWidth - (btn.offsetLeft + btn.offsetWidth);
-      menu.style.top = `${btn.offsetTop + btn.offsetHeight}px`;
-      menu.style.right = `${Math.max(right, 0)}px`;
-      btn.setAttribute("aria-expanded", "true");
-      openMenu = menu;
-      openBtn = btn;
+    const filterItem = target.closest("[data-signals-filter]");
+    if (filterItem instanceof HTMLElement) {
+      applySignalsFilter(filterItem);
       return;
     }
-
-    if (openMenu && !target.closest(".dv-menu-pop")) close();
+    const sortItem = target.closest("[data-signals-sort]");
+    if (sortItem instanceof HTMLElement) applySignalsSort(sortItem);
   });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") close();
+  // DS clear affordance (the trailing X) dispatches these — reset to defaults.
+  document.addEventListener("tds-filter-clear", () => {
+    const panel = activeTabPanel();
+    if (!panel) return;
+    panel.querySelectorAll(".dv-group").forEach((g) => {
+      if (g instanceof HTMLElement) g.hidden = false;
+    });
+    const wrapper = panel.querySelector(".tds-filter-button");
+    if (wrapper) resetToolbarSelection(wrapper, "filter");
   });
+  document.addEventListener("tds-sort-clear", () => {
+    const panel = activeTabPanel();
+    if (!panel) return;
+    const wrapper = panel.querySelector(".tds-sort-button");
+    if (wrapper) {
+      resetToolbarSelection(wrapper, "sort");
+      const defaultItem = wrapper.querySelector<HTMLElement>(
+        "[data-signals-sort-default]",
+      );
+      if (defaultItem) applySignalsSort(defaultItem);
+    }
+  });
+}
+
+/** Bind DS dropdown behavior on all filter/sort menus (safe to re-call). */
+function initSignalsMenus(): void {
+  if (typeof TdsDropdownPanel !== "undefined" && TdsDropdownPanel) {
+    TdsDropdownPanel.initMenus(document);
+  }
+}
+
+/** After a scenario re-render, groups are fresh (all visible, default order) —
+ *  reset every toolbar trigger back to its default state to match. */
+function resetAllSignalsToolbars(): void {
+  document
+    .querySelectorAll(".tds-filter-button")
+    .forEach((w) => resetToolbarSelection(w, "filter"));
+  document
+    .querySelectorAll(".tds-sort-button")
+    .forEach((w) => resetToolbarSelection(w, "sort"));
 }
 
 function wireNiSummaryDrivers(): void {
@@ -850,7 +920,8 @@ document.addEventListener("DOMContentLoaded", () => {
   wireTruaiPanel();
   wireNiAnnounce();
   wireExpandAll();
-  wireSignalsMenus();
+  injectSignalsToolbars();
+  wireSignalsFilterSort();
   wireNiSummaryDrivers();
   wireTxnToggles();
   wireDataTableSort();

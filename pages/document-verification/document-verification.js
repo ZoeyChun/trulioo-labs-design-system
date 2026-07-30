@@ -144,6 +144,8 @@
   var ICON_MINUS = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8h10"/></svg>';
   var ICON_SORT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3"/></svg>';
   var ICON_FILTER = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 3.5h12M4 8h8M6.5 12.5h3"/></svg>';
+  var ICON_MENU_CHECK = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l3.5 3.5L13 5"/></svg>';
+  var ICON_CLOSE_X = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
   var ICON_CIRCLE_CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M5.4 8l1.8 1.8 3.4-3.8"/></svg>';
   var ICON_CIRCLE_INFO = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v3.4M8 5.1h.01"/></svg>';
   var ICON_DIAMOND_EXCLAMATION = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M8 1.5 14.5 8 8 14.5 1.5 8Z"/><path d="M8 5v3.4M8 10.8h.01"/></svg>';
@@ -1371,12 +1373,12 @@
     const sorted = sortIndicatorGroups(groups).filter(isVisibleIndicatorGroup);
     const openKeys = defaultOpenKeys(sorted, options);
     return sorted.map((group) => {
-      var _a;
+      var _a, _b;
       const isOpen = openKeys.has(group.key);
       const detailColumns = collectDetailColumns(group.rows);
       const gridStyle = ` style="--dv-table-cols: ${tableGridTemplate(detailColumns.length)}"`;
       const body = group.knownFaces ? renderKnownFacesBody(group.knownFaces) : group.rows.length > 0 ? `<div class="dv-table" role="table"${gridStyle}>${renderTableHead(tableCheckLabel(group.key), detailColumns)}${group.rows.map((row) => renderCheckRow(row, detailColumns)).join("")}</div>` : `<p class="dv-empty">${escapeHtml((_a = group.emptyState) != null ? _a : "No items.")}</p>`;
-      return `<div class="dv-group dv-collapsible${isOpen ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}">
+      return `<div class="dv-group dv-collapsible${isOpen ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}" data-group-tone="${(_b = GROUP_TAG_TONE[group.key]) != null ? _b : "default"}" data-group-severity="${groupSeverityRank(group.key)}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${isOpen ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
     <span class="dv-group__label">${escapeHtml(group.label)}</span>
@@ -1491,11 +1493,12 @@
     const body = insights.length > 0 ? `<div class="dv-ni2-accs">${insights.map(
       (insight, i) => renderNiInsight(insight, { open: openFirst && i === 0 })
     ).join("")}</div>` : `<p class="dv-empty">No ${escapeHtml(label.toLowerCase())} signals.</p>`;
-    return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(label.toLowerCase())}">
+    const flagged = label === "Flagged";
+    return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(label.toLowerCase())}" data-group-tone="${flagged ? "negative" : "positive"}" data-group-severity="${flagged ? 0 : 2}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${open ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON_DOWN}</span>
     <span class="dv-group__label">${escapeHtml(label)}</span>
-    ${niGroupTag(insights.length, label === "Flagged" ? "negative" : "positive")}
+    ${niGroupTag(insights.length, flagged ? "negative" : "positive")}
   </button>
   <div class="dv-collapsible__body"${open ? "" : " hidden"}>${body}</div>
 </div>`;
@@ -1594,7 +1597,8 @@
 </div>`
     ).join("")}
     </div>` : `<p class="dv-empty">No signals in this category.</p>`;
-    return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}">
+    const hasRisk = group.rows.some((row) => row.insight === "Risk");
+    return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}" data-group-tone="${hasRisk ? "negative" : "positive"}" data-group-severity="${hasRisk ? 0 : 2}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${open ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
     <span class="dv-group__label">${escapeHtml(group.label)}</span>
@@ -1748,38 +1752,53 @@ ${renderSignalsToolbar()}
       `${stats.passRate}%`
     )}${tile("Declined checks", String(stats.declinedChecks), " dv-stat--negative")}`;
   }
+  function renderFilterButton() {
+    const item = (value, label, isDefault = false) => `<button type="button" class="tds-action-list-item${isDefault ? " tds-action-list-item--selected" : ""}"${isDefault ? " data-signals-filter-default" : ""} role="menuitemradio" aria-checked="${isDefault ? "true" : "false"}" data-signals-filter="${value}"><span class="tds-action-list-item__label">${label}</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true">${ICON_MENU_CHECK}</span></button>`;
+    return `<div class="tds-filter-button dv-signals-bar__filter">
+    <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" aria-expanded="false" aria-haspopup="menu"><span class="tds-btn__leading-icon" aria-hidden="true">${ICON_FILTER}</span><span class="tds-filter-button__trigger-default">Filter</span><span class="tds-filter-button__trigger-value" data-signals-filter-value></span><span class="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true">${ICON_CLOSE_X}</span></button>
+    <div class="tds-dropdown-panel" role="menu" hidden>
+      ${item("all", "All signals", true)}
+      ${item("negative", "Failed")}
+      ${item("intermediate", "Needs review")}
+      ${item("positive", "Passed")}
+    </div>
+  </div>`;
+  }
+  function renderSortButton() {
+    const item = (value, label, isDefault = false) => `<button type="button" class="tds-action-list-item${isDefault ? " tds-action-list-item--selected" : ""}"${isDefault ? " data-signals-sort-default" : ""} role="menuitemradio" aria-checked="${isDefault ? "true" : "false"}" data-signals-sort="${value}"><span class="tds-action-list-item__label">${label}</span><span class="tds-action-list-item__trailing-visual" aria-hidden="true">${ICON_MENU_CHECK}</span></button>`;
+    return `<div class="tds-sort-button dv-signals-bar__sort">
+    <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" aria-expanded="false" aria-haspopup="menu"><span class="tds-btn__leading-icon" aria-hidden="true">${ICON_SORT}</span><span class="tds-sort-button__trigger-default">Sort</span><span class="tds-sort-button__trigger-label"><span class="tds-sort-button__trigger-prefix">Sort:</span><span class="tds-sort-button__trigger-value" data-signals-sort-label></span></span><span class="tds-btn__trailing-icon tds-sort-button__clear" aria-hidden="true">${ICON_CLOSE_X}</span></button>
+    <div class="tds-dropdown-panel" role="menu" hidden>
+      ${item("severity-desc", "Severity: high to low", true)}
+      ${item("severity-asc", "Severity: low to high")}
+      ${item("name", "Name: A to Z")}
+    </div>
+  </div>`;
+  }
   function renderSignalsToolbar() {
     return `<div class="dv-signals-bar">
   <h3 class="dv-signals-bar__title">Signals</h3>
   <div class="dv-signals-bar__controls">
     <button class="tds-btn tds-btn--invisible tds-btn--sm dv-expand-all" type="button"><span class="tds-btn__leading-icon">${ICON_EXPAND_ALL}</span>Expand all</button>
-    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__filter" type="button"><span class="tds-btn__leading-icon">${ICON_FILTER}</span>Filter</button>
-    <button class="tds-btn tds-btn--secondary tds-btn--sm dv-signals-bar__sort" type="button"><span class="tds-btn__leading-icon">${ICON_SORT}</span>Sort</button>
+    ${renderFilterButton()}
+    ${renderSortButton()}
   </div>
 </div>`;
   }
-  var SUMMARY_GLYPH_CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6.5"/></svg>';
-  var SUMMARY_GLYPH_X = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>';
-  var SUMMARY_GLYPH_BANG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3.5v5.4M8 11.9h.01"/></svg>';
-  var SUMMARY_STATUS_ICON = {
-    positive: SUMMARY_GLYPH_CHECK,
-    negative: SUMMARY_GLYPH_X,
-    intermediate: SUMMARY_GLYPH_BANG,
-    default: SUMMARY_GLYPH_BANG
-  };
-  function renderSummaryStatus(status, tone) {
-    return `<span class="dv-summary-status__icon">${SUMMARY_STATUS_ICON[tone]}</span><span class="dv-summary-status__label">${escapeHtml(status)}</span>`;
+  function renderSummaryStatus(status) {
+    return `<span class="dv-summary-status__label">${escapeHtml(status)}</span>`;
   }
   function applyScenario(root, config) {
     var _a, _b;
     const q = (sel) => root.querySelector(sel);
+    const summaryHeader = q("#dv-summary-header");
+    if (summaryHeader instanceof HTMLElement) {
+      summaryHeader.className = `dv-summary-status-header dv-summary-status-header--${config.overallTone}`;
+    }
     const summaryStatus = q("#dv-summary-status");
     if (summaryStatus instanceof HTMLElement) {
       summaryStatus.className = `dv-summary-status dv-summary-status--${config.overallTone}`;
-      summaryStatus.innerHTML = renderSummaryStatus(
-        config.overallStatus,
-        config.overallTone
-      );
+      summaryStatus.innerHTML = renderSummaryStatus(config.overallStatus);
     }
     setText(q("#dv-transaction-id"), config.transactionId);
     setText(q("#dv-truai-title"), config.truAiTitle);
@@ -2109,6 +2128,8 @@ ${renderSignalsToolbar()}
     initMoreButtons(document);
     initDataTableSort(document);
     syncExpandAllButtons(document);
+    resetAllSignalsToolbars();
+    initSignalsMenus();
   }
   function wireTabs() {
     document.querySelectorAll(".dv-tab").forEach((tab) => {
@@ -2151,85 +2172,136 @@ ${renderSignalsToolbar()}
       updateExpandAllButton(btn);
     });
   }
-  function wireSignalsMenus() {
-    const FILTER_OPTIONS = [
-      "All signals",
-      "Declined only",
-      "Needs review only",
-      "Accepted only"
-    ];
-    const SORT_OPTIONS = [
-      "Severity: high to low",
-      "Severity: low to high",
-      "Name: A to Z"
-    ];
-    const CHECK_SVG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg>';
-    let openMenu = null;
-    let openBtn = null;
-    function close() {
-      if (openMenu) openMenu.remove();
-      if (openBtn) openBtn.setAttribute("aria-expanded", "false");
-      openMenu = null;
-      openBtn = null;
+  function activeTabPanel() {
+    const panel = document.querySelector(".dv-tabpanel:not([hidden])");
+    return panel instanceof HTMLElement ? panel : null;
+  }
+  function injectSignalsToolbars() {
+    document.querySelectorAll("[data-signals-toolbar]").forEach((slot) => {
+      if (slot.getAttribute("data-signals-toolbar") === "done") return;
+      slot.innerHTML = renderSignalsToolbar();
+      slot.setAttribute("data-signals-toolbar", "done");
+    });
+  }
+  function applySignalsFilter(item) {
+    var _a, _b, _c;
+    const value = (_a = item.getAttribute("data-signals-filter")) != null ? _a : "all";
+    const menuPanel = item.closest(".tds-dropdown-panel");
+    menuPanel == null ? void 0 : menuPanel.querySelectorAll("[data-signals-filter]").forEach((el) => {
+      const on = el.getAttribute("data-signals-filter") === value;
+      el.setAttribute("aria-checked", on ? "true" : "false");
+      el.classList.toggle("tds-action-list-item--selected", on);
+    });
+    const panel = activeTabPanel();
+    if (!panel) return;
+    const wrapper = panel.querySelector(".tds-filter-button");
+    if (wrapper instanceof HTMLElement) {
+      const selected = value !== "all";
+      wrapper.classList.toggle("tds-filter-button--selected", selected);
+      const valueLabel = wrapper.querySelector("[data-signals-filter-value]");
+      if (valueLabel) {
+        valueLabel.textContent = selected ? (_c = (_b = item.querySelector(".tds-action-list-item__label")) == null ? void 0 : _b.textContent) != null ? _c : "" : "";
+      }
     }
-    function build(kind) {
-      const options = kind === "filter" ? FILTER_OPTIONS : SORT_OPTIONS;
-      const menu = document.createElement("div");
-      menu.className = "dv-menu-pop";
-      menu.setAttribute("role", "menu");
-      const label = document.createElement("p");
-      label.className = "dv-menu-pop__label";
-      label.textContent = kind === "filter" ? "Filter by" : "Sort by";
-      menu.appendChild(label);
-      options.forEach((text, index) => {
-        const item = document.createElement("button");
-        item.type = "button";
-        item.className = "dv-menu-pop__item" + (index === 0 ? " dv-menu-pop__item--active" : "");
-        item.setAttribute("role", "menuitemradio");
-        item.setAttribute("aria-checked", index === 0 ? "true" : "false");
-        item.innerHTML = `<span class="dv-menu-pop__text">${text}</span><span class="dv-menu-pop__check" aria-hidden="true">${CHECK_SVG}</span>`;
-        item.addEventListener("click", () => {
-          menu.querySelectorAll(".dv-menu-pop__item").forEach((el) => {
-            el.classList.remove("dv-menu-pop__item--active");
-            el.setAttribute("aria-checked", "false");
-          });
-          item.classList.add("dv-menu-pop__item--active");
-          item.setAttribute("aria-checked", "true");
-          close();
-        });
-        menu.appendChild(item);
-      });
-      return menu;
+    panel.querySelectorAll(".dv-group").forEach((group) => {
+      if (!(group instanceof HTMLElement)) return;
+      group.hidden = value !== "all" && group.getAttribute("data-group-tone") !== value;
+    });
+  }
+  function applySignalsSort(item) {
+    var _a, _b, _c;
+    const value = (_a = item.getAttribute("data-signals-sort")) != null ? _a : "severity-desc";
+    const menuPanel = item.closest(".tds-dropdown-panel");
+    menuPanel == null ? void 0 : menuPanel.querySelectorAll("[data-signals-sort]").forEach((el) => {
+      const on = el.getAttribute("data-signals-sort") === value;
+      el.setAttribute("aria-checked", on ? "true" : "false");
+      el.classList.toggle("tds-action-list-item--selected", on);
+    });
+    const panel = activeTabPanel();
+    if (!panel) return;
+    const wrapper = panel.querySelector(".tds-sort-button");
+    if (wrapper instanceof HTMLElement) {
+      wrapper.classList.toggle("tds-sort-button--selected", value !== "severity-desc");
+      const valueLabel = wrapper.querySelector("[data-signals-sort-label]");
+      if (valueLabel) {
+        valueLabel.textContent = (_c = (_b = item.querySelector(".tds-action-list-item__label")) == null ? void 0 : _b.textContent) != null ? _c : "";
+      }
     }
+    const groups = Array.from(panel.querySelectorAll(".dv-group")).filter(
+      (g) => g instanceof HTMLElement
+    );
+    if (groups.length < 2) return;
+    const parent = groups[0].parentElement;
+    if (!parent) return;
+    const severity = (g) => {
+      var _a2;
+      return Number((_a2 = g.getAttribute("data-group-severity")) != null ? _a2 : "99");
+    };
+    const name = (g) => {
+      var _a2, _b2, _c2;
+      return (_c2 = (_b2 = (_a2 = g.querySelector(".dv-group__label")) == null ? void 0 : _a2.textContent) == null ? void 0 : _b2.trim().toLowerCase()) != null ? _c2 : "";
+    };
+    const sorted = groups.slice().sort((a, b) => {
+      if (value === "name") return name(a).localeCompare(name(b));
+      if (value === "severity-asc") return severity(b) - severity(a);
+      return severity(a) - severity(b);
+    });
+    sorted.forEach((group) => parent.appendChild(group));
+  }
+  function resetToolbarSelection(wrapper, kind) {
+    wrapper.classList.remove(`tds-${kind}-button--selected`);
+    const valueSel = kind === "filter" ? "[data-signals-filter-value]" : "[data-signals-sort-label]";
+    const valueLabel = wrapper.querySelector(valueSel);
+    if (valueLabel) valueLabel.textContent = "";
+    const itemAttr = `[data-signals-${kind}]`;
+    wrapper.querySelectorAll(itemAttr).forEach((el) => {
+      const isDefault = el.hasAttribute(`data-signals-${kind}-default`);
+      el.setAttribute("aria-checked", isDefault ? "true" : "false");
+      el.classList.toggle("tds-action-list-item--selected", isDefault);
+    });
+  }
+  function wireSignalsFilterSort() {
     document.addEventListener("click", (event) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
-      const btn = target.closest(
-        ".dv-signals-bar__filter, .dv-signals-bar__sort"
-      );
-      if (btn instanceof HTMLElement) {
-        event.preventDefault();
-        const wasOpen = openBtn === btn;
-        close();
-        if (wasOpen) return;
-        const kind = btn.classList.contains("dv-signals-bar__filter") ? "filter" : "sort";
-        const controls = btn.parentElement;
-        if (!controls) return;
-        const menu = build(kind);
-        controls.appendChild(menu);
-        const right = controls.offsetWidth - (btn.offsetLeft + btn.offsetWidth);
-        menu.style.top = `${btn.offsetTop + btn.offsetHeight}px`;
-        menu.style.right = `${Math.max(right, 0)}px`;
-        btn.setAttribute("aria-expanded", "true");
-        openMenu = menu;
-        openBtn = btn;
+      const filterItem = target.closest("[data-signals-filter]");
+      if (filterItem instanceof HTMLElement) {
+        applySignalsFilter(filterItem);
         return;
       }
-      if (openMenu && !target.closest(".dv-menu-pop")) close();
+      const sortItem = target.closest("[data-signals-sort]");
+      if (sortItem instanceof HTMLElement) applySignalsSort(sortItem);
     });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") close();
+    document.addEventListener("tds-filter-clear", () => {
+      const panel = activeTabPanel();
+      if (!panel) return;
+      panel.querySelectorAll(".dv-group").forEach((g) => {
+        if (g instanceof HTMLElement) g.hidden = false;
+      });
+      const wrapper = panel.querySelector(".tds-filter-button");
+      if (wrapper) resetToolbarSelection(wrapper, "filter");
     });
+    document.addEventListener("tds-sort-clear", () => {
+      const panel = activeTabPanel();
+      if (!panel) return;
+      const wrapper = panel.querySelector(".tds-sort-button");
+      if (wrapper) {
+        resetToolbarSelection(wrapper, "sort");
+        const defaultItem = wrapper.querySelector(
+          "[data-signals-sort-default]"
+        );
+        if (defaultItem) applySignalsSort(defaultItem);
+      }
+    });
+  }
+  function initSignalsMenus() {
+    if (typeof TdsDropdownPanel !== "undefined" && TdsDropdownPanel) {
+      TdsDropdownPanel.initMenus(document);
+    }
+  }
+  function resetAllSignalsToolbars() {
+    document.querySelectorAll(".tds-filter-button").forEach((w) => resetToolbarSelection(w, "filter"));
+    document.querySelectorAll(".tds-sort-button").forEach((w) => resetToolbarSelection(w, "sort"));
   }
   function wireNiSummaryDrivers() {
     document.addEventListener("click", (event) => {
@@ -2545,7 +2617,8 @@ ${renderSignalsToolbar()}
     wireTruaiPanel();
     wireNiAnnounce();
     wireExpandAll();
-    wireSignalsMenus();
+    injectSignalsToolbars();
+    wireSignalsFilterSort();
     wireNiSummaryDrivers();
     wireTxnToggles();
     wireDataTableSort();

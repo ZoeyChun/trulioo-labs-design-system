@@ -686,7 +686,8 @@ button.tds-side-nav__nav-item,
   margin: 0;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-md);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
   color: var(--text-default);
 }
 
@@ -746,6 +747,22 @@ button.tds-side-nav__nav-item,
   flex-direction: column;
   gap: var(--spacing-16);
 }
+/* Tone-tinted header: SUMMARY label + big status + TruAI pill (Figma 2861:74548). */
+.dv-summary-status-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  margin: calc(-1 * var(--spacing-16)) calc(-1 * var(--spacing-16)) 0;
+  padding: var(--spacing-16);
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: var(--surface-neutral-02);
+}
+.dv-summary-status-header--positive { background-color: var(--surface-positive); }
+.dv-summary-status-header--negative { background-color: var(--surface-negative); }
+.dv-summary-status-header--intermediate { background-color: var(--surface-intermediate); }
+.dv-summary-status-header--positive .dv-summary-status__label { color: var(--text-positive); }
+.dv-summary-status-header--negative .dv-summary-status__label { color: var(--text-negative); }
+.dv-summary-status-header--intermediate .dv-summary-status__label { color: var(--text-intermediate); }
 .dv-summary-block__label {
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
@@ -862,56 +879,15 @@ button.tds-side-nav__nav-item,
   font-weight: var(--font-weight-semibold);
   color: var(--text-default);
 }
-.dv-signals-bar__controls { position: relative; display: inline-flex; align-items: center; gap: var(--spacing-8); }
+.dv-signals-bar__controls { display: inline-flex; align-items: center; gap: var(--spacing-8); }
 .dv-signals-bar__controls .dv-expand-all { color: var(--interactive-default); }
 
-/* Filter / Sort dropdown menu (opened from the signals toolbar) */
-.dv-menu-pop {
-  position: absolute;
-  z-index: 30;
-  min-width: 208px;
-  margin-top: var(--spacing-4);
-  padding: var(--spacing-4);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  background-color: var(--surface-neutral-01);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: 0 8px 24px rgba(23, 45, 45, 0.12);
-}
-.dv-menu-pop__label {
-  padding: var(--spacing-8) var(--spacing-8) var(--spacing-4);
+/* Filter/Sort menu items match the small (12px) toolbar button text. */
+.tds-dropdown-panel--filter-menu .tds-action-list-item,
+.tds-dropdown-panel--sort-menu .tds-action-list-item {
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
-  font-weight: var(--font-weight-figma);
-  font-variation-settings: var(--font-variation-figma-medium);
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  color: var(--text-caption);
 }
-.dv-menu-pop__item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-8);
-  width: 100%;
-  padding: var(--spacing-8) var(--spacing-12);
-  border: none;
-  border-radius: var(--radius-sm);
-  background: none;
-  cursor: pointer;
-  text-align: left;
-  font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  color: var(--text-default);
-}
-.dv-menu-pop__item:hover { background-color: var(--surface-neutral-02); }
-.dv-menu-pop__item--active { font-weight: var(--font-weight-semibold); }
-.dv-menu-pop__check { display: inline-flex; width: 16px; height: 16px; color: var(--icon-positive); }
-.dv-menu-pop__check svg { width: 16px; height: 16px; }
-.dv-menu-pop__item:not(.dv-menu-pop__item--active) .dv-menu-pop__check { visibility: hidden; }
 
 /* Grouped signal accordions (NI / DI) */
 .dv-ni2-groups,
@@ -944,9 +920,8 @@ button.tds-side-nav__nav-item,
 /* Summary status rows */
 .dv-summary-list {
   list-style: none;
-  margin: 0 calc(-1 * var(--spacing-16));
-  padding: var(--spacing-16) var(--spacing-16) 0;
-  border-top: 1px solid var(--border-subtle);
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-12);
@@ -1270,6 +1245,8 @@ button.tds-side-nav__nav-item,
   border-bottom: 1px solid var(--border-divider);
   width: 100%;
 }
+/* Filter hides non-matching groups via the [hidden] attribute. */
+.dv-group[hidden] { display: none; }
 
 .dv-group__header {
   gap: var(--spacing-8);
@@ -1966,6 +1943,10 @@ button.tds-side-nav__nav-item,
   display: flex;
   flex-direction: column;
   gap: var(--spacing-16);
+  /* Full-bleed divider under Key Drivers, before the Signals toolbar (Figma 2737:90888). */
+  margin: 0 calc(-1 * var(--spacing-16));
+  padding: 0 var(--spacing-16) var(--spacing-16);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .dv-ni-summary__drivers-title {
@@ -2350,7 +2331,9 @@ button.tds-side-nav__nav-item,
   display: flex;
   flex-direction: column;
   gap: var(--spacing-16);
-  padding-bottom: var(--spacing-16);
+  /* Full-bleed divider: bleed to the panel edges, restore the 16px content inset. */
+  margin: 0 calc(-1 * var(--spacing-16));
+  padding: 0 var(--spacing-16) var(--spacing-16);
   border-bottom: 1px solid var(--border-subtle);
 }
 
