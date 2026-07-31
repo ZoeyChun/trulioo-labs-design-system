@@ -1,0 +1,188 @@
+/* ============================================================
+   KYC Form — page-local form styles
+   Layout chrome comes from document-verification-flow.css + app-shell.
+   ============================================================ */
+
+.kyc-form-step-desc {
+  margin: var(--spacing-8) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-description);
+}
+
+.kyc-step-body {
+  padding-top: var(--spacing-24);
+}
+
+.dv-flow-content > .kyc-form-errors {
+  width: 100%;
+  max-width: 896px;
+  margin: 0;
+}
+
+/* --- Field grid --- */
+
+.kyc-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-24);
+}
+
+.kyc-fields .tds-text-input,
+.kyc-fields .tds-select,
+.kyc-fields .tds-combobox,
+.kyc-fields .tds-date-picker {
+  min-width: 0;
+}
+
+.kyc-fields__full {
+  grid-column: 1 / -1;
+}
+
+/* --- Review summary --- */
+
+.kyc-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+.kyc-review__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  padding-bottom: var(--spacing-24);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.kyc-review__section:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.kyc-review__heading {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-description);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.kyc-review__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-16) var(--spacing-24);
+}
+
+.kyc-review__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.kyc-review__label {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.kyc-review__value {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  word-break: break-word;
+}
+
+/* --- Consent checkboxes --- */
+
+.kyc-consent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  margin-top: var(--spacing-24);
+}
+
+.kyc-consent__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+  cursor: pointer;
+}
+
+.kyc-consent__item .tds-checkbox {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.kyc-consent__text {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+}
+
+/* --- Success state --- */
+
+.kyc-success .kyc-success__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-24);
+  padding: var(--spacing-48) var(--spacing-32);
+  text-align: center;
+}
+
+.kyc-success__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background-color: var(--surface-positive);
+  color: var(--icon-positive);
+}
+
+.kyc-success__icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.kyc-success__title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.kyc-success__desc {
+  margin: 0;
+  max-width: 420px;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  color: var(--text-description);
+}
+
+/* --- Form errors --- */
+
+.kyc-form-errors {
+  padding: var(--spacing-12) var(--spacing-16);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-negative);
+  color: var(--text-negative);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.kyc-form-errors[hidden] {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .kyc-fields,
+  .kyc-review__grid {
+    grid-template-columns: 1fr;
+  }
+}
