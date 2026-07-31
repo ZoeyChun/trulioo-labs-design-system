@@ -32,70 +32,60 @@ allCompanies.forEach(function(c) {
   cosByCountry[c.countryCode].push(c);
 });
 
-var assessmentFeatures = [
-  'Horizon Risk Score',
-  'Ownership analysis',
-  'AML risk evaluation',
-  'Deep research',
-  'Ongoing monitoring',
-];
+var planOptionalCatalog = {
+  'bank-verification': { id: 'bank-verification', name: 'Bank Verification' },
+  'ongoing-monitoring': { id: 'ongoing-monitoring', name: 'Ongoing Monitoring' },
+};
 
-var assessmentBasedOn = [
-  'International operations',
-  'Complex ownership structure',
-];
+var defaultAssessmentPlan = {
+  description: 'This business shows signs of international operations and complex ownership.',
+  estimatedTime: '38s',
+  features: [
+    { id: 'horizon-risk', name: 'Horizon risk score', badge: 'Recommended' },
+    { id: 'ownership', name: 'Ownership analysis', badge: 'Complex ownership' },
+    { id: 'aml-risk', name: 'AML risk evaluation', badge: 'Intl. operations' },
+    { id: 'deep-research', name: 'Deep research', badge: 'Multi-jurisdiction' },
+  ],
+  alsoAvailable: ['bank-verification', 'ongoing-monitoring'],
+};
 
 var sampleEntities = {
   standard: {
     plan: {
-      introMessage: 'Clean US registry records and straightforward ownership. I\'ve prepared a standard verification with baseline risk scoring.',
+      description: 'Clean US registry records and straightforward ownership suggest a standard verification path.',
       estimatedTime: '28s',
       features: [
-        'Horizon Risk Score',
-        'Registry confirmation',
-        'Document verification match',
+        { id: 'horizon-risk', name: 'Horizon risk score', badge: 'Recommended' },
+        { id: 'registry-confirmation', name: 'Registry confirmation', badge: 'Standard profile' },
+        { id: 'document-match', name: 'Document verification match', badge: 'Low risk' },
       ],
-      basedOn: [
-        'Standard onboarding profile',
-        'Single-jurisdiction registration',
-        'No adverse signals detected',
-      ],
+      alsoAvailable: ['bank-verification', 'ongoing-monitoring'],
     },
   },
   complex: {
     plan: {
-      introMessage: 'Nested corporate layers and cross-border subsidiaries detected. I\'ve prepared enhanced ownership tracing and structure analysis.',
+      description: 'Nested corporate layers and cross-border subsidiaries indicate complex ownership structure.',
       estimatedTime: '54s',
       features: [
-        'Ownership analysis',
-        'UBO mapping',
-        'Cross-border structure review',
-        'Deep research',
-        'Beneficial owner screening',
+        { id: 'ownership', name: 'Ownership analysis', badge: 'Complex ownership' },
+        { id: 'ubo-mapping', name: 'UBO mapping', badge: 'Multi-layer' },
+        { id: 'cross-border', name: 'Cross-border structure review', badge: 'Intl. operations' },
+        { id: 'deep-research', name: 'Deep research', badge: 'Multi-jurisdiction' },
       ],
-      basedOn: [
-        'Multi-layer ownership structure',
-        'Offshore subsidiary links',
-        'Multi-jurisdiction footprint',
-      ],
+      alsoAvailable: ['bank-verification', 'ongoing-monitoring'],
     },
   },
   elevated: {
     plan: {
-      introMessage: 'Elevated AML signals and adverse media indicators surfaced. I\'ve prepared enhanced screening and ongoing monitoring.',
+      description: 'Elevated AML signals and adverse media indicators require enhanced screening.',
       estimatedTime: '46s',
       features: [
-        'AML risk evaluation',
-        'Adverse media screening',
-        'Sanctions & PEP screening',
-        'Horizon Risk Score',
-        'Ongoing monitoring',
+        { id: 'aml-risk', name: 'AML risk evaluation', badge: 'Elevated risk' },
+        { id: 'adverse-media', name: 'Adverse media screening', badge: 'Signals detected' },
+        { id: 'sanctions-pep', name: 'Sanctions & PEP screening', badge: 'Required' },
+        { id: 'horizon-risk', name: 'Horizon risk score', badge: 'Recommended' },
       ],
-      basedOn: [
-        'Elevated risk signals',
-        'Adverse media indicators',
-        'High-risk jurisdiction exposure',
-      ],
+      alsoAvailable: ['bank-verification', 'ongoing-monitoring'],
     },
   },
 };
@@ -112,8 +102,8 @@ function resolvePageUrl(relativeUrl, githubUrl) {
 }
 
 var kybResultsUrl = resolvePageUrl(
-  '../KYB Results/index.html',
-  'https://zoeychun.github.io/trulioo-labs-design-system/pages/KYB%20Results/index.html'
+  'kyb-results.html',
+  'https://zoeychun.github.io/trulioo-labs-design-system/pages/unified-intelligence-home/kyb-results.html'
 );
 
 var personServiceUrls = {

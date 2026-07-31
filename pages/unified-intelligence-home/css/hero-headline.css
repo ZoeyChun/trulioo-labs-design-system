@@ -12,35 +12,49 @@
   border: 0;
 }
 
-.hero-title--animated {
+.hero-title--animated:not(.hero-title--flattened) {
   position: relative;
+  overflow: visible;
 }
 
 .hero-title-chars {
   position: relative;
-  display: inline-block;
+  display: inline;
   max-width: 800px;
   text-align: center;
+  line-height: inherit;
 }
 
 .hero-char-slot {
   display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
+  /* Align to the top of the line box, not the baseline: a baseline-aligned
+     inline-block extends a full 1em above the baseline (taller than the font's
+     ascent) and inflates every line box, making the animated headline ~4%
+     taller than the flattened text and causing a visible shrink on settle. */
+  vertical-align: top;
   line-height: inherit;
-  height: 1.05em;
+  height: 1em;
+  overflow: hidden;
 }
 
 .hero-char-slot--space {
-  width: 0.28em;
+  /* Render the font's real space advance (preserved whitespace) rather than a
+     hardcoded width, so per-glyph kerning compensation (set in JS) measures and
+     corrects spacing uniformly for spaces and letters alike. */
+  white-space: pre;
+}
+
+.hero-title--ready:not(.hero-title--flattened) .hero-char-slot--descender {
+  height: 1.25em;
+  margin-bottom: -0.25em;
 }
 
 .hero-char {
   display: inline-block;
+  vertical-align: baseline;
+  line-height: inherit;
   opacity: 1;
-  transform: translateY(105%);
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  transform: translateY(110%);
   background-image: linear-gradient(
     100deg,
     var(--text-primary) 0%,
@@ -90,7 +104,6 @@
     background-position: 0% 50%;
   }
 }
-
 
 @media (prefers-reduced-motion: reduce) {
   .hero-title-sr-only {

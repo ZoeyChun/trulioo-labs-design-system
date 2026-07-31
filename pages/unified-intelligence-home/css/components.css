@@ -67,7 +67,7 @@
 .truai-btn {
   position: absolute;
   top: 25px;
-  right: 25px;
+  right: 24px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -80,7 +80,8 @@
   font-size: var(--font-14);
   font-weight: 600;
   cursor: pointer;
-  z-index: 2;
+  z-index: 450;
+  pointer-events: auto;
 }
 
 .truai-btn:hover { background: #1a1a1a; }

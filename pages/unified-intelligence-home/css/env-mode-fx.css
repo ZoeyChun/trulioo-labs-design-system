@@ -1,0 +1,55 @@
+/* ============================================================
+   Demo / Prod switch feedback effects
+   Headline light sweep + section cross-fade + hero tint pulse
+   ============================================================ */
+
+/* --- Headline light sweep --- */
+.hero-title--fx-sweep {
+  /* Glossy colored gloss (originkit shiny-pill feel): a wide, smooth band
+     (matching the shiny-pill mask's 30%→50%→70% spread) that washes the text
+     in brand teal #0F8A7F as it passes, reading as a broad gloss rather than a
+     thin sweep line. */
+  background-image: linear-gradient(
+    100deg,
+    var(--text-primary) 0%,
+    var(--text-primary) 40%,
+    #0f8a7f 50%,
+    var(--text-primary) 60%,
+    var(--text-primary) 100%
+  );
+  /* 200% (not 250%) so the highlight band sits at the left edge of the text at
+     the very first frame — with a wider gradient it only reached the text
+     mid-animation, which read as the sweep starting a beat late. */
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  background-position: 100% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  /* Decelerate curve: moves at full speed from frame one, so it starts in sync
+     with the click rather than easing in. */
+  animation: hero-title-fx-sweep 1.1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+@keyframes hero-title-fx-sweep {
+  from { background-position: 100% 50%; }
+  to { background-position: 0% 50%; }
+}
+
+/* --- Section cross-fade --- */
+.env-fx-enter {
+  animation: env-fx-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes env-fx-enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title--fx-sweep,
+  .env-fx-enter {
+    animation: none;
+  }
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction History — Trulioo Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../Components/text-input/text-input.css">
+  <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
+  <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
+  <link rel="stylesheet" href="../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../Components/dialog/dialog.css">
+  <link rel="stylesheet" href="css/ds-nav-tokens.css">
+  <link rel="stylesheet" href="css/side-nav.css">
+  <link rel="stylesheet" href="css/side-nav-experimental.css">
+  <link rel="stylesheet" href="css/app-shell.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/page-hero.css">
+  <link rel="stylesheet" href="css/history.css">
+  <link rel="stylesheet" href="css/truai-panel.css?v=4">
+  <script src="js/truai-panel.js?v=4" defer></script>
+</head>
+<body data-sidenav="experimental" data-sidenav-active="history">
+<div class="app-shell" id="app-shell">
+  <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
+
+  <aside class="tds-side-nav tds-side-nav--collapsed" id="app-sidenav" aria-label="Primary">
+    <div class="tds-side-nav__header">
+      <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home" onclick="window.location.href='index.html'">
+        <span class="tds-side-nav__logo">
+          <img src="assets/trulioo-logo-mark.svg" alt="" width="40" height="40">
+        </span>
+      </button>
+    </div>
+
+    <div class="tds-side-nav__main">
+      <div class="tds-side-nav__icon-rail" aria-hidden="false">
+        <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
+          <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+          <span class="tds-side-nav__tooltip" role="tooltip"><span class="tds-side-nav__tooltip-caret"></span><span class="tds-side-nav__tooltip-body">Home</span></span>
+        </button>
+        <button type="button" class="tds-side-nav__icon-button" aria-label="Labs">
+          <svg class="icon tds-labs-icon tds-labs-icon--onlight" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="#617269"/></svg><svg class="icon tds-labs-icon tds-labs-icon--ondark" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="white"/></svg>
+          <span class="tds-side-nav__tooltip" role="tooltip"><span class="tds-side-nav__tooltip-caret"></span><span class="tds-side-nav__tooltip-body">Labs</span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="tds-side-nav__footer">
+      <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" aria-label="Jane Doe, janedoe@trulioo.com">
+        <span class="tds-side-nav__avatar">JD</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="app-main history-main">
+    <button class="truai-btn" type="button" aria-controls="truaiPanel" aria-expanded="false" aria-label="Open TruAI chat" onclick="window.TruAIPanel && window.TruAIPanel.open()"><span aria-hidden="true">✦</span> TruAI</button>
+
+    <header class="history-hero">
+      <h1 class="history-hero__title">Transaction History</h1>
+      <p class="history-hero__desc">View, search, and review previous AI investigations and verification activities across Trulioo Labs.</p>
+    </header>
+
+    <div class="history-content">
+      <div class="tds-data-table-container history-table-container">
+        <div class="tds-data-table__header tds-data-table__header--stacked tds-data-table__header--toolbar-only history-table-header">
+          <div class="tds-data-table__header-toolbar history-table-toolbar">
+            <div class="tds-data-table__header-filter-row history-table-toolbar__main">
+              <div class="tds-text-input tds-text-input--full-width history-search">
+                <div class="tds-text-input__field tds-text-input__field--lg">
+                  <span class="tds-text-input__leading-icon" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+                  </span>
+                  <input class="tds-text-input__native" id="historySearchInput" type="search" placeholder="Search by Transaction ID, entity, or experience..." autocomplete="off" aria-label="Search transactions">
+                </div>
+              </div>
+
+              <div class="history-filters-inline" id="historyFilterBar" aria-label="Filters"></div>
+            </div>
+          </div>
+
+          <div class="history-active-filters" id="historyActiveFilters" hidden aria-label="Active filters"></div>
+        </div>
+
+        <div class="tds-data-table__wrapper">
+          <table class="tds-data-table tds-data-table--comfort history-table">
+            <thead id="historyTableHead">
+              <tr>
+                <th scope="col" data-sort="id" aria-sort="none" tabindex="0">Transaction ID <span class="tds-data-table__sort-icon" aria-hidden="true"></span></th>
+                <th scope="col" data-sort="entity" aria-sort="none" tabindex="0">Entity <span class="tds-data-table__sort-icon" aria-hidden="true"></span></th>
+                <th scope="col">Experience</th>
+                <th scope="col">Outcome</th>
+                <th scope="col" data-sort="status" aria-sort="none" tabindex="0">Status <span class="tds-data-table__sort-icon" aria-hidden="true"></span></th>
+                <th scope="col" data-sort="lastUpdated" aria-sort="descending" tabindex="0">Last Updated <span class="tds-data-table__sort-icon" aria-hidden="true"><svg class="icon icon--sm" viewBox="0 0 16 16" fill="currentColor"><path d="M8 13l-4-5h8l-4 5z"/></svg></span></th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="tds-dialog tds-dialog--right tds-dialog--lg" id="txn-drawer" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="txnDrawerTitle" tabindex="-1">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="txnDrawerTitle">Transaction Details</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss">
+            <span class="tds-icon-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg>
+            </span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <div class="tds-dialog__body" id="txnDrawerBody"></div>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-dialog-close>Close</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<dialog class="truai-dialog" id="truaiPanel" aria-label="TruAI Chat">
+  <div class="truai-panel" id="truaiPanelSurface">
+    <div class="truai-panel-bg" aria-hidden="true"></div>
+    <div class="truai-panel-inner">
+      <header class="truai-panel-head">
+        <h2>TruAI Chat</h2>
+        <div class="truai-panel-actions">
+          <button class="truai-icon-btn" type="button" id="truaiExpand" title="Expand" aria-label="Expand panel"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 10V13h3M13 6V3h-3M6 3h3v3M10 13h-3v-3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="truai-icon-btn" type="button" id="truaiClose" title="Close" aria-label="Close TruAI chat"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round"/></svg></button>
+        </div>
+      </header>
+      <div class="truai-messages" id="truaiMessages">
+        <div class="truai-msg truai-msg-ai">What do you want to learn with TruAI?</div>
+      </div>
+      <footer class="truai-chatbar">
+        <input class="truai-chat-input" id="truaiInput" type="text" placeholder="Ask TruAI anything…" autocomplete="off" aria-label="Message TruAI">
+        <button class="truai-chat-send" type="button" id="truaiSend" aria-label="Send message"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 12V4M5 7l3-3 3 3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </footer>
+    </div>
+  </div>
+</dialog>
+
+<script src="js/history-data.js?v=2"></script>
+<script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
+<script src="../../Components/dialog/dialog.js"></script>
+<script src="js/history.js"></script>
+<script src="js/side-nav-experimental.js"></script>
+<script>SideNavExperimental.init();</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+.history-main {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.history-content {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 48px 64px 80px;
+  box-sizing: border-box;
+}
+
+.history-table-header {
+  padding-bottom: var(--padding-sm);
+}
+
+.history-table-toolbar,
+.history-table-toolbar__main {
+  width: 100%;
+}
+
+.history-table-toolbar__main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.history-search {
+  flex: 1 1 280px;
+  min-width: 240px;
+}
+
+.history-filters-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.history-active-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.history-active-filters[hidden] {
+  display: none !important;
+}
+
+.history-availability-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.history-availability-dot--live { background: var(--surface-positive-strong, #34c759); }
+.history-availability-dot--demo { background: #ff9500; }
+.history-availability-dot--external { background: #007aff; }
+
+.history-table tbody tr.history-table__row {
+  cursor: pointer;
+}
+
+.history-table tbody tr.history-table__row:hover {
+  background: var(--surface-hover);
+}
+
+.history-table tbody tr.history-table__row:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+
+.history-table__id {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.history-empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-description);
+  font-size: var(--font-size-sm);
+}
+
+.history-drawer-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.history-drawer-summary {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-md, 20px);
+  color: var(--text-description);
+}
+
+.history-drawer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .history-content {
+    padding: 48px 24px 80px;
+  }
+
+  .history-table-toolbar__main {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .history-filters-inline {
+    width: 100%;
+  }
+}

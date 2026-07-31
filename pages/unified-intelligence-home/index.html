@@ -14,15 +14,21 @@
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/ds-nav-tokens.css">
   <link rel="stylesheet" href="css/side-nav.css">
+  <link rel="stylesheet" href="css/side-nav-experimental.css">
   <link rel="stylesheet" href="css/app-shell.css">
   <link rel="stylesheet" href="css/glass.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/hero.css">
-  <link rel="stylesheet" href="css/hero-headline.css">
+  <link rel="stylesheet" href="css/hero-headline.css?v=6">
+  <link rel="stylesheet" href="css/demo-scenarios.css?v=2">
+  <link rel="stylesheet" href="css/env-mode-fx.css?v=11">
+  <link rel="stylesheet" href="css/prod-home.css">
   <link rel="stylesheet" href="css/mcp.css">
+  <link rel="stylesheet" href="css/truai-panel.css?v=4">
+  <script src="js/truai-panel.js?v=4" defer></script>
 </head>
-<body>
+<body data-sidenav="experimental" data-sidenav-active="home">
 <div class="app-shell" id="app-shell">
 
   <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
@@ -139,12 +145,12 @@
   <main class="app-main">
 
     <section class="hero-zone">
-      <button class="truai-btn" type="button"><span aria-hidden="true">✦</span> TruAI</button>
+      <button class="truai-btn" type="button" aria-controls="truaiPanel" aria-expanded="false" aria-label="Open TruAI chat" onclick="window.TruAIPanel && window.TruAIPanel.open()"><span aria-hidden="true">✦</span> TruAI</button>
 
       <div class="hero-inner">
-        <div class="brand-pill glass-frosted">
-          <svg class="labs-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="currentColor"/></svg>
-          Trulioo Labs
+        <div class="env-toggle" id="envToggle" role="group" aria-label="Environment">
+          <button class="env-toggle-btn is-active" id="envDemo" type="button" aria-pressed="true">Demo</button>
+          <button class="env-toggle-btn" id="envProd" type="button" aria-pressed="false">Prod</button>
         </div>
 
         <h1 class="hero-title" id="heroTitle">Turn verification signals into actionable risk intelligence.</h1>
@@ -164,18 +170,29 @@
 
           <div class="block-search" id="blockSearch">
             <div class="search-row glass-solid" id="searchRow">
-              <svg class="search-ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="5.5"/><path d="M14 14l3 3" stroke-linecap="round"/></svg>
-              <div class="search-main">
-                <input class="search-input" id="searchInput" type="text" placeholder="Search company or country..." autocomplete="off">
-                <div class="search-entity-chip" id="searchEntityChip" hidden>
-                  <svg class="search-entity-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="4" width="12" height="10" rx="1"/><path d="M5 4V3a3 3 0 0 1 6 0v1"/></svg>
+              <div class="search-bar-leading">
+                <svg class="search-ico" id="searchIco" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M14 14l3 3" stroke-linecap="round"/></svg>
+                <div class="search-token-chip search-entity-chip" id="searchEntityChip" hidden>
+                  <svg class="search-entity-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2" y="4" width="12" height="10" rx="1"/><path d="M5 4V3a3 3 0 0 1 6 0v1"/></svg>
                   <span class="search-entity-name" id="searchEntityName"></span>
-                  <button class="search-entity-clear" type="button" id="searchEntityClear" aria-label="Clear selection">
+                  <button class="search-token-clear search-entity-clear" type="button" id="searchEntityClear" aria-label="Clear company">
                     <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round"/></svg>
                   </button>
                 </div>
               </div>
-              <div class="search-actions">
+              <div class="search-main">
+                <div class="search-pills" id="searchPills" hidden>
+                  <div class="search-token-chip search-country-chip" id="searchCountryChip" hidden>
+                    <span class="search-token-flag" id="searchCountryFlag" aria-hidden="true"></span>
+                    <span class="search-token-name" id="searchCountryName"></span>
+                    <button class="search-token-clear" type="button" id="searchCountryClear" aria-label="Clear country">
+                      <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 2l6 6M8 2l-6 6" stroke-linecap="round"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <input class="search-input" id="searchInput" type="text" placeholder="Search company or country..." autocomplete="off">
+              </div>
+              <div class="search-actions" id="searchActions">
                 <button class="icon-btn voice-btn" type="button" aria-label="Voice search"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="6" height="10" rx="3"/><path d="M5 9a5 5 0 0 0 10 0M10 14v3"/></svg></button>
                 <button class="submit-btn" id="searchSubmit" type="button" aria-label="Submit"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9h10M9 4l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               </div>
@@ -222,84 +239,36 @@
           </div>
 
           <div class="block-analyzing" id="blockAnalyzing" aria-live="polite">
-            <div class="entity-chip-row">
-              <span class="entity-chip-caption" id="analyzingEntityCaption">Selected Business</span>
-              <div class="entity-chip">
-                <span class="entity-chip-label" id="analyzingEntityLabel"></span>
-                <button class="entity-chip-edit" type="button" aria-label="Edit selection" id="analyzingEntityEdit">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/></svg>
-                </button>
-              </div>
-            </div>
-
             <div class="intel-loading">
               <p class="intel-loading-head">Analyzing available intelligence...</p>
-
-              <div class="intel-steps" id="intelSteps">
-                <div class="intel-step" data-step="0">
-                  <span class="intel-step-icon" aria-hidden="true">
-                    <svg class="intel-step-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 7.2l2.3 2.3L10.8 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span class="intel-step-pulse"></span>
-                  </span>
-                  <span class="intel-step-label">Identity</span>
-                </div>
-                <div class="intel-step" data-step="1">
-                  <span class="intel-step-icon" aria-hidden="true">
-                    <svg class="intel-step-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 7.2l2.3 2.3L10.8 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span class="intel-step-pulse"></span>
-                  </span>
-                  <span class="intel-step-label">Ownership</span>
-                </div>
-                <div class="intel-step" data-step="2">
-                  <span class="intel-step-icon" aria-hidden="true">
-                    <svg class="intel-step-check" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 7.2l2.3 2.3L10.8 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span class="intel-step-pulse"></span>
-                  </span>
-                  <span class="intel-step-label">Risk Signals</span>
-                </div>
-              </div>
-
-              <div class="intel-progress">
-                <div class="intel-progress-track">
-                  <div class="intel-progress-fill" id="intelProgressFill"></div>
-                </div>
-                <p class="intel-progress-label" id="intelProgressLabel">Processing 1 of 3 steps...</p>
+              <div class="intel-canvas" id="intelCanvas" aria-hidden="true">
+                <div class="intel-canvas__glow intel-canvas__glow--a"></div>
+                <div class="intel-canvas__glow intel-canvas__glow--b"></div>
+                <div class="intel-canvas__glow intel-canvas__glow--c"></div>
               </div>
             </div>
           </div>
 
           <div class="block-configured" id="blockConfigured">
-            <div class="entity-chip-row">
-              <span class="entity-chip-caption" id="planEntityCaption">Selected Business</span>
-              <div class="entity-chip">
-                <span class="entity-chip-label" id="entityChipLabel"></span>
-                <button class="entity-chip-edit" type="button" aria-label="Edit selection" id="entityChipEdit">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M11.5 2.5l2 2L5 13H3v-2L11.5 2.5z"/></svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="plan-intro">
-              <h3 class="plan-intro-title">Assessment Plan Ready</h3>
-              <p class="plan-intro-message" id="planIntroMessage">I've prepared from available entity intelligence for this business. Review or customize before starting.</p>
-            </div>
-
             <div class="assessment-plan-card">
               <div class="assessment-plan-inner">
                 <div class="assessment-plan-head">
-                  <h4 class="assessment-plan-title">Recommended Assessment</h4>
-                  <span class="assessment-plan-time" id="planEstimatedTime">Estimated time: 38s</span>
+                  <div class="assessment-plan-head-row">
+                    <h4 class="assessment-plan-title">Recommended Assessment</h4>
+                    <span class="assessment-plan-time" id="planEstimatedTime">Estimated time: 38s</span>
+                  </div>
+                  <p class="assessment-plan-desc" id="planDescription">This business shows signs of international operations and complex ownership.</p>
                 </div>
 
                 <div class="plan-section">
                   <div class="plan-section-label">Required</div>
-                  <div class="plan-check-row">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M5.5 8l1.8 1.8L10.8 6.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <div class="plan-check-row plan-check-row--required">
+                    <svg class="plan-icon plan-icon--lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="7" width="8" height="6" rx="1"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>
                     <span class="plan-check-label">Business verification</span>
                   </div>
                 </div>
 
-                <div class="plan-section">
+                <div class="plan-section plan-section--perform">
                   <div class="plan-section-head">
                     <div class="plan-section-label">AI will perform</div>
                     <button class="plan-customize-btn" type="button" id="customizePlanBtn">Customize</button>
@@ -307,9 +276,9 @@
                   <div class="plan-features" id="planFeatures"></div>
                 </div>
 
-                <div class="plan-section">
-                  <div class="plan-section-label">Based on</div>
-                  <div class="plan-based-list" id="planBasedOn"></div>
+                <div class="plan-section plan-section--available" id="planAlsoAvailableSection" hidden>
+                  <div class="plan-section-label">Also available</div>
+                  <div class="plan-features plan-features--available" id="planAlsoAvailable"></div>
                 </div>
 
                 <div class="assessment-plan-foot">
@@ -358,9 +327,54 @@
       </div>
     </section>
 
-    <section class="mcp-section" aria-label="MCP workflow">
+    <section class="prod-home" id="prodHome" hidden aria-label="Production home">
+      <div class="prod-block">
+        <div class="prod-block__head">
+          <h5 class="prod-block__title">Where you left off</h5>
+          <button class="prod-block__link" type="button">See all →</button>
+        </div>
+        <div class="prod-panel">
+          <div class="prod-panel__head">
+            <div class="prod-panel__head-title">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 3.5v9l8-4.5-8-4.5z"/></svg>
+              In progress
+            </div>
+          </div>
+          <div id="leftOffList"></div>
+        </div>
+      </div>
+
+      <div class="prod-block">
+        <div class="prod-block__head">
+          <h5 class="prod-block__title">Monitoring alerts</h5>
+          <button class="prod-block__link" type="button">View all →</button>
+        </div>
+        <div class="prod-panel">
+          <div class="prod-panel__head">
+            <div class="prod-panel__head-title">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 8L11 5"/><circle cx="8" cy="8" r="1.2" fill="currentColor" stroke="none"/></svg>
+              Active alerts
+              <span class="prod-alert-pill">3 new</span>
+            </div>
+          </div>
+          <div id="monitoringList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-scenarios" id="demoScenarios" aria-label="Explore demo scenarios">
+      <h3 class="demo-scenarios__title">Explore Demo Scenarios</h3>
+      <div class="demo-scenarios__filters" role="group" aria-label="Scenario filters">
+        <button class="demo-filter-btn is-active" type="button" data-demo-filter="all">All</button>
+        <button class="demo-filter-btn" type="button" data-demo-filter="business">Business</button>
+        <button class="demo-filter-btn" type="button" data-demo-filter="person">Person</button>
+      </div>
+      <div class="demo-scenarios__grid" id="demoScenariosGrid"></div>
+    </section>
+
+    <section class="mcp-section" id="mcpSection" aria-label="MCP workflow">
         <div class="mcp-copy">
-          <h2 class="text-display-md">Bring Trulioo to your AI workflow</h2>
+          <h3 class="text-display-md">Bring Trulioo to your AI workflow</h3>
           <p class="mcp-sub">Connect your AI assistant to Trulioo verification, risk, and ownership capabilities through MCP.</p>
           <button class="mcp-learn-btn" type="button">Learn more</button>
         </div>
@@ -415,11 +429,38 @@
 
 </div>
 
-<script src="js/data.js"></script>
-<script src="js/hero-headline.js"></script>
+<dialog class="truai-dialog" id="truaiPanel" aria-label="TruAI Chat">
+  <div class="truai-panel" id="truaiPanelSurface">
+    <div class="truai-panel-bg" aria-hidden="true"></div>
+    <div class="truai-panel-inner">
+      <header class="truai-panel-head">
+        <h2>TruAI Chat</h2>
+        <div class="truai-panel-actions">
+          <button class="truai-icon-btn" type="button" id="truaiExpand" title="Expand" aria-label="Expand panel"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 10V13h3M13 6V3h-3M6 3h3v3M10 13h-3v-3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="truai-icon-btn" type="button" id="truaiClose" title="Close" aria-label="Close TruAI chat"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round"/></svg></button>
+        </div>
+      </header>
+      <div class="truai-messages" id="truaiMessages">
+        <div class="truai-msg truai-msg-ai">What do you want to learn with TruAI?</div>
+      </div>
+      <footer class="truai-chatbar">
+        <input class="truai-chat-input" id="truaiInput" type="text" placeholder="Ask TruAI anything…" autocomplete="off" aria-label="Message TruAI">
+        <button class="truai-chat-send" type="button" id="truaiSend" aria-label="Send message"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 12V4M5 7l3-3 3 3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </footer>
+    </div>
+  </div>
+</dialog>
+
+<script src="js/data.js?v=8"></script>
+<script src="js/env-mode.js"></script>
+<script src="js/env-mode-fx.js?v=6"></script>
+<script src="js/demo-scenarios.js"></script>
+<script src="js/prod-activity.js"></script>
+<script src="js/hero-headline.js?v=6"></script>
 <script src="js/app.js"></script>
 <script src="js/side-nav.js"></script>
-<script>TdsSideNav.init();</script>
+<script src="js/side-nav-experimental.js"></script>
+<script>TdsSideNav.init(); SideNavExperimental.init();</script>
 </body>
 </html>
 

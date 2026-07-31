@@ -15,9 +15,14 @@
   var recognition = null;
   var analyzingTimer = null;
   var ANALYZING_STEP_MS = 850;
+  var businessInputEditing = false;
+  var planCustomizing = false;
+  var planSelectionReady = false;
+  var planSelectedIds = [];
+  var planFeaturePool = [];
 
-  var checkIcon = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M5.5 8l1.8 1.8L10.8 6.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  var bulletIcon = '<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3"/></svg>';
+  var planCheckIcon = '<svg class="plan-icon plan-icon--check" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="currentColor"/><path d="M4.6 8.1l2.1 2.1 4.9-5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var planCircleIcon = '<svg class="plan-icon plan-icon--circle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/></svg>';
 
   var els = {
     heroCard: document.getElementById('heroCard'),
@@ -29,25 +34,25 @@
     personPanel: document.getElementById('personPanel'),
     trySample: document.getElementById('trySample'),
     searchRow: document.getElementById('searchRow'),
+    searchIco: document.getElementById('searchIco'),
     searchInput: document.getElementById('searchInput'),
+    searchPills: document.getElementById('searchPills'),
+    searchCountryChip: document.getElementById('searchCountryChip'),
+    searchCountryFlag: document.getElementById('searchCountryFlag'),
+    searchCountryName: document.getElementById('searchCountryName'),
+    searchCountryClear: document.getElementById('searchCountryClear'),
     searchEntityChip: document.getElementById('searchEntityChip'),
     searchEntityName: document.getElementById('searchEntityName'),
     searchEntityClear: document.getElementById('searchEntityClear'),
     prefillSection: document.getElementById('prefillSection'),
     smartDrop: document.getElementById('smartDrop'),
     searchSubmit: document.getElementById('searchSubmit'),
-    entityChipLabel: document.getElementById('entityChipLabel'),
-    planEntityCaption: document.getElementById('planEntityCaption'),
-    entityChipEdit: document.getElementById('entityChipEdit'),
-    analyzingEntityLabel: document.getElementById('analyzingEntityLabel'),
-    analyzingEntityCaption: document.getElementById('analyzingEntityCaption'),
-    analyzingEntityEdit: document.getElementById('analyzingEntityEdit'),
-    intelSteps: document.getElementById('intelSteps'),
-    intelProgressFill: document.getElementById('intelProgressFill'),
-    intelProgressLabel: document.getElementById('intelProgressLabel'),
+    searchActions: document.getElementById('searchActions'),
+    intelCanvas: document.getElementById('intelCanvas'),
     planFeatures: document.getElementById('planFeatures'),
-    planBasedOn: document.getElementById('planBasedOn'),
-    planIntroMessage: document.getElementById('planIntroMessage'),
+    planAlsoAvailable: document.getElementById('planAlsoAvailable'),
+    planAlsoAvailableSection: document.getElementById('planAlsoAvailableSection'),
+    planDescription: document.getElementById('planDescription'),
     planEstimatedTime: document.getElementById('planEstimatedTime'),
     startAssessmentBtn: document.getElementById('startAssessmentBtn'),
     planStartOverBtn: document.getElementById('planStartOverBtn'),
@@ -69,19 +74,6 @@
     if (!company) return '';
     var cn = country ? country.name : company.country;
     return cn ? company.name + ' in ' + cn : company.name;
-  }
-
-  function getEntityCaption() {
-    if (selFromSample && sampleChipLabel) {
-      return 'Sample entity - ' + sampleChipLabel;
-    }
-    return 'Selected Business';
-  }
-
-  function updateEntityCaptions() {
-    var caption = getEntityCaption();
-    if (els.analyzingEntityCaption) els.analyzingEntityCaption.textContent = caption;
-    if (els.planEntityCaption) els.planEntityCaption.textContent = caption;
   }
 
   function clearVoicePickList() {
@@ -184,50 +176,166 @@
     if (selFromSample && sampleEntities[activeSample]) {
       return sampleEntities[activeSample].plan;
     }
-    return {
-      introMessage: 'I\'ve prepared from available entity intelligence for this business. Review or customize before starting.',
-      estimatedTime: '38s',
-      features: assessmentFeatures,
-      basedOn: assessmentBasedOn,
-    };
+    return defaultAssessmentPlan;
   }
 
   function getSampleCompany(sampleKey) {
     return allCompanies.find(function (c) { return c.sampleKey === sampleKey; }) || null;
   }
 
+  function resetPlanSelection() {
+    planSelectionReady = false;
+    planCustomizing = false;
+    planSelectedIds = [];
+    planFeaturePool = [];
+  }
+
+  function getFeatureById(id) {
+    var plan = getPlanConfig();
+    var i;
+    for (i = 0; i < plan.features.length; i++) {
+      if (plan.features[i].id === id) return plan.features[i];
+    }
+    return planOptionalCatalog[id] || null;
+  }
+
+  function ensurePlanSelection() {
+    if (planSelectionReady) return;
+    var plan = getPlanConfig();
+    var alsoIds = plan.alsoAvailable || [];
+    planSelectedIds = plan.features.map(function (feature) { return feature.id; });
+    planFeaturePool = planSelectedIds.slice();
+    alsoIds.forEach(function (id) {
+      if (planFeaturePool.indexOf(id) === -1) planFeaturePool.push(id);
+    });
+    planSelectionReady = true;
+  }
+
+  function getAvailableFeatureIds() {
+    return planFeaturePool.filter(function (id) {
+      return planSelectedIds.indexOf(id) === -1;
+    });
+  }
+
+  function renderPlanFeatureRow(feature, selected) {
+    var badgeHtml = selected && feature.badge
+      ? '<span class="plan-feature-badge">' + feature.badge + '</span>'
+      : '';
+    var icon = selected ? planCheckIcon : planCircleIcon;
+    var rowClass = 'plan-feature-row' +
+      (selected ? '' : ' plan-feature-row--available') +
+      (planCustomizing ? ' plan-feature-row--editable' : '');
+
+    if (planCustomizing) {
+      return (
+        '<button type="button" class="' + rowClass + '" data-feature-id="' + feature.id + '" aria-pressed="' + (selected ? 'true' : 'false') + '">' +
+          icon +
+          '<span class="plan-feature-label">' + feature.name + '</span>' +
+          badgeHtml +
+        '</button>'
+      );
+    }
+
+    return (
+      '<div class="' + rowClass + '">' +
+        icon +
+        '<span class="plan-feature-label">' + feature.name + '</span>' +
+        badgeHtml +
+      '</div>'
+    );
+  }
+
   function renderAssessmentPlan() {
+    ensurePlanSelection();
     var plan = getPlanConfig();
 
-    if (els.planIntroMessage) els.planIntroMessage.textContent = plan.introMessage;
     if (els.planEstimatedTime) els.planEstimatedTime.textContent = 'Estimated time: ' + plan.estimatedTime;
+    if (els.planDescription) els.planDescription.textContent = plan.description;
 
-    els.planFeatures.innerHTML = plan.features.map(function (name) {
-      return (
-        '<div class="plan-check-row">' +
-          checkIcon +
-          '<span class="plan-check-label">' + name + '</span>' +
-        '</div>'
-      );
+    if (els.customizePlanBtn) {
+      els.customizePlanBtn.textContent = planCustomizing ? 'Done' : 'Customize';
+      els.customizePlanBtn.setAttribute('aria-expanded', planCustomizing ? 'true' : 'false');
+    }
+
+    if (els.blockConfigured) {
+      els.blockConfigured.classList.toggle('is-customizing', planCustomizing);
+    }
+
+    var selectedFeatures = planSelectedIds.map(getFeatureById).filter(Boolean);
+    els.planFeatures.innerHTML = selectedFeatures.map(function (feature) {
+      return renderPlanFeatureRow(feature, true);
     }).join('');
 
-    els.planBasedOn.innerHTML = plan.basedOn.map(function (name) {
-      return (
-        '<div class="plan-based-item">' +
-          bulletIcon +
-          '<span>' + name + '</span>' +
-        '</div>'
-      );
-    }).join('');
+    if (els.planAlsoAvailableSection) {
+      els.planAlsoAvailableSection.hidden = !planCustomizing;
+      els.planAlsoAvailableSection.classList.toggle('is-visible', planCustomizing);
+    }
+
+    if (els.planAlsoAvailable) {
+      if (planCustomizing) {
+        var availableFeatures = getAvailableFeatureIds().map(getFeatureById).filter(Boolean);
+        els.planAlsoAvailable.innerHTML = availableFeatures.map(function (feature) {
+          return renderPlanFeatureRow(feature, false);
+        }).join('');
+      } else {
+        els.planAlsoAvailable.innerHTML = '';
+      }
+    }
+  }
+
+  function togglePlanFeature(id) {
+    if (!planCustomizing || planFeaturePool.indexOf(id) === -1) return;
+    var idx = planSelectedIds.indexOf(id);
+    if (idx >= 0) {
+      planSelectedIds.splice(idx, 1);
+    } else {
+      planSelectedIds.push(id);
+    }
+    renderAssessmentPlan();
+  }
+
+  function togglePlanCustomize() {
+    planCustomizing = !planCustomizing;
+    renderAssessmentPlan();
   }
 
   function syncSearchBarMode() {
-    var hasEntity = bizPhase === 'entity' && !!selCmp;
-    els.searchEntityChip.hidden = !hasEntity;
-    els.searchInput.classList.toggle('is-hidden', hasEntity);
-    els.searchRow.classList.toggle('has-entity-chip', hasEntity);
-    if (hasEntity) {
-      els.searchEntityName.textContent = businessLabel(selCmp, selCo);
+    if (curType !== 'business') return;
+
+    var submitted = bizPhase === 'analyzing' || bizPhase === 'plan';
+    var entityReady = bizPhase === 'entity' && !!selCmp;
+    var countryOnly = bizPhase === 'search' && !!selCo && !selCmp;
+    var showEntity = !!selCmp && (entityReady || submitted);
+    var showCountry = countryOnly;
+    var hideInput = (showEntity || showCountry) && !businessInputEditing;
+
+    if (els.searchEntityChip) {
+      els.searchEntityChip.hidden = !showEntity;
+      if (showEntity && selCmp && els.searchEntityName) {
+        els.searchEntityName.textContent = selCmp.name;
+      }
+    }
+
+    if (els.searchPills) els.searchPills.hidden = !showCountry;
+
+    if (els.searchCountryChip) {
+      els.searchCountryChip.hidden = !showCountry;
+      if (showCountry && selCo) {
+        if (els.searchCountryFlag) els.searchCountryFlag.textContent = selCo.flag;
+        if (els.searchCountryName) els.searchCountryName.textContent = selCo.name;
+      }
+    }
+
+    els.searchInput.classList.toggle('is-hidden', hideInput);
+    els.searchRow.classList.toggle('has-entity-chip', showEntity);
+    els.searchRow.classList.toggle('has-country-pill', showCountry);
+    els.searchRow.classList.toggle('has-pills', showEntity || showCountry);
+    els.searchRow.classList.toggle('is-entity-selected', entityReady);
+    els.searchRow.classList.toggle('is-submitted', submitted);
+    els.searchRow.classList.toggle('is-locked', submitted);
+
+    if (els.searchActions) {
+      els.searchActions.hidden = submitted;
     }
   }
 
@@ -242,7 +350,7 @@
     els.tabBusiness.setAttribute('aria-selected', isBiz ? 'true' : 'false');
     els.tabPerson.setAttribute('aria-selected', isBiz ? 'false' : 'true');
 
-    els.blockSearch.classList.toggle('hidden', !isBiz || analyzing || planReady);
+    els.blockSearch.classList.toggle('hidden', !isBiz);
     els.blockAnalyzing.classList.toggle('on', analyzing);
     els.blockConfigured.classList.toggle('on', planReady);
     els.personPanel.classList.toggle('on', !isBiz);
@@ -252,14 +360,7 @@
 
     syncSearchBarMode();
 
-    if (analyzing && selCmp) {
-      els.analyzingEntityLabel.textContent = businessLabel(selCmp, selCo);
-      updateEntityCaptions();
-    }
-
     if (planReady && selCmp) {
-      els.entityChipLabel.textContent = businessLabel(selCmp, selCo);
-      updateEntityCaptions();
       renderAssessmentPlan();
     }
 
@@ -273,20 +374,20 @@
     }
   }
 
-  function updateAnalyzingUI(activeStep) {
-    if (!els.intelSteps) return;
-    var steps = els.intelSteps.querySelectorAll('.intel-step');
-    steps.forEach(function (el, i) {
-      el.classList.remove('is-active', 'is-done');
-      if (activeStep >= 3 || i < activeStep) el.classList.add('is-done');
-      else if (i === activeStep) el.classList.add('is-active');
+  function restartIntelCanvasAnimation() {
+    if (!els.intelCanvas) return;
+    els.intelCanvas.classList.add('is-restarting');
+    void els.intelCanvas.offsetWidth;
+    els.intelCanvas.classList.remove('is-restarting');
+    els.intelCanvas.querySelectorAll('.intel-canvas__glow').forEach(function (el) {
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
     });
+  }
 
-    var pct = activeStep >= 3 ? 100 : Math.round(((activeStep + 1) / 3) * 100);
-    if (els.intelProgressFill) els.intelProgressFill.style.width = pct + '%';
-    if (els.intelProgressLabel) {
-      els.intelProgressLabel.textContent = 'Processing ' + Math.min(activeStep + 1, 3) + ' of 3 steps...';
-    }
+  function updateAnalyzingUI() {
+    /* Visual is handled by CSS sweep animation on .intel-canvas */
   }
 
   function runAnalyzingSequence(step) {
@@ -306,9 +407,10 @@
   function beginAnalyzing() {
     stopAnalyzing();
     bizPhase = 'analyzing';
+    resetPlanSelection();
     clearVoicePickList();
     els.smartDrop.classList.remove('open');
-    if (els.intelProgressFill) els.intelProgressFill.style.width = '0%';
+    restartIntelCanvasAnimation();
     syncLayout();
     requestAnimationFrame(function () {
       runAnalyzingSequence(0);
@@ -494,10 +596,12 @@
   function pickCountry(c) {
     clearVoicePickList();
     selCo = c;
+    businessInputEditing = true;
     els.searchInput.value = '';
     els.searchInput.placeholder = 'Search company...';
     els.smartDrop.classList.remove('open');
     syncLayout();
+    els.searchInput.focus();
   }
 
   function pickCompany(c) {
@@ -506,6 +610,7 @@
     selFromSample = false;
     sampleChipLabel = '';
     activeSample = 'standard';
+    businessInputEditing = false;
     if (!selCo) {
       selCo = countries.find(function (co) { return co.code === c.countryCode; }) || null;
     }
@@ -516,6 +621,20 @@
     syncLayout();
   }
 
+  function clearCompanyChip() {
+    stopAnalyzing();
+    selCmp = null;
+    selFromSample = false;
+    sampleChipLabel = '';
+    bizPhase = 'search';
+    businessInputEditing = true;
+    els.searchInput.value = '';
+    els.searchInput.placeholder = 'Search company...';
+    els.smartDrop.classList.remove('open');
+    syncLayout();
+    els.searchInput.focus();
+  }
+
   function pickSampleEntity(c, sampleKey, chipLabel) {
     clearVoicePickList();
     selCmp = c;
@@ -523,6 +642,7 @@
     activeSample = sampleKey;
     selFromSample = true;
     sampleChipLabel = chipLabel;
+    businessInputEditing = false;
     els.searchInput.value = '';
     els.smartDrop.classList.remove('open');
     beginAnalyzing();
@@ -552,6 +672,8 @@
     activeSample = 'standard';
     selFromSample = false;
     sampleChipLabel = '';
+    businessInputEditing = false;
+    resetPlanSelection();
     els.searchInput.value = '';
     els.searchInput.placeholder = 'Search company or country...';
     els.searchInput.classList.remove('is-hidden');
@@ -675,7 +797,21 @@
   });
 
   els.searchInput.addEventListener('blur', function () {
-    setTimeout(function () { els.smartDrop.classList.remove('open'); }, 200);
+    setTimeout(function () {
+      els.smartDrop.classList.remove('open');
+      if (bizPhase === 'search' && selCo && !selCmp && !els.searchInput.value.trim()) {
+        businessInputEditing = false;
+        syncSearchBarMode();
+      }
+    }, 200);
+  });
+
+  els.searchRow.addEventListener('click', function (e) {
+    if (bizPhase !== 'search' || !selCo || selCmp) return;
+    if (e.target.closest('.search-token-clear') || e.target.closest('.submit-btn') || e.target.closest('.voice-btn')) return;
+    businessInputEditing = true;
+    syncSearchBarMode();
+    els.searchInput.focus();
   });
 
   els.searchSubmit.addEventListener('click', function () {
@@ -683,41 +819,35 @@
     else if (els.smartDrop.classList.contains('open')) pickTopDropMatch();
   });
 
-  els.searchEntityClear.addEventListener('click', function (e) {
-    e.stopPropagation();
-    resetBusiness();
-    els.searchInput.focus();
-  });
-
-  els.entityChipEdit.addEventListener('click', function () {
-    stopAnalyzing();
-    if (selFromSample) {
+  if (els.searchCountryClear) {
+    els.searchCountryClear.addEventListener('click', function (e) {
+      e.stopPropagation();
       resetBusiness();
       els.searchInput.focus();
-    } else {
-      bizPhase = 'entity';
-      syncLayout();
-    }
-  });
-
-  if (els.analyzingEntityEdit) {
-    els.analyzingEntityEdit.addEventListener('click', function () {
-      stopAnalyzing();
-      if (selFromSample) {
-        resetBusiness();
-        els.searchInput.focus();
-      } else {
-        bizPhase = 'entity';
-        syncLayout();
-      }
     });
   }
 
+  els.searchEntityClear.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (bizPhase === 'analyzing' || bizPhase === 'plan') {
+      resetBusiness();
+      return;
+    }
+    clearCompanyChip();
+  });
+
   els.startAssessmentBtn.addEventListener('click', submitAssessment);
   els.planStartOverBtn.addEventListener('click', resetBusiness);
-  els.customizePlanBtn.addEventListener('click', function () {
-    alert('Customize flow — coming in next frame.');
-  });
+  els.customizePlanBtn.addEventListener('click', togglePlanCustomize);
+
+  if (els.blockConfigured) {
+    els.blockConfigured.addEventListener('click', function (e) {
+      if (!planCustomizing) return;
+      var btn = e.target.closest('[data-feature-id]');
+      if (!btn) return;
+      togglePlanFeature(btn.getAttribute('data-feature-id'));
+    });
+  }
 
   if (els.personServicesGrid) {
     els.personServicesGrid.querySelectorAll('.person-service-option').forEach(function (btn) {

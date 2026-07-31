@@ -9,11 +9,13 @@
   --text-body: #1a1c1e;
   --text-muted: #72777a;
   --text-caption: #617269;
+  --text-description: #526660;
   --text-subtle: rgba(23, 45, 45, 0.7);
   --text-inverse: #ffffff;
   --icon-faint: #617269;
 
   --surface-page: #ffffff;
+  --surface-neutral-02: #f4f6f4;
   --surface-card: rgba(255, 255, 255, 0.1);
   --surface-card-solid: #ffffff;
   --surface-hover: #f4f6f4;
@@ -72,6 +74,7 @@
     var(--glass-dispersion-offset) 0 0 rgba(100, 160, 255, 0.06);
 
   --border-subtle: #dde2de;
+  --border-strong: #c5cec8;
   --border-chip: #dde2de;
   --border-service: #ececef;
   --border-surface: #dbe2e1;

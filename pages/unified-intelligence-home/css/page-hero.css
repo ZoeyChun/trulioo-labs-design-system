@@ -1,0 +1,58 @@
+/* Shared page header — Labs, History, etc. */
+
+.labs-main .truai-btn,
+.history-main .truai-btn {
+  position: absolute;
+  top: 25px;
+  right: 24px;
+  z-index: 450;
+  pointer-events: auto;
+}
+
+.page-hero,
+.labs-hero,
+.history-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 64px 64px 0;
+  text-align: center;
+}
+
+.page-hero__title,
+.labs-hero__title,
+.history-hero__title {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: -1px;
+  color: #1e1b18;
+}
+
+.page-hero__desc,
+.labs-hero__desc,
+.history-hero__desc {
+  margin: 0;
+  max-width: 600px;
+  font-size: var(--font-14);
+  line-height: 20px;
+  color: #5c5752;
+}
+
+@media (max-width: 900px) {
+  .page-hero,
+  .labs-hero,
+  .history-hero {
+    padding: 48px 24px 0;
+  }
+
+  .page-hero__title,
+  .labs-hero__title,
+  .history-hero__title {
+    font-size: 32px;
+    line-height: 38px;
+  }
+}
