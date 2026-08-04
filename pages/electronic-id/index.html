@@ -1,4 +1,4 @@
-<!-- Static reference implementation — visual spec only. The JS here drives a demo-only multi-step wizard (combobox, radio branches, timed transitions); wire up real verification logic in your own app. -->
+<!-- Static reference implementation — visual spec only. Demo wizard for the 2026 Electronic ID redesign; wire up real verification logic in your own app. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,8 +18,11 @@
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/select/combobox.css">
   <link rel="stylesheet" href="../../Components/progress-indicator/progress-indicator.css">
-  <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="../../Components/switch/switch.css">
+  <link rel="stylesheet" href="../../Components/radio-group/radio-group.css">
+  <link rel="stylesheet" href="../../Components/text-input/text-input.css">
+  <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../Components/dialog/dialog.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
 
@@ -203,19 +206,30 @@
 
         <div class="dv-flow-content">
 
-          <!-- ===== Step: Configuration setup (shared by both flows) ===== -->
-          <section class="dv-flow-step eid-step" id="eid-step-config" aria-label="Configuration setup">
-            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" data-progress="config" aria-label="Progress"></ol>
-
-            <section class="dv-flow-card" aria-labelledby="eid-config-title">
-              <div class="dv-flow-card__header">
-                <h2 class="dv-flow-card__title" id="eid-config-title">Configuration setup</h2>
+          <!-- ===== Step: Verification configuration ===== -->
+          <section class="dv-flow-step eid-step" id="eid-step-config" aria-label="Verification configuration">
+            <div class="eid-config-card" aria-labelledby="eid-config-title">
+              <div class="eid-config-card__header">
+                <h2 class="eid-config-card__title" id="eid-config-title">Verification configuration</h2>
+                <div class="eid-config-card__header-actions">
+                  <label class="tds-switch">
+                    <span class="tds-switch__label-group">
+                      Simulated data
+                      <span class="tds-switch__icon eid-simulated-info" id="eid-simulated-info" tabindex="0" role="button" aria-label="About simulated data">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.25v3.5M8 5.5h.01" stroke-linecap="round"/></svg>
+                      </span>
+                    </span>
+                    <button type="button" class="tds-switch__track tds-switch__track--sm" id="eid-simulated-toggle" role="switch" aria-checked="false" aria-label="Simulated data">
+                      <span class="tds-switch__indicator" aria-hidden="true"></span>
+                      <span class="tds-switch__handle" aria-hidden="true"></span>
+                    </button>
+                  </label>
+                </div>
               </div>
 
-              <!-- Country -->
-              <div class="dv-flow-section__label">Country</div>
-              <div class="dv-flow-section__body">
+              <div class="eid-config-card__country">
                 <div class="tds-combobox eid-country" id="eid-country">
+                  <label class="tds-field-label" for="eid-country-input">Country</label>
                   <div class="tds-combobox__field tds-combobox__field--lg">
                     <span class="tds-combobox__leading-visual eid-country__flag" hidden></span>
                     <input class="tds-combobox__input" id="eid-country-input" type="text"
@@ -233,234 +247,206 @@
                 </div>
               </div>
 
-              <!-- Verification Mode -->
-              <div class="dv-flow-section__label">Verification Mode</div>
-              <div class="dv-flow-section__body">
-                <div class="dv-flow-radio-row">
-                  <label class="tds-radio-card tds-radio-card--selected">
-                    <input class="tds-radio" type="radio" name="eid-verification-mode" value="idin" checked>
-                    <span class="tds-radio-card__content">
-                      <span class="tds-radio-card__label-row">
-                        <span class="tds-radio-card__icon">
-                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2" y="2.5" width="8" height="8" rx="1.5"/><path d="M6 10.5v1.5A1.5 1.5 0 0 0 7.5 13.5h4A1.5 1.5 0 0 0 13 12V7.5A1.5 1.5 0 0 0 11.5 6H10"/></svg>
-                        </span>
-                        <span class="tds-radio-card__label">Validate with iDIN</span>
-                      </span>
-                      <span class="tds-radio-card__description">This option will connect you to an external iDIN site to complete your verification. Rest assured, we do not retain any of your information.</span>
-                    </span>
-                  </label>
-                  <label class="tds-radio-card">
-                    <input class="tds-radio" type="radio" name="eid-verification-mode" value="simulated">
-                    <span class="tds-radio-card__content">
-                      <span class="tds-radio-card__label-row">
-                        <span class="tds-radio-card__icon">
-                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M3 2.2l8.2 3.4-3.3 1.2-1.3 3.4L3 2.2z"/></svg>
-                        </span>
-                        <span class="tds-radio-card__label">Validate using simulated data</span>
-                      </span>
-                      <span class="tds-radio-card__description">This option lets you explore a preview of the e-ID experience through our demo tool.</span>
-                    </span>
-                  </label>
-                </div>
-              </div>
-
-              <!-- Device Intelligence -->
-              <div class="dv-flow-device">
-                <div class="dv-flow-device__box">
-                  <div class="dv-flow-device__text">
-                    <div class="dv-flow-device__title-row">
-                      <span class="dv-flow-device__icon">
-                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><path d="M7 12.5h2"/></svg>
-                      </span>
-                      <span class="dv-flow-device__title">Device Intelligence</span>
+              <div class="eid-config-card__settings">
+                <h3 class="eid-config-card__settings-title">Additional Settings</h3>
+                <div class="eid-settings-panel">
+                  <div class="eid-settings-row">
+                    <div class="eid-settings-row__text">
+                      <p class="eid-settings-row__title">Device Intelligence</p>
+                      <p class="eid-settings-row__desc">Collect device signals for fraud detection.</p>
                     </div>
-                    <p class="dv-flow-device__desc">Collect device signals for fraud detection</p>
+                    <label class="tds-switch">
+                      <button type="button" class="tds-switch__track tds-switch__track--sm" id="eid-device-toggle" role="switch" aria-checked="false" aria-label="Device Intelligence">
+                        <span class="tds-switch__indicator" aria-hidden="true"></span>
+                        <span class="tds-switch__handle" aria-hidden="true"></span>
+                      </button>
+                    </label>
                   </div>
-                  <label class="tds-switch">
-                    <span class="tds-switch__label-group">Enable</span>
-                    <button type="button" class="tds-switch__track tds-switch__track--sm tds-switch__track--on" role="switch" aria-checked="true" aria-label="Enable Device Intelligence">
-                      <span class="tds-switch__indicator" aria-hidden="true"></span>
-                      <span class="tds-switch__handle" aria-hidden="true"></span>
-                    </button>
-                  </label>
                 </div>
               </div>
 
-              <div class="dv-flow-card__footer">
-                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="eid-config-back">Back</button>
+              <div class="eid-config-card__footer eid-config-card__footer--next-only">
+                <span class="eid-config-card__footer-spacer" aria-hidden="true"></span>
                 <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="eid-config-next" aria-disabled="true">Next</button>
               </div>
-            </section>
+            </div>
           </section>
 
-          <!-- ===== Flow 1 · Step: Redirect to provider ===== -->
-          <section class="dv-flow-step eid-step" id="eid-step-redirect" aria-label="Redirect to provider" hidden>
-            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" data-progress="redirect" aria-label="Progress"></ol>
+          <!-- ===== Real data flow · Redirect to service provider ===== -->
+          <section class="dv-flow-step eid-step" id="eid-step-redirect" aria-label="Redirect to service provider" hidden>
+            <div class="eid-config-card" aria-labelledby="eid-redirect-heading">
+              <div class="eid-config-card__header">
+                <h2 class="eid-config-card__title" id="eid-redirect-heading">Redirect to service provider</h2>
+              </div>
 
-            <section class="dv-flow-card" aria-labelledby="eid-redirect-title">
-              <div class="dv-flow-card__header">
-                <h2 class="dv-flow-card__title" id="eid-redirect-title">Redirect to provider</h2>
-              </div>
-              <div class="eid-stage">
-                <div class="eid-device-graphic" aria-hidden="true">
-                  <span class="eid-device-graphic__node">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="2.5" width="13" height="8.5" rx="1"/><path d="M6 13.5h4M8 11v2.5"/></svg>
-                  </span>
-                  <span class="eid-device-graphic__link"></span>
-                  <span class="eid-device-graphic__node">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5" y="1.5" width="6" height="13" rx="1.5"/><path d="M7 12.5h2"/></svg>
-                  </span>
+              <div class="eid-redirect-stage">
+                <div class="eid-redirect-logos">
+                  <img class="eid-redirect-logos__brand" src="assets/providers/trulioo-wordmark.png" alt="Trulioo" width="148" height="40">
+                  <span class="eid-redirect-logos__divider" aria-hidden="true"></span>
+                  <img class="eid-redirect-logos__provider" id="eid-redirect-provider-logo" src="assets/providers/idin.png" alt="iDIN" height="40">
                 </div>
-                <p class="eid-stage__text">Click &ldquo;Next&rdquo; to continue</p>
+                <div class="eid-redirect-copy">
+                  <p class="eid-redirect-copy__title" id="eid-redirect-title">You&rsquo;ll be asked to validate with iDIN</p>
+                  <p class="eid-redirect-copy__desc" id="eid-redirect-desc">This option will connect you to an external iDIN site to complete your verification. Rest assured, we do not retain any of your information.</p>
+                </div>
               </div>
-              <div class="dv-flow-card__footer">
+
+              <div class="eid-config-card__footer">
                 <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="eid-redirect-back">Back</button>
                 <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="eid-redirect-next">Next</button>
               </div>
-            </section>
+            </div>
           </section>
 
-          <!-- ===== Flow 2 · Step: Select your bank ===== -->
-          <section class="dv-flow-step eid-step" id="eid-step-bank" aria-label="Select your bank" hidden>
-            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" data-progress="bank" aria-label="Progress"></ol>
+          <!-- ===== Simulated data flow (dynamic steps from CSV) ===== -->
+          <section class="dv-flow-step eid-step" id="eid-step-simulated" aria-label="Simulated verification flow" hidden>
+            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" id="eid-sim-progress" aria-label="Progress"></ol>
 
-            <section class="dv-flow-card" aria-labelledby="eid-bank-title">
+            <!-- Select bank -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-select-bank" aria-labelledby="eid-select-bank-title" hidden>
               <div class="dv-flow-card__header">
-                <h2 class="dv-flow-card__title" id="eid-bank-title">Select your bank</h2>
+                <h2 class="dv-flow-card__title" id="eid-select-bank-title">Select bank</h2>
               </div>
               <div class="eid-bank-body">
-                <div class="eid-bank-grid" role="radiogroup" aria-label="Select your bank" id="eid-bank-grid"></div>
+                <div class="eid-bank-grid eid-bank-grid--cards" role="radiogroup" aria-label="Select bank" id="eid-bank-grid"></div>
               </div>
               <div class="dv-flow-card__footer">
-                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="eid-bank-back">Back</button>
-                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="eid-bank-next" aria-disabled="true">Next</button>
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-sim-action="next" aria-disabled="true">Next</button>
               </div>
             </section>
-          </section>
 
-          <!-- ===== Flow 2 · Step: Scan QR code ===== -->
-          <section class="dv-flow-step eid-step" id="eid-step-qr" aria-label="Scan QR code" hidden>
-            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" data-progress="connect" aria-label="Progress"></ol>
-
-            <section class="dv-flow-card" aria-labelledby="eid-qr-title">
+            <!-- Select provider -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-select-provider" aria-labelledby="eid-select-provider-title" hidden>
               <div class="dv-flow-card__header">
-                <h2 class="dv-flow-card__title" id="eid-qr-title">Scan QR code</h2>
+                <h2 class="dv-flow-card__title" id="eid-select-provider-title">Select identity provider</h2>
               </div>
-              <div class="eid-stage">
+              <div class="eid-bank-body">
+                <div class="eid-bank-grid eid-bank-grid--cards" role="radiogroup" aria-label="Select identity provider" id="eid-provider-grid"></div>
+              </div>
+              <div class="dv-flow-card__footer">
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-sim-action="next" aria-disabled="true">Next</button>
+              </div>
+            </section>
+
+            <!-- Scan QR -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-scan-qr" aria-labelledby="eid-scan-qr-title" hidden>
+              <div class="dv-flow-card__header">
+                <h2 class="dv-flow-card__title" id="eid-scan-qr-title">Simulate QR code scan</h2>
+              </div>
+              <div class="eid-stage eid-stage--qr">
                 <div class="eid-qr" role="img" aria-label="QR code placeholder">
-                  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <rect width="100" height="100" fill="var(--color-white)"/>
-                    <g fill="var(--text-default)">
-                      <path fill-rule="evenodd" d="M6 6h24v24H6V6zm5 5v14h14V11H11z"/>
-                      <rect x="14" y="14" width="8" height="8"/>
-                      <path fill-rule="evenodd" d="M70 6h24v24H70V6zm5 5v14h14V11H75z"/>
-                      <rect x="78" y="14" width="8" height="8"/>
-                      <path fill-rule="evenodd" d="M6 70h24v24H6V70zm5 5v14h14V75H11z"/>
-                      <rect x="14" y="78" width="8" height="8"/>
-                      <rect x="36" y="6" width="6" height="6"/><rect x="48" y="6" width="6" height="6"/><rect x="60" y="6" width="6" height="6"/>
-                      <rect x="36" y="18" width="6" height="6"/><rect x="54" y="18" width="6" height="6"/>
-                      <rect x="6" y="36" width="6" height="6"/><rect x="18" y="36" width="6" height="6"/><rect x="30" y="42" width="6" height="6"/>
-                      <rect x="6" y="48" width="6" height="6"/><rect x="18" y="54" width="6" height="6"/><rect x="6" y="60" width="6" height="6"/>
-                      <rect x="36" y="36" width="6" height="6"/><rect x="48" y="42" width="6" height="6"/><rect x="60" y="36" width="6" height="6"/>
-                      <rect x="42" y="48" width="6" height="6"/><rect x="54" y="54" width="6" height="6"/><rect x="66" y="48" width="6" height="6"/>
-                      <rect x="72" y="36" width="6" height="6"/><rect x="84" y="42" width="6" height="6"/><rect x="72" y="60" width="6" height="6"/>
-                      <rect x="88" y="54" width="6" height="6"/><rect x="88" y="66" width="6" height="6"/>
-                      <rect x="36" y="60" width="6" height="6"/><rect x="48" y="66" width="6" height="6"/><rect x="60" y="66" width="6" height="6"/>
-                      <rect x="36" y="72" width="6" height="6"/><rect x="48" y="84" width="6" height="6"/><rect x="60" y="78" width="6" height="6"/>
-                      <rect x="72" y="72" width="6" height="6"/><rect x="84" y="78" width="6" height="6"/><rect x="72" y="84" width="6" height="6"/><rect x="66" y="90" width="6" height="6"/>
-                    </g>
-                  </svg>
+                  <img class="eid-qr__image" src="assets/qr-placeholder.svg" width="200" height="200" alt="">
                 </div>
-                <p class="eid-stage__text">Use your phone to scan the secure QR code</p>
+                <div class="eid-stage__copy">
+                  <p class="eid-stage__heading">Test the QR code step</p>
+                  <p class="eid-stage__subtext">This QR code is for demonstration only and cannot be scanned. Select Simulate QR scan to continue the test flow.</p>
+                </div>
               </div>
               <div class="dv-flow-card__footer">
-                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="eid-qr-back">Back</button>
-                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="eid-qr-simulate">Simulate QR scan</button>
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-sim-action="simulate-qr">Simulate QR scan</button>
               </div>
             </section>
-          </section>
 
-          <!-- ===== Flow 2 · Step: Connecting to your account (3s) ===== -->
-          <section class="dv-flow-step eid-step" id="eid-step-connecting" aria-label="Gathering your information" hidden>
-            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" data-progress="connect" aria-label="Progress"></ol>
+            <!-- QR loading -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-qr-loading" aria-label="Connecting to your account" hidden>
+              <div class="dv-flow-card__header eid-sim-panel__header--empty" aria-hidden="true"></div>
+              <div class="eid-stage">
+                <span class="eid-spinner eid-spinner--lg" aria-hidden="true"></span>
+                <div class="eid-stage__copy">
+                  <p class="eid-stage__heading">Connecting to your account</p>
+                  <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
+                </div>
+              </div>
+              <div class="dv-flow-card__footer">
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
+              </div>
+            </section>
 
-            <section class="dv-flow-card" aria-labelledby="eid-connecting-title">
+            <!-- Launch app -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-launch-app" aria-labelledby="eid-launch-app-title" hidden>
               <div class="dv-flow-card__header">
-                <h2 class="dv-flow-card__title" id="eid-connecting-title">Gathering your information</h2>
+                <h2 class="dv-flow-card__title" id="eid-launch-app-title">Launch app</h2>
               </div>
               <div class="eid-stage">
-                <div class="eid-device-graphic" aria-hidden="true">
-                  <span class="eid-device-graphic__node">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="2.5" width="13" height="8.5" rx="1"/><path d="M6 13.5h4M8 11v2.5"/></svg>
-                  </span>
-                  <span class="eid-device-graphic__link"></span>
-                  <span class="eid-device-graphic__node">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5" y="1.5" width="6" height="13" rx="1.5"/><path d="M7 12.5h2"/></svg>
-                  </span>
+                <div class="eid-phone-frame" aria-hidden="true"></div>
+                <div class="eid-stage__copy">
+                  <p class="eid-stage__heading">Open your mobile app to approve</p>
+                  <p class="eid-stage__subtext">We sent a verification request to your mobile app. Open the notification and approve it to continue.</p>
                 </div>
-                <div class="eid-status">
-                  <span class="eid-spinner" aria-hidden="true"></span>
-                  <span class="eid-status__label">Connecting to your account</span>
-                </div>
-                <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
               </div>
               <div class="dv-flow-card__footer">
-                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="eid-connecting-back">Back</button>
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-sim-action="simulate-approval">Simulate approval</button>
               </div>
             </section>
-          </section>
 
-          <!-- ===== Flow 2 · Step: Share your data ===== -->
-          <section class="dv-flow-step eid-step" id="eid-step-share" aria-label="Share your data" hidden>
-            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" data-progress="connect" aria-label="Progress"></ol>
-
-            <section class="dv-flow-card" aria-labelledby="eid-share-title">
+            <!-- Enter details -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-enter-details" aria-labelledby="eid-enter-details-title" hidden>
               <div class="dv-flow-card__header">
-                <h2 class="dv-flow-card__title" id="eid-share-title">Share your data</h2>
+                <h2 class="dv-flow-card__title" id="eid-enter-details-title">Enter personal details</h2>
+              </div>
+              <div class="eid-details-body">
+                <div class="eid-details-grid" id="eid-details-fields"></div>
+              </div>
+              <div class="dv-flow-card__footer">
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-sim-action="next" aria-disabled="true">Next</button>
+              </div>
+            </section>
+
+            <!-- OTP -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-otp" aria-labelledby="eid-otp-title" hidden>
+              <div class="dv-flow-card__header">
+                <h2 class="dv-flow-card__title" id="eid-otp-title">One-time password</h2>
+              </div>
+              <div class="eid-otp-body">
+                <div class="eid-otp-copy">
+                  <p class="eid-stage__heading" id="eid-otp-heading">Verify your phone number</p>
+                  <p class="eid-stage__subtext" id="eid-otp-desc">Enter the code sent to <strong id="eid-otp-target">+1 (234) 567 8910</strong>.</p>
+                </div>
+                <div class="eid-otp-inputs" id="eid-otp-inputs" role="group" aria-label="One-time password"></div>
+                <div class="eid-otp-resend">
+                  <span class="eid-otp-resend__label">Didn&rsquo;t receive a code?</span>
+                  <button class="eid-otp-resend__btn" type="button" id="eid-otp-resend" disabled>Resend (<span id="eid-otp-resend-timer">00:10</span>)</button>
+                </div>
+              </div>
+              <div class="dv-flow-card__footer">
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="eid-otp-simulate" data-sim-action="simulate-otp">Simulate password</button>
+              </div>
+            </section>
+
+            <!-- Consent -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-consent" aria-labelledby="eid-consent-title" hidden>
+              <div class="dv-flow-card__header">
+                <h2 class="dv-flow-card__title" id="eid-consent-title">Share your data</h2>
               </div>
               <div class="eid-share">
-                <p class="eid-share__intro"><span id="eid-share-bank">Rabobank</span> will share the following information for identity verification:</p>
-                <ul class="eid-share__list">
-                  <li class="eid-share__item">Full name</li>
-                  <li class="eid-share__item">Date of birth</li>
-                  <li class="eid-share__item">Address</li>
-                  <li class="eid-share__item">BSN (hashed)</li>
-                </ul>
+                <p class="eid-share__intro"><strong id="eid-consent-entity">Rabobank</strong> will share the following information for identity verification:</p>
+                <ul class="eid-share__list" id="eid-consent-list"></ul>
                 <p class="eid-share__note">This data will only be used for verification purposes.</p>
               </div>
               <div class="dv-flow-card__footer">
-                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="eid-share-deny">Deny</button>
-                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="eid-share-proceed">Proceed</button>
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="deny">Deny</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-sim-action="allow">Allow</button>
               </div>
             </section>
-          </section>
 
-          <!-- ===== Flow 2 · Step: Completing verification (3s, static end) ===== -->
-          <section class="dv-flow-step eid-step" id="eid-step-completing" aria-label="Gathering your information" hidden>
-            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" data-progress="connect" aria-label="Progress"></ol>
-
-            <section class="dv-flow-card" aria-labelledby="eid-completing-title">
-              <div class="dv-flow-card__header">
-                <h2 class="dv-flow-card__title" id="eid-completing-title">Gathering your information</h2>
-              </div>
+            <!-- Completing -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-completing" aria-label="Completing verification" hidden>
+              <div class="dv-flow-card__header eid-sim-panel__header--empty" aria-hidden="true"></div>
               <div class="eid-stage">
-                <div class="eid-device-graphic" aria-hidden="true">
-                  <span class="eid-device-graphic__node">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="2.5" width="13" height="8.5" rx="1"/><path d="M6 13.5h4M8 11v2.5"/></svg>
-                  </span>
-                  <span class="eid-device-graphic__link"></span>
-                  <span class="eid-device-graphic__node">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5" y="1.5" width="6" height="13" rx="1.5"/><path d="M7 12.5h2"/></svg>
-                  </span>
+                <span class="eid-spinner eid-spinner--lg" aria-hidden="true"></span>
+                <div class="eid-stage__copy">
+                  <p class="eid-stage__heading">Completing verification</p>
+                  <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
                 </div>
-                <div class="eid-status">
-                  <span class="eid-spinner" aria-hidden="true"></span>
-                  <span class="eid-status__label">Completing verification</span>
-                </div>
-                <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
               </div>
               <div class="dv-flow-card__footer">
-                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" id="eid-completing-back">Back</button>
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
               </div>
             </section>
           </section>
@@ -647,26 +633,70 @@
 
   </div>
 
-  <!-- ============ Flow 1 · Provider flow overlay ============ -->
-  <div class="eid-modal" id="eid-provider-modal" hidden role="dialog" aria-modal="true" aria-labelledby="eid-provider-modal-title">
-    <div class="eid-modal__overlay" data-modal-close></div>
-    <div class="eid-modal__panel">
-      <div class="eid-modal__header">
-        <h2 class="eid-modal__title" id="eid-provider-modal-title">Provider flow</h2>
-        <button class="eid-modal__close" type="button" aria-label="Close" data-modal-close>
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
-        </button>
+  <!-- ============ Real data flow · Provider dialog ============ -->
+  <div class="tds-dialog tds-dialog--center tds-dialog--xl" id="eid-provider-dialog" hidden>
+    <div class="tds-dialog__backdrop">
+      <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="eid-provider-dialog-title">
+        <header class="tds-dialog__header">
+          <div class="tds-dialog__header-row">
+            <h2 class="tds-dialog__title" id="eid-provider-dialog-title">Verify with iDIN</h2>
+            <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">
+              <span class="tds-icon-btn__icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+              </span>
+            </button>
+          </div>
+          <div class="tds-dialog__divider" role="presentation"></div>
+        </header>
+        <div class="tds-dialog__body">
+          <div class="eid-provider-placeholder">Content</div>
+        </div>
+        <footer class="tds-dialog__footer">
+          <div class="tds-dialog__divider" role="presentation"></div>
+          <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+            <div class="tds-dialog__actions">
+              <button class="tds-btn tds-btn--primary tds-btn--md" type="button" id="eid-provider-results">See results</button>
+            </div>
+          </div>
+        </footer>
       </div>
-      <div class="eid-modal__body">
-        <div class="eid-modal__placeholder">Content</div>
-      </div>
-      <div class="eid-modal__footer">
-        <button class="tds-btn tds-btn--primary tds-btn--md" type="button" id="eid-provider-results">See Results</button>
+    </div>
+  </div>
+
+  <!-- ============ Deny confirmation dialog ============ -->
+  <div class="tds-dialog tds-dialog--center tds-dialog--sm" id="eid-deny-dialog" hidden>
+    <div class="tds-dialog__backdrop">
+      <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="eid-deny-dialog-title">
+        <header class="tds-dialog__header">
+          <div class="tds-dialog__header-row">
+            <h2 class="tds-dialog__title" id="eid-deny-dialog-title">Are you sure?</h2>
+            <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">
+              <span class="tds-icon-btn__icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+              </span>
+            </button>
+          </div>
+          <div class="tds-dialog__divider" role="presentation"></div>
+        </header>
+        <div class="tds-dialog__body">
+          <p class="eid-deny-dialog__text">If you deny, you&rsquo;ll return to the start of the Electronic ID flow and lose your progress on this verification.</p>
+        </div>
+        <footer class="tds-dialog__footer">
+          <div class="tds-dialog__divider" role="presentation"></div>
+          <div class="tds-dialog__footer-row">
+            <div class="tds-dialog__actions">
+              <button class="tds-btn tds-btn--secondary tds-btn--md" type="button" id="eid-deny-cancel">Cancel</button>
+              <button class="tds-btn tds-btn--primary tds-btn--md" type="button" id="eid-deny-confirm">Yes, go back</button>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   </div>
 
   <script src="../../Components/score-gauge/score-gauge.js"></script>
+  <script src="../../Components/dialog/dialog.js"></script>
+  <script src="electronic-id-flow-data.js"></script>
   <script src="electronic-id-result.js"></script>
   <script src="electronic-id-flow.js"></script>
   <script src="truai-responses.js?v=1"></script>
