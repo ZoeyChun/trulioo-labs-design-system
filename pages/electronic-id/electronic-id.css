@@ -153,17 +153,8 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--gap-lg);
   padding: var(--padding-2xl);
   border-top: 1px solid var(--border-subtle);
-}
-
-.eid-config-card__settings-title {
-  margin: 0;
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-md);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-default);
 }
 
 .eid-settings-panel {
