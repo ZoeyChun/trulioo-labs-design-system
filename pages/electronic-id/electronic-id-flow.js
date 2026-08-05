@@ -14,7 +14,7 @@
   var PROVIDER_PLACEHOLDER = "assets/providers/provider-placeholder.svg";
   var FLOW_DATA = window.EID_FLOW_DATA || [];
   var TRANSITION_MS = 3000;
-  var SIMULATE_FILL_MS = 600;
+  var SIMULATE_FILL_MS = 3000;
   var RESEND_SECONDS = 10;
   var CHECK_SVG = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
 
@@ -45,11 +45,11 @@
   };
 
   var MOCK_VALUES = {
-    phone: "(555) 123-4567",
-    pin: "1234",
-    username: "johndoe",
-    password: "password",
-    email: "name@example.com"
+    phone: "+1 (234) 567-8901",
+    pin: "2846",
+    username: "janedoe",
+    password: "Trulioo1!",
+    email: "jane.doe@email.com"
   };
 
   var REDIRECT_DESC = "This option will connect you to an external {provider} site to complete your verification. Rest assured, we do not retain any of your information.";
@@ -161,11 +161,11 @@
         var label = document.createElement("span");
         label.className = "tds-combobox__option-label";
         label.textContent = c.country;
-        var meta = document.createElement("span");
-        meta.className = "tds-combobox__option-meta";
-        meta.textContent = c.provider;
+        var tag = document.createElement("span");
+        tag.className = "tds-tag tds-tag--sm eid-country__provider-tag";
+        tag.textContent = c.provider;
         text.appendChild(label);
-        text.appendChild(meta);
+        text.appendChild(tag);
         opt.appendChild(visual);
         opt.appendChild(text);
 
@@ -183,15 +183,15 @@
       setFlag(flag, c.code);
       close();
       updateConfigNext();
-      updateRedirectCopy();
+      updateCountryInfo();
     }
-
     input.addEventListener("focus", function () { renderOptions(state.country ? "" : input.value); open(); });
     input.addEventListener("click", function () { renderOptions(state.country ? "" : input.value); open(); });
     input.addEventListener("input", function () {
       state.country = null;
       setFlag(flag, null);
       updateConfigNext();
+      updateCountryInfo();
       renderOptions(input.value);
       open();
     });
@@ -207,6 +207,21 @@
   /* ===================================================================
      Redirect step
      =================================================================== */
+  function updateCountryInfo() {
+    var info = byId("eid-country-info");
+    var title = byId("eid-country-info-title");
+    var desc = byId("eid-country-info-desc");
+    var country = state.country;
+    if (!info) return;
+    if (!country || state.simulated) {
+      info.hidden = true;
+      return;
+    }
+    if (title) title.textContent = "You\u2019ll be asked to validate with " + country.provider;
+    if (desc) desc.textContent = REDIRECT_DESC.replace("{provider}", country.provider);
+    info.hidden = false;
+  }
+
   function updateRedirectCopy() {
     var country = state.country;
     if (!country) return;
@@ -232,7 +247,10 @@
       track.setAttribute("aria-checked", String(next));
       track.classList.toggle("tds-switch__track--on", next);
       state[stateKey] = next;
-      if (stateKey === "simulated") updateConfigNext();
+      if (stateKey === "simulated") {
+        updateConfigNext();
+        updateCountryInfo();
+      }
     });
   }
 
@@ -373,6 +391,16 @@
     return state.country ? state.country.provider : "Provider";
   }
 
+  function formatConsentLabel(item) {
+    var label = String(item || "").trim().replace(/\s+/g, " ");
+    if (!label) return label;
+    label = label.replace(/\bFull Nae\b/gi, "Full name");
+    label = label.replace(/\bissueing\b/gi, "issuing");
+    label = label.replace(/^\)\s*/, "");
+    label = label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
+    return label;
+  }
+
   function renderConsent() {
     var entity = byId("eid-consent-entity");
     var list = byId("eid-consent-list");
@@ -388,7 +416,7 @@
       li.innerHTML =
         '<span class="eid-share__check" aria-hidden="true">' +
         '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8.5l3 3 7-7"/></svg></span>' +
-        '<span>' + item.trim() + "</span>";
+        '<span>' + formatConsentLabel(item) + "</span>";
       list.appendChild(li);
     });
   }

@@ -15,6 +15,7 @@
   <!-- Design system components -->
   <link rel="stylesheet" href="../../Components/button/button.css">
   <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/select/combobox.css">
   <link rel="stylesheet" href="../../Components/progress-indicator/progress-indicator.css">
@@ -228,21 +229,33 @@
               </div>
 
               <div class="eid-config-card__country">
-                <div class="tds-combobox eid-country" id="eid-country">
-                  <label class="tds-field-label" for="eid-country-input">Country</label>
-                  <div class="tds-combobox__field tds-combobox__field--lg">
-                    <span class="tds-combobox__leading-visual eid-country__flag" hidden></span>
-                    <input class="tds-combobox__input" id="eid-country-input" type="text"
-                           placeholder="Type country" autocomplete="off"
-                           role="combobox" aria-expanded="false" aria-controls="eid-country-list" aria-label="Country">
-                    <span class="tds-combobox__trailing-group">
-                      <span class="tds-caret tds-caret--default" aria-hidden="true">
-                        <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                <div class="eid-country-fields">
+                  <div class="tds-combobox eid-country" id="eid-country">
+                    <label class="tds-field-label" for="eid-country-input">Country</label>
+                    <div class="tds-combobox__field tds-combobox__field--lg">
+                      <span class="tds-combobox__leading-visual eid-country__flag" hidden></span>
+                      <input class="tds-combobox__input" id="eid-country-input" type="text"
+                             placeholder="Type country" autocomplete="off"
+                             role="combobox" aria-expanded="false" aria-controls="eid-country-list" aria-label="Country">
+                      <span class="tds-combobox__trailing-group">
+                        <span class="tds-caret tds-caret--default" aria-hidden="true">
+                          <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                        </span>
                       </span>
-                    </span>
+                    </div>
+                    <div class="tds-combobox__menu">
+                      <div class="tds-dropdown-panel eid-country__list" id="eid-country-list" role="listbox"></div>
+                    </div>
                   </div>
-                  <div class="tds-combobox__menu">
-                    <div class="tds-dropdown-panel eid-country__list" id="eid-country-list" role="listbox"></div>
+                </div>
+
+                <div class="tds-announcement tds-announcement--info" id="eid-country-info" role="status" hidden>
+                  <span class="tds-announcement__icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.25v3.5M8 5.5h.01" stroke-linecap="round"/></svg>
+                  </span>
+                  <div class="tds-announcement__content">
+                    <p class="tds-announcement__title" id="eid-country-info-title"></p>
+                    <p class="tds-announcement__message" id="eid-country-info-desc"></p>
                   </div>
                 </div>
               </div>

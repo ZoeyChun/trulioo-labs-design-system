@@ -24,13 +24,13 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "First Initials",
-      "Last Name",
-      "Date of Birth",
+      "First initials",
+      "Last name",
+      "Date of birth",
       "Gender",
       "Address 1",
-      "Postal Code",
-      " Country of Residence"
+      "Postal code",
+      "Country of residence"
     ]
   },
   {
@@ -59,15 +59,15 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "First Name",
-      "Last Name",
-      "Date of Birth",
+      "First name",
+      "Last name",
+      "Date of birth",
       "Nationality",
       "Gender",
-      "Full Address",
-      "Document Number",
-      "Document Issuing Country",
-      "Document Expiry"
+      "Full address",
+      "Document number",
+      "Document issuing country",
+      "Document expiry"
     ]
   },
   {
@@ -97,12 +97,12 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "Full Nae",
-      "Date of Birth",
+      "Full name",
+      "Date of birth",
       "Gender",
-      "Full Address",
-      "Document Number",
-      "Document Portrait (selfie"
+      "Full address",
+      "Document number",
+      "Document portrait (selfie)"
     ]
   },
   {
@@ -137,12 +137,10 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "First Name",
-      "Last Name",
-      "Date of Birth",
-      "Document type",
-      "number",
-      "issue date and issuing authority"
+      "First name",
+      "Last name",
+      "Date of birth",
+      "Document type, number, issue date and issuing authority"
     ]
   },
   {
@@ -173,9 +171,9 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "First Name",
-      "Last Name",
-      "Date of Birth",
+      "First name",
+      "Last name",
+      "Date of birth",
       "Gender"
     ]
   },
@@ -237,19 +235,14 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "First Name",
-      "Last Name",
-      "Date of Birth",
+      "First name",
+      "Last name",
+      "Date of birth",
       "Nationality",
       "Gender",
-      "Phone Number",
-      "Full Address",
-      "Document type",
-      "number",
-      "issue date",
-      "expiry date",
-      "issueing country",
-      "issueing authority"
+      "Phone number",
+      "Full address",
+      "Document type, number, issue date, expiry date, issuing country, issuing authority"
     ]
   },
   {
@@ -279,8 +272,8 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "Full Name",
-      "Date of Birth"
+      "Full name",
+      "Date of birth"
     ]
   },
   {
@@ -392,9 +385,9 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "First Name",
-      "Last Name",
-      "Date of Birth"
+      "First name",
+      "Last name",
+      "Date of birth"
     ]
   },
   {

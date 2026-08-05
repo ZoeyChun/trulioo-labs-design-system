@@ -13,8 +13,8 @@
   flex-direction: column;
   width: 100%;
   max-width: 895px;
-  height: 370px;
   min-height: 370px;
+  height: auto;
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-3xl);
   box-shadow: var(--elevation-sm);
@@ -84,11 +84,28 @@
 
 /* --- Country field --- */
 .eid-config-card__country {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
   padding: var(--spacing-12) var(--spacing-32) var(--padding-xl);
 }
 
-.eid-country {
+.eid-country-fields {
   width: 410px;
+  max-width: 100%;
+}
+
+#eid-country-info {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#eid-country-info[hidden] {
+  display: none !important;
+}
+
+.eid-country {
+  width: 100%;
   max-width: 100%;
 }
 
@@ -123,13 +140,16 @@
 
 .eid-country .tds-combobox__option-text {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--gap-sm);
   flex: 1;
   min-width: 0;
 }
 
 .eid-country .tds-combobox__option-label {
+  flex: 1;
+  min-width: 0;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   color: var(--text-default);
@@ -138,10 +158,8 @@
   text-overflow: ellipsis;
 }
 
-.eid-country .tds-combobox__option-meta {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  color: var(--text-caption);
+.eid-country__provider-tag {
+  flex-shrink: 0;
 }
 
 .eid-country .tds-combobox__option {
@@ -244,6 +262,11 @@
 }
 
 /* --- Redirect step --- */
+#eid-step-redirect .eid-config-card {
+  height: 468px;
+  min-height: 468px;
+}
+
 #eid-step-redirect .eid-config-card__header {
   padding: var(--padding-xl) var(--spacing-32) 0;
 }
@@ -626,17 +649,22 @@
 }
 
 .eid-details-body {
-  padding: var(--spacing-12) var(--spacing-32) var(--padding-xl);
+  padding: var(--spacing-12) 240px var(--padding-2xl);
 }
 
 .eid-details-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-16) var(--spacing-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  width: 100%;
 }
 
 .eid-details-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
   min-width: 0;
+  width: 100%;
 }
 
 .eid-otp-body {
@@ -946,9 +974,12 @@
   }
 
   .eid-bank-grid,
-  .eid-details-grid,
   .eid-highlights__grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .eid-details-body {
+    padding-inline: var(--spacing-32);
   }
 
   .eid-otp-inputs {
