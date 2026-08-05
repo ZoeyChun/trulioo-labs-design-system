@@ -421,7 +421,7 @@
 
 .eid-sim-panel .dv-flow-card__header {
   flex-shrink: 0;
-  padding: var(--padding-xl) var(--spacing-32);
+  padding: var(--padding-xl) var(--spacing-32) 0;
 }
 
 .eid-sim-panel .dv-flow-card__title {
@@ -452,7 +452,7 @@
 }
 
 .eid-bank-body {
-  padding: var(--spacing-12) var(--spacing-32) var(--padding-2xl);
+  padding: var(--spacing-64) var(--spacing-32);
 }
 
 .eid-bank-grid {
@@ -534,17 +534,17 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-48);
-  padding: var(--spacing-16) var(--spacing-32) var(--padding-2xl);
+  padding: var(--spacing-64) var(--spacing-32);
   text-align: center;
 }
 
 .eid-stage--hero {
-  padding: var(--spacing-64) var(--spacing-32) var(--padding-2xl);
+  padding: var(--spacing-64) var(--spacing-32);
 }
 
 .eid-stage--loading {
   gap: 0;
-  padding: var(--spacing-80) var(--spacing-32);
+  padding: var(--spacing-64) var(--spacing-32);
 }
 
 .eid-loading-content {
@@ -563,7 +563,7 @@
 }
 
 .eid-stage--qr {
-  padding: var(--spacing-64) var(--spacing-32) var(--padding-2xl);
+  padding: var(--spacing-64) var(--spacing-32);
 }
 
 .eid-stage__copy {
@@ -653,7 +653,7 @@
 }
 
 .eid-details-body {
-  padding: var(--spacing-12) 240px var(--padding-2xl);
+  padding: var(--spacing-64) 240px;
 }
 
 .eid-details-grid {
@@ -677,7 +677,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-48);
-  padding: var(--spacing-16) var(--spacing-32) var(--padding-xl);
+  padding: var(--spacing-64) var(--spacing-32);
   text-align: center;
 }
 
@@ -747,7 +747,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-16);
-  padding: var(--spacing-12) var(--spacing-32) var(--padding-2xl);
+  padding: var(--spacing-64) var(--spacing-32);
   overflow-y: auto;
 }
 
@@ -948,7 +948,7 @@
   }
 
   .eid-sim-panel .dv-flow-card__header {
-    padding: var(--spacing-32);
+    padding: var(--spacing-32) var(--spacing-32) 0;
   }
 
   .eid-sim-panel .dv-flow-card__title {
