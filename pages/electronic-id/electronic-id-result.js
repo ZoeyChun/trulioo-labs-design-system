@@ -19,23 +19,8 @@
   var ICON_NOTRUN = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8h5"/></svg>';
   var ICON_CHEVRON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg>';
   var ICON_PLUS = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>';
-  var ICON_SIGNAL_VERIFIED = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  var ICON_SIGNAL_DECLINED = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg>';
-  var ICON_SIGNAL_REVIEW = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v4M8 11h.01"/></svg>';
 
   function kindToFilterTone(kind) {
-    if (kind === "declined") return "negative";
-    if (kind === "review") return "intermediate";
-    return "positive";
-  }
-
-  function signalResultIcon(kind) {
-    if (kind === "declined") return ICON_SIGNAL_DECLINED;
-    if (kind === "review") return ICON_SIGNAL_REVIEW;
-    return ICON_SIGNAL_VERIFIED;
-  }
-
-  function signalResultMod(kind) {
     if (kind === "declined") return "negative";
     if (kind === "review") return "intermediate";
     return "positive";
@@ -350,9 +335,19 @@
     return signals;
   }
 
+  var RESULT_STATUS = "Completed";
+
+  function buildClientDetails(country, provider) {
+    var code = country && country.code ? String(country.code).toUpperCase() : "—";
+    return [
+      { label: "Country code", value: code },
+      { label: "Provider", value: provider || (country && country.provider) || "—" }
+    ];
+  }
+
   function buildSummaryRows(scenario, showDi) {
     var rows = [
-      { label: "e-ID", value: scenario.overallStatus, tone: scenario.overallTone }
+      { label: "e-ID", value: RESULT_STATUS, tone: "positive" }
     ];
     if (showDi) {
       var diTone = scenario.diRisk === "high" ? "negative" : scenario.diRisk === "medium" ? "intermediate" : "positive";
@@ -379,58 +374,32 @@
     }).join("");
   }
 
-  function renderStatRow(stats) {
-    function tile(label, value, mod) {
-      mod = mod || "";
-      return '<div class="dv-stat' + mod + '"><span class="dv-stat__label">' + label +
-        '</span><span class="dv-stat__value">' + esc(value) + "</span></div>";
-    }
-    return tile("Signals checked", String(stats.signalsChecked)) +
-      tile("Verification rate", stats.verificationRate + "%") +
-      tile("Declined checks", String(stats.declinedChecks), " dv-stat--negative");
-  }
-
-  function computeStats(signals) {
-    var declined = 0;
-    signals.forEach(function (s) { if (s.kind === "declined") declined++; });
-    var total = signals.length;
-    var passed = total - declined;
-    return {
-      signalsChecked: total,
-      verificationRate: total > 0 ? Math.round(passed / total * 100) : 0,
-      declinedChecks: declined
-    };
-  }
-
-  function renderResultCell(signal) {
-    var mod = signalResultMod(signal.kind);
-    return '<span class="tds-data-table__signals tds-data-table__signals--' + mod + '">' +
-      '<span class="tds-data-table__signals-icon" aria-hidden="true">' + signalResultIcon(signal.kind) + "</span>" +
-      esc(signal.result) + "</span>";
-  }
-
   function renderSignalsTable(signals) {
     var rows = signals.map(function (signal) {
       return "<tr>" +
         '<td class="tds-data-table__text-cell">' + esc(signal.label) + "</td>" +
-        '<td class="tds-data-table__text-cell">' + esc(signal.dataReturned) + "</td>" +
-        "<td>" + renderResultCell(signal) + "</td></tr>";
+        '<td class="tds-data-table__text-cell">' + esc(signal.dataReturned) + "</td></tr>";
     }).join("");
     return '<div class="tds-data-table-container eid-signals-table">' +
       '<div class="tds-data-table__header">' +
       '<div class="tds-data-table__header-text">' +
-      '<div class="tds-data-table__header-title">Signals</div></div></div>' +
+      '<div class="tds-data-table__header-title">Identity Data Collected</div></div></div>' +
       '<div class="tds-data-table__wrapper"><table class="tds-data-table">' +
       "<thead><tr>" +
-      "<th>Signal</th><th>Data returned</th><th>Result</th>" +
+      "<th>Field</th><th>Data returned</th>" +
       "</tr></thead><tbody>" + rows + "</tbody></table></div></div>";
   }
 
-  function updateSummaryPanel() {
+  function updateSummaryPanel(showDi, rowCount) {
+    var summaryBlock = byId("eid-summary-block");
     var summaryRowsWrap = byId("eid-summary-rows");
     var truaiCard = byId("eid-truai-card");
     var truaiPill = byId("eid-truai-pill");
-    if (summaryRowsWrap) summaryRowsWrap.hidden = false;
+    if (summaryRowsWrap) summaryRowsWrap.hidden = rowCount <= 1;
+    if (summaryBlock) {
+      summaryBlock.classList.toggle("eid-summary-block--solo", rowCount <= 1);
+      summaryBlock.classList.remove("eid-summary-block--truai-open");
+    }
     if (truaiPill) {
       truaiPill.setAttribute("aria-expanded", "false");
       truaiPill.classList.remove("dv-truai-pill--open");
@@ -438,7 +407,7 @@
     if (truaiCard) truaiCard.hidden = true;
   }
 
-  function applyScenario(root, scenario, showDi) {
+  function applyScenario(root, scenario, showDi, flowCountry, provider) {
     var q = function (sel) { return root.querySelector(sel); };
 
     setText(byId("eid-person-name"), scenario.personName);
@@ -446,12 +415,12 @@
 
     var summaryHeader = byId("eid-summary-header");
     if (summaryHeader) {
-      summaryHeader.className = "dv-summary-status-header dv-summary-status-header--" + scenario.overallTone;
+      summaryHeader.className = "dv-summary-status-header";
     }
     var summaryStatus = byId("eid-summary-status");
     if (summaryStatus) {
-      summaryStatus.className = "dv-summary-status dv-summary-status--" + scenario.overallTone;
-      summaryStatus.innerHTML = renderSummaryStatus(scenario.overallStatus);
+      summaryStatus.className = "dv-summary-status";
+      summaryStatus.innerHTML = renderSummaryStatus(RESULT_STATUS);
     }
 
     setText(byId("eid-truai-title"), scenario.truAiTitle);
@@ -459,21 +428,10 @@
     var summaryRows = buildSummaryRows(scenario, showDi);
     var summaryList = byId("eid-summary-list");
     if (summaryList) setHtml(summaryList, renderSummaryList(summaryRows));
-    updateSummaryPanel();
-    setHtml(byId("eid-client-details"), renderDetailPairs(scenario.clientDetails));
+    updateSummaryPanel(showDi, summaryRows.length);
+    setHtml(byId("eid-client-details"), renderDetailPairs(buildClientDetails(flowCountry, provider)));
 
     currentSignals = buildSignals(scenario);
-    var stats;
-    if (scenario.verificationRate != null) {
-      stats = {
-        signalsChecked: scenario.signalCount,
-        verificationRate: scenario.verificationRate,
-        declinedChecks: scenario.declinedCount
-      };
-    } else {
-      stats = computeStats(currentSignals);
-    }
-    setHtml(byId("eid-eid-stats"), renderStatRow(stats));
     setHtml(byId("eid-eid-signals"), renderSignalsTable(currentSignals));
 
     var tabsBar = byId("eid-result-tabs");
@@ -636,6 +594,8 @@
         card.hidden = !willOpen;
         pill.setAttribute("aria-expanded", String(willOpen));
         pill.classList.toggle("dv-truai-pill--open", willOpen);
+        var summaryBlock = byId("eid-summary-block");
+        if (summaryBlock) summaryBlock.classList.toggle("eid-summary-block--truai-open", willOpen);
         return;
       }
 
@@ -690,7 +650,7 @@
     setMetaCountry(code, country.country || "Netherlands");
 
     var root = byId("eid-result-view");
-    applyScenario(root, currentScenario, showDi);
+    applyScenario(root, currentScenario, showDi, country, flowState.provider || country.provider);
 
     var flow = byId("eid-flow-view");
     var result = byId("eid-result-view");

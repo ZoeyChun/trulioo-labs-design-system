@@ -817,6 +817,10 @@
    Result view
    ============================================================ */
 
+#eid-result-tabs[hidden] {
+  display: none !important;
+}
+
 #eid-result-view .dv-doc-panel {
   overflow: hidden;
 }
@@ -1029,18 +1033,36 @@
 }
 
 /* Result view — summary sidebar + signals data table */
+#eid-summary-header.dv-summary-status-header {
+  background-color: var(--surface-neutral-02);
+}
+
+#eid-summary-header .dv-summary-status__label {
+  color: var(--text-default);
+}
+
 #eid-summary-rows[hidden],
 #eid-truai-card[hidden] {
   display: none !important;
 }
 
-#eid-summary-block.eid-summary-block--solo {
+#eid-summary-block.eid-summary-block--solo:not(.eid-summary-block--truai-open) {
   gap: 0;
+  padding-bottom: 0;
 }
 
-#eid-summary-block.eid-summary-block--solo .dv-summary-status-header {
+#eid-summary-block.eid-summary-block--solo:not(.eid-summary-block--truai-open) .dv-summary-status-header {
   margin-bottom: 0;
   border-bottom: none;
+}
+
+#eid-summary-block.eid-summary-block--solo.eid-summary-block--truai-open {
+  gap: var(--spacing-16);
+  padding-bottom: var(--spacing-16);
+}
+
+#eid-summary-block.eid-summary-block--solo.eid-summary-block--truai-open .dv-summary-status-header {
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .eid-signals-table {
@@ -1054,7 +1076,7 @@
 
 .eid-signals-table .tds-data-table th,
 .eid-signals-table .tds-data-table td {
-  width: 33.333%;
+  width: 50%;
 }
 
 #eid-eid-signals .tds-data-table-container {

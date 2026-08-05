@@ -32,7 +32,7 @@
 
   function verificationStatus() {
     var label = document.querySelector("#eid-summary-status .dv-summary-status__label");
-    return label ? label.textContent.trim() : "Verified";
+    return label ? label.textContent.trim() : "Completed";
   }
 
   function deviceIntelligenceEnabled() {
@@ -48,7 +48,7 @@
   }
 
   function statusTone(status) {
-    if (/verified|accepted/i.test(status)) return "low";
+    if (/completed|verified|accepted/i.test(status)) return "low";
     if (/review|partial/i.test(status)) return "medium";
     return "high";
   }
@@ -59,7 +59,7 @@
     var summary =
       summaryText() ||
       (tone === "low"
-        ? name + "'s electronic ID has been verified. No additional steps are required."
+        ? name + "'s electronic ID verification is completed. No additional steps are required."
         : tone === "medium"
           ? name + "'s electronic ID verification needs review before proceeding."
           : name + "'s electronic ID could not be verified. Check identity and device signals.");
