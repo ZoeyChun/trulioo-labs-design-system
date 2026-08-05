@@ -162,6 +162,10 @@
   flex-shrink: 0;
 }
 
+.eid-country__field-tag[hidden] {
+  display: none !important;
+}
+
 .eid-country .tds-combobox__option {
   align-items: center;
   padding: var(--padding-xs);

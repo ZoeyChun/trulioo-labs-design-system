@@ -238,6 +238,7 @@
                              placeholder="Type country" autocomplete="off"
                              role="combobox" aria-expanded="false" aria-controls="eid-country-list" aria-label="Country">
                       <span class="tds-combobox__trailing-group">
+                        <span class="tds-tag tds-tag--sm eid-country__provider-tag eid-country__field-tag" id="eid-country-provider-tag" hidden></span>
                         <span class="tds-caret tds-caret--default" aria-hidden="true">
                           <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
                         </span>
@@ -748,6 +749,37 @@
             <div class="tds-dialog__actions">
               <button class="tds-btn tds-btn--secondary tds-btn--md" type="button" id="eid-deny-cancel">Cancel</button>
               <button class="tds-btn tds-btn--primary tds-btn--md" type="button" id="eid-deny-confirm">Yes, go back</button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Exit simulated flow dialog ============ -->
+  <div class="tds-dialog tds-dialog--center tds-dialog--sm" id="eid-exit-sim-dialog" hidden>
+    <div class="tds-dialog__backdrop">
+      <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="eid-exit-sim-dialog-title">
+        <header class="tds-dialog__header">
+          <div class="tds-dialog__header-row">
+            <h2 class="tds-dialog__title" id="eid-exit-sim-dialog-title">Are you sure?</h2>
+            <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">
+              <span class="tds-icon-btn__icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+              </span>
+            </button>
+          </div>
+          <div class="tds-dialog__divider" role="presentation"></div>
+        </header>
+        <div class="tds-dialog__body">
+          <p class="eid-deny-dialog__text">Your changes will be lost if you go back to country selection.</p>
+        </div>
+        <footer class="tds-dialog__footer">
+          <div class="tds-dialog__divider" role="presentation"></div>
+          <div class="tds-dialog__footer-row">
+            <div class="tds-dialog__actions">
+              <button class="tds-btn tds-btn--secondary tds-btn--md" type="button" id="eid-exit-sim-cancel">Cancel</button>
+              <button class="tds-btn tds-btn--primary tds-btn--md" type="button" id="eid-exit-sim-confirm">Go back</button>
             </div>
           </div>
         </footer>

@@ -14,7 +14,7 @@
   var PROVIDER_PLACEHOLDER = "assets/providers/provider-placeholder.svg";
   var FLOW_DATA = window.EID_FLOW_DATA || [];
   var TRANSITION_MS = 3000;
-  var SIMULATE_FILL_MS = 3000;
+  var SIMULATE_FILL_MS = 1500;
   var RESEND_SECONDS = 10;
   var CHECK_SVG = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
 
@@ -184,6 +184,7 @@
       close();
       updateConfigNext();
       updateCountryInfo();
+      updateCountryFieldTag();
     }
     input.addEventListener("focus", function () { renderOptions(state.country ? "" : input.value); open(); });
     input.addEventListener("click", function () { renderOptions(state.country ? "" : input.value); open(); });
@@ -192,6 +193,7 @@
       setFlag(flag, null);
       updateConfigNext();
       updateCountryInfo();
+      updateCountryFieldTag();
       renderOptions(input.value);
       open();
     });
@@ -207,6 +209,18 @@
   /* ===================================================================
      Redirect step
      =================================================================== */
+  function updateCountryFieldTag() {
+    var tag = byId("eid-country-provider-tag");
+    if (!tag) return;
+    if (state.country && state.simulated) {
+      tag.textContent = state.country.provider;
+      tag.hidden = false;
+    } else {
+      tag.textContent = "";
+      tag.hidden = true;
+    }
+  }
+
   function updateCountryInfo() {
     var info = byId("eid-country-info");
     var title = byId("eid-country-info-title");
@@ -250,6 +264,7 @@
       if (stateKey === "simulated") {
         updateConfigNext();
         updateCountryInfo();
+        updateCountryFieldTag();
       }
     });
   }
@@ -382,7 +397,7 @@
       return;
     }
     if (state.flowIndex > 0) goSimIndex(state.flowIndex - 1);
-    else goStep("eid-step-config");
+    else openExitSimDialog();
   }
 
   function consentEntityName() {
@@ -703,6 +718,16 @@
     else { var d = byId("eid-deny-dialog"); if (d) d.hidden = true; }
   }
 
+  function openExitSimDialog() {
+    if (window.openTdsDialog) window.openTdsDialog("eid-exit-sim-dialog");
+    else { var d = byId("eid-exit-sim-dialog"); if (d) d.hidden = false; }
+  }
+
+  function closeExitSimDialog() {
+    if (window.closeTdsDialog) window.closeTdsDialog(byId("eid-exit-sim-dialog"));
+    else { var d = byId("eid-exit-sim-dialog"); if (d) d.hidden = true; }
+  }
+
   function resetToStart() {
     resetSimState();
     state.bank = null;
@@ -821,6 +846,18 @@
     }
   }
 
+  function initExitSimDialog() {
+    var cancel = byId("eid-exit-sim-cancel");
+    var confirm = byId("eid-exit-sim-confirm");
+    if (cancel) cancel.addEventListener("click", closeExitSimDialog);
+    if (confirm) {
+      confirm.addEventListener("click", function () {
+        closeExitSimDialog();
+        resetToStart();
+      });
+    }
+  }
+
   /* ===================================================================
      Tooltips
      =================================================================== */
@@ -907,10 +944,12 @@
     initSelectionGrids();
     initProviderDialog();
     initDenyDialog();
+    initExitSimDialog();
     initSimActions();
     initSimulatedDataTooltip();
     initNav();
     updateConfigNext();
+    updateCountryFieldTag();
     goStep("eid-step-config");
   });
 })();
