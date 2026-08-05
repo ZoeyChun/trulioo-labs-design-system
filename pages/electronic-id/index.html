@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="../../Components/dialog/dialog.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
+  <link rel="stylesheet" href="../../Components/data-table/data-table.css">
 
   <!-- Page-local styles -->
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
@@ -525,8 +526,7 @@
               <button type="button" class="dv-back-btn" id="eid-result-back" aria-label="Back to capture flow">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
               </button>
-              <h1 class="dv-title">Jane Doe</h1>
-              <span class="tds-tag tds-tag--positive tds-tag--md">Verified</span>
+              <h1 class="dv-title" id="eid-person-name">Jane Doe</h1>
             </div>
             <div class="dv-header__actions">
               <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
@@ -548,89 +548,69 @@
             <div class="dv-meta__item">
               <span class="dv-meta__label">Country / Jurisdiction</span>
               <span class="dv-meta__value dv-meta__value--country">
-                <span>Netherlands</span>
-                <span class="tds-select__country-flag dv-meta__flag" aria-hidden="true"><span class="fi fi-nl"></span></span>
+                <span id="eid-meta-country">Netherlands</span>
+                <span class="tds-select__country-flag dv-meta__flag" id="eid-meta-flag" aria-hidden="true"><span class="fi fi-nl"></span></span>
               </span>
             </div>
             <span class="dv-meta__divider" aria-hidden="true"></span>
             <div class="dv-meta__item">
               <span class="dv-meta__label">Transaction ID</span>
-              <span class="dv-meta__value">8c2f4e7a-19bd-4f02-a6c1-77de42915b3a</span>
+              <span class="dv-meta__value" id="eid-transaction-id"></span>
             </div>
             <span class="dv-meta__divider" aria-hidden="true"></span>
             <div class="dv-meta__item">
               <span class="dv-meta__label">Date</span>
-              <span class="dv-meta__value">17 Jun 2026, 2:14 PM</span>
+              <span class="dv-meta__value" id="eid-meta-date">17 Jun 2026, 2:14 PM</span>
             </div>
           </div>
         </div>
 
         <div class="dv-content">
-          <div class="dv-tabs" role="tablist" aria-label="Verification sections">
-            <button class="dv-tab dv-tab--active" role="tab" aria-selected="true" type="button" data-tab="document">Document</button>
-            <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="device-intelligence">Device Intelligence</button>
-          </div>
-
           <div class="dv-columns" id="eid-result-columns">
 
             <aside class="dv-sidebar" id="eid-result-sidebar">
               <div class="dv-sidebar__block dv-sidebar__block--entity">
                 <div class="dv-sidebar__entity-head">
-                  <h2 class="dv-sidebar__heading">Test Entity</h2>
+                  <h2 class="dv-sidebar__heading">Summary</h2>
                   <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="eid-result-sidebar" aria-label="Collapse summary panel">
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
                   </button>
                 </div>
-                <div class="dv-sidebar__entity-select">
-                  <div class="tds-select eid-te-select">
-                    <button type="button" class="tds-select__trigger tds-select__trigger--lg" aria-haspopup="listbox" aria-expanded="false">
-                      <span class="tds-select__text-wrapper"><span class="tds-select__value">Verified ID</span></span>
-                      <span class="tds-select__trailing-group">
-                        <span class="tds-tag tds-tag--positive tds-tag--sm">Verified</span>
-                        <span class="tds-caret tds-caret--default" aria-hidden="true">
-                          <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
-                        </span>
+              </div>
+
+              <div class="dv-sidebar__block dv-summary-block" id="eid-summary-block">
+                <div class="dv-summary-status-header" id="eid-summary-header">
+                  <span class="dv-summary-block__label">Result</span>
+                  <div class="dv-summary-block__row">
+                    <span class="dv-summary-status dv-summary-status--positive" id="eid-summary-status"></span>
+                    <button type="button" class="dv-truai-pill" id="eid-truai-pill" aria-expanded="false" aria-controls="eid-truai-card">
+                      <span class="dv-truai-pill__icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
+                      </span>
+                      TruAI
+                      <span class="dv-truai-pill__caret" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
                       </span>
                     </button>
                   </div>
                 </div>
-              </div>
-
-              <div class="dv-sidebar__block">
-                <div class="dv-di-score">
-                  <span class="dv-di-score__label">Risk Score</span>
-                  <div class="dv-di-gauge" id="eid-sidebar-gauge" data-score="8" data-max="10" data-risk="low" data-label="Low Risk" data-show-percent="false"></div>
+                <div class="dv-ai-card" id="eid-truai-card" hidden>
+                  <p class="dv-ai-title" id="eid-truai-title"></p>
+                  <p class="dv-ai-text" id="eid-truai-text"></p>
+                </div>
+                <div id="eid-summary-rows">
+                  <ul class="dv-summary-list" id="eid-summary-list"></ul>
                 </div>
               </div>
 
-              <div class="dv-sidebar__block">
-                <h2 class="dv-section-title">Summary</h2>
-                <div class="dv-ai-card">
-                  <span class="dv-ai-badge">
-                    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
-                    TruAI
-                  </span>
-                  <p class="dv-ai-text" id="eid-truai-text">Jane Doe&rsquo;s electronic ID has been verified. No additional steps required.</p>
-                </div>
-              </div>
-
-              <div class="dv-sidebar__block dv-collapsible dv-collapsible--open dv-sidebar__block--last">
-                <button class="dv-collapsible__header" type="button" aria-expanded="true">
+              <div class="dv-sidebar__block dv-collapsible dv-collapsible--right dv-sidebar__block--last">
+                <button class="dv-collapsible__header" type="button" aria-expanded="false">
+                  <span class="dv-section-title">Client Details</span>
                   <span class="dv-chevron" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
                   </span>
-                  <span class="dv-section-title">Overview</span>
                 </button>
-                <div class="dv-collapsible__body">
-                  <div class="dv-detail-row">
-                    <span class="dv-detail-label">Country Code</span>
-                    <span class="dv-detail-value">NL</span>
-                  </div>
-                  <div class="dv-detail-row">
-                    <span class="dv-detail-label">Provider</span>
-                    <span class="dv-detail-value">iDIN</span>
-                  </div>
-                </div>
+                <div class="dv-collapsible__body" id="eid-client-details" hidden></div>
               </div>
             </aside>
 
@@ -639,50 +619,21 @@
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
               </button>
 
-              <!-- Document tab (e-ID verification results) -->
-              <section class="dv-doc-panel dv-tabpanel" data-tab="document">
-                <div class="dv-doc-panel__header dv-ni2-panelhead">
-                  <div class="dv-ni2-panelhead__title">
-                    <h2 class="dv-doc-panel__title">Verification Results</h2>
-                    <span class="tds-tag tds-tag--positive tds-tag--sm">6 Passed</span>
-                  </div>
-                </div>
-                <div class="dv-doc-panel__body eid-result-panel__body">
-                  <div class="eid-highlights">
-                    <h3 class="dv-section-title">Highlights</h3>
-                    <div class="eid-highlights__grid">
-                      <div class="eid-highlight">
-                        <span class="eid-highlight__value">14</span>
-                        <span class="eid-highlight__label">e-ID signals</span>
-                      </div>
-                      <div class="eid-highlight">
-                        <span class="eid-highlight__value">27</span>
-                        <span class="eid-highlight__label">Device signals</span>
-                      </div>
-                    </div>
-                  </div>
+              <div class="dv-tabs" id="eid-result-tabs" role="tablist" aria-label="Verification sections">
+                <button class="dv-tab dv-tab--active" role="tab" aria-selected="true" type="button" data-tab="e-id">e-ID</button>
+                <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="device-intelligence" id="eid-di-tab">Device Intelligence</button>
+              </div>
 
-                  <div class="eid-idsection">
-                    <h3 class="dv-section-title">Identity Data Collected</h3>
-                    <div class="eid-idtable" id="eid-idtable"></div>
+              <section class="dv-doc-panel dv-tabpanel" data-tab="e-id">
+                <div class="dv-doc-panel__body">
+                  <div class="dv-indicators">
+                    <div class="dv-stats" id="eid-eid-stats"></div>
+                    <div id="eid-eid-signals" class="dv-indicators__list"></div>
                   </div>
                 </div>
               </section>
 
-              <!-- Device Intelligence tab -->
               <section class="dv-doc-panel dv-tabpanel" data-tab="device-intelligence" hidden>
-                <div class="dv-doc-panel__header dv-ni2-panelhead">
-                  <div class="dv-ni2-panelhead__title">
-                    <h2 class="dv-doc-panel__title">Device Intelligence</h2>
-                    <span class="tds-tag tds-tag--negative tds-tag--sm">High Risk</span>
-                  </div>
-                  <button class="tds-btn tds-btn--secondary tds-btn--sm dv-expand-all" type="button">
-                    <span class="tds-btn__leading-icon">
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h9M5 8h9M5 12h9M2 4h.01M2 8h.01M2 12h.01"/></svg>
-                    </span>
-                    Expand all
-                  </button>
-                </div>
                 <div id="eid-device-body" class="dv-di-body"></div>
               </section>
             </div>
@@ -789,6 +740,7 @@
 
   <script src="../../Components/score-gauge/score-gauge.js"></script>
   <script src="../../Components/dialog/dialog.js"></script>
+  <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
   <script src="electronic-id-flow-data.js"></script>
   <script src="electronic-id-result.js"></script>
   <script src="electronic-id-flow.js"></script>

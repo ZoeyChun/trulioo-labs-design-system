@@ -952,4 +952,16 @@
     updateCountryFieldTag();
     goStep("eid-step-config");
   });
+
+  window.EidFlow = {
+    getState: function () {
+      return {
+        country: state.country,
+        deviceIntelligence: state.deviceIntelligence,
+        simulated: state.simulated,
+        bank: state.bank,
+        provider: state.provider
+      };
+    }
+  };
 })();

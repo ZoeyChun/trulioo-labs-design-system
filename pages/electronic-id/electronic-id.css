@@ -913,6 +913,22 @@
   color: var(--icon-positive);
 }
 
+.eid-decline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+}
+
+.eid-decline__icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-negative);
+}
+
 .eid-di-sub {
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
@@ -1010,4 +1026,37 @@
   .eid-spinner {
     animation-duration: 2s;
   }
+}
+
+/* Result view — summary sidebar + signals data table */
+#eid-summary-rows[hidden],
+#eid-truai-card[hidden] {
+  display: none !important;
+}
+
+#eid-summary-block.eid-summary-block--solo {
+  gap: 0;
+}
+
+#eid-summary-block.eid-summary-block--solo .dv-summary-status-header {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.eid-signals-table {
+  width: 100%;
+}
+
+.eid-signals-table .tds-data-table {
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.eid-signals-table .tds-data-table th,
+.eid-signals-table .tds-data-table td {
+  width: 33.333%;
+}
+
+#eid-eid-signals .tds-data-table-container {
+  width: 100%;
 }

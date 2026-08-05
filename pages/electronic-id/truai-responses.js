@@ -21,31 +21,29 @@
   var COMPOSER_PLACEHOLDER = "Ask about this electronic ID verification...";
 
   function entityName() {
-    var title = document.querySelector("#eid-result-view .dv-title") || document.querySelector(".dv-title");
+    var title = document.getElementById("eid-person-name") || document.querySelector("#eid-result-view .dv-title");
     return title ? title.textContent.trim() : "Jane Doe";
   }
 
   function summaryText() {
     var el = document.getElementById("eid-truai-text");
-    if (el) return el.textContent.trim();
-    var card = document.querySelector("#eid-result-view .dv-ai-text");
-    return card ? card.textContent.trim() : "";
+    return el ? el.textContent.trim() : "";
   }
 
   function verificationStatus() {
-    var tag = document.querySelector("#eid-result-view .dv-header__title-group .tds-tag");
-    return tag ? tag.textContent.trim() : "Verified";
+    var label = document.querySelector("#eid-summary-status .dv-summary-status__label");
+    return label ? label.textContent.trim() : "Verified";
+  }
+
+  function deviceIntelligenceEnabled() {
+    var diTab = document.getElementById("eid-di-tab");
+    return diTab && !diTab.hidden;
   }
 
   function deviceRisk() {
-    var gauge = document.getElementById("eid-sidebar-gauge");
+    var gauge = document.getElementById("eid-device-gauge");
     var risk = gauge ? gauge.getAttribute("data-risk") || "low" : "low";
-    var score = gauge ? gauge.getAttribute("data-score") || "8" : "8";
-    var diTag = document.querySelector('#eid-result-view [data-tab="device-intelligence"]');
-    var panelTag = document.querySelector(
-      '#eid-result-view .dv-tabpanel[data-tab="device-intelligence"] .tds-tag'
-    );
-    if (panelTag && panelTag.textContent.trim() === "High Risk") risk = "high";
+    var score = gauge ? gauge.getAttribute("data-score") || "2" : "2";
     return { risk: risk, score: score };
   }
 
@@ -61,53 +59,60 @@
     var summary =
       summaryText() ||
       (tone === "low"
-        ? name + "'s electronic ID has been verified through iDIN. No additional steps are required."
+        ? name + "'s electronic ID has been verified. No additional steps are required."
         : tone === "medium"
           ? name + "'s electronic ID verification needs review before proceeding."
           : name + "'s electronic ID could not be verified. Check identity and device signals.");
 
-    var device = deviceRisk();
+    var device = deviceIntelligenceEnabled() ? deviceRisk() : { risk: "low", score: "2" };
+    var meta = deviceIntelligenceEnabled()
+      ? [device.risk === "high" ? "Elevated device risk" : "Device risk low"]
+      : ["Device intelligence not enabled"];
 
     return {
       thinkingLabel: "Reviewing e-ID verification for " + name + "…",
-      sourceLabel: "6 identity fields checked",
+      sourceLabel: "e-ID signals checked",
       summary: summary,
       hero: {
         value: status,
         label: "e-ID status",
-        meta: [device.risk === "high" ? "Elevated device risk" : "Device risk low"],
+        meta: meta,
         tone: tone,
       },
       driversTitle: "Verification checks",
       drivers: buildIdentityDrivers(status),
       findingsTitle: "Key findings",
-      findings: buildFindings(status, device.risk),
-      primaryAction: { label: "View identity data", tab: "document" },
-      secondaryAction: { label: "Review device intelligence", tab: "device-intelligence" },
+      findings: buildFindings(status, device.risk, deviceIntelligenceEnabled()),
+      primaryAction: { label: "View e-ID signals", tab: "e-id" },
+      secondaryAction: deviceIntelligenceEnabled()
+        ? { label: "Review device intelligence", tab: "device-intelligence" }
+        : null,
     };
   }
 
   function buildIdentityDrivers(status) {
     if (statusTone(status) === "low") {
       return [
-        { title: "Name", badge: "Verified", badgeTone: "positive", detail: "Matches iDIN bank record." },
+        { title: "Name", badge: "Verified", badgeTone: "positive", detail: "Matches provider bank record." },
         { title: "Date of birth", badge: "Verified", badgeTone: "positive", detail: "Exact match with provider data." },
         { title: "Address", badge: "Verified", badgeTone: "positive", detail: "Registered address confirmed." },
       ];
     }
     return [
-      { title: "Name", badge: "Verified", badgeTone: "positive", detail: "Matches iDIN bank record." },
+      { title: "Name", badge: "Verified", badgeTone: "positive", detail: "Matches provider record." },
       { title: "Email address", badge: "Partial", badgeTone: "intermediate", detail: "Formatting difference detected." },
       { title: "Phone number", badge: "Review", badgeTone: "intermediate", detail: "Could not fully confirm." },
     ];
   }
 
-  function buildFindings(status, deviceRiskLevel) {
+  function buildFindings(status, deviceRiskLevel, diEnabled) {
     var findings = [];
-    if (statusTone(status) === "low") findings.push("Identity verified via iDIN", "All core identity fields matched");
+    if (statusTone(status) === "low") findings.push("Identity verified via e-ID provider", "All core identity signals matched");
     else findings.push("Identity verification incomplete", "Manual review recommended");
-    if (deviceRiskLevel === "high") findings.push("High device risk signals detected");
-    else findings.push("Device session appears legitimate");
+    if (diEnabled) {
+      if (deviceRiskLevel === "high") findings.push("High device risk signals detected");
+      else findings.push("Device session appears legitimate");
+    }
     return findings.slice(0, 2);
   }
 
@@ -117,30 +122,35 @@
 
     return {
       thinkingLabel: "Reviewing identity data for " + name + "…",
-      sourceLabel: "6 identity attributes",
+      sourceLabel: "e-ID identity attributes",
       summary: verified
-        ? "Six identity attributes were returned from the iDIN provider for " + name + ", including name, address, gender, date of birth, email, and phone number."
-        : "Identity data for " + name + " was partially returned from iDIN. Some attributes require manual confirmation.",
+        ? "Identity attributes were returned from the e-ID provider for " + name + ", including name, address, gender, date of birth, email, and phone number."
+        : "Identity data for " + name + " was partially returned. Some attributes require manual confirmation.",
       hero: {
-        value: verified ? "6/6" : "4/6",
-        label: verified ? "Complete" : "Partial",
-        meta: ["iDIN provider data"],
+        value: verified ? "Complete" : "Partial",
+        label: verified ? "Verified" : "Review",
+        meta: ["e-ID provider data"],
         tone: verified ? "low" : "medium",
       },
       driversTitle: "Identity attributes",
       drivers: [
-        { title: "Name", badge: "Match", badgeTone: "positive", detail: "Jane Doe" },
-        { title: "Address", badge: "Match", badgeTone: "positive", detail: "Keizersgracht 123, Amsterdam" },
+        { title: "Name", badge: "Match", badgeTone: "positive", detail: name },
+        { title: "Address", badge: "Match", badgeTone: "positive", detail: "Registered address on file" },
         { title: "Date of birth", badge: "Match", badgeTone: "positive", detail: "1986/03/24" },
       ],
       findingsTitle: "Notes",
-      findings: buildFindings(status, deviceRisk().risk).slice(0, 2),
-      primaryAction: { label: "Open identity data", tab: "document" },
-      secondaryAction: { label: "View overview", tab: "document" },
+      findings: buildFindings(status, deviceRisk().risk, deviceIntelligenceEnabled()).slice(0, 2),
+      primaryAction: { label: "Open e-ID signals", tab: "e-id" },
+      secondaryAction: deviceIntelligenceEnabled()
+        ? { label: "View device intelligence", tab: "device-intelligence" }
+        : null,
     };
   }
 
   function buildDeviceRiskResponse(name) {
+    if (!deviceIntelligenceEnabled()) {
+      return buildSummaryResponse(name);
+    }
     var device = deviceRisk();
     var high = device.risk === "high";
     var summary = high
@@ -161,7 +171,7 @@
       drivers: high
         ? [
             { title: "Emulator detection", badge: "Risk", badgeTone: "negative", detail: "Virtualised device detected." },
-            { title: "Velocity anomaly", badge: "Risk", badgeTone: "negative", detail: "ES → RU → SE location hop." },
+            { title: "Velocity anomaly", badge: "Risk", badgeTone: "negative", detail: "Multi-country location hop." },
             { title: "Linked identities", badge: "3 found", badgeTone: "intermediate", detail: "Device tied to multiple identities." },
           ]
         : [
@@ -173,7 +183,7 @@
         ? ["Review device intelligence before approval", "Consider step-up verification"]
         : ["Device session acceptable", "No blocking signals detected"],
       primaryAction: { label: "Review device intelligence", tab: "device-intelligence" },
-      secondaryAction: { label: "View identity data", tab: "document" },
+      secondaryAction: { label: "View e-ID signals", tab: "e-id" },
     };
   }
 
