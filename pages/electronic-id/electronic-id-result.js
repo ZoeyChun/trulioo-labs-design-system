@@ -72,6 +72,14 @@
     "Postal Code", "City", "Region", "Country of Residence", "Provider Match", "Consent Timestamp"
   ];
 
+  var DOCUMENT_COUNTRY_CODES = { in: true, be: true, pl: true, cz: true };
+
+  var SPLIT_DEFAULT_END = 353;
+  var SPLIT_MIN_START = 240;
+  var SPLIT_MIN_END = 280;
+  var SPLIT_STACK_MAX = 1200;
+  var sharedSplitEnd = SPLIT_DEFAULT_END;
+
   var COUNTRY_SCENARIOS = {
     nl: {
       overallStatus: "Verified",
@@ -95,6 +103,7 @@
     in: {
       overallStatus: "Declined",
       overallTone: "negative",
+      hasDocument: true,
       personName: "Arjun Mehta",
       transactionId: "f3a91c02-6d44-4b8e-9f12-0c8e5d4a7210",
       truAiTitle: "Verification declined",
@@ -114,6 +123,7 @@
     be: {
       overallStatus: "Verified",
       overallTone: "positive",
+      hasDocument: true,
       personName: "Lucas Janssens",
       transactionId: "b7e4a1d0-3c92-4f6a-8e55-2d1f9a0b6c78",
       truAiTitle: "Verification complete",
@@ -133,6 +143,7 @@
     cz: {
       overallStatus: "Review",
       overallTone: "intermediate",
+      hasDocument: true,
       personName: "Eva Nov\u00e1kov\u00e1",
       transactionId: "c1d8f902-7a3b-4e6c-9d21-5f0b3e8a1247",
       truAiTitle: "Review recommended",
@@ -210,6 +221,7 @@
     pl: {
       overallStatus: "Review",
       overallTone: "intermediate",
+      hasDocument: true,
       personName: "Anna Kowalska",
       transactionId: "f6d9b125-3b4a-6e7f-c098-504e1b2f7890",
       truAiTitle: "Partial verification",
@@ -289,27 +301,33 @@
 
   function buildScenario(code, flowCountry, provider) {
     var base = COUNTRY_SCENARIOS[code];
-    if (base) return Object.assign({}, base);
-    var name = (flowCountry && flowCountry.country) || "Jane Doe";
-    return {
-      overallStatus: "Verified",
-      overallTone: "positive",
-      personName: name.indexOf(" ") > -1 ? name : "Jane Doe",
-      transactionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      truAiTitle: "Verification complete",
-      truAiSummary: name + "\u2019s electronic ID has been verified through " + (provider || "the provider") + ". No additional steps required.",
-      clientDetails: [
-        { label: "Full name", value: name.indexOf(" ") > -1 ? name : "Jane Doe" },
-        { label: "Date of birth", value: "1986/03/24" },
-        { label: "Address", value: "919 Government St, Victoria, BC V6W 3Y8" }
-      ],
-      signalCount: 10,
-      declinedCount: 0,
-      verificationRate: 100,
-      diRisk: "low",
-      diScore: 2,
-      diLabel: "Low Risk"
-    };
+    var scenario;
+    if (base) {
+      scenario = Object.assign({}, base);
+    } else {
+      var name = (flowCountry && flowCountry.country) || "Jane Doe";
+      scenario = {
+        overallStatus: "Verified",
+        overallTone: "positive",
+        personName: name.indexOf(" ") > -1 ? name : "Jane Doe",
+        transactionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        truAiTitle: "Verification complete",
+        truAiSummary: name + "\u2019s electronic ID has been verified through " + (provider || "the provider") + ". No additional steps required.",
+        clientDetails: [
+          { label: "Full name", value: name.indexOf(" ") > -1 ? name : "Jane Doe" },
+          { label: "Date of birth", value: "1986/03/24" },
+          { label: "Address", value: "919 Government St, Victoria, BC V6W 3Y8" }
+        ],
+        signalCount: 10,
+        declinedCount: 0,
+        verificationRate: 100,
+        diRisk: "low",
+        diScore: 2,
+        diLabel: "Low Risk"
+      };
+    }
+    if (DOCUMENT_COUNTRY_CODES[code]) scenario.hasDocument = true;
+    return scenario;
   }
 
   function buildSignals(scenario) {
@@ -433,6 +451,7 @@
 
     currentSignals = buildSignals(scenario);
     setHtml(byId("eid-eid-signals"), renderSignalsTable(currentSignals));
+    applyDocumentSection(scenario);
 
     var tabsBar = byId("eid-result-tabs");
     if (tabsBar) tabsBar.hidden = !showDi;
@@ -555,6 +574,169 @@
     if (body) body.hidden = !open;
   }
 
+  function applyDocumentSection(scenario) {
+    var showDocument = !!(scenario && scenario.hasDocument);
+    var panelBody = byId("eid-eid-panel-body");
+    var divider = byId("eid-eid-split-divider");
+    var viewer = byId("eid-eid-document-viewer");
+    var indicators = byId("eid-eid-indicators");
+
+    if (panelBody) {
+      panelBody.classList.toggle("dv-split-pane", showDocument);
+      if (showDocument) panelBody.setAttribute("data-split-pane", "");
+      else panelBody.removeAttribute("data-split-pane");
+    }
+    if (indicators) indicators.classList.toggle("dv-split-pane__start", showDocument);
+    if (divider) divider.hidden = !showDocument;
+    if (viewer) viewer.hidden = !showDocument;
+    if (showDocument) {
+      sharedSplitEnd = SPLIT_DEFAULT_END;
+      syncEidSplitPane();
+    }
+  }
+
+  function isSplitPaneStacked() {
+    return window.matchMedia("(max-width: " + SPLIT_STACK_MAX + "px)").matches;
+  }
+
+  function getEidSplitPane() {
+    var pane = byId("eid-eid-panel-body");
+    return pane && pane.hasAttribute("data-split-pane") ? pane : null;
+  }
+
+  function clampSplitEnd(pane, endWidth) {
+    var paneWidth = pane.getBoundingClientRect().width;
+    if (paneWidth <= 0) return endWidth;
+    var maxEnd = paneWidth - SPLIT_MIN_START - 8;
+    return Math.max(SPLIT_MIN_END, Math.min(endWidth, maxEnd));
+  }
+
+  function setSplitEndWidth(pane, endWidth) {
+    var clamped = clampSplitEnd(pane, endWidth);
+    pane.style.setProperty("--dv-split-end", clamped + "px");
+    pane.style.gridTemplateColumns = "minmax(" + SPLIT_MIN_START + "px, 1fr) 8px " + clamped + "px";
+    return clamped;
+  }
+
+  function syncEidSplitPane() {
+    if (isSplitPaneStacked()) return;
+    var pane = getEidSplitPane();
+    if (!pane) return;
+    sharedSplitEnd = clampSplitEnd(pane, sharedSplitEnd);
+    setSplitEndWidth(pane, sharedSplitEnd);
+  }
+
+  function figureImageTitle(figure) {
+    var caption = figure.querySelector(".dv-doc-image__caption");
+    if (caption) {
+      var clone = caption.cloneNode(true);
+      clone.querySelectorAll("button").forEach(function (btn) { btn.remove(); });
+      var text = clone.textContent ? clone.textContent.trim() : "";
+      if (text) return text;
+    }
+    var viewer = figure.closest(".dv-viewer");
+    var viewerTitle = viewer && viewer.querySelector(".dv-section-title");
+    return viewerTitle && viewerTitle.textContent ? viewerTitle.textContent.trim() : "Image";
+  }
+
+  function closeImageModal() {
+    var modal = byId("eid-image-modal");
+    var body = byId("eid-image-modal-body");
+    if (!modal) return;
+    modal.hidden = true;
+    if (body) body.innerHTML = "";
+    document.body.style.overflow = "";
+  }
+
+  function openImageModal(figure) {
+    var modal = byId("eid-image-modal");
+    var title = byId("eid-image-modal-title");
+    var body = byId("eid-image-modal-body");
+    var media = figure.querySelector(".dv-doc-image__media");
+    if (!modal || !title || !body || !media) return;
+    title.textContent = figureImageTitle(figure);
+    body.innerHTML = media.innerHTML;
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    var closeBtn = modal.querySelector(".dv-image-modal__close");
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function wireSplitPane(root) {
+    var divider = byId("eid-eid-split-divider");
+    if (!divider || divider.dataset.wired) return;
+    divider.dataset.wired = "true";
+
+    divider.addEventListener("pointerdown", function (event) {
+      if (isSplitPaneStacked() || divider.hidden) return;
+      event.preventDefault();
+      divider.setPointerCapture(event.pointerId);
+      divider.classList.add("is-dragging");
+      document.body.classList.add("dv-is-resizing");
+
+      function updateSplitFromPointer(clientX) {
+        var activePane = getEidSplitPane();
+        if (!activePane) return;
+        sharedSplitEnd = setSplitEndWidth(activePane, activePane.getBoundingClientRect().right - clientX);
+      }
+
+      function stopDragging(pointerId, onMove, onUp) {
+        divider.classList.remove("is-dragging");
+        document.body.classList.remove("dv-is-resizing");
+        if (divider.hasPointerCapture(pointerId)) divider.releasePointerCapture(pointerId);
+        divider.removeEventListener("pointermove", onMove);
+        divider.removeEventListener("pointerup", onUp);
+        divider.removeEventListener("pointercancel", onUp);
+      }
+
+      updateSplitFromPointer(event.clientX);
+      function onMove(ev) { updateSplitFromPointer(ev.clientX); }
+      function onUp(ev) { stopDragging(ev.pointerId, onMove, onUp); }
+      divider.addEventListener("pointermove", onMove);
+      divider.addEventListener("pointerup", onUp);
+      divider.addEventListener("pointercancel", onUp);
+    });
+
+    divider.addEventListener("keydown", function (event) {
+      if (isSplitPaneStacked() || divider.hidden) return;
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      var activePane = getEidSplitPane();
+      if (!activePane) return;
+      var current = Number.parseInt(getComputedStyle(activePane).getPropertyValue("--dv-split-end") || String(SPLIT_DEFAULT_END), 10);
+      var delta = event.key === "ArrowLeft" ? -16 : 16;
+      sharedSplitEnd = setSplitEndWidth(activePane, current + delta);
+    });
+
+    window.addEventListener("resize", syncEidSplitPane);
+  }
+
+  function wireImageModal(root) {
+    if (root.dataset.imageModalWired) return;
+    root.dataset.imageModalWired = "true";
+
+    root.addEventListener("click", function (event) {
+      var target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest("[data-eid-modal-close]")) {
+        closeImageModal();
+        return;
+      }
+      var expandBtn = target.closest("#eid-eid-document-viewer .dv-doc-image .dv-icon-btn");
+      var media = expandBtn ? null : target.closest("#eid-eid-document-viewer .dv-doc-image__media");
+      var figure = (expandBtn || media) ? (expandBtn || media).closest(".dv-doc-image") : null;
+      if (!figure) return;
+      event.preventDefault();
+      openImageModal(figure);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key !== "Escape") return;
+      var modal = byId("eid-image-modal");
+      if (modal && !modal.hidden) closeImageModal();
+    });
+  }
+
   function initTabs(root) {
     var tabs = root.querySelectorAll(".dv-tab");
     var panels = root.querySelectorAll(".dv-tabpanel");
@@ -570,6 +752,7 @@
           p.hidden = p.getAttribute("data-tab") !== name;
         });
         if (name === "device-intelligence") renderGauges(root);
+        else if (name === "e-id") syncEidSplitPane();
       });
     });
   }
@@ -637,6 +820,8 @@
     if (!root) return;
     initTabs(root);
     initInteractions(root);
+    wireSplitPane(root);
+    wireImageModal(root);
   }
 
   function show() {
@@ -661,6 +846,7 @@
     window.scrollTo(0, 0);
 
     window.dispatchEvent(new Event("resize"));
+    syncEidSplitPane();
     renderGauges(result);
 
     var eidTab = root.querySelector('.dv-tab[data-tab="e-id"]');

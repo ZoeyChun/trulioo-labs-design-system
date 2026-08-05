@@ -605,7 +605,7 @@
 
               <div class="dv-sidebar__block dv-collapsible dv-collapsible--right dv-sidebar__block--last">
                 <button class="dv-collapsible__header" type="button" aria-expanded="false">
-                  <span class="dv-section-title">Client Details</span>
+                  <span class="dv-section-title">e-ID details</span>
                   <span class="dv-chevron" aria-hidden="true">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
                   </span>
@@ -625,9 +625,53 @@
               </div>
 
               <section class="dv-doc-panel dv-tabpanel" data-tab="e-id">
-                <div class="dv-doc-panel__body">
-                  <div class="dv-indicators">
+                <div class="dv-doc-panel__body" id="eid-eid-panel-body">
+                  <div class="dv-indicators" id="eid-eid-indicators">
                     <div id="eid-eid-signals" class="dv-indicators__list"></div>
+                  </div>
+                  <div class="dv-split-pane__divider" id="eid-eid-split-divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0" hidden></div>
+                  <div class="dv-viewer dv-split-pane__end" id="eid-eid-document-viewer" hidden>
+                    <h3 class="dv-section-title">Driver&rsquo;s License</h3>
+                    <figure class="dv-doc-image">
+                      <figcaption class="dv-doc-image__caption">
+                        Front of Document
+                        <button class="dv-icon-btn" type="button" aria-label="Expand front of document">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                        </button>
+                      </figcaption>
+                      <div class="dv-doc-image__media">
+                        <svg viewBox="0 0 293 205" role="img" aria-label="Front of ID document placeholder" preserveAspectRatio="xMidYMid meet">
+                          <rect width="293" height="205" fill="transparent"/>
+                          <rect x="16" y="16" width="80" height="100" rx="6" fill="var(--surface-neutral-04)"/>
+                          <circle cx="56" cy="52" r="22" fill="var(--border-strong)"/>
+                          <path d="M34 96c0-14 10-22 22-22s22 8 22 22z" fill="var(--border-strong)"/>
+                          <rect x="112" y="24" width="150" height="12" rx="3" fill="var(--border-strong)"/>
+                          <rect x="112" y="48" width="120" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                          <rect x="112" y="66" width="140" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                          <rect x="112" y="84" width="100" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                          <rect x="16" y="140" width="261" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                          <rect x="16" y="160" width="200" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                        </svg>
+                      </div>
+                    </figure>
+                    <figure class="dv-doc-image">
+                      <figcaption class="dv-doc-image__caption">
+                        Back of Document
+                        <button class="dv-icon-btn" type="button" aria-label="Expand back of document">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                        </button>
+                      </figcaption>
+                      <div class="dv-doc-image__media">
+                        <svg viewBox="0 0 293 202" role="img" aria-label="Back of ID document placeholder" preserveAspectRatio="xMidYMid meet">
+                          <rect width="293" height="202" fill="transparent"/>
+                          <rect x="16" y="20" width="261" height="26" rx="3" fill="var(--border-strong)"/>
+                          <rect x="16" y="60" width="180" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                          <rect x="16" y="78" width="220" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                          <rect x="16" y="96" width="160" height="9" rx="3" fill="var(--surface-neutral-04)"/>
+                          <rect x="16" y="130" width="261" height="40" rx="3" fill="var(--surface-neutral-04)"/>
+                        </svg>
+                      </div>
+                    </figure>
                   </div>
                 </div>
               </section>
@@ -734,6 +778,19 @@
           </div>
         </footer>
       </div>
+    </div>
+  </div>
+
+  <div class="dv-image-modal" id="eid-image-modal" hidden role="dialog" aria-modal="true" aria-labelledby="eid-image-modal-title">
+    <div class="dv-image-modal__overlay" data-eid-modal-close></div>
+    <div class="dv-image-modal__panel">
+      <div class="dv-image-modal__header">
+        <h2 class="dv-image-modal__title" id="eid-image-modal-title"></h2>
+        <button class="dv-image-modal__close" type="button" aria-label="Close" data-eid-modal-close>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+      </div>
+      <div class="dv-image-modal__body" id="eid-image-modal-body"></div>
     </div>
   </div>
 
