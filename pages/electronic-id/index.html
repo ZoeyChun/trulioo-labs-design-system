@@ -250,12 +250,18 @@
               <div class="eid-config-card__settings">
                 <div class="eid-settings-panel">
                   <div class="eid-settings-row">
-                    <div class="eid-settings-row__text">
-                      <p class="eid-settings-row__title">Device Intelligence</p>
-                      <p class="eid-settings-row__desc">Collect device signals for fraud detection.</p>
+                    <div class="eid-settings-row__content">
+                      <span class="eid-settings-row__icon" aria-hidden="true">
+                        <img src="assets/device-intelligence-icon.svg" width="16" height="16" alt="">
+                      </span>
+                      <div class="eid-settings-row__text">
+                        <p class="eid-settings-row__title">Device Intelligence</p>
+                        <p class="eid-settings-row__desc">Collect device signals for fraud detection.</p>
+                      </div>
                     </div>
                     <label class="tds-switch">
-                      <button type="button" class="tds-switch__track tds-switch__track--sm" id="eid-device-toggle" role="switch" aria-checked="false" aria-label="Device Intelligence">
+                      <span class="tds-switch__label-group">Enable</span>
+                      <button type="button" class="tds-switch__track tds-switch__track--sm" id="eid-device-toggle" role="switch" aria-checked="false" aria-label="Enable Device Intelligence">
                         <span class="tds-switch__indicator" aria-hidden="true"></span>
                         <span class="tds-switch__handle" aria-hidden="true"></span>
                       </button>
@@ -334,11 +340,11 @@
               <div class="dv-flow-card__header">
                 <h2 class="dv-flow-card__title" id="eid-scan-qr-title">Simulate QR code scan</h2>
               </div>
-              <div class="eid-stage eid-stage--qr">
+              <div class="eid-stage eid-stage--hero eid-stage--qr">
                 <div class="eid-qr" role="img" aria-label="QR code placeholder">
                   <img class="eid-qr__image" src="assets/qr-placeholder.svg" width="200" height="200" alt="">
                 </div>
-                <div class="eid-stage__copy">
+                <div class="eid-stage__copy eid-stage__copy--wide">
                   <p class="eid-stage__heading">Test the QR code step</p>
                   <p class="eid-stage__subtext">This QR code is for demonstration only and cannot be scanned. Select Simulate QR scan to continue the test flow.</p>
                 </div>
@@ -352,11 +358,13 @@
             <!-- QR loading -->
             <section class="dv-flow-card eid-sim-panel" id="eid-panel-qr-loading" aria-label="Connecting to your account" hidden>
               <div class="dv-flow-card__header eid-sim-panel__header--empty" aria-hidden="true"></div>
-              <div class="eid-stage">
-                <span class="eid-spinner eid-spinner--lg" aria-hidden="true"></span>
-                <div class="eid-stage__copy">
-                  <p class="eid-stage__heading">Connecting to your account</p>
-                  <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
+              <div class="eid-stage eid-stage--loading">
+                <div class="eid-loading-content">
+                  <span class="eid-spinner eid-spinner--lg" aria-hidden="true"></span>
+                  <div class="eid-stage__copy">
+                    <p class="eid-stage__heading">Connecting to your account</p>
+                    <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
+                  </div>
                 </div>
               </div>
               <div class="dv-flow-card__footer">
@@ -369,9 +377,11 @@
               <div class="dv-flow-card__header">
                 <h2 class="dv-flow-card__title" id="eid-launch-app-title">Launch app</h2>
               </div>
-              <div class="eid-stage">
-                <div class="eid-phone-frame" aria-hidden="true"></div>
-                <div class="eid-stage__copy">
+              <div class="eid-stage eid-stage--hero">
+                <div class="eid-illustration" role="img" aria-label="Mobile app approval screen">
+                  <img class="eid-illustration__image" src="assets/launch-app-illustration.svg" width="280" height="280" alt="">
+                </div>
+                <div class="eid-stage__copy eid-stage__copy--wide">
                   <p class="eid-stage__heading">Open your mobile app to approve</p>
                   <p class="eid-stage__subtext">We sent a verification request to your mobile app. Open the notification and approve it to continue.</p>
                 </div>
@@ -379,6 +389,23 @@
               <div class="dv-flow-card__footer">
                 <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
                 <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-sim-action="simulate-approval">Simulate approval</button>
+              </div>
+            </section>
+
+            <!-- Launch app loading -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-launch-loading" aria-label="Connecting to your account" hidden>
+              <div class="dv-flow-card__header eid-sim-panel__header--empty" aria-hidden="true"></div>
+              <div class="eid-stage eid-stage--loading">
+                <div class="eid-loading-content">
+                  <span class="eid-spinner eid-spinner--lg" aria-hidden="true"></span>
+                  <div class="eid-stage__copy">
+                    <p class="eid-stage__heading">Connecting to your account</p>
+                    <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="dv-flow-card__footer">
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
               </div>
             </section>
 
@@ -392,7 +419,7 @@
               </div>
               <div class="dv-flow-card__footer">
                 <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
-                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-sim-action="next" aria-disabled="true">Next</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="eid-details-mock" data-sim-action="simulate-mock-data">Fill mock data</button>
               </div>
             </section>
 
@@ -418,7 +445,7 @@
               </div>
             </section>
 
-            <!-- Consent -->
+            <!-- Consent (desktop — India & Czechia) -->
             <section class="dv-flow-card eid-sim-panel" id="eid-panel-consent" aria-labelledby="eid-consent-title" hidden>
               <div class="dv-flow-card__header">
                 <h2 class="dv-flow-card__title" id="eid-consent-title">Share your data</h2>
@@ -434,14 +461,36 @@
               </div>
             </section>
 
+            <!-- Consent (mobile — all other countries) -->
+            <section class="dv-flow-card eid-sim-panel" id="eid-panel-consent-mobile" aria-labelledby="eid-consent-mobile-title" hidden>
+              <div class="dv-flow-card__header">
+                <h2 class="dv-flow-card__title" id="eid-consent-mobile-title">Share your data</h2>
+              </div>
+              <div class="eid-stage eid-stage--hero">
+                <div class="eid-illustration" role="img" aria-label="Mobile consent screen">
+                  <img class="eid-illustration__image" src="assets/consent-mobile-illustration.svg" width="280" height="280" alt="">
+                </div>
+                <div class="eid-stage__copy eid-stage__copy--wide">
+                  <p class="eid-stage__heading">Give consent on your mobile device</p>
+                  <p class="eid-stage__subtext">We sent a consent request to your mobile app. Open the notification and accept it to continue.</p>
+                </div>
+              </div>
+              <div class="dv-flow-card__footer">
+                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-sim-action="simulate-approval">Simulate approval</button>
+              </div>
+            </section>
+
             <!-- Completing -->
             <section class="dv-flow-card eid-sim-panel" id="eid-panel-completing" aria-label="Completing verification" hidden>
               <div class="dv-flow-card__header eid-sim-panel__header--empty" aria-hidden="true"></div>
-              <div class="eid-stage">
-                <span class="eid-spinner eid-spinner--lg" aria-hidden="true"></span>
-                <div class="eid-stage__copy">
-                  <p class="eid-stage__heading">Completing verification</p>
-                  <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
+              <div class="eid-stage eid-stage--loading">
+                <div class="eid-loading-content">
+                  <span class="eid-spinner eid-spinner--lg" aria-hidden="true"></span>
+                  <div class="eid-stage__copy">
+                    <p class="eid-stage__heading">Completing verification</p>
+                    <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
+                  </div>
                 </div>
               </div>
               <div class="dv-flow-card__footer">

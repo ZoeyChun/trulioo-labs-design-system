@@ -14,6 +14,7 @@
   var PROVIDER_PLACEHOLDER = "assets/providers/provider-placeholder.svg";
   var FLOW_DATA = window.EID_FLOW_DATA || [];
   var TRANSITION_MS = 3000;
+  var SIMULATE_FILL_MS = 600;
   var RESEND_SECONDS = 10;
   var CHECK_SVG = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
 
@@ -41,6 +42,14 @@
     "Username": { key: "username", type: "text", placeholder: "johndoe" },
     "Password": { key: "password", type: "password", placeholder: "••••••••" },
     "Email": { key: "email", type: "email", placeholder: "name@example.com" }
+  };
+
+  var MOCK_VALUES = {
+    phone: "(555) 123-4567",
+    pin: "1234",
+    username: "johndoe",
+    password: "password",
+    email: "name@example.com"
   };
 
   var REDIRECT_DESC = "This option will connect you to an external {provider} site to complete your verification. Rest assured, we do not retain any of your information.";
@@ -274,6 +283,11 @@
     });
   }
 
+  function usesDesktopConsent() {
+    var code = state.country && state.country.code;
+    return code === "in" || code === "cz";
+  }
+
   function panelIdForStep(step) {
     if (!step) return null;
     var map = {
@@ -284,9 +298,14 @@
       "enter-details": "eid-panel-enter-details",
       "otp-phone": "eid-panel-otp",
       "otp-email": "eid-panel-otp",
-      "consent": "eid-panel-consent"
+      "consent": usesDesktopConsent() ? "eid-panel-consent" : "eid-panel-consent-mobile"
     };
     return map[step.type] || null;
+  }
+
+  function activeSimPanelId() {
+    if (state.transientPanel) return state.transientPanel;
+    return panelIdForStep(currentStep());
   }
 
   function showSimPanel(id) {
@@ -479,7 +498,28 @@
       wrap.appendChild(inputWrap);
       container.appendChild(wrap);
     });
+
+    var mockBtn = byId("eid-details-mock");
+    if (mockBtn) mockBtn.hidden = false;
     updateSimNextButtons();
+  }
+
+  function fillMockDataAndAdvance() {
+    var step = currentStep();
+    if (!step || step.type !== "enter-details") return;
+
+    var fields = expandedFields(step.fields || []);
+    fields.forEach(function (fieldName) {
+      var def = FIELD_DEFS[fieldName];
+      if (!def || MOCK_VALUES[def.key] === undefined) return;
+      state.formValues[def.key] = MOCK_VALUES[def.key];
+      var input = byId("eid-field-" + def.key);
+      if (input) input.value = MOCK_VALUES[def.key];
+    });
+
+    var mockBtn = byId("eid-details-mock");
+    if (mockBtn) mockBtn.hidden = true;
+    state.pendingTimer = setTimeout(function () { nextSimStep(); }, SIMULATE_FILL_MS);
   }
 
   function detailsValid(step) {
@@ -599,7 +639,7 @@
       btn.disabled = false;
       btn.innerHTML = 'Resend (<span id="eid-otp-resend-timer">00:00</span>)';
     }
-    state.pendingTimer = setTimeout(function () { nextSimStep(); }, 600);
+    state.pendingTimer = setTimeout(function () { nextSimStep(); }, SIMULATE_FILL_MS);
   }
 
   /* ===================================================================
@@ -677,12 +717,35 @@
     }
 
     if (action === "simulate-approval") {
+      var panelId = activeSimPanelId();
+      if (panelId === "eid-panel-launch-app") {
+        state.transientPanel = "eid-panel-launch-loading";
+        renderSimView();
+        state.pendingTimer = setTimeout(function () {
+          state.transientPanel = null;
+          nextSimStep();
+        }, TRANSITION_MS);
+        return;
+      }
+      if (panelId === "eid-panel-consent-mobile") {
+        state.transientPanel = "eid-panel-completing";
+        renderSimView();
+        state.pendingTimer = setTimeout(function () {
+          if (window.EidResult) window.EidResult.show();
+        }, TRANSITION_MS);
+        return;
+      }
       nextSimStep();
       return;
     }
 
     if (action === "simulate-otp") {
       fillOtpAndAdvance();
+      return;
+    }
+
+    if (action === "simulate-mock-data") {
+      fillMockDataAndAdvance();
       return;
     }
 
