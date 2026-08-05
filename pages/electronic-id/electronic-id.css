@@ -433,6 +433,29 @@
   flex-shrink: 0;
 }
 
+.eid-sim-footer__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.eid-sim-footer__actions .tds-btn--invisible {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.eid-sim-footer__actions .tds-btn--invisible:hover,
+.eid-sim-footer__actions .tds-btn--invisible:active {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.eid-sim-footer__actions .tds-btn--invisible:focus-visible {
+  background-color: transparent;
+}
+
 .eid-sim-panel__header--empty {
   flex-shrink: 0;
   box-sizing: border-box;

@@ -14,7 +14,6 @@
   var PROVIDER_PLACEHOLDER = "assets/providers/provider-placeholder.svg";
   var FLOW_DATA = window.EID_FLOW_DATA || [];
   var TRANSITION_MS = 3000;
-  var SIMULATE_FILL_MS = 1500;
   var RESEND_SECONDS = 10;
   var CHECK_SVG = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
 
@@ -547,7 +546,7 @@
     updateSimNextButtons();
   }
 
-  function fillMockDataAndAdvance() {
+  function fillMockData() {
     var step = currentStep();
     if (!step || step.type !== "enter-details") return;
 
@@ -560,9 +559,7 @@
       if (input) input.value = MOCK_VALUES[def.key];
     });
 
-    var mockBtn = byId("eid-details-mock");
-    if (mockBtn) mockBtn.hidden = true;
-    state.pendingTimer = setTimeout(function () { nextSimStep(); }, SIMULATE_FILL_MS);
+    updateSimNextButtons();
   }
 
   function detailsValid(step) {
@@ -577,11 +574,23 @@
     });
   }
 
+  function otpValid() {
+    var digits = byId("eid-otp-inputs");
+    if (!digits) return false;
+    var inputs = digits.querySelectorAll(".eid-otp-digit");
+    if (inputs.length !== 6) return false;
+    for (var i = 0; i < inputs.length; i++) {
+      if (!inputs[i].value.trim()) return false;
+    }
+    return true;
+  }
+
   function stepValid(step) {
     if (!step) return false;
     if (step.type === "select-bank") return !!state.bank;
     if (step.type === "select-provider") return !!state.provider;
     if (step.type === "enter-details") return detailsValid(step);
+    if (step.type === "otp-phone" || step.type === "otp-email") return otpValid();
     return true;
   }
 
@@ -626,12 +635,14 @@
           var idx = Array.prototype.indexOf.call(inputsRoot.children, e.target);
           if (idx >= 0) state.otpDigits[idx] = e.target.value;
           if (e.target.value && e.target.nextElementSibling) e.target.nextElementSibling.focus();
+          updateSimNextButtons();
         });
         inputsRoot.appendChild(field);
       }
     }
     if (simulateBtn) simulateBtn.hidden = false;
     startResendCountdown();
+    updateSimNextButtons();
   }
 
   function formatTimer(s) {
@@ -664,7 +675,7 @@
     state.resendTimer = setInterval(tick, 1000);
   }
 
-  function fillOtpAndAdvance() {
+  function fillOtp() {
     var digits = byId("eid-otp-inputs");
     var code = [9, 6, 2, 8, 9, 1];
     state.otpDigits = [];
@@ -674,15 +685,7 @@
         state.otpDigits[i] = input.value;
       });
     }
-    var simulateBtn = byId("eid-otp-simulate");
-    if (simulateBtn) simulateBtn.hidden = true;
-    clearResendTimer();
-    var btn = byId("eid-otp-resend");
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = 'Resend (<span id="eid-otp-resend-timer">00:00</span>)';
-    }
-    state.pendingTimer = setTimeout(function () { nextSimStep(); }, SIMULATE_FILL_MS);
+    updateSimNextButtons();
   }
 
   /* ===================================================================
@@ -793,12 +796,12 @@
     }
 
     if (action === "simulate-otp") {
-      fillOtpAndAdvance();
+      fillOtp();
       return;
     }
 
     if (action === "simulate-mock-data") {
-      fillMockDataAndAdvance();
+      fillMockData();
       return;
     }
 
