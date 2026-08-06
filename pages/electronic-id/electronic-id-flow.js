@@ -70,8 +70,15 @@
   };
 
   function selectableCountries() {
-    return FLOW_DATA.filter(function (c) { return c.selectable && c.steps && c.steps.length; });
+    return FLOW_DATA.filter(function (c) {
+      if (state.simulated) return !!c.selectable && c.steps && c.steps.length;
+      return true;
+    }).sort(function (a, b) {
+      return a.country.localeCompare(b.country);
+    });
   }
+
+  var refreshCountryCombobox = null;
 
   function clearPending() {
     if (state.pendingTimer) { clearTimeout(state.pendingTimer); state.pendingTimer = null; }
@@ -125,7 +132,6 @@
     var list = byId("eid-country-list");
     if (!root || !input || !list) return;
     var flag = root.querySelector(".eid-country__flag");
-    var countries = selectableCountries();
 
     function open() { root.classList.add("tds-combobox--open"); input.setAttribute("aria-expanded", "true"); }
     function close() { root.classList.remove("tds-combobox--open"); input.setAttribute("aria-expanded", "false"); }
@@ -133,7 +139,7 @@
     function renderOptions(filter) {
       list.innerHTML = "";
       var q = (filter || "").trim().toLowerCase();
-      var matches = countries.filter(function (c) {
+      var matches = selectableCountries().filter(function (c) {
         return !q || c.country.toLowerCase().indexOf(q) !== -1 || c.provider.toLowerCase().indexOf(q) !== -1;
       });
       if (!matches.length) {
@@ -182,7 +188,6 @@
       setFlag(flag, c.code);
       close();
       updateConfigNext();
-      updateCountryInfo();
       updateCountryFieldTag();
     }
     input.addEventListener("focus", function () { renderOptions(state.country ? "" : input.value); open(); });
@@ -191,7 +196,6 @@
       state.country = null;
       setFlag(flag, null);
       updateConfigNext();
-      updateCountryInfo();
       updateCountryFieldTag();
       renderOptions(input.value);
       open();
@@ -202,6 +206,9 @@
     document.addEventListener("click", function (e) {
       if (!root.contains(e.target)) close();
     });
+    refreshCountryCombobox = function () {
+      renderOptions(state.country ? "" : input.value);
+    };
     renderOptions("");
   }
 
@@ -211,7 +218,7 @@
   function updateCountryFieldTag() {
     var tag = byId("eid-country-provider-tag");
     if (!tag) return;
-    if (state.country && state.simulated) {
+    if (state.country) {
       tag.textContent = state.country.provider;
       tag.hidden = false;
     } else {
@@ -220,19 +227,24 @@
     }
   }
 
-  function updateCountryInfo() {
-    var info = byId("eid-country-info");
-    var title = byId("eid-country-info-title");
-    var desc = byId("eid-country-info-desc");
-    var country = state.country;
-    if (!info) return;
-    if (!country || state.simulated) {
-      info.hidden = true;
-      return;
-    }
-    if (title) title.textContent = "You\u2019ll be asked to validate with " + country.provider;
-    if (desc) desc.textContent = REDIRECT_DESC.replace("{provider}", country.provider);
-    info.hidden = false;
+  function validateCountrySelection() {
+    if (!state.country) return;
+    var stillValid = selectableCountries().some(function (c) { return c.code === state.country.code; });
+    if (stillValid) return;
+    state.country = null;
+    var input = byId("eid-country-input");
+    var flag = document.querySelector("#eid-country .eid-country__flag");
+    if (input) input.value = "";
+    setFlag(flag, null);
+    updateConfigNext();
+    updateCountryFieldTag();
+  }
+
+  function onSimulatedModeChange() {
+    validateCountrySelection();
+    updateCountryFieldTag();
+    updateConfigNext();
+    if (refreshCountryCombobox) refreshCountryCombobox();
   }
 
   function updateRedirectCopy() {
@@ -260,11 +272,7 @@
       track.setAttribute("aria-checked", String(next));
       track.classList.toggle("tds-switch__track--on", next);
       state[stateKey] = next;
-      if (stateKey === "simulated") {
-        updateConfigNext();
-        updateCountryInfo();
-        updateCountryFieldTag();
-      }
+      if (stateKey === "simulated") onSimulatedModeChange();
     });
   }
 

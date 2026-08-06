@@ -361,7 +361,7 @@ window.EID_FLOW_DATA = [
   {
     "country": "Poland",
     "code": "pl",
-    "provider": "MojeID / mObywatel",
+    "provider": "MojeID",
     "selectable": true,
     "logo": "assets/providers/provider-placeholder.svg",
     "steps": [

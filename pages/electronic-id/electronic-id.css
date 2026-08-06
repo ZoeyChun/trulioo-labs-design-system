@@ -13,7 +13,7 @@
   flex-direction: column;
   width: 100%;
   max-width: 895px;
-  min-height: 370px;
+  min-height: 468px;
   height: auto;
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-3xl);
@@ -86,6 +86,8 @@
 .eid-config-card__country {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  justify-content: center;
   gap: var(--spacing-16);
   padding: var(--spacing-12) var(--spacing-32) var(--padding-xl);
 }
@@ -95,18 +97,30 @@
   max-width: 100%;
 }
 
-#eid-country-info {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-#eid-country-info[hidden] {
-  display: none !important;
-}
-
 .eid-country {
   width: 100%;
   max-width: 100%;
+}
+
+.eid-country .tds-combobox__menu {
+  max-height: 280px;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--elevation-xl);
+}
+
+.eid-country .tds-combobox__menu .tds-dropdown-panel,
+#eid-country-list {
+  max-height: 280px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  background-color: transparent;
 }
 
 .eid-country .tds-combobox__leading-visual {
@@ -175,6 +189,7 @@
 .eid-config-card__settings {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   gap: var(--spacing-16);
   padding: var(--padding-2xl);
   border-top: 1px solid var(--border-subtle);
@@ -326,7 +341,7 @@
   flex-direction: column;
   gap: var(--spacing-12);
   max-width: 100%;
-  padding: 0 var(--spacing-160);
+  padding: 0 var(--eid-form-inset-x);
 }
 
 .eid-redirect-copy__title {
@@ -372,8 +387,16 @@
 
 /* Figma 2976:57599 — flow panel: 24px padding, 32px header→content gap */
 #eid-flow-view {
+  --eid-flow-padding-x: var(--spacing-280);
+  --eid-flow-padding-y: var(--spacing-64);
+  --eid-form-inset-x: var(--spacing-160);
+  --eid-details-inset-x: 15rem; /* 240px */
   gap: var(--padding-2xl);
   padding: var(--padding-xl);
+}
+
+#eid-flow-view:has(#eid-step-simulated:not([hidden])) {
+  gap: var(--spacing-32);
 }
 
 #eid-flow-view .dv-flow-header {
@@ -381,25 +404,42 @@
   width: 100%;
 }
 
-/* Figma 2976:57610 — 200px horizontal inset; config/redirect stay vertically centered */
+/* Figma 3262:56003 — responsive horizontal inset, 64px vertical inset */
 #eid-flow-view .dv-flow-content {
   flex: 1;
   justify-content: center;
   align-items: center;
-  padding: 0 clamp(var(--spacing-32), 12vw, var(--spacing-200));
+  padding: var(--eid-flow-padding-y) var(--eid-flow-padding-x);
   width: 100%;
   overflow: visible;
 }
 
-/* Simulated flow: top-aligned block with 48px inset from header area */
+/* Simulated flow: top-aligned step block, 32px below page header */
 #eid-flow-view .dv-flow-content:has(#eid-step-simulated:not([hidden])) {
   justify-content: flex-start;
-  padding-top: var(--spacing-48);
+  padding: 0 var(--eid-flow-padding-x) var(--eid-flow-padding-y);
 }
 
-/* Figma 2976:57610 — 64px gap between progress indicator and card */
+@media (max-width: 1280px) {
+  #eid-flow-view {
+    --eid-flow-padding-x: var(--spacing-160);
+    --eid-form-inset-x: var(--spacing-96);
+    --eid-details-inset-x: var(--spacing-160);
+  }
+}
+
+@media (max-width: 1024px) {
+  #eid-flow-view {
+    --eid-flow-padding-x: var(--spacing-64);
+    --eid-flow-padding-y: var(--spacing-48);
+    --eid-form-inset-x: var(--spacing-32);
+    --eid-details-inset-x: var(--spacing-64);
+  }
+}
+
+/* Figma 3262:56278 — 48px gap between progress indicator and card */
 #eid-step-simulated {
-  gap: var(--spacing-64);
+  gap: var(--spacing-48);
   width: 100%;
   max-width: 896px;
 }
@@ -416,6 +456,7 @@
 
 .eid-sim-panel.dv-flow-card {
   max-width: 895px;
+  min-height: 468px;
   flex-shrink: 0;
 }
 
@@ -475,6 +516,7 @@
 }
 
 .eid-bank-body {
+  justify-content: center;
   padding: var(--spacing-64) var(--spacing-32);
 }
 
@@ -577,7 +619,7 @@
   gap: var(--spacing-24);
   width: 100%;
   box-sizing: border-box;
-  padding-inline: var(--spacing-160);
+  padding-inline: var(--eid-form-inset-x);
 }
 
 .eid-stage--loading .eid-stage__copy {
@@ -600,7 +642,7 @@
   max-width: none;
   width: 100%;
   box-sizing: border-box;
-  padding-inline: var(--spacing-160);
+  padding-inline: var(--eid-form-inset-x);
 }
 
 .eid-stage__heading {
@@ -676,7 +718,8 @@
 }
 
 .eid-details-body {
-  padding: var(--spacing-64) 240px;
+  justify-content: center;
+  padding: var(--spacing-64) var(--eid-details-inset-x);
 }
 
 .eid-details-grid {
@@ -769,6 +812,7 @@
 .eid-share {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: var(--spacing-16);
   padding: var(--spacing-64) var(--spacing-32);
   overflow-y: auto;
@@ -970,6 +1014,13 @@
 }
 
 @media (max-width: 720px) {
+  #eid-flow-view {
+    --eid-flow-padding-x: 0;
+    --eid-flow-padding-y: 0;
+    --eid-form-inset-x: var(--spacing-32);
+    --eid-details-inset-x: var(--spacing-32);
+  }
+
   .eid-country {
     width: 100%;
   }
@@ -977,11 +1028,10 @@
   #eid-flow-view .dv-flow-content {
     flex: none;
     justify-content: flex-start;
-    padding: 0;
   }
 
   #eid-flow-view .dv-flow-content:has(#eid-step-simulated:not([hidden])) {
-    padding-top: 0;
+    padding: 0;
   }
 
   #eid-step-simulated {
@@ -1007,7 +1057,7 @@
   }
 
   .eid-loading-content {
-    padding-inline: var(--spacing-32);
+    padding-inline: var(--eid-form-inset-x);
   }
 
   .eid-sim-panel .dv-flow-card__footer {
@@ -1027,10 +1077,6 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .eid-details-body {
-    padding-inline: var(--spacing-32);
-  }
-
   .eid-otp-inputs {
     gap: var(--spacing-8);
   }
@@ -1041,7 +1087,7 @@
   }
 
   .eid-stage__copy--wide {
-    padding-inline: var(--spacing-32);
+    padding-inline: var(--eid-form-inset-x);
   }
 
   .eid-stage--hero,
@@ -1058,36 +1104,24 @@
 }
 
 /* Result view — summary sidebar + signals data table */
-#eid-summary-header.dv-summary-status-header {
+#eid-summary-header.dv-summary-status-header:not(.dv-summary-status-header--positive):not(.dv-summary-status-header--intermediate):not(.dv-summary-status-header--negative) {
   background-color: var(--surface-neutral-02);
 }
 
-#eid-summary-header .dv-summary-status__label {
+#eid-summary-header.dv-summary-status-header:not(.dv-summary-status-header--positive):not(.dv-summary-status-header--intermediate):not(.dv-summary-status-header--negative) .dv-summary-status__label {
   color: var(--text-default);
 }
+
+#eid-summary-header.dv-summary-status-header--positive { background-color: var(--surface-positive); }
+#eid-summary-header.dv-summary-status-header--intermediate { background-color: var(--surface-intermediate); }
+#eid-summary-header.dv-summary-status-header--negative { background-color: var(--surface-negative); }
+#eid-summary-header.dv-summary-status-header--positive .dv-summary-status__label { color: var(--text-positive); }
+#eid-summary-header.dv-summary-status-header--intermediate .dv-summary-status__label { color: var(--text-intermediate); }
+#eid-summary-header.dv-summary-status-header--negative .dv-summary-status__label { color: var(--text-negative); }
 
 #eid-summary-rows[hidden],
 #eid-truai-card[hidden] {
   display: none !important;
-}
-
-#eid-summary-block.eid-summary-block--solo:not(.eid-summary-block--truai-open) {
-  gap: 0;
-  padding-bottom: 0;
-}
-
-#eid-summary-block.eid-summary-block--solo:not(.eid-summary-block--truai-open) .dv-summary-status-header {
-  margin-bottom: 0;
-  border-bottom: none;
-}
-
-#eid-summary-block.eid-summary-block--solo.eid-summary-block--truai-open {
-  gap: var(--spacing-16);
-  padding-bottom: var(--spacing-16);
-}
-
-#eid-summary-block.eid-summary-block--solo.eid-summary-block--truai-open .dv-summary-status-header {
-  border-bottom: 1px solid var(--border-subtle);
 }
 
 .eid-signals-table {

@@ -40,8 +40,6 @@
   }
 
   function dataReturnedForSignal(label, scenario, kind) {
-    if (kind === "declined") return "Not returned";
-    if (kind === "review") return "Partial match";
     var name = detailValue(scenario.clientDetails, "Full name");
     var dob = detailValue(scenario.clientDetails, "Date of birth");
     var address = detailValue(scenario.clientDetails, "Address");
@@ -73,6 +71,35 @@
   ];
 
   var PORTRAIT_COUNTRY_CODES = { in: true };
+
+  var ASSURANCE_BY_COUNTRY = {
+    nl: "Substantial",
+    be: "High",
+    it: "Substantial",
+    de: "Substantial",
+    se: "Substantial",
+    at: "High",
+    bg: "Substantial",
+    cz: "Substantial",
+    dk: "Substantial",
+    ee: "High",
+    fi: "High",
+    fr: "High",
+    pt: "High",
+    lv: "Substantial",
+    lt: "High",
+    no: "High",
+    pl: "Substantial"
+  };
+
+  function assuranceTone(level) {
+    if (!level) return null;
+    var normalized = String(level).toLowerCase();
+    if (normalized === "high") return "positive";
+    if (normalized === "substantial") return "intermediate";
+    if (normalized === "low") return "negative";
+    return null;
+  }
 
   var SPLIT_DEFAULT_END = 353;
   var SPLIT_MIN_START = 240;
@@ -323,6 +350,7 @@
       };
     }
     scenario.documentType = PORTRAIT_COUNTRY_CODES[code] ? "document-portrait" : null;
+    scenario.assuranceLevel = ASSURANCE_BY_COUNTRY[code] || null;
     return scenario;
   }
 
@@ -404,16 +432,9 @@
       "</tr></thead><tbody>" + rows + "</tbody></table></div></div>";
   }
 
-  function updateSummaryPanel(showDi, rowCount) {
-    var summaryBlock = byId("eid-summary-block");
-    var summaryRowsWrap = byId("eid-summary-rows");
+  function updateSummaryPanel() {
     var truaiCard = byId("eid-truai-card");
     var truaiPill = byId("eid-truai-pill");
-    if (summaryRowsWrap) summaryRowsWrap.hidden = rowCount <= 1;
-    if (summaryBlock) {
-      summaryBlock.classList.toggle("eid-summary-block--solo", rowCount <= 1);
-      summaryBlock.classList.remove("eid-summary-block--truai-open");
-    }
     if (truaiPill) {
       truaiPill.setAttribute("aria-expanded", "false");
       truaiPill.classList.remove("dv-truai-pill--open");
@@ -427,14 +448,19 @@
     setText(byId("eid-person-name"), scenario.personName);
     setText(byId("eid-transaction-id"), scenario.transactionId);
 
+    var assuranceLevel = scenario.assuranceLevel;
+    var headerTone = assuranceTone(assuranceLevel);
+    var headerLabel = byId("eid-summary-block-label");
+    if (headerLabel) headerLabel.textContent = assuranceLevel ? "Assurance level" : "Result";
+
     var summaryHeader = byId("eid-summary-header");
     if (summaryHeader) {
-      summaryHeader.className = "dv-summary-status-header";
+      summaryHeader.className = "dv-summary-status-header" + (headerTone ? " dv-summary-status-header--" + headerTone : "");
     }
     var summaryStatus = byId("eid-summary-status");
     if (summaryStatus) {
       summaryStatus.className = "dv-summary-status";
-      summaryStatus.innerHTML = renderSummaryStatus(RESULT_STATUS);
+      summaryStatus.innerHTML = renderSummaryStatus(assuranceLevel || RESULT_STATUS);
     }
 
     setText(byId("eid-truai-title"), scenario.truAiTitle);
@@ -442,7 +468,7 @@
     var summaryRows = buildSummaryRows(scenario, showDi);
     var summaryList = byId("eid-summary-list");
     if (summaryList) setHtml(summaryList, renderSummaryList(summaryRows));
-    updateSummaryPanel(showDi, summaryRows.length);
+    updateSummaryPanel();
     setHtml(byId("eid-client-details"), renderDetailPairs(buildClientDetails(flowCountry, provider)));
 
     currentSignals = buildSignals(scenario);
@@ -773,8 +799,6 @@
         card.hidden = !willOpen;
         pill.setAttribute("aria-expanded", String(willOpen));
         pill.classList.toggle("dv-truai-pill--open", willOpen);
-        var summaryBlock = byId("eid-summary-block");
-        if (summaryBlock) summaryBlock.classList.toggle("eid-summary-block--truai-open", willOpen);
         return;
       }
 

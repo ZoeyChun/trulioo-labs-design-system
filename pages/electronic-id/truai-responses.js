@@ -48,7 +48,8 @@
   }
 
   function statusTone(status) {
-    if (/completed|verified|accepted/i.test(status)) return "low";
+    if (/completed|verified|accepted|substantial|high/i.test(status)) return "low";
+    if (/^low$/i.test(status)) return "medium";
     if (/review|partial/i.test(status)) return "medium";
     return "high";
   }
