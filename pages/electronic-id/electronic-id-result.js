@@ -72,12 +72,7 @@
     "Postal Code", "City", "Region", "Country of Residence", "Provider Match", "Consent Timestamp"
   ];
 
-  var DOCUMENT_BY_COUNTRY = {
-    in: "passport",
-    be: "drivers-license",
-    pl: "drivers-license",
-    cz: "drivers-license"
-  };
+  var PORTRAIT_COUNTRY_CODES = { in: true };
 
   var SPLIT_DEFAULT_END = 353;
   var SPLIT_MIN_START = 240;
@@ -327,7 +322,7 @@
         diLabel: "Low Risk"
       };
     }
-    scenario.documentType = DOCUMENT_BY_COUNTRY[code] || null;
+    scenario.documentType = PORTRAIT_COUNTRY_CODES[code] ? "document-portrait" : null;
     return scenario;
   }
 
@@ -576,33 +571,23 @@
   }
 
   function applyDocumentSection(scenario) {
-    var docType = scenario && scenario.documentType;
-    var showDocument = docType === "drivers-license" || docType === "passport";
+    var showPortrait = scenario && scenario.documentType === "document-portrait";
     var panelBody = byId("eid-eid-panel-body");
     var divider = byId("eid-eid-split-divider");
     var viewer = byId("eid-eid-document-viewer");
     var indicators = byId("eid-eid-indicators");
-    var title = byId("eid-document-title");
-    var frontLabel = byId("eid-document-front-label");
-    var backFigure = byId("eid-document-back");
 
     if (panelBody) {
-      panelBody.classList.toggle("dv-split-pane", showDocument);
-      if (showDocument) panelBody.setAttribute("data-split-pane", "");
+      panelBody.classList.toggle("dv-split-pane", showPortrait);
+      if (showPortrait) panelBody.setAttribute("data-split-pane", "");
       else panelBody.removeAttribute("data-split-pane");
     }
-    if (indicators) indicators.classList.toggle("dv-split-pane__start", showDocument);
-    if (divider) divider.hidden = !showDocument;
-    if (viewer) viewer.hidden = !showDocument;
-
-    if (showDocument) {
-      if (title) title.textContent = docType === "passport" ? "Passport" : "Driver\u2019s License";
-      if (frontLabel) frontLabel.textContent = docType === "passport" ? "Document" : "Front of Document";
-      if (backFigure) backFigure.hidden = docType !== "drivers-license";
+    if (indicators) indicators.classList.toggle("dv-split-pane__start", showPortrait);
+    if (divider) divider.hidden = !showPortrait;
+    if (viewer) viewer.hidden = !showPortrait;
+    if (showPortrait) {
       sharedSplitEnd = SPLIT_DEFAULT_END;
       syncEidSplitPane();
-    } else if (backFigure) {
-      backFigure.hidden = true;
     }
   }
 
