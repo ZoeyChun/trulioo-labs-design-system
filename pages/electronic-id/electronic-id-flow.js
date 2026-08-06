@@ -51,7 +51,7 @@
     email: "jane.doe@email.com"
   };
 
-  var REDIRECT_DESC = "This option will connect you to an external {provider} site to complete your verification. Rest assured, we do not retain any of your information.";
+  var REDIRECT_DESC = "This option will connect you to an external {provider} site to complete your verification.";
 
   var state = {
     country: null,
@@ -261,6 +261,24 @@
   }
 
   /* ===================================================================
+     Verification mode radio cards
+     =================================================================== */
+  function initVerificationMode() {
+    var inputs = document.querySelectorAll('input[name="eid-verification-mode"]');
+    if (!inputs.length) return;
+    inputs.forEach(function (input) {
+      input.addEventListener("change", function () {
+        document.querySelectorAll('input[name="eid-verification-mode"]').forEach(function (radio) {
+          var card = radio.closest(".tds-radio-card");
+          if (card) card.classList.toggle("tds-radio-card--selected", radio.checked);
+        });
+        state.simulated = input.value === "simulated";
+        onSimulatedModeChange();
+      });
+    });
+  }
+
+  /* ===================================================================
      Switches
      =================================================================== */
   function bindSwitch(trackId, stateKey) {
@@ -272,7 +290,6 @@
       track.setAttribute("aria-checked", String(next));
       track.classList.toggle("tds-switch__track--on", next);
       state[stateKey] = next;
-      if (stateKey === "simulated") onSimulatedModeChange();
     });
   }
 
@@ -870,52 +887,12 @@
   }
 
   /* ===================================================================
-     Tooltips
-     =================================================================== */
-  var floatingTooltipEl = null;
-
-  function ensureFloatingTooltip() {
-    if (!floatingTooltipEl) {
-      floatingTooltipEl = document.createElement("div");
-      floatingTooltipEl.className = "eid-floating-tooltip";
-      floatingTooltipEl.setAttribute("role", "tooltip");
-      floatingTooltipEl.hidden = true;
-      document.body.appendChild(floatingTooltipEl);
-    }
-    return floatingTooltipEl;
-  }
-
-  function bindFloatingTooltip(el, text) {
-    if (!el || !text) return;
-    function show() {
-      var tip = ensureFloatingTooltip();
-      tip.textContent = text;
-      tip.hidden = false;
-      var rect = el.getBoundingClientRect();
-      tip.style.left = Math.max(8, rect.left + rect.width / 2) + "px";
-      tip.style.top = rect.top + "px";
-      tip.style.transform = "translate(-50%, calc(-100% - 8px))";
-    }
-    function hide() {
-      if (floatingTooltipEl) floatingTooltipEl.hidden = true;
-    }
-    el.addEventListener("mouseenter", show);
-    el.addEventListener("focus", show);
-    el.addEventListener("mouseleave", hide);
-    el.addEventListener("blur", hide);
-  }
-
-  function initSimulatedDataTooltip() {
-    bindFloatingTooltip(
-      byId("eid-simulated-info"),
-      "Preview the verification flow with demo data. Steps are simulated so you can explore the experience without connecting to a live identity provider."
-    );
-  }
-
-  /* ===================================================================
      Navigation wiring
      =================================================================== */
   function initNav() {
+    var configBack = byId("eid-config-back");
+    if (configBack) configBack.addEventListener("click", function () { history.back(); });
+
     var configNext = byId("eid-config-next");
     if (configNext) {
       configNext.addEventListener("click", function () {
@@ -950,14 +927,13 @@
      =================================================================== */
   document.addEventListener("DOMContentLoaded", function () {
     initCountry();
-    bindSwitch("eid-simulated-toggle", "simulated");
+    initVerificationMode();
     bindSwitch("eid-device-toggle", "deviceIntelligence");
     initSelectionGrids();
     initProviderDialog();
     initDenyDialog();
     initExitSimDialog();
     initSimActions();
-    initSimulatedDataTooltip();
     initNav();
     updateConfigNext();
     updateCountryFieldTag();

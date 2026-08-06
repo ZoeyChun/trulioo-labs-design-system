@@ -13,7 +13,7 @@
   flex-direction: column;
   width: 100%;
   max-width: 895px;
-  min-height: 468px;
+  min-height: auto;
   height: auto;
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-3xl);
@@ -33,7 +33,6 @@
 .eid-config-card__header {
   display: flex;
   align-items: center;
-  gap: var(--gap-lg);
   padding: var(--padding-xl) var(--spacing-32);
 }
 
@@ -47,22 +46,42 @@
   color: var(--text-default);
 }
 
-.eid-config-card__header-actions {
+.eid-config-section__label {
+  padding: var(--spacing-12) var(--spacing-32);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.eid-config-section__body {
+  padding: 0 var(--spacing-32) var(--spacing-24);
+}
+
+.eid-config-radio-row {
   display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: flex-end;
+  gap: var(--spacing-12);
+  align-items: stretch;
+}
+
+.eid-config-radio-row .tds-radio-card {
+  flex: 1 1 0;
   min-width: 0;
+  gap: var(--padding-md);
+  padding: var(--padding-md);
+  align-items: flex-start;
 }
 
-.eid-simulated-info {
-  cursor: help;
+.eid-config-radio-row .tds-radio-card .tds-radio {
+  margin-top: 0;
 }
 
-.eid-simulated-info:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 2px;
-  border-radius: var(--radius-xs);
+.eid-config-radio-row .tds-radio-card__content {
+  gap: var(--spacing-8);
+}
+
+.eid-config-radio-row .tds-radio-card__label-row {
+  gap: var(--spacing-8);
 }
 
 .eid-floating-tooltip {
@@ -83,18 +102,9 @@
 }
 
 /* --- Country field --- */
-.eid-config-card__country {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: center;
-  gap: var(--spacing-16);
-  padding: var(--spacing-12) var(--spacing-32) var(--padding-xl);
-}
-
-.eid-country-fields {
-  width: 410px;
-  max-width: 100%;
+.eid-config-section__body .eid-country {
+  width: calc((100% - var(--spacing-16)) / 2);
+  max-width: calc((100% - var(--spacing-16)) / 2);
 }
 
 .eid-country {
@@ -185,45 +195,41 @@
   padding: var(--padding-xs);
 }
 
-/* --- Additional settings --- */
+/* --- Device Intelligence panel --- */
 .eid-config-card__settings {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  gap: var(--spacing-16);
-  padding: var(--padding-2xl);
+  padding: var(--spacing-24) var(--spacing-32);
   border-top: 1px solid var(--border-subtle);
 }
 
-.eid-settings-panel {
+.eid-device-panel {
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-8);
+  min-height: 80px;
+  padding: var(--spacing-16);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  justify-content: center;
 }
 
-.eid-settings-row {
+.eid-device-panel__header {
   display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-24);
-  padding: var(--padding-md) var(--padding-lg);
-  border-bottom: 1px solid var(--border-subtle);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16);
 }
 
-.eid-settings-row:last-child {
-  border-bottom: none;
-}
-
-.eid-settings-row__content {
+.eid-device-panel__title-row {
   display: flex;
-  flex: 1;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--spacing-8);
   min-width: 0;
 }
 
-.eid-settings-row__icon {
+.eid-device-panel__icon {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
@@ -232,33 +238,29 @@
   height: 16px;
 }
 
-.eid-settings-row__icon img {
+.eid-device-panel__icon img {
   display: block;
   width: 16px;
   height: 16px;
 }
 
-.eid-settings-row__text {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--spacing-4);
-  min-width: 0;
-}
-
-.eid-settings-row__title {
+.eid-device-panel__title {
   margin: 0;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   color: var(--text-default);
 }
 
-.eid-settings-row__desc {
+.eid-device-panel__desc {
   margin: 0;
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
   color: var(--text-description);
+}
+
+.eid-device-panel__switch {
+  flex-shrink: 0;
 }
 
 /* --- Card footer --- */
@@ -267,17 +269,12 @@
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
-  padding: var(--gap-lg) var(--padding-2xl);
+  padding: var(--spacing-16) var(--spacing-32);
   background-color: var(--surface-neutral-03);
 }
 
-.eid-config-card__footer--next-only {
-  justify-content: flex-end;
-}
-
-.eid-config-card__footer-spacer {
-  width: 65px;
-  flex-shrink: 0;
+.eid-config-card__footer .tds-btn {
+  border-radius: var(--radius-lg);
 }
 
 /* --- Redirect step --- */
@@ -1019,6 +1016,15 @@
     --eid-flow-padding-y: 0;
     --eid-form-inset-x: var(--spacing-32);
     --eid-details-inset-x: var(--spacing-32);
+  }
+
+  .eid-config-section__body .eid-country {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .eid-config-radio-row {
+    flex-direction: column;
   }
 
   .eid-country {

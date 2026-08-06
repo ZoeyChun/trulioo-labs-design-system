@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="../../Components/progress-indicator/progress-indicator.css">
   <link rel="stylesheet" href="../../Components/switch/switch.css">
   <link rel="stylesheet" href="../../Components/radio-group/radio-group.css">
+  <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="../../Components/text-input/text-input.css">
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="../../Components/dialog/dialog.css">
@@ -213,31 +214,18 @@
             <div class="eid-config-card" aria-labelledby="eid-config-title">
               <div class="eid-config-card__header">
                 <h2 class="eid-config-card__title" id="eid-config-title">Verification settings</h2>
-                <div class="eid-config-card__header-actions">
-                  <label class="tds-switch">
-                    <span class="tds-switch__label-group">
-                      Simulated data
-                      <span class="tds-switch__icon eid-simulated-info" id="eid-simulated-info" tabindex="0" role="button" aria-label="About simulated data">
-                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.25v3.5M8 5.5h.01" stroke-linecap="round"/></svg>
-                      </span>
-                    </span>
-                    <button type="button" class="tds-switch__track tds-switch__track--sm" id="eid-simulated-toggle" role="switch" aria-checked="false" aria-label="Simulated data">
-                      <span class="tds-switch__indicator" aria-hidden="true"></span>
-                      <span class="tds-switch__handle" aria-hidden="true"></span>
-                    </button>
-                  </label>
-                </div>
               </div>
 
-              <div class="eid-config-card__country">
-                <div class="eid-country-fields">
-                  <div class="tds-combobox eid-country" id="eid-country">
-                    <label class="tds-field-label" for="eid-country-input">Country</label>
+              <div class="eid-config-section">
+                <div class="eid-config-section__label" id="eid-country-label">Country</div>
+                <div class="eid-config-section__body">
+                  <div class="tds-combobox eid-country" id="eid-country" aria-labelledby="eid-country-label">
                     <div class="tds-combobox__field tds-combobox__field--lg">
                       <span class="tds-combobox__leading-visual eid-country__flag" hidden></span>
                       <input class="tds-combobox__input" id="eid-country-input" type="text"
                              placeholder="Type country" autocomplete="off"
-                             role="combobox" aria-expanded="false" aria-controls="eid-country-list" aria-label="Country">
+                             role="combobox" aria-expanded="false" aria-controls="eid-country-list"
+                             aria-labelledby="eid-country-label" aria-label="Country">
                       <span class="tds-combobox__trailing-group">
                         <span class="tds-tag tds-tag--sm eid-country__provider-tag eid-country__field-tag" id="eid-country-provider-tag" hidden></span>
                         <span class="tds-caret tds-caret--default" aria-hidden="true">
@@ -252,19 +240,48 @@
                 </div>
               </div>
 
+              <div class="eid-config-section">
+                <div class="eid-config-section__label" id="eid-verification-mode-label">Verification Mode</div>
+                <div class="eid-config-section__body">
+                  <div class="eid-config-radio-row" role="radiogroup" aria-labelledby="eid-verification-mode-label">
+                    <label class="tds-radio-card tds-radio-card--selected">
+                      <input class="tds-radio" type="radio" name="eid-verification-mode" value="provider" checked>
+                      <span class="tds-radio-card__content">
+                        <span class="tds-radio-card__label-row">
+                          <span class="tds-radio-card__icon" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M2.5 2V7H7V8.5H0.65625C0.90625 9.09375 1.5 9.5 2.1875 9.5H7V11H2.1875C0.4375 11 -1 9.5625 -1 7.8125C-1 7.375 -0.625 7 -0.1875 7H1V2C1 0.90625 1.90625 0 3 0H12C13.0938 0 14 0.90625 14 2V3.5H12.5V2C12.5 1.71875 12.2812 1.5 12 1.5H3C2.71875 1.5 2.5 1.71875 2.5 2ZM10.5 14.5H14C14.2812 14.5 14.5 14.2812 14.5 14V7C14.5 6.71875 14.2812 6.5 14 6.5H10.5C10.2188 6.5 10 6.71875 10 7V14C10 14.2812 10.2188 14.5 10.5 14.5ZM10.5 5H14C15.0938 5 16 5.90625 16 7V14C16 15.0938 15.0938 16 14 16H10.5C9.40625 16 8.5 15.0938 8.5 14V7C8.5 5.90625 9.40625 5 10.5 5ZM11.75 12H12.75C13.1562 12 13.5 12.3438 13.5 12.75C13.5 13.1562 13.1562 13.5 12.75 13.5H11.75C11.3438 13.5 11 13.1562 11 12.75C11 12.3438 11.3438 12 11.75 12Z" fill="currentColor"/></svg>
+                          </span>
+                          <span class="tds-radio-card__label">Validate with provider</span>
+                        </span>
+                        <span class="tds-radio-card__description">This option will connect you to an external provider site to complete your verification.</span>
+                      </span>
+                    </label>
+                    <label class="tds-radio-card">
+                      <input class="tds-radio" type="radio" name="eid-verification-mode" value="simulated">
+                      <span class="tds-radio-card__content">
+                        <span class="tds-radio-card__label-row">
+                          <span class="tds-radio-card__icon" aria-hidden="true">
+                            <svg width="12" height="16" viewBox="0 0 12 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.1875 0.21875L11.1875 7.71875C11.4688 7.90625 11.5625 8.25 11.4688 8.5625C11.3438 8.84375 11.0625 9.0625 10.75 9.0625H5.71875L8.65625 14.9688C8.84375 15.3438 8.71875 15.7812 8.34375 15.9688C7.96875 16.1562 7.5 16.0312 7.34375 15.6562L4.375 9.71875L1.34375 13.75C1.15625 14.0312 0.8125 14.125 0.5 14.0312C0.21875 13.9375 0 13.625 0 13.3125V0.8125C0 0.53125 0.15625 0.28125 0.40625 0.15625C0.65625 0 0.96875 0.03125 1.1875 0.21875ZM1.5 11.0625L3.90625 7.875C4.03125 7.6875 4.25 7.5625 4.5 7.5625H8.5L1.5 2.3125V11.0625Z" fill="currentColor"/></svg>
+                          </span>
+                          <span class="tds-radio-card__label">Validate using simulated data</span>
+                        </span>
+                        <span class="tds-radio-card__description">This option lets you explore a preview of the e-ID experience through our demo tool.</span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               <div class="eid-config-card__settings">
-                <div class="eid-settings-panel">
-                  <div class="eid-settings-row">
-                    <div class="eid-settings-row__content">
-                      <span class="eid-settings-row__icon" aria-hidden="true">
+                <div class="eid-device-panel">
+                  <div class="eid-device-panel__header">
+                    <div class="eid-device-panel__title-row">
+                      <span class="eid-device-panel__icon" aria-hidden="true">
                         <img src="assets/device-intelligence-icon.svg" width="16" height="16" alt="">
                       </span>
-                      <div class="eid-settings-row__text">
-                        <p class="eid-settings-row__title">Device Intelligence</p>
-                        <p class="eid-settings-row__desc">Collect device signals for fraud detection.</p>
-                      </div>
+                      <p class="eid-device-panel__title">Device Intelligence</p>
                     </div>
-                    <label class="tds-switch">
+                    <label class="tds-switch eid-device-panel__switch">
                       <span class="tds-switch__label-group">Enable</span>
                       <button type="button" class="tds-switch__track tds-switch__track--sm" id="eid-device-toggle" role="switch" aria-checked="false" aria-label="Enable Device Intelligence">
                         <span class="tds-switch__indicator" aria-hidden="true"></span>
@@ -272,11 +289,12 @@
                       </button>
                     </label>
                   </div>
+                  <p class="eid-device-panel__desc">Collect device signals for fraud detection</p>
                 </div>
               </div>
 
-              <div class="eid-config-card__footer eid-config-card__footer--next-only">
-                <span class="eid-config-card__footer-spacer" aria-hidden="true"></span>
+              <div class="eid-config-card__footer">
+                <button class="tds-btn tds-btn--secondary tds-btn--lg eid-config-card__back" type="button" id="eid-config-back">Back</button>
                 <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="eid-config-next" aria-disabled="true">Next</button>
               </div>
             </div>
@@ -297,7 +315,7 @@
                 </div>
                 <div class="eid-redirect-copy">
                   <p class="eid-redirect-copy__title" id="eid-redirect-title">You&rsquo;ll be asked to validate with iDIN</p>
-                  <p class="eid-redirect-copy__desc" id="eid-redirect-desc">This option will connect you to an external iDIN site to complete your verification. Rest assured, we do not retain any of your information.</p>
+                  <p class="eid-redirect-copy__desc" id="eid-redirect-desc">This option will connect you to an external iDIN site to complete your verification.</p>
                 </div>
               </div>
 
