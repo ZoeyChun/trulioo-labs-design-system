@@ -72,7 +72,12 @@
     "Postal Code", "City", "Region", "Country of Residence", "Provider Match", "Consent Timestamp"
   ];
 
-  var DOCUMENT_COUNTRY_CODES = { in: true, be: true, pl: true, cz: true };
+  var DOCUMENT_BY_COUNTRY = {
+    in: "passport",
+    be: "drivers-license",
+    pl: "drivers-license",
+    cz: "drivers-license"
+  };
 
   var SPLIT_DEFAULT_END = 353;
   var SPLIT_MIN_START = 240;
@@ -103,7 +108,6 @@
     in: {
       overallStatus: "Declined",
       overallTone: "negative",
-      hasDocument: true,
       personName: "Arjun Mehta",
       transactionId: "f3a91c02-6d44-4b8e-9f12-0c8e5d4a7210",
       truAiTitle: "Verification declined",
@@ -123,7 +127,6 @@
     be: {
       overallStatus: "Verified",
       overallTone: "positive",
-      hasDocument: true,
       personName: "Lucas Janssens",
       transactionId: "b7e4a1d0-3c92-4f6a-8e55-2d1f9a0b6c78",
       truAiTitle: "Verification complete",
@@ -143,7 +146,6 @@
     cz: {
       overallStatus: "Review",
       overallTone: "intermediate",
-      hasDocument: true,
       personName: "Eva Nov\u00e1kov\u00e1",
       transactionId: "c1d8f902-7a3b-4e6c-9d21-5f0b3e8a1247",
       truAiTitle: "Review recommended",
@@ -221,7 +223,6 @@
     pl: {
       overallStatus: "Review",
       overallTone: "intermediate",
-      hasDocument: true,
       personName: "Anna Kowalska",
       transactionId: "f6d9b125-3b4a-6e7f-c098-504e1b2f7890",
       truAiTitle: "Partial verification",
@@ -326,7 +327,7 @@
         diLabel: "Low Risk"
       };
     }
-    if (DOCUMENT_COUNTRY_CODES[code]) scenario.hasDocument = true;
+    scenario.documentType = DOCUMENT_BY_COUNTRY[code] || null;
     return scenario;
   }
 
@@ -575,11 +576,15 @@
   }
 
   function applyDocumentSection(scenario) {
-    var showDocument = !!(scenario && scenario.hasDocument);
+    var docType = scenario && scenario.documentType;
+    var showDocument = docType === "drivers-license" || docType === "passport";
     var panelBody = byId("eid-eid-panel-body");
     var divider = byId("eid-eid-split-divider");
     var viewer = byId("eid-eid-document-viewer");
     var indicators = byId("eid-eid-indicators");
+    var title = byId("eid-document-title");
+    var frontLabel = byId("eid-document-front-label");
+    var backFigure = byId("eid-document-back");
 
     if (panelBody) {
       panelBody.classList.toggle("dv-split-pane", showDocument);
@@ -589,9 +594,15 @@
     if (indicators) indicators.classList.toggle("dv-split-pane__start", showDocument);
     if (divider) divider.hidden = !showDocument;
     if (viewer) viewer.hidden = !showDocument;
+
     if (showDocument) {
+      if (title) title.textContent = docType === "passport" ? "Passport" : "Driver\u2019s License";
+      if (frontLabel) frontLabel.textContent = docType === "passport" ? "Document" : "Front of Document";
+      if (backFigure) backFigure.hidden = docType !== "drivers-license";
       sharedSplitEnd = SPLIT_DEFAULT_END;
       syncEidSplitPane();
+    } else if (backFigure) {
+      backFigure.hidden = true;
     }
   }
 

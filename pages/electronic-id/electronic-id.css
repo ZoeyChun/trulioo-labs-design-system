@@ -842,7 +842,8 @@
 
 #eid-result-tabs[hidden],
 #eid-eid-split-divider[hidden],
-#eid-eid-document-viewer[hidden] {
+#eid-eid-document-viewer[hidden],
+#eid-document-back[hidden] {
   display: none !important;
 }
 

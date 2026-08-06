@@ -637,10 +637,10 @@
                   </div>
                   <div class="dv-split-pane__divider" id="eid-eid-split-divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0" hidden></div>
                   <div class="dv-viewer dv-split-pane__end" id="eid-eid-document-viewer" hidden>
-                    <h3 class="dv-section-title">Driver&rsquo;s License</h3>
-                    <figure class="dv-doc-image">
+                    <h3 class="dv-section-title" id="eid-document-title">Driver&rsquo;s License</h3>
+                    <figure class="dv-doc-image" id="eid-document-front">
                       <figcaption class="dv-doc-image__caption">
-                        Front of Document
+                        <span id="eid-document-front-label">Front of Document</span>
                         <button class="dv-icon-btn" type="button" aria-label="Expand front of document">
                           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
                         </button>
@@ -660,7 +660,7 @@
                         </svg>
                       </div>
                     </figure>
-                    <figure class="dv-doc-image">
+                    <figure class="dv-doc-image" id="eid-document-back">
                       <figcaption class="dv-doc-image__caption">
                         Back of Document
                         <button class="dv-icon-btn" type="button" aria-label="Expand back of document">
