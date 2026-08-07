@@ -51,12 +51,32 @@ body {
    -------------------------------------------------------- */
 
 .bv-main {
+  position: relative;
   align-items: center;
   gap: var(--gap-2xl);
   padding: var(--padding-xl);
-  background-color: var(--surface-neutral-02);
+  background-color: var(--surface-neutral-01);
   border-radius: var(--radius-section);
   box-shadow: var(--elevation-md);
+}
+
+/* Figma 3273:57823 — dual glow overlay at 50% opacity (behind panel content) */
+.bv-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.5;
+  pointer-events: none;
+  background-image: var(--surface-flow-glow);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.bv-main > * {
+  position: relative;
+  z-index: 1;
 }
 
 .bv-header {
@@ -131,9 +151,10 @@ body {
   flex-direction: column;
   width: 100%;
   max-width: var(--bv-form-max-width);
-  background-color: var(--surface-neutral-01);
+  background-color: var(--color-white);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-3xl);
-  box-shadow: var(--elevation-sm);
+  box-shadow: var(--elevation-lg);
   overflow: hidden;
 }
 

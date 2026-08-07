@@ -15,9 +15,10 @@
   max-width: 895px;
   min-height: auto;
   height: auto;
-  background-color: var(--surface-neutral-01);
+  background-color: var(--color-white);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-3xl);
-  box-shadow: var(--elevation-sm);
+  box-shadow: var(--elevation-lg);
   overflow: hidden;
 }
 

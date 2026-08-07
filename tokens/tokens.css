@@ -240,6 +240,9 @@
     0 24px 48px -8px rgba(0, 0, 0, 0.16),
     0 8px 16px -4px rgba(0, 0, 0, 0.08);
 
+  /* Figma 3273:57823 — dual glow (top-right + bottom-left rotated) at 50% opacity */
+  --surface-flow-glow: url("data:image/svg+xml;utf8,<svg viewBox='0 0 1344 1008' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><defs><radialGradient id='glow-tr' gradientUnits='userSpaceOnUse' cx='0' cy='0' r='10' gradientTransform='matrix(117.1 -6.04 5.436 105.39 1293 -242)'><stop stop-color='rgba(93,221,198,0.5)' offset='0'/><stop stop-color='rgba(140,166,229,0.2)' offset='0.5'/><stop stop-color='rgba(178,191,229,0)' offset='1'/></radialGradient><radialGradient id='glow-bl' gradientUnits='userSpaceOnUse' cx='0' cy='0' r='10' gradientTransform='matrix(112 0 0 100.8 1344 -302.4)'><stop stop-color='rgba(93,221,198,0.5)' offset='0'/><stop stop-color='rgba(126,165,231,0.2)' offset='0.5'/><stop stop-color='rgba(178,191,229,0)' offset='1'/></radialGradient></defs><rect x='0' y='0' width='100%25' height='100%25' fill='url(%23glow-tr)'/><g transform='rotate(180 672 504)'><rect x='0' y='0' width='100%25' height='100%25' fill='url(%23glow-bl)'/></g></svg>");
+
 
   /* --------------------------------------------------------
      COMPONENT SHADOWS (from Figma effect styles)
