@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "node ../scripts/build-component-tracker.mjs && node ../scripts/extract-docs-react.mjs && node ../scripts/build-docs-search-index.mjs && node ../scripts/generate-docs-react-styles.mjs && vite build",
+    "dev": "vite dev.html",
+    "build": "node ../scripts/build-component-tracker.mjs && node ../scripts/extract-docs-react.mjs && node ../scripts/build-docs-search-index.mjs && node ../scripts/generate-docs-react-styles.mjs && vite build && node ../scripts/finalize-docs-build.mjs",
     "build:search": "node ../scripts/build-docs-search-index.mjs",
     "build:tracker": "node ../scripts/build-component-tracker.mjs",
     "preview": "vite preview"

@@ -29,12 +29,31 @@ Opens at **http://localhost:5175/**
 ## Build
 
 ```bash
-cd pages/preview/docs && npm run build
+cd Documentation && npm install && npm run build
 ```
 
-Output: `pages/preview/docs-dist/`
+Output: `Documentation/dist/` (committed for GitHub Pages)
 
-GitHub Pages entry: `pages/preview/index-docs.html` → `docs-dist/index.html`
+## Live URLs (GitHub Pages)
+
+| Entry | URL |
+|-------|-----|
+| Documentation (redirect) | `/Documentation/` |
+| Built site | `/Documentation/dist/` |
+| Repo root (redirect) | `/` |
+| Legacy shortcut | `/pages/preview/index-docs.html` |
+
+After push to `main`, open:
+
+**https://zoeychun.github.io/trulioo-labs-design-system/Documentation/dist/**
+
+## Run locally
+
+```bash
+cd Documentation && npm install && npm run dev
+```
+
+Opens **http://localhost:5175/dev.html**
 
 ## Main preview vs docs
 

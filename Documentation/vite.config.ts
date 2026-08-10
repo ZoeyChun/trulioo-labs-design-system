@@ -36,7 +36,7 @@ function serveRepoAssets(): Plugin {
       });
     },
     closeBundle() {
-      const outAssets = path.resolve(__dirname, "../docs-dist/assets");
+      const outAssets = path.resolve(__dirname, "dist/assets");
       fs.cpSync(ASSETS_DIR, outAssets, { recursive: true });
     },
   };
@@ -46,12 +46,15 @@ export default defineConfig({
   plugins: [react(), serveRepoAssets()],
   base: "./",
   build: {
-    outDir: "../docs-dist",
+    outDir: "dist",
     emptyOutDir: true,
+    rollupOptions: {
+      input: path.resolve(__dirname, "dev.html"),
+    },
   },
   server: {
     port: 5175,
-    open: "/",
+    open: "/dev.html",
     fs: {
       allow: [ROOT],
     },
