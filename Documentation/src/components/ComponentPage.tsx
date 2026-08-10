@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { rewritePreviewAssetPaths } from "../utils/assets";
 import { ChapterHeader } from "./ChapterHeader";
 import { chapterIdForComponent } from "../data/component-chapters";
 import { filterShowcasesForComponent, findTrackerComponent } from "../data/component-nav";
@@ -126,7 +127,7 @@ function A11ySection({ pageLabel }: { pageLabel: string }) {
 function ShowcaseBlock({ showcase }: { showcase: PreviewShowcase }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const html = useMemo(
-    () => showcase.html.replace(/\.\.\/\.\.\/assets\//g, "/assets/"),
+    () => rewritePreviewAssetPaths(showcase.html),
     [showcase.html],
   );
 
@@ -346,7 +347,7 @@ export function ComponentPage({ section, page, active }: ComponentPageProps) {
     }
   };
 
-  const rawHtml = section.html.replace(/\.\.\/\.\.\/assets\//g, "/assets/");
+  const rawHtml = rewritePreviewAssetPaths(section.html);
 
   return (
     <div

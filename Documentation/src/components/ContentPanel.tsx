@@ -1,5 +1,6 @@
 import { ChapterHeader } from "./ChapterHeader";
 import type { PreviewSection } from "../data/sections";
+import { rewritePreviewAssetPaths } from "../utils/assets";
 
 type ContentPanelProps = {
   section: PreviewSection;
@@ -7,7 +8,7 @@ type ContentPanelProps = {
 };
 
 export function ContentPanel({ section, active }: ContentPanelProps) {
-  const html = section.html.replace(/\.\.\/\.\.\/assets\//g, "/assets/");
+  const html = rewritePreviewAssetPaths(section.html);
 
   return (
     <div

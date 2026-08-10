@@ -38,16 +38,16 @@ Output: `Documentation/dist/` (committed for GitHub Pages)
 
 | Entry | URL |
 |-------|-----|
-| Documentation (redirect) | `/Documentation/` |
-| Built site | `/Documentation/dist/` |
+| Documentation | `/Documentation/dist/` |
 | Repo root (redirect) | `/` |
+| Classic HTML preview | `/pages/preview/index.html` |
 | Legacy shortcut | `/pages/preview/index-docs.html` |
 
 After push to `main`, open:
 
 **https://zoeychun.github.io/trulioo-labs-design-system/Documentation/dist/**
 
-## Run locally
+GitHub Actions deploys a combined artifact (docs + preview pages). The root URL redirects into `Documentation/dist/`.
 
 ```bash
 cd Documentation && npm install && npm run dev

@@ -1,3 +1,5 @@
+import { assetUrl } from "../../utils/assets";
+
 const homeIcon = (
   <svg className="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M2.5 6.5 8 2l5.5 4.5V13a1 1 0 0 1-1 1H3.5a1 1 0 0 1-1-1V6.5z" />
@@ -48,11 +50,11 @@ export function SideNavAnatomySpecimen() {
         <div className="tds-side-nav__header">
           <button type="button" className="tds-side-nav__brand" aria-expanded="true">
             <span className="tds-side-nav__logo">
-              <img src="/assets/trulioo-logo-mark.svg" alt="Trulioo" width="40" height="40" />
+              <img src={assetUrl("trulioo-logo-mark.svg")} alt="Trulioo" width="40" height="40" />
             </span>
             <span className="tds-side-nav__brand-expanded">
               <span className="tds-side-nav__brand-logo">
-                <img src="/assets/trulioo-labs-logo.svg" alt="Trulioo Labs" width="152" height="24" />
+                <img src={assetUrl("trulioo-labs-logo.svg")} alt="Trulioo Labs" width="152" height="24" />
               </span>
             </span>
           </button>
