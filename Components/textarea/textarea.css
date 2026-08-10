@@ -1,0 +1,156 @@
+@import '../_shared/field-label/field-label.css';
+@import '../_shared/field-caption/field-caption.css';
+@import '../_shared/field-validation/field-validation.css';
+
+/* ============================================================
+   Textarea
+   States: default | focus | disabled
+   Validation: none | invalid | success
+   Options: caption, contrast background
+   Figma: Textarea (3358:26529)
+   ============================================================ */
+
+.tds-textarea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  width: 100%;
+  max-width: 100%;
+  font-family: var(--font-family);
+}
+
+.tds-textarea__field {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-height: 48px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-inset);
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.tds-textarea__native {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  margin: 0;
+  padding: 5px var(--padding-sm);
+  padding-right: calc(var(--padding-sm) + 10px);
+  border: none;
+  outline: none;
+  resize: vertical;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-default);
+}
+
+.tds-textarea__native::placeholder {
+  color: var(--text-placeholder);
+}
+
+.tds-textarea__grip {
+  position: absolute;
+  right: 4px;
+  bottom: 6px;
+  width: 5px;
+  height: 5px;
+  pointer-events: none;
+  color: var(--icon-faint);
+  opacity: 0.72;
+}
+
+.tds-textarea__grip svg {
+  display: block;
+  width: 5px;
+  height: 5px;
+}
+
+/* --- Focus --- */
+
+.tds-textarea__field:focus-within,
+.tds-textarea__field--focus {
+  border-color: var(--border-focus);
+  border-width: 2px;
+  box-shadow: none;
+}
+
+.tds-textarea__field:focus-within .tds-textarea__native,
+.tds-textarea__field--focus .tds-textarea__native {
+  padding: 4px calc(var(--padding-sm) - 1px);
+  padding-right: calc(var(--padding-sm) + 9px);
+  min-height: 36px;
+}
+
+.tds-textarea__field:focus-within .tds-textarea__grip,
+.tds-textarea__field--focus .tds-textarea__grip {
+  right: 3px;
+  bottom: 5px;
+}
+
+/* --- Disabled --- */
+
+.tds-textarea--disabled .tds-field-label {
+  color: var(--text-disabled);
+}
+
+.tds-textarea--disabled .tds-textarea__field {
+  background-color: var(--surface-disabled);
+  border-color: var(--border-subtle);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.tds-textarea--disabled .tds-textarea__native {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  resize: none;
+}
+
+.tds-textarea--disabled .tds-textarea__native::placeholder {
+  color: var(--text-disabled);
+}
+
+/* --- Validation --- */
+
+.tds-textarea--invalid .tds-textarea__field {
+  border-color: var(--border-negative);
+}
+
+.tds-textarea--success .tds-textarea__field {
+  border-color: var(--border-positive);
+}
+
+/* --- Contrast background (demo / inset panels) --- */
+
+.tds-textarea--contrast .tds-textarea__field::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background-color: var(--surface-neutral-02);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.tds-textarea--contrast .tds-textarea__native,
+.tds-textarea--contrast .tds-textarea__grip {
+  position: relative;
+  z-index: 1;
+}
+
+.tds-textarea__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}

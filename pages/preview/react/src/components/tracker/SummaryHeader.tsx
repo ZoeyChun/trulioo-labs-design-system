@@ -39,41 +39,29 @@ export function SummaryHeader({ summary }: SummaryHeaderProps) {
       </article>
 
       <article className="tds-preview__tracker-metric">
-        <span className="tds-preview__tracker-metric-label">Preview adoption</span>
-        <strong className="tds-preview__tracker-metric-value">{summary.adoption.preview.percent}%</strong>
+        <span className="tds-preview__tracker-metric-label">Demo pages</span>
+        <strong className="tds-preview__tracker-metric-value">{summary.demoPageCount}</strong>
         <ProgressBar
-          value={summary.adoption.preview.percent}
-          label={`Preview adoption: ${summary.adoption.preview.percent}%`}
-          tone="positive"
-        />
-        <span className="tds-preview__tracker-metric-meta">
-          {summary.adoption.preview.used} of {summary.adoption.preview.total} built
-        </span>
-      </article>
-
-      <article className="tds-preview__tracker-metric">
-        <span className="tds-preview__tracker-metric-label">BV adoption</span>
-        <strong className="tds-preview__tracker-metric-value">{summary.adoption.bv.percent}%</strong>
-        <ProgressBar
-          value={summary.adoption.bv.percent}
-          label={`BV adoption: ${summary.adoption.bv.percent}%`}
+          value={summary.demoPageCount}
+          max={Math.max(summary.demoPageCount, 1)}
+          label={`Demo pages tracked: ${summary.demoPageCount}`}
           tone="intermediate"
         />
         <span className="tds-preview__tracker-metric-meta">
-          {summary.adoption.bv.used} of {summary.adoption.bv.total} built
+          Auto-discovered under pages/
         </span>
       </article>
 
       <article className="tds-preview__tracker-metric">
-        <span className="tds-preview__tracker-metric-label">DV adoption</span>
-        <strong className="tds-preview__tracker-metric-value">{summary.adoption.dv.percent}%</strong>
+        <span className="tds-preview__tracker-metric-label">Avg DS adoption</span>
+        <strong className="tds-preview__tracker-metric-value">{summary.avgAdoptionPercent}%</strong>
         <ProgressBar
-          value={summary.adoption.dv.percent}
-          label={`DV adoption: ${summary.adoption.dv.percent}%`}
+          value={summary.avgAdoptionPercent}
+          label={`Average DS adoption: ${summary.avgAdoptionPercent}%`}
           tone="brand"
         />
         <span className="tds-preview__tracker-metric-meta">
-          {summary.adoption.dv.used} of {summary.adoption.dv.total} built
+          Across {summary.builtForAdoption} built components
         </span>
       </article>
     </div>

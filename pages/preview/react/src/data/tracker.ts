@@ -1,5 +1,14 @@
 import trackerData from "./component-tracker.json";
 
+export type TrackerPage = {
+  id: string;
+  label: string;
+  path: string;
+  used: number;
+  total: number;
+  percent: number;
+};
+
 export type TrackerComponent = {
   id: string;
   name: string;
@@ -12,9 +21,7 @@ export type TrackerComponent = {
   figmaNodeId?: string;
   notes?: string;
   cssStatus: string;
-  usedInPreview: boolean;
-  usedInBV: boolean;
-  usedInDV: boolean;
+  usedInPages: Record<string, boolean>;
 };
 
 export type TrackerPlanned = {
@@ -34,16 +41,15 @@ export type TrackerSummary = {
   figmaDone: number;
   figmaEligible: number;
   figmaDonePercent: number;
-  adoption: {
-    preview: { used: number; total: number; percent: number };
-    bv: { used: number; total: number; percent: number };
-    dv: { used: number; total: number; percent: number };
-  };
+  demoPageCount: number;
+  avgAdoptionPercent: number;
+  builtForAdoption: number;
 };
 
 export type ComponentTrackerData = {
   lastBuiltAt: string;
   summary: TrackerSummary;
+  pages: TrackerPage[];
   components: TrackerComponent[];
   planned: TrackerPlanned[];
   warnings: string[];

@@ -8,7 +8,7 @@ import path from "node:path";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const COMPONENTS = path.join(ROOT, "Components");
-const OUT = path.join(ROOT, "pages/preview/docs/src/styles/tds-imports.ts");
+const OUT = path.join(ROOT, "Documentation/src/styles/tds-imports.ts");
 
 const NESTED_SKIP = new Set([
   "tabs/tab-item/tab-item.css",
@@ -43,7 +43,7 @@ function discoverComponentImports() {
         base === folderName || SECONDARY_ENTRIES.has(relPath);
       if (!isPrimary) continue;
 
-      imports.push(`import "../../../../../Components/${relPath}";`);
+      imports.push(`import "../../../Components/${relPath}";`);
     }
   }
 
@@ -55,10 +55,10 @@ const componentImports = discoverComponentImports();
 
 const body = `/* AUTO-GENERATED — run: node scripts/generate-docs-react-styles.mjs */
 
-import "../../../../../tokens/fonts.css";
-import "../../../../../tokens/tokens.css";
-import "../../../../shared/tds-shared-atoms.css";
-import "../../../../../assets/flag-icons/css/flag-icons.min.css";
+import "../../../tokens/fonts.css";
+import "../../../tokens/tokens.css";
+import "../../../pages/shared/tds-shared-atoms.css";
+import "../../../assets/flag-icons/css/flag-icons.min.css";
 
 ${componentImports.join("\n")}
 `;

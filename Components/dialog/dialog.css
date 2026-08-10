@@ -1,6 +1,6 @@
 /* ============================================================
    Dialog
-   Figma: Dialog (1654:27850)
+   Figma: Dialog (1654:28553)
    Sub-parts: _Dialog/Header (1658:26195), _Dialog/Body (1660:26204),
               _Dialog/Footer (1659:26198)
    Sizes:    sm (320) | md (480) | lg (640) | xl (960)
@@ -72,17 +72,31 @@ body.tds-dialog-open {
 
 .tds-dialog--left .tds-dialog__backdrop {
   justify-content: flex-start;
+  padding: var(--padding-sm) 0 var(--padding-sm) var(--padding-sm);
 }
 
 .tds-dialog--right .tds-dialog__backdrop {
   justify-content: flex-end;
+  padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) 0;
+}
+
+/* Xlarge left drawer is flush to the viewport edge (Figma). */
+.tds-dialog--left.tds-dialog--xl .tds-dialog__backdrop {
+  padding-left: 0;
 }
 
 .tds-dialog--left .tds-dialog__panel,
 .tds-dialog--right .tds-dialog__panel {
   height: 100%;
   max-height: none;
-  border-radius: 0;
+}
+
+.tds-dialog--left.tds-dialog--xl .tds-dialog__panel {
+  border-radius: 0 var(--radius-modal) var(--radius-modal) 0;
+}
+
+.tds-dialog--right.tds-dialog--xl .tds-dialog__panel {
+  border-radius: var(--radius-modal) 0 0 var(--radius-modal);
 }
 
 /* --- Position: bottom sheet --- */
@@ -90,12 +104,13 @@ body.tds-dialog-open {
 .tds-dialog--bottom .tds-dialog__backdrop {
   align-items: flex-end;
   justify-content: center;
+  padding: 0 var(--padding-sm) var(--padding-sm);
 }
 
 .tds-dialog--bottom .tds-dialog__panel {
   width: 100%;
   max-width: 100%;
-  border-radius: var(--radius-modal) var(--radius-modal) 0 0;
+  border-radius: var(--radius-modal);
 }
 
 /* --- Position: full screen --- */
@@ -210,19 +225,21 @@ body.tds-dialog-open {
   color: var(--text-body);
 }
 
+/* Badge slot uses Tag styling from Figma */
 .tds-dialog__badge {
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  padding: var(--spacing-2) var(--padding-sm);
+  padding: var(--spacing-4) var(--padding-sm);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-badge);
-  background-color: var(--interactive-subtle);
+  background-color: var(--surface-neutral-02);
   font-family: var(--font-family);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
   font-weight: var(--font-weight-medium);
   font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-body);
+  color: var(--text-description);
   white-space: nowrap;
 }
 
@@ -231,7 +248,6 @@ body.tds-dialog-open {
   align-items: center;
   gap: var(--gap-sm);
   flex-shrink: 0;
-  margin-left: auto;
 }
 
 .tds-dialog__dismiss {

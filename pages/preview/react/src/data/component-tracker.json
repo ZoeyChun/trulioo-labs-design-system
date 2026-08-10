@@ -1,31 +1,83 @@
 {
-  "lastBuiltAt": "2026-07-27T19:01:37.089Z",
+  "lastBuiltAt": "2026-08-10T21:15:00.211Z",
   "summary": {
-    "totalComponents": 50,
-    "cssDone": 46,
+    "totalComponents": 52,
+    "cssDone": 48,
     "cssPartial": 0,
     "cssNotStarted": 3,
-    "figmaDone": 50,
-    "figmaEligible": 50,
+    "figmaDone": 52,
+    "figmaEligible": 52,
     "figmaDonePercent": 100,
-    "adoption": {
-      "preview": {
-        "used": 42,
-        "total": 45,
-        "percent": 93
-      },
-      "bv": {
-        "used": 14,
-        "total": 45,
-        "percent": 31
-      },
-      "dv": {
-        "used": 15,
-        "total": 45,
-        "percent": 33
-      }
-    }
+    "demoPageCount": 8,
+    "avgAdoptionPercent": 33,
+    "builtForAdoption": 47
   },
+  "pages": [
+    {
+      "id": "bank-verification",
+      "label": "Bank Verification",
+      "path": "pages/bank-verification",
+      "used": 14,
+      "total": 47,
+      "percent": 30
+    },
+    {
+      "id": "preview",
+      "label": "Component preview",
+      "path": "pages/preview",
+      "used": 44,
+      "total": 47,
+      "percent": 94
+    },
+    {
+      "id": "document-verification",
+      "label": "Document Verification",
+      "path": "pages/document-verification",
+      "used": 15,
+      "total": 47,
+      "percent": 32
+    },
+    {
+      "id": "electronic-id",
+      "label": "Electronic Id",
+      "path": "pages/electronic-id",
+      "used": 12,
+      "total": 47,
+      "percent": 26
+    },
+    {
+      "id": "experiments-ubo-graph",
+      "label": "Experiments · Ubo Graph",
+      "path": "pages/Experiments/ubo-graph",
+      "used": 1,
+      "total": 47,
+      "percent": 2
+    },
+    {
+      "id": "kyb-results",
+      "label": "KYB Results",
+      "path": "pages/KYB Results",
+      "used": 23,
+      "total": 47,
+      "percent": 49
+    },
+    {
+      "id": "kyc-form",
+      "label": "Kyc Form",
+      "path": "pages/kyc-form",
+      "used": 13,
+      "total": 47,
+      "percent": 28
+    },
+    {
+      "id": "unified-intelligence-home",
+      "label": "Unified Intelligence Home",
+      "path": "pages/unified-intelligence-home",
+      "used": 3,
+      "total": 47,
+      "percent": 6
+    }
+  ],
   "components": [
     {
       "id": "button",
@@ -40,9 +92,16 @@
       "figmaNodeId": "96:2225",
       "notes": "4 variants x 3 sizes x 5 states + alignment; loading boolean with spinner",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "icon-button",
@@ -57,9 +116,16 @@
       "figmaNodeId": "1371:22653",
       "notes": "4 variants x 3 sizes x 7 states x 2 shapes; loading swaps icon for .tds-spinner--xs",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "button-group",
@@ -75,9 +141,40 @@
       "figmaNodeId": "1952:33320",
       "notes": "Segmented control; iconButtons, buttons, or mixed; count 2–5",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
+    },
+    {
+      "id": "segmented-control",
+      "name": "SegmentedControl",
+      "category": "Core Controls",
+      "figmaStatus": "Done",
+      "figmaVariants": 18,
+      "cssFile": "segmented-control/segmented-control.css",
+      "classPrefixes": [
+        "tds-segmented-control"
+      ],
+      "figmaNodeId": "3367:27333",
+      "notes": "Text or icon-only segments; medium and small; 2–6 items on neutral track",
+      "cssStatus": "Done",
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "spinner",
@@ -93,9 +190,16 @@
       "figmaNodeId": "2092:18230",
       "notes": "5 sizes (xs–xl); optional label block; used by Button and IconButton loading",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "button-menu",
@@ -111,9 +215,16 @@
       "figmaNodeId": "832:13390",
       "notes": "Uses dropdown-panel for menu",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "switch",
@@ -127,9 +238,16 @@
       ],
       "figmaNodeId": "96:3234",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "checkbox",
@@ -143,9 +261,16 @@
       ],
       "figmaNodeId": "299:12998",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "dismiss-action",
@@ -159,9 +284,16 @@
       ],
       "figmaNodeId": "331:8149",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "text-input",
@@ -177,9 +309,41 @@
       "figmaNodeId": "96:3268",
       "notes": "Imports shared atoms via @import",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
+    },
+    {
+      "id": "textarea",
+      "name": "Textarea",
+      "category": "Form Inputs",
+      "figmaStatus": "Done",
+      "figmaVariants": 10,
+      "cssFile": "textarea/textarea.css",
+      "classPrefixes": [
+        "tds-textarea"
+      ],
+      "subComponents": "FieldLabel, FieldCaption, FieldValidation",
+      "figmaNodeId": "3358:26529",
+      "notes": "Multi-line field with resize grip, validation, and caption",
+      "cssStatus": "Done",
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "select",
@@ -196,9 +360,16 @@
       "figmaNodeId": "96:1624",
       "notes": "Includes combobox variant",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "date-picker",
@@ -214,9 +385,16 @@
       "figmaNodeId": "1632:29292",
       "notes": "Single and range calendar variants",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "radio",
@@ -231,9 +409,16 @@
       "figmaNodeId": "100:4253",
       "notes": "Shared atom",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "radio-group",
@@ -248,9 +433,16 @@
       "subComponents": "Radio",
       "figmaNodeId": "100:4222",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "radio-card",
@@ -266,9 +458,16 @@
       "figmaNodeId": "359:3332",
       "notes": "single-selection (radio) or multi-selection (checkbox)",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "field-label",
@@ -283,9 +482,16 @@
       "figmaNodeId": "107:2085",
       "notes": "Used by TextInput, Select",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "field-caption",
@@ -299,9 +505,16 @@
       ],
       "notes": "Used by TextInput, Select",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "field-validation",
@@ -316,9 +529,16 @@
       "figmaNodeId": "107:2078",
       "notes": "Used by TextInput, Select",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "caret",
@@ -333,9 +553,16 @@
       "figmaNodeId": "640:9140",
       "notes": "Used by Select, Tooltip",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "dropdown-panel",
@@ -351,9 +578,16 @@
       "figmaNodeId": "320:21652",
       "notes": "MenuType text|multiSelect|icon|flag; GroupHeading caption header + optional Clear all link; 30px items at 4px inset. Positioning via dropdown-panel.js. Used by Select, ButtonMenu, FilterButton, SortButton",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "tag",
@@ -368,9 +602,16 @@
       "figmaNodeId": "331:8199",
       "notes": "Used by Select, Accordion",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "ai-tag",
@@ -385,9 +626,16 @@
       "figmaNodeId": "1821:33907",
       "notes": "TruAI badge; sparkles icon always required",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "side-nav",
@@ -404,9 +652,16 @@
       "figmaNodeId": "1188:10384",
       "notes": "3 modes: expanded, collapsed, mobile",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": true,
+        "unified-intelligence-home": true
+      }
     },
     {
       "id": "nav-item",
@@ -420,9 +675,16 @@
       ],
       "notes": "Nested under side-nav/",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": true,
+        "unified-intelligence-home": true
+      }
     },
     {
       "id": "nav-list",
@@ -436,9 +698,16 @@
       ],
       "notes": "Nested under side-nav/",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "tabs",
@@ -453,9 +722,16 @@
       "subComponents": "TabItem",
       "figmaNodeId": "405:8964",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "tab-item",
@@ -470,9 +746,16 @@
       "figmaNodeId": "403:5492",
       "notes": "Nested under tabs/",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "filter-tab",
@@ -488,9 +771,16 @@
       "subComponents": "FilterTabsItem",
       "figmaNodeId": "844:6968",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "breadcrumb",
@@ -505,9 +795,16 @@
       "figmaNodeId": "1596:23587",
       "notes": "BreadCrumbs container, item, and divider",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "filter-tab-2",
@@ -519,9 +816,16 @@
       "notes": "Shares CSS file with FilterTabs; adoption tracked on FilterTabs",
       "classPrefixes": [],
       "cssStatus": "Done",
-      "usedInPreview": false,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": false,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "data-table",
@@ -538,9 +842,16 @@
       "figmaNodeId": "884:13685",
       "notes": "Complex composite with many sub-components",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "data-field",
@@ -554,9 +865,16 @@
       ],
       "figmaNodeId": "856:13029",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "counter-label",
@@ -570,9 +888,16 @@
       ],
       "figmaNodeId": "409:9115",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "section-header",
@@ -587,9 +912,16 @@
       "figmaNodeId": "1816:29234",
       "notes": "Groups table sections; composes Tag, Counter, Button",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "dismiss-issue-badge",
@@ -603,9 +935,16 @@
       ],
       "figmaNodeId": "331:8174",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "flag-icon",
@@ -621,9 +960,16 @@
       "figmaNodeId": "299:8750",
       "notes": "255 country codes",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": true,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": true,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": true,
+        "kyb-results": true,
+        "kyc-form": true,
+        "unified-intelligence-home": true
+      }
     },
     {
       "id": "action-list-item",
@@ -637,9 +983,16 @@
       ],
       "notes": "Used inside DropdownPanel",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "stat-card",
@@ -653,9 +1006,16 @@
       ],
       "figmaNodeId": "915:9281",
       "cssStatus": "Done",
-      "usedInPreview": false,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": false,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "tooltip",
@@ -671,9 +1031,16 @@
       "figmaNodeId": "1054:18565",
       "notes": "Body + Caret sub-components",
       "cssStatus": "Done",
-      "usedInPreview": false,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": false,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "announcement",
@@ -687,9 +1054,16 @@
       ],
       "figmaNodeId": "866:13118",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "accordion",
@@ -705,9 +1079,16 @@
       "figmaNodeId": "810:5659",
       "notes": "Complex component with many states",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "dialog",
@@ -723,9 +1104,16 @@
       "figmaNodeId": "1654:27850",
       "notes": "Center sizes sm–xl, left/right drawers, bottom sheet, full screen; header badge + trailing slots; footer label/caption + up to 3 buttons",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "progress-indicator",
@@ -741,9 +1129,16 @@
       "figmaNodeId": "1242:22104",
       "notes": "Horizontal step progress",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": true,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": true,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "step-progress",
@@ -756,9 +1151,16 @@
       "figmaNodeId": "1264:24192",
       "notes": "Figma only, CSS pending",
       "cssStatus": "Not Started",
-      "usedInPreview": false,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": false,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "listed-progress-item",
@@ -771,9 +1173,16 @@
       "figmaNodeId": "1267:24260",
       "notes": "Figma only, CSS pending",
       "cssStatus": "Not Started",
-      "usedInPreview": false,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": false,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "score-gauge",
@@ -787,9 +1196,16 @@
       ],
       "notes": "SVG-based, has JS + React variants",
       "cssStatus": "Done",
-      "usedInPreview": false,
-      "usedInBV": false,
-      "usedInDV": true
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": false,
+        "document-verification": true,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "score-card",
@@ -802,9 +1218,16 @@
       "figmaNodeId": "916:9298",
       "notes": "CSS pending",
       "cssStatus": "Not Started",
-      "usedInPreview": false,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": false,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "risk-category-card",
@@ -819,9 +1242,16 @@
       "figmaNodeId": "920:9307",
       "notes": "Category title, risk tag, signal count, and score out of 100",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "font-awesome-icon",
@@ -833,9 +1263,16 @@
       "figmaNodeId": "544:9787",
       "notes": "Icon system, no standalone CSS",
       "cssStatus": "N/A",
-      "usedInPreview": false,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": false,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "filter-button",
@@ -851,9 +1288,16 @@
       "figmaNodeId": "836:13511",
       "notes": "Selected trigger shows value + xmark clear; counter only with 2+ active filters (+N); clear resets all selections via tds-filter-clear",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     },
     {
       "id": "sort-button",
@@ -869,9 +1313,16 @@
       "figmaNodeId": "2191:46183",
       "notes": "Selected trigger shows sort value + xmark clear; open selected reverts label to Sort; clear resets via tds-sort-clear",
       "cssStatus": "Done",
-      "usedInPreview": true,
-      "usedInBV": false,
-      "usedInDV": false
+      "usedInPages": {
+        "bank-verification": false,
+        "preview": true,
+        "document-verification": false,
+        "electronic-id": false,
+        "experiments-ubo-graph": false,
+        "kyb-results": true,
+        "kyc-form": false,
+        "unified-intelligence-home": false
+      }
     }
   ],
   "planned": [
@@ -943,14 +1394,6 @@
       "notes": "For section separation"
     },
     {
-      "name": "Textarea",
-      "category": "Form Inputs",
-      "priority": "Medium",
-      "description": "Multi-line text input with auto-resize",
-      "dependsOn": "FieldLabel, FieldCaption, FieldValidation",
-      "notes": "For notes, comments"
-    },
-    {
       "name": "SearchInput",
       "category": "Form Inputs",
       "priority": "Medium",
@@ -995,13 +1438,6 @@
       "description": "Horizontal top navigation bar",
       "dependsOn": "Button, Avatar, Badge",
       "notes": "If app needs a top bar"
-    },
-    {
-      "name": "SegmentedControl",
-      "category": "Core Controls",
-      "priority": "Low",
-      "description": "Toggle between 2–5 mutually exclusive options",
-      "notes": "Alternative to Tabs for settings"
     },
     {
       "name": "Timeline",

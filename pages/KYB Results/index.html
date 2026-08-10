@@ -169,7 +169,7 @@
 
     </aside>
 
-    <main class="app-main dv-panel kyb-panel" data-active-tab="signals">
+    <main class="app-main dv-panel kyb-panel" data-active-tab="overview">
 
       <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -246,7 +246,11 @@
           <div class="tds-tabs__row">
             <button type="button" class="tds-tabs__overflow-btn" aria-label="Scroll tabs left" data-tabs-scroll="left"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5"/></svg></button>
             <div class="tds-tabs__list" role="tablist" aria-label="KYB results sections">
-              <button class="tds-tab-item tds-tab-item--active" type="button" role="tab" aria-selected="true" id="kyb-tab-signals" data-kyb-tab="signals" aria-controls="kyb-signals">
+              <button class="tds-tab-item tds-tab-item--active" type="button" role="tab" aria-selected="true" id="kyb-tab-overview" data-kyb-tab="overview" aria-controls="kyb-overview">
+                <span class="tds-tab-item__content">Overview</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="kyb-tab-signals" data-kyb-tab="signals" aria-controls="kyb-signals">
                 <span class="tds-tab-item__content">Signals</span>
                 <span class="tds-tab-item__indicator" aria-hidden="true"></span>
               </button>
@@ -320,7 +324,31 @@
                 </span>
               </button>
               <div class="tds-accordion__content">
-                <p class="tds-accordion__body">Meridian Apex Consulting Ltd. is an active but commercially dormant private company with no verifiable operating footprint. Ownership resolves through a BVI holding company to a single inferred beneficial owner.</p>
+                <div class="kyb-sidebar-summary">
+                  <p class="tds-announcement__message">Shell company indicators with no operating footprint and opaque offshore ownership.</p>
+                  <hr class="kyb-section-divider">
+                  <div class="kyb-sidebar-summary__findings">
+                    <div class="tds-announcement tds-announcement--error tds-announcement--inline kyb-sidebar-summary__finding kyb-sidebar-summary__finding--featured" role="status">
+                      <span class="tds-announcement__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>
+                      <div class="tds-announcement__content">
+                        <p class="tds-announcement__message">No verifiable business activity at registered address</p>
+                        <button type="button" class="tds-accordion__action" data-kyb-jump-tab="signals">View</button>
+                      </div>
+                    </div>
+                    <div class="tds-announcement tds-announcement--error tds-announcement--inline kyb-sidebar-summary__finding" role="status">
+                      <span class="tds-announcement__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>
+                      <div class="tds-announcement__content">
+                        <p class="tds-announcement__message">Ownership resolves through BVI holding, single inferred UBO</p>
+                      </div>
+                    </div>
+                    <div class="tds-announcement tds-announcement--error tds-announcement--inline kyb-sidebar-summary__finding" role="status">
+                      <span class="tds-announcement__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>
+                      <div class="tds-announcement__content">
+                        <p class="tds-announcement__message">Director linked to 3 dissolved entities</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </aside>
@@ -331,8 +359,250 @@
             </button>
 
             <div class="kyb-main-stack" id="kyb-tab-panels">
+              <!-- Overview -->
+              <section class="kyb-section" id="kyb-overview" data-kyb-tab="overview" role="tabpanel" aria-labelledby="kyb-tab-overview">
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Overview</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="kyb-section__body kyb-overview">
+                  <div class="tds-filter-tabs kyb-overview__view-switcher" role="tablist" aria-label="Overview view">
+                    <button type="button" class="tds-filter-tab tds-filter-tab--selected" role="tab" aria-selected="true" data-kyb-overview-view="risk">Risk</button>
+                    <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-kyb-overview-view="entity" disabled aria-disabled="true">Entity</button>
+                    <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-kyb-overview-view="verification" disabled aria-disabled="true">Verification</button>
+                  </div>
+
+                  <div class="kyb-overview-risk" data-kyb-overview-view-panel="risk">
+                    <article class="kyb-overview-hero" aria-label="Risk verdict">
+                      <div class="kyb-overview-hero__gauge-wrap">
+                        <div class="dv-di-gauge kyb-overview-hero__gauge" data-score="81" id="kyb-overview-gauge"></div>
+                      </div>
+                      <div class="kyb-overview-hero__content">
+                        <div class="kyb-overview-hero__head">
+                          <h3 class="kyb-overview-hero__title">Business Risk Score</h3>
+                          <span class="tds-ai-tag tds-ai-tag--sm"><span class="tds-ai-tag__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg></span><span class="tds-ai-tag__label">TruAI</span></span>
+                        </div>
+                        <div class="kyb-overview-hero__meta">
+                          <span class="kyb-overview-hero__confidence">Confidence: <strong>86%</strong></span>
+                          <span class="kyb-overview-hero__trend"><span class="kyb-score-card__trend-value">↑ 3 pts</span><span class="kyb-score-card__trend-label"> from last assessment</span></span>
+                          <button type="button" class="tds-accordion__action" data-kyb-jump-tab="sources">5 sources · 78% match</button>
+                        </div>
+                        <div class="tds-announcement tds-announcement--inline" role="status">
+                          <div class="tds-announcement__content">
+                            <p class="tds-announcement__message" id="kyb-overview-narrative">Meridian Apex Consulting Ltd. presents elevated onboarding risk driven by a commercially dormant operating profile and opaque offshore ownership structure. Registry data confirms active status, but no verifiable trading activity, an expired web presence, and micro-entity filings suggest a shell or pass-through entity rather than an active consultancy. Payment delinquencies and industry-activity mismatches further increase default and AML exposure.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+
+                    <div class="kyb-overview-category-grid" role="list" aria-label="Risk category scores">
+                      <button type="button" class="tds-risk-category-strip-card" role="listitem" data-kyb-signal-category="business-model" aria-label="Business Model, score 84 out of 100, 5 signals">
+                        <p class="tds-risk-category-strip-card__title">Business Model</p>
+                        <div class="tds-risk-category-strip-card__bottom">
+                          <div class="tds-risk-category-strip-card__score">
+                            <span class="tds-risk-category-strip-card__score-value">84</span>
+                            <span class="tds-risk-category-strip-card__score-suffix">/100</span>
+                          </div>
+                          <span class="tds-tag tds-tag--sm tds-tag--negative">High Risk</span>
+                        </div>
+                        <p class="kyb-overview-category-card__signals"><span class="tds-counter tds-counter--secondary tds-counter--sm">5</span> signals</p>
+                      </button>
+                      <button type="button" class="tds-risk-category-strip-card" role="listitem" data-kyb-signal-category="financial-health" aria-label="Financial Health, score 68 out of 100, 2 signals">
+                        <p class="tds-risk-category-strip-card__title">Financial Health</p>
+                        <div class="tds-risk-category-strip-card__bottom">
+                          <div class="tds-risk-category-strip-card__score">
+                            <span class="tds-risk-category-strip-card__score-value">68</span>
+                            <span class="tds-risk-category-strip-card__score-suffix">/100</span>
+                          </div>
+                          <span class="tds-tag tds-tag--sm tds-tag--negative">High Risk</span>
+                        </div>
+                        <p class="kyb-overview-category-card__signals"><span class="tds-counter tds-counter--secondary tds-counter--sm">2</span> signals</p>
+                      </button>
+                      <button type="button" class="tds-risk-category-strip-card" role="listitem" data-kyb-signal-category="fraud-financial-crimes" aria-label="Fraud and Financial Crimes, score 20 out of 100, 0 signals">
+                        <p class="tds-risk-category-strip-card__title">Fraud &amp; Financial Crimes</p>
+                        <div class="tds-risk-category-strip-card__bottom">
+                          <div class="tds-risk-category-strip-card__score">
+                            <span class="tds-risk-category-strip-card__score-value">20</span>
+                            <span class="tds-risk-category-strip-card__score-suffix">/100</span>
+                          </div>
+                          <span class="tds-tag tds-tag--sm tds-tag--positive">Low Risk</span>
+                        </div>
+                        <p class="kyb-overview-category-card__signals"><span class="tds-counter tds-counter--secondary tds-counter--sm">0</span> signals</p>
+                      </button>
+                    </div>
+
+                    <article class="kyb-overview-block">
+                      <div class="kyb-overview-block__head">
+                        <h3 class="kyb-subsection-title kyb-subsection-title--sm">Critical Findings</h3>
+                        <button type="button" class="tds-accordion__action" data-kyb-jump-tab="signals">View details</button>
+                      </div>
+                      <div class="tds-data-table-container kyb-overview-findings">
+                        <div class="tds-data-table__wrapper">
+                          <table class="tds-data-table tds-data-table--comfort">
+                            <thead>
+                              <tr>
+                                <th scope="col">Impact</th>
+                                <th scope="col">Signal</th>
+                                <th scope="col" class="tds-data-table__actions-col" aria-hidden="true"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td><span class="tds-data-table__signals tds-data-table__signals--negative"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11.5 6 8l2.5 2L13.5 4"/><path d="M10.5 4H13.5V7"/></svg></span>Increased</span></td>
+                                <td class="tds-data-table__text-cell">No verifiable operating footprint detected for the registered business activity.</td>
+                                <td data-align="right"><button type="button" class="tds-accordion__action" data-kyb-jump-tab="signals" data-kyb-jump-anchor="signal-operating-footprint">View in Signals</button></td>
+                              </tr>
+                              <tr>
+                                <td><span class="tds-data-table__signals tds-data-table__signals--negative"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11.5 6 8l2.5 2L13.5 4"/><path d="M10.5 4H13.5V7"/></svg></span>Increased</span></td>
+                                <td class="tds-data-table__text-cell">Stated industry classification does not align with observable business activity.</td>
+                                <td data-align="right"><button type="button" class="tds-accordion__action" data-kyb-jump-tab="signals" data-kyb-jump-signal-category="business-model">View in Signals</button></td>
+                              </tr>
+                              <tr>
+                                <td><span class="tds-data-table__signals tds-data-table__signals--negative"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11.5 6 8l2.5 2L13.5 4"/><path d="M10.5 4H13.5V7"/></svg></span>Increased</span></td>
+                                <td class="tds-data-table__text-cell">Company appears commercially dormant with no active trading indicators.</td>
+                                <td data-align="right"><button type="button" class="tds-accordion__action" data-kyb-jump-tab="signals" data-kyb-jump-signal-category="business-model">View in Signals</button></td>
+                              </tr>
+                              <tr>
+                                <td><span class="tds-data-table__signals tds-data-table__signals--negative"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11.5 6 8l2.5 2L13.5 4"/><path d="M10.5 4H13.5V7"/></svg></span>Increased</span></td>
+                                <td class="tds-data-table__text-cell">The business has an elevated risk of default based on its credit profile.</td>
+                                <td data-align="right"><button type="button" class="tds-accordion__action" data-kyb-jump-tab="signals" data-kyb-jump-signal-category="financial-health">View in Signals</button></td>
+                              </tr>
+                              <tr>
+                                <td><span class="tds-data-table__signals tds-data-table__signals--negative"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11.5 6 8l2.5 2L13.5 4"/><path d="M10.5 4H13.5V7"/></svg></span>Increased</span></td>
+                                <td class="tds-data-table__text-cell">Recent payment delinquencies reported against the entity.</td>
+                                <td data-align="right"><button type="button" class="tds-accordion__action" data-kyb-jump-tab="signals" data-kyb-jump-signal-category="financial-health">View in Signals</button></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </article>
+
+                    <div class="kyb-overview-grid-2">
+                      <article class="kyb-overview-block">
+                        <div class="kyb-overview-block__head">
+                          <h3 class="kyb-subsection-title kyb-subsection-title--sm">Ownership Flags</h3>
+                          <button type="button" class="tds-accordion__action" data-kyb-jump-tab="ownership" data-kyb-jump-anchor="ownership-table">View details</button>
+                        </div>
+                        <div class="kyb-overview-ownership">
+                          <div class="kyb-overview-ownership__summary">
+                            <span class="kyb-overview-ownership__label">UBOs identified</span>
+                            <span class="tds-counter tds-counter--secondary tds-counter--sm">1</span>
+                          </div>
+                          <ul class="kyb-overview-ownership__list">
+                            <li class="kyb-overview-ownership__item">
+                              <span class="kyb-overview-ownership__name">Apex Holdings BVI Ltd.</span>
+                              <span class="kyb-overview-ownership__pct">100%</span>
+                              <span class="tds-tag tds-tag--sm tds-tag--intermediate">Inferred</span>
+                            </li>
+                            <li class="kyb-overview-ownership__item">
+                              <span class="kyb-overview-ownership__name">James Whitmore</span>
+                              <span class="kyb-overview-ownership__pct">Director</span>
+                              <span class="tds-tag tds-tag--sm tds-tag--positive">Verified</span>
+                            </li>
+                          </ul>
+                          <div class="kyb-tag-row">
+                            <span class="tds-tag tds-tag--sm tds-tag--positive">No PEP matches</span>
+                            <span class="tds-tag tds-tag--sm tds-tag--positive">No sanctions</span>
+                          </div>
+                        </div>
+                      </article>
+
+                      <article class="kyb-overview-block">
+                        <div class="kyb-overview-block__head">
+                          <h3 class="kyb-subsection-title kyb-subsection-title--sm">Financial Red Flags</h3>
+                          <button type="button" class="tds-accordion__action" data-kyb-jump-tab="financial">View details</button>
+                        </div>
+                        <div class="kyb-overview-financial-flags">
+                          <div class="tds-stat-card tds-stat-card--negative">
+                            <p class="tds-stat-card__label">Revenue (latest)</p>
+                            <div class="tds-stat-card__value-group">
+                              <p class="tds-stat-card__value">£0</p>
+                              <p class="tds-stat-card__sub-label">FY 2025</p>
+                            </div>
+                            <div class="tds-stat-card__footer">
+                              <span class="tds-stat-card__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>
+                              <p class="tds-stat-card__description">Commercially dormant</p>
+                            </div>
+                          </div>
+                          <div class="tds-stat-card tds-stat-card--negative">
+                            <p class="tds-stat-card__label">Payment status</p>
+                            <div class="tds-stat-card__value-group">
+                              <p class="tds-stat-card__value">Delinquent</p>
+                              <p class="tds-stat-card__sub-label">Last 90 days</p>
+                            </div>
+                            <div class="tds-stat-card__footer">
+                              <span class="tds-stat-card__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>
+                              <p class="tds-stat-card__description">Recent delinquencies reported</p>
+                            </div>
+                          </div>
+                          <div class="tds-stat-card tds-stat-card--negative">
+                            <p class="tds-stat-card__label">Filing type</p>
+                            <div class="tds-stat-card__value-group">
+                              <p class="tds-stat-card__value">Micro-entity</p>
+                              <p class="tds-stat-card__sub-label">Latest accounts</p>
+                            </div>
+                            <div class="tds-stat-card__footer">
+                              <span class="tds-stat-card__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>
+                              <p class="tds-stat-card__description">Negligible turnover reported</p>
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+
+                    <article class="kyb-overview-block kyb-overview-block--flush">
+                      <div class="kyb-overview-block__head">
+                        <h3 class="kyb-subsection-title kyb-subsection-title--sm">Entity Summary</h3>
+                        <button type="button" class="tds-accordion__action" data-kyb-jump-tab="business-insights" data-kyb-jump-anchor="insight-company-status">View details</button>
+                      </div>
+                      <div class="tds-accordion tds-accordion--sm kyb-overview-entity-summary">
+                        <button type="button" class="tds-accordion__header" aria-expanded="false">
+                          <span class="tds-accordion__leading">
+                            <span class="tds-accordion__title">Industry, incorporation &amp; jurisdiction</span>
+                          </span>
+                          <span class="tds-accordion__trailing">
+                            <span class="tds-accordion__chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></span>
+                          </span>
+                        </button>
+                        <div class="tds-accordion__content" hidden>
+                          <div class="kyb-field-strip">
+                            <div class="kyb-field-strip__item">
+                              <div class="tds-data-field">
+                                <p class="tds-data-field__label">Industry</p>
+                                <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value" data-kyb-overview-field="industry">Management consultancy</p></div></div>
+                              </div>
+                            </div>
+                            <div class="kyb-field-strip__item">
+                              <div class="tds-data-field">
+                                <p class="tds-data-field__label">Incorporated</p>
+                                <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">12 Mar 2019</p></div></div>
+                              </div>
+                            </div>
+                            <div class="kyb-field-strip__item">
+                              <div class="tds-data-field">
+                                <p class="tds-data-field__label">Jurisdiction</p>
+                                <div class="tds-data-field__content">
+                                  <div class="tds-data-field__value-row">
+                                    <p class="tds-data-field__value" data-kyb-overview-field="jurisdiction">United Kingdom</p>
+                                    <span class="tds-select__country-flag" aria-hidden="true"><span class="fi fi-gb" data-kyb-overview-flag></span></span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </section>
+
               <!-- Signals -->
-              <section class="kyb-section" id="kyb-signals" data-kyb-tab="signals" role="tabpanel" aria-labelledby="kyb-tab-signals">
+              <section class="kyb-section" id="kyb-signals" data-kyb-tab="signals" role="tabpanel" aria-labelledby="kyb-tab-signals" hidden>
                 <div class="tds-section-header">
                   <div class="tds-section-header__left">
                     <div class="tds-section-header__title-stack">
@@ -457,7 +727,7 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr data-kyb-signal-row>
+                                <tr data-kyb-signal-row data-kyb-anchor="signal-operating-footprint">
                                   <td><span class="tds-data-table__signals tds-data-table__signals--negative"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11.5 6 8l2.5 2L13.5 4"/><path d="M10.5 4H13.5V7"/></svg></span>Increased</span></td>
                                   <td class="tds-data-table__text-cell">No verifiable operating footprint detected for the registered business activity.</td>
                                   <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
@@ -676,7 +946,7 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr data-kyb-signal-row>
+                                <tr data-kyb-signal-row data-kyb-anchor="signal-offshore-ownership">
                                   <td><span class="tds-data-table__signals tds-data-table__signals--negative"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11.5 6 8l2.5 2L13.5 4"/><path d="M10.5 4H13.5V7"/></svg></span>Increased</span></td>
                                   <td class="tds-data-table__text-cell">Beneficial ownership resolves through an offshore holding company with limited transparency.</td>
                                   <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
@@ -749,7 +1019,7 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr data-kyb-signal-row>
+                                <tr data-kyb-signal-row data-kyb-anchor="signal-shared-address">
                                   <td><span class="tds-data-table__signals tds-data-table__signals--negative"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11.5 6 8l2.5 2L13.5 4"/><path d="M10.5 4H13.5V7"/></svg></span>Increased</span></td>
                                   <td class="tds-data-table__text-cell">Registered address is shared with multiple unrelated entities at the same location.</td>
                                   <td><span class="tds-data-table__signals"><span class="tds-data-table__signals-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Yes</span></td>
@@ -819,7 +1089,7 @@
                 <div class="kyb-section__body">
                   <div class="tds-data-table-container">
                     <div class="tds-data-table__wrapper">
-                      <table class="tds-data-table tds-data-table--comfort kyb-ownership-table">
+                      <table class="tds-data-table tds-data-table--comfort kyb-ownership-table" data-kyb-anchor="ownership-table">
                         <colgroup>
                           <col>
                           <col>
@@ -835,7 +1105,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
+                          <tr data-kyb-anchor="ownership-parent">
                             <td class="tds-data-table__text-cell">Apex Holdings BVI Ltd.</td>
                             <td class="tds-data-table__text-cell">Parent company</td>
                             <td class="tds-data-table__text-cell" data-align="right">100%</td>
@@ -852,7 +1122,7 @@
                     </div>
                   </div>
                   <hr class="kyb-section-divider">
-                  <div class="kyb-officer-block">
+                  <div class="kyb-officer-block" data-kyb-anchor="ownership-officer">
                     <h3 class="kyb-subsection-title kyb-subsection-title--sm">Officer Information:</h3>
                     <div class="kyb-field-grid">
                       <div class="tds-data-field">
@@ -884,7 +1154,7 @@
                 </div>
                 <div class="kyb-section__body">
                   <div class="kyb-insights-intro">
-                    <div class="kyb-insights-intro__head">
+                    <div class="kyb-insights-intro__head" data-kyb-anchor="insight-company-status">
                       <h3 class="kyb-insights-intro__name">Meridian Apex Consulting Ltd.</h3>
                       <span class="tds-tag tds-tag--positive tds-tag--sm">Active</span>
                     </div>
@@ -905,7 +1175,7 @@
                   <hr class="kyb-section-divider">
                   <h3 class="kyb-subsection-title kyb-subsection-title--sm">Company Overview:</h3>
                   <div class="kyb-field-grid">
-                    <div class="tds-data-field"><p class="tds-data-field__label">Registered address</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Suite 4, 123 Formation House, London EC2A 4NE</p></div><p class="tds-data-field__description">Known formations-agent suite</p></div></div>
+                    <div class="tds-data-field" data-kyb-anchor="insight-registered-address"><p class="tds-data-field__label">Registered address</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">Suite 4, 123 Formation House, London EC2A 4NE</p></div><p class="tds-data-field__description">Known formations-agent suite</p></div></div>
                     <div class="tds-data-field"><p class="tds-data-field__label">Paid-up capital</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">£1</p></div></div></div>
                     <div class="tds-data-field"><p class="tds-data-field__label">SIC code</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">70229 — Management consultancy</p></div></div></div>
                     <div class="tds-data-field"><p class="tds-data-field__label">Last filing</p><div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">30 Sep 2025</p></div></div></div>
@@ -1271,7 +1541,7 @@
 
   <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
   <script src="../../Components/score-gauge/score-gauge.js"></script>
-  <script src="kyb-results.js?v=4"></script>
+  <script src="kyb-results.js?v=5"></script>
   <script src="truai-responses.js?v=1"></script>
   <script src="../shared/truai-chat.js?v=1"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>

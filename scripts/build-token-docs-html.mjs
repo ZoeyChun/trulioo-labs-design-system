@@ -64,12 +64,31 @@ const USAGE = {
   "--ai-surface": "AI panel and badge backgrounds",
   "--ai-badge": "AI badge fill",
   "--ai-hover": "AI interactive hover background",
-  "--elevation-xs": "Subtle lift — toggles, chips, inline cards",
+  "--elevation-xs": "Subtle lift: toggles, chips, inline cards",
   "--elevation-sm": "Default cards, dropdowns, popovers",
   "--elevation-md": "Hover cards, raised panels, tooltips",
   "--elevation-lg": "Drawers, sidebars, floating action buttons",
   "--elevation-xl": "Modals and elevated dialogs",
   "--elevation-2xl": "Maximum elevation for overlays",
+  "--padding-xs": "Tight inner spacing: icon buttons, badges, chips",
+  "--padding-sm": "Compact controls: small buttons, input fields",
+  "--padding-md": "Default inner spacing: buttons, list items",
+  "--padding-lg": "Standard card and panel padding",
+  "--padding-xl": "Spacious containers: modals, form sections",
+  "--padding-2xl": "Wide padding: page sections, hero areas",
+  "--padding-3xl": "Maximum padding: full-width layouts",
+  "--gap-xs": "Tight gap: icon + label, badge groups",
+  "--gap-sm": "Compact gap: form fields, button groups",
+  "--gap-md": "Default gap: list items, card content",
+  "--gap-lg": "Standard gap: card grids, section content",
+  "--gap-xl": "Wide gap: page sections, major groups",
+  "--gap-2xl": "Maximum gap: page-level section spacing",
+  "--margin-sm": "Compact margin: between related content blocks",
+  "--margin-md": "Default margin: between sections within a panel",
+  "--margin-lg": "Standard margin: between major page sections",
+  "--margin-xl": "Wide margin: between top-level page regions",
+  "--margin-2xl": "Spacious margin: page header to content",
+  "--margin-3xl": "Maximum margin: full-page section dividers",
 };
 
 const SECTION_ORDER = [
@@ -246,6 +265,18 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
+function pxFromRem(remStr) {
+  const match = remStr.match(/^([\d.]+)rem$/);
+  if (!match) return "";
+  return `${Math.round(parseFloat(match[1]) * 16)}px`;
+}
+
+function renderCopyButton(varName) {
+  return `<button type="button" class="ds-token-copy-btn" data-copy="var(${varName})" aria-label="Copy var(${varName})" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button>`;
+}
+
 function renderSwatch(name, value) {
   return `<span class="ds-token-swatch" style="background: var(${name})" aria-hidden="true"></span>`;
 }
@@ -268,7 +299,7 @@ function renderColorRow(item) {
     ${renderSwatch(item.name, item.value)}
     <div class="ds-token-row__values">
       <span class="ds-token-row__hex">${escapeHtml(item.comment || item.value)}</span>
-      <code class="ds-token-row__var">var(${item.name})</code>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(${item.name})</code>${renderCopyButton(item.name)}</span>
     </div>
   </div>
 </div>`;
@@ -276,12 +307,14 @@ function renderColorRow(item) {
 
 function renderSimpleRow(item, previewHtml = "") {
   const usage = USAGE[item.name] ?? (item.comment || "Design token");
+  const px = pxFromRem(item.value);
+  const valueDisplay = px ? `${escapeHtml(item.value)} (${px})` : escapeHtml(item.value);
   return `<div class="ds-token-row ds-token-row--simple">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">${escapeHtml(figmaTokenName(item.name))}</span>
-    <code class="ds-token-row__var">var(${item.name})</code>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(${item.name})</code>${renderCopyButton(item.name)}</span>
   </div>
-  <div class="ds-token-row__usage">${escapeHtml(item.value)}</div>
+  <div class="ds-token-row__usage">${valueDisplay}</div>
   <div class="ds-token-row__preview">${previewHtml || `<span class="ds-token-row__meta">${escapeHtml(usage)}</span>`}</div>
 </div>`;
 }
@@ -292,7 +325,7 @@ function renderElevationRow(item) {
   return `<div class="ds-token-row ds-token-row--elevation">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">${escapeHtml(figmaTokenName(item.name))}</span>
-    <code class="ds-token-row__var">var(${item.name})</code>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(${item.name})</code>${renderCopyButton(item.name)}</span>
   </div>
   <div class="ds-token-row__usage">${escapeHtml(usage)}</div>
   <div class="ds-token-row__preview">${preview}</div>
@@ -303,7 +336,7 @@ function renderCoreColorRow(item) {
   return `<div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">${escapeHtml(figmaTokenName(item.name))}</span>
-    <code class="ds-token-row__var">var(${item.name})</code>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(${item.name})</code>${renderCopyButton(item.name)}</span>
   </div>
   <div class="ds-token-row__usage">${escapeHtml(item.comment || item.value)}</div>
   <div class="ds-token-row__preview">
@@ -348,13 +381,28 @@ function renderSection(section) {
           item,
           `<span class="ds-token-spacing-preview" style="width: var(${item.name})"></span>`
         );
+      } else if (item.name.startsWith("--font-size-")) {
+        rowsHtml += renderSimpleRow(
+          item,
+          `<span class="ds-token-type-specimen" style="font-size: var(${item.name})">Ag</span>`
+        );
+      } else if (item.name.startsWith("--font-weight-") && !item.name.includes("figma")) {
+        rowsHtml += renderSimpleRow(
+          item,
+          `<span class="ds-token-type-specimen" style="font-weight: var(${item.name})">Ag</span>`
+        );
+      } else if (item.name.startsWith("--font-family")) {
+        rowsHtml += renderSimpleRow(
+          item,
+          `<span class="ds-token-type-specimen" style="font-family: var(${item.name})">The quick brown fox</span>`
+        );
       } else rowsHtml += renderSimpleRow(item);
     }
   }
 
   const desc =
     section.title === "Core colors"
-      ? "Raw color palette for the Trulioo design system. These are the foundational primitives — use semantic tokens in production."
+      ? "Raw color palette for the Trulioo design system. These are the foundational primitives: use semantic tokens in production."
       : section.title === "Color tokens"
         ? "Semantic color variables for the Trulioo design system. All tokens alias Core primitives and are scoped for specific use cases."
         : section.title === "Typography tokens"
@@ -391,15 +439,20 @@ function renderSection(section) {
 }
 
 function renderSubTabNav(sections) {
-  return `<nav class="ds-token-tabs" role="tablist" aria-label="Token categories">
+  return `<div class="tds-tabs ds-token-sub-tabs">
+    <div class="tds-tabs__row">
+      <div class="tds-tabs__list" role="tablist" aria-label="Token categories">
 ${sections
   .map((section, index) => {
     const id = slug(section.title);
     const active = index === 0;
-    return `    <button type="button" class="ds-token-tabs__btn${active ? " is-active" : ""}" role="tab" id="token-tab-${id}" data-token-tab="${id}" aria-selected="${active ? "true" : "false"}" aria-controls="token-panel-${id}" tabindex="${active ? "0" : "-1"}">${escapeHtml(section.title)}</button>`;
+    return `        <button type="button" class="tds-tab-item${active ? " tds-tab-item--active" : ""}" role="tab" id="token-tab-${id}" data-token-tab="${id}" aria-selected="${active ? "true" : "false"}" aria-controls="token-panel-${id}" tabindex="${active ? "0" : "-1"}"><span class="tds-tab-item__content">${escapeHtml(section.title)}</span><span class="tds-tab-item__indicator" aria-hidden="true"></span></button>`;
   })
   .join("\n")}
-  </nav>`;
+      </div>
+    </div>
+    <div class="tds-tabs__divider" aria-hidden="true"></div>
+  </div>`;
 }
 
 function renderTokenPanel(section, index) {
@@ -419,7 +472,8 @@ function buildSectionHtml() {
   return `<section class="ds-chapter ds-tab-panel" id="tokens" role="tabpanel" aria-labelledby="tab-tokens" hidden>
   <header class="ds-chapter__header">
     <h2 class="ds-chapter__title">Design tokens</h2>
-    <p class="ds-chapter__desc">Reference documentation for color, typography, spacing, radius, and elevation tokens. Source of truth: <code>tokens/tokens.css</code> and Figma ADS 2026.</p>
+    <p class="ds-chapter__desc">Design tokens are the shared constants (colors, spacing, typography, elevation) that keep the product visually consistent across code and design tools. Use semantic tokens in your code; they map to the right primitive value automatically.</p>
+    <p class="ds-chapter__desc ds-chapter__desc--source">Source of truth: <code>tokens/tokens.css</code> and Figma ADS 2026. Click any <code>var()</code> value to copy it.</p>
     <div class="ds-token-doc-meta">
       <span><strong>Contributors:</strong> Zoey, Ecem, Mandeep</span>
       <span><strong>Last updated:</strong> 2026-06-30</span>

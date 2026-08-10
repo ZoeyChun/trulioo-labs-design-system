@@ -3,7 +3,6 @@ import { PREVIEW_INTERACTIONS_SCRIPT } from "../data/interactions";
 import dropdownPanelScript from "../../../../../Components/_shared/dropdown-panel/dropdown-panel.js?raw";
 import datePickerScript from "../../../../../Components/date-picker/date-picker.js?raw";
 import dialogScript from "../../../../../Components/dialog/dialog.js?raw";
-import type { ContentPageId } from "../data/navigation";
 
 declare global {
   interface Window {
@@ -23,13 +22,13 @@ function runInlineScript(source: string) {
   script.remove();
 }
 
-function initVisibleDemos() {
-  window.initPreviewSelects?.();
-  window.initPreviewDropdownMenus?.();
-  window.initDatePickers?.();
+export function initPreviewDemos(root?: ParentNode) {
+  window.initPreviewSelects?.(root);
+  window.initPreviewDropdownMenus?.(root);
+  window.initDatePickers?.(root);
 }
 
-export function usePreviewInteractions(activeTab: ContentPageId | null) {
+export function usePreviewInteractions(activeChapter: string | null) {
   useEffect(() => {
     if (window.__tdsPreviewScriptsLoaded) return;
     window.__tdsPreviewScriptsLoaded = true;
@@ -37,11 +36,31 @@ export function usePreviewInteractions(activeTab: ContentPageId | null) {
     runInlineScript(datePickerScript);
     runInlineScript(dialogScript);
     runInlineScript(PREVIEW_INTERACTIONS_SCRIPT);
-    requestAnimationFrame(() => initVisibleDemos());
+    requestAnimationFrame(() => initPreviewDemos());
   }, []);
 
   useEffect(() => {
-    const frame = requestAnimationFrame(() => initVisibleDemos());
+    const root = document.querySelector(".tds-preview__panel.is-active") ?? undefined;
+    const frame = requestAnimationFrame(() => initPreviewDemos(root ?? undefined));
     return () => cancelAnimationFrame(frame);
-  }, [activeTab]);
+  }, [activeChapter]);
+}
+
+/** Re-bind interactive demos after a panel mounts showcase HTML (e.g. doc tab switch). */
+export function usePanelDemoInteractions(
+  panelId: string,
+  active: boolean,
+  contentKey: string | number,
+) {
+  useEffect(() => {
+    if (!active) return;
+
+    const run = () => {
+      const root = document.getElementById(panelId);
+      initPreviewDemos(root ?? undefined);
+    };
+
+    const frame = requestAnimationFrame(() => requestAnimationFrame(run));
+    return () => cancelAnimationFrame(frame);
+  }, [panelId, active, contentKey]);
 }

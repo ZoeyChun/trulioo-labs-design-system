@@ -1,0 +1,236 @@
+# Search synonyms for the docs preview (PM, engineer, designer vocabulary).
+# Run: node scripts/build-docs-search-index.mjs
+#
+# components: aliases indexed on each component page
+# rings: bidirectional groups — searching any term finds related terms
+
+components:
+  switch:
+    - toggle
+    - toggle switch
+    - on off
+    - boolean
+    - flip
+  checkbox:
+    - check box
+    - tick box
+    - tick
+    - multi select
+  radio:
+    - radio button
+    - option
+    - single choice
+  radio-group:
+    - radio buttons
+    - option group
+    - single select group
+  radio-card:
+    - card select
+    - selectable card
+    - choice card
+  text-input:
+    - input
+    - text field
+    - textbox
+    - form field
+    - text box
+  textarea:
+    - text area
+    - multiline input
+    - multi-line input
+    - notes field
+    - comment box
+  select:
+    - dropdown
+    - drop down
+    - combobox
+    - combo box
+    - picker
+    - menu field
+  date-picker:
+    - calendar
+    - date input
+    - date field
+    - date select
+  button:
+    - btn
+    - cta
+    - action button
+    - submit button
+  icon-button:
+    - icon btn
+    - icon only button
+    - ghost button
+  button-group:
+    - segmented control
+    - segment control
+    - button bar
+    - toggle group
+  segmented-control:
+    - segmented button
+    - segment button
+    - segmented control
+    - toggle group
+    - view switcher
+  button-menu:
+    - menu button
+    - overflow menu
+    - actions menu
+  spinner:
+    - loading
+    - loader
+    - busy indicator
+    - progress spinner
+  dialog:
+    - modal
+    - popup
+    - overlay
+    - lightbox
+  tooltip:
+    - hint
+    - help text
+    - info bubble
+  announcement:
+    - banner
+    - alert bar
+    - notice
+    - inline alert
+  accordion:
+    - collapse
+    - expandable
+    - disclosure
+  tabs:
+    - tab bar
+    - tabbed navigation
+    - tab strip
+  tab-item:
+    - tab
+    - tab label
+  side-nav:
+    - sidebar
+    - side navigation
+    - nav rail
+    - left nav
+  nav-item:
+    - nav link
+    - navigation item
+  nav-list:
+    - nav group
+    - navigation list
+  breadcrumb:
+    - breadcrumbs
+    - wayfinding
+    - path
+  data-table:
+    - table
+    - grid
+    - data grid
+    - results table
+  tag:
+    - chip
+    - pill
+    - label tag
+  ai-tag:
+    - ai chip
+    - ai label
+    - ai badge
+  filter-button:
+    - filter
+    - filter control
+  sort-button:
+    - sort
+    - sorting
+    - order by
+  dropdown-panel:
+    - menu panel
+    - options menu
+    - listbox menu
+  action-list-item:
+    - menu item
+    - list item
+    - option row
+  field-label:
+    - label
+    - form label
+    - input label
+  field-caption:
+    - helper text
+    - hint text
+    - caption
+    - description
+  field-validation:
+    - error message
+    - validation error
+    - error text
+  progress-indicator:
+    - stepper
+    - steps
+    - wizard
+    - step indicator
+  step-progress:
+    - progress steps
+    - step bar
+  stat-card:
+    - metric card
+    - kpi card
+    - stat tile
+  score-gauge:
+    - gauge
+    - meter
+    - dial
+  score-card:
+    - score tile
+    - rating card
+  risk-category-card:
+    - risk card
+    - risk tile
+  counter-label:
+    - count badge
+    - counter
+    - badge count
+  section-header:
+    - page header
+    - section title
+    - table header
+  dismiss-action:
+    - close
+    - dismiss
+    - x button
+    - clear
+  caret:
+    - chevron
+    - arrow
+    - dropdown arrow
+  filter-tab:
+    - filter tabs
+    - pill tabs
+    - filter chips
+  filter-tab-2:
+    - filter tab item
+    - pill tab
+  flag-icon:
+    - country flag
+    - flag
+    - locale flag
+  data-field:
+    - read only field
+    - display field
+    - label value pair
+  dismiss-issue-badge:
+    - issue badge
+    - warning badge
+
+rings:
+  - [switch, toggle]
+  - [select, dropdown, combobox, picker]
+  - [dialog, modal, popup]
+  - [tooltip, hint, popover]
+  - [announcement, banner, alert]
+  - [side-nav, sidebar]
+  - [text-input, input, text field]
+  - [spinner, loading, loader]
+  - [tag, chip, pill]
+  - [accordion, collapse, expandable]
+  - [button, btn, cta]
+  - [checkbox, check box, tick box]
+  - [data-table, table, grid]

@@ -195,6 +195,11 @@
   position: relative;
 }
 
+.tds-date-picker-range--open > .tds-date-picker__calendar,
+.tds-date-picker-range--open > .tds-date-picker-range__calendar {
+  z-index: 20;
+}
+
 .tds-date-picker-range__calendar,
 .tds-date-picker-range > .tds-date-picker__calendar {
   width: 100%;

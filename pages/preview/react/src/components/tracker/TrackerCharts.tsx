@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { TrackerComponent, TrackerPlanned, TrackerSummary } from "../../data/tracker";
+import type { TrackerComponent, TrackerPage, TrackerPlanned, TrackerSummary } from "../../data/tracker";
 import {
   HorizontalBarChart,
   SegmentedBar,
@@ -10,8 +10,11 @@ import {
 type TrackerChartsProps = {
   summary: TrackerSummary;
   components: TrackerComponent[];
+  pages: TrackerPage[];
   planned: TrackerPlanned[];
 };
+
+const ADOPTION_TONES: BarRow["tone"][] = ["positive", "intermediate", "brand", "neutral"];
 
 function countByStatus(components: TrackerComponent[], status: string) {
   return components.filter((component) => component.cssStatus === status).length;
@@ -42,7 +45,7 @@ function buildPriorityRows(planned: TrackerPlanned[]): BarRow[] {
     }));
 }
 
-export function TrackerCharts({ summary, components, planned }: TrackerChartsProps) {
+export function TrackerCharts({ summary, components, pages, planned }: TrackerChartsProps) {
   const cssNa = useMemo(() => countByStatus(components, "N/A"), [components]);
 
   const buildSegments = useMemo<Segment[]>(
@@ -56,30 +59,15 @@ export function TrackerCharts({ summary, components, planned }: TrackerChartsPro
   );
 
   const adoptionRows = useMemo<BarRow[]>(
-    () => [
-      {
-        label: "Preview",
-        value: summary.adoption.preview.percent,
+    () =>
+      pages.map((page, index) => ({
+        label: page.label,
+        value: page.percent,
         max: 100,
-        meta: `${summary.adoption.preview.used}/${summary.adoption.preview.total} used`,
-        tone: "positive",
-      },
-      {
-        label: "Bank verification",
-        value: summary.adoption.bv.percent,
-        max: 100,
-        meta: `${summary.adoption.bv.used}/${summary.adoption.bv.total} used`,
-        tone: "intermediate",
-      },
-      {
-        label: "Document verification",
-        value: summary.adoption.dv.percent,
-        max: 100,
-        meta: `${summary.adoption.dv.used}/${summary.adoption.dv.total} used`,
-        tone: "brand",
-      },
-    ],
-    [summary.adoption],
+        meta: `${page.used}/${page.total} used`,
+        tone: ADOPTION_TONES[index % ADOPTION_TONES.length],
+      })),
+    [pages],
   );
 
   const priorityRows = useMemo(() => buildPriorityRows(planned), [planned]);
@@ -101,8 +89,8 @@ export function TrackerCharts({ summary, components, planned }: TrackerChartsPro
 
         <div className="tds-preview__tracker-charts-pair">
           <HorizontalBarChart
-            title="Adoption by page"
-            description="Share of built components used on each demo page"
+            title="DS consumption by page"
+            description="Share of built components used on each demo under pages/"
             rows={adoptionRows}
           />
 

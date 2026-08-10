@@ -2,6 +2,8 @@
 /**
  * Build component tracker JSON from data/component-tracker.yaml + repo scans.
  *
+ * DS consumption: every demo under pages/ is scanned for tds-* class usage.
+ *
  * Run: node scripts/build-component-tracker.mjs
  */
 import fs from "node:fs";
@@ -12,8 +14,9 @@ import { parseTrackerYaml } from "./lib/tracker-yaml.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const YAML_IN = path.join(ROOT, "data/component-tracker.yaml");
-const JSON_OUT = path.join(ROOT, "pages/preview/react/src/data/component-tracker.json");
+const JSON_OUT = path.join(ROOT, "Documentation/src/data/component-tracker.json");
 const COMPONENTS = path.join(ROOT, "Components");
+const PAGES_ROOT = path.join(ROOT, "pages");
 
 const NESTED_SKIP = new Set([
   "tabs/tab-item/tab-item.css",
@@ -24,24 +27,19 @@ const NESTED_SKIP = new Set([
 
 const SECONDARY_ENTRIES = new Set(["select/combobox.css"]);
 
-const SCAN_TARGETS = {
-  preview: [
-    path.join(ROOT, "pages/preview/index.html"),
-    path.join(ROOT, "pages/preview/react/src/data/sections.ts"),
-  ],
-  bv: globFiles(path.join(ROOT, "pages/bank-verification"), [".html", ".js"]),
-  dv: globFiles(path.join(ROOT, "pages/document-verification"), [".html", ".js", ".ts"]),
-};
+const SKIP_PAGE_DIRS = new Set(["_shared", "shared", "node_modules", "dist"]);
+const PREVIEW_SOURCE_SKIP = new Set(["react-dist", "docs-dist", "react", "docs", "node_modules"]);
+const SCAN_EXTENSIONS = [".html", ".js", ".ts", ".tsx", ".jsx"];
 
-function globFiles(dir, extensions) {
+function globFiles(dir, extensions, excludeDirs = SKIP_PAGE_DIRS) {
   const files = [];
   if (!fs.existsSync(dir)) return files;
 
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      if (entry.name === "node_modules" || entry.name === "dist") continue;
-      files.push(...globFiles(full, extensions));
+      if (excludeDirs.has(entry.name)) continue;
+      files.push(...globFiles(full, extensions, excludeDirs));
       continue;
     }
     if (extensions.some((ext) => entry.name.endsWith(ext))) {
@@ -49,6 +47,85 @@ function globFiles(dir, extensions) {
     }
   }
   return files;
+}
+
+function slugify(value) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function formatPageLabel(name) {
+  if (/[A-Z]/.test(name) && /\s/.test(name)) return name;
+  return name
+    .split(/[-_]/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function collectCorpusFromRoots(scanRoots, excludeDirs = SKIP_PAGE_DIRS) {
+  let corpus = "";
+  for (const root of scanRoots) {
+    if (!fs.existsSync(root)) continue;
+    const stat = fs.statSync(root);
+    if (stat.isFile()) {
+      corpus += `${fs.readFileSync(root, "utf8")}\n`;
+      continue;
+    }
+    for (const file of globFiles(root, SCAN_EXTENSIONS, excludeDirs)) {
+      corpus += `${fs.readFileSync(file, "utf8")}\n`;
+    }
+  }
+  return corpus;
+}
+
+function discoverPageDemos() {
+  const demos = [];
+
+  for (const entry of fs.readdirSync(PAGES_ROOT, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    if (SKIP_PAGE_DIRS.has(entry.name)) continue;
+
+    if (entry.name === "preview") {
+      demos.push({
+        id: "preview",
+        label: "Component preview",
+        path: "pages/preview",
+        scanRoots: [
+          path.join(PAGES_ROOT, "preview/index.html"),
+          path.join(PAGES_ROOT, "preview/react/src"),
+        ],
+        excludeDirs: PREVIEW_SOURCE_SKIP,
+      });
+      continue;
+    }
+
+    if (entry.name === "Experiments") {
+      const experimentsDir = path.join(PAGES_ROOT, "Experiments");
+      for (const sub of fs.readdirSync(experimentsDir, { withFileTypes: true })) {
+        if (!sub.isDirectory()) continue;
+        if (SKIP_PAGE_DIRS.has(sub.name)) continue;
+        demos.push({
+          id: slugify(`experiments-${sub.name}`),
+          label: `Experiments · ${formatPageLabel(sub.name)}`,
+          path: `pages/Experiments/${sub.name}`,
+          scanRoots: [path.join(experimentsDir, sub.name)],
+        });
+      }
+      continue;
+    }
+
+    demos.push({
+      id: slugify(entry.name),
+      label: formatPageLabel(entry.name),
+      path: `pages/${entry.name}`,
+      scanRoots: [path.join(PAGES_ROOT, entry.name)],
+    });
+  }
+
+  return demos.sort((a, b) => a.label.localeCompare(b.label));
 }
 
 function discoverComponentFolders() {
@@ -88,7 +165,7 @@ function cssFileExists(cssFile) {
   return fs.existsSync(path.join(COMPONENTS, cssFile));
 }
 
-function computeCssStatus(component, listedIds) {
+function computeCssStatus(component) {
   const { cssFile, figmaStatus } = component;
   const hasFile = cssFileExists(cssFile);
 
@@ -107,22 +184,6 @@ function computeCssStatus(component, listedIds) {
   return "Missing";
 }
 
-function collectUsageCorpus() {
-  const corpus = { preview: "", bv: "", dv: "" };
-
-  for (const file of SCAN_TARGETS.preview) {
-    if (fs.existsSync(file)) corpus.preview += fs.readFileSync(file, "utf8") + "\n";
-  }
-  for (const file of SCAN_TARGETS.bv) {
-    corpus.bv += fs.readFileSync(file, "utf8") + "\n";
-  }
-  for (const file of SCAN_TARGETS.dv) {
-    corpus.dv += fs.readFileSync(file, "utf8") + "\n";
-  }
-
-  return corpus;
-}
-
 function isPrefixUsed(prefix, text) {
   if (!prefix) return false;
   if (prefix.startsWith("tds-") || prefix.startsWith("score-")) {
@@ -136,23 +197,40 @@ function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function buildSummary(components) {
-  const cssDone = components.filter((c) => c.cssStatus === "Done").length;
-  const cssPartial = components.filter((c) => c.cssStatus === "Partial").length;
+function buildPageAdoption(pageDemos, components) {
+  const builtForAdoption = components.filter(
+    (component) => component.cssStatus === "Done" && (component.classPrefixes?.length ?? 0) > 0
+  );
+  const adoptionBase = builtForAdoption.length || 1;
+
+  return pageDemos.map((page) => {
+    const used = builtForAdoption.filter((component) => component.usedInPages[page.id]).length;
+    return {
+      id: page.id,
+      label: page.label,
+      path: page.path,
+      used,
+      total: builtForAdoption.length,
+      percent: Math.round((used / adoptionBase) * 100),
+    };
+  });
+}
+
+function buildSummary(components, pages) {
+  const cssDone = components.filter((component) => component.cssStatus === "Done").length;
+  const cssPartial = components.filter((component) => component.cssStatus === "Partial").length;
   const cssNotStarted = components.filter(
-    (c) => c.cssStatus === "Not Started" || c.cssStatus === "Missing"
+    (component) => component.cssStatus === "Not Started" || component.cssStatus === "Missing"
   ).length;
-  const figmaDone = components.filter((c) => c.figmaStatus === "Done").length;
-  const figmaEligible = components.filter((c) => c.figmaStatus !== "N/A").length;
+  const figmaDone = components.filter((component) => component.figmaStatus === "Done").length;
+  const figmaEligible = components.filter((component) => component.figmaStatus !== "N/A").length;
 
   const builtForAdoption = components.filter(
-    (c) => c.cssStatus === "Done" && (c.classPrefixes?.length ?? 0) > 0
+    (component) => component.cssStatus === "Done" && (component.classPrefixes?.length ?? 0) > 0
   );
-
-  const previewUsed = builtForAdoption.filter((c) => c.usedInPreview).length;
-  const bvUsed = builtForAdoption.filter((c) => c.usedInBV).length;
-  const dvUsed = builtForAdoption.filter((c) => c.usedInDV).length;
-  const adoptionBase = builtForAdoption.length || 1;
+  const avgAdoptionPercent = pages.length
+    ? Math.round(pages.reduce((sum, page) => sum + page.percent, 0) / pages.length)
+    : 0;
 
   return {
     totalComponents: components.length,
@@ -162,23 +240,9 @@ function buildSummary(components) {
     figmaDone,
     figmaEligible,
     figmaDonePercent: figmaEligible ? Math.round((figmaDone / figmaEligible) * 100) : 0,
-    adoption: {
-      preview: {
-        used: previewUsed,
-        total: builtForAdoption.length,
-        percent: Math.round((previewUsed / adoptionBase) * 100),
-      },
-      bv: {
-        used: bvUsed,
-        total: builtForAdoption.length,
-        percent: Math.round((bvUsed / adoptionBase) * 100),
-      },
-      dv: {
-        used: dvUsed,
-        total: builtForAdoption.length,
-        percent: Math.round((dvUsed / adoptionBase) * 100),
-      },
-    },
+    demoPageCount: pages.length,
+    avgAdoptionPercent,
+    builtForAdoption: builtForAdoption.length,
   };
 }
 
@@ -189,8 +253,12 @@ function main() {
   }
 
   const manifest = parseTrackerYaml(fs.readFileSync(YAML_IN, "utf8"));
-  const corpus = collectUsageCorpus();
-  const listedIds = new Set(manifest.components.map((c) => c.id));
+  const pageDemos = discoverPageDemos();
+  const pageCorpora = pageDemos.map((page) => ({
+    ...page,
+    corpus: collectCorpusFromRoots(page.scanRoots, page.excludeDirs ?? SKIP_PAGE_DIRS),
+  }));
+  const listedIds = new Set(manifest.components.map((component) => component.id));
   const prefixOwners = new Map();
   const errors = [];
   const warnings = [];
@@ -209,16 +277,20 @@ function main() {
   }
 
   const components = manifest.components.map((component) => {
-    const cssStatus = computeCssStatus(component, listedIds);
+    const cssStatus = computeCssStatus(component);
     const prefixes = component.classPrefixes ?? [];
+    const usedInPages = Object.fromEntries(
+      pageCorpora.map((page) => [
+        page.id,
+        prefixes.some((prefix) => isPrefixUsed(prefix, page.corpus)),
+      ])
+    );
 
     return {
       ...component,
       classPrefixes: prefixes,
       cssStatus,
-      usedInPreview: prefixes.some((prefix) => isPrefixUsed(prefix, corpus.preview)),
-      usedInBV: prefixes.some((prefix) => isPrefixUsed(prefix, corpus.bv)),
-      usedInDV: prefixes.some((prefix) => isPrefixUsed(prefix, corpus.dv)),
+      usedInPages,
     };
   });
 
@@ -247,9 +319,11 @@ function main() {
     process.exit(1);
   }
 
+  const pages = buildPageAdoption(pageCorpora, components);
   const payload = {
     lastBuiltAt: new Date().toISOString(),
-    summary: buildSummary(components),
+    summary: buildSummary(components, pages),
+    pages,
     components,
     planned: manifest.planned ?? [],
     warnings,
@@ -260,7 +334,7 @@ function main() {
 
   console.log(`Wrote ${JSON_OUT}`);
   console.log(
-    `  CSS Done: ${payload.summary.cssDone}/${payload.summary.totalComponents} · BV adoption: ${payload.summary.adoption.bv.percent}% · DV adoption: ${payload.summary.adoption.dv.percent}%`
+    `  CSS Done: ${payload.summary.cssDone}/${payload.summary.totalComponents} · Demo pages: ${payload.summary.demoPageCount} · Avg adoption: ${payload.summary.avgAdoptionPercent}%`
   );
 
   if (warnings.length) {

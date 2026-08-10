@@ -399,15 +399,14 @@
       field.setAttribute("aria-expanded", "true");
       if (state.selected) state.viewDate = new Date(state.selected);
       render();
-      calendar.hidden = false;
-      openContext = { close: close };
+      showFloatingCalendar(field, calendar, picker, close);
     }
 
     function close() {
       picker.classList.remove("tds-date-picker--open");
       field.classList.remove("tds-date-picker__field--focus");
       field.setAttribute("aria-expanded", "false");
-      calendar.hidden = true;
+      hideFloatingCalendar(calendar, picker);
       if (openContext && openContext.close === close) openContext = null;
     }
 
@@ -477,6 +476,7 @@
     }
 
     var activePart = "start";
+    var awaitingEnd = false;
     var state = {
       mode: "range",
       viewDate: new Date(viewDate),
@@ -489,51 +489,75 @@
       renderCalendar(calendar, state);
     }
 
+    function syncAwaitingEnd() {
+      awaitingEnd = Boolean(state.rangeStart && !state.rangeEnd);
+    }
+
     function handleRangeDayClick(btn) {
       var date = parseDateKey(btn.dataset.date);
       if (!date) return;
 
-      if (!state.rangeStart || (state.rangeStart && state.rangeEnd)) {
+      if (!awaitingEnd) {
         state.rangeStart = date;
         state.rangeEnd = null;
-        activePart = "end";
         setFieldValue(startField, startValue, date);
         setFieldValue(endField, endValue, null);
-      } else {
-        if (compareDays(date, state.rangeStart) < 0) {
-          state.rangeEnd = state.rangeStart;
-          state.rangeStart = date;
-        } else {
-          state.rangeEnd = date;
-        }
-        setFieldValue(startField, startValue, state.rangeStart);
-        setFieldValue(endField, endValue, state.rangeEnd);
+        awaitingEnd = true;
+        setActivePicker("end");
         state.hoverEnd = null;
         state.viewDate = new Date(date);
         render();
-        close();
         return;
       }
 
+      if (compareDays(date, state.rangeStart) < 0) {
+        state.rangeEnd = state.rangeStart;
+        state.rangeStart = date;
+      } else {
+        state.rangeEnd = date;
+      }
+      setFieldValue(startField, startValue, state.rangeStart);
+      setFieldValue(endField, endValue, state.rangeEnd);
+      range.dataset.start = formatDate(state.rangeStart);
+      range.dataset.end = formatDate(state.rangeEnd);
+      awaitingEnd = false;
       state.hoverEnd = null;
       state.viewDate = new Date(date);
       render();
+      close();
     }
 
-    var weeksEl = calendar.querySelector(".tds-date-picker__weeks");
-    weeksEl.onmouseover = function (e) {
-      var btn = e.target.closest("[data-date]");
-      if (!btn || !state.rangeStart || state.rangeEnd) return;
-      state.hoverEnd = parseDateKey(btn.dataset.date);
-      render();
-    };
+    var lastHandledDate = "";
+    var lastHandledAt = 0;
+    var sawMouseDownForDay = false;
 
-    weeksEl.onclick = function (e) {
+    function handleDayActivate(e) {
       var btn = e.target.closest("[data-date]");
       if (!btn) return;
+
+      if (e.type === "mousedown") {
+        if (e.button !== 0) return;
+        sawMouseDownForDay = true;
+      } else if (e.type === "click") {
+        if (sawMouseDownForDay) {
+          sawMouseDownForDay = false;
+          return;
+        }
+      }
+
+      var dayKey = btn.dataset.date || "";
+      var now = Date.now();
+      if (dayKey === lastHandledDate && now - lastHandledAt < 50) return;
+      lastHandledDate = dayKey;
+      lastHandledAt = now;
+
+      e.preventDefault();
       e.stopPropagation();
       handleRangeDayClick(btn);
-    };
+    }
+
+    calendar.addEventListener("mousedown", handleDayActivate, true);
+    calendar.addEventListener("click", handleDayActivate, true);
 
     function setActivePicker(part) {
       activePart = part;
@@ -546,11 +570,18 @@
     }
 
     function open(part) {
-      closeOpenPicker();
       var nextPart = part || activePart;
+      var reopeningSameRange = openContext && openContext.close === close;
+
+      if (!reopeningSameRange) closeOpenPicker();
+
+      syncAwaitingEnd();
       setActivePicker(nextPart);
       if (nextPart === "start" && state.rangeStart) state.viewDate = new Date(state.rangeStart);
       if (nextPart === "end" && state.rangeEnd) state.viewDate = new Date(state.rangeEnd);
+      else if (nextPart === "end" && state.rangeStart && !state.rangeEnd) {
+        state.viewDate = new Date(state.rangeStart);
+      }
       render();
       calendar.hidden = false;
       range.classList.add("tds-date-picker-range--open");
@@ -565,29 +596,33 @@
       startField.setAttribute("aria-expanded", "false");
       endField.setAttribute("aria-expanded", "false");
       calendar.hidden = true;
+      calendar.classList.remove(FLOATING_CLASS);
       range.classList.remove("tds-date-picker-range--open");
       state.hoverEnd = null;
       if (openContext && openContext.close === close) openContext = null;
     }
 
+    function isSelectingEnd() {
+      return awaitingEnd;
+    }
+
     startField.addEventListener("click", function (e) {
       e.stopPropagation();
-      if (!calendar.hidden && activePart === "start") close();
-      else if (!calendar.hidden && activePart === "end") {
+      if (!calendar.hidden && isSelectingEnd()) {
         setActivePicker("start");
         if (state.rangeStart) state.viewDate = new Date(state.rangeStart);
         render();
-      } else open("start");
+        return;
+      }
+      if (!calendar.hidden && activePart === "start") close();
+      else open("start");
     });
 
     endField.addEventListener("click", function (e) {
       e.stopPropagation();
+      if (!calendar.hidden && isSelectingEnd()) return;
       if (!calendar.hidden && activePart === "end") close();
-      else if (!calendar.hidden && activePart === "start") {
-        setActivePicker("end");
-        if (state.rangeEnd) state.viewDate = new Date(state.rangeEnd);
-        render();
-      } else open("end");
+      else open("end");
     });
 
     calendar.querySelector("[data-date-picker-prev]").addEventListener("click", function (e) {
@@ -600,17 +635,6 @@
       e.stopPropagation();
       state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth() + 1, 1);
       render();
-    });
-
-    calendar.addEventListener("mouseleave", function () {
-      if (!state.rangeEnd) {
-        state.hoverEnd = null;
-        render();
-      }
-    });
-
-    calendar.addEventListener("click", function (e) {
-      e.stopPropagation();
     });
   }
 

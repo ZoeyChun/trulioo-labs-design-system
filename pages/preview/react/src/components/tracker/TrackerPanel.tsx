@@ -14,25 +14,25 @@ function formatDate(iso: string) {
 }
 
 export function TrackerPanel() {
-  const { summary, components, planned, lastBuiltAt, warnings } = COMPONENT_TRACKER;
+  const { summary, pages, components, planned, lastBuiltAt, warnings } = COMPONENT_TRACKER;
 
   return (
     <div className="tds-preview__panel is-active" role="tabpanel" id="tracker">
       <ChapterHeader
         eyebrow="Build progress"
         title="Component tracker"
-        desc={`Live status from Components/ and adoption across Preview, BV, and DV demo pages. Last updated ${formatDate(lastBuiltAt)}.`}
+        desc={`CSS build status from Components/ and DS consumption across every demo under pages/. Last updated ${formatDate(lastBuiltAt)}.`}
       />
 
       <TrackerShowcase
         title="At a glance"
-        desc="CSS build completion, page adoption, and category coverage — regenerated on every preview build."
+        desc="CSS build completion, per-page DS adoption, and category coverage — regenerated on every preview build."
       >
         <SummaryHeader summary={summary} />
-        <TrackerCharts summary={summary} components={components} planned={planned} />
+        <TrackerCharts summary={summary} components={components} pages={pages} planned={planned} />
       </TrackerShowcase>
 
-      <ComponentTable components={components} />
+      <ComponentTable components={components} pages={pages} />
 
       {planned.length > 0 && (
         <TrackerShowcase

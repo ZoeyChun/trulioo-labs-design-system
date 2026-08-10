@@ -1,12 +1,21 @@
 import { useMemo, useState } from "react";
-import type { TrackerComponent } from "../../data/tracker";
+import type { TrackerComponent, TrackerPage } from "../../data/tracker";
 import { TrackerShowcase } from "./TrackerShowcase";
 
 type ComponentTableProps = {
   components: TrackerComponent[];
+  pages: TrackerPage[];
 };
 
 type StatusFilter = "all" | "Done" | "Partial" | "Not Started" | "Missing" | "N/A";
+
+function shortPageLabel(label: string) {
+  if (label === "Component preview") return "Preview";
+  if (label.startsWith("Experiments · ")) {
+    return label.replace("Experiments · ", "Exp · ");
+  }
+  return label.length > 16 ? `${label.slice(0, 15)}…` : label;
+}
 
 function StatusPill({ status }: { status: string }) {
   const slug = status.toLowerCase().replace(/\s+/g, "-");
@@ -27,7 +36,7 @@ function UsageCell({ used }: { used: boolean }) {
   );
 }
 
-export function ComponentTable({ components }: ComponentTableProps) {
+export function ComponentTable({ components, pages }: ComponentTableProps) {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
@@ -76,7 +85,7 @@ export function ComponentTable({ components }: ComponentTableProps) {
   return (
     <TrackerShowcase
       title="Built components"
-      desc={`${components.length} components in the library with Figma, CSS, and page adoption status.`}
+      desc={`${components.length} components with Figma, CSS, and DS consumption across ${pages.length} demo pages.`}
       actions={filters}
     >
       <div className="tds-preview__tracker-canvas">
@@ -88,9 +97,11 @@ export function ComponentTable({ components }: ComponentTableProps) {
                 <th scope="col">Category</th>
                 <th scope="col">Figma</th>
                 <th scope="col">CSS</th>
-                <th scope="col">Preview</th>
-                <th scope="col">BV</th>
-                <th scope="col">DV</th>
+                {pages.map((page) => (
+                  <th key={page.id} scope="col" title={`${page.label} (${page.path})`}>
+                    {shortPageLabel(page.label)}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -109,15 +120,11 @@ export function ComponentTable({ components }: ComponentTableProps) {
                   <td>
                     <StatusPill status={component.cssStatus} />
                   </td>
-                  <td>
-                    <UsageCell used={component.usedInPreview} />
-                  </td>
-                  <td>
-                    <UsageCell used={component.usedInBV} />
-                  </td>
-                  <td>
-                    <UsageCell used={component.usedInDV} />
-                  </td>
+                  {pages.map((page) => (
+                    <td key={page.id}>
+                      <UsageCell used={Boolean(component.usedInPages[page.id])} />
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
@@ -126,7 +133,7 @@ export function ComponentTable({ components }: ComponentTableProps) {
       </div>
 
       <p className="tds-preview__tracker-table-meta">
-        Showing {filtered.length} of {components.length} components
+        Showing {filtered.length} of {components.length} components · {pages.length} demo pages under pages/
       </p>
     </TrackerShowcase>
   );

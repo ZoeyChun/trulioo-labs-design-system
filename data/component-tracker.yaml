@@ -1,5 +1,8 @@
 # Trulioo Design System component tracker (repo source of truth)
 # Edit this file, then run: node scripts/build-component-tracker.mjs
+#
+# DS consumption is auto-scanned from every demo under pages/ on build
+# (new top-level folders are picked up automatically).
 
 components:
   -
@@ -36,6 +39,17 @@ components:
     subComponents: Button, IconButton
     figmaNodeId: "1952:33320"
     notes: Segmented control; iconButtons, buttons, or mixed; count 2–5
+  -
+    id: segmented-control
+    name: SegmentedControl
+    category: Core Controls
+    figmaStatus: Done
+    figmaVariants: 18
+    cssFile: segmented-control/segmented-control.css
+    classPrefixes:
+      - tds-segmented-control
+    figmaNodeId: "3367:27333"
+    notes: Text or icon-only segments; medium and small; 2–6 items on neutral track
   -
     id: spinner
     name: Spinner
@@ -102,6 +116,18 @@ components:
     subComponents: FieldLabel, FieldCaption, FieldValidation
     figmaNodeId: "96:3268"
     notes: Imports shared atoms via @import
+  -
+    id: textarea
+    name: Textarea
+    category: Form Inputs
+    figmaStatus: Done
+    figmaVariants: 10
+    cssFile: textarea/textarea.css
+    classPrefixes:
+      - tds-textarea
+    subComponents: FieldLabel, FieldCaption, FieldValidation
+    figmaNodeId: "3358:26529"
+    notes: Multi-line field with resize grip, validation, and caption
   -
     id: select
     name: Select
@@ -613,13 +639,6 @@ planned:
     description: Horizontal or vertical separator line
     notes: For section separation
   -
-    name: Textarea
-    category: Form Inputs
-    priority: Medium
-    description: Multi-line text input with auto-resize
-    dependsOn: FieldLabel, FieldCaption, FieldValidation
-    notes: For notes, comments
-  -
     name: SearchInput
     category: Form Inputs
     priority: Medium
@@ -659,12 +678,6 @@ planned:
     description: Horizontal top navigation bar
     dependsOn: Button, Avatar, Badge
     notes: If app needs a top bar
-  -
-    name: SegmentedControl
-    category: Core Controls
-    priority: Low
-    description: Toggle between 2–5 mutually exclusive options
-    notes: Alternative to Tabs for settings
   -
     name: Timeline
     category: Data Display

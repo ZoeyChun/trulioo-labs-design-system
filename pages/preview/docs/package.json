@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "node ../../../scripts/build-component-tracker.mjs && node ../../../scripts/extract-docs-react.mjs && node ../../../scripts/build-docs-search-index.mjs && cp ../react/src/data/component-tracker.json src/data/component-tracker.json && node ../../../scripts/generate-docs-react-styles.mjs && vite build",
+    "build:search": "node ../../../scripts/build-docs-search-index.mjs",
     "build:tracker": "node ../../../scripts/build-component-tracker.mjs && cp ../react/src/data/component-tracker.json src/data/component-tracker.json",
     "preview": "vite preview"
   },

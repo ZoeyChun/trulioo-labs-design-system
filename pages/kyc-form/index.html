@@ -1,0 +1,441 @@
+<!-- Static reference implementation — visual spec only. The JS drives a demo-only 4-step KYC wizard; wire up real verification logic in your own app. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYC Form — Trulioo Labs</title>
+
+  <link rel="preload" href="../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
+
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/text-input/text-input.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/select/combobox.css">
+  <link rel="stylesheet" href="../../Components/progress-indicator/progress-indicator.css">
+  <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../Components/date-picker/date-picker.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
+
+  <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="../shared/flag-icons.css">
+  <link rel="stylesheet" href="../shared/app-shell.css">
+  <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
+  <link rel="stylesheet" href="../shared/truai-chat.css">
+  <link rel="stylesheet" href="../document-verification/document-verification.css">
+  <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
+  <link rel="stylesheet" href="kyc-form.css">
+  <style>
+    button.tds-side-nav__nav-item,
+    .tds-side-nav__nav-item {
+      height: 40px;
+      min-height: 40px;
+      padding: var(--padding-xs) var(--padding-sm);
+      border-radius: var(--radius-lg);
+    }
+    .tds-side-nav__nav-item-label { justify-content: flex-start; }
+  </style>
+</head>
+<body>
+
+<div class="labs-kyb-layout" id="labs-kyb-layout">
+
+  <div class="app-shell" id="app-shell">
+
+    <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
+
+    <!-- TDS SideNav component -->
+    <aside class="tds-side-nav tds-side-nav--collapsed" id="app-sidenav" aria-label="Primary">
+
+      <div class="tds-side-nav__header">
+        <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+          <span class="tds-side-nav__logo">
+            <img src="../../assets/trulioo-logo-mark.svg" alt="" width="40" height="40">
+          </span>
+          <span class="tds-side-nav__brand-expanded">
+            <span class="tds-side-nav__brand-logo">
+              <img src="../../assets/trulioo-labs-logo.svg" alt="Trulioo Labs" width="152" height="24">
+            </span>
+          </span>
+        </button>
+      </div>
+
+      <div class="tds-side-nav__main">
+        <div class="tds-side-nav__nav-stack">
+          <div>
+            <button type="button" class="tds-side-nav__nav-item">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg></span>
+                <span class="tds-side-nav__nav-item-text">Home</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="tds-side-nav__nav-group">
+            <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-current="page" aria-expanded="true">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon tds-labs-icon tds-labs-icon--onlight" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="#617269"/></svg><svg class="icon tds-labs-icon tds-labs-icon--ondark" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="white"/></svg></span>
+                <span class="tds-side-nav__nav-item-text">Labs</span>
+              </span>
+              <span class="tds-side-nav__nav-item-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></span>
+            </button>
+
+            <div class="tds-side-nav__sub-nav">
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYB</div>
+                <div class="tds-side-nav__section-items">
+                              <a href="../KYB Results/index.html" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="1.5" width="9" height="13"/><path d="M6 4.5h1.2M8.8 4.5H10M6 7.5h1.2M8.8 7.5H10M7 14.5v-3h2v3"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Business Verification</span>
+            </a>
+                              <button type="button" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.5" cy="5" r="2.5"/><path d="M1 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="11.5" cy="5.5" r="2"/><path d="M15 13c0-2 1.5-3 0-3-1 0-2.5 1-2.5 3"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">UBO Agent</span>
+            </button>
+                              <button type="button" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1.5h8a1 1 0 0 1 1 1v12l-5-2.5-5 2.5v-12a1 1 0 0 1 1-1z"/><path d="M6 6l1.5 1.5L10 5"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Policy Review</span>
+            </button>
+                              <button type="button" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Deep Search</span>
+            </button>
+                </div>
+              </div>
+
+              <hr class="tds-side-nav__divider">
+
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYC</div>
+                <div class="tds-side-nav__section-items">
+                              <a href="index.html" class="tds-side-nav__sub-item tds-side-nav__sub-item--selected" aria-current="page">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="2.5"/><path d="M2.5 14c.8-2.6 3-4 5.5-4s4.7 1.4 5.5 4"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">KYC Form</span>
+            </a>
+
+                              <a href="../document-verification/index.html" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><circle cx="6" cy="7.5" r="1.5"/><path d="M3.5 11.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5"/><path d="M10 7h2.5M10 9.5h2.5"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Document Verification</span>
+            </a>
+                              <a href="../bank-verification/index.html" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v8H2z"/><path d="M5 7v2M8 6v4M11 7v2M4 4V2h8v2"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Bank Verification</span>
+            </a>
+                              <a href="../electronic-id/index.html" class="tds-side-nav__sub-item">
+              <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg></span>
+              <span class="tds-side-nav__sub-item-text">Electronic ID</span>
+            </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tds-side-nav__icon-rail" aria-hidden="false">
+          <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Home</span>
+            </span>
+          </button>
+          <button type="button" class="tds-side-nav__icon-button tds-side-nav__icon-button--active" aria-current="page" aria-label="Labs">
+            <svg class="icon tds-labs-icon tds-labs-icon--onlight" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="#617269"/></svg><svg class="icon tds-labs-icon tds-labs-icon--ondark" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="white"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Labs</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="tds-side-nav__collapse-bar" id="sidenav-collapse" aria-label="Expand sidebar" aria-expanded="false">
+        <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4M10 4l4 4-4 4"/></svg>
+        <span class="tds-side-nav__collapse-label text-label-sm-uppercase">Hide Sidebar</span>
+      </button>
+
+      <div class="tds-side-nav__footer">
+        <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" aria-label="Jane Doe, janedoe@trulioo.com">
+          <span class="tds-side-nav__avatar">JD</span>
+          <span class="tds-side-nav__profile-info">
+            <span class="tds-side-nav__profile-name-row">
+              <span class="tds-side-nav__profile-name">Jane Doe</span>
+              <span class="tds-side-nav__profile-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg></span>
+            </span>
+            <span class="tds-side-nav__profile-email">janedoe@trulioo.com</span>
+          </span>
+        </button>
+      </div>
+
+    </aside>
+    <main class="app-main kyb-panel">
+
+      <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 5h14M3 10h14M3 15h14"/>
+        </svg>
+      </button>
+
+      <div class="dv-view dv-flow-view" id="kyc-flow-view">
+
+        <header class="dv-flow-header">
+          <div class="dv-flow-header__title-group">
+            <button type="button" class="dv-back-btn" id="kyc-home-back" aria-label="Back to home">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+            </button>
+            <h1 class="dv-flow-header__title">KYC Verification</h1>
+          </div>
+          <button class="dv-flow-truai-btn" type="button" data-truai-toggle aria-expanded="false">
+            <span class="dv-flow-truai-btn__icon">
+              <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
+            </span>
+            TruAI
+          </button>
+        </header>
+
+        <div class="dv-flow-content">
+
+          <p class="kyc-form-errors" id="kyc-form-errors" role="alert" hidden></p>
+
+<form id="kyc-form" novalidate>
+
+        <!-- Step 1: Personal information -->
+        <section class="dv-flow-step kyc-step" data-step="1" aria-label="Personal information">
+            <ol class="tds-progress-indicator tds-progress-indicator--horizontal kyc-progress" aria-label="Progress"></ol>
+
+          <div class="dv-flow-card">
+            <div class="dv-flow-card__header">
+              <h2 class="dv-flow-card__title">Personal information</h2>
+              <p class="kyc-form-step-desc">Tell us about yourself so we can verify your identity.</p>
+            </div>
+            <div class="dv-flow-section__body kyc-step-body">
+              <div class="kyc-fields">
+                <div class="tds-text-input">
+                  <label class="tds-field-label" for="kyc-first-name">First name</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="kyc-first-name" name="firstName" type="text" placeholder="Jane" autocomplete="given-name" required>
+                  </div>
+                </div>
+                <div class="tds-text-input">
+                  <label class="tds-field-label" for="kyc-last-name">Last name</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="kyc-last-name" name="lastName" type="text" placeholder="Doe" autocomplete="family-name" required>
+                  </div>
+                </div>
+                <div class="tds-date-picker" id="kyc-dob" data-date-picker data-size="lg">
+                  <label class="tds-field-label">Date of birth</label>
+                  <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+                    <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                    <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+                  </button>
+                </div>
+                <div class="tds-text-input">
+                  <label class="tds-field-label" for="kyc-email">Email address</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="kyc-email" name="email" type="email" placeholder="jane.doe@email.com" autocomplete="email" required>
+                  </div>
+                </div>
+                <div class="tds-text-input kyc-fields__full">
+                  <label class="tds-field-label" for="kyc-phone">Phone number</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="kyc-phone" name="phone" type="tel" placeholder="+1 (555) 000-0000" autocomplete="tel" required>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="dv-flow-card__footer">
+              <span></span>
+              <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-kyc-next>Continue</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 2: Address -->
+        <section class="dv-flow-step kyc-step" data-step="2" aria-label="Address" hidden>
+            <ol class="tds-progress-indicator tds-progress-indicator--horizontal kyc-progress" aria-label="Progress"></ol>
+
+          <div class="dv-flow-card">
+            <div class="dv-flow-card__header">
+              <h2 class="dv-flow-card__title">Residential address</h2>
+              <p class="kyc-form-step-desc">Provide your current home address for identity matching.</p>
+            </div>
+            <div class="dv-flow-section__body kyc-step-body">
+              <div class="kyc-fields">
+                <div class="tds-combobox tds-combobox--full-width kyc-fields__full" id="kyc-country">
+                  <label class="tds-field-label" for="kyc-country-input">Country</label>
+                  <div class="tds-combobox__field tds-combobox__field--lg">
+                    <span class="tds-combobox__leading-visual kyc-country__flag" hidden aria-hidden="true"></span>
+                    <input class="tds-combobox__input" id="kyc-country-input" name="country" type="text"
+                           placeholder="Type country" autocomplete="country-name"
+                           role="combobox" aria-expanded="false" aria-controls="kyc-country-list" required>
+                    <span class="tds-combobox__trailing-group">
+                      <span class="tds-caret tds-caret--default" aria-hidden="true">
+                        <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="tds-combobox__menu">
+                    <div class="tds-dropdown-panel kyc-country__list" id="kyc-country-list" role="listbox"></div>
+                  </div>
+                </div>
+                <div class="tds-text-input kyc-fields__full">
+                  <label class="tds-field-label" for="kyc-street">Street address</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="kyc-street" name="street" type="text" placeholder="123 Main Street" autocomplete="street-address" required>
+                  </div>
+                </div>
+                <div class="tds-text-input">
+                  <label class="tds-field-label" for="kyc-city">City</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="kyc-city" name="city" type="text" placeholder="San Francisco" autocomplete="address-level2" required>
+                  </div>
+                </div>
+                <div class="tds-text-input">
+                  <label class="tds-field-label" for="kyc-state">State / Province</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="kyc-state" name="state" type="text" placeholder="California" autocomplete="address-level1" required>
+                  </div>
+                </div>
+                <div class="tds-text-input kyc-fields__full">
+                  <label class="tds-field-label" for="kyc-postal">Postal code</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="kyc-postal" name="postalCode" type="text" placeholder="94105" autocomplete="postal-code" required>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="dv-flow-card__footer">
+              <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-kyc-back>Back</button>
+              <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-kyc-next>Continue</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 3: Identity document -->
+        <section class="dv-flow-step kyc-step" data-step="3" aria-label="Identity document" hidden>
+            <ol class="tds-progress-indicator tds-progress-indicator--horizontal kyc-progress" aria-label="Progress"></ol>
+
+          <div class="dv-flow-card">
+            <div class="dv-flow-card__header">
+              <h2 class="dv-flow-card__title">Identity document</h2>
+              <p class="kyc-form-step-desc">Enter details from a government-issued photo ID.</p>
+            </div>
+            <div class="dv-flow-section__body kyc-step-body">
+              <div class="kyc-fields">
+                <div class="tds-select tds-select--full-width kyc-fields__full" id="kyc-doc-type">
+                  <label class="tds-field-label">Document type</label>
+                  <button type="button" class="tds-select__trigger tds-select__trigger--lg" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="tds-select__text-wrapper"><span class="tds-select__value tds-select__placeholder">Select document type</span></span>
+                    <span class="tds-select__trailing-group">
+                      <span class="tds-caret tds-caret--default" aria-hidden="true">
+                        <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                      </span>
+                    </span>
+                  </button>
+                  <div class="tds-select__menu">
+                    <div class="tds-dropdown-panel" role="listbox"></div>
+                  </div>
+                </div>
+                <div class="tds-text-input kyc-fields__full">
+                  <label class="tds-field-label" for="kyc-doc-number">Document number</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="kyc-doc-number" name="documentNumber" type="text" placeholder="AB1234567" required>
+                  </div>
+                </div>
+                <div class="tds-date-picker" id="kyc-issue-date" data-date-picker data-size="lg">
+                  <label class="tds-field-label">Issue date</label>
+                  <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+                    <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                    <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+                  </button>
+                </div>
+                <div class="tds-date-picker" id="kyc-expiry-date" data-date-picker data-size="lg">
+                  <label class="tds-field-label">Expiry date</label>
+                  <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false">
+                    <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                    <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="dv-flow-card__footer">
+              <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-kyc-back>Back</button>
+              <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-kyc-next>Continue</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 4: Review & submit -->
+        <section class="dv-flow-step kyc-step" data-step="4" aria-label="Review and submit" hidden>
+            <ol class="tds-progress-indicator tds-progress-indicator--horizontal kyc-progress" aria-label="Progress"></ol>
+
+          <div class="dv-flow-card">
+            <div class="dv-flow-card__header">
+              <h2 class="dv-flow-card__title">Review &amp; submit</h2>
+              <p class="kyc-form-step-desc">Confirm your details and provide consent to proceed.</p>
+            </div>
+            <div class="dv-flow-section__body kyc-step-body">
+              <div class="kyc-review" id="kyc-review-content" aria-live="polite"></div>
+
+              <div class="kyc-consent">
+                <label class="kyc-consent__item">
+                  <input type="checkbox" class="tds-checkbox" id="kyc-consent-terms" name="consentTerms">
+                  <span class="kyc-consent__text">I confirm that the information provided is accurate and I agree to the Terms of Service.</span>
+                </label>
+                <label class="kyc-consent__item">
+                  <input type="checkbox" class="tds-checkbox" id="kyc-consent-privacy" name="consentPrivacy">
+                  <span class="kyc-consent__text">I consent to Trulioo processing my personal data for identity verification purposes.</span>
+                </label>
+              </div>
+            </div>
+            <div class="dv-flow-card__footer">
+              <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-kyc-back>Back</button>
+              <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" data-kyc-next>Submit</button>
+            </div>
+          </div>
+        </section>
+
+      </form>
+        </div>
+
+      </div><!-- /#kyc-flow-view -->
+
+      <div class="dv-view dv-flow-view" id="kyc-success-view" hidden>
+        <header class="dv-flow-header">
+          <div class="dv-flow-header__title-group">
+            <h1 class="dv-flow-header__title">KYC Verification</h1>
+          </div>
+        </header>
+        <div class="dv-flow-content">
+          <section class="dv-flow-step">
+            <section class="dv-flow-card kyc-success" aria-label="Submission complete">
+              <div class="kyc-success__body">
+                <div class="kyc-success__icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>
+                </div>
+                <h2 class="kyc-success__title">Verification submitted</h2>
+                <p class="kyc-success__desc">Thank you. Your KYC information has been received and is being processed. You will receive a confirmation email shortly.</p>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" onclick="location.reload()">Start new verification</button>
+              </div>
+            </section>
+          </section>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  </div>
+
+  <script src="../../Components/date-picker/date-picker.js"></script>
+  <script src="kyc-form.js"></script>
+  <script src="../shared/truai-chat.js?v=1"></script>
+  <script src="../../Components/side-nav/side-nav.js"></script>
+  <script>TdsSideNav.init();</script>
+</body>
+</html>

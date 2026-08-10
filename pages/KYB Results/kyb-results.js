@@ -63,7 +63,8 @@
     content.hidden = !expanded;
   }
 
-  function openSignalCategory(categoryId) {
+  function openSignalCategory(categoryId, options) {
+    options = options || {};
     setActiveTab("signals");
 
     document.querySelectorAll(".tds-risk-category-strip-card[data-kyb-signal-category]").forEach(function (card) {
@@ -82,10 +83,70 @@
     });
 
     var target = document.querySelector('.kyb-signal-category[data-kyb-signal-category="' + categoryId + '"]');
-    if (!target) return;
+    if (target && options.scroll !== false) {
+      window.requestAnimationFrame(function () {
+        target.scrollIntoView({ behavior: "smooth", block: options.scrollBlock || "start" });
+      });
+    }
+
+    return target;
+  }
+
+  function expandSignalRow(row) {
+    if (!row) return;
+    row.classList.add("kyb-signal-row--expanded");
+    var toggle = row.querySelector(".kyb-signal-row__toggle");
+    var details = row.nextElementSibling;
+    if (toggle) toggle.setAttribute("aria-expanded", "true");
+    if (details && details.classList.contains("kyb-signal-detail-row")) details.hidden = false;
+  }
+
+  function highlightJumpTarget(el) {
+    if (!el) return;
+    var target = el.matches("tr, .tds-data-field, .kyb-officer-block, .kyb-insights-intro__head, .tds-data-table-container")
+      ? el
+      : el.closest("tr, .tds-data-field, .kyb-officer-block, .kyb-insights-intro__head, .tds-data-table-container") || el;
+    target.classList.remove("kyb-jump-highlight");
+    void target.offsetWidth;
+    target.classList.add("kyb-jump-highlight");
+    target.addEventListener(
+      "animationend",
+      function () {
+        target.classList.remove("kyb-jump-highlight");
+      },
+      { once: true }
+    );
+  }
+
+  function navigateToKybDetail(detail) {
+    if (!detail || !detail.tab) return;
+
+    setActiveTab(detail.tab);
 
     window.requestAnimationFrame(function () {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (detail.signalCategory) openSignalCategory(detail.signalCategory, { scroll: !detail.anchor });
+
+      window.requestAnimationFrame(function () {
+        var target = detail.anchor ? document.querySelector('[data-kyb-anchor="' + detail.anchor + '"]') : null;
+
+        if (target && target.matches("[data-kyb-signal-row]")) expandSignalRow(target);
+
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+          highlightJumpTarget(target);
+          return;
+        }
+
+        if (detail.signalCategory) {
+          var category = document.querySelector(
+            '.kyb-signal-category[data-kyb-signal-category="' + detail.signalCategory + '"]'
+          );
+          if (category) {
+            category.scrollIntoView({ behavior: "smooth", block: "start" });
+            highlightJumpTarget(category);
+          }
+        }
+      });
     });
   }
 
@@ -103,10 +164,20 @@
   }
 
   function initScoreBreakdownLink() {
-    document.querySelectorAll("[data-kyb-jump-tab]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        setActiveTab(btn.getAttribute("data-kyb-jump-tab") || "signals");
-      });
+    document.addEventListener("click", function (event) {
+      var btn = event.target.closest("[data-kyb-jump-tab]");
+      if (!btn) return;
+
+      var tab = btn.getAttribute("data-kyb-jump-tab") || "signals";
+      var anchor = btn.getAttribute("data-kyb-jump-anchor");
+      var signalCategory = btn.getAttribute("data-kyb-jump-signal-category");
+
+      if (anchor || signalCategory) {
+        navigateToKybDetail({ tab: tab, anchor: anchor || "", signalCategory: signalCategory || "" });
+        return;
+      }
+
+      setActiveTab(tab);
     });
   }
 
@@ -140,7 +211,7 @@
       });
     });
 
-    setActiveTab(shell.getAttribute("data-active-tab") || "signals");
+    setActiveTab(shell.getAttribute("data-active-tab") || "overview");
   }
 
   function initTabsScroll() {
@@ -218,11 +289,40 @@
   var DEFAULT_COMPANY_ALT = "Meridian Apex Consulting Limited";
   var DEFAULT_DOMAIN = "meridianapexconsulting.co.uk";
 
+  var ANNOUNCEMENT_ERROR_ICON =
+    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">' +
+    '<path d="M8 2.5 14 13.5H2L8 2.5z"/>' +
+    '<path d="M8 6.5v3.5" stroke-linecap="round"/>' +
+    '<circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg>';
+
   var ENTITY_PROFILES = {
     standard: {
       score: 28,
       riskLevel: "Low",
       summary: "{name} shows clean US registry records and straightforward ownership with no elevated risk signals detected.",
+      overviewNarrative:
+        "{name} presents a low-risk onboarding profile with verified state registration and a direct ownership structure. Registry filings are current, the registered address aligns with declared operations, and no elevated AML or adverse signals were detected across core KYB checks. Overall risk indicators sit within standard onboarding thresholds.",
+      sidebarSummary: {
+        overview:
+          "{name} is an active US services company with verified state registration, direct ownership, and no elevated risk signals across core KYB checks.",
+        alerts: [
+          {
+            text: "Active corporate registry status with consistent filing history",
+            featured: true,
+            view: { tab: "business-insights", anchor: "insight-company-status" },
+          },
+          {
+            text: "Direct ownership structure with no offshore intermediaries",
+            featured: false,
+            view: { tab: "ownership", anchor: "ownership-table" },
+          },
+          {
+            text: "Registered address matches declared operating location",
+            featured: false,
+            view: { tab: "business-insights", anchor: "insight-registered-address" },
+          },
+        ],
+      },
       insightsSummary: "{name} is an active US services company with verified registration, stable operating history, and baseline risk indicators within normal onboarding thresholds.",
       overallRisk: 28,
       registryMatch: 94,
@@ -244,6 +344,29 @@
       score: 72,
       riskLevel: "Medium",
       summary: "{name} resolves through nested corporate layers across multiple jurisdictions with inferred offshore ownership links.",
+      overviewNarrative:
+        "{name} presents moderate onboarding risk due to a multi-layer ownership structure spanning {country} and offshore jurisdictions. Registry status is active, but beneficial ownership is partially inferred and transparency is limited across intermediate holding entities. Additional review of the ownership chain and source coverage is recommended before approval.",
+      sidebarSummary: {
+        overview:
+          "{name} operates through nested corporate layers across {country} and offshore jurisdictions, with inferred beneficial ownership and limited registry transparency.",
+        alerts: [
+          {
+            text: "Multi-layer ownership spanning multiple jurisdictions",
+            featured: true,
+            view: { tab: "ownership", anchor: "ownership-parent" },
+          },
+          {
+            text: "Beneficial owner inferred rather than directly disclosed",
+            featured: false,
+            view: { tab: "ownership", anchor: "ownership-officer" },
+          },
+          {
+            text: "Operating address differs from registered corporate address",
+            featured: false,
+            view: { tab: "signals", signalCategory: "third-party-market", anchor: "signal-shared-address" },
+          },
+        ],
+      },
       insightsSummary: "{name} operates through a multi-layer holding structure with cross-border subsidiaries. Ownership tracing surfaced inferred UBOs and limited transparency across intermediate entities.",
       overallRisk: 72,
       registryMatch: 88,
@@ -266,28 +389,75 @@
       score: 81,
       riskLevel: "High",
       summary: "{name} returned elevated AML signals including adverse media indicators and high-risk jurisdiction exposure.",
-      insightsSummary: "{name} shows elevated AML and adverse media signals alongside cross-border trading activity. Enhanced screening and ongoing monitoring are recommended before onboarding.",
-      overallRisk: 81,
-      registryMatch: 86,
-      operationalFootprint: 36,
+      overviewNarrative:
+        "{name} presents elevated onboarding risk driven by a commercially dormant operating profile and opaque offshore ownership structure. Registry data confirms active status, but no verifiable trading activity, an expired web presence, and micro-entity filings suggest a shell or pass-through entity rather than an active consultancy. Payment delinquencies and industry-activity mismatches further increase default and AML exposure.",
+      sidebarSummary: {
+        overview:
+          "{name} is an active UK private company registered at a formations-agent address, with no verifiable trading activity and ownership routed through an offshore BVI holding.",
+        alerts: [
+          {
+            text: "No verifiable business activity at the registered Formation House address",
+            featured: true,
+            view: { tab: "signals", signalCategory: "business-model", anchor: "signal-operating-footprint" },
+          },
+          {
+            text: "100% ownership inferred through Apex Holdings BVI Ltd. with no disclosed UBO",
+            featured: false,
+            view: { tab: "ownership", anchor: "ownership-parent" },
+          },
+          {
+            text: "Director {director} linked to 3 previously dissolved entities",
+            featured: false,
+            view: { tab: "ownership", anchor: "ownership-officer" },
+          },
+        ],
+      },
+      insightsSummary:
+        "{name} is an active but commercially dormant private company with no verifiable operating footprint. The profile is consistent with a shell or pass-through entity rather than a trading consultancy.",
+      overallRisk: 79,
+      registryMatch: 92,
+      operationalFootprint: 18,
       entityType: "Private limited",
-      industry: "Cross-border trading",
-      employees: "8",
-      parentEntity: "Vantage Pacific Holdings Pte Ltd.",
+      industry: "Management consultancy",
+      employees: "0",
+      parentEntity: "Apex Holdings BVI Ltd.",
       signalCount: "38",
       ownershipRows: [
-        { name: "Vantage Pacific Holdings Pte Ltd.", role: "Parent company", pct: "100%", status: "Inferred", statusTone: "intermediate" },
-        { name: "Mei Lin Tan", role: "Director", pct: "—", status: "Verified", statusTone: "positive" },
+        { name: "Apex Holdings BVI Ltd.", role: "Parent company", pct: "100%", status: "Inferred", statusTone: "intermediate" },
+        { name: "James Whitmore", role: "Director", pct: "—", status: "Verified", statusTone: "positive" },
       ],
-      directorName: "Mei Lin Tan",
-      directorDate: "22 Sep 2021",
-      officerNote: "Elevated AML and adverse media signals require enhanced due diligence before onboarding.",
+      directorName: "James Whitmore",
+      directorDate: "14 Mar 2019",
+      officerNote: "Beneficial owner could not be independently verified from registry sources.",
       officerTone: "warning",
     },
     default: {
       score: 55,
       riskLevel: "Medium",
       summary: "{name} is an active registered entity with mixed registry signals. Ownership and operational footprint require further review.",
+      overviewNarrative:
+        "{name} presents a mixed onboarding profile with active registry status but incomplete ownership disclosure and gaps in operational footprint data. Available sources partially align on core identity fields, though filing history and beneficial ownership require further review before a final risk determination.",
+      sidebarSummary: {
+        overview:
+          "{name} is an active registered entity in {country} with mixed registry signals. Ownership structure and operational footprint require further review.",
+        alerts: [
+          {
+            text: "Registry status is active but filing gaps were detected",
+            featured: true,
+            view: { tab: "business-insights", anchor: "insight-company-status" },
+          },
+          {
+            text: "Limited public footprint relative to stated business activity",
+            featured: false,
+            view: { tab: "signals", signalCategory: "business-model", anchor: "signal-operating-footprint" },
+          },
+          {
+            text: "Partial ownership disclosure with one unresolved layer",
+            featured: false,
+            view: { tab: "ownership", anchor: "ownership-parent" },
+          },
+        ],
+      },
       insightsSummary: "{name} is an active registered entity with available registry data. Additional review of ownership structure and operating footprint is recommended.",
       overallRisk: 55,
       registryMatch: 90,
@@ -375,11 +545,81 @@
       /* ignore malformed session payload */
     }
 
-    return null;
+    return {
+      name: DEFAULT_COMPANY_NAME,
+      country: "United Kingdom",
+      countryCode: "gb",
+      brn: "12847362",
+      sample: "elevated",
+      address1: "Suite 4, 123 Formation House",
+      city: "London",
+      postal: "EC2A 4NE",
+    };
   }
 
-  function fillTemplate(template, entity) {
-    return template.replace(/\{name\}/g, entity.name);
+  function fillTemplate(template, entity, extras) {
+    var result = (template || "").replace(/\{name\}/g, entity.name);
+    result = result.replace(/\{country\}/g, entity.country || "the registered jurisdiction");
+    if (extras && extras.director) result = result.replace(/\{director\}/g, extras.director);
+    return result;
+  }
+
+  function buildSidebarViewButton(view) {
+    if (!view) return "";
+    var attrs = 'type="button" class="tds-accordion__action" data-kyb-jump-tab="' + (view.tab || "signals") + '"';
+    if (view.anchor) attrs += ' data-kyb-jump-anchor="' + view.anchor + '"';
+    if (view.signalCategory) attrs += ' data-kyb-jump-signal-category="' + view.signalCategory + '"';
+    return "<button " + attrs + ">View</button>";
+  }
+
+  function renderSidebarSummary(summaryData) {
+    var root = document.querySelector(".kyb-sidebar-summary");
+    if (!root || !summaryData) return;
+
+    var overview = root.querySelector(":scope > .tds-announcement__message");
+    if (overview) overview.textContent = summaryData.overview;
+
+    var findings = root.querySelector(".kyb-sidebar-summary__findings");
+    if (findings && summaryData.alerts) {
+      findings.innerHTML = summaryData.alerts
+        .map(function (alert) {
+          var featuredClass = alert.featured ? " kyb-sidebar-summary__finding--featured" : "";
+          var viewBtn = buildSidebarViewButton(alert.view);
+          return (
+            '<div class="tds-announcement tds-announcement--error tds-announcement--inline kyb-sidebar-summary__finding' +
+            featuredClass +
+            '" role="status">' +
+            '<span class="tds-announcement__icon" aria-hidden="true">' +
+            ANNOUNCEMENT_ERROR_ICON +
+            "</span>" +
+            '<div class="tds-announcement__content">' +
+            '<p class="tds-announcement__message">' +
+            alert.text +
+            "</p>" +
+            viewBtn +
+            "</div></div>"
+          );
+        })
+        .join("");
+    }
+  }
+
+  function sidebarSummaryFromProfile(profile, entity) {
+    var data = profile.sidebarSummary;
+    if (!data) return null;
+
+    var extras = { director: profile.directorName || "the appointed director" };
+
+    return {
+      overview: fillTemplate(data.overview, entity, extras),
+      alerts: data.alerts.map(function (alert) {
+        return {
+          text: fillTemplate(alert.text, entity, extras),
+          featured: !!alert.featured,
+          view: alert.view || null,
+        };
+      }),
+    };
   }
 
   function slugifyDomain(name) {
@@ -437,9 +677,10 @@
     if (!tbody || !rows || !rows.length) return;
 
     tbody.innerHTML = rows
-      .map(function (row) {
+      .map(function (row, index) {
+        var anchorAttr = index === 0 ? ' data-kyb-anchor="ownership-parent"' : "";
         return (
-          "<tr>" +
+          "<tr" + anchorAttr + ">" +
             '<td class="tds-data-table__text-cell">' + row.name + "</td>" +
             '<td class="tds-data-table__text-cell">' + row.role + "</td>" +
             '<td class="tds-data-table__text-cell" data-align="right">' + row.pct + "</td>" +
@@ -467,13 +708,64 @@
     }
   }
 
+  function renderOverviewOwnership(rows) {
+    var list = document.querySelector(".kyb-overview-ownership__list");
+    if (!list || !rows || !rows.length) return;
+
+    list.innerHTML = rows
+      .map(function (row) {
+        var pct = row.pct === "—" ? row.role : row.pct;
+        return (
+          '<li class="kyb-overview-ownership__item">' +
+          '<span class="kyb-overview-ownership__name">' + row.name + "</span>" +
+          '<span class="kyb-overview-ownership__pct">' + pct + "</span>" +
+          '<span class="tds-tag tds-tag--sm tds-tag--' + row.statusTone + '">' + row.status + "</span>" +
+          "</li>"
+        );
+      })
+      .join("");
+
+    var uboCount = document.querySelector(".kyb-overview-ownership__summary .tds-counter");
+    if (uboCount) {
+      var owners = rows.filter(function (row) {
+        return row.pct !== "—";
+      });
+      uboCount.textContent = String(Math.max(owners.length, 1));
+    }
+  }
+
+  function renderOverviewContext(profile, entity) {
+    var extras = { director: profile.directorName || "the appointed director" };
+    var narrative = document.getElementById("kyb-overview-narrative");
+    if (narrative && profile.overviewNarrative) {
+      narrative.textContent = fillTemplate(profile.overviewNarrative, entity, extras);
+    }
+
+    if (profile.industry) {
+      var industryEl = document.querySelector('[data-kyb-overview-field="industry"]');
+      if (industryEl) industryEl.textContent = profile.industry;
+    }
+
+    if (entity.country) {
+      var jurisdictionEl = document.querySelector('[data-kyb-overview-field="jurisdiction"]');
+      if (jurisdictionEl) jurisdictionEl.textContent = entity.country;
+      var flag = document.querySelector("[data-kyb-overview-flag]");
+      if (flag) flag.className = "fi fi-" + entity.countryCode;
+    }
+
+    renderOverviewOwnership(profile.ownershipRows);
+
+    var overviewGauge = document.getElementById("kyb-overview-gauge");
+    if (overviewGauge) overviewGauge.setAttribute("data-score", String(profile.score));
+  }
+
   function applyEntityContext() {
     var entity = parseEntityContext();
     if (!entity) return null;
 
     var profile = ENTITY_PROFILES[entity.sample] || ENTITY_PROFILES.default;
-    var summary = fillTemplate(profile.summary, entity);
-    var insightsSummary = fillTemplate(profile.insightsSummary, entity);
+    var extras = { director: profile.directorName || "the appointed director" };
+    var insightsSummary = fillTemplate(profile.insightsSummary, entity, extras);
     var address = formatRegisteredAddress(entity);
     var domainSlug = slugifyDomain(entity.name);
     var domain = domainSlug ? domainSlug + ".com" : DEFAULT_DOMAIN;
@@ -514,8 +806,8 @@
       }).format(new Date())
     );
 
-    var sidebarSummary = document.querySelector(".kyb-sidebar-accordion .tds-accordion__body");
-    if (sidebarSummary) sidebarSummary.textContent = summary;
+    var sidebarSummaryData = sidebarSummaryFromProfile(profile, entity);
+    if (sidebarSummaryData) renderSidebarSummary(sidebarSummaryData);
 
     var insightsSummaryEl = document.querySelector(".kyb-insights-summary");
     if (insightsSummaryEl) insightsSummaryEl.textContent = insightsSummary;
@@ -540,6 +832,8 @@
 
     var gauge = document.querySelector(".kyb-score-card .dv-di-gauge[data-score]");
     if (gauge) gauge.setAttribute("data-score", String(profile.score));
+
+    renderOverviewContext(profile, entity);
 
     var rawPre = document.getElementById("kyb-raw-pre");
     if (rawPre) {
@@ -566,7 +860,7 @@
   }
 
   function initKybScoreGauge() {
-    document.querySelectorAll(".kyb-score-card .dv-di-gauge[data-score]").forEach(function (el) {
+    document.querySelectorAll(".kyb-score-card .dv-di-gauge[data-score], .kyb-overview-hero__gauge[data-score]").forEach(function (el) {
       var score = parseFloat(el.getAttribute("data-score") || "0");
       var tier = kybRiskFromScore(score);
       el.setAttribute("data-risk", tier.risk);
@@ -1382,5 +1676,6 @@
   window.toggleAccordion = toggleAccordion;
   window.KybResults = {
     setActiveTab: setActiveTab,
+    navigateToKybDetail: navigateToKybDetail,
   };
 })();

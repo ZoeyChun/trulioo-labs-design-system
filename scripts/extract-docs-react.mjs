@@ -8,9 +8,9 @@ import path from "node:path";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const PREVIEW = path.join(ROOT, "pages/preview/index.html");
-const OUT = path.join(ROOT, "pages/preview/docs/src/data/sections.ts");
-const SHOWCASES_OUT = path.join(ROOT, "pages/preview/docs/src/data/showcases.ts");
-const INTERACTIONS_OUT = path.join(ROOT, "pages/preview/docs/src/data/interactions.ts");
+const OUT = path.join(ROOT, "Documentation/src/data/sections.ts");
+const SHOWCASES_OUT = path.join(ROOT, "Documentation/src/data/showcases.ts");
+const INTERACTIONS_OUT = path.join(ROOT, "Documentation/src/data/interactions.ts");
 
 const TAB_IDS = [
   "buttons",
@@ -54,7 +54,8 @@ function stripTags(html) {
 
 function classifyShowcase(title, api, index) {
   const t = title.toLowerCase();
-  if (index === 0 || t.includes("anatomy") || t.includes("overview")) return "overview";
+  if (t.includes("anatomy")) return "variants";
+  if (index === 0 || t.includes("overview")) return "overview";
   if (
     t.includes("variant") ||
     t.includes("size") ||
@@ -70,7 +71,7 @@ function classifyShowcase(title, api, index) {
   if (t.includes("token") || t.includes("color") || t.includes("spacing")) return "tokens";
   if (t.includes("a11y") || t.includes("accessibility") || t.includes("keyboard")) return "a11y";
   if (t.includes("use case") || t.includes("kyb") || t.includes("example")) return "code";
-  if (api) return "props";
+  // Canvas demos belong in Design; Props tab still lists API from all showcases.
   return "variants";
 }
 

@@ -1,0 +1,2102 @@
+{
+  "components": {
+    "switch": [
+      "toggle",
+      "toggle switch",
+      "on off",
+      "boolean",
+      "flip"
+    ],
+    "checkbox": [
+      "check box",
+      "tick box",
+      "tick",
+      "multi select"
+    ],
+    "radio": [
+      "radio button",
+      "option",
+      "single choice"
+    ],
+    "radio-group": [
+      "radio buttons",
+      "option group",
+      "single select group"
+    ],
+    "radio-card": [
+      "card select",
+      "selectable card",
+      "choice card"
+    ],
+    "text-input": [
+      "input",
+      "text field",
+      "textbox",
+      "form field",
+      "text box"
+    ],
+    "textarea": [
+      "text area",
+      "multiline input",
+      "multi-line input",
+      "notes field",
+      "comment box"
+    ],
+    "select": [
+      "dropdown",
+      "drop down",
+      "combobox",
+      "combo box",
+      "picker",
+      "menu field"
+    ],
+    "date-picker": [
+      "calendar",
+      "date input",
+      "date field",
+      "date select"
+    ],
+    "button": [
+      "btn",
+      "cta",
+      "action button",
+      "submit button"
+    ],
+    "icon-button": [
+      "icon btn",
+      "icon only button",
+      "ghost button"
+    ],
+    "button-group": [
+      "segmented control",
+      "segment control",
+      "button bar",
+      "toggle group"
+    ],
+    "segmented-control": [
+      "segmented button",
+      "segment button",
+      "segmented control",
+      "toggle group",
+      "view switcher"
+    ],
+    "button-menu": [
+      "menu button",
+      "overflow menu",
+      "actions menu"
+    ],
+    "spinner": [
+      "loading",
+      "loader",
+      "busy indicator",
+      "progress spinner"
+    ],
+    "dialog": [
+      "modal",
+      "popup",
+      "overlay",
+      "lightbox"
+    ],
+    "tooltip": [
+      "hint",
+      "help text",
+      "info bubble"
+    ],
+    "announcement": [
+      "banner",
+      "alert bar",
+      "notice",
+      "inline alert"
+    ],
+    "accordion": [
+      "collapse",
+      "expandable",
+      "disclosure"
+    ],
+    "tabs": [
+      "tab bar",
+      "tabbed navigation",
+      "tab strip"
+    ],
+    "tab-item": [
+      "tab",
+      "tab label"
+    ],
+    "side-nav": [
+      "sidebar",
+      "side navigation",
+      "nav rail",
+      "left nav"
+    ],
+    "nav-item": [
+      "nav link",
+      "navigation item"
+    ],
+    "nav-list": [
+      "nav group",
+      "navigation list"
+    ],
+    "breadcrumb": [
+      "breadcrumbs",
+      "wayfinding",
+      "path"
+    ],
+    "data-table": [
+      "table",
+      "grid",
+      "data grid",
+      "results table"
+    ],
+    "tag": [
+      "chip",
+      "pill",
+      "label tag"
+    ],
+    "ai-tag": [
+      "ai chip",
+      "ai label",
+      "ai badge"
+    ],
+    "filter-button": [
+      "filter",
+      "filter control"
+    ],
+    "sort-button": [
+      "sort",
+      "sorting",
+      "order by"
+    ],
+    "dropdown-panel": [
+      "menu panel",
+      "options menu",
+      "listbox menu"
+    ],
+    "action-list-item": [
+      "menu item",
+      "list item",
+      "option row"
+    ],
+    "field-label": [
+      "label",
+      "form label",
+      "input label"
+    ],
+    "field-caption": [
+      "helper text",
+      "hint text",
+      "caption",
+      "description"
+    ],
+    "field-validation": [
+      "error message",
+      "validation error",
+      "error text"
+    ],
+    "progress-indicator": [
+      "stepper",
+      "steps",
+      "wizard",
+      "step indicator"
+    ],
+    "step-progress": [
+      "progress steps",
+      "step bar"
+    ],
+    "stat-card": [
+      "metric card",
+      "kpi card",
+      "stat tile"
+    ],
+    "score-gauge": [
+      "gauge",
+      "meter",
+      "dial"
+    ],
+    "score-card": [
+      "score tile",
+      "rating card"
+    ],
+    "risk-category-card": [
+      "risk card",
+      "risk tile"
+    ],
+    "counter-label": [
+      "count badge",
+      "counter",
+      "badge count"
+    ],
+    "section-header": [
+      "page header",
+      "section title",
+      "table header"
+    ],
+    "dismiss-action": [
+      "close",
+      "dismiss",
+      "x button",
+      "clear"
+    ],
+    "caret": [
+      "chevron",
+      "arrow",
+      "dropdown arrow"
+    ],
+    "filter-tab": [
+      "filter tabs",
+      "pill tabs",
+      "filter chips"
+    ],
+    "filter-tab-2": [
+      "filter tab item",
+      "pill tab"
+    ],
+    "flag-icon": [
+      "country flag",
+      "flag",
+      "locale flag"
+    ],
+    "data-field": [
+      "read only field",
+      "display field",
+      "label value pair"
+    ],
+    "dismiss-issue-badge": [
+      "issue badge",
+      "warning badge"
+    ]
+  },
+  "rings": [
+    [
+      "switch",
+      "toggle"
+    ],
+    [
+      "select",
+      "dropdown",
+      "combobox",
+      "picker"
+    ],
+    [
+      "dialog",
+      "modal",
+      "popup"
+    ],
+    [
+      "tooltip",
+      "hint",
+      "popover"
+    ],
+    [
+      "announcement",
+      "banner",
+      "alert"
+    ],
+    [
+      "side-nav",
+      "sidebar"
+    ],
+    [
+      "text-input",
+      "input",
+      "text field"
+    ],
+    [
+      "spinner",
+      "loading",
+      "loader"
+    ],
+    [
+      "tag",
+      "chip",
+      "pill"
+    ],
+    [
+      "accordion",
+      "collapse",
+      "expandable"
+    ],
+    [
+      "button",
+      "btn",
+      "cta"
+    ],
+    [
+      "checkbox",
+      "check box",
+      "tick box"
+    ],
+    [
+      "data-table",
+      "table",
+      "grid"
+    ]
+  ],
+  "termIndex": {
+    "accordion": [
+      "accordion",
+      "collapse",
+      "disclosure",
+      "expandable"
+    ],
+    "action button": [
+      "action button",
+      "btn",
+      "button",
+      "cta",
+      "submit button"
+    ],
+    "action list item": [
+      "action list item",
+      "action-list-item",
+      "list item",
+      "menu item",
+      "option row"
+    ],
+    "action-list-item": [
+      "action list item",
+      "action-list-item",
+      "list item",
+      "menu item",
+      "option row"
+    ],
+    "actions menu": [
+      "actions menu",
+      "button menu",
+      "button-menu",
+      "menu button",
+      "overflow menu"
+    ],
+    "ai badge": [
+      "ai badge",
+      "ai chip",
+      "ai label",
+      "ai tag",
+      "ai-tag"
+    ],
+    "ai chip": [
+      "ai badge",
+      "ai chip",
+      "ai label",
+      "ai tag",
+      "ai-tag"
+    ],
+    "ai label": [
+      "ai badge",
+      "ai chip",
+      "ai label",
+      "ai tag",
+      "ai-tag"
+    ],
+    "ai tag": [
+      "ai badge",
+      "ai chip",
+      "ai label",
+      "ai tag",
+      "ai-tag"
+    ],
+    "ai-tag": [
+      "ai badge",
+      "ai chip",
+      "ai label",
+      "ai tag",
+      "ai-tag"
+    ],
+    "alert": [
+      "alert",
+      "announcement",
+      "banner"
+    ],
+    "alert bar": [
+      "alert bar",
+      "announcement",
+      "banner",
+      "inline alert",
+      "notice"
+    ],
+    "announcement": [
+      "alert",
+      "alert bar",
+      "announcement",
+      "banner",
+      "inline alert",
+      "notice"
+    ],
+    "arrow": [
+      "arrow",
+      "caret",
+      "chevron",
+      "dropdown arrow"
+    ],
+    "badge count": [
+      "badge count",
+      "count badge",
+      "counter",
+      "counter label",
+      "counter-label"
+    ],
+    "banner": [
+      "alert",
+      "alert bar",
+      "announcement",
+      "banner",
+      "inline alert",
+      "notice"
+    ],
+    "boolean": [
+      "boolean",
+      "flip",
+      "on off",
+      "switch",
+      "toggle",
+      "toggle switch"
+    ],
+    "breadcrumb": [
+      "breadcrumb",
+      "breadcrumbs",
+      "path",
+      "wayfinding"
+    ],
+    "breadcrumbs": [
+      "breadcrumb",
+      "breadcrumbs",
+      "path",
+      "wayfinding"
+    ],
+    "btn": [
+      "action button",
+      "btn",
+      "button",
+      "cta",
+      "submit button"
+    ],
+    "busy indicator": [
+      "busy indicator",
+      "loader",
+      "loading",
+      "progress spinner",
+      "spinner"
+    ],
+    "button": [
+      "action button",
+      "btn",
+      "button",
+      "cta",
+      "submit button"
+    ],
+    "button bar": [
+      "button bar",
+      "button group",
+      "button-group",
+      "segment control",
+      "segmented control",
+      "toggle group"
+    ],
+    "button group": [
+      "button bar",
+      "button group",
+      "button-group",
+      "segment control",
+      "segmented control",
+      "toggle group"
+    ],
+    "button menu": [
+      "actions menu",
+      "button menu",
+      "button-menu",
+      "menu button",
+      "overflow menu"
+    ],
+    "button-group": [
+      "button bar",
+      "button group",
+      "button-group",
+      "segment control",
+      "segmented control",
+      "toggle group"
+    ],
+    "button-menu": [
+      "actions menu",
+      "button menu",
+      "button-menu",
+      "menu button",
+      "overflow menu"
+    ],
+    "calendar": [
+      "calendar",
+      "date field",
+      "date input",
+      "date picker",
+      "date select",
+      "date-picker"
+    ],
+    "caption": [
+      "caption",
+      "description",
+      "field caption",
+      "field-caption",
+      "helper text",
+      "hint text"
+    ],
+    "card select": [
+      "card select",
+      "choice card",
+      "radio card",
+      "radio-card",
+      "selectable card"
+    ],
+    "caret": [
+      "arrow",
+      "caret",
+      "chevron",
+      "dropdown arrow"
+    ],
+    "check box": [
+      "check box",
+      "checkbox",
+      "multi select",
+      "tick",
+      "tick box"
+    ],
+    "checkbox": [
+      "check box",
+      "checkbox",
+      "multi select",
+      "tick",
+      "tick box"
+    ],
+    "chevron": [
+      "arrow",
+      "caret",
+      "chevron",
+      "dropdown arrow"
+    ],
+    "chip": [
+      "chip",
+      "label tag",
+      "pill",
+      "tag"
+    ],
+    "choice card": [
+      "card select",
+      "choice card",
+      "radio card",
+      "radio-card",
+      "selectable card"
+    ],
+    "clear": [
+      "clear",
+      "close",
+      "dismiss",
+      "dismiss action",
+      "dismiss-action",
+      "x button"
+    ],
+    "close": [
+      "clear",
+      "close",
+      "dismiss",
+      "dismiss action",
+      "dismiss-action",
+      "x button"
+    ],
+    "collapse": [
+      "accordion",
+      "collapse",
+      "disclosure",
+      "expandable"
+    ],
+    "combo box": [
+      "combo box",
+      "combobox",
+      "drop down",
+      "dropdown",
+      "menu field",
+      "picker",
+      "select"
+    ],
+    "combobox": [
+      "combo box",
+      "combobox",
+      "drop down",
+      "dropdown",
+      "menu field",
+      "picker",
+      "select"
+    ],
+    "comment box": [
+      "comment box",
+      "multi-line input",
+      "multiline input",
+      "notes field",
+      "text area",
+      "textarea"
+    ],
+    "count badge": [
+      "badge count",
+      "count badge",
+      "counter",
+      "counter label",
+      "counter-label"
+    ],
+    "counter": [
+      "badge count",
+      "count badge",
+      "counter",
+      "counter label",
+      "counter-label"
+    ],
+    "counter label": [
+      "badge count",
+      "count badge",
+      "counter",
+      "counter label",
+      "counter-label"
+    ],
+    "counter-label": [
+      "badge count",
+      "count badge",
+      "counter",
+      "counter label",
+      "counter-label"
+    ],
+    "country flag": [
+      "country flag",
+      "flag",
+      "flag icon",
+      "flag-icon",
+      "locale flag"
+    ],
+    "cta": [
+      "action button",
+      "btn",
+      "button",
+      "cta",
+      "submit button"
+    ],
+    "data field": [
+      "data field",
+      "data-field",
+      "display field",
+      "label value pair",
+      "read only field"
+    ],
+    "data grid": [
+      "data grid",
+      "data table",
+      "data-table",
+      "grid",
+      "results table",
+      "table"
+    ],
+    "data table": [
+      "data grid",
+      "data table",
+      "data-table",
+      "grid",
+      "results table",
+      "table"
+    ],
+    "data-field": [
+      "data field",
+      "data-field",
+      "display field",
+      "label value pair",
+      "read only field"
+    ],
+    "data-table": [
+      "data grid",
+      "data table",
+      "data-table",
+      "grid",
+      "results table",
+      "table"
+    ],
+    "date field": [
+      "calendar",
+      "date field",
+      "date input",
+      "date picker",
+      "date select",
+      "date-picker"
+    ],
+    "date input": [
+      "calendar",
+      "date field",
+      "date input",
+      "date picker",
+      "date select",
+      "date-picker"
+    ],
+    "date picker": [
+      "calendar",
+      "date field",
+      "date input",
+      "date picker",
+      "date select",
+      "date-picker"
+    ],
+    "date select": [
+      "calendar",
+      "date field",
+      "date input",
+      "date picker",
+      "date select",
+      "date-picker"
+    ],
+    "date-picker": [
+      "calendar",
+      "date field",
+      "date input",
+      "date picker",
+      "date select",
+      "date-picker"
+    ],
+    "description": [
+      "caption",
+      "description",
+      "field caption",
+      "field-caption",
+      "helper text",
+      "hint text"
+    ],
+    "dial": [
+      "dial",
+      "gauge",
+      "meter",
+      "score gauge",
+      "score-gauge"
+    ],
+    "dialog": [
+      "dialog",
+      "lightbox",
+      "modal",
+      "overlay",
+      "popup"
+    ],
+    "disclosure": [
+      "accordion",
+      "collapse",
+      "disclosure",
+      "expandable"
+    ],
+    "dismiss": [
+      "clear",
+      "close",
+      "dismiss",
+      "dismiss action",
+      "dismiss-action",
+      "x button"
+    ],
+    "dismiss action": [
+      "clear",
+      "close",
+      "dismiss",
+      "dismiss action",
+      "dismiss-action",
+      "x button"
+    ],
+    "dismiss issue badge": [
+      "dismiss issue badge",
+      "dismiss-issue-badge",
+      "issue badge",
+      "warning badge"
+    ],
+    "dismiss-action": [
+      "clear",
+      "close",
+      "dismiss",
+      "dismiss action",
+      "dismiss-action",
+      "x button"
+    ],
+    "dismiss-issue-badge": [
+      "dismiss issue badge",
+      "dismiss-issue-badge",
+      "issue badge",
+      "warning badge"
+    ],
+    "display field": [
+      "data field",
+      "data-field",
+      "display field",
+      "label value pair",
+      "read only field"
+    ],
+    "drop down": [
+      "combo box",
+      "combobox",
+      "drop down",
+      "dropdown",
+      "menu field",
+      "picker",
+      "select"
+    ],
+    "dropdown": [
+      "combo box",
+      "combobox",
+      "drop down",
+      "dropdown",
+      "menu field",
+      "picker",
+      "select"
+    ],
+    "dropdown arrow": [
+      "arrow",
+      "caret",
+      "chevron",
+      "dropdown arrow"
+    ],
+    "dropdown panel": [
+      "dropdown panel",
+      "dropdown-panel",
+      "listbox menu",
+      "menu panel",
+      "options menu"
+    ],
+    "dropdown-panel": [
+      "dropdown panel",
+      "dropdown-panel",
+      "listbox menu",
+      "menu panel",
+      "options menu"
+    ],
+    "error message": [
+      "error message",
+      "error text",
+      "field validation",
+      "field-validation",
+      "validation error"
+    ],
+    "error text": [
+      "error message",
+      "error text",
+      "field validation",
+      "field-validation",
+      "validation error"
+    ],
+    "expandable": [
+      "accordion",
+      "collapse",
+      "disclosure",
+      "expandable"
+    ],
+    "field caption": [
+      "caption",
+      "description",
+      "field caption",
+      "field-caption",
+      "helper text",
+      "hint text"
+    ],
+    "field label": [
+      "field label",
+      "field-label",
+      "form label",
+      "input label",
+      "label"
+    ],
+    "field validation": [
+      "error message",
+      "error text",
+      "field validation",
+      "field-validation",
+      "validation error"
+    ],
+    "field-caption": [
+      "caption",
+      "description",
+      "field caption",
+      "field-caption",
+      "helper text",
+      "hint text"
+    ],
+    "field-label": [
+      "field label",
+      "field-label",
+      "form label",
+      "input label",
+      "label"
+    ],
+    "field-validation": [
+      "error message",
+      "error text",
+      "field validation",
+      "field-validation",
+      "validation error"
+    ],
+    "filter": [
+      "filter",
+      "filter button",
+      "filter control",
+      "filter-button"
+    ],
+    "filter button": [
+      "filter",
+      "filter button",
+      "filter control",
+      "filter-button"
+    ],
+    "filter chips": [
+      "filter chips",
+      "filter tab",
+      "filter tabs",
+      "filter-tab",
+      "pill tabs"
+    ],
+    "filter control": [
+      "filter",
+      "filter button",
+      "filter control",
+      "filter-button"
+    ],
+    "filter tab": [
+      "filter chips",
+      "filter tab",
+      "filter tabs",
+      "filter-tab",
+      "pill tabs"
+    ],
+    "filter tab 2": [
+      "filter tab 2",
+      "filter tab item",
+      "filter-tab-2",
+      "pill tab"
+    ],
+    "filter tab item": [
+      "filter tab 2",
+      "filter tab item",
+      "filter-tab-2",
+      "pill tab"
+    ],
+    "filter tabs": [
+      "filter chips",
+      "filter tab",
+      "filter tabs",
+      "filter-tab",
+      "pill tabs"
+    ],
+    "filter-button": [
+      "filter",
+      "filter button",
+      "filter control",
+      "filter-button"
+    ],
+    "filter-tab": [
+      "filter chips",
+      "filter tab",
+      "filter tabs",
+      "filter-tab",
+      "pill tabs"
+    ],
+    "filter-tab-2": [
+      "filter tab 2",
+      "filter tab item",
+      "filter-tab-2",
+      "pill tab"
+    ],
+    "flag": [
+      "country flag",
+      "flag",
+      "flag icon",
+      "flag-icon",
+      "locale flag"
+    ],
+    "flag icon": [
+      "country flag",
+      "flag",
+      "flag icon",
+      "flag-icon",
+      "locale flag"
+    ],
+    "flag-icon": [
+      "country flag",
+      "flag",
+      "flag icon",
+      "flag-icon",
+      "locale flag"
+    ],
+    "flip": [
+      "boolean",
+      "flip",
+      "on off",
+      "switch",
+      "toggle",
+      "toggle switch"
+    ],
+    "form field": [
+      "form field",
+      "input",
+      "text box",
+      "text field",
+      "text input",
+      "text-input",
+      "textbox"
+    ],
+    "form label": [
+      "field label",
+      "field-label",
+      "form label",
+      "input label",
+      "label"
+    ],
+    "gauge": [
+      "dial",
+      "gauge",
+      "meter",
+      "score gauge",
+      "score-gauge"
+    ],
+    "ghost button": [
+      "ghost button",
+      "icon btn",
+      "icon button",
+      "icon only button",
+      "icon-button"
+    ],
+    "grid": [
+      "data grid",
+      "data table",
+      "data-table",
+      "grid",
+      "results table",
+      "table"
+    ],
+    "help text": [
+      "help text",
+      "hint",
+      "info bubble",
+      "tooltip"
+    ],
+    "helper text": [
+      "caption",
+      "description",
+      "field caption",
+      "field-caption",
+      "helper text",
+      "hint text"
+    ],
+    "hint": [
+      "help text",
+      "hint",
+      "info bubble",
+      "popover",
+      "tooltip"
+    ],
+    "hint text": [
+      "caption",
+      "description",
+      "field caption",
+      "field-caption",
+      "helper text",
+      "hint text"
+    ],
+    "icon btn": [
+      "ghost button",
+      "icon btn",
+      "icon button",
+      "icon only button",
+      "icon-button"
+    ],
+    "icon button": [
+      "ghost button",
+      "icon btn",
+      "icon button",
+      "icon only button",
+      "icon-button"
+    ],
+    "icon only button": [
+      "ghost button",
+      "icon btn",
+      "icon button",
+      "icon only button",
+      "icon-button"
+    ],
+    "icon-button": [
+      "ghost button",
+      "icon btn",
+      "icon button",
+      "icon only button",
+      "icon-button"
+    ],
+    "info bubble": [
+      "help text",
+      "hint",
+      "info bubble",
+      "tooltip"
+    ],
+    "inline alert": [
+      "alert bar",
+      "announcement",
+      "banner",
+      "inline alert",
+      "notice"
+    ],
+    "input": [
+      "form field",
+      "input",
+      "text box",
+      "text field",
+      "text input",
+      "text-input",
+      "textbox"
+    ],
+    "input label": [
+      "field label",
+      "field-label",
+      "form label",
+      "input label",
+      "label"
+    ],
+    "issue badge": [
+      "dismiss issue badge",
+      "dismiss-issue-badge",
+      "issue badge",
+      "warning badge"
+    ],
+    "kpi card": [
+      "kpi card",
+      "metric card",
+      "stat card",
+      "stat tile",
+      "stat-card"
+    ],
+    "label": [
+      "field label",
+      "field-label",
+      "form label",
+      "input label",
+      "label"
+    ],
+    "label tag": [
+      "chip",
+      "label tag",
+      "pill",
+      "tag"
+    ],
+    "label value pair": [
+      "data field",
+      "data-field",
+      "display field",
+      "label value pair",
+      "read only field"
+    ],
+    "left nav": [
+      "left nav",
+      "nav rail",
+      "side nav",
+      "side navigation",
+      "side-nav",
+      "sidebar"
+    ],
+    "lightbox": [
+      "dialog",
+      "lightbox",
+      "modal",
+      "overlay",
+      "popup"
+    ],
+    "list item": [
+      "action list item",
+      "action-list-item",
+      "list item",
+      "menu item",
+      "option row"
+    ],
+    "listbox menu": [
+      "dropdown panel",
+      "dropdown-panel",
+      "listbox menu",
+      "menu panel",
+      "options menu"
+    ],
+    "loader": [
+      "busy indicator",
+      "loader",
+      "loading",
+      "progress spinner",
+      "spinner"
+    ],
+    "loading": [
+      "busy indicator",
+      "loader",
+      "loading",
+      "progress spinner",
+      "spinner"
+    ],
+    "locale flag": [
+      "country flag",
+      "flag",
+      "flag icon",
+      "flag-icon",
+      "locale flag"
+    ],
+    "menu button": [
+      "actions menu",
+      "button menu",
+      "button-menu",
+      "menu button",
+      "overflow menu"
+    ],
+    "menu field": [
+      "combo box",
+      "combobox",
+      "drop down",
+      "dropdown",
+      "menu field",
+      "picker",
+      "select"
+    ],
+    "menu item": [
+      "action list item",
+      "action-list-item",
+      "list item",
+      "menu item",
+      "option row"
+    ],
+    "menu panel": [
+      "dropdown panel",
+      "dropdown-panel",
+      "listbox menu",
+      "menu panel",
+      "options menu"
+    ],
+    "meter": [
+      "dial",
+      "gauge",
+      "meter",
+      "score gauge",
+      "score-gauge"
+    ],
+    "metric card": [
+      "kpi card",
+      "metric card",
+      "stat card",
+      "stat tile",
+      "stat-card"
+    ],
+    "modal": [
+      "dialog",
+      "lightbox",
+      "modal",
+      "overlay",
+      "popup"
+    ],
+    "multi select": [
+      "check box",
+      "checkbox",
+      "multi select",
+      "tick",
+      "tick box"
+    ],
+    "multi-line input": [
+      "comment box",
+      "multi-line input",
+      "multiline input",
+      "notes field",
+      "text area",
+      "textarea"
+    ],
+    "multiline input": [
+      "comment box",
+      "multi-line input",
+      "multiline input",
+      "notes field",
+      "text area",
+      "textarea"
+    ],
+    "nav group": [
+      "nav group",
+      "nav list",
+      "nav-list",
+      "navigation list"
+    ],
+    "nav item": [
+      "nav item",
+      "nav link",
+      "nav-item",
+      "navigation item"
+    ],
+    "nav link": [
+      "nav item",
+      "nav link",
+      "nav-item",
+      "navigation item"
+    ],
+    "nav list": [
+      "nav group",
+      "nav list",
+      "nav-list",
+      "navigation list"
+    ],
+    "nav rail": [
+      "left nav",
+      "nav rail",
+      "side nav",
+      "side navigation",
+      "side-nav",
+      "sidebar"
+    ],
+    "nav-item": [
+      "nav item",
+      "nav link",
+      "nav-item",
+      "navigation item"
+    ],
+    "nav-list": [
+      "nav group",
+      "nav list",
+      "nav-list",
+      "navigation list"
+    ],
+    "navigation item": [
+      "nav item",
+      "nav link",
+      "nav-item",
+      "navigation item"
+    ],
+    "navigation list": [
+      "nav group",
+      "nav list",
+      "nav-list",
+      "navigation list"
+    ],
+    "notes field": [
+      "comment box",
+      "multi-line input",
+      "multiline input",
+      "notes field",
+      "text area",
+      "textarea"
+    ],
+    "notice": [
+      "alert bar",
+      "announcement",
+      "banner",
+      "inline alert",
+      "notice"
+    ],
+    "on off": [
+      "boolean",
+      "flip",
+      "on off",
+      "switch",
+      "toggle",
+      "toggle switch"
+    ],
+    "option": [
+      "option",
+      "radio",
+      "radio button",
+      "single choice"
+    ],
+    "option group": [
+      "option group",
+      "radio buttons",
+      "radio group",
+      "radio-group",
+      "single select group"
+    ],
+    "option row": [
+      "action list item",
+      "action-list-item",
+      "list item",
+      "menu item",
+      "option row"
+    ],
+    "options menu": [
+      "dropdown panel",
+      "dropdown-panel",
+      "listbox menu",
+      "menu panel",
+      "options menu"
+    ],
+    "order by": [
+      "order by",
+      "sort",
+      "sort button",
+      "sort-button",
+      "sorting"
+    ],
+    "overflow menu": [
+      "actions menu",
+      "button menu",
+      "button-menu",
+      "menu button",
+      "overflow menu"
+    ],
+    "overlay": [
+      "dialog",
+      "lightbox",
+      "modal",
+      "overlay",
+      "popup"
+    ],
+    "page header": [
+      "page header",
+      "section header",
+      "section title",
+      "section-header",
+      "table header"
+    ],
+    "path": [
+      "breadcrumb",
+      "breadcrumbs",
+      "path",
+      "wayfinding"
+    ],
+    "picker": [
+      "combo box",
+      "combobox",
+      "drop down",
+      "dropdown",
+      "menu field",
+      "picker",
+      "select"
+    ],
+    "pill": [
+      "chip",
+      "label tag",
+      "pill",
+      "tag"
+    ],
+    "pill tab": [
+      "filter tab 2",
+      "filter tab item",
+      "filter-tab-2",
+      "pill tab"
+    ],
+    "pill tabs": [
+      "filter chips",
+      "filter tab",
+      "filter tabs",
+      "filter-tab",
+      "pill tabs"
+    ],
+    "popover": [
+      "hint",
+      "popover",
+      "tooltip"
+    ],
+    "popup": [
+      "dialog",
+      "lightbox",
+      "modal",
+      "overlay",
+      "popup"
+    ],
+    "progress indicator": [
+      "progress indicator",
+      "progress-indicator",
+      "step indicator",
+      "stepper",
+      "steps",
+      "wizard"
+    ],
+    "progress spinner": [
+      "busy indicator",
+      "loader",
+      "loading",
+      "progress spinner",
+      "spinner"
+    ],
+    "progress steps": [
+      "progress steps",
+      "step bar",
+      "step progress",
+      "step-progress"
+    ],
+    "progress-indicator": [
+      "progress indicator",
+      "progress-indicator",
+      "step indicator",
+      "stepper",
+      "steps",
+      "wizard"
+    ],
+    "radio": [
+      "option",
+      "radio",
+      "radio button",
+      "single choice"
+    ],
+    "radio button": [
+      "option",
+      "radio",
+      "radio button",
+      "single choice"
+    ],
+    "radio buttons": [
+      "option group",
+      "radio buttons",
+      "radio group",
+      "radio-group",
+      "single select group"
+    ],
+    "radio card": [
+      "card select",
+      "choice card",
+      "radio card",
+      "radio-card",
+      "selectable card"
+    ],
+    "radio group": [
+      "option group",
+      "radio buttons",
+      "radio group",
+      "radio-group",
+      "single select group"
+    ],
+    "radio-card": [
+      "card select",
+      "choice card",
+      "radio card",
+      "radio-card",
+      "selectable card"
+    ],
+    "radio-group": [
+      "option group",
+      "radio buttons",
+      "radio group",
+      "radio-group",
+      "single select group"
+    ],
+    "rating card": [
+      "rating card",
+      "score card",
+      "score tile",
+      "score-card"
+    ],
+    "read only field": [
+      "data field",
+      "data-field",
+      "display field",
+      "label value pair",
+      "read only field"
+    ],
+    "results table": [
+      "data grid",
+      "data table",
+      "data-table",
+      "grid",
+      "results table",
+      "table"
+    ],
+    "risk card": [
+      "risk card",
+      "risk category card",
+      "risk tile",
+      "risk-category-card"
+    ],
+    "risk category card": [
+      "risk card",
+      "risk category card",
+      "risk tile",
+      "risk-category-card"
+    ],
+    "risk tile": [
+      "risk card",
+      "risk category card",
+      "risk tile",
+      "risk-category-card"
+    ],
+    "risk-category-card": [
+      "risk card",
+      "risk category card",
+      "risk tile",
+      "risk-category-card"
+    ],
+    "score card": [
+      "rating card",
+      "score card",
+      "score tile",
+      "score-card"
+    ],
+    "score gauge": [
+      "dial",
+      "gauge",
+      "meter",
+      "score gauge",
+      "score-gauge"
+    ],
+    "score tile": [
+      "rating card",
+      "score card",
+      "score tile",
+      "score-card"
+    ],
+    "score-card": [
+      "rating card",
+      "score card",
+      "score tile",
+      "score-card"
+    ],
+    "score-gauge": [
+      "dial",
+      "gauge",
+      "meter",
+      "score gauge",
+      "score-gauge"
+    ],
+    "section header": [
+      "page header",
+      "section header",
+      "section title",
+      "section-header",
+      "table header"
+    ],
+    "section title": [
+      "page header",
+      "section header",
+      "section title",
+      "section-header",
+      "table header"
+    ],
+    "section-header": [
+      "page header",
+      "section header",
+      "section title",
+      "section-header",
+      "table header"
+    ],
+    "segment button": [
+      "segment button",
+      "segmented button",
+      "segmented control",
+      "segmented-control",
+      "toggle group",
+      "view switcher"
+    ],
+    "segment control": [
+      "button bar",
+      "button group",
+      "button-group",
+      "segment control",
+      "segmented control",
+      "toggle group"
+    ],
+    "segmented button": [
+      "segment button",
+      "segmented button",
+      "segmented control",
+      "segmented-control",
+      "toggle group",
+      "view switcher"
+    ],
+    "segmented control": [
+      "button bar",
+      "button group",
+      "button-group",
+      "segment button",
+      "segment control",
+      "segmented button",
+      "segmented control",
+      "segmented-control",
+      "toggle group",
+      "view switcher"
+    ],
+    "segmented-control": [
+      "segment button",
+      "segmented button",
+      "segmented control",
+      "segmented-control",
+      "toggle group",
+      "view switcher"
+    ],
+    "select": [
+      "combo box",
+      "combobox",
+      "drop down",
+      "dropdown",
+      "menu field",
+      "picker",
+      "select"
+    ],
+    "selectable card": [
+      "card select",
+      "choice card",
+      "radio card",
+      "radio-card",
+      "selectable card"
+    ],
+    "side nav": [
+      "left nav",
+      "nav rail",
+      "side nav",
+      "side navigation",
+      "side-nav",
+      "sidebar"
+    ],
+    "side navigation": [
+      "left nav",
+      "nav rail",
+      "side nav",
+      "side navigation",
+      "side-nav",
+      "sidebar"
+    ],
+    "side-nav": [
+      "left nav",
+      "nav rail",
+      "side nav",
+      "side navigation",
+      "side-nav",
+      "sidebar"
+    ],
+    "sidebar": [
+      "left nav",
+      "nav rail",
+      "side nav",
+      "side navigation",
+      "side-nav",
+      "sidebar"
+    ],
+    "single choice": [
+      "option",
+      "radio",
+      "radio button",
+      "single choice"
+    ],
+    "single select group": [
+      "option group",
+      "radio buttons",
+      "radio group",
+      "radio-group",
+      "single select group"
+    ],
+    "sort": [
+      "order by",
+      "sort",
+      "sort button",
+      "sort-button",
+      "sorting"
+    ],
+    "sort button": [
+      "order by",
+      "sort",
+      "sort button",
+      "sort-button",
+      "sorting"
+    ],
+    "sort-button": [
+      "order by",
+      "sort",
+      "sort button",
+      "sort-button",
+      "sorting"
+    ],
+    "sorting": [
+      "order by",
+      "sort",
+      "sort button",
+      "sort-button",
+      "sorting"
+    ],
+    "spinner": [
+      "busy indicator",
+      "loader",
+      "loading",
+      "progress spinner",
+      "spinner"
+    ],
+    "stat card": [
+      "kpi card",
+      "metric card",
+      "stat card",
+      "stat tile",
+      "stat-card"
+    ],
+    "stat tile": [
+      "kpi card",
+      "metric card",
+      "stat card",
+      "stat tile",
+      "stat-card"
+    ],
+    "stat-card": [
+      "kpi card",
+      "metric card",
+      "stat card",
+      "stat tile",
+      "stat-card"
+    ],
+    "step bar": [
+      "progress steps",
+      "step bar",
+      "step progress",
+      "step-progress"
+    ],
+    "step indicator": [
+      "progress indicator",
+      "progress-indicator",
+      "step indicator",
+      "stepper",
+      "steps",
+      "wizard"
+    ],
+    "step progress": [
+      "progress steps",
+      "step bar",
+      "step progress",
+      "step-progress"
+    ],
+    "step-progress": [
+      "progress steps",
+      "step bar",
+      "step progress",
+      "step-progress"
+    ],
+    "stepper": [
+      "progress indicator",
+      "progress-indicator",
+      "step indicator",
+      "stepper",
+      "steps",
+      "wizard"
+    ],
+    "steps": [
+      "progress indicator",
+      "progress-indicator",
+      "step indicator",
+      "stepper",
+      "steps",
+      "wizard"
+    ],
+    "submit button": [
+      "action button",
+      "btn",
+      "button",
+      "cta",
+      "submit button"
+    ],
+    "switch": [
+      "boolean",
+      "flip",
+      "on off",
+      "switch",
+      "toggle",
+      "toggle switch"
+    ],
+    "tab": [
+      "tab",
+      "tab item",
+      "tab label",
+      "tab-item"
+    ],
+    "tab bar": [
+      "tab bar",
+      "tab strip",
+      "tabbed navigation",
+      "tabs"
+    ],
+    "tab item": [
+      "tab",
+      "tab item",
+      "tab label",
+      "tab-item"
+    ],
+    "tab label": [
+      "tab",
+      "tab item",
+      "tab label",
+      "tab-item"
+    ],
+    "tab strip": [
+      "tab bar",
+      "tab strip",
+      "tabbed navigation",
+      "tabs"
+    ],
+    "tab-item": [
+      "tab",
+      "tab item",
+      "tab label",
+      "tab-item"
+    ],
+    "tabbed navigation": [
+      "tab bar",
+      "tab strip",
+      "tabbed navigation",
+      "tabs"
+    ],
+    "table": [
+      "data grid",
+      "data table",
+      "data-table",
+      "grid",
+      "results table",
+      "table"
+    ],
+    "table header": [
+      "page header",
+      "section header",
+      "section title",
+      "section-header",
+      "table header"
+    ],
+    "tabs": [
+      "tab bar",
+      "tab strip",
+      "tabbed navigation",
+      "tabs"
+    ],
+    "tag": [
+      "chip",
+      "label tag",
+      "pill",
+      "tag"
+    ],
+    "text area": [
+      "comment box",
+      "multi-line input",
+      "multiline input",
+      "notes field",
+      "text area",
+      "textarea"
+    ],
+    "text box": [
+      "form field",
+      "input",
+      "text box",
+      "text field",
+      "text input",
+      "text-input",
+      "textbox"
+    ],
+    "text field": [
+      "form field",
+      "input",
+      "text box",
+      "text field",
+      "text input",
+      "text-input",
+      "textbox"
+    ],
+    "text input": [
+      "form field",
+      "input",
+      "text box",
+      "text field",
+      "text input",
+      "text-input",
+      "textbox"
+    ],
+    "text-input": [
+      "form field",
+      "input",
+      "text box",
+      "text field",
+      "text input",
+      "text-input",
+      "textbox"
+    ],
+    "textarea": [
+      "comment box",
+      "multi-line input",
+      "multiline input",
+      "notes field",
+      "text area",
+      "textarea"
+    ],
+    "textbox": [
+      "form field",
+      "input",
+      "text box",
+      "text field",
+      "text input",
+      "text-input",
+      "textbox"
+    ],
+    "tick": [
+      "check box",
+      "checkbox",
+      "multi select",
+      "tick",
+      "tick box"
+    ],
+    "tick box": [
+      "check box",
+      "checkbox",
+      "multi select",
+      "tick",
+      "tick box"
+    ],
+    "toggle": [
+      "boolean",
+      "flip",
+      "on off",
+      "switch",
+      "toggle",
+      "toggle switch"
+    ],
+    "toggle group": [
+      "button bar",
+      "button group",
+      "button-group",
+      "segment button",
+      "segment control",
+      "segmented button",
+      "segmented control",
+      "segmented-control",
+      "toggle group",
+      "view switcher"
+    ],
+    "toggle switch": [
+      "boolean",
+      "flip",
+      "on off",
+      "switch",
+      "toggle",
+      "toggle switch"
+    ],
+    "tooltip": [
+      "help text",
+      "hint",
+      "info bubble",
+      "popover",
+      "tooltip"
+    ],
+    "validation error": [
+      "error message",
+      "error text",
+      "field validation",
+      "field-validation",
+      "validation error"
+    ],
+    "view switcher": [
+      "segment button",
+      "segmented button",
+      "segmented control",
+      "segmented-control",
+      "toggle group",
+      "view switcher"
+    ],
+    "warning badge": [
+      "dismiss issue badge",
+      "dismiss-issue-badge",
+      "issue badge",
+      "warning badge"
+    ],
+    "wayfinding": [
+      "breadcrumb",
+      "breadcrumbs",
+      "path",
+      "wayfinding"
+    ],
+    "wizard": [
+      "progress indicator",
+      "progress-indicator",
+      "step indicator",
+      "stepper",
+      "steps",
+      "wizard"
+    ],
+    "x button": [
+      "clear",
+      "close",
+      "dismiss",
+      "dismiss action",
+      "dismiss-action",
+      "x button"
+    ]
+  }
+}
