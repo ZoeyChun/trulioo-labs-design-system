@@ -393,6 +393,10 @@
   padding: var(--padding-xl);
 }
 
+#eid-flow-view::before {
+  opacity: 0.38;
+}
+
 #eid-flow-view:has(#eid-step-simulated:not([hidden])) {
   gap: var(--spacing-32);
 }
@@ -451,10 +455,6 @@
   #eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
     --eid-flow-padding-x: clamp(var(--spacing-12), 3vw, var(--spacing-48));
   }
-
-  #eid-step-simulated.eid-step-simulated--nl-phone {
-    --eid-nl-gutter: clamp(var(--spacing-8), 1.75vw, var(--spacing-24));
-  }
 }
 
 /* Figma 3262:56278 — 48px gap between progress indicator and card */
@@ -465,7 +465,7 @@
 
 #eid-step-simulated.eid-step-simulated--nl-phone {
   max-width: none;
-  --eid-nl-gutter: clamp(var(--spacing-12), 2vw, var(--spacing-32));
+  --eid-nl-phone-gap: var(--spacing-32);
   overflow: visible;
 }
 
@@ -495,12 +495,17 @@
   max-width: 896px;
 }
 
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__content {
+  justify-content: center;
+}
+
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
   flex-direction: row;
   align-items: flex-start;
-  gap: var(--eid-nl-gutter);
+  justify-content: center;
+  gap: var(--eid-nl-phone-gap);
   max-width: none;
-  padding-inline: var(--eid-nl-gutter);
+  padding-inline: 0;
   box-sizing: border-box;
 }
 
@@ -512,9 +517,16 @@
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__column {
-  flex: 1 1 0;
+  flex: 0 1 895px;
+  width: 100%;
+  max-width: 895px;
   min-width: 0;
   padding-inline: 0;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator {
+  width: 100%;
+  max-width: 895px;
 }
 
 .eid-sim-stage__main {
@@ -523,7 +535,9 @@
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__main {
-  flex: 1 1 0;
+  flex: none;
+  width: 100%;
+  max-width: 895px;
   min-width: 0;
 }
 
@@ -1359,8 +1373,38 @@
   display: none !important;
 }
 
+/* Main results panel — page scrolls vertically; no fixed-height inner scroll */
+#eid-result-view .dv-content,
+#eid-result-view .dv-columns,
+#eid-result-view .dv-main {
+  min-height: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+#eid-result-view .dv-main,
 #eid-result-view .dv-doc-panel {
   overflow: hidden;
+}
+
+#eid-result-view .dv-doc-panel__body {
+  min-height: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+#eid-result-view .dv-indicators,
+#eid-result-view .dv-split-pane > .dv-split-pane__start.dv-indicators {
+  max-height: none;
+  overflow-y: visible;
+}
+
+#eid-result-view .dv-split-pane__divider {
+  min-height: auto;
+}
+
+#eid-result-view .dv-di-body {
+  overflow: visible;
 }
 
 .eid-result-panel__body {
@@ -1485,7 +1529,7 @@
 @media (max-width: 1200px) {
   #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
 
   #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone {
@@ -1521,10 +1565,6 @@
 
   #eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
     --eid-flow-padding-x: clamp(var(--spacing-8), 2.5vw, var(--spacing-24));
-  }
-
-  #eid-step-simulated.eid-step-simulated--nl-phone {
-    --eid-nl-gutter: clamp(var(--spacing-8), 2.5vw, var(--spacing-16));
   }
 
   #eid-flow-view .dv-flow-content:has(#eid-step-simulated:not([hidden])) {
@@ -1613,21 +1653,89 @@
   }
 }
 
-/* Result view — summary sidebar + signals data table */
-#eid-summary-header.dv-summary-status-header:not(.dv-summary-status-header--positive):not(.dv-summary-status-header--intermediate):not(.dv-summary-status-header--negative) {
-  background-color: var(--surface-neutral-02);
+/* Result view — assurance gauge + signals data table */
+.eid-summary-block__header {
+  display: flex;
+  flex-direction: column;
 }
 
-#eid-summary-header.dv-summary-status-header:not(.dv-summary-status-header--positive):not(.dv-summary-status-header--intermediate):not(.dv-summary-status-header--negative) .dv-summary-status__label {
+.eid-assurance-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: auto;
+  margin-inline: calc(-1 * var(--spacing-16));
+  padding: 0 var(--spacing-16) var(--spacing-16);
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: var(--surface-neutral-01);
+}
+
+#eid-assurance-block[hidden] {
+  display: none !important;
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+}
+
+.eid-summary-block__header[hidden] {
+  display: none !important;
+}
+
+.eid-assurance-block__head {
+  align-self: stretch;
+  width: 100%;
+}
+
+/* Completed e-ID summary row: status tag + docked TruAI pill, 8px apart */
+.eid-summary-row__tags {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.eid-assurance-block__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.eid-assurance-block__title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
   color: var(--text-default);
 }
 
-#eid-summary-header.dv-summary-status-header--positive { background-color: var(--surface-positive); }
-#eid-summary-header.dv-summary-status-header--intermediate { background-color: var(--surface-intermediate); }
-#eid-summary-header.dv-summary-status-header--negative { background-color: var(--surface-negative); }
-#eid-summary-header.dv-summary-status-header--positive .dv-summary-status__label { color: var(--text-positive); }
-#eid-summary-header.dv-summary-status-header--intermediate .dv-summary-status__label { color: var(--text-intermediate); }
-#eid-summary-header.dv-summary-status-header--negative .dv-summary-status__label { color: var(--text-negative); }
+.eid-assurance-block__gauge {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.eid-assurance-block__gauge .score-gauge {
+  display: block;
+  width: 227px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.eid-summary-status-header--plain {
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+  background-color: var(--surface-neutral-01);
+}
+
+/* Large "Completed" status header is replaced by the e-ID tag in the summary list */
+#eid-summary-header {
+  display: none !important;
+}
+
+.eid-summary-status-header--plain .dv-summary-block__row {
+  padding-right: 0;
+}
 
 #eid-summary-rows[hidden],
 #eid-truai-card[hidden] {
@@ -1650,4 +1758,6 @@
 
 #eid-eid-signals .tds-data-table-container {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }

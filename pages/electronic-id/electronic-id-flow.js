@@ -353,11 +353,16 @@
     return usesNlSimFlow() && state.bank && state.bank.id === "ing";
   }
 
+  function shouldShowNlPhonePreview() {
+    if (!usesNlIngPhonePreview()) return false;
+    return activeSimPanelId() !== "eid-panel-completing";
+  }
+
   function updateNlPhoneLayout() {
     var stepRoot = byId("eid-step-simulated");
     var phone = byId("eid-sim-phone");
     if (!stepRoot || !phone) return;
-    var showPhone = usesNlIngPhonePreview();
+    var showPhone = shouldShowNlPhonePreview();
     var wasVisible = phone.getAttribute("data-visible") === "true";
     stepRoot.classList.toggle("eid-step-simulated--nl-phone", showPhone);
     phone.hidden = !showPhone;
@@ -417,21 +422,9 @@
     );
   }
 
-  function renderMobileLoadingScreen(heading, copy) {
-    return (
-      '<div class="eid-mobile-screen eid-mobile-screen--loading">' +
-      '<div class="eid-mobile-screen__status" aria-hidden="true">9:41</div>' +
-      '<div class="eid-mobile-loading">' +
-      '<span class="eid-spinner eid-spinner--lg" aria-hidden="true"></span>' +
-      '<p class="eid-mobile-loading__title">' + heading + "</p>" +
-      '<p class="eid-mobile-loading__copy">' + copy + "</p>" +
-      "</div></div>"
-    );
-  }
-
   function renderNlPhonePreview() {
     var screen = byId("eid-sim-phone-screen");
-    if (!screen || !usesNlIngPhonePreview()) return;
+    if (!screen || !shouldShowNlPhonePreview()) return;
 
     var panelId = activeSimPanelId();
     if (panelId === "eid-panel-select-bank") {
@@ -442,13 +435,6 @@
     if (panelId === "eid-panel-consent-mobile") {
       screen.innerHTML = renderMobileEmbedScreen("ing-launch.html", "ING app launch");
       bindNlPhoneEmbedLoad(screen);
-      return;
-    }
-    if (panelId === "eid-panel-completing") {
-      screen.innerHTML = renderMobileLoadingScreen(
-        "Completing verification",
-        "Return to this page once approval is complete."
-      );
       return;
     }
 

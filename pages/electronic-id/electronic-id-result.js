@@ -92,13 +92,113 @@
     pl: "Substantial"
   };
 
-  function assuranceTone(level) {
+  var ASSURANCE_GAUGE = {
+    basic: { score: 0, risk: "basic", label: "Basic" },
+    substantial: { score: 50, risk: "medium", label: "Substantial" },
+    high: { score: 100, risk: "low", label: "High" }
+  };
+
+  var ASSURANCE_TOOLTIP =
+    "Assurance level reflects how strongly the e-ID provider verified the user\u2019s identity. " +
+    "Basic indicates minimal verification, Substantial indicates standard multi-factor checks, " +
+    "and High indicates the strongest level of authentication.";
+
+  var floatingTooltipEl = null;
+
+  function ensureFloatingTooltip() {
+    if (!floatingTooltipEl) {
+      floatingTooltipEl = document.createElement("div");
+      floatingTooltipEl.className = "eid-floating-tooltip";
+      floatingTooltipEl.setAttribute("role", "tooltip");
+      floatingTooltipEl.hidden = true;
+      document.body.appendChild(floatingTooltipEl);
+    }
+    return floatingTooltipEl;
+  }
+
+  function positionFloatingTooltip(anchor, tip) {
+    var rect = anchor.getBoundingClientRect();
+    var tipRect = tip.getBoundingClientRect();
+    var left = rect.left + rect.width / 2 - tipRect.width / 2;
+    var top = rect.bottom + 8;
+    left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
+    if (top + tipRect.height > window.innerHeight - 8) {
+      top = rect.top - tipRect.height - 8;
+    }
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
+  }
+
+  function bindAssuranceTooltip() {
+    var btn = byId("eid-assurance-info");
+    if (!btn || btn.dataset.tooltipBound) return;
+    btn.dataset.tooltipBound = "1";
+    var tip = ensureFloatingTooltip();
+
+    function show() {
+      tip.textContent = ASSURANCE_TOOLTIP;
+      tip.hidden = false;
+      positionFloatingTooltip(btn, tip);
+    }
+
+    function hide() {
+      tip.hidden = true;
+    }
+
+    btn.addEventListener("mouseenter", show);
+    btn.addEventListener("focus", show);
+    btn.addEventListener("mouseleave", hide);
+    btn.addEventListener("blur", hide);
+  }
+
+  function hasAssuranceLevel(code) {
+    return !!ASSURANCE_BY_COUNTRY[String(code || "").toLowerCase()];
+  }
+
+  function assuranceLevelForCountry(code) {
+    return ASSURANCE_BY_COUNTRY[String(code || "").toLowerCase()] || null;
+  }
+
+  function assuranceGaugeConfig(level) {
     if (!level) return null;
-    var normalized = String(level).toLowerCase();
-    if (normalized === "high") return "positive";
-    if (normalized === "substantial") return "intermediate";
-    if (normalized === "low") return "negative";
-    return null;
+    return ASSURANCE_GAUGE[String(level).toLowerCase()] || null;
+  }
+
+  function renderAssuranceGauge(countryCode, level) {
+    var block = byId("eid-assurance-block");
+    var gaugeEl = byId("eid-assurance-gauge");
+    var assuranceLevel = hasAssuranceLevel(countryCode) ? (level || assuranceLevelForCountry(countryCode)) : null;
+    var config = assuranceGaugeConfig(assuranceLevel);
+
+    if (block) block.hidden = !config;
+
+    var header = document.querySelector(".eid-summary-block__header");
+    if (header) header.hidden = !config;
+
+    if (!gaugeEl) return;
+
+    if (!config) {
+      gaugeEl.innerHTML = "";
+      gaugeEl.removeAttribute("data-score");
+      gaugeEl.removeAttribute("data-max");
+      gaugeEl.removeAttribute("data-risk");
+      gaugeEl.removeAttribute("data-label");
+      gaugeEl.removeAttribute("data-show-percent");
+      gaugeEl.removeAttribute("data-hide-score");
+      gaugeEl.setAttribute("aria-label", "Assurance level");
+      return;
+    }
+
+    if (!global.ScoreGauge) return;
+
+    gaugeEl.setAttribute("data-score", String(config.score));
+    gaugeEl.setAttribute("data-max", "100");
+    gaugeEl.setAttribute("data-risk", config.risk);
+    gaugeEl.setAttribute("data-label", config.label);
+    gaugeEl.setAttribute("data-show-percent", "false");
+    gaugeEl.setAttribute("data-hide-score", "true");
+    gaugeEl.setAttribute("aria-label", "Assurance level: " + config.label);
+    global.ScoreGauge.render(gaugeEl);
   }
 
   var SPLIT_DEFAULT_END = 353;
@@ -350,7 +450,8 @@
       };
     }
     scenario.documentType = PORTRAIT_COUNTRY_CODES[code] ? "document-portrait" : null;
-    scenario.assuranceLevel = ASSURANCE_BY_COUNTRY[code] || null;
+    scenario.countryCode = code;
+    scenario.assuranceLevel = assuranceLevelForCountry(code);
     return scenario;
   }
 
@@ -398,14 +499,22 @@
     return rows;
   }
 
-  function renderSummaryStatus(status) {
-    return '<span class="dv-summary-status__label">' + esc(status) + "</span>";
-  }
+  var TRUAI_PILL_MARKUP =
+    '<button type="button" class="dv-truai-pill eid-summary-row__truai" id="eid-truai-pill" aria-expanded="false" aria-controls="eid-truai-card">' +
+      '<span class="dv-truai-pill__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg></span>' +
+      "TruAI" +
+      '<span class="dv-truai-pill__caret" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></span>' +
+    "</button>";
 
   function renderSummaryList(rows) {
     return rows.map(function (row) {
+      var tag = renderTag(row.value, row.tone);
+      // Completed e-ID row docks the TruAI pill beside the status tag (8px apart)
+      var right = row.label === "e-ID" && row.value === RESULT_STATUS
+        ? '<span class="eid-summary-row__tags">' + TRUAI_PILL_MARKUP + tag + "</span>"
+        : tag;
       return '<li class="dv-summary-row"><span class="dv-summary-label">' + esc(row.label) +
-        "</span>" + renderTag(row.value, row.tone) + "</li>";
+        "</span>" + right + "</li>";
     }).join("");
   }
 
@@ -449,19 +558,15 @@
     setText(byId("eid-transaction-id"), scenario.transactionId);
 
     var assuranceLevel = scenario.assuranceLevel;
-    var headerTone = assuranceTone(assuranceLevel);
-    var headerLabel = byId("eid-summary-block-label");
-    if (headerLabel) headerLabel.textContent = assuranceLevel ? "Assurance level" : "Result";
+    var countryCode = scenario.countryCode || (flowCountry && flowCountry.code) || "";
 
+    renderAssuranceGauge(countryCode, assuranceLevel);
+
+    // Legacy large status header is unused — e-ID status shows as the list tag below.
     var summaryHeader = byId("eid-summary-header");
-    if (summaryHeader) {
-      summaryHeader.className = "dv-summary-status-header" + (headerTone ? " dv-summary-status-header--" + headerTone : "");
-    }
     var summaryStatus = byId("eid-summary-status");
-    if (summaryStatus) {
-      summaryStatus.className = "dv-summary-status";
-      summaryStatus.innerHTML = renderSummaryStatus(assuranceLevel || RESULT_STATUS);
-    }
+    if (summaryHeader) summaryHeader.hidden = true;
+    if (summaryStatus) summaryStatus.innerHTML = "";
 
     setText(byId("eid-truai-title"), scenario.truAiTitle);
     setText(byId("eid-truai-text"), scenario.truAiSummary);
@@ -575,7 +680,7 @@
 
   function renderGauges(scope) {
     if (!global.ScoreGauge) return;
-    (scope || document).querySelectorAll(".dv-di-gauge[data-score]").forEach(function (el) {
+    (scope || document).querySelectorAll(".dv-di-gauge[data-score]:not(#eid-assurance-gauge)").forEach(function (el) {
       global.ScoreGauge.render(el);
     });
   }
@@ -840,6 +945,7 @@
     if (!root) return;
     initTabs(root);
     initInteractions(root);
+    bindAssuranceTooltip();
     wireSplitPane(root);
     wireImageModal(root);
   }

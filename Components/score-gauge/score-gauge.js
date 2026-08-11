@@ -24,7 +24,8 @@
   var PAL = {
     high: { fill: "#fff1f1", border: "#db2b2b", tag: "#ba151d" },
     medium: { fill: "#fff4db", border: "#d8a13b", tag: "#775516" },
-    low: { fill: "#eaf7f0", border: "#6fb38a", tag: "#166534" }
+    low: { fill: "#eaf7f0", border: "#6fb38a", tag: "#166534" },
+    basic: { fill: "#f4f6f4", border: "#dde2de", tag: "#617269" }
   };
 
   function polar(deg, r) {
@@ -63,10 +64,11 @@
     var pal = PAL[container.getAttribute("data-risk") || ""] || PAL.high;
     var label = container.getAttribute("data-label") || "";
     var showPercent = container.getAttribute("data-show-percent") !== "false";
+    var hideScore = container.getAttribute("data-hide-score") === "true";
     container.innerHTML = "";
 
     var root = document.createElement("div");
-    root.className = "score-gauge";
+    root.className = "score-gauge" + (hideScore ? " score-gauge--label-only" : "");
     container.appendChild(root);
 
     var svg = mk(
@@ -110,27 +112,36 @@
     var center = document.createElement("div");
     center.className = "score-gauge__center";
 
-    var scoreRow = document.createElement("div");
-    scoreRow.className = "score-gauge__score";
-    scoreRow.setAttribute("aria-hidden", "true");
-    var scoreValue = document.createElement("span");
-    scoreValue.className = "score-gauge__value";
-    scoreValue.textContent = "0";
-    scoreRow.appendChild(scoreValue);
-    if (showPercent) {
-      var scorePercent = document.createElement("span");
-      scorePercent.className = "score-gauge__percent";
-      scorePercent.textContent = "%";
-      scoreRow.appendChild(scorePercent);
+    var scoreValue = null;
+    if (!hideScore) {
+      var scoreRow = document.createElement("div");
+      scoreRow.className = "score-gauge__score";
+      scoreRow.setAttribute("aria-hidden", "true");
+      scoreValue = document.createElement("span");
+      scoreValue.className = "score-gauge__value";
+      scoreValue.textContent = "0";
+      scoreRow.appendChild(scoreValue);
+      if (showPercent) {
+        var scorePercent = document.createElement("span");
+        scorePercent.className = "score-gauge__percent";
+        scorePercent.textContent = "%";
+        scoreRow.appendChild(scorePercent);
+      }
+      center.appendChild(scoreRow);
     }
-    center.appendChild(scoreRow);
 
     var badge = document.createElement("span");
-    badge.className = "score-gauge__badge";
-    badge.textContent = label;
-    badge.style.backgroundColor = pal.fill;
-    badge.style.borderColor = pal.border;
-    badge.style.color = pal.tag;
+    if (hideScore) {
+      badge.className = "score-gauge__label-text";
+      badge.textContent = label;
+      badge.style.color = pal.tag;
+    } else {
+      badge.className = "score-gauge__badge";
+      badge.textContent = label;
+      badge.style.backgroundColor = pal.fill;
+      badge.style.borderColor = pal.border;
+      badge.style.color = pal.tag;
+    }
     center.appendChild(badge);
     root.appendChild(center);
 
@@ -139,8 +150,10 @@
       if (t0 === null) t0 = now;
       var raw = Math.min((now - t0) / DURATION, 1);
       var v = score * (1 - Math.pow(1 - raw, 4));
-      if (v > 0.3) {
-        var end = START + (v / max) * SWEEP;
+      var showPointer = v > 0.3 || (score === 0 && raw >= 1);
+      if (showPointer) {
+        var fillValue = score === 0 ? 0 : v;
+        var end = START + (fillValue / max) * SWEEP;
         fl.setAttribute("d", sector(START, end, R_OUTER, R_INNER));
         fd.setAttribute("d", sector(START, end, R_OUTER, R_DARK));
         var p = polar(end, POINTER_R);
@@ -155,7 +168,7 @@
         pw.style.display = "none";
         pg.style.display = "none";
       }
-      scoreValue.textContent = String(Math.round(v));
+      if (scoreValue) scoreValue.textContent = String(Math.round(v));
       if (raw < 1) requestAnimationFrame(anim);
     }
     requestAnimationFrame(anim);
