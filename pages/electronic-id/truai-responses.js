@@ -33,8 +33,8 @@
   function verificationStatus() {
     var assuranceBlock = document.getElementById("eid-assurance-block");
     if (assuranceBlock && !assuranceBlock.hidden) {
-      var gauge = document.getElementById("eid-assurance-gauge");
-      return gauge ? (gauge.getAttribute("data-label") || "Substantial") : "Substantial";
+      var level = document.getElementById("eid-assurance-level");
+      return level && level.textContent.trim() ? level.textContent.trim() : "Substantial";
     }
     var label = document.querySelector("#eid-summary-status .dv-summary-status__label");
     return label ? label.textContent.trim() : "Completed";

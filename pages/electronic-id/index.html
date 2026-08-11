@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="../../Components/text-input/text-input.css">
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../Components/tooltip/tooltip.css">
   <link rel="stylesheet" href="../../Components/dialog/dialog.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
@@ -272,7 +273,7 @@
                 </div>
               </div>
 
-              <div class="eid-config-card__settings">
+              <div class="eid-config-card__settings" hidden>
                 <div class="eid-device-panel">
                   <div class="eid-device-panel__header">
                     <div class="eid-device-panel__title-row">
@@ -613,17 +614,15 @@
               <div class="dv-sidebar__block dv-summary-block" id="eid-summary-block">
                 <div class="eid-summary-block__header">
                   <div class="eid-assurance-block" id="eid-assurance-block" hidden>
-                    <div class="eid-assurance-block__head">
-                      <div class="eid-assurance-block__title-row">
-                        <h2 class="eid-assurance-block__title">Assurance Level</h2>
-                        <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--sm tds-icon-btn--circular" id="eid-assurance-info" aria-label="About assurance levels">
-                          <span class="tds-icon-btn__icon" aria-hidden="true">
-                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.1v3.4M8 5.5v.1"/></svg>
-                          </span>
-                        </button>
-                      </div>
+                    <div class="eid-assurance-block__label-row">
+                      <span class="tds-field-label" id="eid-assurance-label">Provider's assurance level</span>
+                      <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--circular eid-assurance-block__info" id="eid-assurance-info" aria-label="About assurance levels" aria-describedby="eid-assurance-tooltip">
+                        <span class="tds-icon-btn__icon" aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.1v3.4M8 5.5v.1"/></svg>
+                        </span>
+                      </button>
                     </div>
-                    <div class="dv-di-gauge eid-assurance-block__gauge" id="eid-assurance-gauge" role="img" aria-label="Assurance level"></div>
+                    <p class="eid-assurance-block__value text-heading-lg" id="eid-assurance-level"></p>
                   </div>
 
                   <div class="dv-summary-status-header eid-summary-status-header--plain" id="eid-summary-header">

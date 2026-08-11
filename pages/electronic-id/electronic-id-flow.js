@@ -18,9 +18,9 @@
   var CHECK_SVG = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
 
   var BANKS = [
+    { id: "ing", label: "ING", initials: "IN", shareName: "ING" },
     { id: "abn-amro", label: "ABN AMRO", initials: "AB", shareName: "ABN AMRO" },
     { id: "asn", label: "ASN Bank", initials: "AS", shareName: "ASN Bank" },
-    { id: "ing", label: "ING", initials: "IN", shareName: "ING", recommended: true },
     { id: "rabo", label: "Rabo Bank", initials: "RA", shareName: "Rabobank" },
     { id: "sns", label: "SNS Bank", initials: "SN", shareName: "SNS Bank" },
     { id: "triodos", label: "Triodos Bank", initials: "TR", shareName: "Triodos Bank" }
@@ -542,7 +542,12 @@
     showSimPanel(panelId);
     if (!step) return;
 
-    if (step.type === "select-bank" || step.type === "select-provider") syncSelectionGrids();
+    if (step.type === "select-bank") {
+      ensureDefaultNlBank();
+      syncSelectionGrids();
+    } else if (step.type === "select-provider") {
+      syncSelectionGrids();
+    }
     if (step.type === "enter-details") renderDetailsFields(step.fields || []);
     if (step.type === "otp-phone" || step.type === "otp-email") setupOtpPanel(step.type);
     if (step.type === "consent") renderConsent();
@@ -621,25 +626,27 @@
   /* ===================================================================
      Selection grids
      =================================================================== */
+  function defaultNlBank() {
+    return BANKS.find(function (b) { return b.id === "ing"; }) || BANKS[0];
+  }
+
+  function ensureDefaultNlBank() {
+    if (!usesNlSimFlow() || state.bank) return;
+    state.bank = defaultNlBank();
+  }
+
   function buildSelectionGrid(gridId, items, stateKey, onChange) {
     var grid = byId(gridId);
     if (!grid) return;
     grid.innerHTML = "";
     items.forEach(function (item) {
       var card = document.createElement("label");
-      var isFeatured = !!(item.recommended && usesNlSimFlow() && gridId === "eid-bank-grid");
-      card.className = "eid-bank-card eid-bank-card--radio" + (isFeatured ? " eid-bank-card--featured" : "");
-      var innerLabel = isFeatured
-        ? '<span class="eid-bank-card__content">' +
-          '<span class="eid-bank-card__label">' + item.label + "</span>" +
-          '<span class="tds-tag tds-tag--sm tds-tag--default">Recommended</span>' +
-          "</span>"
-        : '<span class="eid-bank-card__label">' + item.label + "</span>";
+      card.className = "eid-bank-card eid-bank-card--radio";
       card.innerHTML =
         '<input class="tds-radio" type="radio" name="' + gridId + '" value="' + item.id + '">' +
         '<span class="eid-bank-card__label-row">' +
         '<span class="eid-bank-card__badge">' + item.initials + "</span>" +
-        innerLabel +
+        '<span class="eid-bank-card__label">' + item.label + "</span>" +
         "</span>";
       var input = card.querySelector("input");
       input.addEventListener("change", function () {

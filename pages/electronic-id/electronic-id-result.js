@@ -92,12 +92,6 @@
     pl: "Substantial"
   };
 
-  var ASSURANCE_GAUGE = {
-    basic: { score: 0, risk: "basic", label: "Basic" },
-    substantial: { score: 50, risk: "medium", label: "Substantial" },
-    high: { score: 100, risk: "low", label: "High" }
-  };
-
   var ASSURANCE_TOOLTIP =
     "Assurance level reflects how strongly the e-ID provider verified the user\u2019s identity. " +
     "Basic indicates minimal verification, Substantial indicates standard multi-factor checks, " +
@@ -108,9 +102,17 @@
   function ensureFloatingTooltip() {
     if (!floatingTooltipEl) {
       floatingTooltipEl = document.createElement("div");
-      floatingTooltipEl.className = "eid-floating-tooltip";
+      floatingTooltipEl.className =
+        "eid-floating-tooltip tds-tooltip tds-tooltip--dark tds-tooltip--top tds-tooltip--caret-sm";
+      floatingTooltipEl.id = "eid-assurance-tooltip";
       floatingTooltipEl.setAttribute("role", "tooltip");
       floatingTooltipEl.hidden = true;
+      floatingTooltipEl.innerHTML =
+        '<div class="tds-tooltip__body">' +
+          '<p class="tds-tooltip__text">Assurance level</p>' +
+          '<p class="tds-tooltip__description">' + esc(ASSURANCE_TOOLTIP) + "</p>" +
+        "</div>" +
+        '<span class="tds-tooltip__caret" aria-hidden="true"></span>';
       document.body.appendChild(floatingTooltipEl);
     }
     return floatingTooltipEl;
@@ -120,10 +122,10 @@
     var rect = anchor.getBoundingClientRect();
     var tipRect = tip.getBoundingClientRect();
     var left = rect.left + rect.width / 2 - tipRect.width / 2;
-    var top = rect.bottom + 8;
+    var top = rect.bottom + 4;
     left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
     if (top + tipRect.height > window.innerHeight - 8) {
-      top = rect.top - tipRect.height - 8;
+      top = rect.top - tipRect.height - 4;
     }
     tip.style.left = left + "px";
     tip.style.top = top + "px";
@@ -136,7 +138,6 @@
     var tip = ensureFloatingTooltip();
 
     function show() {
-      tip.textContent = ASSURANCE_TOOLTIP;
       tip.hidden = false;
       positionFloatingTooltip(btn, tip);
     }
@@ -146,9 +147,9 @@
     }
 
     btn.addEventListener("mouseenter", show);
-    btn.addEventListener("focus", show);
     btn.addEventListener("mouseleave", hide);
-    btn.addEventListener("blur", hide);
+    document.addEventListener("scroll", hide, true);
+    window.addEventListener("blur", hide);
   }
 
   function hasAssuranceLevel(code) {
@@ -159,46 +160,25 @@
     return ASSURANCE_BY_COUNTRY[String(code || "").toLowerCase()] || null;
   }
 
-  function assuranceGaugeConfig(level) {
-    if (!level) return null;
-    return ASSURANCE_GAUGE[String(level).toLowerCase()] || null;
-  }
-
-  function renderAssuranceGauge(countryCode, level) {
+  function renderAssuranceLevel(countryCode, level) {
     var block = byId("eid-assurance-block");
-    var gaugeEl = byId("eid-assurance-gauge");
+    var valueEl = byId("eid-assurance-level");
     var assuranceLevel = hasAssuranceLevel(countryCode) ? (level || assuranceLevelForCountry(countryCode)) : null;
-    var config = assuranceGaugeConfig(assuranceLevel);
+    var show = !!assuranceLevel;
 
-    if (block) block.hidden = !config;
+    if (block) block.hidden = !show;
 
     var header = document.querySelector(".eid-summary-block__header");
-    if (header) header.hidden = !config;
+    if (header) header.hidden = !show;
 
-    if (!gaugeEl) return;
+    if (!valueEl) return;
 
-    if (!config) {
-      gaugeEl.innerHTML = "";
-      gaugeEl.removeAttribute("data-score");
-      gaugeEl.removeAttribute("data-max");
-      gaugeEl.removeAttribute("data-risk");
-      gaugeEl.removeAttribute("data-label");
-      gaugeEl.removeAttribute("data-show-percent");
-      gaugeEl.removeAttribute("data-hide-score");
-      gaugeEl.setAttribute("aria-label", "Assurance level");
+    if (!show) {
+      valueEl.textContent = "";
       return;
     }
 
-    if (!global.ScoreGauge) return;
-
-    gaugeEl.setAttribute("data-score", String(config.score));
-    gaugeEl.setAttribute("data-max", "100");
-    gaugeEl.setAttribute("data-risk", config.risk);
-    gaugeEl.setAttribute("data-label", config.label);
-    gaugeEl.setAttribute("data-show-percent", "false");
-    gaugeEl.setAttribute("data-hide-score", "true");
-    gaugeEl.setAttribute("aria-label", "Assurance level: " + config.label);
-    global.ScoreGauge.render(gaugeEl);
+    valueEl.textContent = assuranceLevel;
   }
 
   var SPLIT_DEFAULT_END = 353;
@@ -560,7 +540,7 @@
     var assuranceLevel = scenario.assuranceLevel;
     var countryCode = scenario.countryCode || (flowCountry && flowCountry.code) || "";
 
-    renderAssuranceGauge(countryCode, assuranceLevel);
+    renderAssuranceLevel(countryCode, assuranceLevel);
 
     // Legacy large status header is unused — e-ID status shows as the list tag below.
     var summaryHeader = byId("eid-summary-header");
@@ -680,7 +660,7 @@
 
   function renderGauges(scope) {
     if (!global.ScoreGauge) return;
-    (scope || document).querySelectorAll(".dv-di-gauge[data-score]:not(#eid-assurance-gauge)").forEach(function (el) {
+    (scope || document).querySelectorAll(".dv-di-gauge[data-score]").forEach(function (el) {
       global.ScoreGauge.render(el);
     });
   }
