@@ -68,16 +68,9 @@
   align-items: flex-start;
 }
 
+/* Match DocV: .dv-main owns the outer frame; inner panel has no second border. */
 .bv-result-shell .dv-main .dv-doc-panel {
   overflow: hidden;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-modal);
-  background-color: var(--surface-neutral-01);
-}
-
-.bv-result-shell .dv-doc-panel__header {
-  border-top-left-radius: var(--radius-modal);
-  border-top-right-radius: var(--radius-modal);
 }
 
 .bv-result-table {
