@@ -13,11 +13,6 @@ window.EID_FLOW_DATA = [
         "fields": []
       },
       {
-        "type": "scan-qr",
-        "label": "Scan QR",
-        "fields": []
-      },
-      {
         "type": "consent",
         "label": "Consent",
         "fields": []

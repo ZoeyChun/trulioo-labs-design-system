@@ -328,7 +328,13 @@
 
           <!-- ===== Simulated data flow (dynamic steps from CSV) ===== -->
           <section class="dv-flow-step eid-step" id="eid-step-simulated" aria-label="Simulated verification flow" hidden>
-            <ol class="tds-progress-indicator tds-progress-indicator--horizontal" id="eid-sim-progress" aria-label="Progress"></ol>
+            <div class="eid-sim-stage" id="eid-sim-stage">
+              <div class="eid-sim-stage__content">
+                <div class="eid-sim-stage__workspace">
+                  <div class="eid-sim-stage__column">
+                    <ol class="tds-progress-indicator tds-progress-indicator--horizontal" id="eid-sim-progress" aria-label="Progress"></ol>
+
+                    <div class="eid-sim-stage__main">
 
             <!-- Select bank -->
             <section class="dv-flow-card eid-sim-panel" id="eid-panel-select-bank" aria-labelledby="eid-select-bank-title" hidden>
@@ -526,6 +532,17 @@
                 <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
               </div>
             </section>
+
+                </div>
+
+                    </div>
+
+              <aside class="eid-sim-phone" id="eid-sim-phone" hidden aria-hidden="true" aria-label="Mobile preview">
+                <div id="eid-sim-phone-screen" aria-live="polite"></div>
+              </aside>
+                </div>
+              </div>
+            </div>
           </section>
 
         </div>

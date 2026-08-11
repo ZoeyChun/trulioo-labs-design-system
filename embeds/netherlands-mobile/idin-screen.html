@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iDIN — Identificeren</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: transparent;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .screen::-webkit-scrollbar { width: 0; }
+
+  /* Status bar */
+  .status-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: 44px;
+    background: #1a8be0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 26px 0 30px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .status-icons { display: flex; align-items: center; gap: 6px; }
+  .status-icons svg { display: block; }
+
+  /* Dynamic-island / notch */
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  .idin-card {
+    width: 100%;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  /* ---------- Blue header ---------- */
+  .header {
+    background: #1a8be0;
+    color: #ffffff;
+    padding: 22px 24px 26px;
+    position: relative;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 22px;
+  }
+
+  .header-title {
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .label {
+    font-size: 12px;
+    color: #a9d7f5;
+    font-weight: 400;
+    margin-bottom: 3px;
+  }
+
+  .value {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 16px;
+  }
+
+  .value:last-child { margin-bottom: 0; }
+
+  /* iDIN logo mark — transparent PNG, no badge/background */
+  .idin-logo {
+    width: 54px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .idin-logo img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+
+  /* ---------- White bank section ---------- */
+  .banks {
+    padding: 22px 24px 30px;
+  }
+
+  .banks-head {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 22px;
+  }
+
+  .banks-head .idin-logo-sm {
+    width: 54px;
+    height: 44px;
+  }
+
+  .banks-head h2 {
+    font-size: 19px;
+    font-weight: 700;
+    color: #1d1d1b;
+  }
+
+  .bank-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 24px;
+    column-gap: 8px;
+  }
+
+  .bank {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: pointer;
+  }
+
+  .bank-logo {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 6px;
+  }
+
+  .bank-logo img {
+    display: block;
+    object-fit: contain;
+    object-position: left center;
+    max-width: 100%;
+  }
+  /* Pictorial marks — normalized by height */
+  .bank-logo img.logo-mark { height: 38px; width: auto; }
+  /* Wordmarks — normalized to a consistent text height */
+  .bank-logo img.logo-word { height: 24px; width: auto; }
+
+  .bank-name {
+    font-size: 13px;
+    color: #4d4d4d;
+    line-height: 1.25;
+    font-weight: 400;
+  }
+
+  /* Embedded in E-ID phone preview — keep mockup frame, room for shadow */
+  html.preview body {
+    padding: 0;
+    min-height: 800px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+   <!-- Status bar spacer (notch clearance) -->
+   <div class="status-bar"></div>
+
+  <div class="idin-card">
+
+    <!-- ===== Blue header ===== -->
+    <div class="header">
+      <div class="header-top">
+        <div class="header-title">Identificeren</div>
+        <div class="idin-logo">
+          <img src="../../assets/netherlands-logos/idin-logo-1024.png" alt="iDIN">
+        </div>
+      </div>
+
+      <div class="label">Gegevens verstrekken</div>
+      <div class="value">Registreer veilig en snel door je identiteit te verifiëren via je bank</div>
+
+      <div class="label">Voor</div>
+      <div class="value">Trulioo</div>
+
+      <div class="label">Inzake</div>
+      <div class="value">Trulioo Identity Verification</div>
+    </div>
+
+    <!-- ===== Bank selection ===== -->
+    <div class="banks">
+      <div class="banks-head">
+        <div class="idin-logo idin-logo-sm">
+          <img src="../../assets/netherlands-logos/idin-logo-1024.png" alt="iDIN">
+        </div>
+        <h2>Kies uw bank</h2>
+      </div>
+
+      <div class="bank-grid">
+
+        <!-- ABN AMRO -->
+        <div class="bank">
+          <div class="bank-logo">
+            <img class="logo-mark" src="../../assets/netherlands-logos/ABN_AMRO_logo_(cropped).svg" alt="ABN AMRO">
+          </div>
+          <div class="bank-name">ABN AMRO</div>
+        </div>
+
+        <!-- ASN Bank -->
+        <div class="bank">
+          <div class="bank-logo">
+            <img class="logo-mark" src="../../assets/netherlands-logos/ASN_Bank.png" alt="ASN Bank">
+          </div>
+          <div class="bank-name">ASN Bank</div>
+        </div>
+
+        <!-- Regio Bank -->
+        <div class="bank">
+          <div class="bank-logo">
+            <img class="logo-word" src="../../assets/netherlands-logos/Regiobank_Logo.svg" alt="RegioBank">
+          </div>
+          <div class="bank-name">ASN Bank vh<br>Regiobank</div>
+        </div>
+
+        <!-- ASN Bank voorheen SNS -->
+        <div class="bank">
+          <div class="bank-logo">
+            <img class="logo-word" src="../../assets/netherlands-logos/logo-sns.svg" alt="ASN Bank voorheen SNS">
+          </div>
+          <div class="bank-name">ASN Bank<br>voorheen SNS</div>
+        </div>
+
+        <!-- bunq -->
+        <div class="bank">
+          <div class="bank-logo">
+            <img class="logo-word" src="../../assets/netherlands-logos/bunq-logo-black.png" alt="bunq">
+          </div>
+          <div class="bank-name">bunq</div>
+        </div>
+
+        <!-- ING -->
+        <div class="bank">
+          <div class="bank-logo">
+            <img class="logo-mark" src="../../assets/netherlands-logos/ing-com-logo.png" alt="ING">
+          </div>
+          <div class="bank-name">ING</div>
+        </div>
+
+        <!-- Rabobank -->
+        <div class="bank">
+          <div class="bank-logo">
+            <img class="logo-mark" src="../../assets/netherlands-logos/Rabobank-Logo-1536x864.png" alt="Rabobank">
+          </div>
+          <div class="bank-name">Rabobank</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- .idin-card -->
+  </div><!-- .screen -->
+ </div><!-- .phone -->
+</body>
+</html>

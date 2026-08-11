@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ING — Mobile Confirmation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: transparent;
+    /* ING brand typeface "ING Me" (proprietary) if installed, else Lato as closest free fallback */
+    font-family: "ING Me", "INGMe", "Lato", "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .screen::-webkit-scrollbar { width: 0; }
+
+  /* Notch */
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  /* ---------- Content transition (arrival; frame stays static) ---------- */
+  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .nav, .content, .footer { animation: contentIn .45s ease backwards; }
+  @media (prefers-reduced-motion: reduce) { .nav, .content, .footer { animation: none; } }
+
+  /* Status bar spacer */
+  .status-bar { height: 44px; flex-shrink: 0; }
+
+  /* ---------- Nav bar ---------- */
+  .nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 4px 20px 14px;
+    flex-shrink: 0;
+    min-height: 26px;
+  }
+
+  .nav .cancel {
+    font-size: 16px;
+    color: #333;
+    font-weight: 400;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav .nav-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  /* ---------- Body ---------- */
+  .content {
+    padding: 6px 20px 0;
+    flex: 1;
+  }
+
+  .send-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .send-row h1 {
+    font-size: 19px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  .idin-logo {
+    width: 48px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .idin-logo img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+
+  .subtitle {
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: #8a8a8a;
+    margin-bottom: 22px;
+  }
+
+  /* ---------- Details list ---------- */
+  .details {
+    background: #efefef;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .detail {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .detail:last-child { border-bottom: none; }
+
+  .detail .check {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: #7a7a7a;
+  }
+  .detail .check svg { display: block; }
+
+  .detail .label {
+    font-size: 13px;
+    color: #1a1a1a;
+    font-weight: 400;
+  }
+
+  /* ---------- Footer buttons ---------- */
+  .footer {
+    padding: 16px 18px 22px;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 15px 0;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+  }
+
+  .btn-accept {
+    background: #ff6200;
+    color: #ffffff;
+    margin-bottom: 12px;
+  }
+
+  .btn-decline {
+    background: #ffffff;
+    color: #ff6200;
+    border-color: #ff6200;
+  }
+
+  html.preview body {
+    padding: 0;
+    min-height: 800px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <!-- Status bar spacer (notch clearance) -->
+    <div class="status-bar"></div>
+
+    <!-- Nav bar -->
+    <div class="nav">
+      <span class="cancel">Cancel</span>
+      <span class="nav-title">Mobile Confirmation</span>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <div class="send-row">
+        <h1>Send details to Trulioo</h1>
+        <div class="idin-logo">
+          <img src="../../assets/netherlands-logos/idin-logo-1024.png" alt="iDIN">
+        </div>
+      </div>
+
+      <p class="subtitle">If you send your details, Trulioo will know who you are. You are requesting ING to send below details only once:</p>
+
+      <div class="details">
+        <div class="detail">
+          <span class="check"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 L7 13 L14.5 5"/></svg></span>
+          <span class="label">First initials</span>
+        </div>
+        <div class="detail">
+          <span class="check"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 L7 13 L14.5 5"/></svg></span>
+          <span class="label">Last name</span>
+        </div>
+        <div class="detail">
+          <span class="check"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 L7 13 L14.5 5"/></svg></span>
+          <span class="label">Date of Birth</span>
+        </div>
+        <div class="detail">
+          <span class="check"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 L7 13 L14.5 5"/></svg></span>
+          <span class="label">Gender</span>
+        </div>
+        <div class="detail">
+          <span class="check"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 L7 13 L14.5 5"/></svg></span>
+          <span class="label">Address 1</span>
+        </div>
+        <div class="detail">
+          <span class="check"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 L7 13 L14.5 5"/></svg></span>
+          <span class="label">City</span>
+        </div>
+        <div class="detail">
+          <span class="check"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 L7 13 L14.5 5"/></svg></span>
+          <span class="label">Postal code</span>
+        </div>
+        <div class="detail">
+          <span class="check"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 L7 13 L14.5 5"/></svg></span>
+          <span class="label">Country of Residence</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer buttons -->
+    <div class="footer">
+      <span class="btn btn-accept">Accept</span>
+      <span class="btn btn-decline">Decline</span>
+    </div>
+
+  </div>
+ </div>
+</body>
+</html>

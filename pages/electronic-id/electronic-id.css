@@ -418,11 +418,25 @@
   padding: 0 var(--eid-flow-padding-x) var(--eid-flow-padding-y);
 }
 
+#eid-flow-view .dv-flow-content:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
+  align-items: stretch;
+  overflow: visible;
+}
+
+/* NL + phone preview — fluid horizontal insets (avoid stacked fixed padding) */
+#eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
+  --eid-flow-padding-x: clamp(var(--spacing-16), 4vw, var(--spacing-280));
+}
+
 @media (max-width: 1280px) {
   #eid-flow-view {
     --eid-flow-padding-x: var(--spacing-160);
     --eid-form-inset-x: var(--spacing-96);
     --eid-details-inset-x: var(--spacing-160);
+  }
+
+  #eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
+    --eid-flow-padding-x: clamp(var(--spacing-16), 3.5vw, var(--spacing-64));
   }
 }
 
@@ -433,13 +447,463 @@
     --eid-form-inset-x: var(--spacing-32);
     --eid-details-inset-x: var(--spacing-64);
   }
+
+  #eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
+    --eid-flow-padding-x: clamp(var(--spacing-12), 3vw, var(--spacing-48));
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone {
+    --eid-nl-gutter: clamp(var(--spacing-8), 1.75vw, var(--spacing-24));
+  }
 }
 
 /* Figma 3262:56278 — 48px gap between progress indicator and card */
 #eid-step-simulated {
-  gap: var(--spacing-48);
   width: 100%;
   max-width: 896px;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone {
+  max-width: none;
+  --eid-nl-gutter: clamp(var(--spacing-12), 2vw, var(--spacing-32));
+  overflow: visible;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage,
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__content,
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
+  overflow: visible;
+}
+
+.eid-sim-stage {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.eid-sim-stage__content {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.eid-sim-stage__workspace {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 896px;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--eid-nl-gutter);
+  max-width: none;
+  padding-inline: var(--eid-nl-gutter);
+  box-sizing: border-box;
+}
+
+.eid-sim-stage__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-48);
+  width: 100%;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__column {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-inline: 0;
+}
+
+.eid-sim-stage__main {
+  width: 100%;
+  max-width: 895px;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__main {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__main .eid-sim-panel.dv-flow-card {
+  width: 100%;
+  max-width: 895px;
+  min-height: auto;
+}
+
+.eid-sim-phone {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  overflow: visible;
+  will-change: transform, opacity;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone {
+  padding-inline: 0;
+}
+
+.eid-sim-phone.eid-sim-phone--enter {
+  animation: eid-phone-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes eid-phone-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eid-sim-phone.eid-sim-phone--enter {
+    animation: none;
+  }
+}
+
+.eid-mobile-embed-host {
+  overflow: visible;
+  flex-shrink: 0;
+  width: calc(390px * var(--eid-phone-scale, 1));
+  height: calc(800px * var(--eid-phone-scale, 1));
+}
+
+.eid-mobile-embed {
+  width: 390px;
+  height: 800px;
+  overflow: visible;
+  transform: scale(var(--eid-phone-scale, 1));
+  transform-origin: top left;
+}
+
+.eid-mobile-embed__frame {
+  display: block;
+  width: 390px;
+  height: 800px;
+  border: 0;
+  background: transparent;
+}
+
+.eid-mobile-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--surface-neutral-01);
+}
+
+.eid-mobile-screen__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  flex-shrink: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.eid-mobile-screen__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-8) var(--spacing-16) var(--spacing-16);
+  text-align: center;
+}
+
+.eid-mobile-screen__logo {
+  display: block;
+  height: 24px;
+  width: auto;
+  max-width: 72px;
+  object-fit: contain;
+}
+
+.eid-mobile-screen__title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.eid-mobile-screen__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 var(--spacing-12) var(--spacing-12);
+}
+
+.eid-mobile-bank-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eid-mobile-bank-list__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-12);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background-color: var(--surface-neutral-01);
+}
+
+.eid-mobile-bank-list__item--selected {
+  border-color: var(--border-interactive);
+  box-shadow: inset 0 0 0 1px var(--border-interactive);
+}
+
+.eid-bank-card--featured:not(.eid-bank-card--selected) {
+  border-color: var(--color-teal-30);
+  background: linear-gradient(180deg, var(--color-white) 0%, var(--color-teal-10) 100%);
+}
+
+.eid-bank-card__content {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--spacing-8);
+  min-width: 0;
+}
+
+.eid-bank-card__content .eid-bank-card__label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.eid-bank-card__content .tds-tag {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.eid-mobile-ing {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-16);
+  padding: var(--spacing-24) var(--spacing-16);
+  text-align: center;
+}
+
+.eid-mobile-ing__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-card);
+  background-color: var(--color-neutral-20);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-40);
+}
+
+.eid-mobile-ing__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.eid-mobile-ing__desc {
+  margin: 0;
+  max-width: 240px;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-description);
+}
+
+.eid-mobile-ing__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+  margin-top: var(--spacing-8);
+  padding: var(--padding-md) var(--padding-lg);
+  border-radius: var(--radius-button);
+  background-color: var(--interactive-default);
+  color: var(--text-inverse);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.eid-mobile-bank-list__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-neutral-20);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-40);
+}
+
+.eid-mobile-bank-list__copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.eid-mobile-bank-list__name {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.eid-mobile-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-16);
+  height: 100%;
+  padding: var(--spacing-16);
+  text-align: center;
+}
+
+.eid-mobile-qr__frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  padding: var(--spacing-8);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background-color: var(--surface-neutral-01);
+}
+
+.eid-mobile-qr__image {
+  display: block;
+  width: 120px;
+  height: 120px;
+}
+
+.eid-mobile-qr__copy,
+.eid-mobile-loading__copy {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.eid-mobile-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-16);
+  height: 100%;
+  padding: var(--spacing-16);
+  text-align: center;
+}
+
+.eid-mobile-loading__title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.eid-mobile-consent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--interactive-default);
+}
+
+.eid-mobile-consent__panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: var(--spacing-12);
+  border-radius: var(--radius-card);
+  background-color: var(--surface-neutral-01);
+  overflow: hidden;
+}
+
+.eid-mobile-consent__header {
+  padding: var(--spacing-16) var(--spacing-12) var(--spacing-8);
+  text-align: center;
+}
+
+.eid-mobile-consent__title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.eid-mobile-consent__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  margin: 0;
+  padding: 0 var(--spacing-12) var(--spacing-12);
+  list-style: none;
+}
+
+.eid-mobile-consent__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-default);
+}
+
+.eid-mobile-consent__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--surface-positive);
+  color: var(--icon-inverse);
+}
+
+.eid-mobile-consent__check svg {
+  width: 10px;
+  height: 10px;
+}
+
+.eid-mobile-consent__action {
+  margin: 0 var(--spacing-12) var(--spacing-12);
+  padding: var(--spacing-12);
+  border: none;
+  border-radius: var(--radius-button);
+  background-color: var(--interactive-default);
+  color: var(--text-inverse);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
 }
 
 #eid-step-simulated .tds-progress-indicator {
@@ -566,6 +1030,13 @@
   align-items: center;
   gap: var(--spacing-16);
   flex: 1;
+  min-width: 0;
+}
+
+.eid-bank-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
   min-width: 0;
 }
 
@@ -1011,6 +1482,17 @@
   margin-bottom: var(--spacing-12);
 }
 
+@media (max-width: 1200px) {
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone {
+    align-self: center;
+  }
+}
+
 @media (max-width: 720px) {
   #eid-flow-view {
     --eid-flow-padding-x: 0;
@@ -1035,6 +1517,14 @@
   #eid-flow-view .dv-flow-content {
     flex: none;
     justify-content: flex-start;
+  }
+
+  #eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
+    --eid-flow-padding-x: clamp(var(--spacing-8), 2.5vw, var(--spacing-24));
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone {
+    --eid-nl-gutter: clamp(var(--spacing-8), 2.5vw, var(--spacing-16));
   }
 
   #eid-flow-view .dv-flow-content:has(#eid-step-simulated:not([hidden])) {
@@ -1082,6 +1572,19 @@
   .eid-bank-grid,
   .eid-highlights__grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .eid-sim-stage {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
+    flex-direction: column;
+  }
+
+  .eid-sim-phone {
+    margin-inline: auto;
   }
 
   .eid-otp-inputs {
