@@ -575,6 +575,7 @@
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone {
   padding-inline: 0;
+  flex-shrink: 0;
 }
 
 .eid-sim-phone.eid-sim-phone--enter {
@@ -599,18 +600,34 @@
   }
 }
 
+#eid-sim-phone-screen {
+  flex-shrink: 0;
+  overflow: visible;
+  line-height: 0;
+}
+
+#eid-sim-phone-screen:has(.eid-mobile-embed-host) {
+  width: calc(390px * var(--eid-phone-scale, 0.55));
+  height: calc(800px * var(--eid-phone-scale, 0.55));
+  flex-shrink: 0;
+}
+
 .eid-mobile-embed-host {
+  position: relative;
   overflow: visible;
   flex-shrink: 0;
-  width: calc(390px * var(--eid-phone-scale, 1));
-  height: calc(800px * var(--eid-phone-scale, 1));
+  width: 100%;
+  height: 100%;
 }
 
 .eid-mobile-embed {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 390px;
   height: 800px;
   overflow: visible;
-  transform: scale(var(--eid-phone-scale, 1));
+  transform: scale(var(--eid-phone-scale, 0.55));
   transform-origin: top left;
 }
 
@@ -1394,16 +1411,36 @@
 
 /* Main results panel — page scrolls vertically; no fixed-height inner scroll */
 #eid-result-view .dv-content,
-#eid-result-view .dv-columns,
+#eid-result-view .dv-columns {
+  min-height: auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+}
+
 #eid-result-view .dv-main {
   min-height: auto;
   min-width: 0;
   max-width: 100%;
+  overflow: visible;
 }
 
-#eid-result-view .dv-main,
 #eid-result-view .dv-doc-panel {
   overflow: hidden;
+}
+
+/* Room for expand toggle straddling the left panel border (half-width ~18px) */
+#eid-result-view .dv-columns--sidebar-collapsed {
+  gap: 0;
+  padding-left: 20px;
+  overflow: visible;
+}
+
+#eid-result-view .dv-sidebar-toggle--expand {
+  left: 0;
+  top: var(--dv-panel-header-offset);
+  transform: translate(-50%, -50%);
+  z-index: 5;
 }
 
 #eid-result-view .dv-doc-panel__body {

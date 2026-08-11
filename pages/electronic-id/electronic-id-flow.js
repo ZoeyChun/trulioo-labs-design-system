@@ -372,7 +372,7 @@
     if (showPhone) {
       renderNlPhonePreview();
       bindNlPhoneResize();
-      requestAnimationFrame(syncNlPhoneSize);
+      scheduleNlPhoneSizeSync();
       if (!wasVisible) {
         requestAnimationFrame(function () {
           phone.classList.add("eid-sim-phone--enter");
@@ -381,6 +381,7 @@
     } else {
       var screen = byId("eid-sim-phone-screen");
       if (screen) screen.innerHTML = "";
+      phone.removeAttribute("data-nl-phone-scale");
     }
   }
 
@@ -390,27 +391,70 @@
   var NL_PHONE_VIEWPORT_PAD = 24;
   var nlPhoneResizeBound = false;
 
-  function syncNlPhoneSize() {
+  function nlPhoneLabelReserve(phone) {
+    if (!phone.querySelector(".eid-mobile-embed-host")) return 0;
+    var label = phone.querySelector(".eid-sim-phone__label");
+    if (!label || getComputedStyle(label).display === "none") return 0;
+    var gap = parseFloat(getComputedStyle(phone).rowGap || getComputedStyle(phone).gap) || 0;
+    var height = label.getBoundingClientRect().height;
+    if (height < 1) height = 24;
+    return height + gap;
+  }
+
+  function applyNlPhoneScale(phone, host, scaleStr) {
+    phone.style.setProperty("--eid-phone-scale", scaleStr);
+    var screen = byId("eid-sim-phone-screen");
+    if (screen) screen.style.setProperty("--eid-phone-scale", scaleStr);
+    host.style.setProperty("--eid-phone-scale", scaleStr);
+  }
+
+  function syncNlPhoneSize(forceRecalc) {
     var phone = byId("eid-sim-phone");
     if (!phone || phone.hidden) return;
     var host = phone.querySelector(".eid-mobile-embed-host");
     if (!host) return;
 
+    var cached = phone.getAttribute("data-nl-phone-scale");
+    if (!forceRecalc && cached) {
+      applyNlPhoneScale(phone, host, cached);
+      return;
+    }
+
+    var labelReserve = nlPhoneLabelReserve(phone);
     var top = phone.getBoundingClientRect().top;
-    var available = window.innerHeight - top - NL_PHONE_VIEWPORT_PAD;
+    var available = window.innerHeight - top - NL_PHONE_VIEWPORT_PAD - labelReserve;
+    available = Math.max(0, available);
     var scale = Math.min(1, available / NL_PHONE_FRAME_H);
     scale = Math.max(0.35, scale);
-    host.style.setProperty("--eid-phone-scale", scale.toFixed(4));
+    var scaleStr = scale.toFixed(4);
+    phone.setAttribute("data-nl-phone-scale", scaleStr);
+    applyNlPhoneScale(phone, host, scaleStr);
+  }
+
+  function scheduleNlPhoneSizeSync(forceRecalc) {
+    syncNlPhoneSize(forceRecalc);
+    requestAnimationFrame(function () {
+      syncNlPhoneSize(forceRecalc);
+      requestAnimationFrame(function () {
+        syncNlPhoneSize(forceRecalc);
+      });
+    });
   }
 
   function bindNlPhoneResize() {
     if (nlPhoneResizeBound) return;
     nlPhoneResizeBound = true;
     var timer;
-    window.addEventListener("resize", function () {
+    function onResize() {
       clearTimeout(timer);
-      timer = setTimeout(syncNlPhoneSize, 100);
-    });
+      timer = setTimeout(function () { scheduleNlPhoneSizeSync(true); }, 100);
+    }
+    window.addEventListener("resize", onResize);
+    var phone = byId("eid-sim-phone");
+    if (phone && typeof ResizeObserver !== "undefined") {
+      var ro = new ResizeObserver(onResize);
+      ro.observe(phone);
+    }
   }
 
   function renderMobileEmbedScreen(filename, title) {
@@ -425,6 +469,9 @@
   function renderNlPhonePreview() {
     var screen = byId("eid-sim-phone-screen");
     if (!screen || !shouldShowNlPhonePreview()) return;
+
+    var phone = byId("eid-sim-phone");
+    if (phone) phone.removeAttribute("data-nl-phone-scale");
 
     var panelId = activeSimPanelId();
     if (panelId === "eid-panel-select-bank") {
@@ -444,11 +491,13 @@
   function bindNlPhoneEmbedLoad(screen) {
     var iframe = screen.querySelector(".eid-mobile-embed__frame");
     if (!iframe) {
-      syncNlPhoneSize();
+      scheduleNlPhoneSizeSync();
       return;
     }
-    iframe.addEventListener("load", syncNlPhoneSize);
-    syncNlPhoneSize();
+    iframe.addEventListener("load", function () {
+      scheduleNlPhoneSizeSync();
+    });
+    scheduleNlPhoneSizeSync();
   }
 
   function panelIdForStep(step) {
