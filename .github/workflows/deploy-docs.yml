@@ -11,6 +11,7 @@ on:
       - "assets/**"
       - "scripts/**"
       - "data/**"
+      - "embeds/**"
 
 permissions:
   contents: read

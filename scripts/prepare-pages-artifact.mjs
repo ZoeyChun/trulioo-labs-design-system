@@ -31,7 +31,7 @@ copyIfExists(path.join(ROOT, "index.html"), path.join(OUT, "index.html"));
 copyIfExists(dist, path.join(OUT, "Documentation/dist"));
 copyIfExists(path.join(ROOT, "Documentation/index.html"), path.join(OUT, "Documentation/index.html"));
 
-for (const dir of ["pages", "Components", "tokens", "assets", "data"]) {
+for (const dir of ["pages", "Components", "tokens", "assets", "data", "embeds"]) {
   copyIfExists(path.join(ROOT, dir), path.join(OUT, dir));
 }
 
