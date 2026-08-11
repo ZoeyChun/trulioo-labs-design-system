@@ -189,7 +189,13 @@
     font-weight: 400;
   }
 
-  /* Embedded in E-ID phone preview — keep mockup frame, room for shadow */
+  /* Embedded in E-ID phone preview — display only, not interactive */
+  html.preview,
+  html.preview * {
+    cursor: default !important;
+    pointer-events: none !important;
+  }
+
   html.preview body {
     padding: 0;
     min-height: 800px;

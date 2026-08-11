@@ -66,7 +66,7 @@
   bottom: auto;
   width: max-content;
   max-width: calc(100% - 3rem);
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, calc(-50% + 6px));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -74,9 +74,10 @@
 
 .score-gauge__label-text {
   font-family: var(--font-family, inherit);
-  font-size: var(--font-size-2xl, 1.5rem);
-  line-height: var(--line-height-2xl, 1.625rem);
+  font-size: var(--font-size-xl, 1.25rem);
+  line-height: var(--line-height-xl, 1.5rem);
   font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-default, #172d2d);
   text-align: center;
   white-space: nowrap;
 }

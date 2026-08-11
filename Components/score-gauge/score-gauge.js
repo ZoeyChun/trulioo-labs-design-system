@@ -134,7 +134,6 @@
     if (hideScore) {
       badge.className = "score-gauge__label-text";
       badge.textContent = label;
-      badge.style.color = pal.tag;
     } else {
       badge.className = "score-gauge__badge";
       badge.textContent = label;

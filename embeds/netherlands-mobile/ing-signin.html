@@ -177,6 +177,12 @@
   .key .icon { color: #ff6200; display: flex; }
   .key .icon svg { display: block; }
 
+  html.preview,
+  html.preview * {
+    cursor: default !important;
+    pointer-events: none !important;
+  }
+
   html.preview body {
     padding: 0;
     min-height: 800px;

@@ -548,10 +548,29 @@
 }
 
 .eid-sim-phone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-8);
   flex: 0 0 auto;
   align-self: flex-start;
   overflow: visible;
   will-change: transform, opacity;
+  cursor: default;
+  user-select: none;
+}
+
+.eid-sim-phone__label {
+  flex-shrink: 0;
+  display: none;
+}
+
+.eid-sim-phone:has(.eid-mobile-embed-host) .eid-sim-phone__label {
+  display: inline-flex;
+}
+
+.eid-sim-phone .eid-mobile-embed__frame {
+  pointer-events: none;
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone {

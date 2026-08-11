@@ -433,7 +433,7 @@
       return;
     }
     if (panelId === "eid-panel-consent-mobile") {
-      screen.innerHTML = renderMobileEmbedScreen("ing-launch.html", "ING app launch");
+      screen.innerHTML = renderMobileEmbedScreen("ing-consent.html", "ING consent");
       bindNlPhoneEmbedLoad(screen);
       return;
     }
