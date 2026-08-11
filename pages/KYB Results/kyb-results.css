@@ -58,24 +58,6 @@
   flex: 1;
   min-height: 0;
   min-width: 0;
-  overflow: hidden;
-}
-
-.kyb-panel .dv-main .kyb-main-stack,
-.kyb-panel .dv-main .kyb-section {
-  flex: 1;
-  min-height: 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Match DocV: .dv-main owns the outer frame; inner tab panels have no second border. */
-.kyb-panel .dv-main .kyb-section {
-  border: none;
-  border-radius: 0;
-  background-color: transparent;
-  overflow: hidden;
 }
 
 .kyb-panel .tds-tabs {
