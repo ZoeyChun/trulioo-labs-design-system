@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ING — Log in</title>
+<title>ING — Sign in</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -40,24 +40,10 @@
 
   .screen::-webkit-scrollbar { width: 0; }
 
-  /* Status bar (dark on white) */
+  /* Status bar spacer */
   .status-bar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
     height: 44px;
-    background: #ffffff;
-    color: #0d0d0f;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 26px 0 30px;
-    font-size: 14px;
-    font-weight: 600;
   }
-
-  .status-icons { display: flex; align-items: center; gap: 6px; }
-  .status-icons svg { display: block; }
 
   /* Notch */
   .notch {
@@ -70,15 +56,6 @@
     background: #0d0d0f;
     border-radius: 0 0 16px 16px;
     z-index: 20;
-  }
-
-  /* ---------- Content transition (frame stays static) ---------- */
-  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  .login { animation: contentIn .45s ease backwards; }
-  body.leaving .login { opacity: 0; transform: translateY(-8px); transition: opacity .32s ease, transform .32s ease; }
-  @media (prefers-reduced-motion: reduce) {
-    .login { animation: none; }
-    body.leaving .login { transition: none; }
   }
 
   /* ---------- Login content ---------- */
@@ -241,14 +218,15 @@
        <div class="info-btn">i</div>
      </div>
 
-     <div class="login-title">Please log in to continue</div>
+     <div class="login-title">Please sign in to continue</div>
 
+     <!-- PIN correctly entered — all dots filled -->
      <div class="pin-dots">
-       <span class="dot"></span>
-       <span class="dot"></span>
-       <span class="dot"></span>
-       <span class="dot"></span>
-       <span class="dot"></span>
+       <span class="dot filled"></span>
+       <span class="dot filled"></span>
+       <span class="dot filled"></span>
+       <span class="dot filled"></span>
+       <span class="dot filled"></span>
      </div>
 
      <div class="keypad">
@@ -297,12 +275,5 @@
    </div>
   </div><!-- .screen -->
  </div><!-- .phone -->
-
- <script>
-   // Simulate PIN entry time, then swap instantly to the entered/confirmed state (no transition).
-   setTimeout(function () {
-     window.location.href = "ing-signin-complete.html";
-   }, 2000);
- </script>
 </body>
 </html>

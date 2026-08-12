@@ -585,6 +585,11 @@
 
 .eid-sim-phone:has(.eid-mobile-embed-host) .eid-sim-phone__label {
   display: inline-flex;
+  pointer-events: none;
+}
+
+.eid-sim-phone__label:hover {
+  filter: none;
 }
 
 .eid-sim-phone .eid-mobile-embed__frame {

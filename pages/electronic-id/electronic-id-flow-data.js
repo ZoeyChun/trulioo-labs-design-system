@@ -13,6 +13,11 @@ window.EID_FLOW_DATA = [
         "fields": []
       },
       {
+        "type": "sign-in",
+        "label": "Login",
+        "fields": []
+      },
+      {
         "type": "consent",
         "label": "Consent",
         "fields": []

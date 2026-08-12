@@ -385,7 +385,7 @@
     }
   }
 
-  var NL_MOBILE_EMBED_BASE = "../../embeds/netherlands-mobile/";
+  var NL_MOBILE_EMBED_BASE = "embeds/netherlands-mobile/";
   var NL_PHONE_FRAME_W = 390;
   var NL_PHONE_FRAME_H = 800;
   var NL_PHONE_VIEWPORT_PAD = 24;
@@ -479,6 +479,11 @@
       bindNlPhoneEmbedLoad(screen);
       return;
     }
+    if (panelId === "eid-panel-sign-in") {
+      screen.innerHTML = renderMobileEmbedScreen("ing-launch.html", "ING launch");
+      bindNlPhoneEmbedLoad(screen);
+      return;
+    }
     if (panelId === "eid-panel-consent-mobile") {
       screen.innerHTML = renderMobileEmbedScreen("ing-consent.html", "ING consent");
       bindNlPhoneEmbedLoad(screen);
@@ -504,6 +509,7 @@
     if (!step) return null;
     var map = {
       "select-bank": "eid-panel-select-bank",
+      "sign-in": "eid-panel-sign-in",
       "select-provider": "eid-panel-select-provider",
       "scan-qr": "eid-panel-scan-qr",
       "launch-app": "eid-panel-launch-app",
