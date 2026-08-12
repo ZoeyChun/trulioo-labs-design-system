@@ -936,6 +936,20 @@
     else { var d = byId("eid-exit-sim-dialog"); if (d) d.hidden = true; }
   }
 
+  function restoreFromSession(session) {
+    if (!session) return;
+    if (typeof session.deviceIntelligence === "boolean") state.deviceIntelligence = session.deviceIntelligence;
+    if (typeof session.simulated === "boolean") state.simulated = session.simulated;
+    if (session.bank) state.bank = session.bank;
+    if (session.provider) state.provider = session.provider;
+    if (session.countryCode) {
+      var found = FLOW_DATA.find(function (c) {
+        return c.code === session.countryCode;
+      });
+      if (found) state.country = found;
+    }
+  }
+
   function resetToStart() {
     resetSimState();
     state.bank = null;
@@ -1118,7 +1132,16 @@
     initNav();
     updateConfigNext();
     updateCountryFieldTag();
-    goStep("eid-step-config");
+
+    var session = window.EidResult && window.EidResult.loadSession
+      ? window.EidResult.loadSession()
+      : null;
+    if (location.hash === "#result" || (session && session.view === "result")) {
+      if (session) restoreFromSession(session);
+      if (window.EidResult) window.EidResult.show();
+    } else {
+      goStep("eid-step-config");
+    }
   });
 
   window.EidFlow = {
@@ -1130,6 +1153,7 @@
         bank: state.bank,
         provider: state.provider
       };
-    }
+    },
+    restoreFromSession: restoreFromSession
   };
 })();

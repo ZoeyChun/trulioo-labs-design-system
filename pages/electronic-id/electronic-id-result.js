@@ -187,6 +187,49 @@
   var SPLIT_STACK_MAX = 1200;
   var sharedSplitEnd = SPLIT_DEFAULT_END;
 
+  var SESSION_KEY = "eid-demo-session";
+
+  function saveSession(flowState) {
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+        view: "result",
+        countryCode: flowState.country && flowState.country.code,
+        deviceIntelligence: !!flowState.deviceIntelligence,
+        simulated: !!flowState.simulated,
+        bank: flowState.bank || null,
+        provider: flowState.provider || null
+      }));
+    } catch (e) { /* demo-only */ }
+  }
+
+  function loadSession() {
+    try {
+      var raw = sessionStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function markSessionFormView() {
+    try {
+      var session = loadSession();
+      if (!session) return;
+      session.view = "form";
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    } catch (e) { /* demo-only */ }
+  }
+
+  function setResultHash() {
+    history.replaceState(null, "", location.pathname + location.search + "#result");
+  }
+
+  function clearResultHash() {
+    if (location.hash) {
+      history.replaceState(null, "", location.pathname + location.search);
+    }
+  }
+
   var COUNTRY_SCENARIOS = {
     nl: {
       overallStatus: "Verified",
@@ -949,6 +992,8 @@
     flow.hidden = true;
     result.hidden = false;
     document.title = "Electronic ID Results — Trulioo Labs";
+    saveSession(flowState);
+    setResultHash();
     window.scrollTo(0, 0);
 
     window.dispatchEvent(new Event("resize"));
@@ -966,8 +1011,10 @@
     result.hidden = true;
     flow.hidden = false;
     document.title = "Electronic ID — Trulioo Labs";
+    clearResultHash();
+    markSessionFormView();
     window.scrollTo(0, 0);
   }
 
-  global.EidResult = { show: show, hide: hide };
+  global.EidResult = { show: show, hide: hide, loadSession: loadSession };
 })(window);
