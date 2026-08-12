@@ -389,6 +389,7 @@
   var NL_PHONE_FRAME_W = 390;
   var NL_PHONE_FRAME_H = 800;
   var NL_PHONE_VIEWPORT_PAD = 24;
+  var NL_PHONE_MIN_MAIN_W = 320;
   var nlPhoneResizeBound = false;
 
   function nlPhoneLabelReserve(phone) {
@@ -422,9 +423,22 @@
 
     var labelReserve = nlPhoneLabelReserve(phone);
     var top = phone.getBoundingClientRect().top;
-    var available = window.innerHeight - top - NL_PHONE_VIEWPORT_PAD - labelReserve;
-    available = Math.max(0, available);
-    var scale = Math.min(1, available / NL_PHONE_FRAME_H);
+    var availableHeight = window.innerHeight - top - NL_PHONE_VIEWPORT_PAD - labelReserve;
+    availableHeight = Math.max(0, availableHeight);
+    var scaleByHeight = Math.min(1, availableHeight / NL_PHONE_FRAME_H);
+
+    var scaleByWidth = 1;
+    var workspace = phone.closest(".eid-sim-stage__workspace");
+    if (workspace) {
+      var workspaceWidth = workspace.getBoundingClientRect().width;
+      var gap = parseFloat(getComputedStyle(workspace).columnGap || getComputedStyle(workspace).gap) || 0;
+      var maxPhoneWidth = workspaceWidth - NL_PHONE_MIN_MAIN_W - gap;
+      if (maxPhoneWidth > 0) {
+        scaleByWidth = maxPhoneWidth / NL_PHONE_FRAME_W;
+      }
+    }
+
+    var scale = Math.min(scaleByHeight, scaleByWidth, 1);
     scale = Math.max(0.35, scale);
     var scaleStr = scale.toFixed(4);
     phone.setAttribute("data-nl-phone-scale", scaleStr);
@@ -454,6 +468,8 @@
     if (phone && typeof ResizeObserver !== "undefined") {
       var ro = new ResizeObserver(onResize);
       ro.observe(phone);
+      var workspace = phone.closest(".eid-sim-stage__workspace");
+      if (workspace) ro.observe(workspace);
     }
   }
 

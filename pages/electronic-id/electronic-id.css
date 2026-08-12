@@ -447,7 +447,8 @@
 
 /* NL + phone preview — fluid horizontal insets (avoid stacked fixed padding) */
 #eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
-  --eid-flow-padding-x: clamp(var(--spacing-16), 4vw, var(--spacing-280));
+  --eid-flow-padding-x: clamp(var(--spacing-12), 1.5vw, var(--spacing-32));
+  padding-inline: var(--spacing-24);
 }
 
 @media (max-width: 1280px) {
@@ -456,9 +457,21 @@
     --eid-form-inset-x: var(--spacing-96);
     --eid-details-inset-x: var(--spacing-160);
   }
+}
 
+@media (max-width: 1200px) {
   #eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
-    --eid-flow-padding-x: clamp(var(--spacing-16), 3.5vw, var(--spacing-64));
+    --eid-flow-padding-x: var(--spacing-16);
+    padding-inline: var(--spacing-12);
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone {
+    --eid-nl-panel-max: min(760px, calc(100vw - 400px));
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
+    justify-content: flex-start;
+    width: 100%;
   }
 }
 
@@ -471,7 +484,8 @@
   }
 
   #eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
-    --eid-flow-padding-x: clamp(var(--spacing-12), 3vw, var(--spacing-48));
+    --eid-flow-padding-x: var(--spacing-12);
+    padding-inline: var(--spacing-8);
   }
 }
 
@@ -483,7 +497,8 @@
 
 #eid-step-simulated.eid-step-simulated--nl-phone {
   max-width: none;
-  --eid-nl-phone-gap: var(--spacing-32);
+  --eid-nl-panel-max: min(760px, calc(100vw - 480px));
+  --eid-nl-phone-gap: var(--spacing-24);
   overflow: visible;
 }
 
@@ -519,6 +534,7 @@
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
   flex-direction: row;
+  flex-wrap: nowrap;
   align-items: flex-start;
   justify-content: center;
   gap: var(--eid-nl-phone-gap);
@@ -535,16 +551,29 @@
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__column {
-  flex: 0 1 895px;
-  width: 100%;
-  max-width: 895px;
+  flex: 1 1 0;
+  width: auto;
+  max-width: var(--eid-nl-panel-max);
   min-width: 0;
   padding-inline: 0;
+  gap: var(--spacing-32);
+  container-type: inline-size;
+  container-name: eid-nl-sim-column;
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator {
   width: 100%;
-  max-width: 895px;
+  max-width: var(--eid-nl-panel-max);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator__title {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator__caption {
+  font-size: 0.6875rem;
+  line-height: var(--line-height-xs);
 }
 
 .eid-sim-stage__main {
@@ -555,14 +584,150 @@
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__main {
   flex: none;
   width: 100%;
-  max-width: 895px;
+  max-width: var(--eid-nl-panel-max);
   min-width: 0;
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__main .eid-sim-panel.dv-flow-card {
   width: 100%;
-  max-width: 895px;
+  max-width: var(--eid-nl-panel-max);
   min-height: auto;
+}
+
+/* NL phone preview — compact operator panel beside end-user view */
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-panel .dv-flow-card__header {
+  padding: var(--spacing-24) var(--spacing-24) 0;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-panel .dv-flow-card__title {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-panel__header--empty {
+  height: var(--spacing-32);
+  padding: var(--spacing-24) var(--spacing-24) 0;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-body {
+  padding: var(--spacing-32) var(--spacing-24);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-grid {
+  gap: var(--spacing-12);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card {
+  gap: var(--spacing-12);
+  padding: var(--padding-md);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card__badge {
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-stage,
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-stage--hero,
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-stage--loading,
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-stage--qr {
+  gap: var(--spacing-24);
+  padding: var(--spacing-32) var(--spacing-24);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-loading-content {
+  gap: var(--spacing-16);
+  padding-inline: var(--spacing-24);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-stage__copy {
+  gap: var(--spacing-8);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-stage__heading {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-stage__subtext {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-illustration,
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-illustration__image {
+  width: 200px;
+  height: 200px;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-panel .tds-btn--lg {
+  min-height: 40px;
+  padding: var(--padding-sm) var(--padding-lg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+/* NL phone — narrow operator column: compact stepper + stacked bank labels */
+@container eid-nl-sim-column (max-width: 520px) {
+  .tds-progress-indicator,
+  .eid-sim-stage__main,
+  .eid-sim-stage__main .eid-sim-panel.dv-flow-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .tds-progress-indicator--horizontal .tds-progress-indicator__item {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+
+  .tds-progress-indicator--horizontal .tds-progress-indicator__content {
+    padding: var(--padding-sm) var(--padding-xs) 0 0;
+    align-items: center;
+  }
+
+  .tds-progress-indicator__label-row {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .tds-progress-indicator__title {
+    display: none;
+  }
+
+  .eid-bank-card {
+    align-items: flex-start;
+  }
+
+  .eid-bank-card--radio .tds-radio {
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+
+  .eid-bank-card__label-row {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--spacing-8);
+    text-align: left;
+  }
+
+  .eid-bank-card__badge,
+  .eid-bank-card__label {
+    align-self: flex-start;
+    text-align: left;
+  }
+
+  .eid-bank-card__label {
+    width: 100%;
+  }
 }
 
 .eid-sim-phone {
@@ -1605,17 +1770,6 @@
   margin-bottom: var(--spacing-12);
 }
 
-@media (max-width: 1200px) {
-  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone {
-    align-self: center;
-  }
-}
-
 @media (max-width: 720px) {
   #eid-flow-view {
     --eid-flow-padding-x: 0;
@@ -1700,6 +1854,73 @@
 
   #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
     flex-direction: column;
+    align-items: center;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone {
+    --eid-nl-panel-max: 100%;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__column {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator,
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__main,
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__main .eid-sim-panel.dv-flow-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator--horizontal .tds-progress-indicator__item {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator--horizontal .tds-progress-indicator__content {
+    padding: var(--padding-sm) var(--padding-xs) 0 0;
+    align-items: center;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator__label-row {
+    justify-content: center;
+    width: 100%;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator__title {
+    display: none;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card {
+    align-items: flex-start;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card--radio .tds-radio {
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card__label-row {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--spacing-8);
+    text-align: left;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card__badge,
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card__label {
+    align-self: flex-start;
+    text-align: left;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card__label {
+    width: 100%;
+  }
+
+  #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone {
+    align-self: center;
   }
 
   .eid-sim-phone {
