@@ -990,6 +990,11 @@
   min-width: 0;
 }
 
+.tds-preview__gs-section > .tds-preview__hero-cta {
+  align-self: flex-start;
+  width: auto;
+}
+
 .tds-preview__gs-section h2,
 .tds-preview__migration-section h2 {
   font-size: clamp(1.375rem, 2.5vw, 1.625rem);
@@ -1039,6 +1044,7 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  align-items: stretch;
 }
 
 .tds-preview__gs-comparison-panel {
@@ -1050,6 +1056,7 @@
   border: 1px solid var(--border-subtle);
   background: var(--surface-neutral-01);
   min-width: 0;
+  height: 100%;
 }
 
 .tds-preview__gs-comparison-panel--before {
@@ -1177,12 +1184,26 @@
   max-width: none;
 }
 
-.tds-preview__gs-diagram {
+.tds-preview__gs-diagram-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--surface-neutral-02);
+  border: 1px solid var(--border-subtle);
+  min-height: 0;
+}
+
+.tds-preview__gs-diagram {
+  width: 75%;
+  max-width: 75%;
   height: auto;
-  margin-top: 8px;
   display: block;
+  margin: 0;
 }
 
 .tds-preview__gs-diagram-connector {

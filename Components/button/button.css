@@ -9,6 +9,7 @@
 @import '../spinner/spinner.css';
 
 .tds-btn {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -45,8 +46,28 @@
 .tds-btn--lg {
   height: 42px;
   padding: var(--padding-md) var(--padding-lg);
+  border-radius: var(--radius-lg);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
+}
+
+/* Focus ring uses 2px border — compensate padding to avoid layout shift. */
+
+.tds-btn--sm:focus-visible,
+.tds-btn--sm.tds-btn--focus {
+  padding: calc(var(--padding-xs) - 1px) calc(var(--padding-sm) - 1px);
+}
+
+.tds-btn--md:focus-visible,
+.tds-btn--md.tds-btn--focus,
+.tds-btn:not([class*="tds-btn--sm"]):not([class*="tds-btn--lg"]):focus-visible,
+.tds-btn:not([class*="tds-btn--sm"]):not([class*="tds-btn--lg"]).tds-btn--focus {
+  padding: calc(var(--padding-sm) - 1px) calc(var(--padding-md) - 1px);
+}
+
+.tds-btn--lg:focus-visible,
+.tds-btn--lg.tds-btn--focus {
+  padding: calc(var(--padding-md) - 1px) calc(var(--padding-lg) - 1px);
 }
 
 /* --- Align content: start --- */
@@ -176,7 +197,7 @@
 .tds-btn--danger:disabled,
 .tds-btn--danger[aria-disabled="true"] {
   background-color: var(--surface-neutral-01);
-  border-color: transparent;
+  border: none;
   color: var(--text-disabled);
   cursor: not-allowed;
 }

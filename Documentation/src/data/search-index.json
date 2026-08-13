@@ -712,7 +712,7 @@
     "pageId": "button",
     "path": "#/components/button#loading",
     "category": "Button · Design",
-    "keywords": "Button button button Core Controls tds-btn button/button.css button btn cta action button submit button Loading .tds-btn--loading · .tds-spinner--sm Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225)."
+    "keywords": "Button button button Core Controls tds-btn button/button.css button btn cta action button submit button Loading .tds-btn--loading · .tds-spinner--{xs|sm} Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225)."
   },
   {
     "id": "components/spinner/loading",
@@ -723,7 +723,7 @@
     "pageId": "spinner",
     "path": "#/components/spinner#loading",
     "category": "Spinner · Design",
-    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Loading .tds-btn--loading · .tds-spinner--sm Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225)."
+    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Loading .tds-btn--loading · .tds-spinner--{xs|sm} Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225)."
   },
   {
     "id": "components/button/button-group",
@@ -761,13 +761,13 @@
   {
     "id": "components/spinner/spinner",
     "title": "Spinner",
-    "description": "Standalone loading indicator: four sizes with optional label (Figma 2092:18230).",
+    "description": "Standalone loading indicator: five sizes with optional label (Figma 2092:18230).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "spinner",
     "path": "#/components/spinner#spinner",
     "category": "Spinner · Design",
-    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Spinner .tds-spinner--{xs|sm|md|lg|xl} · .tds-spinner--negative · .tds-spinner-block Standalone loading indicator: four sizes with optional label (Figma 2092:18230)."
+    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Spinner .tds-spinner--{xs|sm|md|lg|xl} · .tds-spinner--negative · .tds-spinner-block Standalone loading indicator: five sizes with optional label (Figma 2092:18230)."
   },
   {
     "id": "components/button/button-menu",

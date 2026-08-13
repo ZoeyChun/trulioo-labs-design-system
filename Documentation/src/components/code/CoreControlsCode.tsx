@@ -396,9 +396,9 @@ export function SpinnerCode({ basePath }: CodePageProps) {
               type: "<span>",
             },
             {
-              name: ".tds-spinner-block--{sm|md|lg|xl}",
+              name: ".tds-spinner-block--{xs|sm|md|lg|xl}",
               description: "Controls label font size to match spinner scale.",
-              type: "sm | md | lg | xl",
+              type: "xs | sm | md | lg | xl",
             },
           ]}
         />

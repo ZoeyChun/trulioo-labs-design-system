@@ -337,7 +337,7 @@ body {
           <h3 class="ds-showcase__title">Loading</h3>
           <p class="ds-showcase__desc">Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225).</p>
           <div class="ds-showcase__meta">
-            <code class="ds-api">.tds-btn--loading · .tds-spinner--sm</code>
+            <code class="ds-api">.tds-btn--loading · .tds-spinner--{xs|sm}</code>
           </div>
         </div>
         <div class="ds-showcase__canvas">
@@ -352,7 +352,7 @@ body {
         </button>
         <button class="tds-btn tds-btn--sm tds-btn--danger tds-btn--loading" aria-busy="true">
           Button
-          <span class="tds-spinner tds-spinner--sm" aria-hidden="true"></span>
+          <span class="tds-spinner tds-spinner--xs" aria-hidden="true"></span>
         </button>
       </div>
         </div>
@@ -435,7 +435,7 @@ body {
       <article class="ds-showcase">
         <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Spinner</h3>
-          <p class="ds-showcase__desc">Standalone loading indicator — four sizes with optional label (Figma 2092:18230).</p>
+          <p class="ds-showcase__desc">Standalone loading indicator — five sizes with optional label (Figma 2092:18230).</p>
           <div class="ds-showcase__meta">
             <code class="ds-api">.tds-spinner--{xs|sm|md|lg|xl} · .tds-spinner--negative · .tds-spinner-block</code>
           </div>
@@ -448,10 +448,28 @@ body {
         <div class="ds-state-demo"><span class="ds-state-demo__label">Large</span><span class="tds-spinner tds-spinner--lg" role="status" aria-label="Loading"></span></div>
         <div class="ds-state-demo"><span class="ds-state-demo__label">XLarge</span><span class="tds-spinner tds-spinner--xl" role="status" aria-label="Loading"></span></div>
         <div class="ds-state-demo" style="grid-column: 1 / -1;"><span class="ds-state-demo__label">Negative tone</span><span class="tds-spinner tds-spinner--md tds-spinner--negative" role="status" aria-label="Loading"></span></div>
-        <div class="ds-state-demo" style="grid-column: 1 / -1;"><span class="ds-state-demo__label">With label</span>
+        <div class="ds-state-demo" style="grid-column: 1 / -1;"><span class="ds-state-demo__label">With label · all sizes</span>
+<div class="row">
+<div class="tds-spinner-block tds-spinner-block--xs">
+  <span class="tds-spinner tds-spinner--xs" aria-hidden="true"></span>
+  <span class="tds-spinner-block__label">Loading…</span>
+</div>
+<div class="tds-spinner-block tds-spinner-block--sm">
+  <span class="tds-spinner tds-spinner--sm" aria-hidden="true"></span>
+  <span class="tds-spinner-block__label">Loading…</span>
+</div>
 <div class="tds-spinner-block tds-spinner-block--md">
   <span class="tds-spinner tds-spinner--md" aria-hidden="true"></span>
   <span class="tds-spinner-block__label">Loading…</span>
+</div>
+<div class="tds-spinner-block tds-spinner-block--lg">
+  <span class="tds-spinner tds-spinner--lg" aria-hidden="true"></span>
+  <span class="tds-spinner-block__label">Loading…</span>
+</div>
+<div class="tds-spinner-block tds-spinner-block--xl">
+  <span class="tds-spinner tds-spinner--xl" aria-hidden="true"></span>
+  <span class="tds-spinner-block__label">Loading…</span>
+</div>
 </div></div>
       </div>
         </div>

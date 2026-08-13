@@ -73,6 +73,11 @@
   white-space: nowrap;
 }
 
+.tds-spinner-block--xs .tds-spinner-block__label {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
 .tds-spinner-block--sm .tds-spinner-block__label {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);

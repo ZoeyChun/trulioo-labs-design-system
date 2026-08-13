@@ -119,11 +119,6 @@ export default function App() {
 
             <footer className="tds-preview__footer">
               <span>Trulioo Design System · ADS 2026</span>
-              {!isHome && (
-                <a href="../index.html" className="tds-preview__footer-link">
-                  Classic preview
-                </a>
-              )}
             </footer>
           </main>
         </div>
