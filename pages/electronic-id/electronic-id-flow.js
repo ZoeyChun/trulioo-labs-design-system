@@ -385,7 +385,7 @@
     }
   }
 
-  var NL_MOBILE_EMBED_BASE = "embeds/netherlands-mobile/";
+  var NL_MOBILE_EMBED_BASE = "embed/";
   var NL_PHONE_FRAME_W = 390;
   var NL_PHONE_FRAME_H = 800;
   var NL_PHONE_VIEWPORT_PAD = 24;
