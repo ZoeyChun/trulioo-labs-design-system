@@ -1,5 +1,5 @@
 {
-  "lastBuiltAt": "2026-08-10T21:15:00.211Z",
+  "lastBuiltAt": "2026-08-10T22:05:21.849Z",
   "summary": {
     "totalComponents": 52,
     "cssDone": 48,
@@ -9,7 +9,7 @@
     "figmaEligible": 52,
     "figmaDonePercent": 100,
     "demoPageCount": 8,
-    "avgAdoptionPercent": 33,
+    "avgAdoptionPercent": 38,
     "builtForAdoption": 47
   },
   "pages": [
@@ -33,17 +33,17 @@
       "id": "document-verification",
       "label": "Document Verification",
       "path": "pages/document-verification",
-      "used": 15,
+      "used": 17,
       "total": 47,
-      "percent": 32
+      "percent": 36
     },
     {
       "id": "electronic-id",
       "label": "Electronic Id",
       "path": "pages/electronic-id",
-      "used": 12,
+      "used": 17,
       "total": 47,
-      "percent": 26
+      "percent": 36
     },
     {
       "id": "experiments-ubo-graph",
@@ -73,9 +73,9 @@
       "id": "unified-intelligence-home",
       "label": "Unified Intelligence Home",
       "path": "pages/unified-intelligence-home",
-      "used": 3,
+      "used": 14,
       "total": 47,
-      "percent": 6
+      "percent": 30
     }
   ],
   "components": [
@@ -100,7 +100,7 @@
         "experiments-ubo-graph": false,
         "kyb-results": true,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -120,11 +120,11 @@
         "bank-verification": false,
         "preview": true,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -313,11 +313,11 @@
         "bank-verification": true,
         "preview": true,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -486,7 +486,7 @@
         "bank-verification": true,
         "preview": true,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
         "kyc-form": true,
@@ -586,7 +586,7 @@
         "experiments-ubo-graph": false,
         "kyb-results": true,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -610,7 +610,7 @@
         "experiments-ubo-graph": false,
         "kyb-results": true,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -846,11 +846,11 @@
         "bank-verification": false,
         "preview": true,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -873,7 +873,7 @@
         "experiments-ubo-graph": false,
         "kyb-results": true,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -896,7 +896,7 @@
         "experiments-ubo-graph": false,
         "kyb-results": true,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -991,7 +991,7 @@
         "experiments-ubo-graph": false,
         "kyb-results": true,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -1108,11 +1108,11 @@
         "bank-verification": false,
         "preview": true,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -1291,12 +1291,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
-        "document-verification": false,
+        "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -1316,7 +1316,7 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
-        "document-verification": false,
+        "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,

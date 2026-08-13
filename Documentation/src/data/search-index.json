@@ -22,17 +22,6 @@
     "keywords": "tracker status adoption figma backlog"
   },
   {
-    "id": "getting-started/migration",
-    "title": "Migration Guide",
-    "description": "URL redirects, page splits, and link updates from classic preview.",
-    "section": "Getting Started",
-    "sectionId": "getting-started",
-    "pageId": "migration",
-    "path": "#/getting-started/migration",
-    "category": "Getting Started",
-    "keywords": "migration redirect urls upgrade classic"
-  },
-  {
     "id": "foundations/typography",
     "title": "Typography",
     "description": "Type scale, weights, and text utility classes from tokens.css.",

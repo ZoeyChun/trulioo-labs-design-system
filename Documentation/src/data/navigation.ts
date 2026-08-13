@@ -9,7 +9,7 @@ import {
 /** Top-level doc sections (zeroheight-style top nav). */
 export type NavSectionId = "getting-started" | "foundations" | "components" | "content";
 
-export type GettingStartedPageId = "overview" | "tracker" | "migration";
+export type GettingStartedPageId = "overview" | "tracker";
 export type FoundationPageId = "typography" | "tokens";
 export type LegacyGroupedPageId =
   | "buttons"
@@ -30,12 +30,16 @@ export type PageId =
 
 export type LifecycleBadge = "Beta" | "New" | "Deprecated";
 
+/** When true, Content section pages are visible in nav but not navigable. */
+export const CONTENT_SECTION_LOCKED = true;
+
 export type NavPage = {
   id: string;
   label: string;
   section: NavSectionId;
   icon?: string;
   badge?: LifecycleBadge;
+  locked?: boolean;
   sortKey: string;
   description?: string;
 };
@@ -63,14 +67,6 @@ const GETTING_STARTED_PAGES: NavPage[] = [
     badge: "Beta",
     sortKey: "tracker",
     description: "Implementation status, Figma parity, and adoption across preview, BV, and DV.",
-  },
-  {
-    id: "migration",
-    label: "Migration Guide",
-    section: "getting-started",
-    icon: "migration",
-    sortKey: "migration",
-    description: "URL redirects, page splits, and link updates from the classic preview.",
   },
 ];
 
@@ -100,6 +96,7 @@ const CONTENT_NAV_PAGES: NavPage[] = CONTENT_PAGES.map((page) => ({
   icon: "overview",
   sortKey: page.id,
   description: page.description,
+  locked: CONTENT_SECTION_LOCKED,
 }));
 
 const COMPONENT_PAGES = buildComponentNavPages();
@@ -175,9 +172,9 @@ export const HERO_STATS: HeroStat[] = [
 export const HERO_QUICK_LINKS: HeroQuickLink[] = [
   {
     tag: "Designer",
-    title: "Explore the Figma library",
-    body: "Components, variants, and tokens mapped 1:1 between Figma and code.",
-    path: pageToPath("components", "side-nav"),
+    title: "Browse design tokens",
+    body: "Color, spacing, radius, elevation, and semantic CSS custom properties.",
+    path: pageToPath("foundations", "tokens"),
   },
   {
     tag: "Engineer",
@@ -190,12 +187,6 @@ export const HERO_QUICK_LINKS: HeroQuickLink[] = [
     title: "Track adoption",
     body: "See which components ship in each product and where coverage gaps remain.",
     path: pageToPath("getting-started", "tracker"),
-  },
-  {
-    tag: "Content",
-    title: "Write for verification",
-    body: "Voice, vocabulary, and terminology standards for identity workflows.",
-    path: pageToPath("content", "writing-guidelines"),
   },
 ];
 
@@ -220,6 +211,22 @@ export const HERO_FEATURES = OVERVIEW_PRINCIPLES;
 
 export function findPage(pageId: string): NavPage | undefined {
   return ALL_PAGES.find((p) => p.id === pageId);
+}
+
+export function isNavPageLocked(page: NavPage): boolean {
+  return page.locked === true;
+}
+
+export function isLockedRoute(route: AppRoute): boolean {
+  if (route.type !== "page") return false;
+  const page = findPage(route.pageId);
+  return page ? isNavPageLocked(page) : route.section === "content" && CONTENT_SECTION_LOCKED;
+}
+
+/** Redirect target when a locked page is requested directly. */
+export function resolveLockedRouteRedirect(route: AppRoute): string | null {
+  if (!isLockedRoute(route)) return null;
+  return pageToPath("getting-started", "overview");
 }
 
 export function findNavSection(sectionId: NavSectionId): NavSection | undefined {
@@ -256,8 +263,7 @@ export function parseHashWithAnchor(hash: string): ParsedHash {
   return { routePath: `#${route}`, anchor: anchor || undefined };
 }
 
-export function parseRouteFromHash(): AppRoute {
-  const { routePath } = parseHashWithAnchor(window.location.hash);
+export function parseRouteFromPath(routePath: string): AppRoute {
   const raw = routePath.replace(/^#\/?/, "");
 
   if (!raw || raw === "home") {
@@ -300,9 +306,21 @@ export function parseRouteFromHash(): AppRoute {
   return { type: "home" };
 }
 
+export function parseRouteFromHash(): AppRoute {
+  const { routePath } = parseHashWithAnchor(window.location.hash);
+  return parseRouteFromPath(routePath);
+}
+
 export function resolveLegacyRedirect(): string | null {
   const raw = window.location.hash.replace(/^#/, "");
-  if (!raw || raw.startsWith("/")) return null;
+  if (!raw) return null;
+
+  const normalized = raw.startsWith("/") ? raw.slice(1) : raw;
+  if (normalized === "getting-started/migration") {
+    return pageToPath("getting-started", "overview");
+  }
+
+  if (raw.startsWith("/")) return null;
   if (LEGACY_TAB_IDS.includes(raw as LegacyTabId)) {
     return LEGACY_HASH_REDIRECTS[raw as LegacyTabId];
   }

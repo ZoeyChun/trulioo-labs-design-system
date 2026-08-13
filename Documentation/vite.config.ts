@@ -12,10 +12,21 @@ execSync("node scripts/generate-docs-react-styles.mjs", {
   stdio: "inherit",
 });
 
+execSync("node scripts/sync-jira-tickets.mjs", {
+  cwd: ROOT,
+  stdio: "inherit",
+});
+
 function serveRepoAssets(): Plugin {
   return {
     name: "serve-repo-assets",
     configureServer(server) {
+      server.middlewares.use((req, _res, next) => {
+        if (req.url === "/" || req.url?.startsWith("/?")) {
+          req.url = `/dev.html${req.url?.slice(1) ?? ""}`;
+        }
+        next();
+      });
       server.middlewares.use("/assets", (req, res, next) => {
         const urlPath = decodeURIComponent(req.url || "/").split("?")[0];
         const filePath = path.join(ASSETS_DIR, urlPath);

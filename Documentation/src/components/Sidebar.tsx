@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   activeSectionFromRoute,
+  isNavPageLocked,
   NAV_SECTIONS,
   type AppRoute,
   type NavPage,
@@ -62,19 +63,53 @@ function PageLink({
   onSelectPage: (section: NavSectionId, pageId: string) => void;
 }) {
   const active = isPageActive(route, page);
+  const locked = isNavPageLocked(page);
+
   return (
     <li>
       <button
         type="button"
-        className={`tds-preview__nav-link tds-preview__nav-link--child${active ? " is-active" : ""}`}
+        className={`tds-preview__nav-link tds-preview__nav-link--child${active ? " is-active" : ""}${locked ? " tds-preview__nav-link--locked" : ""}`}
         aria-current={active ? "page" : undefined}
-        onClick={() => onSelectPage(sectionId, page.id)}
-        title={page.label}
+        aria-disabled={locked || undefined}
+        disabled={locked}
+        onClick={() => {
+          if (locked) return;
+          onSelectPage(sectionId, page.id);
+        }}
+        title={locked ? `${page.label} (locked)` : page.label}
       >
         <span className="tds-preview__nav-label-text">
           <HighlightedLabel text={page.label} query={query} />
         </span>
-        <LifecycleBadge badge={page.badge} />
+        {!locked ? <LifecycleBadge badge={page.badge} /> : null}
+        {locked ? (
+          <svg
+            className="tds-preview__nav-lock"
+            width="12"
+            height="12"
+            viewBox="0 0 16 16"
+            aria-hidden="true"
+          >
+            <path
+              d="M4.5 7V5a3.5 3.5 0 0 1 7 0v2"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+            <rect
+              x="3.25"
+              y="7"
+              width="9.5"
+              height="6.75"
+              rx="1.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+          </svg>
+        ) : null}
       </button>
     </li>
   );

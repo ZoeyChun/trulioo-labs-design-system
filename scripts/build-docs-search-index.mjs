@@ -47,13 +47,6 @@ const GETTING_STARTED_PAGES = [
     path: "#/getting-started/tracker",
     keywords: ["tracker", "status", "adoption", "figma", "backlog"],
   },
-  {
-    id: "migration",
-    title: "Migration Guide",
-    description: "URL redirects, page splits, and link updates from classic preview.",
-    path: "#/getting-started/migration",
-    keywords: ["migration", "redirect", "urls", "upgrade", "classic"],
-  },
 ];
 
 const CONTENT_PAGES = [

@@ -7,11 +7,15 @@ import {
   HERO_QUICK_LINKS,
   isComponentDocPage,
   isContentGuidelinePage,
+  isLockedRoute,
+  isNavPageLocked,
   isPreviewDemoPage,
   pageToPath,
   parseHashWithAnchor,
   parseRouteFromHash,
+  parseRouteFromPath,
   resolveLegacyRedirect,
+  resolveLockedRouteRedirect,
   type AppRoute,
   type NavSectionId,
 } from "./data/navigation";
@@ -30,9 +34,11 @@ import { useNavPersistence } from "./hooks/useNavPersistence";
 
 function navigateToPath(path: string) {
   const { routePath, anchor } = parseHashWithAnchor(path);
-  const fullPath = anchor ? `${routePath}#${anchor}` : routePath;
-  if (window.location.hash !== fullPath) {
-    history.replaceState(null, "", fullPath);
+  const hash = anchor ? `${routePath}#${anchor}` : routePath;
+  const nextUrl = `${window.location.pathname}${window.location.search}${hash}`;
+  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  if (currentUrl !== nextUrl) {
+    history.replaceState(null, "", nextUrl);
   }
   window.dispatchEvent(new HashChangeEvent("hashchange"));
 }
@@ -68,6 +74,11 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const redirect = resolveLockedRouteRedirect(parseRouteFromHash());
+    if (redirect) navigateToPath(redirect);
+  }, []);
+
+  useEffect(() => {
     const { anchor } = parseHashWithAnchor(window.location.hash);
     if (anchor) {
       scrollToAnchor(mainRef.current, anchor);
@@ -76,6 +87,9 @@ export default function App() {
 
   const activatePage = useCallback(
     (section: NavSectionId, pageId: string, { scrollTop = true } = {}) => {
+      const page = findPage(pageId);
+      if (page && isNavPageLocked(page)) return;
+
       setRoute({ type: "page", section, pageId });
       navigateToPath(pageToPath(section, pageId));
       if (scrollTop) {
@@ -107,9 +121,12 @@ export default function App() {
 
   const handleSearchNavigate = useCallback(
     (path: string) => {
-      const { anchor } = parseHashWithAnchor(path);
+      const { routePath, anchor } = parseHashWithAnchor(path);
+      const nextRoute = parseRouteFromPath(routePath);
+      if (isLockedRoute(nextRoute)) return;
+
       navigateToPath(path);
-      setRoute(parseRouteFromHash());
+      setRoute(nextRoute);
       setSearchOpen(false);
       scrollToAnchor(mainRef.current, anchor);
       if (isMobileLayout()) {
@@ -135,8 +152,15 @@ export default function App() {
 
   useEffect(() => {
     const onHashChange = () => {
+      const nextRoute = parseRouteFromHash();
+      const lockedRedirect = resolveLockedRouteRedirect(nextRoute);
+      if (lockedRedirect) {
+        navigateToPath(lockedRedirect);
+        return;
+      }
+
       const { anchor } = parseHashWithAnchor(window.location.hash);
-      setRoute(parseRouteFromHash());
+      setRoute(nextRoute);
       scrollToAnchor(mainRef.current, anchor);
     };
     window.addEventListener("hashchange", onHashChange);
@@ -184,6 +208,7 @@ export default function App() {
         <div className="tds-preview__workspace">
           <TopBar
             route={route}
+            mainRef={mainRef}
             sidebarOpen={sidebarExpanded}
             onToggleSidebar={toggleSidebar}
             onOpenSearch={openSearch}
@@ -205,14 +230,6 @@ export default function App() {
               <div className="tds-preview__panels" aria-hidden={isHome}>
                 {route.type === "page" && route.pageId === "overview" && (
                   <GettingStartedPanel
-                    pageId="overview"
-                    active
-                    onExplore={() => activatePage("components", "button")}
-                  />
-                )}
-                {route.type === "page" && route.pageId === "migration" && (
-                  <GettingStartedPanel
-                    pageId="migration"
                     active
                     onExplore={() => activatePage("components", "button")}
                   />
@@ -221,6 +238,7 @@ export default function App() {
 
                 {route.type === "page" &&
                   isContentGuidelinePage(route.pageId) &&
+                  !isLockedRoute(route) &&
                   CONTENT_PAGES.map((contentPage) => (
                     <ContentGuidelinePage
                       key={contentPage.id}

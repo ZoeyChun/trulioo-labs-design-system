@@ -11,12 +11,12 @@ export type DocTab = {
 };
 
 /** Default tab when opening a component doc page or switching between components. */
-export const DEFAULT_COMPONENT_DOC_TAB: DocTabId = "overview";
+export const DEFAULT_COMPONENT_DOC_TAB: DocTabId = "variants";
 
 /** Zeroheight-aligned tabs with developer extras grouped separately. */
 export const DOC_TABS: DocTab[] = [
-  { id: "overview", label: "Guidelines", group: "primary" },
   { id: "variants", label: "Design", group: "primary" },
+  { id: "overview", label: "Guidelines", group: "primary" },
   { id: "a11y", label: "Accessibility", group: "primary" },
   { id: "changelog", label: "Change Log", group: "primary" },
   { id: "props", label: "Props", group: "developer" },

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import Fuse from "fuse.js";
 import searchIndex from "../data/search-index.json";
 import synonymData from "../data/search-synonyms.json";
+import { CONTENT_SECTION_LOCKED } from "../data/navigation";
 
 export type SearchEntry = {
   id: string;
@@ -113,6 +114,7 @@ export function searchPreview(query: string, limit = 12): SearchResult[] {
   }
 
   return [...merged.values()]
+    .filter((result) => !(CONTENT_SECTION_LOCKED && result.item.sectionId === "content"))
     .sort((a, b) => (a.score ?? 1) - (b.score ?? 1))
     .slice(0, limit);
 }

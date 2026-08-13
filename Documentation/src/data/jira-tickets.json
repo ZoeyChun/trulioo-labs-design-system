@@ -1,0 +1,322 @@
+{
+  "parentTicket": "UT-134",
+  "baseUrl": "https://trulioo.atlassian.net/browse",
+  "lastSyncedAt": "2026-08-13T18:35:40.632Z",
+  "tickets": [
+    {
+      "key": "UT-135",
+      "name": "Button",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-136",
+      "name": "IconButton",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-137",
+      "name": "ButtonMenu",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-138",
+      "name": "Switch",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-139",
+      "name": "Checkbox",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-140",
+      "name": "DismissAction",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-141",
+      "name": "TextInput",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-142",
+      "name": "Select",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-143",
+      "name": "Radio",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-144",
+      "name": "RadioGroup",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-145",
+      "name": "RadioCard",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-146",
+      "name": "FieldLabel",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-147",
+      "name": "FieldCaption",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-148",
+      "name": "FieldValidation",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-149",
+      "name": "Caret",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-150",
+      "name": "DropdownPanel",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-151",
+      "name": "Tag",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-152",
+      "name": "SideNav",
+      "status": "Backlog",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-153",
+      "name": "NavItem",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-154",
+      "name": "NavList",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-155",
+      "name": "Tabs",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-156",
+      "name": "TabItem",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-157",
+      "name": "FilterTabs",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-158",
+      "name": "FilterTabsItem",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-159",
+      "name": "DataTable",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-160",
+      "name": "DataField",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-161",
+      "name": "CounterLabel",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-162",
+      "name": "DismissIssueBadge",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-163",
+      "name": "CountryFlag",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-164",
+      "name": "ActionListItem",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-165",
+      "name": "StatCard",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-166",
+      "name": "Tooltip",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-167",
+      "name": "Announcement",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-168",
+      "name": "Accordion",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-169",
+      "name": "ProgressIndicator",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-170",
+      "name": "ListedProgressItem",
+      "status": "In progress",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-171",
+      "name": "ScoreGauge",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-172",
+      "name": "ScoreCard",
+      "status": "Development Ready",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-173",
+      "name": "RiskCategoryCard",
+      "status": "Development Ready",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-174",
+      "name": "FontAwesome Icon",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-175",
+      "name": "FilterButton",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-176",
+      "name": "SortButton",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-177",
+      "name": "Date Picker",
+      "status": "Development Ready",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-178",
+      "name": "Dialog",
+      "status": "Development Ready",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    },
+    {
+      "key": "UT-179",
+      "name": "BreadCrumbs",
+      "status": "Completed",
+      "priority": "Medium",
+      "assignee": "mandeep.kumar"
+    }
+  ]
+}
