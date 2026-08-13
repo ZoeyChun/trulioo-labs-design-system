@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Italy — SPID Sign In</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #0066cc;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .page { animation: contentIn .45s ease backwards; }
+  @media (prefers-reduced-motion: reduce) { .page { animation: none; } }
+
+  .top-spacer { height: 44px; flex-shrink: 0; }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .card {
+    flex: 0 1 auto;
+    min-height: 0;
+    background: #ffffff;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .card__body {
+    flex: 0 1 auto;
+    overflow: hidden;
+  }
+
+  /* ---------- Brand row ---------- */
+  .brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px 24px;
+  }
+
+  .brand-row__spid {
+    display: block;
+    max-height: 40px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .brand-row__posteid {
+    display: block;
+    max-height: 40px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Request / provider ---------- */
+  .request {
+    padding: 0 20px;
+    font-size: 18px;
+    font-weight: 200;
+    color: #666;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+
+  .provider {
+    padding: 0 20px;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.2;
+    margin-bottom: 18px;
+  }
+
+  /* ---------- PosteID app promo ---------- */
+  .app-promo {
+    margin: 0 20px 40px;
+    background: #F1F1F1;
+    border-left: 8px solid #0066cc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px 12px 8px;
+  }
+
+  .app-promo__icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .app-promo__text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0066cc;
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+
+  .app-promo__text span {
+    font-size: 13px;
+    font-weight: 200;
+    color: #0066cc;
+    line-height: 1.3;
+  }
+
+  /* ---------- Form fields ---------- */
+  .field {
+    padding: 0 20px;
+    margin-bottom: 18px;
+  }
+
+  .field:first-of-type {
+    margin-bottom: 26px;
+  }
+
+  .field__label {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .field__input {
+    display: block;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #c5cad3;
+    padding: 6px 12px 8px;
+    font-size: 15px;
+    font-style: italic;
+    color: #bbb;
+    line-height: 1.35;
+    background: transparent;
+  }
+
+  .forgot {
+    display: block;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 200;
+    color: #0066cc;
+    line-height: 1.35;
+  }
+
+  /* ---------- Actions ---------- */
+  .actions {
+    flex-shrink: 0;
+    margin-top: 64px;
+    padding: 0 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-spid {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    background: #0066cc;
+    color: #ffffff;
+    border-radius: 28px;
+    overflow: hidden;
+    min-height: 44px;
+  }
+
+  .btn-spid__icon {
+    width: 52px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-spid__icon img {
+    display: block;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+
+  .btn-spid__divider {
+    width: 1px;
+    background: #ffffff;
+    flex-shrink: 0;
+    margin: 6px 0;
+  }
+
+  .btn-spid__label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    padding: 0 12px;
+  }
+
+  .btn-cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+    border-radius: 28px;
+    border: 1.5px solid #0066cc;
+    background: #ffffff;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+      <div class="card">
+        <div class="card__body">
+          <div class="brand-row">
+            <img class="brand-row__spid" src="../assets/embeds/italy/spid-logo.png" alt="SPID">
+            <img class="brand-row__posteid" src="../assets/embeds/italy/posteid-spid-enabled.png" alt="PosteID — New SPID Enabled">
+          </div>
+
+          <p class="request">Request for access to SPID 2</p>
+          <h1 class="provider">Trulioo</h1>
+
+          <div class="app-promo">
+            <img class="app-promo__icon" src="../assets/embeds/italy/posteid-app-icon.png" alt="">
+            <div class="app-promo__text">
+              <strong>Do you have the PosteID App?</strong>
+              <span>Sign in faster</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="field__label">Email</span>
+            <span class="field__input">enter your email</span>
+          </div>
+
+          <div class="field">
+            <span class="field__label">Password</span>
+            <span class="field__input">enter your password</span>
+          </div>
+
+          <span class="forgot">Forgot your username or password?</span>
+        </div>
+
+        <div class="actions">
+        <span class="btn-spid">
+          <span class="btn-spid__icon" aria-hidden="true">
+            <img src="../assets/embeds/italy/spid-user-icon.png" alt="">
+          </span>
+          <span class="btn-spid__divider"></span>
+          <span class="btn-spid__label">SIGN IN WITH SPID</span>
+        </span>
+        <span class="btn-cancel">CANCEL</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+ </div>
+</body>
+</html>

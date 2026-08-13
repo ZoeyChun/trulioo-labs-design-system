@@ -15,6 +15,7 @@
   var FLOW_DATA = window.EID_FLOW_DATA || [];
   var TRANSITION_MS = 3000;
   var RESEND_SECONDS = 10;
+  var IN_RESEND_SECONDS = 60;
   var CHECK_SVG = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
 
   var BANKS = [
@@ -51,6 +52,8 @@
     email: "jane.doe@email.com"
   };
 
+  var IN_MOCK_PHONE = "9876543210";
+
   var REDIRECT_DESC = "This option will connect you to an external {provider} site to complete your verification.";
 
   var state = {
@@ -66,7 +69,9 @@
     otpDigits: [],
     resendTimer: null,
     resendSeconds: RESEND_SECONDS,
-    pendingTimer: null
+    pendingTimer: null,
+    inSigninFilled: false,
+    inOtpFilled: false
   };
 
   function selectableCountries() {
@@ -105,6 +110,8 @@
     state.provider = null;
     state.formValues = {};
     state.otpDigits = [];
+    state.inSigninFilled = false;
+    state.inOtpFilled = false;
     clearResendTimer();
     clearPending();
   }
@@ -342,7 +349,7 @@
 
   function usesDesktopConsent() {
     var code = state.country && state.country.code;
-    return code === "in" || code === "cz";
+    return code === "cz";
   }
 
   function usesNlSimFlow() {
@@ -353,16 +360,46 @@
     return usesNlSimFlow() && state.bank && state.bank.id === "ing";
   }
 
+  function visibleFlowSteps(steps) {
+    return (steps || []).filter(function (step) { return !step.hidden; });
+  }
+
+  function usesBeSimFlow() {
+    return !!(state.simulated && state.country && state.country.code === "be");
+  }
+
+  function usesInSimFlow() {
+    return !!(state.simulated && state.country && state.country.code === "in");
+  }
+
   function shouldShowNlPhonePreview() {
     if (!usesNlIngPhonePreview()) return false;
     return activeSimPanelId() !== "eid-panel-completing";
+  }
+
+  function shouldShowBePhonePreview() {
+    if (!usesBeSimFlow()) return false;
+    return activeSimPanelId() === "eid-panel-consent-mobile";
+  }
+
+  function shouldShowInPhonePreview() {
+    if (!usesInSimFlow()) return false;
+    var panelId = activeSimPanelId();
+    return panelId === "eid-panel-enter-details"
+      || panelId === "eid-panel-otp"
+      || panelId === "eid-panel-consent-mobile";
+  }
+
+  function shouldShowPhonePreview() {
+    if (activeSimPanelId() === "eid-panel-completing") return false;
+    return shouldShowNlPhonePreview() || shouldShowBePhonePreview() || shouldShowInPhonePreview();
   }
 
   function updateNlPhoneLayout() {
     var stepRoot = byId("eid-step-simulated");
     var phone = byId("eid-sim-phone");
     if (!stepRoot || !phone) return;
-    var showPhone = shouldShowNlPhonePreview();
+    var showPhone = shouldShowPhonePreview();
     var wasVisible = phone.getAttribute("data-visible") === "true";
     stepRoot.classList.toggle("eid-step-simulated--nl-phone", showPhone);
     phone.hidden = !showPhone;
@@ -473,35 +510,74 @@
     }
   }
 
-  function renderMobileEmbedScreen(filename, title) {
+  function renderMobileEmbedScreen(filename, title, query) {
+    var src = NL_MOBILE_EMBED_BASE + filename + (query || "");
     return (
       '<div class="eid-mobile-embed-host">' +
       '<div class="eid-mobile-embed">' +
-      '<iframe class="eid-mobile-embed__frame" src="' + NL_MOBILE_EMBED_BASE + filename + '" title="' + title + '" tabindex="-1" loading="lazy"></iframe>' +
+      '<iframe class="eid-mobile-embed__frame" src="' + src + '" title="' + title + '" tabindex="-1" loading="lazy"></iframe>' +
       "</div></div>"
     );
   }
 
+  function indiaPhoneDigits(value) {
+    return String(value || "").replace(/\D/g, "");
+  }
+
+  function indiaEmbedPhoneQuery() {
+    var digits = indiaPhoneDigits(state.formValues.phone) || IN_MOCK_PHONE;
+    return "?phone=" + encodeURIComponent(digits);
+  }
+
+  function mockValueForKey(key) {
+    if (key === "phone" && usesInSimFlow()) return IN_MOCK_PHONE;
+    return MOCK_VALUES[key];
+  }
+
   function renderNlPhonePreview() {
     var screen = byId("eid-sim-phone-screen");
-    if (!screen || !shouldShowNlPhonePreview()) return;
+    if (!screen || !shouldShowPhonePreview()) return;
 
     var phone = byId("eid-sim-phone");
     if (phone) phone.removeAttribute("data-nl-phone-scale");
 
     var panelId = activeSimPanelId();
     if (panelId === "eid-panel-select-bank") {
-      screen.innerHTML = renderMobileEmbedScreen("idin-screen.html", "iDIN bank selection");
+      screen.innerHTML = renderMobileEmbedScreen("ND-idin-screen.html", "iDIN bank selection");
       bindNlPhoneEmbedLoad(screen);
       return;
     }
     if (panelId === "eid-panel-sign-in") {
-      screen.innerHTML = renderMobileEmbedScreen("ing-launch.html", "ING launch");
+      screen.innerHTML = renderMobileEmbedScreen("ND-ing-launch.html", "ING launch");
+      bindNlPhoneEmbedLoad(screen);
+      return;
+    }
+    if (panelId === "eid-panel-enter-details" && usesInSimFlow()) {
+      screen.innerHTML = renderMobileEmbedScreen(
+        state.inSigninFilled ? "IN-signin-filled.html" : "IN-signin.html",
+        state.inSigninFilled ? "India sign in filled" : "India sign in",
+        state.inSigninFilled ? indiaEmbedPhoneQuery() : ""
+      );
+      bindNlPhoneEmbedLoad(screen);
+      return;
+    }
+    if (panelId === "eid-panel-otp" && usesInSimFlow()) {
+      screen.innerHTML = renderMobileEmbedScreen(
+        state.inOtpFilled ? "IN-OTP-filled.html" : "IN-OTP.html",
+        state.inOtpFilled ? "India OTP filled" : "India OTP",
+        indiaEmbedPhoneQuery()
+      );
       bindNlPhoneEmbedLoad(screen);
       return;
     }
     if (panelId === "eid-panel-consent-mobile") {
-      screen.innerHTML = renderMobileEmbedScreen("ing-consent.html", "ING consent");
+      if (usesBeSimFlow()) {
+        screen.innerHTML = renderMobileEmbedScreen("BE-consent.html", "Belgium consent");
+      } else if (usesInSimFlow()) {
+        screen.innerHTML = renderMobileEmbedScreen("IN-consent.html", "India consent");
+      } else {
+        screen.innerHTML = renderMobileEmbedScreen("ND-ing-consent.html", "ING consent");
+      }
       bindNlPhoneEmbedLoad(screen);
       return;
     }
@@ -580,7 +656,7 @@
   function startSimulatedFlow() {
     if (!state.country || !state.country.steps.length) return;
     resetSimState();
-    state.flowSteps = state.country.steps.slice();
+    state.flowSteps = visibleFlowSteps(state.country.steps);
     state.flowIndex = 0;
     buildSelectionGrid("eid-bank-grid", BANKS, "bank", usesNlSimFlow() ? updateNlPhoneLayout : null);
     goStep("eid-step-simulated");
@@ -774,11 +850,16 @@
     var fields = expandedFields(step.fields || []);
     fields.forEach(function (fieldName) {
       var def = FIELD_DEFS[fieldName];
-      if (!def || MOCK_VALUES[def.key] === undefined) return;
-      state.formValues[def.key] = MOCK_VALUES[def.key];
+      if (!def || mockValueForKey(def.key) === undefined) return;
+      state.formValues[def.key] = mockValueForKey(def.key);
       var input = byId("eid-field-" + def.key);
-      if (input) input.value = MOCK_VALUES[def.key];
+      if (input) input.value = mockValueForKey(def.key);
     });
+
+    if (usesInSimFlow()) {
+      state.inSigninFilled = true;
+      updateNlPhoneLayout();
+    }
 
     updateSimNextButtons();
   }
@@ -872,9 +953,13 @@
     return String(m).padStart(2, "0") + ":" + String(sec).padStart(2, "0");
   }
 
+  function resendSecondsInitial() {
+    return usesInSimFlow() ? IN_RESEND_SECONDS : RESEND_SECONDS;
+  }
+
   function startResendCountdown() {
     clearResendTimer();
-    state.resendSeconds = RESEND_SECONDS;
+    state.resendSeconds = resendSecondsInitial();
     var btn = byId("eid-otp-resend");
     var timerEl = byId("eid-otp-resend-timer");
     function tick() {
@@ -906,12 +991,12 @@
         state.otpDigits[i] = input.value;
       });
     }
+    if (usesInSimFlow()) {
+      state.inOtpFilled = true;
+      updateNlPhoneLayout();
+    }
     updateSimNextButtons();
   }
-
-  /* ===================================================================
-     Provider dialog (real flow)
-     =================================================================== */
   function openProviderDialog() {
     if (window.openTdsDialog) window.openTdsDialog("eid-provider-dialog");
     else { var d = byId("eid-provider-dialog"); if (d) d.hidden = false; }

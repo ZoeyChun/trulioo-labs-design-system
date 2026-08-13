@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India — DigiLocker Consent</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #f3f4f6;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .page { animation: contentIn .45s ease backwards; }
+  @media (prefers-reduced-motion: reduce) { .page { animation: none; } }
+
+  .top-spacer { height: 44px; flex-shrink: 0; }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    padding: 0 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ---------- DigiLocker header bar ---------- */
+  .dl-header {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .dl-header__logo {
+    height: 44px;
+    width: auto;
+    max-width: 220px;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    align-self: center;
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  .dl-header__shield {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    align-self: center;
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  /* ---------- Consent panel ---------- */
+  .consent-panel {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+    padding: 18px 16px 20px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding-bottom: 200px;
+  }
+
+  .consent-panel__intro {
+    font-size: 15px;
+    line-height: 1.45;
+    color: #333;
+    margin-bottom: 18px;
+  }
+
+  .consent-panel__intro strong {
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .section-head__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 400;
+    color: #1a1a1a;
+  }
+
+  .section-head__chevron {
+    width: 14px;
+    height: 14px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-head__chevron svg { display: block; }
+
+  .section-head__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .select-all {
+    font-size: 14px;
+    font-weight: 400;
+    color: #006AFE;
+  }
+
+  .doc-list {
+    list-style: none;
+    margin-bottom: 0;
+  }
+
+  .doc-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eef0f3;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.35;
+  }
+
+  .doc-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    border: 1.5px solid #c5cad3;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .doc-check--on {
+    background: #019041;
+    border-color: #019041;
+  }
+
+  .doc-check--blue.doc-check--indeterminate {
+    background: #006AFE;
+    border-color: #006AFE;
+  }
+
+  .doc-check--on::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 7px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .doc-check--indeterminate::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    top: 50%;
+    height: 2px;
+    background: #ffffff;
+    transform: translateY(-50%);
+  }
+
+  .profile-row,
+  .meta-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid #eef0f3;
+  }
+
+  .profile-row__icon,
+  .meta-row__icon {
+    width: calc(14px * 1.35);
+    height: calc(14px * 1.35);
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .profile-row__icon svg,
+  .meta-row__icon svg { display: block; width: 14px; height: 14px; }
+
+  .profile-row__text,
+  .meta-row__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .profile-row__text h2,
+  .meta-row__head h2 {
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+    line-height: 1.35;
+  }
+
+  .profile-row__text p,
+  .meta-row__desc {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.35;
+    margin-top: 4px;
+  }
+
+  .meta-row__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .meta-row__head h2 .meta-row__muted {
+    color: #888;
+  }
+
+  .meta-row__action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #006AFE;
+    flex-shrink: 0;
+    line-height: 1.35;
+  }
+
+  .meta-row__action svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+  }
+
+  .meta-row__sub {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #888;
+    line-height: 1.35;
+  }
+
+  .meta-row__chevron {
+    color: #666;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .meta-row__chevron svg { display: block; width: 14px; height: 14px; }
+
+  /* ---------- Bottom overlay ---------- */
+  .consent-footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background: #ffffff;
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.1);
+    padding: 18px 20px 28px;
+  }
+
+  .consent-footer__legal {
+    font-size: 13px;
+    line-height: 1.45;
+    color: #444;
+    margin-bottom: 16px;
+  }
+
+  .consent-footer__legal strong {
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  .consent-footer__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 10px 0;
+  }
+
+  .btn-deny {
+    background: #ffffff;
+    color: #006AFE;
+    border: 1.5px solid #006AFE;
+  }
+
+  .btn-allow {
+    background: #006AFE;
+    color: #ffffff;
+    border: 1.5px solid #006AFE;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+      <header class="dl-header">
+        <img class="dl-header__logo" src="../assets/embeds/india/digilocker-wordmark-full.png" alt="DigiLocker">
+        <img class="dl-header__shield" src="../assets/embeds/india/digilocker-shield-check.png" alt="">
+      </header>
+
+      <div class="consent-panel">
+        <p class="consent-panel__intro">Please provide your consent to share the following with <strong>Digital Onboarding</strong>:</p>
+
+        <div class="section-head">
+          <div class="section-head__left">
+            <span class="section-head__chevron" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5 L7 9 L11 5"/></svg>
+            </span>
+            <span>Issued Documents (3)</span>
+          </div>
+          <div class="section-head__right">
+            <span class="select-all">Select all</span>
+            <span class="doc-check doc-check--blue doc-check--indeterminate"></span>
+          </div>
+        </div>
+
+        <ul class="doc-list">
+          <li class="doc-item">
+            <span>Aadhaar Card (XX3399)</span>
+            <span class="doc-check doc-check--on"></span>
+          </li>
+          <li class="doc-item">
+            <span>PAN Verification Record (XXD1511J)</span>
+            <span class="doc-check doc-check--on"></span>
+          </li>
+          <li class="doc-item">
+            <span>Driving License (XX015148)</span>
+            <span class="doc-check"></span>
+          </li>
+        </ul>
+
+        <div class="profile-row">
+          <span class="profile-row__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+          </span>
+          <div class="profile-row__text">
+            <h2>Profile information</h2>
+            <p>Name, Date of Birth, Gender</p>
+          </div>
+        </div>
+
+        <div class="meta-row">
+          <span class="meta-row__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+          </span>
+          <div class="meta-row__body">
+            <div class="meta-row__head">
+              <h2>Consent validity date <span class="meta-row__muted">(Today + 30 days)</span></h2>
+              <span class="meta-row__action">
+                Edit
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 20h9"/>
+                  <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                </svg>
+              </span>
+            </div>
+            <div class="meta-row__sub">13-July-2025</div>
+          </div>
+        </div>
+
+        <div class="meta-row">
+          <span class="meta-row__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9.5 9a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Z"/>
+              <path d="M12 14v2"/>
+            </svg>
+          </span>
+          <div class="meta-row__body">
+            <div class="meta-row__head">
+              <h2>Purpose</h2>
+              <span class="meta-row__chevron" aria-hidden="true">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5 L7 9 L11 5"/></svg>
+              </span>
+            </div>
+            <p class="meta-row__desc">Know Your Customer</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="consent-footer">
+      <p class="consent-footer__legal">Consent validity is subject to applicable laws.<br>By clicking 'Allow', you are giving consent to share with <strong>Digital Onboarding</strong>.</p>
+      <div class="consent-footer__actions">
+        <span class="btn btn-deny">Deny</span>
+        <span class="btn btn-allow">Allow</span>
+      </div>
+    </footer>
+
+  </div>
+ </div>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Italy — SPID Provider Select</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .page { animation: contentIn .45s ease backwards; }
+  @media (prefers-reduced-motion: reduce) { .page { animation: none; } }
+
+  .top-spacer { height: 44px; flex-shrink: 0; }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0 0;
+    position: relative;
+  }
+
+  .close {
+    position: absolute;
+    top: 4px;
+    right: 18px;
+    width: 32px;
+    height: 32px;
+    color: #888;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 32px;
+    text-align: center;
+  }
+
+  /* ---------- SPID flow header ---------- */
+  .spid-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 28px 24px 22px;
+  }
+
+  .spid-flow__service {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: block;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+
+  .spid-flow__arrow {
+    color: #bbb;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .spid-flow__arrow svg { display: block; width: 22px; height: 22px; }
+
+  .spid-flow__logo {
+    display: block;
+    max-height: 36px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Intro ---------- */
+  .intro {
+    padding: 0 28px 20px;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: #333;
+    text-align: center;
+  }
+
+  .intro strong {
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  /* ---------- Learn more ---------- */
+  .learn-more {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 24px;
+    border-top: 1px solid #eef0f3;
+    border-bottom: 1px solid #eef0f3;
+    font-size: 15px;
+    font-weight: 400;
+    color: #333;
+  }
+
+  .learn-more__chevron {
+    color: #888;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .learn-more__chevron svg { display: block; width: 16px; height: 16px; }
+
+  /* ---------- Provider list ---------- */
+  .idp-list {
+    list-style: none;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .idp-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 72px;
+    padding: 14px 24px;
+    border-bottom: 1px solid #eef0f3;
+  }
+
+  .idp-item__logo {
+    display: block;
+    max-height: 36px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .idp-item__logo--etna { max-height: 32px; }
+  .idp-item__logo--sielte { max-height: 34px; }
+  .idp-item__logo--posteid { max-height: 40px; }
+
+  .idp-item__logo--intesi { max-height: 36px; }
+
+  /* ---------- Footer ---------- */
+  .agid-footer {
+    flex-shrink: 0;
+    background: #f5f6f8;
+    padding: 18px 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .agid-footer__logo {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+      <span class="close" aria-hidden="true">×</span>
+
+      <div class="spid-flow">
+        <img class="spid-flow__service" src="../assets/embeds/italy/trulioo-logo.png" alt="Trulioo">
+        <span class="spid-flow__arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        </span>
+        <img class="spid-flow__logo" src="../assets/embeds/italy/spid-logo.png" alt="SPID">
+      </div>
+
+      <p class="intro"><strong>Trulioo</strong> is requesting to verify your identity with <strong>SPID</strong>.</p>
+
+      <div class="learn-more">
+        <span>Learn more about SPID</span>
+        <span class="learn-more__chevron" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6 L8 10 L12 6"/></svg>
+        </span>
+      </div>
+
+      <ul class="idp-list">
+        <li class="idp-item">
+          <img class="idp-item__logo idp-item__logo--etna" src="../assets/embeds/italy/idp-etnaid.png" alt="etnaID">
+        </li>
+        <li class="idp-item">
+          <img class="idp-item__logo idp-item__logo--sielte" src="../assets/embeds/italy/idp-sielteid.png" alt="SIELTEid">
+        </li>
+        <li class="idp-item">
+          <img class="idp-item__logo idp-item__logo--intesi" src="../assets/embeds/italy/idp-intesi-group.png" alt="INTESI GROUP">
+        </li>
+        <li class="idp-item">
+          <img class="idp-item__logo idp-item__logo--posteid" src="../assets/embeds/italy/posteid-spid-enabled.png" alt="PosteID — New SPID Enabled">
+        </li>
+      </ul>
+
+      <footer class="agid-footer">
+        <img class="agid-footer__logo" src="../assets/embeds/italy/spid-agid-footer.png" alt="SPID — AgID, Agenzia per l'Italia Digitale">
+      </footer>
+    </div>
+
+  </div>
+ </div>
+</body>
+</html>
