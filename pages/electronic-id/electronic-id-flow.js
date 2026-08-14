@@ -372,6 +372,10 @@
     return !!(state.simulated && state.country && state.country.code === "in");
   }
 
+  function usesPhonePreviewFlow() {
+    return usesNlIngPhonePreview() || usesBeSimFlow() || usesInSimFlow();
+  }
+
   function shouldShowNlPhonePreview() {
     if (!usesNlIngPhonePreview()) return false;
     return activeSimPanelId() !== "eid-panel-completing";
@@ -395,13 +399,18 @@
     return shouldShowNlPhonePreview() || shouldShowBePhonePreview() || shouldShowInPhonePreview();
   }
 
+  function shouldUseSplitCardLayout() {
+    return shouldShowPhonePreview();
+  }
+
   function updateNlPhoneLayout() {
     var stepRoot = byId("eid-step-simulated");
     var phone = byId("eid-sim-phone");
     if (!stepRoot || !phone) return;
     var showPhone = shouldShowPhonePreview();
+    var splitLayout = shouldUseSplitCardLayout();
     var wasVisible = phone.getAttribute("data-visible") === "true";
-    stepRoot.classList.toggle("eid-step-simulated--nl-phone", showPhone);
+    stepRoot.classList.toggle("eid-step-simulated--nl-phone", splitLayout);
     phone.hidden = !showPhone;
     phone.setAttribute("aria-hidden", showPhone ? "false" : "true");
     phone.setAttribute("data-visible", showPhone ? "true" : "false");
@@ -419,6 +428,8 @@
       var screen = byId("eid-sim-phone-screen");
       if (screen) screen.innerHTML = "";
       phone.removeAttribute("data-nl-phone-scale");
+      hidePhoneMagnifier();
+      setPhoneMagnifierHitActive(false);
     }
   }
 
@@ -427,6 +438,182 @@
   var NL_PHONE_FRAME_H = 800;
   var NL_PHONE_PANEL_PAD = 32;
   var nlPhoneResizeBound = false;
+  var MAGNIFIER_ZOOM = 2;
+  var MAGNIFIER_SIZE = 140;
+  var phoneMagnifierBound = false;
+  var phoneMagnifierState = null;
+
+  function magnifierReducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function getPhoneEmbedScale(host) {
+    var embed = host && host.querySelector(".eid-mobile-embed:not(.eid-mobile-embed--lens)");
+    if (!embed) return 0.55;
+    var scale = parseFloat(getComputedStyle(embed).getPropertyValue("--eid-phone-scale"));
+    return Number.isFinite(scale) && scale > 0 ? scale : 0.55;
+  }
+
+  function syncPhoneMagnifierContent() {
+    if (!phoneMagnifierState) return;
+    var host = phoneMagnifierState.host;
+    var frame = host && host.querySelector(".eid-mobile-embed__frame:not([data-magnifier])");
+    if (!host || !frame) return;
+
+    var src = frame.src || "";
+    if (phoneMagnifierState.src === src && phoneMagnifierState.layer) {
+      syncPhoneMagnifierScale();
+      return;
+    }
+
+    phoneMagnifierState.src = src;
+    phoneMagnifierState.ready = false;
+
+    var viewport = phoneMagnifierState.viewport;
+    viewport.innerHTML = "";
+
+    var layer = document.createElement("div");
+    layer.className = "eid-mobile-magnifier__layer";
+
+    var embed = document.createElement("div");
+    embed.className = "eid-mobile-magnifier__embed";
+
+    var cloneFrame = document.createElement("iframe");
+    cloneFrame.className = "eid-mobile-magnifier__frame";
+    cloneFrame.setAttribute("data-magnifier", "true");
+    cloneFrame.src = src;
+    cloneFrame.title = (frame.title || "Mobile preview") + " (magnified)";
+    cloneFrame.tabIndex = -1;
+    cloneFrame.addEventListener("load", function () {
+      phoneMagnifierState.ready = true;
+    });
+    if (cloneFrame.contentWindow) {
+      try {
+        if (cloneFrame.contentWindow.document.readyState === "complete") {
+          phoneMagnifierState.ready = true;
+        }
+      } catch (err) {
+        /* cross-origin — wait for load event */
+      }
+    }
+
+    embed.appendChild(cloneFrame);
+    layer.appendChild(embed);
+    viewport.appendChild(layer);
+    phoneMagnifierState.layer = layer;
+    syncPhoneMagnifierScale();
+  }
+
+  function syncPhoneMagnifierScale() {
+    if (!phoneMagnifierState || !phoneMagnifierState.layer) return;
+    var host = phoneMagnifierState.host;
+    var embed = phoneMagnifierState.layer.querySelector(".eid-mobile-magnifier__embed");
+    if (!host || !embed) return;
+    var scale = getPhoneEmbedScale(host);
+    embed.style.transform = "scale(" + scale.toFixed(4) + ")";
+  }
+
+  function updatePhoneMagnifierPosition(e) {
+    if (!phoneMagnifierState || !phoneMagnifierState.layer) return;
+    var host = phoneMagnifierState.host;
+    var lens = phoneMagnifierState.lens;
+    var layer = phoneMagnifierState.layer;
+    if (!host || !lens || !layer) return;
+
+    var hostRect = host.getBoundingClientRect();
+    if (!hostRect.width || !hostRect.height) {
+      hidePhoneMagnifier();
+      return;
+    }
+
+    var radius = MAGNIFIER_SIZE / 2;
+    var hx = Math.min(Math.max(e.clientX - hostRect.left, 0), hostRect.width);
+    var hy = Math.min(Math.max(e.clientY - hostRect.top, 0), hostRect.height);
+
+    layer.style.width = hostRect.width + "px";
+    layer.style.height = hostRect.height + "px";
+    layer.style.left = (radius - hx) + "px";
+    layer.style.top = (radius - hy) + "px";
+    layer.style.transformOrigin = hx + "px " + hy + "px";
+    layer.style.transform = "scale(" + MAGNIFIER_ZOOM + ")";
+
+    lens.hidden = false;
+    lens.style.left = e.clientX + "px";
+    lens.style.top = e.clientY + "px";
+  }
+
+  function hidePhoneMagnifier() {
+    if (phoneMagnifierState && phoneMagnifierState.lens) {
+      phoneMagnifierState.lens.hidden = true;
+    }
+  }
+
+  function bindPhoneMagnifier() {
+    var phone = byId("eid-sim-phone");
+    if (!phone || phoneMagnifierBound) return;
+    phoneMagnifierBound = true;
+
+    var hitLayer = document.createElement("div");
+    hitLayer.className = "eid-sim-phone__magnifier-hit";
+    hitLayer.setAttribute("aria-hidden", "true");
+    hitLayer.hidden = true;
+    phone.appendChild(hitLayer);
+
+    var lens = document.createElement("div");
+    lens.className = "eid-mobile-magnifier";
+    lens.hidden = true;
+    lens.setAttribute("aria-hidden", "true");
+    var viewport = document.createElement("div");
+    viewport.className = "eid-mobile-magnifier__viewport";
+    lens.appendChild(viewport);
+    document.body.appendChild(lens);
+
+    phoneMagnifierState = {
+      phone: phone,
+      hitLayer: hitLayer,
+      lens: lens,
+      viewport: viewport,
+      layer: null,
+      src: "",
+      ready: false,
+      get host() {
+        return phone.querySelector(".eid-mobile-embed-host");
+      }
+    };
+
+    function onMove(e) {
+      if (phone.hidden || magnifierReducedMotion()) {
+        hidePhoneMagnifier();
+        return;
+      }
+      var host = phoneMagnifierState.host;
+      if (!host || !phoneMagnifierState.ready) {
+        hidePhoneMagnifier();
+        return;
+      }
+      updatePhoneMagnifierPosition(e);
+    }
+
+    hitLayer.addEventListener("mousemove", onMove);
+    hitLayer.addEventListener("mouseleave", hidePhoneMagnifier);
+  }
+
+  function setPhoneMagnifierHitActive(active) {
+    if (!phoneMagnifierState || !phoneMagnifierState.hitLayer) return;
+    phoneMagnifierState.hitLayer.hidden = !active;
+  }
+
+  function updatePhoneMagnifier() {
+    var phone = byId("eid-sim-phone");
+    if (!phone || phone.hidden || !phone.querySelector(".eid-mobile-embed-host")) {
+      hidePhoneMagnifier();
+      setPhoneMagnifierHitActive(false);
+      return;
+    }
+    bindPhoneMagnifier();
+    setPhoneMagnifierHitActive(true);
+    syncPhoneMagnifierContent();
+  }
 
   function nlPhoneLabelReserve(phone) {
     var stepRoot = byId("eid-step-simulated");
@@ -456,6 +643,7 @@
     var cached = phone.getAttribute("data-nl-phone-scale");
     if (!forceRecalc && cached) {
       applyNlPhoneScale(phone, host, cached);
+      syncPhoneMagnifierScale();
       return;
     }
 
@@ -481,6 +669,7 @@
     var scaleStr = scale.toFixed(4);
     phone.setAttribute("data-nl-phone-scale", scaleStr);
     applyNlPhoneScale(phone, host, scaleStr);
+    syncPhoneMagnifierScale();
   }
 
   function scheduleNlPhoneSizeSync(forceRecalc) {
@@ -586,18 +775,22 @@
     }
 
     screen.innerHTML = "";
+    updatePhoneMagnifier();
   }
 
   function bindNlPhoneEmbedLoad(screen) {
-    var iframe = screen.querySelector(".eid-mobile-embed__frame");
+    var iframe = screen.querySelector(".eid-mobile-embed__frame:not([data-magnifier])");
     if (!iframe) {
       scheduleNlPhoneSizeSync();
+      updatePhoneMagnifier();
       return;
     }
     iframe.addEventListener("load", function () {
       scheduleNlPhoneSizeSync();
+      syncPhoneMagnifierContent();
     });
     scheduleNlPhoneSizeSync();
+    updatePhoneMagnifier();
   }
 
   function panelIdForStep(step) {

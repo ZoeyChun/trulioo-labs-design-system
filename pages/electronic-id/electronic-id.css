@@ -442,13 +442,20 @@
 
 #eid-flow-view .dv-flow-content:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
   align-items: stretch;
-  overflow: visible;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: var(--spacing-24);
 }
 
 /* NL + phone preview — fluid horizontal insets (avoid stacked fixed padding) */
 #eid-flow-view:has(#eid-step-simulated.eid-step-simulated--nl-phone:not([hidden])) {
   --eid-flow-padding-x: clamp(var(--spacing-12), 1.5vw, var(--spacing-32));
+  --eid-flow-padding-y: var(--spacing-24);
   padding-inline: var(--spacing-24);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 @media (max-width: 1280px) {
@@ -494,12 +501,16 @@
 
 /* Figma 3262:56278 — 48px gap between progress indicator and card */
 #eid-step-simulated {
+  --eid-sim-block-width: 895px;
   width: 100%;
-  max-width: 896px;
+  max-width: var(--eid-sim-block-width);
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone {
+  flex: 1;
+  align-self: stretch;
   max-width: none;
+  min-height: 0;
   --eid-nl-panel-max: min(760px, calc(100vw - 480px));
   overflow: visible;
 }
@@ -507,14 +518,22 @@
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage,
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__content,
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__workspace {
+  flex: 1;
+  min-height: 0;
   overflow: visible;
+}
+
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage,
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__content {
+  display: flex;
+  flex-direction: column;
 }
 
 .eid-sim-split-card {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 895px;
+  max-width: var(--eid-sim-block-width, 895px);
 }
 
 .eid-sim-split-card__form {
@@ -524,9 +543,11 @@
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-split-card {
+  flex: 1;
   flex-direction: row;
   align-items: stretch;
-  min-height: 640px;
+  min-height: 0;
+  max-height: min(640px, 100%);
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-3xl);
@@ -554,9 +575,9 @@
 .eid-sim-stage__workspace {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: center;
   width: 100%;
-  max-width: 896px;
+  max-width: var(--eid-sim-block-width, 895px);
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__content {
@@ -575,37 +596,22 @@
   flex-direction: column;
   gap: var(--spacing-48);
   width: 100%;
-}
-
-#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__column {
-  flex: none;
-  width: 100%;
-  max-width: 895px;
-  min-width: 0;
-  padding-inline: 0;
-  gap: var(--spacing-48);
+  max-width: var(--eid-sim-block-width, 895px);
   container-type: inline-size;
   container-name: eid-nl-sim-column;
 }
 
-#eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator {
-  width: 100%;
-  max-width: 895px;
-}
-
-#eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator__title {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-}
-
-#eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator__caption {
-  font-size: 0.6875rem;
-  line-height: var(--line-height-xs);
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__column {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding-inline: 0;
+  gap: var(--spacing-48);
 }
 
 .eid-sim-stage__main {
   width: 100%;
-  max-width: 895px;
+  max-width: var(--eid-sim-block-width, 895px);
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__main {
@@ -641,7 +647,7 @@
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-panel__header--empty {
   height: var(--spacing-32);
-  padding: var(--spacing-24) var(--spacing-24) 0;
+  padding: var(--spacing-24) var(--spacing-32) 0;
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-body {
@@ -669,10 +675,32 @@
   line-height: var(--line-height-sm);
 }
 
-#eid-step-simulated.eid-step-simulated--nl-phone .eid-stage--loading,
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-stage--qr {
   gap: var(--spacing-24);
   padding: var(--spacing-32) var(--spacing-24);
+}
+
+/* Simulated flow — loading steps share OTP spacing and full column width */
+#eid-step-simulated .eid-stage--loading {
+  gap: var(--spacing-48);
+  padding: var(--spacing-64) var(--spacing-32);
+}
+
+#eid-step-simulated .eid-loading-content {
+  gap: var(--spacing-24);
+  width: 100%;
+  padding-inline: 0;
+}
+
+#eid-step-simulated .eid-stage--loading .eid-stage__copy {
+  align-self: stretch;
+  max-width: none;
+  width: 100%;
+}
+
+#eid-step-simulated .eid-sim-panel__header--empty {
+  height: var(--spacing-32);
+  padding: var(--spacing-24) var(--spacing-32) 0;
 }
 
 /* Match OTP body spacing in split-card form column */
@@ -685,11 +713,6 @@
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-stage__copy--wide {
   align-self: stretch;
   padding-inline: 0;
-}
-
-#eid-step-simulated.eid-step-simulated--nl-phone .eid-loading-content {
-  gap: var(--spacing-16);
-  padding-inline: var(--spacing-24);
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-stage__copy {
@@ -818,11 +841,74 @@
   box-sizing: border-box;
 }
 
+#eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone:has(.eid-mobile-embed-host) {
+  cursor: default;
+}
+
+.eid-sim-phone__magnifier-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  cursor: crosshair;
+  background: transparent;
+}
+
+.eid-sim-phone__magnifier-hit[hidden] {
+  display: none !important;
+}
+
+.eid-mobile-magnifier {
+  position: fixed;
+  z-index: 1000;
+  width: 140px;
+  height: 140px;
+  border: 2px solid var(--border-interactive);
+  border-radius: var(--radius-full);
+  background-color: #0d0d0f;
+  box-shadow: var(--elevation-lg);
+  overflow: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.eid-mobile-magnifier[hidden] {
+  display: none !important;
+}
+
+.eid-mobile-magnifier__viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.eid-mobile-magnifier__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  will-change: transform;
+}
+
+.eid-mobile-magnifier__embed {
+  width: 390px;
+  height: 800px;
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+.eid-mobile-magnifier__frame {
+  display: block;
+  width: 390px;
+  height: 800px;
+  border: 0;
+  pointer-events: none;
+}
+
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone__label {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 11;
   margin: 0;
   border-radius: 0 0 var(--radius-card) 0;
   background-color: var(--surface-neutral-03);
@@ -1209,6 +1295,7 @@
 
 #eid-step-simulated .tds-progress-indicator {
   width: 100%;
+  max-width: var(--eid-sim-block-width, 895px);
   margin-bottom: 0;
   flex-shrink: 0;
 }
@@ -1218,7 +1305,7 @@
 }
 
 .eid-sim-panel.dv-flow-card {
-  max-width: 895px;
+  max-width: var(--eid-sim-block-width, 895px);
   min-height: 468px;
   flex-shrink: 0;
 }
