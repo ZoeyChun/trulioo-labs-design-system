@@ -764,7 +764,6 @@
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone {
   padding-inline: 0;
   flex-shrink: 0;
-  order: -1;
 }
 
 .eid-sim-phone.eid-sim-phone--enter {
@@ -774,7 +773,7 @@
 @keyframes eid-phone-slide-in {
   from {
     opacity: 0;
-    transform: translateX(-48px);
+    transform: translateX(48px);
   }
 
   to {
@@ -1865,7 +1864,6 @@
   #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-stage__column {
     width: 100%;
     max-width: 100%;
-    order: 1;
   }
 
   #eid-step-simulated.eid-step-simulated--nl-phone .tds-progress-indicator,
@@ -1923,7 +1921,6 @@
 
   #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-phone {
     align-self: center;
-    order: 2;
   }
 
   .eid-sim-phone {
