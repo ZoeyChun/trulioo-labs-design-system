@@ -425,11 +425,12 @@
   var NL_MOBILE_EMBED_BASE = "embed/";
   var NL_PHONE_FRAME_W = 390;
   var NL_PHONE_FRAME_H = 800;
-  var NL_PHONE_VIEWPORT_PAD = 24;
-  var NL_PHONE_MIN_MAIN_W = 320;
+  var NL_PHONE_PANEL_PAD = 32;
   var nlPhoneResizeBound = false;
 
   function nlPhoneLabelReserve(phone) {
+    var stepRoot = byId("eid-step-simulated");
+    if (stepRoot && stepRoot.classList.contains("eid-step-simulated--nl-phone")) return 0;
     if (!phone.querySelector(".eid-mobile-embed-host")) return 0;
     var label = phone.querySelector(".eid-sim-phone__label");
     if (!label || getComputedStyle(label).display === "none") return 0;
@@ -459,20 +460,20 @@
     }
 
     var labelReserve = nlPhoneLabelReserve(phone);
-    var top = phone.getBoundingClientRect().top;
-    var availableHeight = window.innerHeight - top - NL_PHONE_VIEWPORT_PAD - labelReserve;
-    availableHeight = Math.max(0, availableHeight);
-    var scaleByHeight = Math.min(1, availableHeight / NL_PHONE_FRAME_H);
+    var panelStyle = getComputedStyle(phone);
+    var padY = parseFloat(panelStyle.paddingTop) + parseFloat(panelStyle.paddingBottom);
+    var padX = parseFloat(panelStyle.paddingLeft) + parseFloat(panelStyle.paddingRight);
+    var panelRect = phone.getBoundingClientRect();
+    var innerWidth = Math.max(0, panelRect.width - padX);
+    var innerHeight = Math.max(0, panelRect.height - padY - labelReserve);
+    var scaleByWidth = innerWidth > 0 ? innerWidth / NL_PHONE_FRAME_W : 1;
+    var scaleByHeight = innerHeight > 0 ? innerHeight / NL_PHONE_FRAME_H : 1;
 
-    var scaleByWidth = 1;
-    var workspace = phone.closest(".eid-sim-stage__workspace");
-    if (workspace) {
-      var workspaceWidth = workspace.getBoundingClientRect().width;
-      var gap = parseFloat(getComputedStyle(workspace).columnGap || getComputedStyle(workspace).gap) || 0;
-      var maxPhoneWidth = workspaceWidth - NL_PHONE_MIN_MAIN_W - gap;
-      if (maxPhoneWidth > 0) {
-        scaleByWidth = maxPhoneWidth / NL_PHONE_FRAME_W;
-      }
+    if (innerWidth < 1 || innerHeight < 1) {
+      var top = panelRect.top;
+      var availableHeight = window.innerHeight - top - NL_PHONE_PANEL_PAD - labelReserve;
+      availableHeight = Math.max(0, availableHeight);
+      scaleByHeight = Math.min(scaleByHeight, availableHeight / NL_PHONE_FRAME_H);
     }
 
     var scale = Math.min(scaleByHeight, scaleByWidth, 1);
@@ -505,6 +506,8 @@
     if (phone && typeof ResizeObserver !== "undefined") {
       var ro = new ResizeObserver(onResize);
       ro.observe(phone);
+      var splitCard = phone.closest(".eid-sim-split-card");
+      if (splitCard) ro.observe(splitCard);
       var workspace = phone.closest(".eid-sim-stage__workspace");
       if (workspace) ro.observe(workspace);
     }

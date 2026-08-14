@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="../shared/truai-chat.css">
   <link rel="stylesheet" href="../document-verification/document-verification.css">
   <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
-  <link rel="stylesheet" href="electronic-id.css?v=nl-layout-4">
+  <link rel="stylesheet" href="electronic-id.css?v=nl-layout-9">
   <style>
     /* Nav item spec — inlined because Cursor preview often skips ../../ component CSS */
     button.tds-side-nav__nav-item,
@@ -335,6 +335,8 @@
                   <div class="eid-sim-stage__column">
                     <ol class="tds-progress-indicator tds-progress-indicator--horizontal" id="eid-sim-progress" aria-label="Progress"></ol>
 
+                    <div class="eid-sim-split-card">
+                      <div class="eid-sim-split-card__form">
                     <div class="eid-sim-stage__main">
 
             <!-- Select bank -->
@@ -556,13 +558,15 @@
 
                 </div>
 
-                    </div>
+                      </div>
 
               <aside class="eid-sim-phone" id="eid-sim-phone" hidden aria-hidden="true" aria-label="Mobile preview">
                 <span class="tds-tag tds-tag--sm tds-tag--default eid-sim-phone__label">End-user view</span>
                 <div id="eid-sim-phone-screen" aria-live="polite"></div>
               </aside>
-                </div>
+                    </div>
+
+                    </div>
               </div>
             </div>
           </section>
