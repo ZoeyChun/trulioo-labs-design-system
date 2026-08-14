@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India — Meri Pehchaan Verify OTP (Filled)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .screen::-webkit-scrollbar { width: 0; }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .page { animation: contentIn .45s ease backwards; }
+  @media (prefers-reduced-motion: reduce) { .page { animation: none; } }
+
+  .top-spacer { height: 44px; }
+
+  .page {
+    padding: 0 14px 24px;
+  }
+
+  /* ---------- Brand header ---------- */
+  .brand {
+    padding: 2px 0 12px;
+    text-align: center;
+  }
+
+  .brand__header {
+    height: 64px;
+    width: auto;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+  }
+
+  /* ---------- Card ---------- */
+  .card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eef0f3;
+    padding: 18px 20px 24px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .card::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 5px;
+    background: #4D32FD;
+  }
+
+  .card__heading {
+    font-size: 21px;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
+
+  /* ---------- OTP notice ---------- */
+  .notice {
+    background: #eef8f3;
+    border-radius: 6px;
+    padding: 14px 14px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #1f5c45;
+    margin-bottom: 16px;
+  }
+
+  /* ---------- OTP field ---------- */
+  .field {
+    margin-bottom: 10px;
+  }
+
+  .input-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .input {
+    width: 100%;
+    border: 1.5px solid #d8dce3;
+    border-radius: 6px;
+    padding: 14px 44px 14px 14px;
+    font-size: 15px;
+    color: #9aa0a8;
+    background: #ffffff;
+    line-height: 1.2;
+  }
+
+  .input--filled {
+    color: #1a1a1a;
+  }
+
+  .input__toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    color: #9aa0a8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .input__toggle svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+  }
+
+  .resend {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
+    margin: 0 0 20px;
+  }
+
+  .resend--ready {
+    color: #006AFE;
+  }
+
+  /* ---------- Sign in button ---------- */
+  .signin-btn {
+    display: block;
+    width: 100%;
+    background: #019041;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 6px;
+    padding: 15px 0;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  (function () {
+    if (window.self !== window.top) document.documentElement.classList.add("preview");
+    var phone = new URLSearchParams(window.location.search).get("phone");
+    if (!phone) return;
+    phone = phone.replace(/\D/g, "");
+    var display = document.getElementById("in-phone-value");
+    if (display) display.textContent = phone;
+    var masked = document.getElementById("in-phone-masked");
+    if (masked && phone.length >= 4) masked.textContent = "xxxxxx" + phone.slice(-4);
+  })();
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+      <header class="brand">
+        <img class="brand__header" src="../assets/embeds/india/meri-pehchaan-header.png" alt="Meri Pehchaan — Single Sign-On Service">
+      </header>
+
+      <div class="card">
+        <h1 class="card__heading">Verify OTP</h1>
+
+        <p class="notice">DigiLocker has sent you an OTP to your registered mobile (<span id="in-phone-masked">xxxxxx3210</span>). OTP will be valid for 10 Minutes.</p>
+
+        <div class="field">
+          <div class="input-wrap">
+            <div class="input input--filled">••••••</div>
+            <span class="input__toggle" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+                <circle cx="12" cy="12" r="3"/>
+                <line x1="4" y1="4" x2="20" y2="20"/>
+              </svg>
+            </span>
+          </div>
+        </div>
+
+        <span class="resend resend--ready">Resend OTP</span>
+
+        <div class="signin-btn">Sign In</div>
+      </div>
+    </div>
+
+  </div>
+ </div>
+</body>
+</html>

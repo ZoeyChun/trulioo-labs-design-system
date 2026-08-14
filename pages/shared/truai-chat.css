@@ -9,6 +9,11 @@ body {
   margin: 0;
 }
 
+html:has(.labs-kyb-layout) {
+  /* Labs shell scrolls inside .app-main — don't reserve a page-level gutter. */
+  scrollbar-gutter: auto;
+}
+
 body:has(.labs-kyb-layout) {
   overflow: hidden;
 }

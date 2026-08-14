@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India — Meri Pehchaan Sign In</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .screen::-webkit-scrollbar { width: 0; }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .page { animation: contentIn .45s ease backwards; }
+  @media (prefers-reduced-motion: reduce) { .page { animation: none; } }
+
+  .top-spacer { height: 44px; }
+
+  .page {
+    padding: 0 14px 24px;
+  }
+
+  /* ---------- Brand header ---------- */
+  .brand {
+    padding: 2px 0 12px;
+    text-align: center;
+  }
+
+  .brand__header {
+    height: 64px;
+    width: auto;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+  }
+
+  /* ---------- Sign-in card ---------- */
+  .card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eef0f3;
+    padding: 18px 20px 24px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .card::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 5px;
+    background: #4D32FD;
+  }
+
+  .card__heading {
+    font-size: 21px;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
+
+  .card__provider {
+    color: #006AFE;
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    width: 100%;
+  }
+
+  .tab {
+    font-size: 14px;
+    font-weight: 400;
+    color: #006AFE;
+    padding: 12px 24px;
+    border-radius: 6px;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  .tab--active {
+    background: #006AFE;
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  /* ---------- Fields ---------- */
+  .field {
+    margin-bottom: 14px;
+  }
+
+  .input {
+    width: 100%;
+    border: 1.5px solid #d8dce3;
+    border-radius: 6px;
+    padding: 14px 14px;
+    font-size: 15px;
+    color: #9aa0a8;
+    background: #ffffff;
+    line-height: 1.2;
+  }
+
+  .forgot {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    font-weight: 400;
+    color: #006AFE;
+    margin: -2px 0 16px;
+  }
+
+  /* ---------- Checkboxes ---------- */
+  .checks {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.35;
+  }
+
+  .check__box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #c5cad3;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .check__link {
+    color: #006AFE;
+    font-weight: 400;
+  }
+
+  /* ---------- Sign in button ---------- */
+  .signin-btn {
+    display: block;
+    width: 100%;
+    background: #50B398;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 6px;
+    padding: 15px 0;
+    margin-bottom: 16px;
+  }
+
+  .signup {
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 18px;
+  }
+
+  .signup__link {
+    color: #006AFE;
+    font-weight: 400;
+  }
+
+  /* ---------- OR divider ---------- */
+  .or {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .or__line {
+    flex: 1;
+    height: 1px;
+    background: #e0e3e8;
+  }
+
+  .or__text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+  }
+
+  .continue-label {
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 14px;
+  }
+
+  /* ---------- Alt providers ---------- */
+  .alt-providers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .alt-providers img {
+    display: block;
+    object-fit: contain;
+  }
+
+  .alt-providers__epramaan { height: 44px; width: auto; max-width: 140px; }
+  .alt-providers__janparichay { height: 44px; width: auto; max-width: 153px; }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+      <header class="brand">
+        <img class="brand__header" src="../assets/embeds/india/meri-pehchaan-header.png" alt="Meri Pehchaan — Single Sign-On Service">
+      </header>
+
+      <div class="card">
+        <h1 class="card__heading">Sign In to your account via<br><span class="card__provider">DigiLocker</span></h1>
+
+        <div class="tabs">
+          <span class="tab tab--active">Mobile</span>
+          <span class="tab">Username</span>
+          <span class="tab">Others</span>
+        </div>
+
+        <div class="field">
+          <div class="input">Phone number*</div>
+        </div>
+        <div class="field">
+          <div class="input">PIN*</div>
+        </div>
+
+        <span class="forgot">Forgot security PIN?</span>
+
+        <div class="checks">
+          <div class="check">
+            <span class="check__box"></span>
+            <span>PIN less authentication</span>
+          </div>
+          <div class="check">
+            <span class="check__box"></span>
+            <span>I consent to <span class="check__link">terms of use.</span></span>
+          </div>
+        </div>
+
+        <div class="signin-btn">Sign In</div>
+
+        <p class="signup">New user? <span class="signup__link">Sign up</span></p>
+
+        <div class="or">
+          <span class="or__line"></span>
+          <span class="or__text">OR</span>
+          <span class="or__line"></span>
+        </div>
+
+        <p class="continue-label">Continue with</p>
+
+        <div class="alt-providers">
+          <img class="alt-providers__epramaan" src="../assets/embeds/india/e-pramaan-wordmark.png" alt="e-Pramaan">
+          <img class="alt-providers__janparichay" src="../assets/embeds/india/janparichay-banner.png" alt="JanParichay">
+        </div>
+      </div>
+    </div>
+
+  </div>
+ </div>
+</body>
+</html>

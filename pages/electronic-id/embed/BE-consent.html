@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belgium — Consent</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Notch */
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  /* ---------- Content transition ---------- */
+  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .consent { animation: contentIn .45s ease backwards; }
+  @media (prefers-reduced-motion: reduce) { .consent { animation: none; } }
+
+  /* Notch clearance spacer (no status utilities) */
+  .top-spacer { height: 44px; flex-shrink: 0; }
+
+  /* ---------- Consent panel ---------- */
+  .consent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+    padding: 0 22px;
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 0 18px;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    width: 39px;
+    height: 39px;
+    flex-shrink: 0;
+  }
+  .logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+  .header-text h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.25;
+  }
+
+  .header-text p {
+    font-size: 14px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e8e8e8;
+    flex-shrink: 0;
+    margin-bottom: 22px;
+  }
+
+  /* ---------- Body sections ---------- */
+  .body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .body::-webkit-scrollbar { width: 0; }
+
+  .section { margin-bottom: 24px; }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #D54C09;
+    margin-bottom: 8px;
+  }
+
+  .section-item {
+    font-size: 15px;
+    color: #1a1a1a;
+    line-height: 1.5;
+  }
+
+  .data-list {
+    list-style: none;
+  }
+
+  .data-list li {
+    font-size: 15px;
+    color: #1a1a1a;
+    line-height: 1.55;
+  }
+
+  /* ---------- Footer buttons ---------- */
+  .footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 0 28px;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 16px 0;
+    border: none;
+  }
+
+  .btn-confirm {
+    background: #018B63;
+    color: #ffffff;
+  }
+
+  .btn-reject {
+    background: #ececec;
+    color: #333;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="consent">
+      <header class="header">
+        <div class="logo" aria-hidden="true">
+          <img src="../assets/embeds/belgium/identify-icon.png" alt="">
+        </div>
+        <div class="header-text">
+          <h1>Identify myself</h1>
+          <p>Trulioo</p>
+        </div>
+      </header>
+
+      <div class="divider"></div>
+
+      <div class="body">
+        <section class="section">
+          <h2 class="section-title">Info</h2>
+          <p class="section-item">Registration</p>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Shared ID data</h2>
+          <ul class="data-list">
+            <li>National registration number</li>
+            <li>Date of birth</li>
+            <li>Sex</li>
+            <li>Name</li>
+          </ul>
+        </section>
+      </div>
+
+      <footer class="footer">
+        <span class="btn btn-confirm">Confirm</span>
+        <span class="btn btn-reject">Reject</span>
+      </footer>
+    </div>
+
+  </div>
+ </div>
+</body>
+</html>

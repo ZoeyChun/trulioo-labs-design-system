@@ -45,12 +45,14 @@ window.EID_FLOW_DATA = [
         "label": "Enter details",
         "fields": [
           "Phone number"
-        ]
+        ],
+        "hidden": true
       },
       {
         "type": "launch-app",
         "label": "Launch app",
-        "fields": []
+        "fields": [],
+        "hidden": true
       },
       {
         "type": "consent",

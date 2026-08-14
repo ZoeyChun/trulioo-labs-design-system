@@ -38,7 +38,7 @@
   <link rel="stylesheet" href="../shared/truai-chat.css">
   <link rel="stylesheet" href="../document-verification/document-verification.css">
   <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
-  <link rel="stylesheet" href="electronic-id.css?v=nl-layout-4">
+  <link rel="stylesheet" href="electronic-id.css?v=nl-layout-17">
   <style>
     /* Nav item spec — inlined because Cursor preview often skips ../../ component CSS */
     button.tds-side-nav__nav-item,
@@ -335,6 +335,8 @@
                   <div class="eid-sim-stage__column">
                     <ol class="tds-progress-indicator tds-progress-indicator--horizontal" id="eid-sim-progress" aria-label="Progress"></ol>
 
+                    <div class="eid-sim-split-card">
+                      <div class="eid-sim-split-card__form">
                     <div class="eid-sim-stage__main">
 
             <!-- Select bank -->
@@ -501,7 +503,7 @@
               </div>
             </section>
 
-            <!-- Consent (desktop — India & Czechia) -->
+            <!-- Consent (desktop — Czechia) -->
             <section class="dv-flow-card eid-sim-panel" id="eid-panel-consent" aria-labelledby="eid-consent-title" hidden>
               <div class="dv-flow-card__header">
                 <h2 class="dv-flow-card__title" id="eid-consent-title">Share your data</h2>
@@ -556,13 +558,15 @@
 
                 </div>
 
-                    </div>
+                      </div>
 
               <aside class="eid-sim-phone" id="eid-sim-phone" hidden aria-hidden="true" aria-label="Mobile preview">
                 <span class="tds-tag tds-tag--sm tds-tag--default eid-sim-phone__label">End-user view</span>
                 <div id="eid-sim-phone-screen" aria-live="polite"></div>
               </aside>
-                </div>
+                    </div>
+
+                    </div>
               </div>
             </div>
           </section>
@@ -828,7 +832,7 @@
   <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
   <script src="electronic-id-flow-data.js?v=nl-flow-2"></script>
   <script src="electronic-id-result.js"></script>
-  <script src="electronic-id-flow.js?v=nl-layout-1"></script>
+  <script src="electronic-id-flow.js?v=nl-layout-18"></script>
   <script src="truai-responses.js?v=1"></script>
   <script src="../shared/truai-chat.js?v=1"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>
