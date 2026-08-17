@@ -14,6 +14,7 @@
   var PROVIDER_PLACEHOLDER = "assets/providers/provider-placeholder.svg";
   var FLOW_DATA = window.EID_FLOW_DATA || [];
   var TRANSITION_MS = 3000;
+  var IT_LAUNCH_ACCESS_MS = 2000;
   var RESEND_SECONDS = 10;
   var IN_RESEND_SECONDS = 60;
   var CHECK_SVG = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
@@ -28,11 +29,11 @@
   ];
 
   var PROVIDERS = [
+    { id: "poste", label: "Poste ID", initials: "PO" },
     { id: "etna", label: "Etna ID", initials: "ET" },
     { id: "infocert", label: "Infocert ID", initials: "IN" },
     { id: "lepida", label: "Lepida", initials: "LE" },
     { id: "namirial", label: "Namirial ID", initials: "NA" },
-    { id: "poste", label: "Poste ID", initials: "PO" },
     { id: "spid", label: "Spid Italia", initials: "SP" }
   ];
 
@@ -71,7 +72,9 @@
     resendSeconds: RESEND_SECONDS,
     pendingTimer: null,
     inSigninFilled: false,
-    inOtpFilled: false
+    inOtpFilled: false,
+    itSigninFilled: false,
+    itLaunchPhoneShown: false
   };
 
   function selectableCountries() {
@@ -85,8 +88,15 @@
 
   var refreshCountryCombobox = null;
 
+  var itLaunchPhoneTimer = null;
+
+  function clearItLaunchPhoneTimer() {
+    if (itLaunchPhoneTimer) { clearTimeout(itLaunchPhoneTimer); itLaunchPhoneTimer = null; }
+  }
+
   function clearPending() {
     if (state.pendingTimer) { clearTimeout(state.pendingTimer); state.pendingTimer = null; }
+    clearItLaunchPhoneTimer();
   }
 
   function clearResendTimer() {
@@ -112,6 +122,8 @@
     state.otpDigits = [];
     state.inSigninFilled = false;
     state.inOtpFilled = false;
+    state.itSigninFilled = false;
+    state.itLaunchPhoneShown = false;
     clearResendTimer();
     clearPending();
   }
@@ -372,8 +384,16 @@
     return !!(state.simulated && state.country && state.country.code === "in");
   }
 
+  function usesItSimFlow() {
+    return !!(state.simulated && state.country && state.country.code === "it");
+  }
+
+  function usesItPosteMobilePreview() {
+    return !!(state.provider && state.provider.id === "poste");
+  }
+
   function usesPhonePreviewFlow() {
-    return usesNlIngPhonePreview() || usesBeSimFlow() || usesInSimFlow();
+    return usesNlIngPhonePreview() || usesBeSimFlow() || usesInSimFlow() || usesItSimFlow();
   }
 
   function shouldShowNlPhonePreview() {
@@ -394,9 +414,22 @@
       || panelId === "eid-panel-consent-mobile";
   }
 
+  function shouldShowItPhonePreview() {
+    if (!usesItSimFlow() || !usesItPosteMobilePreview()) return false;
+    var panelId = activeSimPanelId();
+    return panelId === "eid-panel-select-provider"
+      || panelId === "eid-panel-enter-details"
+      || panelId === "eid-panel-launch-app"
+      || panelId === "eid-panel-launch-loading"
+      || panelId === "eid-panel-consent-mobile";
+  }
+
   function shouldShowPhonePreview() {
     if (activeSimPanelId() === "eid-panel-completing") return false;
-    return shouldShowNlPhonePreview() || shouldShowBePhonePreview() || shouldShowInPhonePreview();
+    return shouldShowNlPhonePreview()
+      || shouldShowBePhonePreview()
+      || shouldShowInPhonePreview()
+      || shouldShowItPhonePreview();
   }
 
   function shouldUseSplitCardLayout() {
@@ -426,7 +459,11 @@
       }
     } else {
       var screen = byId("eid-sim-phone-screen");
-      if (screen) screen.innerHTML = "";
+      if (screen) {
+        clearPhoneEmbedFadeTimer();
+        screen.innerHTML = "";
+        screen.removeAttribute("data-embed-key");
+      }
       phone.removeAttribute("data-nl-phone-scale");
       hidePhoneMagnifier();
       setPhoneMagnifierHitActive(false);
@@ -437,7 +474,9 @@
   var NL_PHONE_FRAME_W = 390;
   var NL_PHONE_FRAME_H = 800;
   var NL_PHONE_PANEL_PAD = 32;
+  var PHONE_EMBED_FADE_MS = 400;
   var nlPhoneResizeBound = false;
+  var phoneEmbedFadeTimer = null;
   var MAGNIFIER_ZOOM = 2;
   var MAGNIFIER_SIZE = 140;
   var phoneMagnifierBound = false;
@@ -704,12 +743,129 @@
 
   function renderMobileEmbedScreen(filename, title, query) {
     var src = NL_MOBILE_EMBED_BASE + filename + (query || "");
-    return (
-      '<div class="eid-mobile-embed-host">' +
-      '<div class="eid-mobile-embed">' +
-      '<iframe class="eid-mobile-embed__frame" src="' + src + '" title="' + title + '" tabindex="-1" loading="lazy"></iframe>' +
-      "</div></div>"
-    );
+    return {
+      key: filename + (query || ""),
+      html: (
+        '<div class="eid-mobile-embed-host">' +
+        '<div class="eid-mobile-embed">' +
+        '<iframe class="eid-mobile-embed__frame" src="' + src + '" title="' + title + '" tabindex="-1" loading="lazy"></iframe>' +
+        "</div></div>"
+      )
+    };
+  }
+
+  function phoneEmbedFadeReducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function clearPhoneEmbedFadeTimer() {
+    if (phoneEmbedFadeTimer) {
+      clearTimeout(phoneEmbedFadeTimer);
+      phoneEmbedFadeTimer = null;
+    }
+  }
+
+  function mountPhoneEmbedScreen(screen, embed) {
+    screen.setAttribute("data-embed-key", embed.key);
+    screen.innerHTML = embed.html;
+    var host = screen.querySelector(".eid-mobile-embed-host");
+    if (host && !phoneEmbedFadeReducedMotion()) {
+      host.classList.add("eid-mobile-embed-host--enter");
+    }
+    bindNlPhoneEmbedLoad(screen);
+  }
+
+  function setPhoneEmbedScreen(screen, embed) {
+    if (!screen || !embed) return;
+    if (screen.getAttribute("data-embed-key") === embed.key) return;
+
+    var existingHost = screen.querySelector(".eid-mobile-embed-host");
+    if (!existingHost || !screen.getAttribute("data-embed-key")) {
+      mountPhoneEmbedScreen(screen, embed);
+      return;
+    }
+
+    clearPhoneEmbedFadeTimer();
+    if (phoneEmbedFadeReducedMotion()) {
+      mountPhoneEmbedScreen(screen, embed);
+      return;
+    }
+
+    existingHost.classList.add("eid-mobile-embed-host--leave");
+
+    var temp = document.createElement("div");
+    temp.innerHTML = embed.html;
+    var newHost = temp.firstElementChild;
+    if (!newHost) {
+      mountPhoneEmbedScreen(screen, embed);
+      return;
+    }
+
+    screen.setAttribute("data-embed-key", embed.key);
+    newHost.classList.add("eid-mobile-embed-host--enter");
+    screen.appendChild(newHost);
+
+    phoneEmbedFadeTimer = setTimeout(function () {
+      existingHost.remove();
+      newHost.classList.remove("eid-mobile-embed-host--enter");
+      phoneEmbedFadeTimer = null;
+      bindNlPhoneEmbedLoad(screen);
+    }, PHONE_EMBED_FADE_MS);
+  }
+
+  function phoneEmbedForPanel(panelId) {
+    if (panelId === "eid-panel-select-bank") {
+      return renderMobileEmbedScreen("NE-idin-screen.html", "iDIN bank selection");
+    }
+    if (panelId === "eid-panel-sign-in") {
+      return renderMobileEmbedScreen("NE-ing-launch.html", "ING launch");
+    }
+    if (panelId === "eid-panel-select-provider" && usesItSimFlow() && usesItPosteMobilePreview()) {
+      return renderMobileEmbedScreen("IT-select.html", "Italy SPID provider select");
+    }
+    if (panelId === "eid-panel-enter-details" && usesInSimFlow()) {
+      return renderMobileEmbedScreen(
+        state.inSigninFilled ? "IN-signin-filled.html" : "IN-signin.html",
+        state.inSigninFilled ? "India sign in filled" : "India sign in",
+        state.inSigninFilled ? indiaEmbedPhoneQuery() : ""
+      );
+    }
+    if (panelId === "eid-panel-enter-details" && usesItSimFlow()) {
+      return renderMobileEmbedScreen(
+        state.itSigninFilled ? "IT-signin-complete.html" : "IT-signin.html",
+        state.itSigninFilled ? "Italy SPID sign in complete" : "Italy SPID sign in",
+        state.itSigninFilled ? italyEmbedSigninQuery() : ""
+      );
+    }
+    if (panelId === "eid-panel-otp" && usesInSimFlow()) {
+      return renderMobileEmbedScreen(
+        state.inOtpFilled ? "IN-OTP-filled.html" : "IN-OTP.html",
+        state.inOtpFilled ? "India OTP filled" : "India OTP",
+        indiaEmbedPhoneQuery()
+      );
+    }
+    if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesItSimFlow()) {
+      var launchEmbed = (panelId === "eid-panel-launch-loading" || state.itLaunchPhoneShown)
+        ? "IT-access-phone.html"
+        : "IT-access.html";
+      return renderMobileEmbedScreen(
+        launchEmbed,
+        state.itLaunchPhoneShown ? "Italy SPID access with phone" : "Italy SPID access"
+      );
+    }
+    if (panelId === "eid-panel-consent-mobile") {
+      if (usesBeSimFlow()) {
+        return renderMobileEmbedScreen("BE-consent.html", "Belgium consent");
+      }
+      if (usesInSimFlow()) {
+        return renderMobileEmbedScreen("IN-consent.html", "India consent");
+      }
+      if (usesItSimFlow()) {
+        return renderMobileEmbedScreen("IT-consent.html", "Italy SPID consent");
+      }
+      return renderMobileEmbedScreen("NE-ing-consent.html", "ING consent");
+    }
+    return null;
   }
 
   function indiaPhoneDigits(value) {
@@ -719,6 +875,21 @@
   function indiaEmbedPhoneQuery() {
     var digits = indiaPhoneDigits(state.formValues.phone) || IN_MOCK_PHONE;
     return "?phone=" + encodeURIComponent(digits);
+  }
+
+  function italyEmbedSigninQuery() {
+    return "?email=" + encodeURIComponent(MOCK_VALUES.email);
+  }
+
+  function scheduleItLaunchPhoneTransition() {
+    if (!usesItSimFlow() || state.itLaunchPhoneShown) return;
+    if (activeSimPanelId() !== "eid-panel-launch-app") return;
+    if (itLaunchPhoneTimer) return;
+    itLaunchPhoneTimer = setTimeout(function () {
+      itLaunchPhoneTimer = null;
+      state.itLaunchPhoneShown = true;
+      renderNlPhonePreview();
+    }, IT_LAUNCH_ACCESS_MS);
   }
 
   function mockValueForKey(key) {
@@ -734,48 +905,20 @@
     if (phone) phone.removeAttribute("data-nl-phone-scale");
 
     var panelId = activeSimPanelId();
-    if (panelId === "eid-panel-select-bank") {
-      screen.innerHTML = renderMobileEmbedScreen("ND-idin-screen.html", "iDIN bank selection");
-      bindNlPhoneEmbedLoad(screen);
-      return;
-    }
-    if (panelId === "eid-panel-sign-in") {
-      screen.innerHTML = renderMobileEmbedScreen("ND-ing-launch.html", "ING launch");
-      bindNlPhoneEmbedLoad(screen);
-      return;
-    }
-    if (panelId === "eid-panel-enter-details" && usesInSimFlow()) {
-      screen.innerHTML = renderMobileEmbedScreen(
-        state.inSigninFilled ? "IN-signin-filled.html" : "IN-signin.html",
-        state.inSigninFilled ? "India sign in filled" : "India sign in",
-        state.inSigninFilled ? indiaEmbedPhoneQuery() : ""
-      );
-      bindNlPhoneEmbedLoad(screen);
-      return;
-    }
-    if (panelId === "eid-panel-otp" && usesInSimFlow()) {
-      screen.innerHTML = renderMobileEmbedScreen(
-        state.inOtpFilled ? "IN-OTP-filled.html" : "IN-OTP.html",
-        state.inOtpFilled ? "India OTP filled" : "India OTP",
-        indiaEmbedPhoneQuery()
-      );
-      bindNlPhoneEmbedLoad(screen);
-      return;
-    }
-    if (panelId === "eid-panel-consent-mobile") {
-      if (usesBeSimFlow()) {
-        screen.innerHTML = renderMobileEmbedScreen("BE-consent.html", "Belgium consent");
-      } else if (usesInSimFlow()) {
-        screen.innerHTML = renderMobileEmbedScreen("IN-consent.html", "India consent");
-      } else {
-        screen.innerHTML = renderMobileEmbedScreen("ND-ing-consent.html", "ING consent");
-      }
-      bindNlPhoneEmbedLoad(screen);
+    var embed = phoneEmbedForPanel(panelId);
+    if (!embed) {
+      clearPhoneEmbedFadeTimer();
+      screen.removeAttribute("data-embed-key");
+      screen.innerHTML = "";
+      updatePhoneMagnifier();
       return;
     }
 
-    screen.innerHTML = "";
-    updatePhoneMagnifier();
+    setPhoneEmbedScreen(screen, embed);
+
+    if (panelId === "eid-panel-launch-app" && usesItSimFlow() && !state.itLaunchPhoneShown) {
+      scheduleItLaunchPhoneTransition();
+    }
   }
 
   function bindNlPhoneEmbedLoad(screen) {
@@ -840,6 +983,7 @@
       ensureDefaultNlBank();
       syncSelectionGrids();
     } else if (step.type === "select-provider") {
+      ensureDefaultItProvider();
       syncSelectionGrids();
     }
     if (step.type === "enter-details") renderDetailsFields(step.fields || []);
@@ -861,6 +1005,11 @@
 
   function goSimIndex(index) {
     state.transientPanel = null;
+    var nextStep = state.flowSteps[index];
+    if (nextStep && nextStep.type === "launch-app") {
+      state.itLaunchPhoneShown = false;
+      clearItLaunchPhoneTimer();
+    }
     state.flowIndex = Math.max(0, Math.min(index, state.flowSteps.length - 1));
     renderSimView();
   }
@@ -929,6 +1078,15 @@
     state.bank = defaultNlBank();
   }
 
+  function defaultItProvider() {
+    return PROVIDERS.find(function (p) { return p.id === "poste"; }) || PROVIDERS[0];
+  }
+
+  function ensureDefaultItProvider() {
+    if (!usesItSimFlow() || state.provider) return;
+    state.provider = defaultItProvider();
+  }
+
   function buildSelectionGrid(gridId, items, stateKey, onChange) {
     var grid = byId(gridId);
     if (!grid) return;
@@ -958,7 +1116,9 @@
 
   function initSelectionGrids() {
     buildSelectionGrid("eid-bank-grid", BANKS, "bank");
-    buildSelectionGrid("eid-provider-grid", PROVIDERS, "provider");
+    buildSelectionGrid("eid-provider-grid", PROVIDERS, "provider", function () {
+      if (usesItSimFlow()) updateNlPhoneLayout();
+    });
   }
 
   function syncSelectionGrid(gridId, stateKey) {
@@ -1054,6 +1214,9 @@
 
     if (usesInSimFlow()) {
       state.inSigninFilled = true;
+      updateNlPhoneLayout();
+    } else if (usesItSimFlow()) {
+      state.itSigninFilled = true;
       updateNlPhoneLayout();
     }
 

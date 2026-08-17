@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Italy — SPID Access with Phone Overlay</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* Stack matches embed viewport — base layer supplies the phone mockup */
+  .stack {
+    position: relative;
+    width: 390px;
+    height: 800px;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .stack__base,
+  .stack__overlay {
+    position: absolute;
+    border: 0;
+  }
+
+  .stack__base {
+    top: 0;
+    left: 0;
+    width: 390px;
+    height: 800px;
+  }
+
+  /* Overlay aligns to IT-access .screen inset (12px padding, 42px radius) */
+  .stack__overlay {
+    top: 12px;
+    left: 12px;
+    width: 366px;
+    height: 776px;
+    z-index: 2;
+    border-radius: 42px;
+    overflow: hidden;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+  }
+
+  html.preview .stack {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+  <div class="stack">
+    <iframe class="stack__base" src="IT-access.html" title="Italy SPID access" tabindex="-1"></iframe>
+    <iframe class="stack__overlay" src="IT-phone.html" title="Italy SPID phone authorization" tabindex="-1"></iframe>
+  </div>
+</body>
+</html>

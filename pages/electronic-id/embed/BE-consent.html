@@ -58,11 +58,6 @@
     z-index: 20;
   }
 
-  /* ---------- Content transition ---------- */
-  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  .consent { animation: contentIn .45s ease backwards; }
-  @media (prefers-reduced-motion: reduce) { .consent { animation: none; } }
-
   /* Notch clearance spacer (no status utilities) */
   .top-spacer { height: 44px; flex-shrink: 0; }
 

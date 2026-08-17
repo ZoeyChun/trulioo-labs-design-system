@@ -72,15 +72,6 @@
     z-index: 20;
   }
 
-  /* ---------- Content transition (frame stays static) ---------- */
-  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  .login { animation: contentIn .45s ease backwards; }
-  body.leaving .login { opacity: 0; transform: translateY(-8px); transition: opacity .32s ease, transform .32s ease; }
-  @media (prefers-reduced-motion: reduce) {
-    .login { animation: none; }
-    body.leaving .login { transition: none; }
-  }
-
   /* ---------- Login content ---------- */
   .login {
     padding: 6px 30px 30px;
@@ -301,7 +292,7 @@
  <script>
    // Simulate PIN entry time, then swap instantly to the entered/confirmed state (no transition).
    setTimeout(function () {
-     window.location.href = "ND-ing-signin-complete.html";
+     window.location.href = "NE-ing-signin-complete.html";
    }, 900);
  </script>
 </body>

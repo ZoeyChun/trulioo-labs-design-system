@@ -944,17 +944,49 @@
 }
 
 #eid-sim-phone-screen:has(.eid-mobile-embed-host) {
+  position: relative;
   width: calc(390px * var(--eid-phone-scale, 0.55));
   height: calc(800px * var(--eid-phone-scale, 0.55));
   flex-shrink: 0;
 }
 
 .eid-mobile-embed-host {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   overflow: visible;
   flex-shrink: 0;
   width: 100%;
   height: 100%;
+  opacity: 1;
+}
+
+.eid-mobile-embed-host--leave {
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.eid-mobile-embed-host--enter {
+  opacity: 0;
+  z-index: 1;
+  animation: eid-embed-fade-in 0.4s ease-in-out forwards;
+}
+
+@keyframes eid-embed-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eid-mobile-embed-host--leave {
+    transition: none;
+  }
+
+  .eid-mobile-embed-host--enter {
+    animation: none;
+  }
 }
 
 .eid-mobile-embed {

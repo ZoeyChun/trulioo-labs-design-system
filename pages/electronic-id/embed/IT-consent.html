@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Italy — SPID Sign In</title>
+<title>Italy — SPID Consent</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -88,18 +88,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 18px 20px 24px;
+    padding: 18px 20px 20px;
   }
 
-  .brand-row__spid {
-    display: block;
-    max-height: 40px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
-
+  .brand-row__spid,
   .brand-row__posteid {
     display: block;
     max-height: 40px;
@@ -125,141 +117,56 @@
     font-weight: 400;
     color: #1a1a1a;
     line-height: 1.2;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
 
-  /* ---------- PosteID app promo ---------- */
-  .app-promo {
-    margin: 0 20px 40px;
-    background: #F1F1F1;
-    border-left: 8px solid #0066cc;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 14px 12px 8px;
-  }
-
-  .app-promo__icon {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-    flex-shrink: 0;
-    display: block;
-  }
-
-  .app-promo__text strong {
-    display: block;
-    font-size: 14px;
-    font-weight: 700;
-    color: #0066cc;
-    line-height: 1.3;
-    margin-bottom: 2px;
-  }
-
-  .app-promo__text span {
-    font-size: 13px;
-    font-weight: 200;
-    color: #0066cc;
-    line-height: 1.3;
-  }
-
-  /* ---------- Form fields ---------- */
-  .field {
+  .consent-intro {
     padding: 0 20px;
-    margin-bottom: 18px;
-  }
-
-  .field:first-of-type {
-    margin-bottom: 26px;
-  }
-
-  .field__label {
-    display: block;
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    color: #888;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .field__input {
-    display: block;
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid #c5cad3;
-    padding: 6px 12px 8px;
     font-size: 15px;
-    font-style: italic;
-    color: #bbb;
-    line-height: 1.35;
-    background: transparent;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.4;
+    margin-bottom: 14px;
   }
 
-  .forgot {
-    display: block;
-    padding: 0 20px;
-    font-size: 14px;
+  .consent-list {
+    list-style: disc;
+    padding: 0 20px 0 36px;
+    font-size: 15px;
     font-weight: 200;
-    color: #0066cc;
-    line-height: 1.35;
+    color: #555;
+    line-height: 1.45;
+  }
+
+  .consent-list li + li {
+    margin-top: 2px;
   }
 
   /* ---------- Actions ---------- */
   .actions {
     flex-shrink: 0;
-    margin-top: 64px;
+    margin-top: 32px;
     padding: 0 20px 16px;
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
-  .btn-spid {
+  .btn-consent {
     display: flex;
-    align-items: stretch;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    min-height: 44px;
+    border-radius: 28px;
     background: #0066cc;
     color: #ffffff;
-    border-radius: 28px;
-    overflow: hidden;
-    min-height: 44px;
-  }
-
-  .btn-spid__icon {
-    width: 52px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .btn-spid__icon img {
-    display: block;
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-  }
-
-  .btn-spid__divider {
-    width: 1px;
-    background: #ffffff;
-    flex-shrink: 0;
-    margin: 6px 0;
-  }
-
-  .btn-spid__label {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 14px;
     font-weight: 300;
     letter-spacing: 0.02em;
-    padding: 0 12px;
   }
 
-  .btn-cancel {
+  .btn-decline {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -268,7 +175,7 @@
     border-radius: 28px;
     border: 1.5px solid #0066cc;
     background: #ffffff;
-    color: #1a1a1a;
+    color: #0066cc;
     font-size: 14px;
     font-weight: 300;
     letter-spacing: 0.02em;
@@ -335,36 +242,28 @@
           <p class="request">Request for access to SPID 2</p>
           <h1 class="provider">Trulioo</h1>
 
-          <div class="app-promo">
-            <img class="app-promo__icon" src="../assets/embeds/italy/posteid-app-icon.png" alt="">
-            <div class="app-promo__text">
-              <strong>Do you have the PosteID App?</strong>
-              <span>Sign in faster</span>
-            </div>
-          </div>
+          <p class="consent-intro">The following data will be sent to the service provider</p>
 
-          <div class="field">
-            <span class="field__label">Email</span>
-            <span class="field__input">enter your email</span>
-          </div>
-
-          <div class="field">
-            <span class="field__label">Password</span>
-            <span class="field__input">enter your password</span>
-          </div>
-
-          <span class="forgot">Forgot your username or password?</span>
+          <ul class="consent-list">
+            <li>Identification code</li>
+            <li>First name</li>
+            <li>Last name</li>
+            <li>Date of birth</li>
+            <li>Gender</li>
+            <li>Tax code</li>
+            <li>Residential address</li>
+            <li>Postal code of residence</li>
+            <li>City of residence</li>
+            <li>Province of residence</li>
+            <li>Country of residence</li>
+            <li>Mobile phone number</li>
+            <li>Email address</li>
+          </ul>
         </div>
 
         <div class="actions">
-        <span class="btn-spid">
-          <span class="btn-spid__icon" aria-hidden="true">
-            <img src="../assets/embeds/italy/spid-user-icon.png" alt="">
-          </span>
-          <span class="btn-spid__divider"></span>
-          <span class="btn-spid__label">SIGN IN WITH SPID</span>
-        </span>
-        <span class="btn-cancel">CANCEL</span>
+          <span class="btn-consent">I CONSENT</span>
+          <span class="btn-decline">I DO NOT CONSENT</span>
         </div>
       </div>
     </div>

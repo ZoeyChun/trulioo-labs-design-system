@@ -52,24 +52,11 @@
     z-index: 20;
   }
 
-  /* ---------- Content transition (frame stays static) ---------- */
-  body.leaving .app-icon { opacity: 0; transform: scale(.96); transition: opacity .3s ease, transform .3s ease; }
-  @media (prefers-reduced-motion: reduce) {
-    .app-icon { animation: none; }
-    body.leaving .app-icon { transition: none; }
-  }
-
   .app-icon {
     width: 88px;
     height: 88px;
     object-fit: contain;
     display: block;
-    animation: pop 0.5s ease-out both;
-  }
-
-  @keyframes pop {
-    from { opacity: 0; transform: scale(0.9); }
-    to   { opacity: 1; transform: scale(1); }
   }
 
   html.preview,
@@ -131,8 +118,7 @@
 
  <script>
    setTimeout(function () {
-     document.body.classList.add("leaving");
-     setTimeout(function () { window.location.href = "ND-ing-signin.html"; }, 180);
+     window.location.href = "NE-ing-signin.html";
    }, 750);
  </script>
 </body>

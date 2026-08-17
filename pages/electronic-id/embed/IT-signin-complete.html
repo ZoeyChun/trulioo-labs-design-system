@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Italy — SPID Sign In</title>
+<title>Italy — SPID Sign In (Complete)</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -196,6 +196,11 @@
     background: transparent;
   }
 
+  .field__input--filled {
+    font-style: normal;
+    color: #1a1a1a;
+  }
+
   .forgot {
     display: block;
     padding: 0 20px;
@@ -345,12 +350,12 @@
 
           <div class="field">
             <span class="field__label">Email</span>
-            <span class="field__input">enter your email</span>
+            <span class="field__input field__input--filled" id="it-email-value">jane.doe@email.com</span>
           </div>
 
           <div class="field">
             <span class="field__label">Password</span>
-            <span class="field__input">enter your password</span>
+            <span class="field__input field__input--filled" id="it-password-value">••••••••</span>
           </div>
 
           <span class="forgot">Forgot your username or password?</span>
@@ -371,5 +376,16 @@
 
   </div>
  </div>
+<script>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var email = params.get("email");
+    var password = params.get("password");
+    var emailEl = document.getElementById("it-email-value");
+    var passwordEl = document.getElementById("it-password-value");
+    if (email && emailEl) emailEl.textContent = email;
+    if (password && passwordEl) passwordEl.textContent = password;
+  })();
+</script>
 </body>
 </html>

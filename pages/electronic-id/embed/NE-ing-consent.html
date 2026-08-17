@@ -59,11 +59,6 @@
     z-index: 20;
   }
 
-  /* ---------- Content transition (arrival; frame stays static) ---------- */
-  @keyframes contentIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  .nav, .content, .footer { animation: contentIn .45s ease backwards; }
-  @media (prefers-reduced-motion: reduce) { .nav, .content, .footer { animation: none; } }
-
   /* Status bar spacer */
   .status-bar { height: 44px; flex-shrink: 0; }
 
