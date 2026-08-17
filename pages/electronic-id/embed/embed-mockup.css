@@ -1,0 +1,37 @@
+/**
+ * Shared entry animation for E-ID phone mockups.
+ * Link from every pages/electronic-id/embed/*.html file.
+ * Fade only — no slide or translate.
+ */
+@keyframes embed-content-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.page,
+.consent,
+.login,
+.idin-card,
+.screen > .content,
+.screen > .nav,
+.screen > .footer,
+.screen > .app-icon,
+.overlay,
+.stack {
+  animation: embed-content-fade-in 0.45s ease backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page,
+  .consent,
+  .login,
+  .idin-card,
+  .screen > .content,
+  .screen > .nav,
+  .screen > .footer,
+  .screen > .app-icon,
+  .overlay,
+  .stack {
+    animation: none;
+  }
+}

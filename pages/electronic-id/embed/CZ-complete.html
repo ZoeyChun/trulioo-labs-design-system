@@ -3,14 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ING — Launch</title>
+<meta name="color-scheme" content="light only">
+<title>Czechia — Complete</title>
 <link rel="stylesheet" href="embed-mockup.css">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html {
+    color-scheme: light only;
+  }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  img,
+  svg {
+    forced-color-adjust: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   body {
     background: transparent;
-    font-family: "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,16 +50,14 @@
   .screen {
     width: 100%;
     height: 100%;
-    background: #ffffff;
+    background: #000000;
     border-radius: 42px;
     overflow: hidden;
     position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
   }
 
-  /* Notch */
   .notch {
     position: absolute;
     top: 9px;
@@ -53,17 +70,61 @@
     z-index: 20;
   }
 
-  .app-icon {
-    width: 88px;
-    height: 88px;
-    object-fit: contain;
-    display: block;
+  .top-spacer { height: 40px; flex-shrink: 0; }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 28px;
+    text-align: center;
   }
 
-  html.preview,
-  html.preview * {
-    cursor: default !important;
-    pointer-events: none !important;
+  .illustration {
+    width: 168px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 36px;
+  }
+
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    font-weight: 400;
+    color: #9a9a9a;
+    line-height: 1.45;
+    max-width: 280px;
+  }
+
+  .actions {
+    flex-shrink: 0;
+    padding: 8px 20px 24px;
+  }
+
+  .btn-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 50px;
+    border: none;
+    border-radius: 10px;
+    background: #000000;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 400;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
   }
 
   html.preview {
@@ -113,14 +174,21 @@
  <div class="phone">
   <div class="notch"></div>
   <div class="screen">
-    <img class="app-icon" src="../../../assets/netherlands-logos/ing-com-logo-app.png" alt="ING">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+      <img class="illustration" src="../assets/embeds/czechia/kb-complete-check.png" alt="">
+
+      <h1 class="title">You're all set</h1>
+      <p class="subtitle">Continue in the browser or in the app where you started.</p>
+    </div>
+
+    <div class="actions">
+      <span class="btn-close">Close</span>
+    </div>
+
   </div>
  </div>
-
- <script>
-   setTimeout(function () {
-     window.location.href = "NE-ing-signin.html";
-   }, 750);
- </script>
 </body>
 </html>

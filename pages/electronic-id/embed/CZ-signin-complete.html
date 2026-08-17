@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Czechia — Bank iD Sign in (Complete)</title>
+<link rel="stylesheet" href="embed-mockup.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    color-scheme: light only;
+  }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  img,
+  svg {
+    forced-color-adjust: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  .top-spacer { height: 40px; flex-shrink: 0; background: #ffffff; }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 20px 20px;
+    overflow: hidden;
+  }
+
+  .page__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .page__body::-webkit-scrollbar { width: 0; }
+
+  .page__actions {
+    flex-shrink: 0;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    margin-top: auto;
+  }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+
+  .top-bar__kb img {
+    display: block;
+    height: 22px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .top-bar__links {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: #1a1a1a;
+  }
+
+  .top-bar__links span {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .title {
+    font-size: 26px;
+    font-weight: 500;
+    color: #1a1a1a;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+
+  .provider-logo {
+    display: block;
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+    margin-bottom: 14px;
+  }
+
+  .company {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a1a1a;
+    line-height: 1.35;
+    margin-bottom: 4px;
+  }
+
+  .coreg {
+    font-size: 12px;
+    font-weight: 400;
+    color: #9a9a9a;
+    line-height: 1.35;
+    margin-bottom: 20px;
+  }
+
+  .request {
+    font-size: 14px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.45;
+    margin-top: 4px;
+    margin-bottom: 12px;
+  }
+
+  .service {
+    font-size: 22px;
+    font-weight: 300;
+    color: #1a1a1a;
+    line-height: 1.25;
+    margin-bottom: 20px;
+  }
+
+  .field {
+    margin-bottom: 16px;
+  }
+
+  .field__box {
+    display: block;
+    width: 100%;
+    min-height: 56px;
+    border: 2px solid #1a1a1a;
+    border-radius: 8px;
+    padding: 10px 10px 12px;
+    background: #ffffff;
+  }
+
+  .field__label {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.2;
+  }
+
+  .field__value {
+    display: block;
+    margin-top: 4px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.3;
+    min-height: 21px;
+  }
+
+  .field__value--empty {
+    visibility: hidden;
+  }
+
+  .remember {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .remember__label {
+    font-size: 14px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.3;
+  }
+
+  .toggle {
+    width: 46px;
+    height: 28px;
+    border-radius: 999px;
+    background: #d9dde3;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .toggle::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  }
+
+  .toggle--on {
+    background: #34c759;
+  }
+
+  .toggle--on::after {
+    left: auto;
+    right: 3px;
+  }
+
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    border: none;
+    border-radius: 8px;
+    background: #e30613;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .btn-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    border: 1.5px solid #a8adb8;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.3;
+    text-align: center;
+    padding: 0 12px;
+  }
+
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .page__actions .link-row:first-of-type {
+    margin-top: 18px;
+  }
+
+  .page__actions .link-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .link-row__icon {
+    flex-shrink: 0;
+    width: 19px;
+    height: 19px;
+    color: #1a1a1a;
+  }
+
+  .link-row__icon--card {
+    width: 18px;
+    height: 16px;
+  }
+
+  .link-row__text {
+    font-size: 14px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.35;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+      <div class="page__body">
+        <div class="top-bar">
+          <div class="top-bar__kb">
+            <img src="../assets/embeds/czechia/komercni-banka.png" alt="Komerční banka">
+          </div>
+          <div class="top-bar__links" aria-hidden="true">
+            <span>Cookies</span>
+            <span>English</span>
+          </div>
+        </div>
+
+        <h1 class="title">Bank iD</h1>
+
+        <img class="provider-logo" src="../assets/embeds/czechia/trulioo-logo-mark.svg" alt="Trulioo">
+
+        <p class="company">Trulioo Information Services Inc.</p>
+        <p class="coreg">Co. Reg. No.: C1538504</p>
+
+        <p class="request">is requesting verification of your identity for this service:</p>
+        <p class="service">Trulioo</p>
+
+        <div class="field">
+          <span class="field__box">
+            <span class="field__label">Username</span>
+            <span class="field__value" id="cz-username-value">jane.doe</span>
+          </span>
+        </div>
+
+        <div class="remember">
+          <span class="toggle toggle--on" aria-hidden="true"></span>
+          <span class="remember__label">Remember me</span>
+        </div>
+      </div>
+
+      <div class="page__actions">
+        <span class="btn-primary">Continue</span>
+        <span class="btn-secondary">I don't remember my username</span>
+
+        <div class="link-row">
+          <svg class="link-row__icon link-row__icon--card" width="18" height="16" viewBox="0 0 18 16" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 2.5H2C1.71875 2.5 1.5 2.71875 1.5 3V13C1.5 13.2812 1.71875 13.5 2 13.5H16C16.2812 13.5 16.5 13.2812 16.5 13V3C16.5 2.71875 16.2812 2.5 16 2.5ZM2 1H16C17.0938 1 18 1.90625 18 3V13C18 14.0938 17.0938 15 16 15H2C0.90625 15 0 14.0938 0 13V3C0 1.90625 0.90625 1 2 1ZM6.5 7.75C5.53125 7.75 4.75 6.96875 4.75 6C4.75 5.03125 5.53125 4.25 6.5 4.25C7.46875 4.25 8.25 5.03125 8.25 6C8.25 6.96875 7.46875 7.75 6.5 7.75ZM5.5 9H7.5C8.875 9 10 10.125 10 11.5C10 11.7812 9.78125 12 9.5 12H3.5C3.21875 12 3 11.7812 3 11.5C3 10.125 4.125 9 5.5 9ZM11.75 4.5H14.25C14.6562 4.5 15 4.84375 15 5.25C15 5.65625 14.6562 6 14.25 6H11.75C11.3438 6 11 5.65625 11 5.25C11 4.84375 11.3438 4.5 11.75 4.5ZM11.75 7.5H14.25C14.6562 7.5 15 7.84375 15 8.25C15 8.65625 14.6562 9 14.25 9H11.75C11.3438 9 11 8.65625 11 8.25C11 7.84375 11.3438 7.5 11.75 7.5Z" fill="currentColor"/>
+          </svg>
+          <span class="link-row__text">Personal certificate on a smart card</span>
+        </div>
+
+        <div class="link-row">
+          <svg class="link-row__icon" viewBox="0 0 22 22" aria-hidden="true">
+            <circle cx="11" cy="11" r="9.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 8l6 6M14 8l-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span class="link-row__text">Cancel login</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+ </div>
+
+<script>
+  (function () {
+    var username = new URLSearchParams(window.location.search).get("username");
+    var usernameEl = document.getElementById("cz-username-value");
+    if (username && usernameEl) usernameEl.textContent = username;
+  })();
+</script>
+</body>
+</html>

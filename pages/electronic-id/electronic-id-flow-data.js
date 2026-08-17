@@ -231,6 +231,11 @@ window.EID_FLOW_DATA = [
         ]
       },
       {
+        "type": "launch-app",
+        "label": "Launch app",
+        "fields": []
+      },
+      {
         "type": "consent",
         "label": "Consent",
         "fields": []

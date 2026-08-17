@@ -3,14 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ING — Launch</title>
+<meta name="color-scheme" content="light only">
+<title>Czechia — KB Launch</title>
 <link rel="stylesheet" href="embed-mockup.css">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html {
+    color-scheme: light only;
+  }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  img,
+  svg {
+    forced-color-adjust: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   body {
     background: transparent;
-    font-family: "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,7 +50,7 @@
   .screen {
     width: 100%;
     height: 100%;
-    background: #ffffff;
+    background: #000000;
     border-radius: 42px;
     overflow: hidden;
     position: relative;
@@ -40,7 +59,6 @@
     justify-content: center;
   }
 
-  /* Notch */
   .notch {
     position: absolute;
     top: 9px;
@@ -54,8 +72,8 @@
   }
 
   .app-icon {
-    width: 88px;
-    height: 88px;
+    width: auto;
+    height: 64px;
     object-fit: contain;
     display: block;
   }
@@ -113,14 +131,9 @@
  <div class="phone">
   <div class="notch"></div>
   <div class="screen">
-    <img class="app-icon" src="../../../assets/netherlands-logos/ing-com-logo-app.png" alt="ING">
+    <img class="app-icon" src="../assets/embeds/czechia/kb-launch-logo.png" alt="Komerční banka">
   </div>
  </div>
 
- <script>
-   setTimeout(function () {
-     window.location.href = "NE-ing-signin.html";
-   }, 750);
- </script>
 </body>
 </html>

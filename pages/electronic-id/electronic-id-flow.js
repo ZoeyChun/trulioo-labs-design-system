@@ -15,6 +15,7 @@
   var FLOW_DATA = window.EID_FLOW_DATA || [];
   var TRANSITION_MS = 3000;
   var IT_LAUNCH_ACCESS_MS = 2000;
+  var CZ_KB_LAUNCH_MS = 750;
   var RESEND_SECONDS = 10;
   var IN_RESEND_SECONDS = 60;
   var CHECK_SVG = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
@@ -26,6 +27,15 @@
     { id: "rabo", label: "Rabo Bank", initials: "RA", shareName: "Rabobank" },
     { id: "sns", label: "SNS Bank", initials: "SN", shareName: "SNS Bank" },
     { id: "triodos", label: "Triodos Bank", initials: "TR", shareName: "Triodos Bank" }
+  ];
+
+  var CZ_BANKS = [
+    { id: "kb", label: "Komerční banka (KB)", initials: "KB", shareName: "Komerční banka" },
+    { id: "air-bank", label: "Air Bank", initials: "AB", shareName: "Air Bank" },
+    { id: "creditas", label: "Banka CREDITAS", initials: "BC", shareName: "Banka CREDITAS" },
+    { id: "ceska-sporitelna", label: "Česká spořitelna", initials: "SP", shareName: "Česká spořitelna" },
+    { id: "csob", label: "ČSOB — Československá obchodní banka", initials: "CB", shareName: "ČSOB" },
+    { id: "fio", label: "Fio banka", initials: "FB", shareName: "Fio banka" }
   ];
 
   var PROVIDERS = [
@@ -74,7 +84,10 @@
     inSigninFilled: false,
     inOtpFilled: false,
     itSigninFilled: false,
-    itLaunchPhoneShown: false
+    itLaunchPhoneShown: false,
+    czSigninFilled: false,
+    czConsentComplete: false,
+    czKbConsentShown: false
   };
 
   function selectableCountries() {
@@ -89,14 +102,20 @@
   var refreshCountryCombobox = null;
 
   var itLaunchPhoneTimer = null;
+  var czKbConsentTimer = null;
 
   function clearItLaunchPhoneTimer() {
     if (itLaunchPhoneTimer) { clearTimeout(itLaunchPhoneTimer); itLaunchPhoneTimer = null; }
   }
 
+  function clearCzKbConsentTimer() {
+    if (czKbConsentTimer) { clearTimeout(czKbConsentTimer); czKbConsentTimer = null; }
+  }
+
   function clearPending() {
     if (state.pendingTimer) { clearTimeout(state.pendingTimer); state.pendingTimer = null; }
     clearItLaunchPhoneTimer();
+    clearCzKbConsentTimer();
   }
 
   function clearResendTimer() {
@@ -124,6 +143,9 @@
     state.inOtpFilled = false;
     state.itSigninFilled = false;
     state.itLaunchPhoneShown = false;
+    state.czSigninFilled = false;
+    state.czConsentComplete = false;
+    state.czKbConsentShown = false;
     clearResendTimer();
     clearPending();
   }
@@ -360,8 +382,7 @@
   }
 
   function usesDesktopConsent() {
-    var code = state.country && state.country.code;
-    return code === "cz";
+    return false;
   }
 
   function usesNlSimFlow() {
@@ -388,12 +409,30 @@
     return !!(state.simulated && state.country && state.country.code === "it");
   }
 
+  function usesCzSimFlow() {
+    return !!(state.simulated && state.country && state.country.code === "cz");
+  }
+
+  function usesCzKbMobilePreview() {
+    return !!(state.bank && state.bank.id === "kb");
+  }
+
   function usesItPosteMobilePreview() {
     return !!(state.provider && state.provider.id === "poste");
   }
 
   function usesPhonePreviewFlow() {
-    return usesNlIngPhonePreview() || usesBeSimFlow() || usesInSimFlow() || usesItSimFlow();
+    return usesNlIngPhonePreview() || usesBeSimFlow() || usesInSimFlow() || usesItSimFlow() || usesCzSimFlow();
+  }
+
+  function bankSelectionItems() {
+    if (usesCzSimFlow()) return CZ_BANKS;
+    return BANKS;
+  }
+
+  function bankGridChangeHandler() {
+    if (usesNlSimFlow() || usesCzSimFlow()) return updateNlPhoneLayout;
+    return null;
   }
 
   function shouldShowNlPhonePreview() {
@@ -424,12 +463,27 @@
       || panelId === "eid-panel-consent-mobile";
   }
 
+  function shouldShowCzPhonePreview() {
+    if (!usesCzSimFlow() || !usesCzKbMobilePreview()) return false;
+    var panelId = activeSimPanelId();
+    return panelId === "eid-panel-select-bank"
+      || panelId === "eid-panel-enter-details"
+      || panelId === "eid-panel-launch-app"
+      || panelId === "eid-panel-launch-loading"
+      || panelId === "eid-panel-consent-mobile"
+      || (panelId === "eid-panel-completing" && state.czConsentComplete);
+  }
+
   function shouldShowPhonePreview() {
-    if (activeSimPanelId() === "eid-panel-completing") return false;
+    var panelId = activeSimPanelId();
+    if (panelId === "eid-panel-completing") {
+      return usesCzSimFlow() && usesCzKbMobilePreview() && state.czConsentComplete;
+    }
     return shouldShowNlPhonePreview()
       || shouldShowBePhonePreview()
       || shouldShowInPhonePreview()
-      || shouldShowItPhonePreview();
+      || shouldShowItPhonePreview()
+      || shouldShowCzPhonePreview();
   }
 
   function shouldUseSplitCardLayout() {
@@ -815,6 +869,9 @@
 
   function phoneEmbedForPanel(panelId) {
     if (panelId === "eid-panel-select-bank") {
+      if (usesCzSimFlow() && usesCzKbMobilePreview()) {
+        return renderMobileEmbedScreen("CZ-bank.html", "Czech bank selection");
+      }
       return renderMobileEmbedScreen("NE-idin-screen.html", "iDIN bank selection");
     }
     if (panelId === "eid-panel-sign-in") {
@@ -837,6 +894,13 @@
         state.itSigninFilled ? italyEmbedSigninQuery() : ""
       );
     }
+    if (panelId === "eid-panel-enter-details" && usesCzSimFlow() && usesCzKbMobilePreview()) {
+      return renderMobileEmbedScreen(
+        state.czSigninFilled ? "CZ-signin-complete.html" : "CZ-signin.html",
+        state.czSigninFilled ? "Czech Bank iD sign in complete" : "Czech Bank iD sign in",
+        state.czSigninFilled ? czechEmbedSigninQuery() : ""
+      );
+    }
     if (panelId === "eid-panel-otp" && usesInSimFlow()) {
       return renderMobileEmbedScreen(
         state.inOtpFilled ? "IN-OTP-filled.html" : "IN-OTP.html",
@@ -853,7 +917,22 @@
         state.itLaunchPhoneShown ? "Italy SPID access with phone" : "Italy SPID access"
       );
     }
+    if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesCzSimFlow() && usesCzKbMobilePreview()) {
+      return renderMobileEmbedScreen("CZ-confirm.html", "Czech Bank iD confirm");
+    }
+    if (panelId === "eid-panel-completing" && usesCzSimFlow() && usesCzKbMobilePreview() && state.czConsentComplete) {
+      return renderMobileEmbedScreen("CZ-complete.html", "Czech Bank iD complete");
+    }
     if (panelId === "eid-panel-consent-mobile") {
+      if (usesCzSimFlow() && usesCzKbMobilePreview()) {
+        if (state.czConsentComplete) {
+          return renderMobileEmbedScreen("CZ-complete.html", "Czech Bank iD complete");
+        }
+        if (state.czKbConsentShown) {
+          return renderMobileEmbedScreen("CZ-consent.html", "Czech Bank iD consent");
+        }
+        return renderMobileEmbedScreen("CZ-kb-launch.html", "Czech KB app launch");
+      }
       if (usesBeSimFlow()) {
         return renderMobileEmbedScreen("BE-consent.html", "Belgium consent");
       }
@@ -879,6 +958,23 @@
 
   function italyEmbedSigninQuery() {
     return "?email=" + encodeURIComponent(MOCK_VALUES.email);
+  }
+
+  function czechEmbedSigninQuery() {
+    var username = state.formValues.username || MOCK_VALUES.username;
+    return "?username=" + encodeURIComponent(username);
+  }
+
+  function scheduleCzKbConsentTransition() {
+    if (!usesCzSimFlow() || !usesCzKbMobilePreview()) return;
+    if (state.czKbConsentShown || state.czConsentComplete) return;
+    if (activeSimPanelId() !== "eid-panel-consent-mobile") return;
+    if (czKbConsentTimer) return;
+    czKbConsentTimer = setTimeout(function () {
+      czKbConsentTimer = null;
+      state.czKbConsentShown = true;
+      renderNlPhonePreview();
+    }, CZ_KB_LAUNCH_MS);
   }
 
   function scheduleItLaunchPhoneTransition() {
@@ -918,6 +1014,10 @@
 
     if (panelId === "eid-panel-launch-app" && usesItSimFlow() && !state.itLaunchPhoneShown) {
       scheduleItLaunchPhoneTransition();
+    }
+    if (panelId === "eid-panel-consent-mobile" && usesCzSimFlow() && usesCzKbMobilePreview()
+      && !state.czKbConsentShown && !state.czConsentComplete) {
+      scheduleCzKbConsentTransition();
     }
   }
 
@@ -981,6 +1081,7 @@
 
     if (step.type === "select-bank") {
       ensureDefaultNlBank();
+      ensureDefaultCzBank();
       syncSelectionGrids();
     } else if (step.type === "select-provider") {
       ensureDefaultItProvider();
@@ -998,7 +1099,7 @@
     resetSimState();
     state.flowSteps = visibleFlowSteps(state.country.steps);
     state.flowIndex = 0;
-    buildSelectionGrid("eid-bank-grid", BANKS, "bank", usesNlSimFlow() ? updateNlPhoneLayout : null);
+    buildSelectionGrid("eid-bank-grid", bankSelectionItems(), "bank", bankGridChangeHandler());
     goStep("eid-step-simulated");
     renderSimView();
   }
@@ -1009,6 +1110,10 @@
     if (nextStep && nextStep.type === "launch-app") {
       state.itLaunchPhoneShown = false;
       clearItLaunchPhoneTimer();
+    }
+    if (!nextStep || nextStep.type !== "consent") {
+      state.czKbConsentShown = false;
+      clearCzKbConsentTimer();
     }
     state.flowIndex = Math.max(0, Math.min(index, state.flowSteps.length - 1));
     renderSimView();
@@ -1022,6 +1127,11 @@
 
   function prevSimStep() {
     if (state.transientPanel) {
+      if (state.transientPanel === "eid-panel-completing" && usesCzSimFlow()) {
+        state.czConsentComplete = false;
+        state.czKbConsentShown = false;
+        clearCzKbConsentTimer();
+      }
       state.transientPanel = null;
       renderSimView();
       return;
@@ -1076,6 +1186,15 @@
   function ensureDefaultNlBank() {
     if (!usesNlSimFlow() || state.bank) return;
     state.bank = defaultNlBank();
+  }
+
+  function defaultCzBank() {
+    return CZ_BANKS.find(function (b) { return b.id === "kb"; }) || CZ_BANKS[0];
+  }
+
+  function ensureDefaultCzBank() {
+    if (!usesCzSimFlow() || state.bank) return;
+    state.bank = defaultCzBank();
   }
 
   function defaultItProvider() {
@@ -1217,6 +1336,9 @@
       updateNlPhoneLayout();
     } else if (usesItSimFlow()) {
       state.itSigninFilled = true;
+      updateNlPhoneLayout();
+    } else if (usesCzSimFlow()) {
+      state.czSigninFilled = true;
       updateNlPhoneLayout();
     }
 
@@ -1464,6 +1586,15 @@
         return;
       }
       if (panelId === "eid-panel-consent-mobile") {
+        if (usesCzSimFlow() && usesCzKbMobilePreview()) {
+          state.czConsentComplete = true;
+          state.transientPanel = "eid-panel-completing";
+          renderSimView();
+          state.pendingTimer = setTimeout(function () {
+            if (window.EidResult) window.EidResult.show();
+          }, TRANSITION_MS);
+          return;
+        }
         state.transientPanel = "eid-panel-completing";
         renderSimView();
         state.pendingTimer = setTimeout(function () {

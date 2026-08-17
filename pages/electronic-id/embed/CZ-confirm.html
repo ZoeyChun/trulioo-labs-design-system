@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Czechia — Bank iD Confirm</title>
+<link rel="stylesheet" href="embed-mockup.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    color-scheme: light only;
+  }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  img,
+  svg {
+    forced-color-adjust: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  .top-spacer { height: 40px; flex-shrink: 0; background: #ffffff; }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 20px 28px;
+  }
+
+  .page::-webkit-scrollbar { width: 0; }
+
+  .provider-logo {
+    display: block;
+    width: 88px;
+    height: 88px;
+    object-fit: contain;
+    margin-bottom: 14px;
+  }
+
+  .company {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a1a1a;
+    line-height: 1.35;
+    margin-bottom: 4px;
+  }
+
+  .coreg {
+    font-size: 12px;
+    font-weight: 400;
+    color: #9a9a9a;
+    line-height: 1.35;
+    margin-bottom: 20px;
+  }
+
+  .request {
+    font-size: 14px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.45;
+    margin-top: 4px;
+    margin-bottom: 12px;
+  }
+
+  .service {
+    font-size: 22px;
+    font-weight: 300;
+    color: #1a1a1a;
+    line-height: 1.25;
+    margin-bottom: 20px;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e2e5ea;
+    margin-bottom: 22px;
+  }
+
+  .confirm-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .confirm-intro {
+    font-size: 14px;
+    font-weight: 400;
+    color: #5c5c5c;
+    line-height: 1.45;
+    margin-bottom: 18px;
+  }
+
+  .code-card {
+    display: flex;
+    align-items: center;
+    min-height: 88px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    background: #ffffff;
+    border: 1px solid #e8ebef;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  }
+
+  .code-card__value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+  }
+
+  .notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 14px 14px 12px;
+    margin-bottom: 22px;
+    background: #f3f4f6;
+    border-radius: 8px;
+  }
+
+  .notice__icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    color: #1a1a1a;
+    margin-top: 1px;
+  }
+
+  .notice__text {
+    font-size: 14px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.4;
+  }
+
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .link-row__icon {
+    flex-shrink: 0;
+    width: 19px;
+    height: 19px;
+    color: #1a1a1a;
+  }
+
+  .link-row__text {
+    font-size: 14px;
+    font-weight: 400;
+    color: #1a1a1a;
+    line-height: 1.35;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+      <img class="provider-logo" src="../assets/embeds/czechia/trulioo-logo-mark.svg" alt="Trulioo">
+
+      <p class="company">Trulioo Information Services Inc.</p>
+      <p class="coreg">Co. Reg. No.: C1538504</p>
+
+      <p class="request">is requesting verification of your identity for this service:</p>
+      <p class="service">Trulioo</p>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <h1 class="confirm-title">Confirm login in mobile app</h1>
+      <p class="confirm-intro">Open the KB+ or KB Key app and check that the following code is shown there.</p>
+
+      <div class="code-card">
+        <span class="code-card__value" id="cz-confirm-code">295-747</span>
+      </div>
+
+      <div class="notice">
+        <svg class="notice__icon" viewBox="0 0 22 22" aria-hidden="true">
+          <circle cx="11" cy="11" r="9.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M11 10v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="11" cy="7.25" r="1" fill="currentColor"/>
+        </svg>
+        <p class="notice__text">Never share this one-time code with anyone. It is not your PIN.</p>
+      </div>
+
+      <div class="link-row">
+        <svg class="link-row__icon" width="19" height="19" viewBox="0 0 19 19" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.34375 0.28125L4.125 3.0625C5.65625 2.4375 7.3125 2.0625 9.0625 2.0625C12.5 2.0625 15.5938 3.4375 17.8438 5.65625C18.125 5.96875 18.1562 6.4375 17.8438 6.71875C17.5625 7.03125 17.0938 7.03125 16.7812 6.71875C14.8125 4.78125 12.0938 3.5625 9.0625 3.5625C7.75 3.5625 6.46875 3.8125 5.28125 4.21875L8.625 7.59375C8.78125 7.5625 8.90625 7.5625 9.0625 7.5625C11.1875 7.5625 13.0938 8.53125 14.375 10.0312C14.6562 10.3438 14.625 10.8125 14.3125 11.0938C14 11.3438 13.5312 11.3125 13.25 11C12.5 10.0938 11.4375 9.46875 10.25 9.1875L17.8438 16.7812C18.125 17.0938 18.125 17.5625 17.8438 17.8438C17.5625 18.1562 17.0938 18.1562 16.7812 17.8438L0.28125 1.34375C0 1.0625 0 0.5625 0.28125 0.28125C0.5625 0 1.0625 0 1.34375 0.28125ZM2.53125 5.71875C2.125 6.03125 1.71875 6.375 1.34375 6.71875C1.03125 7.03125 0.5625 7.03125 0.28125 6.71875C0 6.4375 0 5.96875 0.28125 5.65625C0.65625 5.3125 1.0625 4.96875 1.46875 4.65625L2.53125 5.71875ZM6.5 9.6875C5.875 10.0312 5.34375 10.4688 4.875 11C4.625 11.3125 4.125 11.3438 3.8125 11.0625C3.5 10.8125 3.46875 10.3438 3.75 10.0312C4.21875 9.46875 4.78125 8.96875 5.40625 8.59375L6.5 9.6875ZM10.5625 14.5625C10.5625 15.4062 9.90625 16.0625 9.0625 16.0625C8.25 16.0625 7.5625 15.4062 7.5625 14.5625C7.5625 13.7188 8.25 13.0625 9.0625 13.0625C9.90625 13.0625 10.5625 13.7188 10.5625 14.5625Z" fill="currentColor"/>
+        </svg>
+        <span class="link-row__text">Don't have mobile internet connection?</span>
+      </div>
+
+      <div class="link-row">
+        <svg class="link-row__icon" viewBox="0 0 22 22" aria-hidden="true">
+          <circle cx="11" cy="11" r="9.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 8l6 6M14 8l-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span class="link-row__text">Cancel login</span>
+      </div>
+    </div>
+
+  </div>
+ </div>
+
+<script>
+  (function () {
+    var code = new URLSearchParams(window.location.search).get("code");
+    var codeEl = document.getElementById("cz-confirm-code");
+    if (code && codeEl) codeEl.textContent = code;
+  })();
+</script>
+</body>
+</html>
