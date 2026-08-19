@@ -7,6 +7,7 @@ export type ScenarioId =
   | "deepfake-detected";
 
 export type TabId =
+  | "summary"
   | "document"
   | "biometrics"
   | "data-match"
@@ -81,6 +82,11 @@ export interface HeaderBadge {
 export interface SummaryRow {
   label: string;
   value: string;
+  tone: Tone;
+}
+
+export interface SummarySignal {
+  text: string;
   tone: Tone;
 }
 
@@ -180,6 +186,26 @@ export interface ScenarioConfig {
   transactionId: string;
   truAiTitle: string;
   truAiSummary: string;
+  /** Document-tab left-column TruAI card copy. */
+  documentAiSummary: string;
+  /** Biometrics-tab left-column TruAI card copy. */
+  biometricsAiSummary: string;
+  /** Biometrics-tab Ask TruAI prompt. */
+  biometricsAiPrompt: string;
+  /** Network Insights-tab left-column TruAI card copy. */
+  networkAiSummary: string;
+  /** Network Insights-tab Ask TruAI prompt. */
+  networkAiPrompt: string;
+  /** Device Intelligence-tab left-column TruAI card copy. */
+  deviceAiSummary: string;
+  /** Device Intelligence-tab Ask TruAI prompt. */
+  deviceAiPrompt: string;
+  /** Summary-tab hero headline (primary reason). */
+  summaryHeadline: string;
+  /** Summary-tab Ask TruAI prompt. */
+  summaryAiPrompt: string;
+  /** Summary-tab supporting signal rows under the headline. */
+  summarySignals: SummarySignal[];
   summaryRows: SummaryRow[];
   documentInfo: DocumentInfo;
   document: {

@@ -63,7 +63,9 @@
       kybTab.click();
       return;
     }
-    var dvTab = document.querySelector('.dv-tab[data-tab="' + tabId + '"]');
+    var dvTab =
+      document.querySelector('[role="tab"][data-tab="' + tabId + '"]') ||
+      document.querySelector('.dv-tab[data-tab="' + tabId + '"]');
     if (dvTab) dvTab.click();
   }
 
@@ -323,7 +325,18 @@
     }, 1550);
   }
 
-  function setOpen(next) {
+  function ask(prompt, options) {
+    if (!prompt) return;
+    options = options || {};
+    if (state.phase !== "idle") resetChat();
+    if (!state.open) {
+      setOpen(true, { collapseSidebar: options.collapseSidebar === true });
+    }
+    handlePromptClick(prompt);
+  }
+
+  function setOpen(next, options) {
+    options = options || {};
     state.open = next;
     var layout = document.getElementById("labs-kyb-layout");
     if (layout) layout.classList.toggle("labs-kyb-layout--chat-open", next);
@@ -334,7 +347,7 @@
     syncToggleButtons(next);
 
     if (next) {
-      collapseSidebarIfOpen();
+      if (options.collapseSidebar !== false) collapseSidebarIfOpen();
       renderPrompts();
       renderIntro(true);
       startHeadline();
@@ -482,9 +495,19 @@
 
     renderPrompts();
     renderIntro(false);
+
+    document.addEventListener("click", function (event) {
+      var target = event.target;
+      if (!target || !target.closest) return;
+      var btn = target.closest("[data-truai-prompt]");
+      if (!btn) return;
+      if (btn.closest(".labs-truai-prompts") || btn.closest(".labs-truai-panel")) return;
+      event.preventDefault();
+      ask(btn.getAttribute("data-truai-prompt"));
+    });
   }
 
-  window.TruAIChat = { open: openChat, close: closeChat, toggle: toggleChat };
+  window.TruAIChat = { open: openChat, close: closeChat, toggle: toggleChat, ask: ask };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);

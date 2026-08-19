@@ -150,6 +150,11 @@
   var ICON_CIRCLE_INFO = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v3.4M8 5.1h.01"/></svg>';
   var ICON_DIAMOND_EXCLAMATION = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M8 1.5 14.5 8 8 14.5 1.5 8Z"/><path d="M8 5v3.4M8 10.8h.01"/></svg>';
   var ICON_ARROW_RIGHT = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5"/></svg>';
+  var ICON_SPARKLES = '<svg class="icon" viewBox="0 0 12.375 12.375" fill="none" aria-hidden="true"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>';
+  var ICON_FACE_SCAN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><circle cx="12" cy="10" r="2.4"/><path d="M8.5 16.5c.8-1.8 2-2.7 3.5-2.7s2.7.9 3.5 2.7"/></svg>';
+  var ICON_GLOBE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.6 3.6 5.5 3.6 8.5s-1.2 5.9-3.6 8.5M12 3.5C9.6 6.1 8.4 9 8.4 12s1.2 5.9 3.6 8.5"/></svg>';
+  var ICON_MOBILE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/></svg>';
+  var ICON_ID_CARD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><circle cx="8.5" cy="11.5" r="2"/><path d="M13 10h5.5M13 13.5h4M6 16.2c.5-1 1.4-1.5 2.5-1.5s2 .5 2.5 1.5"/></svg>';
   var ICON_NOTE_THUMB = '<svg viewBox="0 0 93 93" aria-hidden="true"><rect width="93" height="93" fill="var(--surface-neutral-03)"/><circle cx="46" cy="38" r="18" fill="var(--border-strong)"/><path d="M16 90c0-17 13-27 30-27s30 10 30 27z" fill="var(--border-strong)"/></svg>';
 
   // src/badges.ts
@@ -200,21 +205,6 @@
       default:
         return ICON_NOT_DETECTED;
     }
-  }
-  function deriveDiGroupBadges(rows) {
-    let risk2 = 0;
-    let noRisk2 = 0;
-    let notRun2 = 0;
-    for (const row of rows) {
-      if (row.insight === "Risk") risk2 += 1;
-      else if (row.insight === "No Risk") noRisk2 += 1;
-      else notRun2 += 1;
-    }
-    const badges = [];
-    if (risk2 > 0) badges.push({ text: `${risk2} Risk`, tone: "negative" });
-    if (noRisk2 > 0) badges.push({ text: `${noRisk2} No Risk`, tone: "positive" });
-    if (notRun2 > 0) badges.push({ text: `${notRun2} Not Run`, tone: "default" });
-    return badges;
   }
 
   // src/deep-merge.ts
@@ -488,7 +478,10 @@
     indicators: [
       "Trusted browser and operating system",
       "Stable location and timezone",
-      "No shared-device activity"
+      "No shared-device activity",
+      "No VPN or proxy detected",
+      "Consistent device fingerprint",
+      "No emulator or jailbreak"
     ],
     deviceId: "3045489E05849546",
     firstSeenLabel: "First seen",
@@ -509,7 +502,7 @@
     drivers: cleanNiDrivers
   };
   var infoNiSummary = (message) => ({
-    status: "info",
+    status: "clear",
     title: "No network risk detected",
     message,
     drivers: cleanNiDrivers
@@ -520,10 +513,33 @@
     selectDesc: "All checks passed. Clean document and biometrics.",
     overallStatus: "Accepted",
     overallTone: "positive",
-    defaultTab: "document",
+    defaultTab: "summary",
     transactionId: "8c2f4e7a-19bd-4f02-a6c1-77de42915b3a",
     truAiTitle: "Jane Doe\u2019s identity was verified",
     truAiSummary: "Jane Doe\u2019s identity has been verified. All required checks passed and no additional review is needed.",
+    documentAiSummary: "All document signals passed. The document is authentic, valid, and not expired.",
+    biometricsAiSummary: "Face match scored above the acceptance threshold. The selfie matches the document portrait and liveness passed.",
+    biometricsAiPrompt: "How is face match scored?",
+    networkAiSummary: "No network-level risk signals detected. Face, document and IP activity are consistent with a single identity.",
+    networkAiPrompt: "What does network insights cover?",
+    deviceAiSummary: "Device environment shows no risk indicators. The session looks consistent with a typical legitimate device.",
+    deviceAiPrompt: "How is device score calculated?",
+    summaryHeadline: "Jane Doe\u2019s identity was verified",
+    summaryAiPrompt: "Summarize this verification result",
+    summarySignals: [
+      {
+        text: "All document signals passed. The document is authentic and valid.",
+        tone: "positive"
+      },
+      {
+        text: "Face match scored above the acceptance threshold and liveness passed.",
+        tone: "positive"
+      },
+      {
+        text: "No network-level or device risk indicators were detected.",
+        tone: "positive"
+      }
+    ],
     summaryRows: happySummary,
     documentInfo: {
       documentType: "Driver's License",
@@ -730,10 +746,28 @@
       selectDesc: "Document expired; auto-decline.",
       overallStatus: "Review",
       overallTone: "intermediate",
-      defaultTab: "document",
+      defaultTab: "summary",
       transactionId: "91e0b2c4-55aa-4c11-9f20-12ab34cd56ef",
       truAiTitle: "Sent to review \u2014 the document has expired",
       truAiSummary: "Jane Doe\u2019s document is authentic, but it has expired. A valid, non-expired document is required.",
+      documentAiSummary: "The document is authentic, but it has expired. A valid, non-expired document is required before this check can pass.",
+      biometricsAiSummary: "Face match scored above the acceptance threshold. The selfie matches the document portrait. The review is caused by the expired document, not biometrics.",
+      biometricsAiPrompt: "How is face match scored?",
+      networkAiSummary: "No network-level risk signals detected. The review is driven by an expired document, not network activity.",
+      deviceAiSummary: "Device environment shows no risk indicators. The review is caused by the expired document, not the device.",
+      summaryHeadline: "The document is authentic, but it has expired",
+      summaryAiPrompt: "Why was this sent to review?",
+      summarySignals: [
+        { text: "Document expired on 15 January 2023.", tone: "negative" },
+        {
+          text: "Face match scored above the acceptance threshold.",
+          tone: "positive"
+        },
+        {
+          text: "No network-level or device risk indicators were detected.",
+          tone: "positive"
+        }
+      ],
       summaryRows: [
         { label: "Document", value: "Declined", tone: "negative" },
         ...happySummary.slice(1)
@@ -775,10 +809,31 @@
       selectDesc: "Selfie does not match document portrait.",
       overallStatus: "Declined",
       overallTone: "negative",
-      defaultTab: "biometrics",
+      defaultTab: "summary",
       transactionId: "b7d1e9f0-22cc-4a88-81de-90fe12ab34cd",
       truAiTitle: "Declined because of a face mismatch",
       truAiSummary: "The document is valid, but the selfie does not match the portrait on the document. Liveness passed and no spoofing was detected.",
+      documentAiSummary: "All document signals passed. The document itself is authentic and valid. The decline was triggered by biometric mismatch, not document issues.",
+      biometricsAiSummary: "Face match scored 23%, well below the 70% acceptance threshold. The selfie and document photo appear to be different individuals. Liveness passed, ruling out a spoofing attempt.",
+      biometricsAiPrompt: "What causes low face match scores?",
+      networkAiSummary: "No network-level risk signals detected. The decline is driven by biometric failure, not network activity.",
+      deviceAiSummary: "Device environment shows no risk indicators. The submission came from a legitimate device, which makes the face mismatch more notable.",
+      summaryHeadline: "Document photo and selfie are not the same person",
+      summaryAiPrompt: "Why did the face match fail?",
+      summarySignals: [
+        {
+          text: "Face match scored 23%, well below the 70% acceptance threshold.",
+          tone: "negative"
+        },
+        {
+          text: "The selfie and document photo appear to be different individuals.",
+          tone: "negative"
+        },
+        {
+          text: "Liveness passed; no spoofing was detected.",
+          tone: "positive"
+        }
+      ],
       summaryRows: [
         { label: "Document", value: "Accepted", tone: "positive" },
         { label: "Biometrics", value: "Declined", tone: "negative" },
@@ -823,7 +878,16 @@
             label: "Not detected",
             rows: [
               notDetected("Spoof attempt"),
-              notDetected("Deepfake indicators")
+              notDetected("Injection attack"),
+              notDetected("Deepfake indicators"),
+              notDetected("Multiple faces"),
+              notDetected("Eyes closed"),
+              notDetected("Face off-center"),
+              notDetected("Insufficient lighting"),
+              notDetected("Low image sharpness"),
+              notDetected("Extreme pose"),
+              notDetected("Significant occlusion"),
+              notDetected("Virtual camera")
             ]
           },
           knownFacesEmpty(
@@ -855,10 +919,31 @@
       selectDesc: "Applicant DOB conflicts with document OCR.",
       overallStatus: "Declined",
       overallTone: "negative",
-      defaultTab: "data-match",
+      defaultTab: "summary",
       transactionId: "c0ffee12-3456-4abc-9def-112233445566",
       truAiTitle: "Declined because of a date-of-birth mismatch",
       truAiSummary: "The date of birth entered by the applicant does not match the date extracted from the document. Manual review is recommended.",
+      documentAiSummary: "Document authenticity passed. Date of birth extracted from the document does not match the applicant\u2019s submitted date of birth.",
+      biometricsAiSummary: "Face match scored above the acceptance threshold. The selfie matches the document portrait. The decline is caused by a date-of-birth mismatch, not biometrics.",
+      biometricsAiPrompt: "How is face match scored?",
+      networkAiSummary: "No network-level risk signals detected. The review is driven by a date-of-birth discrepancy, not network activity.",
+      deviceAiSummary: "Device environment shows no risk indicators. Manual review is required only for the DOB discrepancy.",
+      summaryHeadline: "Applicant date of birth does not match the document",
+      summaryAiPrompt: "Why does the date of birth need review?",
+      summarySignals: [
+        {
+          text: "Applicant input does not match the date of birth extracted from the document.",
+          tone: "intermediate"
+        },
+        {
+          text: "Face match scored above the acceptance threshold.",
+          tone: "positive"
+        },
+        {
+          text: "No network-level or device risk indicators were detected.",
+          tone: "positive"
+        }
+      ],
       summaryRows: [
         { label: "Document", value: "Review", tone: "intermediate" },
         happySummary[1],
@@ -935,10 +1020,31 @@
       overallTone: "negative",
       secondaryStatus: "Fraud detected",
       secondaryTone: "negative",
-      defaultTab: "network-insights",
+      defaultTab: "summary",
       transactionId: "d4e5f617-8901-4bcd-a123-998877665544",
       truAiTitle: "Declined \u2014 face linked to a previously declined identity",
       truAiSummary: "Jane Doe\u2019s document and selfie passed verification, but the face matches a previously declined identity associated with fraud.",
+      documentAiSummary: "All document signals passed. The document is authentic and valid. The decline comes from a known-face match, not document issues.",
+      biometricsAiSummary: "The selfie matches the document portrait, but the face matches a previously declined identity associated with fraud.",
+      biometricsAiPrompt: "What does a known-face match mean?",
+      networkAiSummary: "This face is linked to multiple identities and a previously declined fraud record. Network intelligence flagged synthetic identity and document conflict.",
+      deviceAiSummary: "This device has been linked to multiple identities and previously declined transactions, which increases the fraud risk.",
+      summaryHeadline: "Face linked to a previously declined identity",
+      summaryAiPrompt: "What does a known-face match mean?",
+      summarySignals: [
+        {
+          text: "3 known face matches against previously declined applicants.",
+          tone: "negative"
+        },
+        {
+          text: "Network intelligence flagged synthetic identity and document conflict.",
+          tone: "negative"
+        },
+        {
+          text: "This device has been linked to multiple identities and declined transactions.",
+          tone: "negative"
+        }
+      ],
       summaryRows: [
         { label: "Document", value: "Accepted", tone: "positive" },
         { label: "Biometrics", value: "Accepted", tone: "positive" },
@@ -1093,10 +1199,31 @@
       selectDesc: "Synthetic selfie detected.",
       overallStatus: "Declined",
       overallTone: "negative",
-      defaultTab: "biometrics",
+      defaultTab: "summary",
       transactionId: "e8f9a0b1-2345-4cde-b678-556677889900",
       truAiTitle: "Declined \u2014 a synthetic selfie was detected",
       truAiSummary: "A synthetic selfie was detected. The document is valid and identity data matches, but the biometric capture cannot be trusted.",
+      documentAiSummary: "All document signals passed. The document is authentic and valid. The decline was triggered by a synthetic selfie, not document issues.",
+      biometricsAiSummary: "A synthetic selfie was detected. Capture-integrity checks failed, so the biometric capture cannot be trusted even though the document portrait itself is valid.",
+      biometricsAiPrompt: "What causes low face match scores?",
+      networkAiSummary: "No network-level risk signals detected. The decline stems from a synthetic capture, not network activity.",
+      deviceAiSummary: "Capture-integrity signals indicate the selfie may have been submitted through a virtual or manipulated camera source.",
+      summaryHeadline: "A synthetic selfie was detected",
+      summaryAiPrompt: "What fraud signals were detected?",
+      summarySignals: [
+        {
+          text: "Deepfake confidence 94%. Capture source looks like a virtual camera.",
+          tone: "negative"
+        },
+        {
+          text: "Device capture-integrity signals indicate a manipulated camera source.",
+          tone: "negative"
+        },
+        {
+          text: "The document itself is authentic and identity data matches.",
+          tone: "positive"
+        }
+      ],
       summaryRows: [
         { label: "Document", value: "Accepted", tone: "positive" },
         { label: "Biometrics", value: "Declined", tone: "negative" },
@@ -1552,12 +1679,9 @@
     "Devices Reviewed"
   ];
   function renderNiWhatWeChecked() {
-    const rows = NI_CLEAN_CHECKS.map((label, index) => {
-      const divider = index < NI_CLEAN_CHECKS.length - 1 ? " tds-action-list-item--divider" : "";
-      return `<div class="tds-action-list-item tds-action-list-item--md${divider} dv-ni-checked__row">
-    <span class="tds-action-list-item__content"><span class="tds-action-list-item__label">${escapeHtml(label)}</span></span>
-  </div>`;
-    }).join("");
+    const rows = NI_CLEAN_CHECKS.map(
+      (label) => `<div class="dv-ni-checked__row"><span class="dv-ni-checked__label">${escapeHtml(label)}</span></div>`
+    ).join("");
     return `<section class="dv-ni-checked" aria-label="What we checked">
   <p class="dv-ni-checked__header">What we checked</p>
   <div class="dv-ni-checked__list">${rows}</div>
@@ -1585,10 +1709,11 @@
     return `<span class="dv-di-insight"><span class="dv-di-insight__icon">${kindIcon("not-run")}</span>Not Run</span>`;
   }
   function renderDiEvidenceGroup(group, open) {
-    const badges = deriveDiGroupBadges(group.rows).map((b) => renderTag(b.text, b.tone)).join("");
+    const hasRisk = group.rows.some((row) => row.insight === "Risk");
+    const countBadge = group.rows.length > 0 ? renderTag(String(group.rows.length), hasRisk ? "negative" : "positive") : "";
     const sortedRows = sortDiEvidenceRows(group.rows);
     const tableBody = sortedRows.length > 0 ? `<div class="dv-ditable">
-      ${renderSortableTableHead("ditable", ["Signal", "Result", "Insight"])}
+      ${renderSortableTableHead("ditable", ["Signals", "Results", "Insights"])}
       ${sortedRows.map(
       (row) => `<div class="dv-ditable__row">
   <span class="dv-ditable__cell"><span class="dv-txn-tx"><span class="dv-cell-title">${escapeHtml(row.title)}</span></span></span>
@@ -1597,12 +1722,11 @@
 </div>`
     ).join("")}
     </div>` : `<p class="dv-empty">No signals in this category.</p>`;
-    const hasRisk = group.rows.some((row) => row.insight === "Risk");
     return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}" data-group-tone="${hasRisk ? "negative" : "positive"}" data-group-severity="${hasRisk ? 0 : 2}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${open ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
     <span class="dv-group__label">${escapeHtml(group.label)}</span>
-    <span class="dv-ni2-counts">${badges}</span>
+    <span class="dv-ni2-counts">${countBadge}</span>
   </button>
   <div class="dv-collapsible__body"${open ? "" : " hidden"}>${tableBody}</div>
 </div>`;
@@ -1617,47 +1741,59 @@
     );
     return (_a = match == null ? void 0 : match.value) != null ? _a : "";
   }
+  var DI_INDICATORS_VISIBLE = 3;
+  function diHeadline(di) {
+    if (di.risk === "high") return "High device risk";
+    if (di.risk === "medium") return "Elevated device risk";
+    return "Normal device and network";
+  }
+  function renderDiAnnouncement(di) {
+    const variant = di.risk === "high" ? "error" : di.risk === "medium" ? "warning" : "success";
+    const icon = di.risk === "high" ? ICON_DIAMOND_EXCLAMATION : di.risk === "medium" ? ICON_CIRCLE_INFO : ICON_CIRCLE_CHECK;
+    return `<div class="tds-announcement tds-announcement--${variant}">
+  <span class="tds-announcement__icon" aria-hidden="true">${icon}</span>
+  <div class="tds-announcement__content">
+    <p class="tds-announcement__title">${escapeHtml(diHeadline(di))}</p>
+    <p class="tds-announcement__message">${escapeHtml(di.summary)}</p>
+  </div>
+</div>`;
+  }
+  function renderDiRiskIndicators(di) {
+    if (di.indicators.length === 0) return "";
+    const extra = Math.max(0, di.indicators.length - DI_INDICATORS_VISIBLE);
+    const risky = di.risk !== "low";
+    const icon = risky ? ICON_RISK : ICON_CIRCLE_CHECK;
+    const rows = di.indicators.map((text, index) => {
+      const isExtra = extra > 0 && index >= DI_INDICATORS_VISIBLE;
+      return `<div class="dv-di-indicator${risky ? " dv-di-indicator--risk" : ""}"${isExtra ? " hidden" : ""} data-indicator-extra="${isExtra ? "true" : "false"}">
+      <span class="dv-di-indicator__icon" aria-hidden="true">${icon}</span>
+      <span class="dv-di-indicator__label">${escapeHtml(text)}</span>
+    </div>`;
+    }).join("");
+    const more = extra > 0 ? `<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm dv-di-indicators__more" data-open="false" aria-expanded="false">
+      <span class="tds-btn__leading-icon">${ICON_PLUS}</span>${extra} more indicator${extra === 1 ? "" : "s"}
+    </button>` : "";
+    return `<section class="dv-di-indicators" aria-label="Risk Indicators">
+  <p class="dv-di-indicators__header">Risk Indicators</p>
+  <div class="dv-di-indicators__list">${rows}</div>
+  ${more}
+</section>`;
+  }
+  function renderDeviceGaugeMarkup(di) {
+    return `<div class="dv-di-gauge" data-score="${escapeHtml(String(di.score))}" data-max="100" data-risk="${escapeHtml(di.risk)}" data-label="${escapeHtml(di.riskLabel)}"></div>`;
+  }
   function renderDeviceIntelligence(di) {
-    var _a;
-    const chips = di.indicators.map((c) => `<div class="dv-di-chip">${escapeHtml(c)}</div>`).join("");
-    const firstSeenLabel = (_a = di.firstSeenLabel) != null ? _a : "First seen";
-    const firstSeen = firstSeenValue(di);
-    const detailsRows = di.deviceDetails.map(
-      (d) => `<div class="dv-detail-row"><span class="dv-detail-label">${escapeHtml(d.label)}</span><span class="dv-detail-value">${escapeHtml(d.value)}</span></div>`
-    ).join("");
     const evidenceGroups = normalizeDiEvidence(di.evidence).filter(
       (group) => group.rows.length > 0
     );
-    const evidence = evidenceGroups.map((group) => renderDiEvidenceGroup(group, evidenceGroups.length === 1)).join("");
-    return `<div class="dv-di-top">
-  <div class="dv-di-summary">
-    <div class="dv-di-score">
-      <span class="dv-di-score__label">Risk Score</span>
-      <div class="dv-di-gauge" data-score="${escapeHtml(String(di.score))}" data-max="100" data-risk="${escapeHtml(di.risk)}" data-label="${escapeHtml(di.riskLabel)}"></div>
-    </div>
-    <div class="dv-di-detail">
-      <p class="dv-di-statement">${escapeHtml(di.summary)}</p>
-      <div class="dv-di-meta">
-        <div class="dv-di-meta__row"><span class="dv-di-meta__label">Device ID</span><span class="dv-di-meta__value">${escapeHtml(di.deviceId)}</span></div>
-        <div class="dv-di-meta__row"><span class="dv-di-meta__label">${escapeHtml(firstSeenLabel)}</span><span class="dv-di-meta__value">${escapeHtml(firstSeen)}</span></div>
-      </div>
-      <div class="dv-di-chips">${chips}</div>
-    </div>
-  </div>
-  <div class="dv-di-showinfo">
-    <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" aria-expanded="false">
-      <span class="tds-btn__leading-icon">${ICON_PLUS}</span>Show Device Information
-    </button>
-  </div>
-  <div class="dv-di-details" id="dv-device-details" hidden>${detailsRows}</div>
+    const evidence = evidenceGroups.map((group, index) => renderDiEvidenceGroup(group, index === 0)).join("");
+    return `<div class="dv-di-summary-block">
+  ${renderDiAnnouncement(di)}
+  ${renderDiRiskIndicators(di)}
 </div>
 ${renderSignalsToolbar()}
+<p class="dv-di-evidence-label">Evidence</p>
 <div class="dv-di-groups">${evidence}</div>`;
-  }
-  function renderSummaryList(rows) {
-    return rows.map(
-      (row) => `<li class="dv-summary-row"><span class="dv-summary-label">${escapeHtml(row.label)}</span>${renderTag(row.value, row.tone)}</li>`
-    ).join("");
   }
   function renderDetailPairs(pairs) {
     return pairs.map(
@@ -1785,26 +1921,332 @@ ${renderSignalsToolbar()}
   </div>
 </div>`;
   }
-  function renderSummaryStatus(status) {
-    return `<span class="dv-summary-status__label">${escapeHtml(status)}</span>`;
+  function renderHighlights(fields) {
+    return fields.map((field) => {
+      const valueClass = field.negative ? "tds-data-field__value tds-data-field__value--negative" : "tds-data-field__value";
+      return `<div class="tds-data-field tds-data-field--horizontal">
+      <div class="tds-data-field__label-row"><p class="tds-data-field__label">${escapeHtml(field.label)}</p></div>
+      <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="${valueClass}">${escapeHtml(field.value)}</p></div></div>
+    </div>`;
+    }).join("");
+  }
+  function knownFaceMatchCount(groups) {
+    var _a, _b;
+    return (_b = (_a = findKnownFacesInfo(groups)) == null ? void 0 : _a.matchedCount) != null ? _b : 0;
+  }
+  function networkHighlightStats(ni) {
+    if (ni.flagged.length === 0) {
+      return [
+        { label: "Signals checked", value: String(NI_CLEAN_CHECKS.length) },
+        { label: "Pass rate", value: "100%" },
+        { label: "Failed checks", value: "0" }
+      ];
+    }
+    const total = ni.flagged.length + ni.clean.length;
+    const failed = ni.flagged.length;
+    const passRate = total === 0 ? 0 : Math.round((total - failed) / total * 100);
+    return [
+      { label: "Signals checked", value: String(total) },
+      { label: "Pass rate", value: `${passRate}%` },
+      { label: "Failed checks", value: String(failed), negative: failed > 0 }
+    ];
+  }
+  function setTruaiCta(cta, prompt) {
+    if (!(cta instanceof HTMLElement)) return;
+    cta.setAttribute("data-truai-prompt", prompt);
+    const label = cta.querySelector(".tds-ai-tag__label");
+    if (label) label.textContent = prompt;
+  }
+  function setAccordionHidden(el, hidden) {
+    if (el instanceof HTMLElement) el.hidden = hidden;
+  }
+  var SUMMARY_PORTRAIT = '<svg viewBox="0 0 185 266" role="img" aria-label="Applicant portrait placeholder" preserveAspectRatio="xMidYMid slice"><rect width="185" height="266" fill="#adadad"/><circle cx="92" cy="108" r="48" fill="#8a8a8a"/><path d="M18 266c0-50 33-80 74-80s74 30 74 80z" fill="#8a8a8a"/></svg>';
+  function groupByKey(groups, key) {
+    return groups.find((g) => g.key === key);
+  }
+  function groupRowCount(groups, key) {
+    var _a, _b;
+    return (_b = (_a = groupByKey(groups, key)) == null ? void 0 : _a.rows.length) != null ? _b : 0;
+  }
+  function findDetailValue(groups, label) {
+    var _a;
+    const needle = label.toLowerCase();
+    for (const group of groups) {
+      for (const row of group.rows) {
+        const pair = (_a = row.details) == null ? void 0 : _a.find((d) => d.label.toLowerCase() === needle);
+        if (pair) return pair.value;
+      }
+    }
+    return void 0;
+  }
+  function firstDeclinedSub(groups) {
+    var _a, _b;
+    return (_b = (_a = groupByKey(groups, "declined")) == null ? void 0 : _a.rows[0]) == null ? void 0 : _b.sub;
+  }
+  function heroStatusIcon(tone) {
+    if (tone === "negative") return ICON_DECLINED;
+    if (tone === "intermediate") return ICON_REVIEW;
+    return ICON_CIRCLE_CHECK;
+  }
+  function signalRowIcon(tone) {
+    if (tone === "positive") return ICON_CIRCLE_CHECK;
+    if (tone === "default") return ICON_CIRCLE_INFO;
+    return ICON_RISK;
+  }
+  function renderSummarySignals(signals) {
+    return signals.map(
+      (signal, index) => `${index > 0 ? '<div class="dv-summary-signal__rule" aria-hidden="true"></div>' : ""}<div class="dv-summary-signal dv-summary-signal--${escapeHtml(signal.tone)}">
+  <span class="dv-summary-signal__icon" aria-hidden="true">${signalRowIcon(signal.tone)}</span>
+  <p class="dv-summary-signal__text">${escapeHtml(signal.text)}</p>
+</div>`
+    ).join("");
+  }
+  function accentMetric(label, value, tone) {
+    const mod = tone === "negative" ? " dv-summary-card__accent--negative" : tone === "positive" ? " dv-summary-card__accent--positive" : "";
+    return `${escapeHtml(label)}<span class="dv-summary-card__accent${mod}">${escapeHtml(value)}</span>`;
+  }
+  function documentEvidence(config) {
+    const groups = config.document.groups;
+    const declined = groupRowCount(groups, "declined");
+    const review = groupRowCount(groups, "review");
+    const accepted2 = groupRowCount(groups, "accepted");
+    const evaluated = declined + review + accepted2;
+    const passed = accepted2;
+    let tag = "Clear";
+    let tagTone = "default";
+    if (declined > 0) {
+      tag = "Declined";
+      tagTone = "negative";
+    } else if (review > 0) {
+      tag = "Review";
+      tagTone = "intermediate";
+    }
+    const info = config.documentInfo;
+    return {
+      tab: "document",
+      caption: "Document",
+      icon: ICON_ID_CARD,
+      tag,
+      tagTone,
+      metricHtml: `${passed}/${evaluated || passed} signals passed`,
+      detail: `${info.documentType} is ${info.documentStatus}.`
+    };
+  }
+  function biometricsEvidence(config) {
+    var _a, _b, _c, _d;
+    const groups = config.biometrics.groups;
+    const declined = groupRowCount(groups, "declined");
+    const review = groupRowCount(groups, "review");
+    const kf = findKnownFacesInfo(groups);
+    const knownHits = (_a = kf == null ? void 0 : kf.matches.length) != null ? _a : 0;
+    const faceScore = findDetailValue(groups, "Face match score");
+    const threshold = findDetailValue(groups, "Required threshold");
+    const deepfake = findDetailValue(groups, "Deepfake confidence");
+    let tag = "Clear";
+    let tagTone = "default";
+    if (declined > 0 || knownHits > 0) {
+      tag = "Declined";
+      tagTone = "negative";
+    } else if (review > 0) {
+      tag = "Review";
+      tagTone = "intermediate";
+    }
+    let metricHtml = "All biometric checks passed";
+    let detail = "Selfie matches the document portrait.";
+    if (faceScore) {
+      metricHtml = accentMetric("Face match: ", faceScore, tagTone);
+      detail = threshold ? `Below ${threshold} threshold. ${declined} Declined.` : (_b = firstDeclinedSub(groups)) != null ? _b : detail;
+    } else if (deepfake) {
+      metricHtml = accentMetric("Deepfake: ", deepfake, "negative");
+      detail = (_c = firstDeclinedSub(groups)) != null ? _c : "A synthetic selfie was detected.";
+    } else if (knownHits > 0 && kf) {
+      const declinedFaces = kf.matches.filter((m) => m.status === "Declined").length;
+      metricHtml = `${declinedFaces || knownHits} known face matches`;
+      detail = kf.message;
+    } else if (declined > 0) {
+      metricHtml = `${declined} declined check${declined === 1 ? "" : "s"}`;
+      detail = (_d = firstDeclinedSub(groups)) != null ? _d : detail;
+    }
+    return {
+      tab: "biometrics",
+      caption: "Biometrics",
+      icon: ICON_FACE_SCAN,
+      tag,
+      tagTone,
+      metricHtml,
+      detail
+    };
+  }
+  function networkEvidence(config) {
+    const ni = config.networkInsights;
+    const flagged = ni.flagged.length;
+    const total = flagged + ni.clean.length > 0 ? flagged + ni.clean.length : NI_CLEAN_CHECKS.length;
+    const isFlagged = flagged > 0;
+    return {
+      tab: "network-insights",
+      caption: "Network Insights",
+      icon: ICON_GLOBE,
+      tag: isFlagged ? "High Risk" : "Clear",
+      tagTone: isFlagged ? "negative" : "default",
+      metricHtml: `${flagged}/${total} signals flagged`,
+      detail: `Checked across ${total} categories.`
+    };
+  }
+  function deviceEvidence(config) {
+    const di = config.deviceIntelligence;
+    const tone = diHeaderTone(di);
+    const risky = di.risk !== "low";
+    return {
+      tab: "device-intelligence",
+      caption: "Device Intelligence",
+      icon: ICON_MOBILE,
+      tag: di.riskLabel,
+      tagTone: tone,
+      metricHtml: `${di.score}/100`,
+      detail: risky ? "The device & network appear risky." : "The device and network appear normal.",
+      extraHtml: `<div class="dv-summary-card__score">
+  <span class="dv-summary-card__metric">${di.score}/100</span>
+  <span class="dv-summary-card__bar" aria-hidden="true"><span class="dv-summary-card__bar-fill dv-summary-card__bar-fill--${escapeHtml(di.risk)}" style="width:${di.score}%"></span></span>
+</div>`
+    };
+  }
+  function renderEvidenceCard(card) {
+    const failTile = card.tagTone === "negative" || card.tagTone === "intermediate";
+    const metric = card.extraHtml ? card.extraHtml : `<p class="dv-summary-card__metric">${card.metricHtml}</p>`;
+    return `<article class="dv-summary-card" data-summary-tab="${escapeHtml(card.tab)}">
+  <div class="dv-summary-card__inner">
+    <div class="dv-summary-card__top">
+      <span class="dv-summary-card__icon${failTile ? " dv-summary-card__icon--fail" : ""}" aria-hidden="true">${card.icon}</span>
+      ${renderTag(card.tag, card.tagTone, "md")}
+    </div>
+    <div class="dv-summary-card__body">
+      <p class="dv-summary-card__caption">${escapeHtml(card.caption)}</p>
+      <div class="dv-summary-card__copy">
+        ${metric}
+        <p class="dv-summary-card__detail">${escapeHtml(card.detail)}</p>
+      </div>
+    </div>
+    <button type="button" class="tds-btn tds-btn--md tds-btn--secondary dv-summary-card__view">
+      View
+      <span class="tds-btn__trailing-icon" aria-hidden="true">${ICON_ARROW_RIGHT}</span>
+    </button>
+  </div>
+</article>`;
+  }
+  function renderSummaryPage(config) {
+    const cards = [
+      documentEvidence(config),
+      biometricsEvidence(config),
+      networkEvidence(config),
+      deviceEvidence(config)
+    ].map(renderEvidenceCard).join("");
+    const prompt = escapeHtml(config.summaryAiPrompt);
+    return `<div class="dv-summary-page">
+  <section class="dv-summary-hero dv-summary-hero--${escapeHtml(config.overallTone)}" aria-label="Decision summary">
+    <div class="dv-summary-hero__photo">${SUMMARY_PORTRAIT}</div>
+    <div class="dv-summary-hero__verdict">
+      <div class="dv-summary-hero__status-row">
+        <div class="dv-summary-hero__status dv-summary-hero__status--${escapeHtml(config.overallTone)}">
+          <span class="dv-summary-hero__status-icon" aria-hidden="true">${heroStatusIcon(config.overallTone)}</span>
+          <span class="dv-summary-hero__status-label">${escapeHtml(config.overallStatus)}</span>
+        </div>
+        <button type="button" class="tds-ai-tag tds-ai-tag--md" data-truai-prompt="${prompt}">
+          <span class="tds-ai-tag__icon" aria-hidden="true">${ICON_SPARKLES}</span>
+          <span class="tds-ai-tag__label">Ask TruAI: ${prompt}</span>
+        </button>
+      </div>
+      <h2 class="dv-summary-hero__headline">${escapeHtml(config.summaryHeadline)}</h2>
+      <div class="dv-summary-signals">${renderSummarySignals(config.summarySignals)}</div>
+    </div>
+  </section>
+  <section class="dv-summary-evidence" aria-label="Evidence">
+    <h3 class="dv-summary-evidence__title">Here is the evidence that informed this decision</h3>
+    <div class="dv-summary-evidence__grid">${cards}</div>
+  </section>
+</div>`;
+  }
+  function applySidebar(root, config, tabId) {
+    const q = (sel) => root.querySelector(sel);
+    const isBio = tabId === "biometrics";
+    const isNi = tabId === "network-insights";
+    const isDi = tabId === "device-intelligence";
+    const heading = q(".dv-sidebar__heading");
+    if (heading) heading.textContent = isDi ? "Risk Score" : "Summary";
+    const gauge = q("#dv-sidebar-gauge");
+    if (gauge instanceof HTMLElement) {
+      if (isDi) {
+        gauge.hidden = false;
+        gauge.innerHTML = renderDeviceGaugeMarkup(config.deviceIntelligence);
+      } else {
+        gauge.hidden = true;
+        gauge.innerHTML = "";
+      }
+    }
+    setAccordionHidden(q("#dv-sidebar-doc-accordions"), isBio || isNi || isDi);
+    setAccordionHidden(q("#dv-sidebar-di-accordions"), !isDi);
+    if (isDi) {
+      const di = config.deviceIntelligence;
+      setHtml(
+        q("#dv-highlights"),
+        renderHighlights([
+          { label: "Device ID", value: di.deviceId },
+          { label: "Created at", value: firstSeenValue(di) }
+        ])
+      );
+      setText(q("#dv-truai-text"), config.deviceAiSummary);
+      setTruaiCta(q("#dv-truai-cta"), config.deviceAiPrompt);
+      setHtml(q("#dv-device-info"), renderDetailPairs(di.deviceDetails));
+      return;
+    }
+    if (isNi) {
+      setHtml(
+        q("#dv-highlights"),
+        renderHighlights(networkHighlightStats(config.networkInsights))
+      );
+      setText(q("#dv-truai-text"), config.networkAiSummary);
+      setTruaiCta(q("#dv-truai-cta"), config.networkAiPrompt);
+      return;
+    }
+    const groups = isBio ? config.biometrics.groups : config.document.groups;
+    const stats = computeSignalStats(groups);
+    const fields = [
+      { label: "Signals checked", value: String(stats.signalsChecked) },
+      { label: "Pass rate", value: `${stats.passRate}%` },
+      {
+        label: "Failed checks",
+        value: String(stats.declinedChecks),
+        negative: stats.declinedChecks > 0
+      }
+    ];
+    if (isBio) {
+      fields.push({
+        label: "Known face matches",
+        value: String(knownFaceMatchCount(config.biometrics.groups))
+      });
+    }
+    setHtml(q("#dv-highlights"), renderHighlights(fields));
+    setText(
+      q("#dv-truai-text"),
+      isBio ? config.biometricsAiSummary : config.documentAiSummary
+    );
+    setTruaiCta(
+      q("#dv-truai-cta"),
+      isBio ? config.biometricsAiPrompt : "View full signal breakdown"
+    );
   }
   function applyScenario(root, config) {
-    var _a, _b;
+    var _a, _b, _c;
     const q = (sel) => root.querySelector(sel);
-    const summaryHeader = q("#dv-summary-header");
-    if (summaryHeader instanceof HTMLElement) {
-      summaryHeader.className = `dv-summary-status-header dv-summary-status-header--${config.overallTone}`;
-    }
-    const summaryStatus = q("#dv-summary-status");
-    if (summaryStatus instanceof HTMLElement) {
-      summaryStatus.className = `dv-summary-status dv-summary-status--${config.overallTone}`;
-      summaryStatus.innerHTML = renderSummaryStatus(config.overallStatus);
+    const headerStatus = q("#dv-header-status");
+    if (headerStatus instanceof HTMLElement) {
+      headerStatus.className = `tds-tag tds-tag--md tds-tag--${config.overallTone}`;
+      headerStatus.textContent = config.overallStatus;
     }
     setText(q("#dv-transaction-id"), config.transactionId);
     setText(q("#dv-truai-title"), config.truAiTitle);
-    setText(q("#dv-truai-text"), config.truAiSummary);
-    setHtml(q("#dv-summary-list"), renderSummaryList(config.summaryRows));
+    setText(q("#dv-truai-overall"), config.truAiSummary);
     setHtml(q("#dv-document-info"), renderDocumentInfo(config.documentInfo));
+    setHtml(q("#dv-panel-summary"), renderSummaryPage(config));
     const teOptions = q("#dv-te-options");
     setHtml(teOptions, renderTeOptions(config.id));
     const teSelect = q("#dv-te-select");
@@ -1817,22 +2259,19 @@ ${renderSignalsToolbar()}
         (_b = teSelect.querySelector("#dv-te-subtext")) != null ? _b : teSelect.querySelector(".dv-te-subtext"),
         config.overallStatus
       );
+      const teTag = (_c = teSelect.querySelector("#dv-te-tag")) != null ? _c : teSelect.querySelector(".dv-te-tag");
+      if (teTag instanceof HTMLElement) {
+        teTag.className = `tds-tag tds-tag--sm tds-tag--${config.overallTone}`;
+        teTag.textContent = config.overallStatus;
+      }
     }
     setHtml(
       q("#dv-document-indicators"),
       renderIndicatorGroups(config.document.groups)
     );
     setHtml(
-      q("#dv-document-stats"),
-      renderStatRow(computeSignalStats(config.document.groups))
-    );
-    setHtml(
       q("#dv-biometrics-indicators"),
       renderIndicatorGroups(config.biometrics.groups)
-    );
-    setHtml(
-      q("#dv-biometrics-stats"),
-      renderStatRow(computeSignalStats(config.biometrics.groups))
     );
     const matchedFaces = q("#dv-matched-faces");
     if (matchedFaces instanceof HTMLElement) {
@@ -1884,18 +2323,22 @@ ${renderSignalsToolbar()}
   var SPLIT_MIN_START = 240;
   var SPLIT_MIN_END = 220;
   var SPLIT_STACK_MAX = 1200;
+  var currentScenarioId = INITIAL_SCENARIO;
   var sharedSplitEnd = SPLIT_DEFAULT_END;
   function selectTab(tabId) {
-    const tabs = document.querySelectorAll(".dv-tab");
+    const tabs = document.querySelectorAll('[role="tab"][data-tab]');
     const panels = document.querySelectorAll(".dv-tabpanel");
     tabs.forEach((tab) => {
       const active = tab.getAttribute("data-tab") === tabId;
-      tab.classList.toggle("dv-tab--active", active);
+      tab.classList.toggle("tds-tab-item--active", active);
       tab.setAttribute("aria-selected", String(active));
     });
     panels.forEach((panel) => {
       panel.hidden = panel.getAttribute("data-tab") !== tabId;
     });
+    const columns = document.getElementById("dv-columns");
+    if (columns) columns.hidden = tabId === "summary";
+    applySidebar(document, getScenario(currentScenarioId), tabId);
     syncSplitPaneForActiveTab();
   }
   function setCollapsibleOpen(section, open) {
@@ -2119,6 +2562,7 @@ ${renderSignalsToolbar()}
     renderGauges(document);
   }
   function setScenario(id) {
+    currentScenarioId = id;
     const config = getScenario(id);
     applyScenario(document, config);
     selectTab(config.defaultTab);
@@ -2131,8 +2575,20 @@ ${renderSignalsToolbar()}
     resetAllSignalsToolbars();
     initSignalsMenus();
   }
+  function wireSummaryCards() {
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const btn = target.closest("[data-summary-tab]");
+      if (!(btn instanceof HTMLElement)) return;
+      const tab = btn.getAttribute("data-summary-tab");
+      if (!tab) return;
+      selectTab(tab);
+      if (tab === "device-intelligence") playDeviceGaugeAnimation();
+    });
+  }
   function wireTabs() {
-    document.querySelectorAll(".dv-tab").forEach((tab) => {
+    document.querySelectorAll('[role="tab"][data-tab]').forEach((tab) => {
       tab.addEventListener("click", () => {
         const target = tab.getAttribute("data-tab");
         if (!target) return;
@@ -2324,20 +2780,6 @@ ${renderSignalsToolbar()}
       acc.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
-  function wireTruaiPanel() {
-    document.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      const pill = target.closest("#dv-truai-pill");
-      if (!(pill instanceof HTMLElement)) return;
-      const card = document.getElementById("dv-truai-card");
-      if (!(card instanceof HTMLElement)) return;
-      const willOpen = card.hidden;
-      card.hidden = !willOpen;
-      pill.setAttribute("aria-expanded", String(willOpen));
-      pill.classList.toggle("dv-truai-pill--open", willOpen);
-    });
-  }
   function wireNiAnnounce() {
     document.addEventListener("click", (event) => {
       const target = event.target;
@@ -2379,17 +2821,25 @@ ${renderSignalsToolbar()}
       updateSortHeaders(table, col, direction);
     });
   }
-  function wireDeviceInfoToggle() {
+  function wireDiIndicatorsMore() {
     document.addEventListener("click", (event) => {
-      var _a, _b, _c, _d;
       const target = event.target;
       if (!(target instanceof Element)) return;
-      const btn = target.closest(".dv-di-showinfo button");
+      const btn = target.closest(".dv-di-indicators__more");
       if (!(btn instanceof HTMLElement)) return;
-      const scope = (_a = btn.closest(".dv-tabpanel")) != null ? _a : document;
-      const details = (_d = (_c = scope.querySelector("#dv-device-details")) != null ? _c : (_b = btn.closest(".dv-di-top")) == null ? void 0 : _b.querySelector(".dv-di-details")) != null ? _d : scope.querySelector(".dv-di-details");
-      if (!(details instanceof HTMLElement)) return;
-      setDeviceInfoOpen(scope, details.hidden);
+      const section = btn.closest(".dv-di-indicators");
+      if (!section) return;
+      const next = btn.getAttribute("data-open") !== "true";
+      btn.setAttribute("data-open", String(next));
+      btn.setAttribute("aria-expanded", String(next));
+      const extra = [...section.querySelectorAll("[data-indicator-extra='true']")];
+      extra.forEach((el) => {
+        if (el instanceof HTMLElement) el.hidden = !next;
+      });
+      const n = extra.length;
+      const icon = next ? ICON_MINUS : ICON_PLUS;
+      const label = next ? "Show less" : `${n} more indicator${n === 1 ? "" : "s"}`;
+      btn.innerHTML = `<span class="tds-btn__leading-icon">${icon}</span>${label}`;
     });
   }
   function setSidebarCollapsed(collapsed) {
@@ -2613,8 +3063,8 @@ ${renderSignalsToolbar()}
   }
   document.addEventListener("DOMContentLoaded", () => {
     wireTabs();
+    wireSummaryCards();
     wireCollapsibles();
-    wireTruaiPanel();
     wireNiAnnounce();
     wireExpandAll();
     injectSignalsToolbars();
@@ -2622,7 +3072,7 @@ ${renderSignalsToolbar()}
     wireNiSummaryDrivers();
     wireTxnToggles();
     wireDataTableSort();
-    wireDeviceInfoToggle();
+    wireDiIndicatorsMore();
     wireSidebarCollapse();
     wireImageModal();
     wireSplitPanes();

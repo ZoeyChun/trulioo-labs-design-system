@@ -1,5 +1,4 @@
 import {
-  deriveDiGroupBadges,
   deriveHeaderBadges,
   kindIcon,
   kindToStatusClass,
@@ -16,8 +15,12 @@ import {
   ICON_DECLINED,
   ICON_CLOSE_X,
   ICON_EXPAND_ALL,
+  ICON_FACE_SCAN,
   ICON_FILTER,
+  ICON_GLOBE,
+  ICON_ID_CARD,
   ICON_MENU_CHECK,
+  ICON_MOBILE,
   ICON_REVIEW,
   ICON_FLAG,
   ICON_MINUS,
@@ -25,6 +28,7 @@ import {
   ICON_PLUS,
   ICON_RISK,
   ICON_SORT,
+  ICON_SPARKLES,
 } from "./icons";
 import { SCENARIO_ORDER, scenarioData, normalizeDiEvidence } from "./scenario-data";
 import type {
@@ -45,6 +49,8 @@ import type {
   ScenarioConfig,
   ScenarioId,
   SummaryRow,
+  SummarySignal,
+  TabId,
   Tone,
 } from "./types";
 
@@ -505,15 +511,10 @@ const NI_CLEAN_CHECKS = [
 ];
 
 function renderNiWhatWeChecked(): string {
-  const rows = NI_CLEAN_CHECKS.map((label, index) => {
-    const divider =
-      index < NI_CLEAN_CHECKS.length - 1
-        ? " tds-action-list-item--divider"
-        : "";
-    return `<div class="tds-action-list-item tds-action-list-item--md${divider} dv-ni-checked__row">
-    <span class="tds-action-list-item__content"><span class="tds-action-list-item__label">${escapeHtml(label)}</span></span>
-  </div>`;
-  }).join("");
+  const rows = NI_CLEAN_CHECKS.map(
+    (label) =>
+      `<div class="dv-ni-checked__row"><span class="dv-ni-checked__label">${escapeHtml(label)}</span></div>`,
+  ).join("");
   return `<section class="dv-ni-checked" aria-label="What we checked">
   <p class="dv-ni-checked__header">What we checked</p>
   <div class="dv-ni-checked__list">${rows}</div>
@@ -554,14 +555,16 @@ function renderDiEvidenceGroup(
   group: DiEvidenceGroup,
   open: boolean,
 ): string {
-  const badges = deriveDiGroupBadges(group.rows)
-    .map((b) => renderTag(b.text, b.tone))
-    .join("");
+  const hasRisk = group.rows.some((row) => row.insight === "Risk");
+  const countBadge =
+    group.rows.length > 0
+      ? renderTag(String(group.rows.length), hasRisk ? "negative" : "positive")
+      : "";
   const sortedRows = sortDiEvidenceRows(group.rows);
   const tableBody =
     sortedRows.length > 0
       ? `<div class="dv-ditable">
-      ${renderSortableTableHead("ditable", ["Signal", "Result", "Insight"])}
+      ${renderSortableTableHead("ditable", ["Signals", "Results", "Insights"])}
       ${sortedRows
         .map(
           (row) => `<div class="dv-ditable__row">
@@ -573,12 +576,11 @@ function renderDiEvidenceGroup(
         .join("")}
     </div>`
       : `<p class="dv-empty">No signals in this category.</p>`;
-  const hasRisk = group.rows.some((row) => row.insight === "Risk");
   return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(group.key)}" data-group-tone="${hasRisk ? "negative" : "positive"}" data-group-severity="${hasRisk ? 0 : 2}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${open ? "true" : "false"}">
     <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
     <span class="dv-group__label">${escapeHtml(group.label)}</span>
-    <span class="dv-ni2-counts">${badges}</span>
+    <span class="dv-ni2-counts">${countBadge}</span>
   </button>
   <div class="dv-collapsible__body"${open ? "" : " hidden"}>${tableBody}</div>
 </div>`;
@@ -593,49 +595,77 @@ function firstSeenValue(di: DiConfig): string {
   return match?.value ?? "";
 }
 
+const DI_INDICATORS_VISIBLE = 3;
+
+function diHeadline(di: DiConfig): string {
+  if (di.risk === "high") return "High device risk";
+  if (di.risk === "medium") return "Elevated device risk";
+  return "Normal device and network";
+}
+
+function renderDiAnnouncement(di: DiConfig): string {
+  const variant =
+    di.risk === "high" ? "error" : di.risk === "medium" ? "warning" : "success";
+  const icon =
+    di.risk === "high"
+      ? ICON_DIAMOND_EXCLAMATION
+      : di.risk === "medium"
+        ? ICON_CIRCLE_INFO
+        : ICON_CIRCLE_CHECK;
+  return `<div class="tds-announcement tds-announcement--${variant}">
+  <span class="tds-announcement__icon" aria-hidden="true">${icon}</span>
+  <div class="tds-announcement__content">
+    <p class="tds-announcement__title">${escapeHtml(diHeadline(di))}</p>
+    <p class="tds-announcement__message">${escapeHtml(di.summary)}</p>
+  </div>
+</div>`;
+}
+
+function renderDiRiskIndicators(di: DiConfig): string {
+  if (di.indicators.length === 0) return "";
+  const extra = Math.max(0, di.indicators.length - DI_INDICATORS_VISIBLE);
+  const risky = di.risk !== "low";
+  const icon = risky ? ICON_RISK : ICON_CIRCLE_CHECK;
+  const rows = di.indicators
+    .map((text, index) => {
+      const isExtra = extra > 0 && index >= DI_INDICATORS_VISIBLE;
+      return `<div class="dv-di-indicator${risky ? " dv-di-indicator--risk" : ""}"${isExtra ? " hidden" : ""} data-indicator-extra="${isExtra ? "true" : "false"}">
+      <span class="dv-di-indicator__icon" aria-hidden="true">${icon}</span>
+      <span class="dv-di-indicator__label">${escapeHtml(text)}</span>
+    </div>`;
+    })
+    .join("");
+  const more =
+    extra > 0
+      ? `<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm dv-di-indicators__more" data-open="false" aria-expanded="false">
+      <span class="tds-btn__leading-icon">${ICON_PLUS}</span>${extra} more indicator${extra === 1 ? "" : "s"}
+    </button>`
+      : "";
+  return `<section class="dv-di-indicators" aria-label="Risk Indicators">
+  <p class="dv-di-indicators__header">Risk Indicators</p>
+  <div class="dv-di-indicators__list">${rows}</div>
+  ${more}
+</section>`;
+}
+
+function renderDeviceGaugeMarkup(di: DiConfig): string {
+  return `<div class="dv-di-gauge" data-score="${escapeHtml(String(di.score))}" data-max="100" data-risk="${escapeHtml(di.risk)}" data-label="${escapeHtml(di.riskLabel)}"></div>`;
+}
+
 export function renderDeviceIntelligence(di: DiConfig): string {
-  const chips = di.indicators
-    .map((c) => `<div class="dv-di-chip">${escapeHtml(c)}</div>`)
-    .join("");
-  const firstSeenLabel = di.firstSeenLabel ?? "First seen";
-  const firstSeen = firstSeenValue(di);
-  const detailsRows = di.deviceDetails
-    .map(
-      (d) =>
-        `<div class="dv-detail-row"><span class="dv-detail-label">${escapeHtml(d.label)}</span><span class="dv-detail-value">${escapeHtml(d.value)}</span></div>`,
-    )
-    .join("");
-  // Drop evidence categories with no signals; all groups start collapsed.
   const evidenceGroups = normalizeDiEvidence(di.evidence).filter(
     (group) => group.rows.length > 0,
   );
   const evidence = evidenceGroups
-    .map((group) => renderDiEvidenceGroup(group, evidenceGroups.length === 1))
+    .map((group, index) => renderDiEvidenceGroup(group, index === 0))
     .join("");
 
-  return `<div class="dv-di-top">
-  <div class="dv-di-summary">
-    <div class="dv-di-score">
-      <span class="dv-di-score__label">Risk Score</span>
-      <div class="dv-di-gauge" data-score="${escapeHtml(String(di.score))}" data-max="100" data-risk="${escapeHtml(di.risk)}" data-label="${escapeHtml(di.riskLabel)}"></div>
-    </div>
-    <div class="dv-di-detail">
-      <p class="dv-di-statement">${escapeHtml(di.summary)}</p>
-      <div class="dv-di-meta">
-        <div class="dv-di-meta__row"><span class="dv-di-meta__label">Device ID</span><span class="dv-di-meta__value">${escapeHtml(di.deviceId)}</span></div>
-        <div class="dv-di-meta__row"><span class="dv-di-meta__label">${escapeHtml(firstSeenLabel)}</span><span class="dv-di-meta__value">${escapeHtml(firstSeen)}</span></div>
-      </div>
-      <div class="dv-di-chips">${chips}</div>
-    </div>
-  </div>
-  <div class="dv-di-showinfo">
-    <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" aria-expanded="false">
-      <span class="tds-btn__leading-icon">${ICON_PLUS}</span>Show Device Information
-    </button>
-  </div>
-  <div class="dv-di-details" id="dv-device-details" hidden>${detailsRows}</div>
+  return `<div class="dv-di-summary-block">
+  ${renderDiAnnouncement(di)}
+  ${renderDiRiskIndicators(di)}
 </div>
 ${renderSignalsToolbar()}
+<p class="dv-di-evidence-label">Evidence</p>
 <div class="dv-di-groups">${evidence}</div>`;
 }
 
@@ -828,6 +858,396 @@ export function renderSignalsToolbar(): string {
 </div>`;
 }
 
+interface HighlightField {
+  label: string;
+  value: string;
+  negative?: boolean;
+}
+
+function renderHighlights(fields: HighlightField[]): string {
+  return fields
+    .map((field) => {
+      const valueClass = field.negative
+        ? "tds-data-field__value tds-data-field__value--negative"
+        : "tds-data-field__value";
+      return `<div class="tds-data-field tds-data-field--horizontal">
+      <div class="tds-data-field__label-row"><p class="tds-data-field__label">${escapeHtml(field.label)}</p></div>
+      <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="${valueClass}">${escapeHtml(field.value)}</p></div></div>
+    </div>`;
+    })
+    .join("");
+}
+
+function knownFaceMatchCount(groups: IndicatorGroup[]): number {
+  return findKnownFacesInfo(groups)?.matchedCount ?? 0;
+}
+
+function networkHighlightStats(ni: NiConfig): HighlightField[] {
+  if (ni.flagged.length === 0) {
+    return [
+      { label: "Signals checked", value: String(NI_CLEAN_CHECKS.length) },
+      { label: "Pass rate", value: "100%" },
+      { label: "Failed checks", value: "0" },
+    ];
+  }
+  const total = ni.flagged.length + ni.clean.length;
+  const failed = ni.flagged.length;
+  const passRate =
+    total === 0 ? 0 : Math.round(((total - failed) / total) * 100);
+  return [
+    { label: "Signals checked", value: String(total) },
+    { label: "Pass rate", value: `${passRate}%` },
+    { label: "Failed checks", value: String(failed), negative: failed > 0 },
+  ];
+}
+
+function setTruaiCta(cta: Element | null, prompt: string): void {
+  if (!(cta instanceof HTMLElement)) return;
+  cta.setAttribute("data-truai-prompt", prompt);
+  const label = cta.querySelector(".tds-ai-tag__label");
+  if (label) label.textContent = prompt;
+}
+
+function setAccordionHidden(el: Element | null, hidden: boolean): void {
+  if (el instanceof HTMLElement) el.hidden = hidden;
+}
+
+const SUMMARY_PORTRAIT =
+  '<svg viewBox="0 0 185 266" role="img" aria-label="Applicant portrait placeholder" preserveAspectRatio="xMidYMid slice"><rect width="185" height="266" fill="#adadad"/><circle cx="92" cy="108" r="48" fill="#8a8a8a"/><path d="M18 266c0-50 33-80 74-80s74 30 74 80z" fill="#8a8a8a"/></svg>';
+
+function groupByKey(
+  groups: IndicatorGroup[],
+  key: string,
+): IndicatorGroup | undefined {
+  return groups.find((g) => g.key === key);
+}
+
+function groupRowCount(groups: IndicatorGroup[], key: string): number {
+  return groupByKey(groups, key)?.rows.length ?? 0;
+}
+
+function findDetailValue(
+  groups: IndicatorGroup[],
+  label: string,
+): string | undefined {
+  const needle = label.toLowerCase();
+  for (const group of groups) {
+    for (const row of group.rows) {
+      const pair = row.details?.find((d) => d.label.toLowerCase() === needle);
+      if (pair) return pair.value;
+    }
+  }
+  return undefined;
+}
+
+function firstDeclinedSub(groups: IndicatorGroup[]): string | undefined {
+  return groupByKey(groups, "declined")?.rows[0]?.sub;
+}
+
+function heroStatusIcon(tone: Tone): string {
+  if (tone === "negative") return ICON_DECLINED;
+  if (tone === "intermediate") return ICON_REVIEW;
+  return ICON_CIRCLE_CHECK;
+}
+
+function signalRowIcon(tone: Tone): string {
+  if (tone === "positive") return ICON_CIRCLE_CHECK;
+  if (tone === "default") return ICON_CIRCLE_INFO;
+  return ICON_RISK;
+}
+
+function renderSummarySignals(signals: SummarySignal[]): string {
+  return signals
+    .map(
+      (signal, index) => `${
+        index > 0 ? '<div class="dv-summary-signal__rule" aria-hidden="true"></div>' : ""
+      }<div class="dv-summary-signal dv-summary-signal--${escapeHtml(signal.tone)}">
+  <span class="dv-summary-signal__icon" aria-hidden="true">${signalRowIcon(signal.tone)}</span>
+  <p class="dv-summary-signal__text">${escapeHtml(signal.text)}</p>
+</div>`,
+    )
+    .join("");
+}
+
+interface EvidenceCard {
+  tab: TabId;
+  caption: string;
+  icon: string;
+  tag: string;
+  tagTone: Tone;
+  metricHtml: string;
+  detail: string;
+  extraHtml?: string;
+}
+
+function accentMetric(label: string, value: string, tone: Tone): string {
+  const mod =
+    tone === "negative"
+      ? " dv-summary-card__accent--negative"
+      : tone === "positive"
+        ? " dv-summary-card__accent--positive"
+        : "";
+  return `${escapeHtml(label)}<span class="dv-summary-card__accent${mod}">${escapeHtml(value)}</span>`;
+}
+
+function documentEvidence(config: ScenarioConfig): EvidenceCard {
+  const groups = config.document.groups;
+  const declined = groupRowCount(groups, "declined");
+  const review = groupRowCount(groups, "review");
+  const accepted = groupRowCount(groups, "accepted");
+  const evaluated = declined + review + accepted;
+  const passed = accepted;
+  let tag = "Clear";
+  let tagTone: Tone = "default";
+  if (declined > 0) {
+    tag = "Declined";
+    tagTone = "negative";
+  } else if (review > 0) {
+    tag = "Review";
+    tagTone = "intermediate";
+  }
+  const info = config.documentInfo;
+  return {
+    tab: "document",
+    caption: "Document",
+    icon: ICON_ID_CARD,
+    tag,
+    tagTone,
+    metricHtml: `${passed}/${evaluated || passed} signals passed`,
+    detail: `${info.documentType} is ${info.documentStatus}.`,
+  };
+}
+
+function biometricsEvidence(config: ScenarioConfig): EvidenceCard {
+  const groups = config.biometrics.groups;
+  const declined = groupRowCount(groups, "declined");
+  const review = groupRowCount(groups, "review");
+  const kf = findKnownFacesInfo(groups);
+  const knownHits = kf?.matches.length ?? 0;
+  const faceScore = findDetailValue(groups, "Face match score");
+  const threshold = findDetailValue(groups, "Required threshold");
+  const deepfake = findDetailValue(groups, "Deepfake confidence");
+  let tag = "Clear";
+  let tagTone: Tone = "default";
+  if (declined > 0 || knownHits > 0) {
+    tag = "Declined";
+    tagTone = "negative";
+  } else if (review > 0) {
+    tag = "Review";
+    tagTone = "intermediate";
+  }
+
+  let metricHtml = "All biometric checks passed";
+  let detail = "Selfie matches the document portrait.";
+  if (faceScore) {
+    metricHtml = accentMetric("Face match: ", faceScore, tagTone);
+    detail = threshold
+      ? `Below ${threshold} threshold. ${declined} Declined.`
+      : (firstDeclinedSub(groups) ?? detail);
+  } else if (deepfake) {
+    metricHtml = accentMetric("Deepfake: ", deepfake, "negative");
+    detail = firstDeclinedSub(groups) ?? "A synthetic selfie was detected.";
+  } else if (knownHits > 0 && kf) {
+    const declinedFaces = kf.matches.filter((m) => m.status === "Declined").length;
+    metricHtml = `${declinedFaces || knownHits} known face matches`;
+    detail = kf.message;
+  } else if (declined > 0) {
+    metricHtml = `${declined} declined check${declined === 1 ? "" : "s"}`;
+    detail = firstDeclinedSub(groups) ?? detail;
+  }
+
+  return {
+    tab: "biometrics",
+    caption: "Biometrics",
+    icon: ICON_FACE_SCAN,
+    tag,
+    tagTone,
+    metricHtml,
+    detail,
+  };
+}
+
+function networkEvidence(config: ScenarioConfig): EvidenceCard {
+  const ni = config.networkInsights;
+  const flagged = ni.flagged.length;
+  const total =
+    flagged + ni.clean.length > 0
+      ? flagged + ni.clean.length
+      : NI_CLEAN_CHECKS.length;
+  const isFlagged = flagged > 0;
+  return {
+    tab: "network-insights",
+    caption: "Network Insights",
+    icon: ICON_GLOBE,
+    tag: isFlagged ? "High Risk" : "Clear",
+    tagTone: isFlagged ? "negative" : "default",
+    metricHtml: `${flagged}/${total} signals flagged`,
+    detail: `Checked across ${total} categories.`,
+  };
+}
+
+function deviceEvidence(config: ScenarioConfig): EvidenceCard {
+  const di = config.deviceIntelligence;
+  const tone = diHeaderTone(di);
+  const risky = di.risk !== "low";
+  return {
+    tab: "device-intelligence",
+    caption: "Device Intelligence",
+    icon: ICON_MOBILE,
+    tag: di.riskLabel,
+    tagTone: tone,
+    metricHtml: `${di.score}/100`,
+    detail: risky
+      ? "The device & network appear risky."
+      : "The device and network appear normal.",
+    extraHtml: `<div class="dv-summary-card__score">
+  <span class="dv-summary-card__metric">${di.score}/100</span>
+  <span class="dv-summary-card__bar" aria-hidden="true"><span class="dv-summary-card__bar-fill dv-summary-card__bar-fill--${escapeHtml(di.risk)}" style="width:${di.score}%"></span></span>
+</div>`,
+  };
+}
+
+function renderEvidenceCard(card: EvidenceCard): string {
+  const failTile = card.tagTone === "negative" || card.tagTone === "intermediate";
+  const metric = card.extraHtml
+    ? card.extraHtml
+    : `<p class="dv-summary-card__metric">${card.metricHtml}</p>`;
+  return `<article class="dv-summary-card" data-summary-tab="${escapeHtml(card.tab)}">
+  <div class="dv-summary-card__inner">
+    <div class="dv-summary-card__top">
+      <span class="dv-summary-card__icon${failTile ? " dv-summary-card__icon--fail" : ""}" aria-hidden="true">${card.icon}</span>
+      ${renderTag(card.tag, card.tagTone, "md")}
+    </div>
+    <div class="dv-summary-card__body">
+      <p class="dv-summary-card__caption">${escapeHtml(card.caption)}</p>
+      <div class="dv-summary-card__copy">
+        ${metric}
+        <p class="dv-summary-card__detail">${escapeHtml(card.detail)}</p>
+      </div>
+    </div>
+    <button type="button" class="tds-btn tds-btn--md tds-btn--secondary dv-summary-card__view">
+      View
+      <span class="tds-btn__trailing-icon" aria-hidden="true">${ICON_ARROW_RIGHT}</span>
+    </button>
+  </div>
+</article>`;
+}
+
+function renderSummaryPage(config: ScenarioConfig): string {
+  const cards = [
+    documentEvidence(config),
+    biometricsEvidence(config),
+    networkEvidence(config),
+    deviceEvidence(config),
+  ]
+    .map(renderEvidenceCard)
+    .join("");
+  const prompt = escapeHtml(config.summaryAiPrompt);
+  return `<div class="dv-summary-page">
+  <section class="dv-summary-hero dv-summary-hero--${escapeHtml(config.overallTone)}" aria-label="Decision summary">
+    <div class="dv-summary-hero__photo">${SUMMARY_PORTRAIT}</div>
+    <div class="dv-summary-hero__verdict">
+      <div class="dv-summary-hero__status-row">
+        <div class="dv-summary-hero__status dv-summary-hero__status--${escapeHtml(config.overallTone)}">
+          <span class="dv-summary-hero__status-icon" aria-hidden="true">${heroStatusIcon(config.overallTone)}</span>
+          <span class="dv-summary-hero__status-label">${escapeHtml(config.overallStatus)}</span>
+        </div>
+        <button type="button" class="tds-ai-tag tds-ai-tag--md" data-truai-prompt="${prompt}">
+          <span class="tds-ai-tag__icon" aria-hidden="true">${ICON_SPARKLES}</span>
+          <span class="tds-ai-tag__label">Ask TruAI: ${prompt}</span>
+        </button>
+      </div>
+      <h2 class="dv-summary-hero__headline">${escapeHtml(config.summaryHeadline)}</h2>
+      <div class="dv-summary-signals">${renderSummarySignals(config.summarySignals)}</div>
+    </div>
+  </section>
+  <section class="dv-summary-evidence" aria-label="Evidence">
+    <h3 class="dv-summary-evidence__title">Here is the evidence that informed this decision</h3>
+    <div class="dv-summary-evidence__grid">${cards}</div>
+  </section>
+</div>`;
+}
+
+export function applySidebar(
+  root: Document | HTMLElement,
+  config: ScenarioConfig,
+  tabId: TabId | string,
+): void {
+  const q = (sel: string): Element | null => root.querySelector(sel);
+  const isBio = tabId === "biometrics";
+  const isNi = tabId === "network-insights";
+  const isDi = tabId === "device-intelligence";
+
+  const heading = q(".dv-sidebar__heading");
+  if (heading) heading.textContent = isDi ? "Risk Score" : "Summary";
+
+  const gauge = q("#dv-sidebar-gauge");
+  if (gauge instanceof HTMLElement) {
+    if (isDi) {
+      gauge.hidden = false;
+      gauge.innerHTML = renderDeviceGaugeMarkup(config.deviceIntelligence);
+    } else {
+      gauge.hidden = true;
+      gauge.innerHTML = "";
+    }
+  }
+
+  setAccordionHidden(q("#dv-sidebar-doc-accordions"), isBio || isNi || isDi);
+  setAccordionHidden(q("#dv-sidebar-di-accordions"), !isDi);
+
+  if (isDi) {
+    const di = config.deviceIntelligence;
+    setHtml(
+      q("#dv-highlights"),
+      renderHighlights([
+        { label: "Device ID", value: di.deviceId },
+        { label: "Created at", value: firstSeenValue(di) },
+      ]),
+    );
+    setText(q("#dv-truai-text"), config.deviceAiSummary);
+    setTruaiCta(q("#dv-truai-cta"), config.deviceAiPrompt);
+    setHtml(q("#dv-device-info"), renderDetailPairs(di.deviceDetails));
+    return;
+  }
+
+  if (isNi) {
+    setHtml(
+      q("#dv-highlights"),
+      renderHighlights(networkHighlightStats(config.networkInsights)),
+    );
+    setText(q("#dv-truai-text"), config.networkAiSummary);
+    setTruaiCta(q("#dv-truai-cta"), config.networkAiPrompt);
+    return;
+  }
+
+  const groups = isBio ? config.biometrics.groups : config.document.groups;
+  const stats = computeSignalStats(groups);
+  const fields: HighlightField[] = [
+    { label: "Signals checked", value: String(stats.signalsChecked) },
+    { label: "Pass rate", value: `${stats.passRate}%` },
+    {
+      label: "Failed checks",
+      value: String(stats.declinedChecks),
+      negative: stats.declinedChecks > 0,
+    },
+  ];
+  if (isBio) {
+    fields.push({
+      label: "Known face matches",
+      value: String(knownFaceMatchCount(config.biometrics.groups)),
+    });
+  }
+  setHtml(q("#dv-highlights"), renderHighlights(fields));
+  setText(
+    q("#dv-truai-text"),
+    isBio ? config.biometricsAiSummary : config.documentAiSummary,
+  );
+  setTruaiCta(
+    q("#dv-truai-cta"),
+    isBio ? config.biometricsAiPrompt : "View full signal breakdown",
+  );
+}
+
 /** Big summary status shown in the sidebar SUMMARY block (tone-colored label, no icon). */
 function renderSummaryStatus(status: string): string {
   return `<span class="dv-summary-status__label">${escapeHtml(status)}</span>`;
@@ -839,22 +1259,17 @@ export function applyScenario(
 ): void {
   const q = (sel: string): Element | null => root.querySelector(sel);
 
-  // Overall status now lives big in the sidebar SUMMARY block (header tag removed).
-  const summaryHeader = q("#dv-summary-header");
-  if (summaryHeader instanceof HTMLElement) {
-    summaryHeader.className = `dv-summary-status-header dv-summary-status-header--${config.overallTone}`;
-  }
-  const summaryStatus = q("#dv-summary-status");
-  if (summaryStatus instanceof HTMLElement) {
-    summaryStatus.className = `dv-summary-status dv-summary-status--${config.overallTone}`;
-    summaryStatus.innerHTML = renderSummaryStatus(config.overallStatus);
+  const headerStatus = q("#dv-header-status");
+  if (headerStatus instanceof HTMLElement) {
+    headerStatus.className = `tds-tag tds-tag--md tds-tag--${config.overallTone}`;
+    headerStatus.textContent = config.overallStatus;
   }
 
   setText(q("#dv-transaction-id"), config.transactionId);
   setText(q("#dv-truai-title"), config.truAiTitle);
-  setText(q("#dv-truai-text"), config.truAiSummary);
-  setHtml(q("#dv-summary-list"), renderSummaryList(config.summaryRows));
+  setText(q("#dv-truai-overall"), config.truAiSummary);
   setHtml(q("#dv-document-info"), renderDocumentInfo(config.documentInfo));
+  setHtml(q("#dv-panel-summary"), renderSummaryPage(config));
 
   const teOptions = q("#dv-te-options");
   setHtml(teOptions, renderTeOptions(config.id));
@@ -871,24 +1286,23 @@ export function applyScenario(
         teSelect.querySelector(".dv-te-subtext"),
       config.overallStatus,
     );
+    const teTag =
+      teSelect.querySelector("#dv-te-tag") ??
+      teSelect.querySelector(".dv-te-tag");
+    if (teTag instanceof HTMLElement) {
+      teTag.className = `tds-tag tds-tag--sm tds-tag--${config.overallTone}`;
+      teTag.textContent = config.overallStatus;
+    }
   }
 
   setHtml(
     q("#dv-document-indicators"),
     renderIndicatorGroups(config.document.groups),
   );
-  setHtml(
-    q("#dv-document-stats"),
-    renderStatRow(computeSignalStats(config.document.groups)),
-  );
 
   setHtml(
     q("#dv-biometrics-indicators"),
     renderIndicatorGroups(config.biometrics.groups),
-  );
-  setHtml(
-    q("#dv-biometrics-stats"),
-    renderStatRow(computeSignalStats(config.biometrics.groups)),
   );
 
   const matchedFaces = q("#dv-matched-faces");

@@ -2,6 +2,7 @@ import { renderGauges } from "./gauge";
 import { ICON_EXPAND_ALL } from "./icons";
 import {
   applyScenario,
+  applySidebar,
   isScenarioId,
   ICON_MINUS,
   ICON_PLUS,
@@ -18,19 +19,23 @@ const SPLIT_MIN_END = 220;
 const SPLIT_STACK_MAX = 1200;
 type SortDir = "asc" | "desc";
 
+let currentScenarioId: ScenarioId = INITIAL_SCENARIO;
 let sharedSplitEnd = SPLIT_DEFAULT_END;
 
 function selectTab(tabId: TabId | string): void {
-  const tabs = document.querySelectorAll<HTMLElement>(".dv-tab");
+  const tabs = document.querySelectorAll<HTMLElement>('[role="tab"][data-tab]');
   const panels = document.querySelectorAll<HTMLElement>(".dv-tabpanel");
   tabs.forEach((tab) => {
     const active = tab.getAttribute("data-tab") === tabId;
-    tab.classList.toggle("dv-tab--active", active);
+    tab.classList.toggle("tds-tab-item--active", active);
     tab.setAttribute("aria-selected", String(active));
   });
   panels.forEach((panel) => {
     panel.hidden = panel.getAttribute("data-tab") !== tabId;
   });
+  const columns = document.getElementById("dv-columns");
+  if (columns) columns.hidden = tabId === "summary";
+  applySidebar(document, getScenario(currentScenarioId), tabId);
   syncSplitPaneForActiveTab();
 }
 
@@ -316,6 +321,7 @@ function playDeviceGaugeAnimation(): void {
 }
 
 function setScenario(id: ScenarioId): void {
+  currentScenarioId = id;
   const config = getScenario(id);
   applyScenario(document, config);
   selectTab(config.defaultTab);
@@ -329,8 +335,21 @@ function setScenario(id: ScenarioId): void {
   initSignalsMenus();
 }
 
+function wireSummaryCards(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const btn = target.closest("[data-summary-tab]");
+    if (!(btn instanceof HTMLElement)) return;
+    const tab = btn.getAttribute("data-summary-tab");
+    if (!tab) return;
+    selectTab(tab);
+    if (tab === "device-intelligence") playDeviceGaugeAnimation();
+  });
+}
+
 function wireTabs(): void {
-  document.querySelectorAll(".dv-tab").forEach((tab) => {
+  document.querySelectorAll('[role="tab"][data-tab]').forEach((tab) => {
     tab.addEventListener("click", () => {
       const target = tab.getAttribute("data-tab");
       if (!target) return;
@@ -563,22 +582,6 @@ function wireNiSummaryDrivers(): void {
   });
 }
 
-/** Sidebar "TruAI" pill toggles the AI summary card. */
-function wireTruaiPanel(): void {
-  document.addEventListener("click", (event) => {
-    const target = event.target;
-    if (!(target instanceof Element)) return;
-    const pill = target.closest("#dv-truai-pill");
-    if (!(pill instanceof HTMLElement)) return;
-    const card = document.getElementById("dv-truai-card");
-    if (!(card instanceof HTMLElement)) return;
-    const willOpen = card.hidden;
-    card.hidden = !willOpen;
-    pill.setAttribute("aria-expanded", String(willOpen));
-    pill.classList.toggle("dv-truai-pill--open", willOpen);
-  });
-}
-
 /** Collapsible Network Insights alert — chevron toggles the message. */
 function wireNiAnnounce(): void {
   document.addEventListener("click", (event) => {
@@ -627,21 +630,28 @@ function wireDataTableSort(): void {
   });
 }
 
-function wireDeviceInfoToggle(): void {
+function wireDiIndicatorsMore(): void {
   document.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-    const btn = target.closest(".dv-di-showinfo button");
+    const btn = target.closest(".dv-di-indicators__more");
     if (!(btn instanceof HTMLElement)) return;
+    const section = btn.closest(".dv-di-indicators");
+    if (!section) return;
 
-    const scope = btn.closest(".dv-tabpanel") ?? document;
-    const details =
-      scope.querySelector("#dv-device-details") ??
-      btn.closest(".dv-di-top")?.querySelector(".dv-di-details") ??
-      scope.querySelector(".dv-di-details");
-    if (!(details instanceof HTMLElement)) return;
-
-    setDeviceInfoOpen(scope, details.hidden);
+    const next = btn.getAttribute("data-open") !== "true";
+    btn.setAttribute("data-open", String(next));
+    btn.setAttribute("aria-expanded", String(next));
+    const extra = [...section.querySelectorAll("[data-indicator-extra='true']")];
+    extra.forEach((el) => {
+      if (el instanceof HTMLElement) el.hidden = !next;
+    });
+    const n = extra.length;
+    const icon = next ? ICON_MINUS : ICON_PLUS;
+    const label = next
+      ? "Show less"
+      : `${n} more indicator${n === 1 ? "" : "s"}`;
+    btn.innerHTML = `<span class="tds-btn__leading-icon">${icon}</span>${label}`;
   });
 }
 
@@ -916,8 +926,8 @@ function wireTestEntitySelect(): void {
 
 document.addEventListener("DOMContentLoaded", () => {
   wireTabs();
+  wireSummaryCards();
   wireCollapsibles();
-  wireTruaiPanel();
   wireNiAnnounce();
   wireExpandAll();
   injectSignalsToolbars();
@@ -925,7 +935,7 @@ document.addEventListener("DOMContentLoaded", () => {
   wireNiSummaryDrivers();
   wireTxnToggles();
   wireDataTableSort();
-  wireDeviceInfoToggle();
+  wireDiIndicatorsMore();
   wireSidebarCollapse();
   wireImageModal();
   wireSplitPanes();

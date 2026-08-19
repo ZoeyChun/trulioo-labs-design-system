@@ -18,6 +18,10 @@
   <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
   <link rel="stylesheet" href="../../Components/data-table/sort-button/sort-button.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/tabs/tabs.css">
+  <link rel="stylesheet" href="../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../Components/section-header/section-header.css">
+  <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="../../Components/progress-indicator/progress-indicator.css">
   <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="../../Components/switch/switch.css">
@@ -27,7 +31,7 @@
   <link rel="stylesheet" href="../shared/app-shell.css">
   <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
   <link rel="stylesheet" href="../shared/truai-chat.css">
-  <link rel="stylesheet" href="document-verification.css?v=3">
+  <link rel="stylesheet" href="document-verification.css?v=19">
   <link rel="stylesheet" href="document-verification-flow.css?v=2">
   <style>
     /* Nav item spec — inlined because Cursor preview often skips ../../ component CSS */
@@ -392,6 +396,7 @@
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
             </button>
             <h1 class="dv-title">Jane Doe</h1>
+            <span class="tds-tag tds-tag--md tds-tag--positive" id="dv-header-status">Accepted</span>
           </div>
           <div class="dv-header__actions">
             <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
@@ -410,132 +415,201 @@
         </div>
 
         <div class="dv-meta">
-          <div class="dv-meta__item">
-            <span class="dv-meta__label">Country / Jurisdiction</span>
-            <span class="dv-meta__value dv-meta__value--country">
-              <span>United States</span>
-              <span class="tds-select__country-flag dv-meta__flag" aria-hidden="true"><span class="fi fi-us"></span></span>
-            </span>
+          <div class="dv-meta__item dv-meta__item--entity">
+            <p class="tds-data-field__label">Test entity</p>
+            <div class="tds-select dv-te-select" id="dv-te-select">
+              <button type="button" class="tds-select__trigger tds-select__trigger--sm dv-select-trigger dv-te-trigger" aria-haspopup="listbox" aria-expanded="false">
+                <span class="tds-select__text-wrapper">
+                  <span class="tds-select__value dv-te-value" id="dv-te-value">Happy path</span>
+                </span>
+                <span class="tds-select__trailing-group">
+                  <span class="tds-tag tds-tag--sm tds-tag--positive" id="dv-te-tag">Accepted</span>
+                  <span class="tds-caret tds-caret--default" aria-hidden="true">
+                    <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                  </span>
+                </span>
+              </button>
+              <div class="tds-select__menu">
+                <div class="tds-dropdown-panel" role="listbox" aria-label="Test entity scenario" id="dv-te-options"></div>
+              </div>
+            </div>
           </div>
           <span class="dv-meta__divider" aria-hidden="true"></span>
           <div class="dv-meta__item">
-            <span class="dv-meta__label">Transaction ID</span>
-            <span class="dv-meta__value" id="dv-transaction-id"></span>
+            <div class="tds-data-field">
+              <p class="tds-data-field__label">Country / Jurisdiction</p>
+              <div class="tds-data-field__content">
+                <div class="tds-data-field__value-row">
+                  <p class="tds-data-field__value">United States</p>
+                  <span class="tds-select__country-flag tds-data-field__flag" aria-hidden="true"><span class="fi fi-us"></span></span>
+                </div>
+              </div>
+            </div>
           </div>
           <span class="dv-meta__divider" aria-hidden="true"></span>
           <div class="dv-meta__item">
-            <span class="dv-meta__label">Date</span>
-            <span class="dv-meta__value">17 Jun 2026, 2:14 PM</span>
+            <div class="tds-data-field">
+              <p class="tds-data-field__label">Transaction ID</p>
+              <div class="tds-data-field__content">
+                <div class="tds-data-field__value-row">
+                  <p class="tds-data-field__value" id="dv-transaction-id"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="dv-meta__divider" aria-hidden="true"></span>
+          <div class="dv-meta__item">
+            <div class="tds-data-field">
+              <p class="tds-data-field__label">Date</p>
+              <div class="tds-data-field__content">
+                <div class="tds-data-field__value-row">
+                  <p class="tds-data-field__value">17 Jun 2026, 2:14 PM</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="dv-content">
-        <div class="dv-columns" id="dv-columns">
+        <div class="tds-tabs tds-tabs--scrollable" data-tabs-scrollable id="dv-tabs">
+          <div class="tds-tabs__row">
+            <div class="tds-tabs__list" role="tablist" aria-label="Verification sections">
+              <button class="tds-tab-item tds-tab-item--active" type="button" role="tab" aria-selected="true" id="dv-tab-summary" data-tab="summary" aria-controls="dv-panel-summary">
+                <span class="tds-tab-item__content">Summary</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="dv-tab-document" data-tab="document" aria-controls="dv-panel-document">
+                <span class="tds-tab-item__content">Document</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="dv-tab-biometrics" data-tab="biometrics" aria-controls="dv-panel-biometrics">
+                <span class="tds-tab-item__content">Biometrics</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="dv-tab-network-insights" data-tab="network-insights" aria-controls="dv-panel-network-insights">
+                <span class="tds-tab-item__content">Network Insights</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+              <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="dv-tab-device-intelligence" data-tab="device-intelligence" aria-controls="dv-panel-device-intelligence">
+                <span class="tds-tab-item__content">Device Intelligence</span>
+                <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div class="tds-tabs__divider" aria-hidden="true"></div>
+        </div>
+
+        <section class="dv-tabpanel dv-summary-panel" id="dv-panel-summary" data-tab="summary" aria-labelledby="dv-tab-summary">
+        </section>
+
+        <div class="dv-columns" id="dv-columns" hidden>
 
           <aside class="dv-sidebar" id="dv-sidebar">
-            <div class="dv-sidebar__block dv-sidebar__block--entity">
-              <div class="dv-sidebar__entity-head">
-                <h2 class="dv-sidebar__heading">Test Entity</h2>
-                <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="dv-sidebar" aria-label="Collapse summary panel">
-                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
-                </button>
-              </div>
-              <div class="dv-sidebar__entity-select">
-                <div class="tds-select dv-te-select" id="dv-te-select">
-                  <button type="button" class="tds-select__trigger tds-select__trigger--lg dv-select-trigger dv-te-trigger" aria-haspopup="listbox" aria-expanded="false">
-                    <span class="dv-te-textwrap">
-                      <span class="tds-select__value dv-te-value" id="dv-te-value">Happy path</span>
-                      <span class="dv-te-subtext" id="dv-te-subtext">Accepted</span>
-                    </span>
-                    <span class="tds-select__trailing-group">
-                      <span class="tds-caret tds-caret--default" aria-hidden="true">
-                        <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
-                      </span>
+            <p id="dv-truai-overall" hidden></p>
+            <p id="dv-truai-title" hidden></p>
+
+            <div class="dv-sidebar__summary" id="dv-summary-block">
+              <div class="dv-sidebar__summary-top">
+                <div class="dv-sidebar__summary-head">
+                  <h2 class="dv-sidebar__heading">Summary</h2>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="dv-sidebar" aria-label="Collapse summary panel">
+                    <span class="tds-icon-btn__icon" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
                     </span>
                   </button>
-                  <div class="tds-select__menu">
-                    <div class="tds-dropdown-panel" role="listbox" aria-label="Test entity scenario" id="dv-te-options"></div>
+                </div>
+                <div class="dv-sidebar__gauge" id="dv-sidebar-gauge" hidden></div>
+                <div class="dv-highlights" id="dv-highlights"></div>
+              </div>
+              <div class="dv-ai-card" id="dv-truai-card">
+                <div class="dv-ai-card__intro">
+                  <div class="dv-ai-card__label">
+                    <span class="dv-ai-card__sparkles" aria-hidden="true">
+                      <svg viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>
+                    </span>
+                    TruAI:
+                  </div>
+                  <p class="dv-ai-text" id="dv-truai-text"></p>
+                </div>
+                <div class="dv-ai-card__ask">
+                  <p class="dv-ai-card__ask-label">Ask TruAI:</p>
+                  <button type="button" class="tds-ai-tag tds-ai-tag--sm" id="dv-truai-cta" data-truai-prompt="View full signal breakdown">
+                    <span class="tds-ai-tag__icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>
+                    </span>
+                    <span class="tds-ai-tag__label">View full signal breakdown</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="dv-sidebar__accordions" id="dv-sidebar-doc-accordions">
+              <div class="dv-sidebar__block dv-collapsible dv-collapsible--right">
+                <button class="dv-collapsible__header" type="button" aria-expanded="false">
+                  <span class="dv-section-title">Client Details</span>
+                  <span class="dv-chevron" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+                  </span>
+                </button>
+                <div class="dv-collapsible__body" hidden>
+                  <div class="dv-detail-row">
+                    <span class="dv-detail-label">Full name</span>
+                    <span class="dv-detail-value">Jane Doe</span>
+                  </div>
+                  <div class="dv-detail-row">
+                    <span class="dv-detail-label">Date of birth</span>
+                    <span class="dv-detail-value">1986/03/24</span>
+                  </div>
+                  <div class="dv-detail-row">
+                    <span class="dv-detail-label">Address</span>
+                    <span class="dv-detail-value">919 Government St, Victoria, BC V6W 3Y8</span>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="dv-sidebar__block dv-summary-block" id="dv-summary-block">
-              <div class="dv-summary-status-header" id="dv-summary-header">
-                <span class="dv-summary-block__label">Summary</span>
-                <div class="dv-summary-block__row">
-                  <span class="dv-summary-status dv-summary-status--negative" id="dv-summary-status"></span>
-                  <button type="button" class="dv-truai-pill" id="dv-truai-pill" aria-expanded="false" aria-controls="dv-truai-card">
-                    <span class="dv-truai-pill__icon" aria-hidden="true">
-                      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
-                    </span>
-                    TruAI
-                    <span class="dv-truai-pill__caret" aria-hidden="true">
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
-                    </span>
-                  </button>
-                </div>
-              </div>
-              <div class="dv-ai-card" id="dv-truai-card" hidden>
-                <p class="dv-ai-title" id="dv-truai-title"></p>
-                <p class="dv-ai-text" id="dv-truai-text"></p>
-              </div>
-              <ul class="dv-summary-list" id="dv-summary-list"></ul>
-            </div>
-
-            <div class="dv-sidebar__block dv-collapsible dv-collapsible--right">
-              <button class="dv-collapsible__header" type="button" aria-expanded="false">
-                <span class="dv-section-title">Client Details</span>
-                <span class="dv-chevron" aria-hidden="true">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
-                </span>
-              </button>
-              <div class="dv-collapsible__body" hidden>
-                <div class="dv-detail-row">
-                  <span class="dv-detail-label">Full name</span>
-                  <span class="dv-detail-value">Jane Doe</span>
-                </div>
-                <div class="dv-detail-row">
-                  <span class="dv-detail-label">Date of birth</span>
-                  <span class="dv-detail-value">1986/03/24</span>
-                </div>
-                <div class="dv-detail-row">
-                  <span class="dv-detail-label">Address</span>
-                  <span class="dv-detail-value">919 Government St, Victoria, BC V6W 3Y8</span>
-                </div>
+              <div class="dv-sidebar__block dv-collapsible dv-collapsible--right">
+                <button class="dv-collapsible__header" type="button" aria-expanded="false">
+                  <span class="dv-section-title">Document Information</span>
+                  <span class="dv-chevron" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+                  </span>
+                </button>
+                <div class="dv-collapsible__body" hidden id="dv-document-info"></div>
               </div>
             </div>
 
-            <div class="dv-sidebar__block dv-collapsible dv-collapsible--right dv-sidebar__block--last">
-              <button class="dv-collapsible__header" type="button" aria-expanded="false">
-                <span class="dv-section-title">Document Information</span>
-                <span class="dv-chevron" aria-hidden="true">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
-                </span>
-              </button>
-              <div class="dv-collapsible__body" hidden id="dv-document-info"></div>
+            <div class="dv-sidebar__accordions" id="dv-sidebar-di-accordions" hidden>
+              <div class="dv-sidebar__block dv-collapsible dv-collapsible--right">
+                <button class="dv-collapsible__header" type="button" aria-expanded="false">
+                  <span class="dv-section-title">Device Information</span>
+                  <span class="dv-chevron" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+                  </span>
+                </button>
+                <div class="dv-collapsible__body" hidden id="dv-device-info"></div>
+              </div>
             </div>
           </aside>
 
-          <div class="dv-main">
-          <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="dv-sidebar" aria-label="Show summary panel">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+          <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="dv-sidebar" aria-label="Show summary panel">
+            <span class="tds-icon-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
+            </span>
           </button>
-
-          <div class="dv-tabs" role="tablist" aria-label="Verification sections">
-            <button class="dv-tab dv-tab--active" role="tab" aria-selected="true" type="button" data-tab="document">Document</button>
-            <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="biometrics">Biometrics</button>
-            <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="data-match">Data Match</button>
-            <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="network-insights">Network Insights</button>
-            <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="device-intelligence">Device Intelligence</button>
-          </div>
+          <div class="dv-main">
 
           <!-- Document -->
-          <section class="dv-doc-panel dv-tabpanel" data-tab="document">
+          <section class="dv-doc-panel dv-tabpanel" id="dv-panel-document" data-tab="document" aria-labelledby="dv-tab-document" hidden>
+            <div class="tds-section-header">
+              <div class="tds-section-header__left">
+                <div class="tds-section-header__title-stack">
+                  <p class="tds-section-header__title">Document</p>
+                </div>
+              </div>
+            </div>
             <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
               <div class="dv-indicators dv-split-pane__start">
-                <div class="dv-stats" id="dv-document-stats"></div>
                 <div data-signals-toolbar></div>
                 <div id="dv-document-indicators" class="dv-indicators__list"></div>
               </div>
@@ -587,10 +661,16 @@
           </section>
 
           <!-- Biometrics -->
-          <section class="dv-tabpanel dv-doc-panel" data-tab="biometrics" hidden>
+          <section class="dv-tabpanel dv-doc-panel" id="dv-panel-biometrics" data-tab="biometrics" aria-labelledby="dv-tab-biometrics" hidden>
+            <div class="tds-section-header">
+              <div class="tds-section-header__left">
+                <div class="tds-section-header__title-stack">
+                  <p class="tds-section-header__title">Biometrics</p>
+                </div>
+              </div>
+            </div>
             <div class="dv-doc-panel__body dv-split-pane" data-split-pane>
               <div class="dv-indicators dv-split-pane__start">
-                <div class="dv-stats" id="dv-biometrics-stats"></div>
                 <div data-signals-toolbar></div>
                 <div id="dv-biometrics-indicators" class="dv-indicators__list"></div>
               </div>
@@ -635,12 +715,26 @@
           </section>
 
           <!-- Network Insights -->
-          <section class="dv-tabpanel dv-doc-panel" data-tab="network-insights" hidden>
+          <section class="dv-tabpanel dv-doc-panel" id="dv-panel-network-insights" data-tab="network-insights" aria-labelledby="dv-tab-network-insights" hidden>
+            <div class="tds-section-header">
+              <div class="tds-section-header__left">
+                <div class="tds-section-header__title-stack">
+                  <p class="tds-section-header__title">Network Insights</p>
+                </div>
+              </div>
+            </div>
             <div class="dv-ni2-body" id="dv-network-body"></div>
           </section>
 
           <!-- Device Intelligence -->
-          <section class="dv-tabpanel dv-doc-panel" data-tab="device-intelligence" hidden>
+          <section class="dv-tabpanel dv-doc-panel" id="dv-panel-device-intelligence" data-tab="device-intelligence" aria-labelledby="dv-tab-device-intelligence" hidden>
+            <div class="tds-section-header">
+              <div class="tds-section-header__left">
+                <div class="tds-section-header__title-stack">
+                  <p class="tds-section-header__title">Device Intelligence</p>
+                </div>
+              </div>
+            </div>
             <div id="dv-device-body" class="dv-di-body"></div>
           </section>
 
@@ -668,10 +762,10 @@
   </div>
 
   <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
-  <script src="document-verification.js?v=2"></script>
+  <script src="document-verification.js?v=14"></script>
   <script src="document-verification-flow.js?v=2"></script>
-  <script src="truai-responses.js?v=1"></script>
-  <script src="../shared/truai-chat.js?v=1"></script>
+  <script src="truai-responses.js?v=5"></script>
+  <script src="../shared/truai-chat.js?v=2"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>
   <script>TdsSideNav.init();</script>
 </body>

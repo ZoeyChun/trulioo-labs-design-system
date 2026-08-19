@@ -313,6 +313,9 @@ const lowRiskDevice = (summary: string, score = 1): DiConfig => ({
     "Trusted browser and operating system",
     "Stable location and timezone",
     "No shared-device activity",
+    "No VPN or proxy detected",
+    "Consistent device fingerprint",
+    "No emulator or jailbreak",
   ],
   deviceId: "3045489E05849546",
   firstSeenLabel: "First seen",
@@ -341,7 +344,7 @@ const happyNiSummary: NiSummary = {
  * another tab — an informational (not all-clear) state.
  */
 const infoNiSummary = (message: string): NiSummary => ({
-  status: "info",
+  status: "clear",
   title: "No network risk detected",
   message,
   drivers: cleanNiDrivers,
@@ -353,11 +356,38 @@ const happyPath: ScenarioConfig = {
   selectDesc: "All checks passed. Clean document and biometrics.",
   overallStatus: "Accepted",
   overallTone: "positive",
-  defaultTab: "document",
+  defaultTab: "summary",
   transactionId: "8c2f4e7a-19bd-4f02-a6c1-77de42915b3a",
   truAiTitle: "Jane Doe’s identity was verified",
   truAiSummary:
     "Jane Doe’s identity has been verified. All required checks passed and no additional review is needed.",
+  documentAiSummary:
+    "All document signals passed. The document is authentic, valid, and not expired.",
+  biometricsAiSummary:
+    "Face match scored above the acceptance threshold. The selfie matches the document portrait and liveness passed.",
+  biometricsAiPrompt: "How is face match scored?",
+  networkAiSummary:
+    "No network-level risk signals detected. Face, document and IP activity are consistent with a single identity.",
+  networkAiPrompt: "What does network insights cover?",
+  deviceAiSummary:
+    "Device environment shows no risk indicators. The session looks consistent with a typical legitimate device.",
+  deviceAiPrompt: "How is device score calculated?",
+  summaryHeadline: "Jane Doe’s identity was verified",
+  summaryAiPrompt: "Summarize this verification result",
+  summarySignals: [
+    {
+      text: "All document signals passed. The document is authentic and valid.",
+      tone: "positive",
+    },
+    {
+      text: "Face match scored above the acceptance threshold and liveness passed.",
+      tone: "positive",
+    },
+    {
+      text: "No network-level or device risk indicators were detected.",
+      tone: "positive",
+    },
+  ],
   summaryRows: happySummary,
   documentInfo: {
     documentType: "Driver's License",
@@ -573,11 +603,33 @@ const scenarioOverrides: Record<
     selectDesc: "Document expired; auto-decline.",
     overallStatus: "Review",
     overallTone: "intermediate",
-    defaultTab: "document",
+    defaultTab: "summary",
     transactionId: "91e0b2c4-55aa-4c11-9f20-12ab34cd56ef",
     truAiTitle: "Sent to review — the document has expired",
     truAiSummary:
       "Jane Doe’s document is authentic, but it has expired. A valid, non-expired document is required.",
+    documentAiSummary:
+      "The document is authentic, but it has expired. A valid, non-expired document is required before this check can pass.",
+    biometricsAiSummary:
+      "Face match scored above the acceptance threshold. The selfie matches the document portrait. The review is caused by the expired document, not biometrics.",
+    biometricsAiPrompt: "How is face match scored?",
+    networkAiSummary:
+      "No network-level risk signals detected. The review is driven by an expired document, not network activity.",
+    deviceAiSummary:
+      "Device environment shows no risk indicators. The review is caused by the expired document, not the device.",
+    summaryHeadline: "The document is authentic, but it has expired",
+    summaryAiPrompt: "Why was this sent to review?",
+    summarySignals: [
+      { text: "Document expired on 15 January 2023.", tone: "negative" },
+      {
+        text: "Face match scored above the acceptance threshold.",
+        tone: "positive",
+      },
+      {
+        text: "No network-level or device risk indicators were detected.",
+        tone: "positive",
+      },
+    ],
     summaryRows: [
       { label: "Document", value: "Declined", tone: "negative" },
       ...happySummary.slice(1),
@@ -622,11 +674,36 @@ const scenarioOverrides: Record<
     selectDesc: "Selfie does not match document portrait.",
     overallStatus: "Declined",
     overallTone: "negative",
-    defaultTab: "biometrics",
+    defaultTab: "summary",
     transactionId: "b7d1e9f0-22cc-4a88-81de-90fe12ab34cd",
     truAiTitle: "Declined because of a face mismatch",
     truAiSummary:
       "The document is valid, but the selfie does not match the portrait on the document. Liveness passed and no spoofing was detected.",
+    documentAiSummary:
+      "All document signals passed. The document itself is authentic and valid. The decline was triggered by biometric mismatch, not document issues.",
+    biometricsAiSummary:
+      "Face match scored 23%, well below the 70% acceptance threshold. The selfie and document photo appear to be different individuals. Liveness passed, ruling out a spoofing attempt.",
+    biometricsAiPrompt: "What causes low face match scores?",
+    networkAiSummary:
+      "No network-level risk signals detected. The decline is driven by biometric failure, not network activity.",
+    deviceAiSummary:
+      "Device environment shows no risk indicators. The submission came from a legitimate device, which makes the face mismatch more notable.",
+    summaryHeadline: "Document photo and selfie are not the same person",
+    summaryAiPrompt: "Why did the face match fail?",
+    summarySignals: [
+      {
+        text: "Face match scored 23%, well below the 70% acceptance threshold.",
+        tone: "negative",
+      },
+      {
+        text: "The selfie and document photo appear to be different individuals.",
+        tone: "negative",
+      },
+      {
+        text: "Liveness passed; no spoofing was detected.",
+        tone: "positive",
+      },
+    ],
     summaryRows: [
       { label: "Document", value: "Accepted", tone: "positive" },
       { label: "Biometrics", value: "Declined", tone: "negative" },
@@ -671,7 +748,16 @@ const scenarioOverrides: Record<
           label: "Not detected",
           rows: [
             notDetected("Spoof attempt"),
+            notDetected("Injection attack"),
             notDetected("Deepfake indicators"),
+            notDetected("Multiple faces"),
+            notDetected("Eyes closed"),
+            notDetected("Face off-center"),
+            notDetected("Insufficient lighting"),
+            notDetected("Low image sharpness"),
+            notDetected("Extreme pose"),
+            notDetected("Significant occlusion"),
+            notDetected("Virtual camera"),
           ],
         },
         knownFacesEmpty(
@@ -706,11 +792,36 @@ const scenarioOverrides: Record<
     selectDesc: "Applicant DOB conflicts with document OCR.",
     overallStatus: "Declined",
     overallTone: "negative",
-    defaultTab: "data-match",
+    defaultTab: "summary",
     transactionId: "c0ffee12-3456-4abc-9def-112233445566",
     truAiTitle: "Declined because of a date-of-birth mismatch",
     truAiSummary:
       "The date of birth entered by the applicant does not match the date extracted from the document. Manual review is recommended.",
+    documentAiSummary:
+      "Document authenticity passed. Date of birth extracted from the document does not match the applicant’s submitted date of birth.",
+    biometricsAiSummary:
+      "Face match scored above the acceptance threshold. The selfie matches the document portrait. The decline is caused by a date-of-birth mismatch, not biometrics.",
+    biometricsAiPrompt: "How is face match scored?",
+    networkAiSummary:
+      "No network-level risk signals detected. The review is driven by a date-of-birth discrepancy, not network activity.",
+    deviceAiSummary:
+      "Device environment shows no risk indicators. Manual review is required only for the DOB discrepancy.",
+    summaryHeadline: "Applicant date of birth does not match the document",
+    summaryAiPrompt: "Why does the date of birth need review?",
+    summarySignals: [
+      {
+        text: "Applicant input does not match the date of birth extracted from the document.",
+        tone: "intermediate",
+      },
+      {
+        text: "Face match scored above the acceptance threshold.",
+        tone: "positive",
+      },
+      {
+        text: "No network-level or device risk indicators were detected.",
+        tone: "positive",
+      },
+    ],
     summaryRows: [
       { label: "Document", value: "Review", tone: "intermediate" },
       happySummary[1],
@@ -790,11 +901,36 @@ const scenarioOverrides: Record<
     overallTone: "negative",
     secondaryStatus: "Fraud detected",
     secondaryTone: "negative",
-    defaultTab: "network-insights",
+    defaultTab: "summary",
     transactionId: "d4e5f617-8901-4bcd-a123-998877665544",
     truAiTitle: "Declined — face linked to a previously declined identity",
     truAiSummary:
       "Jane Doe’s document and selfie passed verification, but the face matches a previously declined identity associated with fraud.",
+    documentAiSummary:
+      "All document signals passed. The document is authentic and valid. The decline comes from a known-face match, not document issues.",
+    biometricsAiSummary:
+      "The selfie matches the document portrait, but the face matches a previously declined identity associated with fraud.",
+    biometricsAiPrompt: "What does a known-face match mean?",
+    networkAiSummary:
+      "This face is linked to multiple identities and a previously declined fraud record. Network intelligence flagged synthetic identity and document conflict.",
+    deviceAiSummary:
+      "This device has been linked to multiple identities and previously declined transactions, which increases the fraud risk.",
+    summaryHeadline: "Face linked to a previously declined identity",
+    summaryAiPrompt: "What does a known-face match mean?",
+    summarySignals: [
+      {
+        text: "3 known face matches against previously declined applicants.",
+        tone: "negative",
+      },
+      {
+        text: "Network intelligence flagged synthetic identity and document conflict.",
+        tone: "negative",
+      },
+      {
+        text: "This device has been linked to multiple identities and declined transactions.",
+        tone: "negative",
+      },
+    ],
     summaryRows: [
       { label: "Document", value: "Accepted", tone: "positive" },
       { label: "Biometrics", value: "Accepted", tone: "positive" },
@@ -959,11 +1095,36 @@ const scenarioOverrides: Record<
     selectDesc: "Synthetic selfie detected.",
     overallStatus: "Declined",
     overallTone: "negative",
-    defaultTab: "biometrics",
+    defaultTab: "summary",
     transactionId: "e8f9a0b1-2345-4cde-b678-556677889900",
     truAiTitle: "Declined — a synthetic selfie was detected",
     truAiSummary:
       "A synthetic selfie was detected. The document is valid and identity data matches, but the biometric capture cannot be trusted.",
+    documentAiSummary:
+      "All document signals passed. The document is authentic and valid. The decline was triggered by a synthetic selfie, not document issues.",
+    biometricsAiSummary:
+      "A synthetic selfie was detected. Capture-integrity checks failed, so the biometric capture cannot be trusted even though the document portrait itself is valid.",
+    biometricsAiPrompt: "What causes low face match scores?",
+    networkAiSummary:
+      "No network-level risk signals detected. The decline stems from a synthetic capture, not network activity.",
+    deviceAiSummary:
+      "Capture-integrity signals indicate the selfie may have been submitted through a virtual or manipulated camera source.",
+    summaryHeadline: "A synthetic selfie was detected",
+    summaryAiPrompt: "What fraud signals were detected?",
+    summarySignals: [
+      {
+        text: "Deepfake confidence 94%. Capture source looks like a virtual camera.",
+        tone: "negative",
+      },
+      {
+        text: "Device capture-integrity signals indicate a manipulated camera source.",
+        tone: "negative",
+      },
+      {
+        text: "The document itself is authentic and identity data matches.",
+        tone: "positive",
+      },
+    ],
     summaryRows: [
       { label: "Document", value: "Accepted", tone: "positive" },
       { label: "Biometrics", value: "Declined", tone: "negative" },
