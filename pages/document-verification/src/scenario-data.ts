@@ -692,16 +692,16 @@ const scenarioOverrides: Record<
     summaryAiPrompt: "Why did the face match fail?",
     summarySignals: [
       {
-        text: "Face match scored 23%, well below the 70% acceptance threshold.",
+        text: "3 known face matches against previously declined applicants",
         tone: "negative",
       },
       {
-        text: "The selfie and document photo appear to be different individuals.",
+        text: "4 network risk signals: velocity abuse and cross-account linkage",
         tone: "negative",
       },
       {
-        text: "Liveness passed; no spoofing was detected.",
-        tone: "positive",
+        text: "Shared device fingerprint seen in 3 other declined verifications",
+        tone: "negative",
       },
     ],
     summaryRows: [

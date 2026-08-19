@@ -21,7 +21,6 @@ import {
   ICON_ID_CARD,
   ICON_MENU_CHECK,
   ICON_MOBILE,
-  ICON_REVIEW,
   ICON_FLAG,
   ICON_MINUS,
   ICON_NOTE_THUMB,
@@ -944,12 +943,6 @@ function firstDeclinedSub(groups: IndicatorGroup[]): string | undefined {
   return groupByKey(groups, "declined")?.rows[0]?.sub;
 }
 
-function heroStatusIcon(tone: Tone): string {
-  if (tone === "negative") return ICON_DECLINED;
-  if (tone === "intermediate") return ICON_REVIEW;
-  return ICON_CIRCLE_CHECK;
-}
-
 function signalRowIcon(tone: Tone): string {
   if (tone === "positive") return ICON_CIRCLE_CHECK;
   if (tone === "default") return ICON_CIRCLE_INFO;
@@ -1108,14 +1101,13 @@ function deviceEvidence(config: ScenarioConfig): EvidenceCard {
 }
 
 function renderEvidenceCard(card: EvidenceCard): string {
-  const failTile = card.tagTone === "negative" || card.tagTone === "intermediate";
   const metric = card.extraHtml
     ? card.extraHtml
     : `<p class="dv-summary-card__metric">${card.metricHtml}</p>`;
   return `<article class="dv-summary-card" data-summary-tab="${escapeHtml(card.tab)}">
   <div class="dv-summary-card__inner">
     <div class="dv-summary-card__top">
-      <span class="dv-summary-card__icon${failTile ? " dv-summary-card__icon--fail" : ""}" aria-hidden="true">${card.icon}</span>
+      <span class="dv-summary-card__icon" aria-hidden="true">${card.icon}</span>
       ${renderTag(card.tag, card.tagTone, "md")}
     </div>
     <div class="dv-summary-card__body">
@@ -1148,21 +1140,20 @@ function renderSummaryPage(config: ScenarioConfig): string {
     <div class="dv-summary-hero__photo">${SUMMARY_PORTRAIT}</div>
     <div class="dv-summary-hero__verdict">
       <div class="dv-summary-hero__status-row">
-        <div class="dv-summary-hero__status dv-summary-hero__status--${escapeHtml(config.overallTone)}">
-          <span class="dv-summary-hero__status-icon" aria-hidden="true">${heroStatusIcon(config.overallTone)}</span>
-          <span class="dv-summary-hero__status-label">${escapeHtml(config.overallStatus)}</span>
-        </div>
+        <p class="dv-summary-hero__status dv-summary-hero__status--${escapeHtml(config.overallTone)}">${escapeHtml(config.overallStatus)}</p>
         <button type="button" class="tds-ai-tag tds-ai-tag--md" data-truai-prompt="${prompt}">
           <span class="tds-ai-tag__icon" aria-hidden="true">${ICON_SPARKLES}</span>
           <span class="tds-ai-tag__label">Ask TruAI: ${prompt}</span>
         </button>
       </div>
-      <h2 class="dv-summary-hero__headline">${escapeHtml(config.summaryHeadline)}</h2>
-      <div class="dv-summary-signals">${renderSummarySignals(config.summarySignals)}</div>
+      <div class="dv-summary-hero__body">
+        <h2 class="dv-summary-hero__headline">${escapeHtml(config.summaryHeadline)}</h2>
+        <div class="dv-summary-signals">${renderSummarySignals(config.summarySignals)}</div>
+      </div>
     </div>
   </section>
   <section class="dv-summary-evidence" aria-label="Evidence">
-    <h3 class="dv-summary-evidence__title">Here is the evidence that informed this decision</h3>
+    <h3 class="dv-summary-evidence__title">Evidence that informed this decision</h3>
     <div class="dv-summary-evidence__grid">${cards}</div>
   </section>
 </div>`;

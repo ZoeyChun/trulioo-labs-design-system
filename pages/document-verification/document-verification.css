@@ -628,7 +628,7 @@ button.tds-side-nav__nav-item,
   height: fit-content;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-16);
+  gap: var(--spacing-24);
   padding: var(--spacing-24);
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-2xl);
@@ -644,43 +644,22 @@ button.tds-side-nav__nav-item,
 }
 
 .dv-summary-hero__status {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-}
-
-.dv-summary-hero__status-icon {
-  display: inline-flex;
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-}
-
-.dv-summary-hero__status-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.dv-summary-hero__status-label {
+  margin: 0;
   font-size: var(--font-size-2xl);
-  line-height: 26px;
+  line-height: var(--line-height-2xl);
   font-weight: var(--font-weight-semibold);
 }
 
-.dv-summary-hero__status--negative,
-.dv-summary-hero__status--negative .dv-summary-hero__status-icon {
+.dv-summary-hero__status--negative {
   color: var(--text-negative);
 }
 
-.dv-summary-hero__status--intermediate,
-.dv-summary-hero__status--intermediate .dv-summary-hero__status-icon {
+.dv-summary-hero__status--intermediate {
   color: var(--text-intermediate);
 }
 
 .dv-summary-hero__status--positive,
-.dv-summary-hero__status--positive .dv-summary-hero__status-icon,
-.dv-summary-hero__status--default,
-.dv-summary-hero__status--default .dv-summary-hero__status-icon {
+.dv-summary-hero__status--default {
   color: var(--text-positive);
 }
 
@@ -688,11 +667,19 @@ button.tds-side-nav__nav-item,
   max-width: 100%;
 }
 
+.dv-summary-hero__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  width: 100%;
+  min-width: 0;
+}
+
 .dv-summary-hero__headline {
   margin: 0;
-  font-size: var(--font-size-xl);
-  line-height: var(--line-height-xl);
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-medium);
   color: var(--text-default);
 }
 
@@ -744,7 +731,7 @@ button.tds-side-nav__nav-item,
   min-width: 0;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
-  color: var(--text-default);
+  color: var(--text-description);
 }
 
 .dv-summary-signal__rule {
@@ -850,11 +837,6 @@ button.tds-side-nav__nav-item,
 .dv-summary-card__icon svg {
   width: 24px;
   height: 24px;
-}
-
-.dv-summary-card__icon--fail {
-  background-color: var(--surface-negative);
-  color: var(--icon-negative);
 }
 
 .dv-summary-card__body {
