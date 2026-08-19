@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iDIN — Identify</title>
+<link rel="stylesheet" href="embed-mockup.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .screen::-webkit-scrollbar { width: 0; }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  .top-spacer { height: 44px; flex-shrink: 0; }
+
+  .content {
+    padding: 8px 20px 32px;
+    position: relative;
+  }
+
+  /* ---------- Language pill ---------- */
+  .lang-pill {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 8px;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #1a1a1a;
+    background: #ffffff;
+  }
+
+  .lang-pill svg {
+    width: 14px;
+    height: 14px;
+    color: #666;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Brand row ---------- */
+  .brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 28px 0 24px;
+  }
+
+  .logo-box {
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .bank-tile .logo-box {
+    width: 48px;
+    height: 48px;
+    padding: 6px;
+    background: #ffffff;
+    border: 1px solid #e3e3e3;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  }
+
+  .bank-tile .logo-box--wordmark {
+    padding: 2px;
+  }
+
+  .bank-tile .logo-box--wordmark img {
+    transform: scale(1.2);
+    transform-origin: center;
+  }
+
+  .logo-box img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .brand-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .brand-arrow {
+    width: 20px;
+    height: 20px;
+    color: #888;
+    flex-shrink: 0;
+  }
+
+  .idin-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* ---------- Headline ---------- */
+  .headline {
+    font-size: 20px;
+    font-weight: 500;
+    color: #1a1a1a;
+    line-height: 1.35;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 0 8px;
+  }
+
+  .subtext {
+    font-size: 15px;
+    font-weight: 400;
+    color: #999;
+    line-height: 1.45;
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 0 4px;
+  }
+
+  /* ---------- Bank grid ---------- */
+  .bank-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .bank-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 96px;
+    padding: 14px 36px 14px 14px;
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .bank-tile__logo {
+    margin-bottom: 10px;
+  }
+
+  .bank-tile__name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a1a1a;
+    line-height: 1.3;
+  }
+
+  .bank-tile__chevron {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #888;
+  }
+
+  html.preview,
+  html.preview * {
+    cursor: default !important;
+    pointer-events: none !important;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="content">
+
+      <div class="lang-pill" aria-hidden="true">
+        English
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </div>
+
+      <div class="brand-row">
+        <div class="logo-box brand-logo">
+          <img src="../../../assets/trulioo-logo-mark.svg" alt="Trulioo">
+        </div>
+        <svg class="brand-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+        <div class="logo-box idin-logo">
+          <img src="../../../assets/netherlands-logos/idin-logo-1024.png" alt="iDIN">
+        </div>
+      </div>
+
+      <h1 class="headline">Trulioo is verifying your identity with iDIN.</h1>
+      <p class="subtext">Select your bank to continue securely with iDIN.</p>
+
+      <div class="bank-grid">
+
+        <div class="bank-tile">
+          <div class="logo-box bank-tile__logo">
+            <img src="../../../assets/netherlands-logos/ABN_AMRO_logo_(cropped).svg" alt="">
+          </div>
+          <div class="bank-tile__name">ABN AMRO</div>
+          <svg class="bank-tile__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <div class="bank-tile">
+          <div class="logo-box bank-tile__logo">
+            <img src="../../../assets/netherlands-logos/ASN_Bank.png" alt="">
+          </div>
+          <div class="bank-tile__name">ASN Bank</div>
+          <svg class="bank-tile__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <div class="bank-tile">
+          <div class="logo-box bank-tile__logo logo-box--wordmark">
+            <img src="../assets/embeds/netherlands/asn-regio-logo.png" alt="">
+          </div>
+          <div class="bank-tile__name">ASN Bank formerly RegioBank</div>
+          <svg class="bank-tile__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <div class="bank-tile">
+          <div class="logo-box bank-tile__logo logo-box--wordmark">
+            <img src="../assets/embeds/netherlands/asn-sns-logo.png" alt="">
+          </div>
+          <div class="bank-tile__name">ASN Bank<br>formerly SNS</div>
+          <svg class="bank-tile__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <div class="bank-tile">
+          <div class="logo-box bank-tile__logo">
+            <img src="../../../assets/netherlands-logos/bunq-logo-black.png" alt="">
+          </div>
+          <div class="bank-tile__name">bunq</div>
+          <svg class="bank-tile__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <div class="bank-tile">
+          <div class="logo-box bank-tile__logo">
+            <img src="../../../assets/netherlands-logos/ing-com-logo-app.png" alt="">
+          </div>
+          <div class="bank-tile__name">ING</div>
+          <svg class="bank-tile__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <div class="bank-tile">
+          <div class="logo-box bank-tile__logo">
+            <img src="../assets/embeds/belgium/itsme-launch-logo.png" alt="">
+          </div>
+          <div class="bank-tile__name">itsme</div>
+          <svg class="bank-tile__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <div class="bank-tile">
+          <div class="logo-box bank-tile__logo">
+            <img src="../../../assets/netherlands-logos/Rabobank-Logo-1536x864.png" alt="">
+          </div>
+          <div class="bank-tile__name">Rabobank</div>
+          <svg class="bank-tile__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+ </div>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Denmark — MitID Approve</title>
+<link rel="stylesheet" href="embed-mockup.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  .top-spacer { height: 44px; flex-shrink: 0; }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 24px 32px;
+  }
+
+  /* ---------- Top bar ---------- */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .reject {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #888;
+  }
+
+  .reject svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .top-bar__mitid img {
+    display: block;
+    height: 16px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  /* ---------- Main content ---------- */
+  .content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .shield {
+    width: 148px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  .brand {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a2b4a;
+    line-height: 1.2;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: #e8e8e8;
+    margin-bottom: 20px;
+  }
+
+  .prompt-block {
+    width: 100%;
+    margin-bottom: auto;
+  }
+
+  .prompt {
+    font-size: 15px;
+    font-weight: 500;
+    color: #888;
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+
+  .action-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a2b4a;
+    line-height: 1.3;
+  }
+
+  /* ---------- Approve button ---------- */
+  .btn-approve {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 72%;
+    max-width: 260px;
+    min-height: 56px;
+    padding: 5px;
+    border-radius: 999px;
+    background: #0066cc;
+    margin-top: auto;
+    margin-bottom: 32px;
+    align-self: center;
+  }
+
+  .btn-approve__icon {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    bottom: 5px;
+    width: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #0066cc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .btn-approve__icon svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+  }
+
+  .btn-approve__label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #ffffff;
+    padding: 0;
+    transform: translateX(8px);
+  }
+
+  html.preview,
+  html.preview * {
+    cursor: default !important;
+    pointer-events: none !important;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+
+      <div class="top-bar">
+        <span class="reject">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+          Reject
+        </span>
+        <div class="top-bar__mitid">
+          <img src="../assets/embeds/denmark/mitid-logo.png" alt="MitID">
+        </div>
+      </div>
+
+      <div class="content">
+
+        <img class="shield" src="../assets/embeds/denmark/shield-lock-icon.png" alt="">
+
+        <h1 class="brand">Trulioo</h1>
+
+        <div class="divider"></div>
+
+        <div class="prompt-block">
+          <p class="prompt">Can you approve?</p>
+          <h2 class="action-title">Log on</h2>
+        </div>
+
+        <span class="btn-approve">
+          <span class="btn-approve__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </span>
+          <span class="btn-approve__label">APPROVE</span>
+        </span>
+
+      </div>
+    </div>
+
+  </div>
+ </div>
+</body>
+</html>

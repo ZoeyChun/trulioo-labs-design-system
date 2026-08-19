@@ -16,6 +16,7 @@
   var TRANSITION_MS = 3000;
   var IT_LAUNCH_ACCESS_MS = 2000;
   var CZ_KB_LAUNCH_MS = 750;
+  var BE_LAUNCH_MS = 750;
   var RESEND_SECONDS = 10;
   var IN_RESEND_SECONDS = 60;
   var CHECK_SVG = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
@@ -87,7 +88,9 @@
     itLaunchPhoneShown: false,
     czSigninFilled: false,
     czConsentComplete: false,
-    czKbConsentShown: false
+    czKbConsentShown: false,
+    beConsentShown: false,
+    dkSigninFilled: false
   };
 
   function selectableCountries() {
@@ -103,6 +106,7 @@
 
   var itLaunchPhoneTimer = null;
   var czKbConsentTimer = null;
+  var beConsentTimer = null;
 
   function clearItLaunchPhoneTimer() {
     if (itLaunchPhoneTimer) { clearTimeout(itLaunchPhoneTimer); itLaunchPhoneTimer = null; }
@@ -112,10 +116,15 @@
     if (czKbConsentTimer) { clearTimeout(czKbConsentTimer); czKbConsentTimer = null; }
   }
 
+  function clearBeConsentTimer() {
+    if (beConsentTimer) { clearTimeout(beConsentTimer); beConsentTimer = null; }
+  }
+
   function clearPending() {
     if (state.pendingTimer) { clearTimeout(state.pendingTimer); state.pendingTimer = null; }
     clearItLaunchPhoneTimer();
     clearCzKbConsentTimer();
+    clearBeConsentTimer();
   }
 
   function clearResendTimer() {
@@ -146,6 +155,8 @@
     state.czSigninFilled = false;
     state.czConsentComplete = false;
     state.czKbConsentShown = false;
+    state.beConsentShown = false;
+    state.dkSigninFilled = false;
     clearResendTimer();
     clearPending();
   }
@@ -413,6 +424,10 @@
     return !!(state.simulated && state.country && state.country.code === "cz");
   }
 
+  function usesDkSimFlow() {
+    return !!(state.simulated && state.country && state.country.code === "dk");
+  }
+
   function usesCzKbMobilePreview() {
     return !!(state.bank && state.bank.id === "kb");
   }
@@ -422,7 +437,7 @@
   }
 
   function usesPhonePreviewFlow() {
-    return usesNlIngPhonePreview() || usesBeSimFlow() || usesInSimFlow() || usesItSimFlow() || usesCzSimFlow();
+    return usesNlIngPhonePreview() || usesBeSimFlow() || usesInSimFlow() || usesItSimFlow() || usesCzSimFlow() || usesDkSimFlow();
   }
 
   function bankSelectionItems() {
@@ -474,6 +489,15 @@
       || (panelId === "eid-panel-completing" && state.czConsentComplete);
   }
 
+  function shouldShowDkPhonePreview() {
+    if (!usesDkSimFlow()) return false;
+    var panelId = activeSimPanelId();
+    return panelId === "eid-panel-enter-details"
+      || panelId === "eid-panel-launch-app"
+      || panelId === "eid-panel-launch-loading"
+      || panelId === "eid-panel-consent-mobile";
+  }
+
   function shouldShowPhonePreview() {
     var panelId = activeSimPanelId();
     if (panelId === "eid-panel-completing") {
@@ -483,7 +507,8 @@
       || shouldShowBePhonePreview()
       || shouldShowInPhonePreview()
       || shouldShowItPhonePreview()
-      || shouldShowCzPhonePreview();
+      || shouldShowCzPhonePreview()
+      || shouldShowDkPhonePreview();
   }
 
   function shouldUseSplitCardLayout() {
@@ -872,7 +897,7 @@
       if (usesCzSimFlow() && usesCzKbMobilePreview()) {
         return renderMobileEmbedScreen("CZ-bank.html", "Czech bank selection");
       }
-      return renderMobileEmbedScreen("NE-idin-screen.html", "iDIN bank selection");
+      return renderMobileEmbedScreen("NE-idin-select-v2.html", "iDIN bank selection");
     }
     if (panelId === "eid-panel-sign-in") {
       return renderMobileEmbedScreen("NE-ing-launch.html", "ING launch");
@@ -901,6 +926,13 @@
         state.czSigninFilled ? czechEmbedSigninQuery() : ""
       );
     }
+    if (panelId === "eid-panel-enter-details" && usesDkSimFlow()) {
+      return renderMobileEmbedScreen(
+        state.dkSigninFilled ? "DE-signin-complete.html" : "DE-signin.html",
+        state.dkSigninFilled ? "Denmark MitID sign in complete" : "Denmark MitID sign in",
+        state.dkSigninFilled ? denmarkEmbedSigninQuery() : ""
+      );
+    }
     if (panelId === "eid-panel-otp" && usesInSimFlow()) {
       return renderMobileEmbedScreen(
         state.inOtpFilled ? "IN-OTP-filled.html" : "IN-OTP.html",
@@ -920,6 +952,9 @@
     if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesCzSimFlow() && usesCzKbMobilePreview()) {
       return renderMobileEmbedScreen("CZ-confirm.html", "Czech Bank iD confirm");
     }
+    if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesDkSimFlow()) {
+      return renderMobileEmbedScreen("DE-app.html", "Denmark MitID app");
+    }
     if (panelId === "eid-panel-completing" && usesCzSimFlow() && usesCzKbMobilePreview() && state.czConsentComplete) {
       return renderMobileEmbedScreen("CZ-complete.html", "Czech Bank iD complete");
     }
@@ -934,13 +969,19 @@
         return renderMobileEmbedScreen("CZ-kb-launch.html", "Czech KB app launch");
       }
       if (usesBeSimFlow()) {
-        return renderMobileEmbedScreen("BE-consent.html", "Belgium consent");
+        if (state.beConsentShown) {
+          return renderMobileEmbedScreen("BE-consent.html", "Belgium consent");
+        }
+        return renderMobileEmbedScreen("BE-launch.html", "itsme app launch");
       }
       if (usesInSimFlow()) {
         return renderMobileEmbedScreen("IN-consent.html", "India consent");
       }
       if (usesItSimFlow()) {
         return renderMobileEmbedScreen("IT-consent.html", "Italy SPID consent");
+      }
+      if (usesDkSimFlow()) {
+        return renderMobileEmbedScreen("DE-approve.html", "Denmark MitID approve");
       }
       return renderMobileEmbedScreen("NE-ing-consent.html", "ING consent");
     }
@@ -965,6 +1006,11 @@
     return "?username=" + encodeURIComponent(username);
   }
 
+  function denmarkEmbedSigninQuery() {
+    var username = state.formValues.username || MOCK_VALUES.username;
+    return "?username=" + encodeURIComponent(username);
+  }
+
   function scheduleCzKbConsentTransition() {
     if (!usesCzSimFlow() || !usesCzKbMobilePreview()) return;
     if (state.czKbConsentShown || state.czConsentComplete) return;
@@ -975,6 +1021,18 @@
       state.czKbConsentShown = true;
       renderNlPhonePreview();
     }, CZ_KB_LAUNCH_MS);
+  }
+
+  function scheduleBeConsentTransition() {
+    if (!usesBeSimFlow()) return;
+    if (state.beConsentShown) return;
+    if (activeSimPanelId() !== "eid-panel-consent-mobile") return;
+    if (beConsentTimer) return;
+    beConsentTimer = setTimeout(function () {
+      beConsentTimer = null;
+      state.beConsentShown = true;
+      renderNlPhonePreview();
+    }, BE_LAUNCH_MS);
   }
 
   function scheduleItLaunchPhoneTransition() {
@@ -1018,6 +1076,9 @@
     if (panelId === "eid-panel-consent-mobile" && usesCzSimFlow() && usesCzKbMobilePreview()
       && !state.czKbConsentShown && !state.czConsentComplete) {
       scheduleCzKbConsentTransition();
+    }
+    if (panelId === "eid-panel-consent-mobile" && usesBeSimFlow() && !state.beConsentShown) {
+      scheduleBeConsentTransition();
     }
   }
 
@@ -1113,7 +1174,9 @@
     }
     if (!nextStep || nextStep.type !== "consent") {
       state.czKbConsentShown = false;
+      state.beConsentShown = false;
       clearCzKbConsentTimer();
+      clearBeConsentTimer();
     }
     state.flowIndex = Math.max(0, Math.min(index, state.flowSteps.length - 1));
     renderSimView();
@@ -1131,6 +1194,10 @@
         state.czConsentComplete = false;
         state.czKbConsentShown = false;
         clearCzKbConsentTimer();
+      }
+      if (state.transientPanel === "eid-panel-completing" && usesBeSimFlow()) {
+        state.beConsentShown = false;
+        clearBeConsentTimer();
       }
       state.transientPanel = null;
       renderSimView();
@@ -1339,6 +1406,9 @@
       updateNlPhoneLayout();
     } else if (usesCzSimFlow()) {
       state.czSigninFilled = true;
+      updateNlPhoneLayout();
+    } else if (usesDkSimFlow()) {
+      state.dkSigninFilled = true;
       updateNlPhoneLayout();
     }
 

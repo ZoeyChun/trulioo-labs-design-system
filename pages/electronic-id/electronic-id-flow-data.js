@@ -226,8 +226,7 @@ window.EID_FLOW_DATA = [
         "type": "enter-details",
         "label": "Enter details",
         "fields": [
-          "Username",
-          "Password"
+          "Username"
         ]
       },
       {
@@ -263,13 +262,12 @@ window.EID_FLOW_DATA = [
         "type": "enter-details",
         "label": "Enter details",
         "fields": [
-          "Username",
-          "Password"
+          "Username"
         ]
       },
       {
-        "type": "scan-qr",
-        "label": "Scan QR",
+        "type": "launch-app",
+        "label": "Launch app",
         "fields": []
       },
       {

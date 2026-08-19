@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Denmark — Open MitID App</title>
+<link rel="stylesheet" href="embed-mockup.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html,
+  html * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  .top-spacer { height: 44px; flex-shrink: 0; }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 24px 0;
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 28px;
+  }
+
+  .header__title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a2b4a;
+    line-height: 1.25;
+    padding-right: 12px;
+  }
+
+  .header__mitid img {
+    display: block;
+    height: 16px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  /* ---------- Main content ---------- */
+  .content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .headline {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a2b4a;
+    line-height: 1.3;
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 0 8px;
+  }
+
+  .illustration {
+    width: 168px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 24px;
+  }
+
+  .actions {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 18px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .btn svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .btn-primary {
+    border: none;
+    background: #0066cc;
+    color: #ffffff;
+    margin-bottom: 12px;
+  }
+
+  .btn-secondary {
+    border: 1px solid #c8c8c8;
+    background: #ffffff;
+    color: #1a2b4a;
+    margin-bottom: 24px;
+  }
+
+  /* ---------- Footer links ---------- */
+  .footer {
+    width: 100%;
+    border-top: 1px solid #e8e8e8;
+    padding-top: 20px;
+    padding-bottom: 32px;
+    margin-top: auto;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 36px;
+  }
+
+  .footer-links span {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a2b4a;
+  }
+
+  html.preview,
+  html.preview * {
+    cursor: default !important;
+    pointer-events: none !important;
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  if (window.self !== window.top) {
+    document.documentElement.classList.add("preview");
+  }
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="top-spacer"></div>
+
+    <div class="page">
+
+      <header class="header">
+        <h1 class="header__title">Log on at Trulioo</h1>
+        <div class="header__mitid">
+          <img src="../assets/embeds/denmark/mitid-logo.png" alt="MitID">
+        </div>
+      </header>
+
+      <div class="content">
+
+        <h2 class="headline">Open MitID app and approve</h2>
+
+        <img class="illustration" src="../assets/embeds/denmark/mitid-app-icon.png" alt="">
+
+        <div class="actions">
+          <span class="btn btn-primary">
+            OPEN MITID APP
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </span>
+
+          <span class="btn btn-secondary">
+            OPEN APP ON ANOTHER DEVICE
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </span>
+
+          <footer class="footer">
+            <div class="footer-links">
+              <span>Cancel</span>
+              <span>Help</span>
+            </div>
+          </footer>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+ </div>
+</body>
+</html>
