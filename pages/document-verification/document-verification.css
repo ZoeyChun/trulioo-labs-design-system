@@ -559,7 +559,7 @@ button.tds-side-nav__nav-item,
 .dv-summary-page {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-16);
+  gap: var(--spacing-24);
   flex: 1 1 auto;
   min-height: 0;
   min-width: 0;
@@ -754,14 +754,7 @@ button.tds-side-nav__nav-item,
   flex-direction: column;
   gap: var(--spacing-16);
   min-width: 0;
-  min-height: 0;
-  flex: 1 1 auto;
   width: 100%;
-  padding: var(--spacing-16);
-  background-color: var(--surface-neutral-01);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-2xl);
-  box-sizing: border-box;
 }
 
 .dv-summary-evidence__title {
