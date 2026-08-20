@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="../shared/app-shell.css">
   <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
   <link rel="stylesheet" href="../shared/truai-chat.css">
-  <link rel="stylesheet" href="document-verification.css?v=21">
+  <link rel="stylesheet" href="document-verification.css?v=23">
   <link rel="stylesheet" href="document-verification-flow.css?v=2">
   <style>
     /* Nav item spec — inlined because Cursor preview often skips ../../ component CSS */
@@ -185,7 +185,7 @@
       </button>
 
       <!-- ============ Capture flow (form view) ============ -->
-      <div class="dv-view dv-flow-view" id="dv-form-view">
+      <div class="dv-view dv-flow-view" id="dv-form-view" hidden>
 
         <header class="dv-flow-header">
           <div class="dv-flow-header__title-group">
@@ -387,12 +387,12 @@
       </div>
 
       <!-- ============ Result view (Jane Doe) ============ -->
-      <div class="dv-view dv-panel" id="dv-result-view" hidden>
+      <div class="dv-view dv-panel" id="dv-result-view">
 
       <div class="dv-header">
         <div class="dv-header__top">
           <div class="dv-header__title-group">
-            <button type="button" class="dv-back-btn" id="dv-result-back" aria-label="Back to document capture">
+            <button type="button" class="dv-back-btn" id="dv-result-back" aria-label="Back to home">
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
             </button>
             <h1 class="dv-title">Jane Doe</h1>
@@ -762,8 +762,8 @@
   </div>
 
   <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
-  <script src="document-verification.js?v=17"></script>
-  <script src="document-verification-flow.js?v=2"></script>
+  <script src="document-verification.js?v=20"></script>
+  <script src="document-verification-flow.js?v=3"></script>
   <script src="truai-responses.js?v=5"></script>
   <script src="../shared/truai-chat.js?v=2"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>

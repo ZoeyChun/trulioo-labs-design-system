@@ -97,9 +97,11 @@
         window.location.href = homeUrl;
       });
     }
-    /* Result header back — return to the capture flow. */
+    /* Result header back — return home; the capture form is not part of this demo. */
     if (resultBack) {
-      resultBack.addEventListener("click", showFormView);
+      resultBack.addEventListener("click", function () {
+        window.location.href = homeUrl;
+      });
     }
   }
 
@@ -113,12 +115,6 @@
     initRadioGroups();
     initSwitches();
     initNav();
-
-    if (location.hash === "#result") {
-      showResultView();
-    } else {
-      showFormView();
-      goStep(1);
-    }
+    showResultView();
   });
 })();
