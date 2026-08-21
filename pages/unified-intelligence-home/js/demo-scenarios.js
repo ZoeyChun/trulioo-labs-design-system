@@ -48,10 +48,11 @@
     {
       id: 'identity-device-risk',
       type: 'person',
-      title: 'Identity and device risk assessment',
-      description: 'A returning customer successfully verifies their identity, while device and network signals are evaluated for potential fraud.',
-      status: 'Bank account verified',
-      statusTone: 'warning',
+      title: 'Device Intelligence',
+      description: 'Evaluate a device for attributes, environment, and risk signals before approval.',
+      status: 'Device signals ready',
+      statusTone: 'info',
+      url: '../device-intelligence/index.html',
     },
     {
       id: 'customer-digital-identity',
@@ -136,6 +137,11 @@
   function handleTryScenario(id) {
     var scenario = findScenario(id);
     if (!scenario) return;
+
+    if (scenario.url) {
+      window.location.href = scenario.url;
+      return;
+    }
 
     scrollToHero();
 

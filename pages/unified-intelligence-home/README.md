@@ -20,6 +20,7 @@ Then open:
 ## Share
 
 - Home: https://zoeychun.github.io/trulioo-labs-design-system/pages/unified-intelligence-home/
+- Device Intelligence: https://zoeychun.github.io/trulioo-labs-design-system/pages/device-intelligence/index.html
 - KYB Results: https://zoeychun.github.io/trulioo-labs-design-system/pages/KYB%20Results/index.html
 
 Use **Start assessment** on the home plan screen to navigate to KYB Results with the selected entity. The Home nav on KYB Results returns here.

@@ -7,6 +7,8 @@ Design tokens and components for Trulioo Labs
 
 **Document Verification:** https://zoeychun.github.io/trulioo-labs-design-system/pages/document-verification/index.html
 
+**Device Intelligence:** https://zoeychun.github.io/trulioo-labs-design-system/pages/device-intelligence/index.html
+
 **Unified Intelligence Home (Experimental):** https://zoeychun.github.io/trulioo-labs-design-system/pages/unified-intelligence-home/
 
 **Component Preview:** https://zoeychun.github.io/trulioo-labs-design-system/pages/preview/index.html
