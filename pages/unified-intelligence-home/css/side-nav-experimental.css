@@ -1,16 +1,24 @@
-/* Experimental sidenav — Figma 975:11948 (icon rail only). Scoped to homepage experimental. */
+/* Experimental sidenav — Figma 975:11948 (icon rail when collapsed). Scoped to homepage experimental. */
 
-body[data-sidenav="experimental"] .tds-side-nav {
+body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed {
   width: 72px;
 }
 
-body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__nav-stack,
-body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__collapse-bar {
+body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__nav-stack,
+body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__collapse-bar {
   display: none !important;
 }
 
-body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-rail {
+body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__icon-rail {
   display: flex !important;
+}
+
+body[data-sidenav="experimental"] .tds-side-nav:not(.tds-side-nav--collapsed) {
+  width: 232px;
+}
+
+body[data-sidenav="experimental"] .tds-side-nav:not(.tds-side-nav--collapsed) .tds-side-nav__icon-rail {
+  display: none !important;
 }
 
 body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-button,

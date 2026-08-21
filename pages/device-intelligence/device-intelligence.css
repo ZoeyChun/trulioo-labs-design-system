@@ -1,0 +1,269 @@
+/* ============================================================
+   Device Intelligence — landing + result chrome
+   Landing: Figma 4735:145261
+   Results: reuses Document Verification Device Intelligence tab
+   ============================================================ */
+
+.di-landing {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: var(--spacing-40);
+  padding: var(--padding-xl);
+  background-color: var(--surface-neutral-01);
+  border-radius: var(--radius-section);
+  box-shadow: var(--elevation-md);
+}
+
+.di-landing::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.5;
+  pointer-events: none;
+  background-image: var(--surface-flow-glow);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.di-landing > * {
+  position: relative;
+  z-index: 1;
+}
+
+.di-landing__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-lg);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.di-landing__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+  min-width: 0;
+}
+
+.di-landing__title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.di-landing__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+}
+
+.di-intro-card {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-32);
+  width: 100%;
+  max-width: 56rem;
+  padding: var(--spacing-12);
+  background-color: var(--surface-neutral-01);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--elevation-sm);
+  overflow: hidden;
+}
+
+.di-intro-card__hero {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 24.9375rem;
+  min-height: 29.25rem;
+  padding: var(--spacing-32);
+  background-color: var(--surface-inverse);
+  border-radius: var(--radius-xl);
+  color: var(--text-inverse);
+  box-sizing: border-box;
+}
+
+.di-intro-card__headline {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-display-lg);
+  line-height: 3.5rem;
+  font-weight: var(--font-weight-regular);
+  color: var(--text-inverse);
+}
+
+.di-intro-card__copy {
+  margin: var(--spacing-24) 0 0;
+  max-width: 17.1875rem;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-inverse);
+}
+
+.di-intro-card__cta {
+  margin-top: auto;
+  align-self: flex-start;
+  width: 13.25rem;
+}
+
+.di-intro-card__discover {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  min-width: 0;
+  padding: var(--spacing-24) var(--spacing-16) var(--spacing-24) 0;
+}
+
+.di-intro-card__discover-title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.di-intro-card__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.di-intro-card__item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.di-intro-card__item + .di-intro-card__item {
+  padding-top: var(--spacing-24);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 0;
+}
+
+.di-intro-card__item-title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.di-intro-card__item-copy {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.di-analyzing-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: var(--spacing-40);
+  padding: var(--padding-xl);
+  background-color: var(--surface-neutral-02);
+  border-radius: var(--radius-section);
+  box-shadow: var(--elevation-md);
+}
+
+.di-analyzing-panel[hidden] {
+  display: none;
+}
+
+.app-main:has(> #di-analyzing:not([hidden])) {
+  overflow: hidden;
+}
+
+.di-analyzing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-16);
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  text-align: center;
+}
+
+.di-analyzing__copy {
+  margin: 0;
+  max-width: 22rem;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-description);
+}
+
+/* --- Results: hide DocV tabs, keep the Device Intelligence panel --- */
+
+.di-result-view .tds-tabs {
+  display: none;
+}
+
+.di-result-view #dv-columns[hidden] {
+  display: flex !important;
+}
+
+.di-result-view .dv-tabpanel[data-tab="device-intelligence"] {
+  display: flex;
+}
+
+.di-result-view .dv-tabpanel[data-tab="device-intelligence"][hidden] {
+  display: flex !important;
+}
+
+.di-result-view .dv-title {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1100px) {
+  .di-intro-card {
+    flex-direction: column;
+    max-width: 40rem;
+  }
+
+  .di-intro-card__hero {
+    width: 100%;
+    min-height: 0;
+  }
+
+  .di-intro-card__discover {
+    padding: var(--spacing-16) var(--spacing-12) var(--spacing-24);
+  }
+
+  .di-intro-card__cta {
+    margin-top: var(--spacing-32);
+  }
+}
+
+@media (max-width: 640px) {
+  .di-landing {
+    gap: var(--spacing-24);
+    padding: var(--padding-lg);
+  }
+
+  .di-intro-card__headline {
+    font-size: var(--font-size-display-sm);
+    line-height: 2.75rem;
+  }
+
+  .di-intro-card__cta {
+    width: 100%;
+  }
+}

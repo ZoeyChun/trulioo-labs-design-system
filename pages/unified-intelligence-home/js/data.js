@@ -115,6 +115,14 @@ var personServiceUrls = {
     '../bank-verification/index.html',
     'https://zoeychun.github.io/trulioo-labs-design-system/pages/bank-verification/index.html'
   ),
+  'electronic-id': resolvePageUrl(
+    '../electronic-id/index.html',
+    'https://zoeychun.github.io/trulioo-labs-design-system/pages/electronic-id/index.html'
+  ),
+  'device-intelligence': resolvePageUrl(
+    '../device-intelligence/index.html',
+    'https://zoeychun.github.io/trulioo-labs-design-system/pages/device-intelligence/index.html'
+  ),
 };
 
 var kybHomeUrl = (function () {

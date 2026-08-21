@@ -37,6 +37,15 @@
       var profile = sideNav.querySelector(".tds-side-nav__profile");
       if (profile)
         profile.classList.toggle("tds-side-nav__profile--collapsed", isExpanded);
+
+      if (!isExpanded) {
+        var labsNav = sideNav.querySelector(".tds-side-nav__nav-item[aria-expanded]");
+        var subNav = sideNav.querySelector(".tds-side-nav__sub-nav");
+        if (labsNav) labsNav.setAttribute("aria-expanded", "true");
+        if (subNav) subNav.style.display = "";
+        var labsChevron = labsNav && labsNav.querySelector(".tds-side-nav__nav-item-chevron svg");
+        if (labsChevron) labsChevron.innerHTML = '<path d="M4 10l4-4 4 4"/>';
+      }
     });
 
     sideNav.addEventListener("click", function (e) {

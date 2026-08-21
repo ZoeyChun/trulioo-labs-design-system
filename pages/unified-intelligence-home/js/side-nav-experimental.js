@@ -2,6 +2,33 @@
   'use strict';
 
   var HISTORY_SVG = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M8 2.5a5.5 5.5 0 1 1-4.9 3M3 2.5v3h3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var CHEVRONS_LEFT = '<path d="M10 4 6 8l4 4M6 4 2 8l4 4"/>';
+
+  function expandLabsNav(sideNav) {
+    sideNav.classList.remove('tds-side-nav--collapsed');
+
+    var collapseBtn = document.getElementById('sidenav-collapse');
+    if (collapseBtn) {
+      collapseBtn.setAttribute('aria-expanded', 'true');
+      collapseBtn.setAttribute('aria-label', 'Collapse sidebar');
+      var collapseSvg = collapseBtn.querySelector('svg');
+      if (collapseSvg) collapseSvg.innerHTML = CHEVRONS_LEFT;
+    }
+
+    var profile = sideNav.querySelector('.tds-side-nav__profile');
+    if (profile) profile.classList.remove('tds-side-nav__profile--collapsed');
+
+    var iconRail = sideNav.querySelector('.tds-side-nav__icon-rail');
+    if (iconRail) iconRail.setAttribute('aria-hidden', 'true');
+
+    var labsNav = sideNav.querySelector('.tds-side-nav__nav-item[aria-expanded]');
+    var subNav = sideNav.querySelector('.tds-side-nav__sub-nav');
+    if (labsNav) labsNav.setAttribute('aria-expanded', 'true');
+    if (subNav) subNav.style.display = '';
+
+    var chevron = labsNav && labsNav.querySelector('.tds-side-nav__nav-item-chevron svg');
+    if (chevron) chevron.innerHTML = '<path d="M4 10l4-4 4 4"/>';
+  }
 
   function init(options) {
     options = options || {};
@@ -24,7 +51,16 @@
       homeBtn.onclick = function () { window.location.href = 'index.html'; };
     }
     if (labsBtn) {
-      labsBtn.onclick = function () { window.location.href = 'labs.html'; };
+      labsBtn.onclick = function (event) {
+        var subNav = sideNav.querySelector('.tds-side-nav__sub-nav');
+        if (!subNav) {
+          window.location.href = 'labs.html';
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        expandLabsNav(sideNav);
+      };
     }
 
     if (!historyBtn) {

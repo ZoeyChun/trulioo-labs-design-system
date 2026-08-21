@@ -1,0 +1,390 @@
+<!-- Static reference implementation — Device Intelligence results (DocV Device Intelligence tab). -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Intelligence Results — Trulioo Labs</title>
+
+  <link rel="preload" href="../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/spinner/spinner.css">
+  <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
+  <link rel="stylesheet" href="../../Components/data-table/sort-button/sort-button.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/tabs/tabs.css">
+  <link rel="stylesheet" href="../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../Components/section-header/section-header.css">
+  <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
+  <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
+  <link rel="stylesheet" href="../shared/app-shell.css">
+  <link rel="stylesheet" href="../shared/truai-chat.css">
+  <link rel="stylesheet" href="../document-verification/document-verification.css">
+  <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
+  <link rel="stylesheet" href="device-intelligence.css">
+  <style>
+    button.tds-side-nav__nav-item,
+    .tds-side-nav__nav-item {
+      height: 40px;
+      min-height: 40px;
+      padding: var(--padding-xs) var(--padding-sm);
+      border-radius: var(--radius-lg);
+    }
+
+    .tds-side-nav__nav-item-label {
+      justify-content: flex-start;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="labs-kyb-layout" id="labs-kyb-layout">
+
+  <div class="app-shell" id="app-shell">
+
+    <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
+
+    <aside class="tds-side-nav tds-side-nav--collapsed" id="app-sidenav" aria-label="Primary">
+
+      <div class="tds-side-nav__header">
+        <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+          <span class="tds-side-nav__logo">
+            <img src="../../assets/trulioo-logo-mark.svg" alt="" width="40" height="40">
+          </span>
+          <span class="tds-side-nav__brand-expanded">
+            <span class="tds-side-nav__brand-logo">
+              <img src="../../assets/trulioo-labs-logo.svg" alt="Trulioo Labs" width="152" height="24">
+            </span>
+          </span>
+        </button>
+      </div>
+
+      <div class="tds-side-nav__main">
+        <div class="tds-side-nav__nav-stack">
+          <div>
+            <button type="button" class="tds-side-nav__nav-item">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg></span>
+                <span class="tds-side-nav__nav-item-text">Home</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="tds-side-nav__nav-group">
+            <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-current="page" aria-expanded="true">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon tds-labs-icon tds-labs-icon--onlight" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="#617269"/></svg><svg class="icon tds-labs-icon tds-labs-icon--ondark" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="white"/></svg></span>
+                <span class="tds-side-nav__nav-item-text">Labs</span>
+              </span>
+              <span class="tds-side-nav__nav-item-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></span>
+            </button>
+
+            <div class="tds-side-nav__sub-nav">
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYB</div>
+                <div class="tds-side-nav__section-items">
+                  <a href="../KYB Results/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="1.5" width="9" height="13"/><path d="M6 4.5h1.2M8.8 4.5H10M6 7.5h1.2M8.8 7.5H10M7 14.5v-3h2v3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Business Verification</span>
+                  </a>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.5" cy="5" r="2.5"/><path d="M1 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="11.5" cy="5.5" r="2"/><path d="M15 13c0-2 1.5-3 0-3-1 0-2.5 1-2.5 3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">UBO Agent</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1.5h8a1 1 0 0 1 1 1v12l-5-2.5-5 2.5v-12a1 1 0 0 1 1-1z"/><path d="M6 6l1.5 1.5L10 5"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Policy Review</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Deep Search</span>
+                  </button>
+                </div>
+              </div>
+
+              <hr class="tds-side-nav__divider">
+
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYC</div>
+                <div class="tds-side-nav__section-items">
+                  <a href="../document-verification/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><circle cx="6" cy="7.5" r="1.5"/><path d="M3.5 11.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5"/><path d="M10 7h2.5M10 9.5h2.5"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Document Verification</span>
+                  </a>
+                  <a href="../bank-verification/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v8H2z"/><path d="M5 7v2M8 6v4M11 7v2M4 4V2h8v2"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Bank Verification</span>
+                  </a>
+                  <a href="../electronic-id/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Electronic ID</span>
+                  </a>
+                  <a href="index.html" class="tds-side-nav__sub-item tds-side-nav__sub-item--selected" aria-current="page">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><path d="M7 12.5h2"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Device Intelligence</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tds-side-nav__icon-rail" aria-hidden="false">
+          <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Home</span>
+            </span>
+          </button>
+          <button type="button" class="tds-side-nav__icon-button tds-side-nav__icon-button--active" aria-current="page" aria-label="Labs">
+            <svg class="icon tds-labs-icon tds-labs-icon--onlight" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="#617269"/></svg><svg class="icon tds-labs-icon tds-labs-icon--ondark" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.1359 0.160156C11.3022 0.160156 11.4626 0.226126 11.5802 0.343746C11.6976 0.461326 11.7638 0.620916 11.7638 0.787106C11.7638 0.953286 11.6976 1.11288 11.5802 1.23047C11.4626 1.34809 11.3022 1.41406 11.1359 1.41406H10.5089V5.87695L15.3458 13.9404H15.3478C15.4619 14.1308 15.5237 14.3484 15.5265 14.5703C15.5292 14.7921 15.4727 15.011 15.3634 15.2041C15.2542 15.3968 15.0958 15.5572 14.9044 15.6689C14.7128 15.7806 14.4944 15.8398 14.2726 15.8398H1.72863C1.50691 15.8395 1.28917 15.7799 1.09777 15.668C0.906488 15.5561 0.747849 15.3959 0.638779 15.2031C0.529689 15.01 0.473788 14.791 0.476668 14.5693C0.479548 14.3476 0.541318 14.1306 0.655378 13.9404L5.49132 5.87695V1.41406H4.86437C4.69804 1.41406 4.53863 1.34807 4.42101 1.23047C4.30339 1.11284 4.23741 0.953446 4.23741 0.787106C4.23744 0.620796 4.30341 0.461346 4.42101 0.343746C4.53862 0.226196 4.69808 0.160156 4.86437 0.160156H11.1359ZM6.74618 1.41406V6.0508C6.74648 6.1643 6.71498 6.2758 6.65638 6.373L4.73839 9.5742C5.84916 9.6127 7.03618 9.9471 8.28328 10.5781C10.0612 11.478 11.3992 11.5568 12.34 11.3711L9.34388 6.373C9.28528 6.2759 9.25488 6.1642 9.25498 6.0508V1.41406H6.74618Z" fill="white"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Labs</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="tds-side-nav__collapse-bar" id="sidenav-collapse" aria-label="Expand sidebar" aria-expanded="false">
+        <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4M10 4l4 4-4 4"/></svg>
+        <span class="tds-side-nav__collapse-label text-label-sm-uppercase">Hide Sidebar</span>
+      </button>
+
+      <div class="tds-side-nav__footer">
+        <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" aria-label="Jane Doe, janedoe@trulioo.com">
+          <span class="tds-side-nav__avatar">JD</span>
+          <span class="tds-side-nav__profile-info">
+            <span class="tds-side-nav__profile-name-row">
+              <span class="tds-side-nav__profile-name">Jane Doe</span>
+              <span class="tds-side-nav__profile-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg></span>
+            </span>
+            <span class="tds-side-nav__profile-email">janedoe@trulioo.com</span>
+          </span>
+        </button>
+      </div>
+
+    </aside>
+
+    <main class="app-main kyb-panel">
+
+      <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 5h14M3 10h14M3 15h14"/>
+        </svg>
+      </button>
+
+      <div class="di-analyzing-panel" id="di-analyzing" aria-busy="true">
+        <header class="di-landing__header">
+          <div class="di-landing__title-group">
+            <button type="button" class="dv-back-btn" id="di-analyzing-back" aria-label="Back to Device Intelligence">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+            </button>
+            <h1 class="di-landing__title">Device Intelligence</h1>
+          </div>
+          <button class="app-truai-btn" type="button" data-truai-toggle aria-expanded="false">
+            <span class="app-truai-btn__icon">
+              <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
+            </span>
+            TruAI
+          </button>
+        </header>
+
+        <div class="di-analyzing">
+          <div class="tds-spinner-block tds-spinner-block--lg" role="status" aria-live="polite">
+            <span class="tds-spinner tds-spinner--lg" aria-hidden="true"></span>
+            <span class="tds-spinner-block__label">Analyzing this device…</span>
+          </div>
+          <p class="di-analyzing__copy">Checking device attributes, environment, and risk signals.</p>
+        </div>
+      </div>
+
+      <div class="dv-view dv-panel di-result-view" id="dv-result-view" hidden>
+
+        <div class="dv-header">
+          <div class="dv-header__top">
+            <div class="dv-header__title-group">
+              <button type="button" class="dv-back-btn" id="di-result-back" aria-label="Back to Device Intelligence">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+              </button>
+              <h1 class="dv-title">Device ID: 3045489E05849546</h1>
+              <span class="tds-tag tds-tag--md tds-tag--positive" id="dv-header-status">Low Risk</span>
+              <span id="dv-device-header-badge" hidden></span>
+            </div>
+            <div class="dv-header__actions">
+              <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
+                <span class="tds-btn__leading-icon">
+                  <svg viewBox="0 0 576 512" fill="currentColor" aria-hidden="true"><path d="M96.5 0c-35.3 0-64 28.7-64 64l0 384c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-96 78.1 0-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l72-72c9.4-9.4 9.4-24.6 0-33.9l-72-72c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-78.1 0 0-133.5c0-17-6.7-33.3-18.7-45.3L291.2 18.7C279.2 6.7 263 0 246 0L96.5 0zM358 176l-93.5 0c-13.3 0-24-10.7-24-24L240.5 58.5 358 176zM224.5 328c0-13.3 10.7-24 24-24l104 0 0 48-104 0c-13.3 0-24-10.7-24-24z"/></svg>
+                </span>
+                Export
+              </button>
+              <button class="app-truai-btn" id="app-truai-btn" type="button" data-truai-toggle aria-expanded="false">
+                <span class="app-truai-btn__icon">
+                  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
+                </span>
+                TruAI
+              </button>
+            </div>
+          </div>
+
+          <div class="dv-meta">
+            <div class="dv-meta__item">
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Device Model</p>
+                <div class="tds-data-field__content">
+                  <div class="tds-data-field__value-row">
+                    <p class="tds-data-field__value">iPhone 15</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="dv-meta__divider" aria-hidden="true"></span>
+            <div class="dv-meta__item">
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Date created</p>
+                <div class="tds-data-field__content">
+                  <div class="tds-data-field__value-row">
+                    <p class="tds-data-field__value">05 July 2026, 3:30pm</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="dv-meta__divider" aria-hidden="true"></span>
+            <div class="dv-meta__item">
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Operating System</p>
+                <div class="tds-data-field__content">
+                  <div class="tds-data-field__value-row">
+                    <p class="tds-data-field__value">iOS 18</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="dv-meta__divider" aria-hidden="true"></span>
+            <div class="dv-meta__item">
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Browser</p>
+                <div class="tds-data-field__content">
+                  <div class="tds-data-field__value-row">
+                    <p class="tds-data-field__value">Mobile Safari</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dv-content">
+          <div class="tds-tabs tds-tabs--scrollable" data-tabs-scrollable id="dv-tabs">
+            <div class="tds-tabs__row">
+              <div class="tds-tabs__list" role="tablist" aria-label="Device Intelligence">
+                <button class="tds-tab-item tds-tab-item--active" type="button" role="tab" aria-selected="true" id="dv-tab-device-intelligence" data-tab="device-intelligence" aria-controls="dv-panel-device-intelligence">
+                  <span class="tds-tab-item__content">Device Intelligence</span>
+                  <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dv-columns" id="dv-columns">
+
+            <aside class="dv-sidebar" id="dv-sidebar">
+              <p id="dv-truai-overall" hidden></p>
+              <p id="dv-truai-title" hidden></p>
+
+              <div class="dv-sidebar__summary" id="dv-summary-block">
+                <div class="dv-sidebar__summary-top">
+                  <div class="dv-sidebar__summary-head">
+                    <h2 class="dv-sidebar__heading">Risk Score</h2>
+                    <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="dv-sidebar" aria-label="Collapse summary panel">
+                      <span class="tds-icon-btn__icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="dv-sidebar__gauge" id="dv-sidebar-gauge"></div>
+                  <div class="dv-highlights" id="dv-highlights"></div>
+                </div>
+                <div class="dv-ai-card" id="dv-truai-card">
+                  <div class="dv-ai-card__intro">
+                    <div class="dv-ai-card__label">
+                      <span class="dv-ai-card__sparkles" aria-hidden="true">
+                        <svg viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>
+                      </span>
+                      TruAI:
+                    </div>
+                    <p class="dv-ai-text" id="dv-truai-text"></p>
+                  </div>
+                  <div class="dv-ai-card__ask">
+                    <p class="dv-ai-card__ask-label">Ask TruAI:</p>
+                    <button type="button" class="tds-ai-tag tds-ai-tag--sm" id="dv-truai-cta" data-truai-prompt="How is device score calculated?">
+                      <span class="tds-ai-tag__icon" aria-hidden="true">
+                        <svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>
+                      </span>
+                      <span class="tds-ai-tag__label">How is device score calculated?</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dv-sidebar__accordions" id="dv-sidebar-doc-accordions" hidden></div>
+
+              <div class="dv-sidebar__accordions" id="dv-sidebar-di-accordions">
+                <div class="dv-sidebar__block dv-collapsible dv-collapsible--right">
+                  <button class="dv-collapsible__header" type="button" aria-expanded="false">
+                    <span class="dv-section-title">Device Information</span>
+                    <span class="dv-chevron" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+                    </span>
+                  </button>
+                  <div class="dv-collapsible__body" hidden id="dv-device-info"></div>
+                </div>
+              </div>
+            </aside>
+
+            <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="dv-sidebar" aria-label="Show summary panel">
+              <span class="tds-icon-btn__icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
+              </span>
+            </button>
+
+            <div class="dv-main">
+              <section class="dv-tabpanel dv-doc-panel" id="dv-panel-device-intelligence" data-tab="device-intelligence" aria-labelledby="dv-tab-device-intelligence">
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Device Intelligence</p>
+                    </div>
+                  </div>
+                </div>
+                <div id="dv-device-body" class="dv-di-body"></div>
+              </section>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  </div>
+
+  <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
+  <script src="../document-verification/document-verification.js"></script>
+  <script src="truai-responses.js"></script>
+  <script src="../shared/truai-chat.js"></script>
+  <script src="../../Components/side-nav/side-nav.js"></script>
+  <script src="device-intelligence.js"></script>
+  <script>TdsSideNav.init();</script>
+</body>
+</html>
