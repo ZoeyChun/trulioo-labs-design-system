@@ -1,7 +1,7 @@
 /* ============================================================
-   Device Intelligence — landing + result chrome
+   Device Intelligence — landing + Figma results
    Landing: Figma 4735:145261
-   Results: reuses Document Verification Device Intelligence tab
+   Results: Figma 4735:144821
    ============================================================ */
 
 .di-landing {
@@ -210,26 +210,85 @@
   color: var(--text-description);
 }
 
-/* --- Results: hide DocV tabs, keep the Device Intelligence panel --- */
+/* --- Results: Figma 4735:144821 --- */
 
-.di-result-view .tds-tabs {
-  display: none;
+.di-result-view.dv-panel {
+  gap: var(--spacing-40);
 }
 
-.di-result-view #dv-columns[hidden] {
-  display: flex !important;
+.di-result-view .dv-content {
+  gap: 0;
+}
+
+.di-score-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  width: 100%;
+}
+
+.di-result-view .dv-sidebar__summary-top {
+  gap: var(--spacing-32);
+}
+
+.di-result-view .dv-sidebar__summary {
+  gap: var(--spacing-24);
+}
+
+.di-device-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  width: 100%;
+}
+
+.di-device-info__title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.di-device-info__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  padding: var(--spacing-8) 0;
+  width: 100%;
+}
+
+.di-device-info__list .tds-data-field + .tds-data-field {
+  padding-top: var(--spacing-12);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.di-result-view .dv-ditable__row .dv-ditable__cell {
+  padding-top: var(--padding-lg);
+  padding-bottom: var(--padding-lg);
+}
+
+.di-result-view .dv-ditable__head .dv-ditable__ch:last-child,
+.di-result-view .dv-ditable__row .dv-ditable__cell:last-child {
+  justify-content: flex-end;
+}
+
+.di-result-view .dv-signals-bar__title {
+  font-size: var(--font-size-md);
+  line-height: 20px;
+}
+
+.di-more-declined {
+  align-self: flex-start;
 }
 
 .di-result-view .dv-tabpanel[data-tab="device-intelligence"] {
   display: flex;
+  flex-direction: column;
 }
 
-.di-result-view .dv-tabpanel[data-tab="device-intelligence"][hidden] {
+.di-result-view #dv-columns[hidden] {
   display: flex !important;
-}
-
-.di-result-view .dv-title {
-  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 1100px) {

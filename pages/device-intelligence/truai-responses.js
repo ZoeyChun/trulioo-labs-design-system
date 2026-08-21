@@ -26,6 +26,8 @@
   }
 
   function riskLabel() {
+    var gauge = document.querySelector(".dv-di-gauge[data-label]");
+    if (gauge && gauge.getAttribute("data-label")) return gauge.getAttribute("data-label");
     var status = document.getElementById("dv-header-status");
     return status ? status.textContent.trim() : "Low Risk";
   }

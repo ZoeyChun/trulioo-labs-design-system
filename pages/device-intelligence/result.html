@@ -1,4 +1,4 @@
-<!-- Static reference implementation — Device Intelligence results (DocV Device Intelligence tab). -->
+<!-- Static reference implementation — Device Intelligence results (Figma 4735:144821). -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,11 +15,6 @@
   <link rel="stylesheet" href="../../Components/spinner/spinner.css">
   <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
   <link rel="stylesheet" href="../../Components/announcement/announcement.css">
-  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
-  <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
-  <link rel="stylesheet" href="../../Components/data-table/sort-button/sort-button.css">
-  <link rel="stylesheet" href="../../Components/select/select.css">
-  <link rel="stylesheet" href="../../Components/tabs/tabs.css">
   <link rel="stylesheet" href="../../Components/data-field/data-field.css">
   <link rel="stylesheet" href="../../Components/section-header/section-header.css">
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
@@ -213,17 +208,13 @@
         <div class="dv-header">
           <div class="dv-header__top">
             <div class="dv-header__title-group">
-              <button type="button" class="dv-back-btn" id="di-result-back" aria-label="Back to Device Intelligence">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
-              </button>
               <h1 class="dv-title">Device ID: 3045489E05849546</h1>
-              <span class="tds-tag tds-tag--md tds-tag--positive" id="dv-header-status">Low Risk</span>
-              <span id="dv-device-header-badge" hidden></span>
+              <span class="tds-tag tds-tag--md tds-tag--negative">Flagged</span>
             </div>
             <div class="dv-header__actions">
               <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
                 <span class="tds-btn__leading-icon">
-                  <svg viewBox="0 0 576 512" fill="currentColor" aria-hidden="true"><path d="M96.5 0c-35.3 0-64 28.7-64 64l0 384c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-96 78.1 0-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l72-72c9.4-9.4 9.4-24.6 0-33.9l-72-72c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-78.1 0 0-133.5c0-17-6.7-33.3-18.7-45.3L291.2 18.7C279.2 6.7 263 0 246 0L96.5 0zM358 176l-93.5 0c-13.3 0-24-10.7-24-24L240.5 58.5 358 176zM224.5 328c0-13.3 10.7-24 24-24l104 0 0 48-104 0c-13.3 0-24-10.7-24-24z"/></svg>
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 10.5V13h10v-2.5M8 3v7M5.5 8.5 8 11l2.5-2.5"/></svg>
                 </span>
                 Export
               </button>
@@ -242,7 +233,7 @@
                 <p class="tds-data-field__label">Device Model</p>
                 <div class="tds-data-field__content">
                   <div class="tds-data-field__value-row">
-                    <p class="tds-data-field__value">iPhone 15</p>
+                    <p class="tds-data-field__value">Macbook Pro</p>
                   </div>
                 </div>
               </div>
@@ -253,7 +244,7 @@
                 <p class="tds-data-field__label">Date created</p>
                 <div class="tds-data-field__content">
                   <div class="tds-data-field__value-row">
-                    <p class="tds-data-field__value">05 July 2026, 3:30pm</p>
+                    <p class="tds-data-field__value">17 Jun 2026, 2:14 PM</p>
                   </div>
                 </div>
               </div>
@@ -264,7 +255,7 @@
                 <p class="tds-data-field__label">Operating System</p>
                 <div class="tds-data-field__content">
                   <div class="tds-data-field__value-row">
-                    <p class="tds-data-field__value">iOS 18</p>
+                    <p class="tds-data-field__value">macOS Tahoe</p>
                   </div>
                 </div>
               </div>
@@ -275,7 +266,7 @@
                 <p class="tds-data-field__label">Browser</p>
                 <div class="tds-data-field__content">
                   <div class="tds-data-field__value-row">
-                    <p class="tds-data-field__value">Mobile Safari</p>
+                    <p class="tds-data-field__value">Chrome 122</p>
                   </div>
                 </div>
               </div>
@@ -284,35 +275,45 @@
         </div>
 
         <div class="dv-content">
-          <div class="tds-tabs tds-tabs--scrollable" data-tabs-scrollable id="dv-tabs">
-            <div class="tds-tabs__row">
-              <div class="tds-tabs__list" role="tablist" aria-label="Device Intelligence">
-                <button class="tds-tab-item tds-tab-item--active" type="button" role="tab" aria-selected="true" id="dv-tab-device-intelligence" data-tab="device-intelligence" aria-controls="dv-panel-device-intelligence">
-                  <span class="tds-tab-item__content">Device Intelligence</span>
-                  <span class="tds-tab-item__indicator" aria-hidden="true"></span>
-                </button>
-              </div>
-            </div>
-          </div>
-
           <div class="dv-columns" id="dv-columns">
 
             <aside class="dv-sidebar" id="dv-sidebar">
-              <p id="dv-truai-overall" hidden></p>
-              <p id="dv-truai-title" hidden></p>
-
               <div class="dv-sidebar__summary" id="dv-summary-block">
                 <div class="dv-sidebar__summary-top">
-                  <div class="dv-sidebar__summary-head">
-                    <h2 class="dv-sidebar__heading">Risk Score</h2>
-                    <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="dv-sidebar" aria-label="Collapse summary panel">
-                      <span class="tds-icon-btn__icon" aria-hidden="true">
-                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
-                      </span>
-                    </button>
+                  <div class="di-score-block">
+                    <div class="dv-sidebar__summary-head">
+                      <h2 class="dv-sidebar__heading">Risk Score</h2>
+                      <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="dv-sidebar" aria-label="Collapse summary panel">
+                        <span class="tds-icon-btn__icon" aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
+                        </span>
+                      </button>
+                    </div>
+                    <div class="dv-sidebar__gauge" id="dv-sidebar-gauge">
+                      <div class="dv-di-gauge" data-score="17" data-max="100" data-risk="low" data-label="Low Risk"></div>
+                    </div>
                   </div>
-                  <div class="dv-sidebar__gauge" id="dv-sidebar-gauge"></div>
-                  <div class="dv-highlights" id="dv-highlights"></div>
+                  <section class="di-device-info" aria-label="Device Information">
+                    <h3 class="di-device-info__title">Device Information</h3>
+                    <div class="di-device-info__list">
+                      <div class="tds-data-field tds-data-field--horizontal">
+                        <div class="tds-data-field__label-row"><p class="tds-data-field__label">Language</p></div>
+                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">en-US</p></div></div>
+                      </div>
+                      <div class="tds-data-field tds-data-field--horizontal">
+                        <div class="tds-data-field__label-row"><p class="tds-data-field__label">Timezone</p></div>
+                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">UTC-07</p></div></div>
+                      </div>
+                      <div class="tds-data-field tds-data-field--horizontal">
+                        <div class="tds-data-field__label-row"><p class="tds-data-field__label">Battery</p></div>
+                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">23%</p></div></div>
+                      </div>
+                      <div class="tds-data-field tds-data-field--horizontal">
+                        <div class="tds-data-field__label-row"><p class="tds-data-field__label">First Seen</p></div>
+                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">2026-02-06 T05:47:53Z</p></div></div>
+                      </div>
+                    </div>
+                  </section>
                 </div>
                 <div class="dv-ai-card" id="dv-truai-card">
                   <div class="dv-ai-card__intro">
@@ -322,7 +323,7 @@
                       </span>
                       TruAI:
                     </div>
-                    <p class="dv-ai-text" id="dv-truai-text"></p>
+                    <p class="dv-ai-text" id="dv-truai-text">Device environment shows no risk indicators. The submission came from a legitimate device, which makes the face mismatch more notable.</p>
                   </div>
                   <div class="dv-ai-card__ask">
                     <p class="dv-ai-card__ask-label">Ask TruAI:</p>
@@ -335,20 +336,6 @@
                   </div>
                 </div>
               </div>
-
-              <div class="dv-sidebar__accordions" id="dv-sidebar-doc-accordions" hidden></div>
-
-              <div class="dv-sidebar__accordions" id="dv-sidebar-di-accordions">
-                <div class="dv-sidebar__block dv-collapsible dv-collapsible--right">
-                  <button class="dv-collapsible__header" type="button" aria-expanded="false">
-                    <span class="dv-section-title">Device Information</span>
-                    <span class="dv-chevron" aria-hidden="true">
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
-                    </span>
-                  </button>
-                  <div class="dv-collapsible__body" hidden id="dv-device-info"></div>
-                </div>
-              </div>
             </aside>
 
             <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="dv-sidebar" aria-label="Show summary panel">
@@ -358,7 +345,7 @@
             </button>
 
             <div class="dv-main">
-              <section class="dv-tabpanel dv-doc-panel" id="dv-panel-device-intelligence" data-tab="device-intelligence" aria-labelledby="dv-tab-device-intelligence">
+              <section class="dv-tabpanel dv-doc-panel" id="dv-panel-device-intelligence" data-tab="device-intelligence">
                 <div class="tds-section-header">
                   <div class="tds-section-header__left">
                     <div class="tds-section-header__title-stack">
@@ -379,8 +366,6 @@
 
   </div>
 
-  <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
-  <script src="../document-verification/document-verification.js"></script>
   <script src="truai-responses.js"></script>
   <script src="../shared/truai-chat.js"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>
