@@ -1,6 +1,6 @@
 /* ============================================================
    Device Intelligence — landing + Figma results
-   Landing: Figma 4735:145261
+   Landing card: Figma 4758:148914 (896 × 492)
    Results: Figma 4735:144821
    ============================================================ */
 
@@ -72,9 +72,11 @@
 .di-intro-card {
   display: flex;
   align-items: stretch;
+  flex-shrink: 0;
   gap: var(--spacing-32);
-  width: 100%;
-  max-width: 56rem;
+  width: 56rem;
+  max-width: 100%;
+  height: 30.75rem;
   padding: var(--spacing-12);
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-3xl);
@@ -87,44 +89,51 @@
   flex-direction: column;
   flex-shrink: 0;
   width: 24.9375rem;
-  min-height: 29.25rem;
+  height: 29.25rem;
   padding: var(--spacing-32);
   background-color: var(--surface-inverse);
   border-radius: var(--radius-xl);
   color: var(--text-inverse);
-  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .di-intro-card__headline {
   margin: 0;
+  width: 20.5625rem;
+  max-width: 100%;
+  min-height: 10.5rem;
   font-family: var(--font-family-display);
   font-size: var(--font-size-display-lg);
   line-height: 3.5rem;
   font-weight: var(--font-weight-regular);
+  letter-spacing: 0;
   color: var(--text-inverse);
 }
 
 .di-intro-card__copy {
   margin: var(--spacing-24) 0 0;
-  max-width: 17.1875rem;
+  width: 17.1875rem;
+  max-width: 100%;
+  min-height: 5.625rem;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
   color: var(--text-inverse);
 }
 
 .di-intro-card__cta {
-  margin-top: auto;
+  margin-top: var(--spacing-32);
   align-self: flex-start;
   width: 13.25rem;
 }
 
 .di-intro-card__discover {
   display: flex;
-  flex: 1;
+  flex: 1 0 0;
   flex-direction: column;
   gap: var(--spacing-32);
   min-width: 0;
-  padding: var(--spacing-24) var(--spacing-16) var(--spacing-24) 0;
+  padding: var(--spacing-24) 1.25rem var(--spacing-24) 0;
 }
 
 .di-intro-card__discover-title {
@@ -133,6 +142,7 @@
   line-height: var(--line-height-md);
   font-weight: var(--font-weight-semibold);
   color: var(--text-default);
+  white-space: nowrap;
 }
 
 .di-intro-card__list {
@@ -140,6 +150,7 @@
   flex-direction: column;
   margin: 0;
   padding: 0;
+  width: 100%;
   list-style: none;
 }
 
@@ -147,16 +158,20 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  width: 100%;
 }
 
 .di-intro-card__item + .di-intro-card__item {
+  margin-top: var(--spacing-24);
   padding-top: var(--spacing-24);
   border-top: 1px solid var(--border-subtle);
-  margin-top: 0;
 }
 
 .di-intro-card__item-title {
   margin: 0;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   font-weight: var(--font-weight-semibold);
@@ -165,8 +180,10 @@
 
 .di-intro-card__item-copy {
   margin: 0;
+  width: 100%;
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
   color: var(--text-description);
 }
 
@@ -294,20 +311,24 @@
 @media (max-width: 1100px) {
   .di-intro-card {
     flex-direction: column;
+    width: 100%;
     max-width: 40rem;
+    height: auto;
   }
 
   .di-intro-card__hero {
     width: 100%;
+    height: auto;
+  }
+
+  .di-intro-card__headline,
+  .di-intro-card__copy {
     min-height: 0;
+    width: auto;
   }
 
   .di-intro-card__discover {
     padding: var(--spacing-16) var(--spacing-12) var(--spacing-24);
-  }
-
-  .di-intro-card__cta {
-    margin-top: var(--spacing-32);
   }
 }
 
