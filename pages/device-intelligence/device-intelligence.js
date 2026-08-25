@@ -30,6 +30,15 @@
     { value: "low", label: "Low-risk Device", description: "No significant risk signals" },
   ];
 
+  function deviceInfo(values) {
+    return [
+      { label: "Language", value: values.language },
+      { label: "Timezone", value: values.timezone },
+      { label: "Battery", value: values.battery },
+      { label: "First Seen", value: values.firstSeen },
+    ];
+  }
+
   var SCENARIOS = {
     low: {
       tag: "Clear",
@@ -49,12 +58,12 @@
         os: "iOS 18",
         browser: "Mobile Safari",
       },
-      deviceInfo: [
-        { label: "Language", value: "en-US" },
-        { label: "Timezone", value: "UTC-07" },
-        { label: "Battery", value: "68%" },
-        { label: "First Seen", value: "05 July 2026, 3:30pm" },
-      ],
+      deviceInfo: deviceInfo({
+        language: "en-US",
+        timezone: "UTC-07",
+        battery: "68%",
+        firstSeen: "05 July 2026, 3:30pm",
+      }),
       indicators: [
         "Trusted browser and operating system",
         "Stable location and timezone",
@@ -141,12 +150,12 @@
         os: "Android 14",
         browser: "Chrome Mobile",
       },
-      deviceInfo: [
-        { label: "Timezone", value: "UTC-07" },
-        { label: "Identity count", value: "3" },
-        { label: "Transaction count", value: "7" },
-        { label: "First Seen", value: "14 September 2025" },
-      ],
+      deviceInfo: deviceInfo({
+        language: "ko-KR",
+        timezone: "UTC+09",
+        battery: "23%",
+        firstSeen: "14 September 2025",
+      }),
       indicators: [
         "Linked to 3 different identities",
         "Device previously seen in a declined transaction",
