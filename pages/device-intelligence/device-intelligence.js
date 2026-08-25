@@ -590,8 +590,10 @@
       '<div class="dv-group dv-collapsible' + (open ? " dv-collapsible--open" : "") + '" data-group-key="' + escapeHtml(group.key) + '">' +
         '<button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="' + String(open) + '">' +
           '<span class="dv-chevron" aria-hidden="true">' + ICON_CHEVRON + "</span>" +
-          '<span class="dv-group__label">' + escapeHtml(group.label) + "</span>" +
-          '<span class="dv-ni2-counts"><span class="tds-tag tds-tag--sm tds-tag--' + tagType + '">' + group.rows.length + "</span></span>" +
+          '<span class="dv-group__heading">' +
+            '<span class="dv-group__label">' + escapeHtml(group.label) + "</span>" +
+            '<span class="dv-ni2-counts"><span class="tds-tag tds-tag--sm tds-tag--' + tagType + '">' + group.rows.length + "</span></span>" +
+          "</span>" +
         "</button>" +
         '<div class="dv-collapsible__body"' + (open ? "" : " hidden") + ">" +
           '<div class="dv-ditable">' +

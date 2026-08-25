@@ -91,13 +91,9 @@
   width: 56rem;
   max-width: 100%;
   background-color: var(--surface-neutral-01);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-3xl);
   box-shadow: var(--elevation-lg);
-  overflow: hidden;
-}
-
-.di-intro-card:has(.tds-select--open) {
   overflow: visible;
 }
 
@@ -118,6 +114,7 @@
   background-color: var(--surface-inverse);
   color: var(--text-inverse);
   overflow: hidden;
+  border-top-left-radius: var(--radius-3xl);
 }
 
 .di-intro-card__headline {
@@ -147,6 +144,7 @@
   gap: var(--spacing-32);
   min-width: 0;
   padding: var(--spacing-24);
+  border-top-right-radius: var(--radius-3xl);
 }
 
 .di-intro-card__discover-title {
@@ -208,6 +206,9 @@
   width: 100%;
   padding: var(--spacing-16) var(--spacing-24) var(--spacing-24);
   background-color: var(--surface-neutral-03);
+  overflow: visible;
+  border-bottom-left-radius: var(--radius-3xl);
+  border-bottom-right-radius: var(--radius-3xl);
 }
 
 .di-intro-card__footer .tds-select {
@@ -356,6 +357,61 @@
   line-height: 20px;
 }
 
+/* Evidence groups: header content centered between row dividers. */
+.di-result-view .dv-di-groups {
+  gap: 0;
+}
+
+.di-result-view .dv-di-groups .dv-group {
+  padding-bottom: 0;
+}
+
+.di-result-view .dv-di-groups .dv-group.dv-collapsible--open {
+  padding-bottom: var(--spacing-16);
+}
+
+.di-result-view .dv-di-groups .dv-group__header {
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--spacing-8);
+  min-height: 0;
+  padding-top: var(--spacing-16);
+  padding-bottom: var(--spacing-16);
+}
+
+.di-result-view .dv-di-groups .dv-group.dv-collapsible--open > .dv-group__header {
+  padding-bottom: 0;
+}
+
+.di-result-view .dv-di-groups .dv-group__heading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.di-result-view .dv-di-groups .dv-group__header .dv-chevron {
+  align-self: center;
+}
+
+.di-result-view .dv-di-groups .dv-group__label {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.di-result-view .dv-di-groups .dv-ni2-counts {
+  margin-left: 0;
+  align-self: center;
+  flex-wrap: nowrap;
+}
+
+.di-result-view .dv-di-groups .dv-group__header .tds-tag {
+  align-self: center;
+}
+
 .di-result-view .dv-tabpanel[data-tab="device-intelligence"] {
   display: flex;
   flex-direction: column;
@@ -378,6 +434,7 @@
 
   .di-intro-card__hero {
     width: 100%;
+    border-top-right-radius: var(--radius-3xl);
   }
 
   .di-intro-card__headline,
@@ -387,6 +444,7 @@
 
   .di-intro-card__discover {
     padding: var(--spacing-16) var(--spacing-12) var(--spacing-24);
+    border-top-right-radius: 0;
   }
 
   .di-intro-card__footer {
