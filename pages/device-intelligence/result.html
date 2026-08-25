@@ -1,4 +1,4 @@
-<!-- Static reference implementation — Device Intelligence results (Figma 4735:144821). -->
+<!-- Static reference implementation — Device Intelligence results (Figma 4777:151852). -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="../../tokens/tokens.css">
   <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
   <link rel="stylesheet" href="../../Components/spinner/spinner.css">
   <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
   <link rel="stylesheet" href="../../Components/announcement/announcement.css">
@@ -209,7 +211,7 @@
           <div class="dv-header__top">
             <div class="dv-header__title-group">
               <h1 class="dv-title">Device ID: 3045489E05849546</h1>
-              <span class="tds-tag tds-tag--md tds-tag--negative">Flagged</span>
+              <span class="tds-tag tds-tag--md tds-tag--negative" id="di-result-tag">Flagged</span>
             </div>
             <div class="dv-header__actions">
               <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
@@ -228,12 +230,44 @@
           </div>
 
           <div class="dv-meta">
+            <div class="dv-meta__item dv-meta__item--entity">
+              <p class="tds-data-field__label" id="di-result-entity-label">Test entity</p>
+              <div class="tds-select dv-te-select" id="di-result-entity">
+                <button type="button" class="tds-select__trigger tds-select__trigger--sm dv-te-trigger" aria-labelledby="di-result-entity-label" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="tds-select__text-wrapper">
+                    <span class="tds-select__value" id="di-result-entity-value">High-risk Device</span>
+                  </span>
+                  <span class="tds-select__trailing-group">
+                    <span class="tds-caret tds-caret--default" aria-hidden="true">
+                      <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                    </span>
+                  </span>
+                </button>
+                <div class="tds-select__menu">
+                  <div class="tds-dropdown-panel" role="listbox" aria-labelledby="di-result-entity-label">
+                    <button type="button" class="tds-action-list-item" role="option" data-value="high">
+                      <span class="tds-action-list-item__content">
+                        <span class="tds-action-list-item__label">High-risk Device</span>
+                        <span class="tds-action-list-item__description">Suspicious device signals are detected.</span>
+                      </span>
+                    </button>
+                    <button type="button" class="tds-action-list-item" role="option" data-value="low">
+                      <span class="tds-action-list-item__content">
+                        <span class="tds-action-list-item__label">Low-risk Device</span>
+                        <span class="tds-action-list-item__description">No significant risk signals</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="dv-meta__divider" aria-hidden="true"></span>
             <div class="dv-meta__item">
               <div class="tds-data-field">
                 <p class="tds-data-field__label">Device Model</p>
                 <div class="tds-data-field__content">
                   <div class="tds-data-field__value-row">
-                    <p class="tds-data-field__value">Macbook Pro</p>
+                    <p class="tds-data-field__value" id="di-meta-model">Samsung Galaxy S24</p>
                   </div>
                 </div>
               </div>
@@ -244,7 +278,7 @@
                 <p class="tds-data-field__label">Date created</p>
                 <div class="tds-data-field__content">
                   <div class="tds-data-field__value-row">
-                    <p class="tds-data-field__value">17 Jun 2026, 2:14 PM</p>
+                    <p class="tds-data-field__value" id="di-meta-date">17 Jun 2026, 2:14 PM</p>
                   </div>
                 </div>
               </div>
@@ -255,7 +289,7 @@
                 <p class="tds-data-field__label">Operating System</p>
                 <div class="tds-data-field__content">
                   <div class="tds-data-field__value-row">
-                    <p class="tds-data-field__value">macOS Tahoe</p>
+                    <p class="tds-data-field__value" id="di-meta-os">Android 14</p>
                   </div>
                 </div>
               </div>
@@ -266,7 +300,7 @@
                 <p class="tds-data-field__label">Browser</p>
                 <div class="tds-data-field__content">
                   <div class="tds-data-field__value-row">
-                    <p class="tds-data-field__value">Chrome 122</p>
+                    <p class="tds-data-field__value" id="di-meta-browser">Chrome Mobile</p>
                   </div>
                 </div>
               </div>
@@ -290,27 +324,27 @@
                       </button>
                     </div>
                     <div class="dv-sidebar__gauge" id="dv-sidebar-gauge">
-                      <div class="dv-di-gauge" data-score="17" data-max="100" data-risk="low" data-label="Low Risk"></div>
+                      <div class="dv-di-gauge" id="di-result-gauge" data-score="92" data-max="100" data-risk="high" data-label="High Risk"></div>
                     </div>
                   </div>
                   <section class="di-device-info" aria-label="Device Information">
                     <h3 class="di-device-info__title">Device Information</h3>
-                    <div class="di-device-info__list">
-                      <div class="tds-data-field tds-data-field--horizontal">
-                        <div class="tds-data-field__label-row"><p class="tds-data-field__label">Language</p></div>
-                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">en-US</p></div></div>
-                      </div>
+                    <div class="di-device-info__list" id="di-device-info-list">
                       <div class="tds-data-field tds-data-field--horizontal">
                         <div class="tds-data-field__label-row"><p class="tds-data-field__label">Timezone</p></div>
                         <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">UTC-07</p></div></div>
                       </div>
                       <div class="tds-data-field tds-data-field--horizontal">
-                        <div class="tds-data-field__label-row"><p class="tds-data-field__label">Battery</p></div>
-                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">23%</p></div></div>
+                        <div class="tds-data-field__label-row"><p class="tds-data-field__label">Identity count</p></div>
+                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">3</p></div></div>
+                      </div>
+                      <div class="tds-data-field tds-data-field--horizontal">
+                        <div class="tds-data-field__label-row"><p class="tds-data-field__label">Transaction count</p></div>
+                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">7</p></div></div>
                       </div>
                       <div class="tds-data-field tds-data-field--horizontal">
                         <div class="tds-data-field__label-row"><p class="tds-data-field__label">First Seen</p></div>
-                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">2026-02-06 T05:47:53Z</p></div></div>
+                        <div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">14 September 2025</p></div></div>
                       </div>
                     </div>
                   </section>
@@ -323,7 +357,7 @@
                       </span>
                       TruAI:
                     </div>
-                    <p class="dv-ai-text" id="dv-truai-text">Device environment shows no risk indicators. The submission came from a legitimate device, which makes the face mismatch more notable.</p>
+                    <p class="dv-ai-text" id="dv-truai-text">This device has been linked to multiple identities and previously declined transactions, which increases the fraud risk.</p>
                   </div>
                   <div class="dv-ai-card__ask">
                     <p class="dv-ai-card__ask-label">Ask TruAI:</p>

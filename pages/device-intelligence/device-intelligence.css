@@ -1,7 +1,6 @@
 /* ============================================================
    Device Intelligence — landing + Figma results
-   Landing page: Figma 4777:152430
-   Results: Figma 4735:144821
+   Landing + results: Figma 4777:151852
    ============================================================ */
 
 .di-landing {
@@ -59,14 +58,18 @@
   color: var(--text-default);
 }
 
-.di-landing .app-truai-btn {
+.di-landing .app-truai-btn,
+.di-analyzing-panel .app-truai-btn,
+.di-result-view .app-truai-btn {
   background-color: var(--interactive-default);
   border: 1px solid var(--interactive-default);
   border-radius: var(--radius-lg);
   font-weight: var(--font-weight-medium);
 }
 
-.di-landing .app-truai-btn:hover {
+.di-landing .app-truai-btn:hover,
+.di-analyzing-panel .app-truai-btn:hover,
+.di-result-view .app-truai-btn:hover {
   background-color: var(--interactive-hover);
   border-color: var(--interactive-hover);
 }
@@ -83,38 +86,42 @@
 
 .di-intro-card {
   display: flex;
-  align-items: stretch;
+  flex-direction: column;
   flex-shrink: 0;
-  gap: var(--spacing-24);
   width: 56rem;
   max-width: 100%;
-  height: 30.75rem;
-  padding: var(--spacing-12);
   background-color: var(--surface-neutral-01);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-3xl);
   box-shadow: var(--elevation-lg);
   overflow: hidden;
+}
+
+.di-intro-card:has(.tds-select--open) {
+  overflow: visible;
+}
+
+.di-intro-card__top {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 27.25rem;
 }
 
 .di-intro-card__hero {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  gap: var(--spacing-24);
   width: 24.9375rem;
-  height: 29.25rem;
   padding: var(--spacing-32);
   background-color: var(--surface-inverse);
-  border-radius: var(--radius-xl);
   color: var(--text-inverse);
   overflow: hidden;
 }
 
 .di-intro-card__headline {
   margin: 0;
-  width: 20.5625rem;
-  max-width: 100%;
-  min-height: 10.5rem;
   font-family: var(--font-family-display);
   font-size: var(--font-size-display-lg);
   line-height: 3.5rem;
@@ -124,20 +131,13 @@
 }
 
 .di-intro-card__copy {
-  margin: var(--spacing-24) 0 0;
+  margin: 0;
   width: 17.1875rem;
   max-width: 100%;
-  min-height: 5.625rem;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   font-weight: var(--font-weight-regular);
   color: var(--text-inverse);
-}
-
-.di-intro-card__cta {
-  margin-top: var(--spacing-32);
-  align-self: flex-start;
-  width: 13.25rem;
 }
 
 .di-intro-card__discover {
@@ -146,7 +146,7 @@
   flex-direction: column;
   gap: var(--spacing-32);
   min-width: 0;
-  padding: var(--spacing-24) 1.25rem var(--spacing-24) 0;
+  padding: var(--spacing-24);
 }
 
 .di-intro-card__discover-title {
@@ -200,6 +200,28 @@
   color: var(--text-description);
 }
 
+.di-intro-card__footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  width: 100%;
+  padding: var(--spacing-16) var(--spacing-24) var(--spacing-24);
+  background-color: var(--surface-neutral-03);
+}
+
+.di-intro-card__footer .tds-select {
+  width: 16.25rem;
+  z-index: 2;
+}
+
+.di-intro-card__footer .tds-select__menu,
+.di-intro-card__footer .tds-select__menu .tds-dropdown-panel {
+  width: max-content;
+  min-width: 100%;
+  max-width: calc(100vw - var(--spacing-32));
+}
+
 .di-analyzing-panel {
   display: flex;
   flex-direction: column;
@@ -244,6 +266,32 @@
 
 .di-result-view.dv-panel {
   gap: var(--spacing-40);
+}
+
+.di-result-view .dv-header,
+.di-result-view .dv-meta {
+  overflow: visible;
+}
+
+.di-result-view .dv-meta__item--entity .tds-select,
+.di-result-view .dv-meta .dv-te-select,
+.di-result-view .dv-meta__item--entity .dv-te-trigger {
+  width: 11.25rem;
+}
+
+.di-result-view .dv-meta .dv-te-select .tds-select__menu,
+.di-result-view .dv-meta .dv-te-select .tds-select__menu .tds-dropdown-panel {
+  width: max-content;
+  min-width: 100%;
+  max-width: calc(100vw - var(--spacing-32));
+}
+
+.di-result-view .dv-meta__item--entity .tds-select__text-wrapper,
+.di-result-view .dv-meta__item--entity .tds-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .di-result-view .dv-content {
@@ -308,10 +356,6 @@
   line-height: 20px;
 }
 
-.di-more-declined {
-  align-self: flex-start;
-}
-
 .di-result-view .dv-tabpanel[data-tab="device-intelligence"] {
   display: flex;
   flex-direction: column;
@@ -323,25 +367,34 @@
 
 @media (max-width: 1100px) {
   .di-intro-card {
-    flex-direction: column;
     width: 100%;
     max-width: 40rem;
-    height: auto;
+  }
+
+  .di-intro-card__top {
+    flex-direction: column;
+    min-height: 0;
   }
 
   .di-intro-card__hero {
     width: 100%;
-    height: auto;
   }
 
   .di-intro-card__headline,
   .di-intro-card__copy {
-    min-height: 0;
     width: auto;
   }
 
   .di-intro-card__discover {
     padding: var(--spacing-16) var(--spacing-12) var(--spacing-24);
+  }
+
+  .di-intro-card__footer {
+    flex-wrap: wrap;
+  }
+
+  .di-intro-card__footer .tds-select {
+    width: 100%;
   }
 }
 
@@ -356,7 +409,7 @@
     line-height: 2.75rem;
   }
 
-  .di-intro-card__cta {
+  .di-intro-card__footer .tds-btn {
     width: 100%;
   }
 }

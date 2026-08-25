@@ -196,29 +196,34 @@
  * Defaults: ButtonMenu/FilterButton = start, SortButton = end
  */
 
-.tds-dropdown-panel .tds-action-list-item {
+/* Extra class + :not() so these beat ActionList.Item --md (16px) when that
+   stylesheet loads after Select. Menu type is body/sm: 14/18 (Figma 320:21652). */
+.tds-dropdown-panel .tds-action-list-item.tds-action-list-item:not([class*="tds-action-list-item--lg"]) {
   width: auto;
   min-width: 100%;
   align-self: stretch;
   flex-shrink: 0;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
   padding: 6px var(--padding-xs);
   box-sizing: border-box;
 }
 
-.tds-dropdown-panel .tds-action-list-item:not(:has(.tds-action-list-item__description)) {
+.tds-dropdown-panel .tds-action-list-item.tds-action-list-item:not(:has(.tds-action-list-item__description)) {
   height: 30px;
   min-height: 30px;
   max-height: 30px;
   align-items: center;
 }
 
-.tds-dropdown-panel .tds-action-list-item:has(.tds-action-list-item__description) {
+.tds-dropdown-panel .tds-action-list-item.tds-action-list-item:has(.tds-action-list-item__description) {
   align-items: flex-start;
-  min-height: 46px;
-  padding-top: var(--spacing-8);
-  padding-bottom: var(--spacing-8);
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 .tds-dropdown-panel .tds-nav-item {
@@ -245,6 +250,15 @@
 .tds-dropdown-panel .tds-action-list-item__label {
   overflow: visible;
   text-overflow: clip;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+.tds-dropdown-panel .tds-action-list-item__description {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
 }
 
 /* --- Header (GroupHeading) --- */

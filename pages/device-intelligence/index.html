@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="../../tokens/tokens.css">
   <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../shared/app-shell.css">
@@ -190,31 +192,64 @@
 
         <div class="di-landing__body">
           <article class="di-intro-card">
-            <div class="di-intro-card__hero">
-              <h2 class="di-intro-card__headline">See Device Intelligence in action</h2>
-              <p class="di-intro-card__copy">Discover what Device Intelligence can reveal about a device from basic attributes and environment details to signals that can help identify potentially risky behaviour.</p>
-              <a class="tds-btn tds-btn--primary tds-btn--lg di-intro-card__cta" href="result.html">Analyze this device</a>
+            <div class="di-intro-card__top">
+              <div class="di-intro-card__hero">
+                <h2 class="di-intro-card__headline">See Device Intelligence in action</h2>
+                <p class="di-intro-card__copy">Discover what Device Intelligence can reveal about a device from basic attributes and environment details to signals that can help identify potentially risky behaviour.</p>
+              </div>
+              <div class="di-intro-card__discover">
+                <h3 class="di-intro-card__discover-title">What you’ll discover</h3>
+                <ul class="di-intro-card__list">
+                  <li class="di-intro-card__item">
+                    <p class="di-intro-card__item-title">Device details</p>
+                    <p class="di-intro-card__item-copy">Browser, operating system, device type, and other attributes.</p>
+                  </li>
+                  <li class="di-intro-card__item">
+                    <p class="di-intro-card__item-title">Environment signals</p>
+                    <p class="di-intro-card__item-copy">Indicators related to the device and its operating environment.</p>
+                  </li>
+                  <li class="di-intro-card__item">
+                    <p class="di-intro-card__item-title">Risk signals</p>
+                    <p class="di-intro-card__item-copy">Potential concerns such as device manipulation or other suspicious characteristics.</p>
+                  </li>
+                  <li class="di-intro-card__item">
+                    <p class="di-intro-card__item-title">Device history</p>
+                    <p class="di-intro-card__item-copy">Understand how the device has been observed across interactions, when available.</p>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="di-intro-card__discover">
-              <h3 class="di-intro-card__discover-title">What you’ll discover</h3>
-              <ul class="di-intro-card__list">
-                <li class="di-intro-card__item">
-                  <p class="di-intro-card__item-title">Device details</p>
-                  <p class="di-intro-card__item-copy">Browser, operating system, device type, and other attributes.</p>
-                </li>
-                <li class="di-intro-card__item">
-                  <p class="di-intro-card__item-title">Environment signals</p>
-                  <p class="di-intro-card__item-copy">Indicators related to the device and its operating environment.</p>
-                </li>
-                <li class="di-intro-card__item">
-                  <p class="di-intro-card__item-title">Risk signals</p>
-                  <p class="di-intro-card__item-copy">Potential concerns such as device manipulation or other suspicious characteristics.</p>
-                </li>
-                <li class="di-intro-card__item">
-                  <p class="di-intro-card__item-title">Device history</p>
-                  <p class="di-intro-card__item-copy">Understand how the device has been observed across interactions, when available.</p>
-                </li>
-              </ul>
+            <div class="di-intro-card__footer">
+              <div class="tds-select" id="di-test-entity">
+                <label class="tds-field-label" id="di-test-entity-label">Test entity</label>
+                <button type="button" class="tds-select__trigger tds-select__trigger--lg" aria-labelledby="di-test-entity-label" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="tds-select__text-wrapper">
+                    <span class="tds-select__value tds-select__placeholder" id="di-test-entity-value">Select</span>
+                  </span>
+                  <span class="tds-select__trailing-group">
+                    <span class="tds-caret tds-caret--default" aria-hidden="true">
+                      <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                    </span>
+                  </span>
+                </button>
+                <div class="tds-select__menu">
+                  <div class="tds-dropdown-panel" role="listbox" aria-labelledby="di-test-entity-label">
+                    <button type="button" class="tds-action-list-item" role="option" data-value="high">
+                      <span class="tds-action-list-item__content">
+                        <span class="tds-action-list-item__label">High-risk Device</span>
+                        <span class="tds-action-list-item__description">Suspicious device signals are detected.</span>
+                      </span>
+                    </button>
+                    <button type="button" class="tds-action-list-item" role="option" data-value="low">
+                      <span class="tds-action-list-item__content">
+                        <span class="tds-action-list-item__label">Low-risk Device</span>
+                        <span class="tds-action-list-item__description">No significant risk signals</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="di-analyze" disabled aria-disabled="true">Analyze now</button>
             </div>
           </article>
         </div>

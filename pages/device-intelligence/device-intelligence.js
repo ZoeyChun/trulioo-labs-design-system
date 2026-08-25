@@ -1,6 +1,6 @@
 /* ============================================================
    Device Intelligence — landing navigation + Figma results
-   Results: Figma 4735:144821
+   Results: Figma 4777:151852
    ============================================================ */
 (function () {
   "use strict";
@@ -18,74 +18,202 @@
   var ICON_SORT =
     '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 6.5L8 3.5l3 3M5 9.5l3 3 3-3"/></svg>';
 
-  var INDICATORS = [
-    "Trusted browser and operating system",
-    "Stable location and timezone",
-    "No shared-device activity",
-    "No VPN or proxy detected",
-    "Consistent device fingerprint",
-    "No emulator or jailbreak",
+  var ICON_RISK =
+    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M8 2L1.5 14h13z"/><path d="M8 6.5v3.3M8 11.7h.01"/></svg>';
+  var ICON_CIRCLE_EXCLAMATION =
+    '<svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.25"/><path d="M8 5v4M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  var ICON_NOT_RUN =
+    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M5 8h6"/></svg>';
+
+  var ENTITIES = [
+    { value: "high", label: "High-risk Device", description: "Suspicious device signals are detected." },
+    { value: "low", label: "Low-risk Device", description: "No significant risk signals" },
   ];
 
-  var EVIDENCE_GROUPS = [
-    {
-      key: "risk-outputs",
-      label: "Risk Outputs",
-      open: true,
-      rows: [
-        { title: "Automation", result: "Not detected" },
-        { title: "Device Risk Level", result: "Low" },
-        { title: "Fraud indicators", result: "None" },
-        { title: "Session Risk", result: "None" },
+  var SCENARIOS = {
+    low: {
+      tag: "Clear",
+      tagType: "positive",
+      score: 17,
+      risk: "low",
+      scoreLabel: "Low Risk",
+      truai: "Device environment shows no risk indicators. The submission came from a legitimate device, which makes the face mismatch more notable.",
+      announcement: {
+        variant: "success",
+        title: "Normal device and network",
+        message: "The device and network appear normal. The transaction was declined because of the face mismatch, not device risk.",
+      },
+      meta: {
+        model: "iPhone 15",
+        date: "17 Jun 2026, 2:14 PM",
+        os: "iOS 18",
+        browser: "Mobile Safari",
+      },
+      deviceInfo: [
+        { label: "Language", value: "en-US" },
+        { label: "Timezone", value: "UTC-07" },
+        { label: "Battery", value: "68%" },
+        { label: "First Seen", value: "05 July 2026, 3:30pm" },
+      ],
+      indicators: [
+        "Trusted browser and operating system",
+        "Stable location and timezone",
+        "No shared-device activity",
+        "No VPN or proxy detected",
+        "Consistent device fingerprint",
+        "No emulator or jailbreak",
+      ],
+      evidence: [
+        {
+          key: "risk-outputs",
+          label: "Risk Outputs",
+          open: true,
+          rows: [
+            { title: "Device Risk Level", result: "Low", insight: "No Risk" },
+            { title: "Session Risk", result: "Low", insight: "No Risk" },
+            { title: "Automation", result: "Not detected", insight: "No Risk" },
+            { title: "Fraud indicators", result: "None", insight: "No Risk" },
+          ],
+        },
+        {
+          key: "network-location",
+          label: "Network & Location",
+          rows: [
+            { title: "VPN", result: "No", insight: "No Risk" },
+            { title: "Proxy", result: "No", insight: "No Risk" },
+            { title: "TOR", result: "No", insight: "No Risk" },
+            { title: "IP reputation", result: "Clean", insight: "No Risk" },
+            { title: "Location consistency", result: "Match", insight: "No Risk" },
+          ],
+        },
+        {
+          key: "integrity-compromise",
+          label: "Integrity & Compromise",
+          rows: [
+            { title: "Emulator", result: "No", insight: "No Risk" },
+            { title: "Root or jailbreak", result: "No", insight: "No Risk" },
+            { title: "Debugging tools", result: "No", insight: "No Risk" },
+          ],
+        },
+        {
+          key: "device-identity-history",
+          label: "Device Identity & History",
+          rows: [
+            { title: "First-party device", result: "Yes", insight: "No Risk" },
+            { title: "Identity count", result: "1", insight: "No Risk" },
+            { title: "Stable fingerprint", result: "Yes", insight: "No Risk" },
+            { title: "Prior fraud", result: "None", insight: "No Risk" },
+          ],
+        },
+        {
+          key: "behavioral-biometrics",
+          label: "Behavioral Biometrics",
+          rows: [
+            { title: "Natural interaction", result: "Yes", insight: "No Risk" },
+            { title: "Automation pattern", result: "Not detected", insight: "No Risk" },
+          ],
+        },
+        {
+          key: "location-history",
+          label: "Location History",
+          rows: [
+            { title: "Current location consistent", result: "Yes", insight: "No Risk" },
+            { title: "Impossible travel", result: "Not detected", insight: "No Risk" },
+          ],
+        },
       ],
     },
-    {
-      key: "network-location",
-      label: "Network & Location",
-      rows: [
-        { title: "VPN", result: "No" },
-        { title: "Proxy", result: "No" },
-        { title: "TOR", result: "No" },
-        { title: "IP reputation", result: "Clean" },
-        { title: "Location consistency", result: "Match" },
+    high: {
+      tag: "Flagged",
+      tagType: "negative",
+      score: 92,
+      risk: "high",
+      scoreLabel: "High Risk",
+      truai: "This device has been linked to multiple identities and previously declined transactions, which increases the fraud risk.",
+      announcement: {
+        variant: "error",
+        title: "High device risk",
+        message: "The device has been linked to multiple identities and previously declined transactions. Immediate review or action is recommended.",
+      },
+      meta: {
+        model: "Samsung Galaxy S24",
+        date: "17 Jun 2026, 2:14 PM",
+        os: "Android 14",
+        browser: "Chrome Mobile",
+      },
+      deviceInfo: [
+        { label: "Timezone", value: "UTC-07" },
+        { label: "Identity count", value: "3" },
+        { label: "Transaction count", value: "7" },
+        { label: "First Seen", value: "14 September 2025" },
+      ],
+      indicators: [
+        "Linked to 3 different identities",
+        "Device previously seen in a declined transaction",
+        "High identity-switching velocity",
+      ],
+      evidence: [
+        {
+          key: "risk-outputs",
+          label: "Risk Outputs",
+          open: true,
+          rows: [
+            { title: "Device Risk Level", result: "High", insight: "Risk" },
+            { title: "Shared Device Risk", result: "High", insight: "Risk" },
+            { title: "Identity Velocity", result: "High", insight: "Risk" },
+            { title: "Prior Fraud Association", result: "High", insight: "Risk" },
+          ],
+        },
+        {
+          key: "network-location",
+          label: "Network & Location",
+          rows: [
+            { title: "IP reputation", result: "High", insight: "Risk" },
+            { title: "Location velocity", result: "High", insight: "Risk" },
+            { title: "VPN", result: "No", insight: "No Risk" },
+            { title: "Proxy", result: "No", insight: "No Risk" },
+            { title: "TOR", result: "Not Run", insight: "Not Run" },
+          ],
+        },
+        {
+          key: "integrity-compromise",
+          label: "Integrity & Compromise",
+          rows: [
+            { title: "Emulator", result: "No", insight: "No Risk" },
+            { title: "Rooted device", result: "No", insight: "No Risk" },
+            { title: "Debugging tools", result: "Not Run", insight: "Not Run" },
+          ],
+        },
+        {
+          key: "device-identity-history",
+          label: "Device Identity & History",
+          rows: [
+            { title: "Multiple identities", result: "High", insight: "Risk" },
+            { title: "Previous declined transaction", result: "High", insight: "Risk" },
+            { title: "Stable device fingerprint", result: "Yes", insight: "No Risk" },
+            { title: "Device age", result: "Normal", insight: "No Risk" },
+            { title: "Account linkage", result: "Not Run", insight: "Not Run" },
+          ],
+        },
+        {
+          key: "behavioral-biometrics",
+          label: "Behavioral Biometrics",
+          rows: [
+            { title: "Repeated identity switching", result: "High", insight: "Risk" },
+            { title: "Interaction pattern", result: "Normal", insight: "No Risk" },
+          ],
+        },
+        {
+          key: "location-history",
+          label: "Location History",
+          rows: [
+            { title: "Rapid country change", result: "High", insight: "Risk" },
+            { title: "Current IP-to-timezone consistency", result: "Match", insight: "No Risk" },
+          ],
+        },
       ],
     },
-    {
-      key: "integrity-compromise",
-      label: "Integrity & Compromise",
-      rows: [
-        { title: "Emulator", result: "No" },
-        { title: "Root or jailbreak", result: "No" },
-        { title: "Debugging tools", result: "No" },
-      ],
-    },
-    {
-      key: "device-identity-history",
-      label: "Device Identity & History",
-      rows: [
-        { title: "First-party device", result: "Yes" },
-        { title: "Identity count", result: "1" },
-        { title: "Stable fingerprint", result: "Yes" },
-        { title: "Prior fraud", result: "None" },
-      ],
-    },
-    {
-      key: "behavioral-biometrics",
-      label: "Behavioral Biometrics",
-      rows: [
-        { title: "Natural interaction", result: "Yes" },
-        { title: "Automation pattern", result: "Not detected" },
-      ],
-    },
-    {
-      key: "location-history",
-      label: "Location History",
-      rows: [
-        { title: "Current location consistent", result: "Yes" },
-        { title: "Impossible travel", result: "Not detected" },
-      ],
-    },
-  ];
+  };
 
   function getHomeUrl() {
     try {
@@ -139,6 +267,72 @@
     overlay.addEventListener("click", function () { setOpen(false); });
   }
 
+  function persistEntity(value) {
+    try { sessionStorage.setItem("di-entity", value); } catch (e) {}
+  }
+
+  function setEntityUrl(value) {
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.set("entity", value);
+      window.history.replaceState({}, "", url);
+    } catch (e) {}
+  }
+
+  function bindEntitySelect(root, valueEl, initialValue, onChange) {
+    if (!root || !valueEl) return null;
+    var trigger = root.querySelector(".tds-select__trigger");
+    if (!trigger) return null;
+
+    var selected = initialValue || "";
+
+    function setOpen(open) {
+      root.classList.toggle("tds-select--open", open);
+      trigger.setAttribute("aria-expanded", String(open));
+    }
+
+    function setSelected(value, emit) {
+      var entity = ENTITIES.filter(function (item) { return item.value === value; })[0];
+      selected = entity ? entity.value : "";
+      if (entity) {
+        valueEl.textContent = entity.label;
+        valueEl.classList.remove("tds-select__placeholder");
+      } else {
+        valueEl.textContent = "Select";
+        valueEl.classList.add("tds-select__placeholder");
+      }
+      root.querySelectorAll(".tds-action-list-item[data-value]").forEach(function (opt) {
+        var on = opt.getAttribute("data-value") === selected;
+        opt.classList.toggle("tds-action-list-item--selected", on);
+        opt.setAttribute("aria-selected", String(on));
+      });
+      if (emit && onChange) onChange(selected);
+    }
+
+    trigger.addEventListener("click", function () {
+      setOpen(!root.classList.contains("tds-select--open"));
+    });
+
+    root.querySelectorAll(".tds-action-list-item[data-value]").forEach(function (opt) {
+      opt.addEventListener("click", function () {
+        var next = opt.getAttribute("data-value") || "";
+        setOpen(false);
+        if (next === selected) return;
+        setSelected(next, true);
+      });
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!(event.target instanceof Node) || root.contains(event.target)) return;
+      setOpen(false);
+    });
+
+    setSelected(selected, false);
+    return {
+      getValue: function () { return selected; },
+    };
+  }
+
   function initLanding() {
     var back = document.getElementById("di-landing-back");
     if (back) {
@@ -147,6 +341,47 @@
       });
     }
     initAppNavToggle();
+    initTestEntitySelect();
+  }
+
+  function initTestEntitySelect() {
+    var root = document.getElementById("di-test-entity");
+    var analyze = document.getElementById("di-analyze");
+    var valueEl = document.getElementById("di-test-entity-value");
+    if (!root || !analyze || !valueEl) return;
+
+    var select = bindEntitySelect(root, valueEl, "", function (value) {
+      analyze.disabled = !value;
+      analyze.setAttribute("aria-disabled", String(!value));
+    });
+    analyze.disabled = !(select && select.getValue());
+    analyze.setAttribute("aria-disabled", String(analyze.disabled));
+
+    analyze.addEventListener("click", function () {
+      var selected = select ? select.getValue() : "";
+      if (!selected) return;
+      persistEntity(selected);
+      window.location.href = "result.html?entity=" + encodeURIComponent(selected);
+    });
+  }
+
+  function loadEntity(value) {
+    persistEntity(value);
+    setEntityUrl(value);
+    var scenario = SCENARIOS[value] || SCENARIOS.high;
+    applyScenario(scenario);
+    var body = document.getElementById("dv-device-body");
+    if (body) body.innerHTML = renderResultsBody(scenario);
+    renderGauges();
+  }
+
+  function initResultsEntitySelect() {
+    var root = document.getElementById("di-result-entity");
+    var valueEl = document.getElementById("di-result-entity-value");
+    bindEntitySelect(root, valueEl, getScenarioKey(), function (value) {
+      if (!value) return;
+      loadEntity(value);
+    });
   }
 
   /* --- Score gauge (ported from Document Verification) --- */
@@ -299,13 +534,41 @@
       .replace(/"/g, "&quot;");
   }
 
-  function renderIndicator(text, extra) {
+  function getScenarioKey() {
+    var entity = "high";
+    try {
+      var param = new URLSearchParams(window.location.search).get("entity");
+      if (param === "high" || param === "low") {
+        try { sessionStorage.setItem("di-entity", param); } catch (e2) {}
+        return param;
+      }
+      var stored = sessionStorage.getItem("di-entity");
+      if (stored === "high" || stored === "low") entity = stored;
+    } catch (e) {}
+    return entity;
+  }
+
+  function getScenario() {
+    return SCENARIOS[getScenarioKey()] || SCENARIOS.high;
+  }
+
+  function renderIndicator(text, extra, risky) {
     return (
-      '<div class="dv-di-indicator"' + (extra ? ' hidden data-indicator-extra="true"' : "") + ">" +
-        '<span class="dv-di-indicator__icon" aria-hidden="true">' + ICON_CHECK + "</span>" +
+      '<div class="dv-di-indicator' + (risky ? " dv-di-indicator--risk" : "") + '"' + (extra ? ' hidden data-indicator-extra="true"' : "") + ">" +
+        '<span class="dv-di-indicator__icon" aria-hidden="true">' + (risky ? ICON_RISK : ICON_CHECK) + "</span>" +
         '<span class="dv-di-indicator__label">' + escapeHtml(text) + "</span>" +
       "</div>"
     );
+  }
+
+  function renderInsight(insight) {
+    if (insight === "Risk") {
+      return '<span class="dv-di-insight dv-di-insight--risk"><span class="dv-di-insight__icon">' + ICON_RISK + "</span>Risk</span>";
+    }
+    if (insight === "No Risk") {
+      return '<span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon">' + ICON_CHECK + "</span>No Risk</span>";
+    }
+    return '<span class="dv-di-insight"><span class="dv-di-insight__icon">' + ICON_NOT_RUN + "</span>Not Run</span>";
   }
 
   function renderTableRow(row) {
@@ -313,20 +576,22 @@
       '<div class="dv-ditable__row">' +
         '<span class="dv-ditable__cell"><span class="dv-cell-title">' + escapeHtml(row.title) + "</span></span>" +
         '<span class="dv-ditable__cell dv-di-result">' + escapeHtml(row.result) + "</span>" +
-        '<span class="dv-ditable__cell"><span class="dv-di-insight dv-di-insight--norisk"><span class="dv-di-insight__icon">' + ICON_CHECK + "</span>No Risk</span></span>" +
+        '<span class="dv-ditable__cell">' + renderInsight(row.insight) + "</span>" +
       "</div>"
     );
   }
 
   function renderEvidenceGroup(group) {
     var open = !!group.open;
+    var hasRisk = group.rows.some(function (row) { return row.insight === "Risk"; });
+    var tagType = hasRisk ? "negative" : "positive";
     var rows = group.rows.map(renderTableRow).join("");
     return (
       '<div class="dv-group dv-collapsible' + (open ? " dv-collapsible--open" : "") + '" data-group-key="' + escapeHtml(group.key) + '">' +
         '<button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="' + String(open) + '">' +
           '<span class="dv-chevron" aria-hidden="true">' + ICON_CHEVRON + "</span>" +
           '<span class="dv-group__label">' + escapeHtml(group.label) + "</span>" +
-          '<span class="dv-ni2-counts"><span class="tds-tag tds-tag--sm tds-tag--positive">' + group.rows.length + "</span></span>" +
+          '<span class="dv-ni2-counts"><span class="tds-tag tds-tag--sm tds-tag--' + tagType + '">' + group.rows.length + "</span></span>" +
         "</button>" +
         '<div class="dv-collapsible__body"' + (open ? "" : " hidden") + ">" +
           '<div class="dv-ditable">' +
@@ -342,10 +607,12 @@
     );
   }
 
-  function renderResultsBody() {
-    var extra = Math.max(0, INDICATORS.length - 3);
-    var indicatorRows = INDICATORS.map(function (text, index) {
-      return renderIndicator(text, extra > 0 && index >= 3);
+  function renderResultsBody(scenario) {
+    var indicators = scenario.indicators;
+    var extra = Math.max(0, indicators.length - 3);
+    var risky = scenario.risk === "high";
+    var indicatorRows = indicators.map(function (text, index) {
+      return renderIndicator(text, extra > 0 && index >= 3, risky);
     }).join("");
     var more =
       extra > 0
@@ -353,14 +620,15 @@
             '<span class="tds-btn__leading-icon">' + ICON_PLUS + "</span>" + extra + " more indicators" +
           "</button>"
         : "";
+    var announcementIcon = scenario.announcement.variant === "error" ? ICON_CIRCLE_EXCLAMATION : ICON_CHECK;
 
     return (
       '<div class="dv-di-summary-block">' +
-        '<div class="tds-announcement tds-announcement--success">' +
-          '<span class="tds-announcement__icon" aria-hidden="true">' + ICON_CHECK + "</span>" +
+        '<div class="tds-announcement tds-announcement--' + scenario.announcement.variant + '">' +
+          '<span class="tds-announcement__icon" aria-hidden="true">' + announcementIcon + "</span>" +
           '<div class="tds-announcement__content">' +
-            '<p class="tds-announcement__title">Normal device and network</p>' +
-            '<p class="tds-announcement__message">The device and network appear normal. The transaction was declined because of the face mismatch, not device risk.</p>' +
+            '<p class="tds-announcement__title">' + escapeHtml(scenario.announcement.title) + "</p>" +
+            '<p class="tds-announcement__message">' + escapeHtml(scenario.announcement.message) + "</p>" +
           "</div>" +
         "</div>" +
         '<section class="dv-di-indicators" aria-label="Risk Indicators">' +
@@ -383,10 +651,7 @@
       "</div>" +
       '<p class="dv-di-evidence-label">Evidence</p>' +
       '<div class="dv-di-groups">' +
-        EVIDENCE_GROUPS.map(renderEvidenceGroup).join("") +
-        '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm di-more-declined" data-open="false">' +
-          '<span class="tds-btn__leading-icon">' + ICON_PLUS + "</span>9 More declined" +
-        "</button>" +
+        scenario.evidence.map(renderEvidenceGroup).join("") +
       "</div>"
     );
   }
@@ -457,15 +722,6 @@
           (next ? "Show less" : extraEls.length + " more indicators");
         return;
       }
-
-      var declined = target.closest(".di-more-declined");
-      if (declined instanceof HTMLElement) {
-        var show = declined.getAttribute("data-open") !== "true";
-        declined.setAttribute("data-open", String(show));
-        declined.innerHTML =
-          '<span class="tds-btn__leading-icon">' + (show ? ICON_MINUS : ICON_PLUS) + "</span>" +
-          (show ? "Show less" : "9 More declined");
-      }
     });
 
     var collapseBtn = document.querySelector(".dv-sidebar-toggle--collapse");
@@ -495,10 +751,61 @@
     renderGauges();
   }
 
+  function setText(id, value) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  function renderDeviceInfo(items) {
+    return items.map(function (item) {
+      return (
+        '<div class="tds-data-field tds-data-field--horizontal">' +
+          '<div class="tds-data-field__label-row"><p class="tds-data-field__label">' + escapeHtml(item.label) + "</p></div>" +
+          '<div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">' + escapeHtml(item.value) + "</p></div></div>" +
+        "</div>"
+      );
+    }).join("");
+  }
+
+  function applyScenario(scenario) {
+    document.documentElement.setAttribute("data-di-risk", scenario.risk);
+
+    var tag = document.getElementById("di-result-tag");
+    if (tag) {
+      tag.textContent = scenario.tag;
+      tag.classList.remove("tds-tag--negative", "tds-tag--positive");
+      tag.classList.add("tds-tag--" + scenario.tagType);
+    }
+
+    var gauge = document.getElementById("di-result-gauge");
+    if (gauge) {
+      gauge.setAttribute("data-score", String(scenario.score));
+      gauge.setAttribute("data-risk", scenario.risk);
+      gauge.setAttribute("data-label", scenario.scoreLabel);
+    }
+
+    var truai = document.getElementById("dv-truai-text");
+    if (truai) truai.textContent = scenario.truai;
+
+    if (scenario.meta) {
+      setText("di-meta-model", scenario.meta.model);
+      setText("di-meta-date", scenario.meta.date);
+      setText("di-meta-os", scenario.meta.os);
+      setText("di-meta-browser", scenario.meta.browser);
+    }
+
+    var info = document.getElementById("di-device-info-list");
+    if (info && scenario.deviceInfo) info.innerHTML = renderDeviceInfo(scenario.deviceInfo);
+  }
+
   function initResults() {
+    var scenario = getScenario();
+    applyScenario(scenario);
+
     var body = document.getElementById("dv-device-body");
-    if (body) body.innerHTML = renderResultsBody();
+    if (body) body.innerHTML = renderResultsBody(scenario);
     wireResultsInteractions();
+    initResultsEntitySelect();
     initAppNavToggle();
 
     function goToLanding() {
