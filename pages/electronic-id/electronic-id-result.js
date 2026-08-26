@@ -39,27 +39,111 @@
     return parts[0] + "." + parts[parts.length - 1] + "@example.com";
   }
 
-  function dataReturnedForSignal(label, scenario, kind) {
+  function genderForScenario(scenario) {
+    var code = String(scenario.countryCode || "").toLowerCase();
+    return (code === "be" || code === "in") ? "Male" : "Female";
+  }
+
+  var NATIONALITY_BY_COUNTRY = {
+    nl: "Dutch",
+    be: "Belgian",
+    in: "Indian",
+    it: "Italian",
+    se: "Swedish",
+    cz: "Czech",
+    dk: "Danish",
+    pl: "Polish"
+  };
+
+  var PHONE_BY_COUNTRY = {
+    nl: "+31 6 1234 5678",
+    be: "+32 470 12 34 56",
+    in: "+91 98765 43210",
+    it: "+39 347 123 4567",
+    se: "+46 70 123 45 67",
+    cz: "+420 601 234 567",
+    dk: "+45 20 12 34 56",
+    pl: "+48 601 234 567"
+  };
+
+  var DOCUMENT_BY_COUNTRY = {
+    be: { type: "Identity card", number: "590-1234567-12", issueDate: "2018/03/12", expiry: "2031/08/15", issuingCountry: "Belgium", issuingAuthority: "FPS Interior" },
+    in: { type: "Aadhaar", number: "XXXX XXXX 9012", issueDate: "2016/11/03", expiry: "2031/08/15", issuingCountry: "India", issuingAuthority: "UIDAI" },
+    it: { type: "Identity card", number: "CA12345AA", issueDate: "2019/04/22", expiry: "2029/04/22", issuingCountry: "Italy", issuingAuthority: "Comune di Roma" },
+    cz: { type: "Identity card", number: "123456789", issueDate: "2019/09/08", expiry: "2029/09/08", issuingCountry: "Czechia", issuingAuthority: "Ministry of the Interior" }
+  };
+
+  var IDENTITY_FIELDS_BY_COUNTRY = {
+    nl: ["First initials", "Last name", "Date of birth", "Gender", "Address 1", "City", "Postal code", "Country of residence"],
+    be: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Full address", "Document number", "Document issuing country", "Document expiry"],
+    in: ["Full name", "Date of birth", "Gender", "Full address", "Document number", "Document portrait (selfie)"],
+    it: ["First name", "Last name", "Date of birth", "Document type", "Document number", "Issue date", "Issuing authority"],
+    se: ["First name", "Last name", "Date of birth", "Gender"],
+    cz: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Phone number", "Full address", "Document type", "Document number", "Issue date", "Expiry date", "Issuing country", "Issuing authority"],
+    dk: ["Full name", "Date of birth"],
+    pl: ["First name", "Last name", "Date of birth"]
+  };
+
+  function firstNameFromName(name) {
+    return String(name || "").trim().split(/\s+/)[0] || "—";
+  }
+
+  function lastNameFromName(name) {
+    var parts = String(name || "").trim().split(/\s+/);
+    return parts.length > 1 ? parts.slice(1).join(" ") : name || "—";
+  }
+
+  function initialsFromName(name) {
+    var first = firstNameFromName(name);
+    return first && first !== "—" ? first.charAt(0).toUpperCase() + "." : "—";
+  }
+
+  function dataReturnedForSignal(label, scenario, kind, flowCountry) {
     var name = detailValue(scenario.clientDetails, "Full name");
     var dob = detailValue(scenario.clientDetails, "Date of birth");
     var address = detailValue(scenario.clientDetails, "Address");
-    switch (label) {
-      case "Name": return name;
-      case "Address": return address;
-      case "Date of Birth": return dob;
-      case "Gender": return "Female";
-      case "Email Address": return emailFromName(name);
-      case "Phone Number": return "+31 6 1234 5678";
-      case "National ID": return "AB1234567";
-      case "Document Number": return "DOC-8847291";
-      case "Document Expiry": return "2031/08/15";
-      case "Nationality": return scenario.personName.split(" ").pop() || "—";
-      case "Postal Code": return address.match(/\b\d{4,6}\b/) ? address.match(/\b\d{4,6}\b/)[0] : "1015 CJ";
-      case "City": return address.split(",").slice(-2, -1)[0] ? address.split(",").slice(-2, -1)[0].trim() : "Amsterdam";
-      case "Region": return "—";
-      case "Country of Residence": return address.split(",").pop() ? address.split(",").pop().trim() : "—";
-      case "Provider Match": return "Match";
-      case "Consent Timestamp": return "17 Jun 2026, 2:14 PM";
+    var code = String(scenario.countryCode || (flowCountry && flowCountry.code) || "").toLowerCase();
+    var countryName = (flowCountry && flowCountry.country) || "";
+    var doc = DOCUMENT_BY_COUNTRY[code] || {};
+    var parts = String(address || "").split(",").map(function (part) { return part.trim(); }).filter(Boolean);
+    var street = parts[0] || address;
+    var lastPart = parts.length ? parts[parts.length - 1] : "";
+    var postalMatch = address.match(/\b\d{4}\s?[A-Z]{2}\b/) || address.match(/\b\d{4,6}\b/) || address.match(/\b\d{2}-\d{3}\b/);
+    var city = lastPart.replace(/^\d{4}\s?[A-Z]{2}\s*/i, "").replace(/^\d{4,6}\s*/, "").replace(/^\d{2}-\d{3}\s*/, "").trim();
+    var field = String(label).toLowerCase().replace(/[()]/g, "").replace(/\s+/g, " ").trim();
+
+    switch (field) {
+      case "name":
+      case "full name": return name;
+      case "first name": return firstNameFromName(name);
+      case "last name": return lastNameFromName(name);
+      case "first initials": return initialsFromName(name);
+      case "address":
+      case "full address": return address;
+      case "address 1": return street;
+      case "date of birth": return dob;
+      case "gender": return genderForScenario(scenario);
+      case "email address": return emailFromName(name);
+      case "phone number": return PHONE_BY_COUNTRY[code] || "+31 6 1234 5678";
+      case "national id": return "AB1234567";
+      case "document number": return doc.number || "DOC-8847291";
+      case "document expiry":
+      case "expiry date": return doc.expiry || "2031/08/15";
+      case "issue date": return doc.issueDate || "2018/03/12";
+      case "document type": return doc.type || "Identity card";
+      case "issuing authority": return doc.issuingAuthority || "Issuing authority";
+      case "issuing country":
+      case "document issuing country": return doc.issuingCountry || countryName || (code ? code.toUpperCase() : "—");
+      case "nationality": return NATIONALITY_BY_COUNTRY[code] || countryName || "—";
+      case "postal code": return postalMatch ? postalMatch[0] : "—";
+      case "city":
+        if (code === "in") return parts[1] || "Bengaluru";
+        return city || "—";
+      case "region": return "—";
+      case "country of residence": return countryName || lastPart || "—";
+      case "provider match": return "Match";
+      case "consent timestamp": return "17 Jun 2026, 2:14 PM";
+      case "document portrait selfie": return "Captured";
       default: return kind === "review" ? "Partial match" : "Verified";
     }
   }
@@ -73,7 +157,7 @@
   var PORTRAIT_COUNTRY_CODES = { in: true };
 
   var ASSURANCE_BY_COUNTRY = {
-    nl: "Substantial",
+    nl: "High",
     be: "High",
     it: "Substantial",
     de: "Substantial",
@@ -93,9 +177,10 @@
   };
 
   var ASSURANCE_TOOLTIP =
-    "Assurance level reflects how strongly the e-ID provider verified the user\u2019s identity. " +
-    "Basic indicates minimal verification, Substantial indicates standard multi-factor checks, " +
-    "and High indicates the strongest level of authentication.";
+    "Reflects the assurance level of the eID scheme used for this transaction. " +
+    "It indicates how much confidence can be placed in identities verified through this scheme, " +
+    "based on the rigour of its identity proofing, credential binding and resistance to misuse. " +
+    "Low offers limited confidence, Substantial a materially stronger degree, and High the strongest.";
 
   var floatingTooltipEl = null;
 
@@ -109,7 +194,7 @@
       floatingTooltipEl.hidden = true;
       floatingTooltipEl.innerHTML =
         '<div class="tds-tooltip__body">' +
-          '<p class="tds-tooltip__text">Assurance level</p>' +
+          '<p class="tds-tooltip__text">Scheme assurance level</p>' +
           '<p class="tds-tooltip__description">' + esc(ASSURANCE_TOOLTIP) + "</p>" +
         "</div>" +
         '<span class="tds-tooltip__caret" aria-hidden="true"></span>';
@@ -148,6 +233,8 @@
 
     btn.addEventListener("mouseenter", show);
     btn.addEventListener("mouseleave", hide);
+    btn.addEventListener("focus", show);
+    btn.addEventListener("blur", hide);
     document.addEventListener("scroll", hide, true);
     window.addEventListener("blur", hide);
   }
@@ -167,9 +254,6 @@
     var show = !!assuranceLevel;
 
     if (block) block.hidden = !show;
-
-    var header = document.querySelector(".eid-summary-block__header");
-    if (header) header.hidden = !show;
 
     if (!valueEl) return;
 
@@ -478,67 +562,67 @@
     return scenario;
   }
 
-  function buildSignals(scenario) {
-    var count = scenario.signalCount;
-    var declined = scenario.declinedCount;
-    var review = scenario.reviewCount || 0;
-    var signals = [];
-    for (var i = 0; i < count; i++) {
-      var label = BASE_SIGNALS[i % BASE_SIGNALS.length];
-      if (i >= BASE_SIGNALS.length) label = label + " (" + (Math.floor(i / BASE_SIGNALS.length) + 1) + ")";
-      var kind = "accepted";
-      if (i < declined) kind = "declined";
-      else if (i < declined + review) kind = "review";
-      var result = kind === "declined" ? "Declined" : kind === "review" ? "Review" : "Verified";
-      signals.push({
-        label: label,
-        result: result,
-        kind: kind,
-        tone: kindToFilterTone(kind),
-        dataReturned: dataReturnedForSignal(label, scenario, kind)
-      });
+  function identityFieldsForCountry(flowCountry, scenario) {
+    var code = String((flowCountry && flowCountry.code) || scenario.countryCode || "").toLowerCase();
+    if (IDENTITY_FIELDS_BY_COUNTRY[code]) return IDENTITY_FIELDS_BY_COUNTRY[code].slice();
+    if (flowCountry && flowCountry.consentItems && flowCountry.consentItems.length) {
+      return flowCountry.consentItems.slice();
     }
-    return signals;
+    return BASE_SIGNALS.slice(0, scenario.signalCount || BASE_SIGNALS.length);
+  }
+
+  function buildSignals(scenario, flowCountry) {
+    var fields = identityFieldsForCountry(flowCountry, scenario);
+    return fields.map(function (label) {
+      return {
+        label: label,
+        dataReturned: dataReturnedForSignal(label, scenario, "accepted", flowCountry)
+      };
+    });
   }
 
   var RESULT_STATUS = "Completed";
 
-  function buildClientDetails(country, provider) {
+  function buildClientDetails(country) {
     var code = country && country.code ? String(country.code).toUpperCase() : "—";
     return [
-      { label: "Country code", value: code },
-      { label: "Provider", value: provider || (country && country.provider) || "—" }
+      { label: "Country code", value: code }
     ];
   }
 
-  function buildSummaryRows(scenario, showDi) {
+  function bankLabel(bank) {
+    if (!bank) return "";
+    if (typeof bank === "string") return bank;
+    return bank.shareName || bank.label || "";
+  }
+
+  function buildSummaryRows(scenario, showDi, provider, bank) {
     var rows = [
-      { label: "e-ID", value: RESULT_STATUS, tone: "positive" }
+      { label: "e-ID", value: RESULT_STATUS, tone: "positive", kind: "tag" }
     ];
+    if (provider) rows.push({ label: "Provider", value: provider, kind: "text" });
+    if (bank) rows.push({ label: "Bank", value: bank, kind: "text" });
     if (showDi) {
       var diTone = scenario.diRisk === "high" ? "negative" : scenario.diRisk === "medium" ? "intermediate" : "positive";
-      rows.push({ label: "Device Intelligence", value: scenario.diLabel, tone: diTone });
+      rows.push({ label: "Device Intelligence", value: scenario.diLabel, tone: diTone, kind: "tag" });
     }
     return rows;
   }
 
-  var TRUAI_PILL_MARKUP =
-    '<button type="button" class="dv-truai-pill eid-summary-row__truai" id="eid-truai-pill" aria-expanded="false" aria-controls="eid-truai-card">' +
-      '<span class="dv-truai-pill__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg></span>' +
-      "TruAI" +
-      '<span class="dv-truai-pill__caret" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg></span>' +
-    "</button>";
+  function renderHighlightField(row) {
+    var valueHtml = row.kind === "tag"
+      ? renderTag(row.value, row.tone)
+      : '<p class="tds-data-field__value' + (row.negative ? " tds-data-field__value--negative" : "") + '">' + esc(row.value) + "</p>";
+    return '<div class="tds-data-field tds-data-field--horizontal eid-highlight-row">' +
+      '<div class="tds-data-field__label-row"><p class="tds-data-field__label">' + esc(row.label) + "</p></div>" +
+      '<div class="tds-data-field__content"><div class="tds-data-field__value-row">' + valueHtml + "</div></div>" +
+      "</div>";
+  }
 
-  function renderSummaryList(rows) {
-    return rows.map(function (row) {
-      var tag = renderTag(row.value, row.tone);
-      // Completed e-ID row docks the TruAI pill beside the status tag (8px apart)
-      var right = row.label === "e-ID" && row.value === RESULT_STATUS
-        ? '<span class="eid-summary-row__tags">' + TRUAI_PILL_MARKUP + tag + "</span>"
-        : tag;
-      return '<li class="dv-summary-row"><span class="dv-summary-label">' + esc(row.label) +
-        "</span>" + right + "</li>";
-    }).join("");
+  function renderSummaryHighlights(host, rows) {
+    if (!host) return;
+    host.querySelectorAll(".eid-highlight-row").forEach(function (el) { el.remove(); });
+    host.insertAdjacentHTML("beforeend", rows.map(renderHighlightField).join(""));
   }
 
   function renderDetailPairs(pairs) {
@@ -555,59 +639,73 @@
         '<td class="tds-data-table__text-cell">' + esc(signal.dataReturned) + "</td></tr>";
     }).join("");
     return '<div class="tds-data-table-container eid-signals-table">' +
-      '<div class="tds-data-table__header">' +
-      '<div class="tds-data-table__header-text">' +
-      '<div class="tds-data-table__header-title">Identity Data Collected</div></div></div>' +
       '<div class="tds-data-table__wrapper"><table class="tds-data-table">' +
       "<thead><tr>" +
       "<th>Field</th><th>Data returned</th>" +
       "</tr></thead><tbody>" + rows + "</tbody></table></div></div>";
   }
 
-  function updateSummaryPanel() {
-    var truaiCard = byId("eid-truai-card");
-    var truaiPill = byId("eid-truai-pill");
-    if (truaiPill) {
-      truaiPill.setAttribute("aria-expanded", "false");
-      truaiPill.classList.remove("dv-truai-pill--open");
-    }
-    if (truaiCard) truaiCard.hidden = true;
+  function countryPhrase(countryName) {
+    if (countryName === "Netherlands") return "the Netherlands";
+    return countryName || "the selected country";
   }
 
-  function applyScenario(root, scenario, showDi, flowCountry, provider) {
-    var q = function (sel) { return root.querySelector(sel); };
+  function buildTruAiNarrativeHtml(scenario, country, provider, bank, assurance) {
+    if (scenario.overallStatus === "Declined" || scenario.overallStatus === "Review") {
+      return esc(scenario.truAiSummary);
+    }
+    var name = scenario.personName;
+    var countryName = countryPhrase(country && country.country);
+    var via = provider || "the provider";
+    if (bank) via += " via " + bank;
+    var html = esc(name) + " successfully completed electronic ID verification using <strong>" +
+      esc(via) + "</strong>. The identity data returned by the provider matched the verification requirements for " +
+      esc(countryName);
+    if (assurance) html += ", with a <strong>" + esc(assurance) + " assurance level</strong>";
+    html += ".";
+    return html;
+  }
 
+  function applyScenario(root, scenario, showDi, flowCountry, provider, bank) {
     setText(byId("eid-person-name"), scenario.personName);
     setText(byId("eid-transaction-id"), scenario.transactionId);
 
-    var assuranceLevel = scenario.assuranceLevel;
     var countryCode = scenario.countryCode || (flowCountry && flowCountry.code) || "";
+    var assuranceLevel = scenario.assuranceLevel;
+    var providerLabel = provider || (flowCountry && flowCountry.provider) || "";
+    var bankName = bankLabel(bank);
 
     renderAssuranceLevel(countryCode, assuranceLevel);
 
-    // Legacy large status header is unused — e-ID status shows as the list tag below.
-    var summaryHeader = byId("eid-summary-header");
-    var summaryStatus = byId("eid-summary-status");
-    if (summaryHeader) summaryHeader.hidden = true;
-    if (summaryStatus) summaryStatus.innerHTML = "";
+    var truaiCard = byId("eid-truai-card");
+    if (truaiCard) truaiCard.hidden = false;
+    setHtml(byId("eid-truai-text"), buildTruAiNarrativeHtml(scenario, flowCountry, providerLabel, bankName, assuranceLevel));
 
-    setText(byId("eid-truai-title"), scenario.truAiTitle);
-    setText(byId("eid-truai-text"), scenario.truAiSummary);
-    var summaryRows = buildSummaryRows(scenario, showDi);
-    var summaryList = byId("eid-summary-list");
-    if (summaryList) setHtml(summaryList, renderSummaryList(summaryRows));
-    updateSummaryPanel();
-    setHtml(byId("eid-client-details"), renderDetailPairs(buildClientDetails(flowCountry, provider)));
+    var summaryRows = buildSummaryRows(scenario, showDi, providerLabel, bankName);
+    renderSummaryHighlights(byId("eid-highlights"), summaryRows);
+    setHtml(byId("eid-client-details"), renderDetailPairs(buildClientDetails(flowCountry)));
+    var detailsAccordion = byId("eid-transaction-details");
+    if (detailsAccordion) {
+      detailsAccordion.classList.remove("dv-collapsible--open");
+      var detailsHeader = detailsAccordion.querySelector(".dv-collapsible__header");
+      var detailsBody = detailsAccordion.querySelector(".dv-collapsible__body");
+      if (detailsHeader) detailsHeader.setAttribute("aria-expanded", "false");
+      if (detailsBody) detailsBody.hidden = true;
+    }
 
-    currentSignals = buildSignals(scenario);
+    var headerStatus = byId("eid-header-status");
+    if (headerStatus) {
+      headerStatus.hidden = true;
+      headerStatus.textContent = scenario.overallStatus === "Verified" ? "Completed" : scenario.overallStatus;
+      headerStatus.className = "tds-tag tds-tag--sm tds-tag--" + (scenario.overallTone || "positive");
+    }
+
+    currentSignals = buildSignals(scenario, flowCountry);
     setHtml(byId("eid-eid-signals"), renderSignalsTable(currentSignals));
     applyDocumentSection(scenario);
 
     var tabsBar = byId("eid-result-tabs");
     if (tabsBar) tabsBar.hidden = !showDi;
-
-    var diTab = byId("eid-di-tab");
-    if (diTab) diTab.hidden = !showDi;
 
     if (showDi) {
       DEVICE.score = scenario.diScore;
@@ -712,6 +810,24 @@
     setText(byId("eid-meta-country"), countryName);
     var flag = byId("eid-meta-flag");
     if (flag) flag.innerHTML = '<span class="fi fi-' + esc(code) + '"></span>';
+  }
+
+  function toggleAccordion(header) {
+    var accordion = header.closest(".tds-accordion");
+    if (!accordion) return;
+    var expanded = !accordion.classList.contains("tds-accordion--expanded");
+    accordion.classList.toggle("tds-accordion--expanded", expanded);
+    header.setAttribute("aria-expanded", String(expanded));
+  }
+
+  function openTruAIPrompt(prompt) {
+    if (window.TruAIChat && typeof window.TruAIChat.open === "function") {
+      window.TruAIChat.open();
+    }
+    window.setTimeout(function () {
+      var match = document.querySelector('.labs-truai-prompt[data-truai-prompt="' + prompt + '"]');
+      if (match) match.click();
+    }, 80);
   }
 
   function toggleCollapsible(header) {
@@ -888,14 +1004,14 @@
   }
 
   function initTabs(root) {
-    var tabs = root.querySelectorAll(".dv-tab");
+    var tabs = root.querySelectorAll(".tds-tab-item");
     var panels = root.querySelectorAll(".dv-tabpanel");
     tabs.forEach(function (tab) {
       tab.addEventListener("click", function () {
         var name = tab.getAttribute("data-tab");
         tabs.forEach(function (t) {
           var on = t === tab;
-          t.classList.toggle("dv-tab--active", on);
+          t.classList.toggle("tds-tab-item--active", on);
           t.setAttribute("aria-selected", String(on));
         });
         panels.forEach(function (p) {
@@ -909,6 +1025,18 @@
 
   function initInteractions(root) {
     root.addEventListener("click", function (e) {
+      var accordionHeader = e.target.closest("#eid-transaction-details .tds-accordion__header");
+      if (accordionHeader && root.contains(accordionHeader)) {
+        toggleAccordion(accordionHeader);
+        return;
+      }
+
+      var accordionHeader = e.target.closest("#eid-transaction-details .tds-accordion__header");
+      if (accordionHeader && root.contains(accordionHeader)) {
+        toggleAccordion(accordionHeader);
+        return;
+      }
+
       var header = e.target.closest(".dv-collapsible__header");
       if (header && root.contains(header) && !header.closest(".dv-group")) {
         toggleCollapsible(header);
@@ -919,14 +1047,9 @@
         return;
       }
 
-      var pill = e.target.closest("#eid-truai-pill");
-      if (pill) {
-        var card = byId("eid-truai-card");
-        if (!card) return;
-        var willOpen = card.hidden;
-        card.hidden = !willOpen;
-        pill.setAttribute("aria-expanded", String(willOpen));
-        pill.classList.toggle("dv-truai-pill--open", willOpen);
+      var promptChip = e.target.closest("#eid-truai-prompt");
+      if (promptChip) {
+        openTruAIPrompt(promptChip.getAttribute("data-truai-prompt") || "Summarize verified identity");
         return;
       }
 
@@ -940,24 +1063,19 @@
       }
     });
 
-    var columns = byId("eid-result-columns");
-    root.querySelectorAll(".dv-sidebar-toggle--collapse").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        if (columns) columns.classList.add("dv-columns--sidebar-collapsed");
-        btn.setAttribute("aria-expanded", "false");
-        var expandBtn = root.querySelector(".dv-sidebar-toggle--expand");
-        if (expandBtn) expandBtn.setAttribute("aria-expanded", "true");
-      });
-    });
-    var expandBtn = root.querySelector(".dv-sidebar-toggle--expand");
-    if (expandBtn) {
-      expandBtn.addEventListener("click", function () {
-        if (columns) columns.classList.remove("dv-columns--sidebar-collapsed");
-        expandBtn.setAttribute("aria-expanded", "false");
-        var collapseBtn = root.querySelector(".dv-sidebar-toggle--collapse");
-        if (collapseBtn) collapseBtn.setAttribute("aria-expanded", "true");
-      });
+    function setSidebarCollapsed(collapsed) {
+      var columns = byId("eid-result-columns");
+      var collapseBtn = root.querySelector(".dv-sidebar-toggle--collapse");
+      var expandBtn = root.querySelector(".dv-sidebar-toggle--expand");
+      if (columns) columns.classList.toggle("dv-columns--sidebar-collapsed", collapsed);
+      if (collapseBtn) collapseBtn.setAttribute("aria-expanded", String(!collapsed));
+      if (expandBtn) expandBtn.setAttribute("aria-expanded", String(collapsed));
     }
+
+    var collapseBtn = root.querySelector(".dv-sidebar-toggle--collapse");
+    var expandBtn = root.querySelector(".dv-sidebar-toggle--expand");
+    if (collapseBtn) collapseBtn.addEventListener("click", function () { setSidebarCollapsed(true); });
+    if (expandBtn) expandBtn.addEventListener("click", function () { setSidebarCollapsed(false); });
   }
 
   var wired = false;
@@ -978,13 +1096,17 @@
     var flowState = global.EidFlow && global.EidFlow.getState ? global.EidFlow.getState() : {};
     var country = flowState.country || {};
     var code = (country.code || "nl").toLowerCase();
+    if ((!country.provider || !country.consentItems) && global.EID_FLOW_DATA) {
+      var found = global.EID_FLOW_DATA.find(function (c) { return c.code === code; });
+      if (found) country = Object.assign({}, found, country);
+    }
     var showDi = !!flowState.deviceIntelligence;
 
     currentScenario = buildScenario(code, country, flowState.provider || country.provider);
     setMetaCountry(code, country.country || "Netherlands");
 
     var root = byId("eid-result-view");
-    applyScenario(root, currentScenario, showDi, country, flowState.provider || country.provider);
+    applyScenario(root, currentScenario, showDi, country, flowState.provider || country.provider, flowState.bank);
 
     var flow = byId("eid-flow-view");
     var result = byId("eid-result-view");
@@ -1000,7 +1122,7 @@
     syncEidSplitPane();
     renderGauges(result);
 
-    var eidTab = root.querySelector('.dv-tab[data-tab="e-id"]');
+    var eidTab = root.querySelector('.tds-tab-item[data-tab="e-id"]');
     if (eidTab) eidTab.click();
   }
 

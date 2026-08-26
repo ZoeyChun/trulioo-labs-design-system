@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light only">
 <title>Czechia — Bank iD Confirm</title>
-<link rel="stylesheet" href="embed-mockup.css">
+<link rel="stylesheet" href="embed-mockup.css?v=noscroll-1">
+<link rel="stylesheet" href="../../../Components/tap-indicator/tap-indicator.css?v=tap-cue-12">
+<script src="../../../Components/tap-indicator/tap-indicator.js?v=tap-cue-5"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -13,8 +15,8 @@
     color-scheme: light only;
   }
 
-  html,
-  html * {
+  html.preview:not(.eid-embed--interactive),
+  html.preview:not(.eid-embed--interactive) * {
     cursor: default !important;
     pointer-events: none !important;
     user-select: none;
@@ -75,8 +77,7 @@
   .page {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     padding: 8px 20px 28px;
   }
 
@@ -148,6 +149,7 @@
   .code-card {
     display: flex;
     align-items: center;
+    position: relative;
     min-height: 88px;
     padding: 18px 20px;
     margin-bottom: 18px;
@@ -155,6 +157,13 @@
     border: 1px solid #e8ebef;
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    overflow: visible;
+    cursor: pointer;
+  }
+
+  .code-card:focus-visible {
+    outline: 2px solid #e30613;
+    outline-offset: 2px;
   }
 
   .code-card__value {
@@ -251,9 +260,12 @@
   }
 </style>
 <script>
-  if (window.self !== window.top) {
-    document.documentElement.classList.add("preview");
-  }
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var interactive = params.get("interactive") === "1";
+    if (window.self !== window.top) document.documentElement.classList.add("preview");
+    if (interactive) document.documentElement.classList.add("eid-embed--interactive");
+  })();
 </script>
 </head>
 <body>
@@ -277,7 +289,7 @@
       <h1 class="confirm-title">Confirm login in mobile app</h1>
       <p class="confirm-intro">Open the KB+ or KB Key app and check that the following code is shown there.</p>
 
-      <div class="code-card">
+      <div class="code-card" role="button" tabindex="0" data-tds-tap-cue="outline">
         <span class="code-card__value" id="cz-confirm-code">295-747</span>
       </div>
 
@@ -314,6 +326,24 @@
     var code = new URLSearchParams(window.location.search).get("code");
     var codeEl = document.getElementById("cz-confirm-code");
     if (code && codeEl) codeEl.textContent = code;
+
+    var card = document.querySelector(".code-card");
+    if (!card) return;
+    if (window.TdsTapCue) window.TdsTapCue.show(card);
+
+    function goNext() {
+      if (window.TdsTapCue) window.TdsTapCue.hide();
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ source: "eid-embed", type: "eid-launch-confirm" }, "*");
+      }
+    }
+
+    card.addEventListener("click", goNext);
+    card.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      goNext();
+    });
   })();
 </script>
 </body>

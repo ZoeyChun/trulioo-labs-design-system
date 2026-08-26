@@ -35,3 +35,32 @@
     animation: none;
   }
 }
+
+/* Phone mockups are a fixed 390×800 frame — never a scroll surface. */
+html.preview,
+html.preview body,
+html.preview .phone,
+html.preview .screen,
+html.preview .page,
+html.preview .page__body,
+html.preview .content,
+html.preview .consent-panel,
+html.preview .card,
+html.preview .card__body,
+html.preview .overlay,
+html.preview .stack {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+html.preview,
+html.preview body {
+  overscroll-behavior: none;
+  scrollbar-width: none;
+}
+
+html.preview::-webkit-scrollbar,
+html.preview body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

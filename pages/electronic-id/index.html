@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="../../Components/announcement/announcement.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/select/combobox.css">
+  <link rel="stylesheet" href="../../Components/spinner/spinner.css">
   <link rel="stylesheet" href="../../Components/progress-indicator/progress-indicator.css">
   <link rel="stylesheet" href="../../Components/switch/switch.css">
   <link rel="stylesheet" href="../../Components/radio-group/radio-group.css">
@@ -26,9 +27,14 @@
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="../../Components/tooltip/tooltip.css">
   <link rel="stylesheet" href="../../Components/dialog/dialog.css">
+  <link rel="stylesheet" href="../../Components/demo-guidance-card/demo-guidance-card.css?v=compact-1">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
   <link rel="stylesheet" href="../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../Components/tabs/tabs.css">
+  <link rel="stylesheet" href="../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../Components/section-header/section-header.css">
+  <link rel="stylesheet" href="../../Components/accordion/accordion.css">
 
   <!-- Page-local styles -->
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
@@ -38,7 +44,7 @@
   <link rel="stylesheet" href="../shared/truai-chat.css">
   <link rel="stylesheet" href="../document-verification/document-verification.css">
   <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
-  <link rel="stylesheet" href="electronic-id.css?v=nl-layout-23">
+  <link rel="stylesheet" href="electronic-id.css?v=india-portrait-3">
   <style>
     /* Nav item spec — inlined because Cursor preview often skips ../../ component CSS */
     button.tds-side-nav__nav-item,
@@ -544,19 +550,15 @@
             </section>
 
             <!-- Completing -->
-            <section class="dv-flow-card eid-sim-panel" id="eid-panel-completing" aria-label="Completing verification" hidden>
-              <div class="dv-flow-card__header eid-sim-panel__header--empty" aria-hidden="true"></div>
+            <section class="eid-sim-panel eid-sim-panel--completing" id="eid-panel-completing" aria-label="Completing transaction" hidden>
               <div class="eid-stage eid-stage--loading">
                 <div class="eid-loading-content">
-                  <span class="eid-spinner eid-spinner--lg" aria-hidden="true"></span>
+                  <span class="tds-spinner tds-spinner--md" aria-hidden="true"></span>
                   <div class="eid-stage__copy">
-                    <p class="eid-stage__heading">Completing verification</p>
-                    <p class="eid-stage__subtext">Complete the process using your phone and then return to this page.</p>
+                    <p class="eid-stage__heading">Completing transaction</p>
+                    <p class="eid-stage__subtext">Your transaction is in progress. Please wait until results appear.</p>
                   </div>
                 </div>
-              </div>
-              <div class="dv-flow-card__footer">
-                <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button" data-sim-action="back">Back</button>
               </div>
             </section>
 
@@ -564,10 +566,52 @@
 
                       </div>
 
-              <aside class="eid-sim-phone" id="eid-sim-phone" hidden aria-hidden="true" aria-label="Mobile preview">
-                <span class="tds-tag tds-tag--sm tds-tag--default eid-sim-phone__label">End-user view</span>
-                <div id="eid-sim-phone-screen" aria-live="polite"></div>
-              </aside>
+              <div class="eid-sim-phone-cluster">
+                <div class="eid-sim-phone-stage">
+                <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--circular tds-icon-btn--secondary eid-sim-step-chevron eid-sim-step-chevron--prev" id="eid-sim-chevron-prev" data-sim-action="back" hidden aria-label="Previous action">
+                  <span class="tds-icon-btn__icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>
+                  </span>
+                </button>
+                <aside class="eid-sim-phone" id="eid-sim-phone" hidden aria-hidden="true" aria-label="Mobile preview">
+                  <span class="tds-tag tds-tag--sm tds-tag--default eid-sim-phone__label">End-user view</span>
+                  <div id="eid-sim-phone-screen" aria-live="polite"></div>
+                </aside>
+                <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--circular tds-icon-btn--secondary eid-sim-step-chevron eid-sim-step-chevron--next" id="eid-sim-chevron-next" data-sim-action="next" hidden aria-label="Next action">
+                  <span class="tds-icon-btn__icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>
+                  </span>
+                </button>
+                </div>
+              </div>
+
+              <article class="tds-demo-guidance-card" id="eid-guidance-card" hidden>
+                <div class="tds-demo-guidance-card__body">
+                  <div class="tds-demo-guidance-card__copy">
+                    <h2 class="tds-demo-guidance-card__title" id="eid-guidance-title">Choose a bank</h2>
+                    <p class="tds-demo-guidance-card__description" id="eid-guidance-description">iDIN asks which Dutch bank should handle this login.</p>
+                  </div>
+                  <div class="tds-demo-guidance-card__chip" id="eid-guidance-chip">
+                    <span class="tds-demo-guidance-card__flag" id="eid-guidance-chip-flag" aria-hidden="true"><span class="fi fi-nl"></span></span>
+                    <span class="tds-demo-guidance-card__chip-label" id="eid-guidance-chip-label">NL - iDIN</span>
+                  </div>
+                </div>
+                <div class="tds-announcement tds-announcement--info tds-announcement--inline tds-demo-guidance-card__callout" role="status">
+                  <span class="tds-announcement__icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.25v3.5M8 5.5h.01" stroke-linecap="round"/></svg>
+                  </span>
+                  <div class="tds-announcement__content">
+                    <p class="tds-announcement__title" id="eid-guidance-callout">Select ING.</p>
+                  </div>
+                </div>
+                <footer class="tds-demo-guidance-card__footer">
+                  <div class="tds-demo-guidance-card__locale">
+                    <span class="tds-demo-guidance-card__flag" id="eid-guidance-flag" aria-hidden="true"><span class="fi fi-nl"></span></span>
+                    <span class="tds-demo-guidance-card__country" id="eid-guidance-country">Netherlands</span>
+                  </div>
+                  <span class="tds-tag tds-tag--sm tds-tag--default" id="eid-guidance-method">iDIN</span>
+                </footer>
+              </article>
                     </div>
 
                     </div>
@@ -581,13 +625,14 @@
       <!-- ============ Result view (Jane Doe — e-ID verified) ============ -->
       <div class="dv-view dv-panel" id="eid-result-view" hidden>
 
-        <div class="dv-header">
+        <div class="dv-header eid-result-header">
           <div class="dv-header__top">
             <div class="dv-header__title-group">
               <button type="button" class="dv-back-btn" id="eid-result-back" aria-label="Back to capture flow">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
               </button>
               <h1 class="dv-title" id="eid-person-name">Jane Doe</h1>
+              <span class="tds-tag tds-tag--sm tds-tag--positive" id="eid-header-status" hidden>Completed</span>
             </div>
             <div class="dv-header__actions">
               <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
@@ -607,91 +652,144 @@
 
           <div class="dv-meta">
             <div class="dv-meta__item">
-              <span class="dv-meta__label">Country / Jurisdiction</span>
-              <span class="dv-meta__value dv-meta__value--country">
-                <span id="eid-meta-country">Netherlands</span>
-                <span class="tds-select__country-flag dv-meta__flag" id="eid-meta-flag" aria-hidden="true"><span class="fi fi-nl"></span></span>
-              </span>
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Country / Jurisdiction</p>
+                <div class="tds-data-field__content">
+                  <div class="tds-data-field__value-row">
+                    <p class="tds-data-field__value" id="eid-meta-country">Netherlands</p>
+                    <span class="tds-select__country-flag tds-data-field__flag" id="eid-meta-flag" aria-hidden="true"><span class="fi fi-nl"></span></span>
+                  </div>
+                </div>
+              </div>
             </div>
             <span class="dv-meta__divider" aria-hidden="true"></span>
             <div class="dv-meta__item">
-              <span class="dv-meta__label">Transaction ID</span>
-              <span class="dv-meta__value" id="eid-transaction-id"></span>
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Transaction ID</p>
+                <div class="tds-data-field__content">
+                  <div class="tds-data-field__value-row">
+                    <p class="tds-data-field__value" id="eid-transaction-id"></p>
+                  </div>
+                </div>
+              </div>
             </div>
             <span class="dv-meta__divider" aria-hidden="true"></span>
             <div class="dv-meta__item">
-              <span class="dv-meta__label">Date</span>
-              <span class="dv-meta__value" id="eid-meta-date">17 Jun 2026, 2:14 PM</span>
+              <div class="tds-data-field">
+                <p class="tds-data-field__label">Date</p>
+                <div class="tds-data-field__content">
+                  <div class="tds-data-field__value-row">
+                    <p class="tds-data-field__value" id="eid-meta-date">17 Jun 2026, 2:14 PM</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="dv-content">
+        <div class="dv-content eid-result-body">
+          <div class="tds-tabs tds-tabs--scrollable" data-tabs-scrollable id="eid-result-tabs" hidden>
+            <div class="tds-tabs__row">
+              <div class="tds-tabs__list" role="tablist" aria-label="Verification sections">
+                <button class="tds-tab-item tds-tab-item--active" type="button" role="tab" aria-selected="true" data-tab="e-id" aria-controls="eid-panel-eid">
+                  <span class="tds-tab-item__content">e-ID</span>
+                  <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+                </button>
+                <button class="tds-tab-item" type="button" role="tab" aria-selected="false" id="eid-di-tab" data-tab="device-intelligence" aria-controls="eid-panel-di">
+                  <span class="tds-tab-item__content">Device Intelligence</span>
+                  <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="tds-tabs__divider" aria-hidden="true"></div>
+          </div>
+
           <div class="dv-columns" id="eid-result-columns">
 
             <aside class="dv-sidebar" id="eid-result-sidebar">
-              <div class="dv-sidebar__block dv-sidebar__block--entity">
-                <div class="dv-sidebar__entity-head">
-                  <h2 class="dv-sidebar__heading">Summary</h2>
-                  <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="eid-result-sidebar" aria-label="Collapse summary panel">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+              <div class="dv-sidebar__summary" id="eid-summary-block">
+                <div class="dv-sidebar__summary-top">
+                  <div class="dv-sidebar__summary-head">
+                    <h2 class="dv-sidebar__heading">Summary</h2>
+                    <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="eid-result-sidebar" aria-label="Collapse summary panel">
+                      <span class="tds-icon-btn__icon" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="dv-highlights" id="eid-highlights">
+                    <div class="tds-data-field" id="eid-assurance-block" hidden>
+                      <div class="tds-data-field__label-row">
+                        <p class="tds-data-field__label" id="eid-assurance-label">Scheme assurance level</p>
+                      </div>
+                      <div class="tds-data-field__content">
+                        <div class="tds-data-field__value-row">
+                          <p class="tds-data-field__value" id="eid-assurance-level"></p>
+                          <button type="button" class="tds-data-field__trailing-icon eid-assurance-block__info" id="eid-assurance-info" aria-label="About scheme assurance level" aria-describedby="eid-assurance-tooltip">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                              <path d="M14.5 8C14.5 4.40625 11.5938 1.5 8 1.5C4.40625 1.5 1.5 4.40625 1.5 8C1.5 11.5938 4.40625 14.5 8 14.5C11.5938 14.5 14.5 11.5938 14.5 8ZM0 8C0 3.59375 3.59375 0 8 0C12.4062 0 16 3.59375 16 8C16 12.4062 12.4062 16 8 16C3.59375 16 0 12.4062 0 8ZM8 5.5C7.4375 5.5 7 5.9375 7 6.5C7 6.90625 6.65625 7.25 6.25 7.25C5.84375 7.25 5.5 6.90625 5.5 6.5C5.5 5.125 6.625 4 8 4C9.375 4 10.5 5.125 10.5 6.5C10.5 7.96875 9.375 8.59375 8.75 8.84375V8.9375C8.75 9.375 8.40625 9.6875 8 9.6875C7.59375 9.6875 7.25 9.375 7.25 8.9375V8.6875C7.25 8.0625 7.71875 7.59375 8.1875 7.4375C8.40625 7.375 8.59375 7.28125 8.75 7.125C8.90625 7 9 6.8125 9 6.5C9 5.9375 8.5625 5.5 8 5.5ZM7 11.5C7 10.9375 7.4375 10.5 8 10.5C8.5625 10.5 9 10.9375 9 11.5C9 12.0625 8.5625 12.5 8 12.5C7.4375 12.5 7 12.0625 7 11.5Z" fill="currentColor"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="dv-ai-card" id="eid-truai-card">
+                  <div class="dv-ai-card__intro">
+                    <div class="dv-ai-card__label">
+                      <span class="dv-ai-card__sparkles" aria-hidden="true">
+                        <svg viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>
+                      </span>
+                      TruAI:
+                    </div>
+                    <p class="dv-ai-text" id="eid-truai-text"></p>
+                  </div>
+                  <div class="dv-ai-card__ask">
+                    <p class="dv-ai-card__ask-label">Ask TruAI:</p>
+                    <button type="button" class="tds-ai-tag tds-ai-tag--sm" id="eid-truai-prompt" data-truai-prompt="Summarize verified identity">
+                      <span class="tds-ai-tag__icon" aria-hidden="true">
+                        <svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>
+                      </span>
+                      <span class="tds-ai-tag__label">Summarize verified identity</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dv-sidebar__accordions">
+                <div class="dv-sidebar__block dv-collapsible dv-collapsible--right" id="eid-transaction-details">
+                  <button class="dv-collapsible__header" type="button" aria-expanded="false" aria-controls="eid-transaction-details-content">
+                    <span class="dv-section-title">Transaction Details</span>
+                    <span class="dv-chevron" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+                    </span>
                   </button>
-                </div>
-              </div>
-
-              <div class="dv-sidebar__block dv-summary-block" id="eid-summary-block">
-                <div class="eid-summary-block__header">
-                  <div class="eid-assurance-block" id="eid-assurance-block" hidden>
-                    <div class="eid-assurance-block__label-row">
-                      <span class="tds-field-label" id="eid-assurance-label">Provider's assurance level</span>
-                      <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--circular eid-assurance-block__info" id="eid-assurance-info" aria-label="About assurance levels" aria-describedby="eid-assurance-tooltip">
-                        <span class="tds-icon-btn__icon" aria-hidden="true">
-                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.1v3.4M8 5.5v.1"/></svg>
-                        </span>
-                      </button>
-                    </div>
-                    <p class="eid-assurance-block__value text-heading-lg" id="eid-assurance-level"></p>
-                  </div>
-
-                  <div class="dv-summary-status-header eid-summary-status-header--plain" id="eid-summary-header">
-                    <div class="dv-summary-block__row">
-                      <span class="dv-summary-status" id="eid-summary-status"></span>
-                    </div>
+                  <div class="dv-collapsible__body" id="eid-transaction-details-content" hidden>
+                    <div id="eid-client-details"></div>
                   </div>
                 </div>
-                <div id="eid-summary-rows">
-                  <ul class="dv-summary-list" id="eid-summary-list"></ul>
-                </div>
-                <div class="dv-ai-card" id="eid-truai-card" hidden>
-                  <p class="dv-ai-title" id="eid-truai-title"></p>
-                  <p class="dv-ai-text" id="eid-truai-text"></p>
-                </div>
-              </div>
-
-              <div class="dv-sidebar__block dv-collapsible dv-collapsible--right dv-sidebar__block--last">
-                <button class="dv-collapsible__header" type="button" aria-expanded="false">
-                  <span class="dv-section-title">Details</span>
-                  <span class="dv-chevron" aria-hidden="true">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
-                  </span>
-                </button>
-                <div class="dv-collapsible__body" id="eid-client-details" hidden></div>
               </div>
             </aside>
 
+            <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="eid-result-sidebar" aria-label="Show summary panel">
+              <span class="tds-icon-btn__icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
+              </span>
+            </button>
+
             <div class="dv-main">
-              <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="eid-result-sidebar" aria-label="Show summary panel">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
-              </button>
-
-              <div class="dv-tabs" id="eid-result-tabs" role="tablist" aria-label="Verification sections">
-                <button class="dv-tab dv-tab--active" role="tab" aria-selected="true" type="button" data-tab="e-id">e-ID</button>
-                <button class="dv-tab" role="tab" aria-selected="false" type="button" data-tab="device-intelligence" id="eid-di-tab">Device Intelligence</button>
-              </div>
-
-              <section class="dv-doc-panel dv-tabpanel" data-tab="e-id">
+              <section class="dv-doc-panel dv-tabpanel" id="eid-panel-eid" data-tab="e-id">
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Electronic ID</p>
+                    </div>
+                  </div>
+                </div>
                 <div class="dv-doc-panel__body" id="eid-eid-panel-body">
-                  <div class="dv-indicators" id="eid-eid-indicators">
+                  <div class="dv-indicators eid-idsection" id="eid-eid-indicators">
+                    <h3 class="eid-idsection__title">Identity Data Collected</h3>
                     <div id="eid-eid-signals" class="dv-indicators__list"></div>
                   </div>
                   <div class="dv-split-pane__divider" id="eid-eid-split-divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0" hidden></div>
@@ -713,7 +811,14 @@
                 </div>
               </section>
 
-              <section class="dv-doc-panel dv-tabpanel" data-tab="device-intelligence" hidden>
+              <section class="dv-doc-panel dv-tabpanel" id="eid-panel-di" data-tab="device-intelligence" hidden>
+                <div class="tds-section-header">
+                  <div class="tds-section-header__left">
+                    <div class="tds-section-header__title-stack">
+                      <p class="tds-section-header__title">Device Intelligence</p>
+                    </div>
+                  </div>
+                </div>
                 <div id="eid-device-body" class="dv-di-body"></div>
               </section>
             </div>
@@ -835,9 +940,9 @@
   <script src="../../Components/dialog/dialog.js"></script>
   <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
   <script src="electronic-id-flow-data.js?v=nl-flow-5"></script>
-  <script src="electronic-id-result.js"></script>
-  <script src="electronic-id-flow.js?v=nl-layout-31"></script>
-  <script src="truai-responses.js?v=1"></script>
+  <script src="electronic-id-result.js?v=india-portrait-2"></script>
+  <script src="electronic-id-flow.js?v=guidance-copy-1"></script>
+  <script src="truai-responses.js?v=result-summary-1"></script>
   <script src="../shared/truai-chat.js?v=1"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>
   <script>TdsSideNav.init();</script>

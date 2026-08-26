@@ -1,0 +1,171 @@
+/* ============================================================
+   Demo Guidance Card
+   Figma: BankV instructional panel (4610:21031, 4610:21165)
+   Compact: 5149:92363
+   Slots: title, description, info callout, locale footer
+   Used by Electronic ID simulated steps (Select bank, Login, Consent).
+   Copy is passed in via markup / JS — nothing here is bank-specific.
+   ============================================================ */
+
+.tds-demo-guidance-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 35rem; /* Figma 560px — no 560 token; using 35rem */
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--elevation-lg);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.tds-demo-guidance-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  width: 100%;
+  padding: var(--padding-lg);
+  padding-bottom: 0;
+  box-sizing: border-box;
+}
+
+.tds-demo-guidance-card__copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  width: 100%;
+  min-width: 0;
+}
+
+.tds-demo-guidance-card__chip {
+  display: none;
+}
+
+.tds-demo-guidance-card__callout.tds-announcement {
+  width: auto;
+  margin: var(--spacing-24) var(--padding-lg) var(--padding-lg);
+  box-sizing: border-box;
+}
+
+.tds-demo-guidance-card__title {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.tds-demo-guidance-card__description {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+}
+
+.tds-demo-guidance-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  width: 100%;
+  padding: var(--padding-md);
+  border-top: 1px solid var(--border-subtle);
+  box-sizing: border-box;
+}
+
+.tds-demo-guidance-card__locale {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-md);
+  min-width: 0;
+}
+
+.tds-demo-guidance-card__flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px; /* Figma Country flag 21×14 — no matching size token */
+  height: 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.tds-demo-guidance-card__flag .fi {
+  width: 21px;
+  height: 14px;
+  line-height: 14px;
+  background-size: cover;
+}
+
+.tds-demo-guidance-card__country {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+/* Compact: header row + flush announcement strip (Figma 5149:92363, 118px) */
+.tds-demo-guidance-card--compact {
+  width: 100%;
+  max-width: 55rem; /* 880px */
+}
+
+.tds-demo-guidance-card--compact .tds-demo-guidance-card__body {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--spacing-24);
+  padding: var(--padding-lg);
+}
+
+.tds-demo-guidance-card--compact .tds-demo-guidance-card__copy {
+  flex: 1 1 auto;
+}
+
+.tds-demo-guidance-card--compact .tds-demo-guidance-card__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  flex-shrink: 0;
+  padding: var(--padding-xs) var(--padding-sm);
+  background-color: var(--surface-neutral-02);
+  border-radius: var(--radius-lg);
+  box-sizing: border-box;
+}
+
+.tds-demo-guidance-card--compact .tds-demo-guidance-card__chip-label {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.tds-demo-guidance-card--compact .tds-demo-guidance-card__callout.tds-announcement {
+  margin: 0;
+  width: 100%;
+  min-height: var(--spacing-40);
+  padding: var(--padding-md) var(--padding-sm) var(--padding-md) var(--padding-lg);
+  border-radius: 0;
+}
+
+.tds-demo-guidance-card--compact .tds-demo-guidance-card__footer {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .tds-demo-guidance-card {
+    max-width: none;
+  }
+}

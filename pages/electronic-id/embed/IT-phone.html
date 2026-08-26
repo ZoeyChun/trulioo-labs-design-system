@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Italy — SPID Phone Authorization</title>
-<link rel="stylesheet" href="embed-mockup.css">
+<link rel="stylesheet" href="embed-mockup.css?v=noscroll-1">
+<link rel="stylesheet" href="../../../Components/tap-indicator/tap-indicator.css?v=tap-cue-12">
+<script src="../../../Components/tap-indicator/tap-indicator.js?v=tap-cue-5"></script>
+<script src="eid-embed-tap.js?v=cursor-1"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html,
-  html * {
+  html.preview:not(.eid-embed--interactive),
+  html.preview:not(.eid-embed--interactive) * {
     cursor: default !important;
     pointer-events: none !important;
     user-select: none;
@@ -53,7 +56,7 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
   }
 
   /* ---------- Brand row ---------- */
@@ -79,6 +82,11 @@
   .overlay__body {
     padding: 22px 22px 0;
     text-align: center;
+  }
+
+  .overlay__title {
+    display: inline-block;
+    position: relative;
   }
 
   .overlay__title {
@@ -171,9 +179,7 @@
   }
 </style>
 <script>
-  if (window.self !== window.top) {
-    document.documentElement.classList.add("preview");
-  }
+  EidEmbedTap.initInteractive();
 </script>
 </head>
 <body>
@@ -187,7 +193,7 @@
       </div>
 
       <div class="overlay__body">
-        <h1 class="overlay__title">Control your smartphone</h1>
+        <h1 class="overlay__title" role="button" tabindex="0" data-tds-tap-cue="outline">Control your smartphone</h1>
         <p class="overlay__intro">To continue, you need to authorize access in the PosteID App.</p>
 
         <img class="overlay__illustration" src="../assets/embeds/italy/posteid-phone-authorize.png" alt="">
@@ -201,5 +207,12 @@
       </div>
     </div>
   </div>
+
+<script>
+  (function () {
+    if (!EidEmbedTap.initInteractive()) return;
+    EidEmbedTap.bindTap(document.querySelector(".overlay__title"), "eid-launch-confirm");
+  })();
+</script>
 </body>
 </html>

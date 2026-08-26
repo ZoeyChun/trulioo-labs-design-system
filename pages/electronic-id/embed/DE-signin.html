@@ -5,12 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light only">
 <title>Denmark — MitID Sign in</title>
-<link rel="stylesheet" href="embed-mockup.css">
+<link rel="stylesheet" href="embed-mockup.css?v=noscroll-1">
+<link rel="stylesheet" href="../../../Components/tap-indicator/tap-indicator.css?v=tap-cue-12">
+<script src="../../../Components/tap-indicator/tap-indicator.js?v=tap-cue-5"></script>
+<script src="eid-embed-tap.js?v=cursor-1"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html,
-  html * {
+  html.preview:not(.eid-embed--interactive),
+  html.preview:not(.eid-embed--interactive) * {
     cursor: default !important;
     pointer-events: none !important;
     user-select: none;
@@ -237,11 +240,6 @@
     color: #1a2b4a;
   }
 
-  html.preview,
-  html.preview * {
-    cursor: default !important;
-    pointer-events: none !important;
-  }
 
   html.preview {
     height: 800px;
@@ -281,9 +279,7 @@
   }
 </style>
 <script>
-  if (window.self !== window.top) {
-    document.documentElement.classList.add("preview");
-  }
+  EidEmbedTap.initInteractive();
 </script>
 </head>
 <body>
@@ -313,7 +309,7 @@
           </span>
         </label>
 
-        <div class="field-input">
+        <div class="field-input" role="button" tabindex="0" data-tds-tap-cue="outline">
           <span class="field-input__hide">Hide</span>
         </div>
 
@@ -348,5 +344,12 @@
 
   </div>
  </div>
+
+<script>
+  (function () {
+    if (!EidEmbedTap.initInteractive()) return;
+    EidEmbedTap.bindTap(document.querySelector(".field-input"), "eid-details-filled");
+  })();
+</script>
 </body>
 </html>

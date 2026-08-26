@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ING — Sign in</title>
-<link rel="stylesheet" href="embed-mockup.css">
+<link rel="stylesheet" href="embed-mockup.css?v=noscroll-1">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -33,10 +33,9 @@
     height: 100%;
     background: #ffffff;
     border-radius: 42px;
-    overflow-y: auto;
+    overflow: hidden;
     overflow-x: hidden;
     position: relative;
-    -webkit-overflow-scrolling: touch;
   }
 
   .screen::-webkit-scrollbar { width: 0; }
@@ -136,6 +135,10 @@
     min-height: 58px;
   }
 
+  .key:has(.num) {
+    justify-content: flex-start;
+  }
+
   .key .num {
     font-size: 40px;
     font-weight: 400;
@@ -155,8 +158,8 @@
   .key .icon { color: #ff6200; display: flex; }
   .key .icon svg { display: block; }
 
-  html.preview,
-  html.preview * {
+  html.preview:not(.eid-embed--interactive),
+  html.preview:not(.eid-embed--interactive) * {
     cursor: default !important;
     pointer-events: none !important;
   }
@@ -199,9 +202,14 @@
   }
 </style>
 <script>
-  if (window.self !== window.top) {
-    document.documentElement.classList.add("preview");
-  }
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var interactive = params.get("interactive") === "1";
+    if (window.self !== window.top) {
+      document.documentElement.classList.add("preview");
+    }
+    if (interactive) document.documentElement.classList.add("eid-embed--interactive");
+  })();
 </script>
 </head>
 <body>
@@ -276,5 +284,22 @@
    </div>
   </div><!-- .screen -->
  </div><!-- .phone -->
+
+ <script>
+  (function () {
+    if (window.self === window.top) return;
+    var sent = false;
+    function notifyComplete() {
+      if (sent) return;
+      sent = true;
+      window.parent.postMessage({ source: "eid-embed", type: "eid-signin-complete" }, "*");
+    }
+    document.querySelectorAll(".key").forEach(function (key) {
+      if (!key.querySelector(".num")) return;
+      key.addEventListener("click", notifyComplete);
+    });
+    setTimeout(notifyComplete, 2000);
+  })();
+ </script>
 </body>
 </html>
