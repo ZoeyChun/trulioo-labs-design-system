@@ -177,8 +177,7 @@
   };
 
   var ASSURANCE_TOOLTIP =
-    "Reflects the assurance level of the eID scheme used for this transaction. " +
-    "It indicates how much confidence can be placed in identities verified through this scheme, " +
+    "Indicates how much confidence can be placed in identities verified through this scheme, " +
     "based on the rigour of its identity proofing, credential binding and resistance to misuse. " +
     "Low offers limited confidence, Substantial a materially stronger degree, and High the strongest.";
 
