@@ -2456,12 +2456,19 @@
 #eid-result-view .dv-split-pane,
 #eid-result-view .dv-di-body {
   flex: 1 0 auto;
+  min-width: 0;
   min-height: auto;
   overflow: visible;
 }
 
+#eid-result-view .dv-main {
+  flex: 1 1 auto;
+}
+
 #eid-result-view .dv-columns {
   flex: 1 0 auto;
+  min-width: 0;
+  max-width: 100%;
   min-height: auto;
   overflow: clip;
 }
@@ -2588,17 +2595,27 @@
   display: none !important;
 }
 
-.eid-signals-table {
+#eid-result-view .eid-idsection,
+#eid-eid-signals,
+.eid-signals-table,
+#eid-eid-signals .tds-data-table-container {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .eid-signals-table .tds-data-table {
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
   table-layout: fixed;
 }
 
 #eid-result-view .tds-data-table__wrapper {
-  overflow: visible;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 .eid-signals-table .tds-data-table th,
@@ -2606,10 +2623,13 @@
   width: 50%;
 }
 
+.eid-signals-table .tds-data-table td {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
 #eid-eid-signals .tds-data-table-container {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
+  overflow: hidden;
 }
 
 /* India document portrait — same split/viewer logic as DV results */
