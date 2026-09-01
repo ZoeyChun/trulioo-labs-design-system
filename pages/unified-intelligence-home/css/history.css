@@ -1,3 +1,7 @@
+#historyFilterBar .tds-filter-button:not(.tds-filter-button--selected) .tds-filter-button__clear {
+  display: none !important;
+}
+
 .history-main {
   overflow-x: hidden;
   overflow-y: auto;
