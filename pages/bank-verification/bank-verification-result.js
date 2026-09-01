@@ -19,19 +19,83 @@
     }
   }
 
-  var ICON_POSITIVE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8l1.8 1.8 3.2-3.6"/></svg>';
-  var ICON_NEGATIVE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg>';
-  var ICON_INTERMEDIATE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v4M8 11h.01"/></svg>';
+  var ICON_POSITIVE = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_NEGATIVE = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="m5.5 5.5 5 5M10.5 5.5l-5 5" stroke-linecap="round"/></svg>';
+  var ICON_INTERMEDIATE = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 5.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.25" r=".6" fill="currentColor"/></svg>';
   var CARET_SVG = '<svg viewBox="0 0 8 11" fill="currentColor" aria-hidden="true"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>';
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
 
   function toneClass(tone) {
     return "tds-tag tds-tag--" + tone + " tds-tag--sm";
   }
 
-  function statusClass(kind) {
-    if (kind === "positive") return "dv-status dv-status--positive";
-    if (kind === "negative") return "dv-status dv-status--negative";
-    return "dv-status dv-status--intermediate";
+  function renderHighlightField(row) {
+    var valueHtml = row.kind === "tag"
+      ? '<span class="' + toneClass(row.tone) + '">' + escapeHtml(row.value) + "</span>"
+      : '<p class="tds-data-field__value' + (row.negative ? " tds-data-field__value--negative" : "") + '">' + escapeHtml(row.value) + "</p>";
+    return '<div class="tds-data-field tds-data-field--horizontal">' +
+      '<div class="tds-data-field__label-row"><p class="tds-data-field__label">' + escapeHtml(row.label) + "</p></div>" +
+      '<div class="tds-data-field__content"><div class="tds-data-field__value-row">' + valueHtml + "</div></div>" +
+      "</div>";
+  }
+
+  function renderAnnouncements(config) {
+    var host = document.getElementById("bv-result-announcements");
+    if (!host) return;
+
+    var detailsVerified = !!config.accountDetailsVerified;
+    var ownershipConfirmed = !!config.ownershipConfirmed;
+    var variant = "success";
+    var icon = ICON_POSITIVE;
+    if (!detailsVerified) {
+      variant = "error";
+      icon = ICON_NEGATIVE;
+    } else if (!ownershipConfirmed) {
+      variant = "warning";
+      icon = ICON_INTERMEDIATE;
+    }
+
+    host.innerHTML =
+      '<div class="tds-announcement tds-announcement--' + variant + '" role="status">' +
+        '<span class="tds-announcement__icon" aria-hidden="true">' + icon + "</span>" +
+        '<div class="tds-announcement__content">' +
+          '<p class="tds-announcement__title">' +
+            escapeHtml(detailsVerified
+              ? "Bank account details are verified"
+              : "Bank account details could not be verified") +
+          "</p>" +
+          '<p class="tds-announcement__message">' +
+            escapeHtml(ownershipConfirmed
+              ? "Account ownership is confirmed."
+              : "Account ownership is not confirmed.") +
+          "</p>" +
+        "</div>" +
+      "</div>";
+  }
+
+  function renderHighlights(config) {
+    var host = document.getElementById("bv-result-highlights");
+    if (!host) return;
+    var total = config.fieldMatches.length;
+    var matched = config.matchCount;
+    var failed = total - matched;
+    var passRate = total === 0 ? 0 : Math.round((matched / total) * 100);
+    host.innerHTML = [
+      { label: "Fields checked", value: String(total) },
+      { label: "Pass rate", value: passRate + "%" },
+      { label: "Failed checks", value: String(failed), negative: failed > 0 }
+    ].map(renderHighlightField).join("");
+  }
+
+  function signalsTone(kind) {
+    if (kind === "positive") return "positive";
+    if (kind === "negative") return "negative";
+    return "intermediate";
   }
 
   function statusIcon(kind) {
@@ -52,64 +116,50 @@
   }
 
   function renderFieldDetailCell(detail) {
-    var cell = document.createElement("div");
-    cell.className = "dv-table__detail-cell";
+    var cell = document.createElement("td");
+    cell.className = "tds-data-table__text-cell tds-data-table__text-cell--subtext";
 
     if (!detail) {
-      var dash = document.createElement("span");
-      dash.className = "dv-cell-sub";
-      dash.textContent = "—";
-      cell.appendChild(dash);
+      var placeholder = document.createElement("span");
+      placeholder.className = "tds-data-table__cell-placeholder";
+      placeholder.textContent = "—";
+      cell.appendChild(placeholder);
       return cell;
     }
 
-    var list = document.createElement("ul");
-    list.className = "bv-field-detail";
-    [
-      { label: "Data Input:", value: detail.input },
-      { label: "Data returned:", value: detail.returned || "—" }
-    ].forEach(function (item) {
-      var li = document.createElement("li");
-      li.className = "bv-field-detail__item";
-      var label = document.createElement("span");
-      label.className = "bv-field-detail__label";
-      label.textContent = item.label;
-      var value = document.createElement("span");
-      value.className = "bv-field-detail__value";
-      value.textContent = item.value;
-      li.appendChild(label);
-      li.appendChild(document.createTextNode(" "));
-      li.appendChild(value);
-      list.appendChild(li);
-    });
-    cell.appendChild(list);
+    var stack = document.createElement("span");
+    stack.className = "tds-data-table__cell-text-stack";
+
+    var inputLine = document.createElement("span");
+    inputLine.textContent = "Data Input: " + detail.input;
+
+    var fileLine = document.createElement("span");
+    fileLine.className = "tds-data-table__cell-subtext";
+    fileLine.textContent = "Data on File: " + (detail.returned || "—");
+
+    stack.appendChild(inputLine);
+    stack.appendChild(fileLine);
+    cell.appendChild(stack);
     return cell;
   }
 
   function renderResult(config) {
     document.getElementById("bv-result-title").textContent = config.displayName;
 
-    var statusEl = document.getElementById("bv-result-status");
-    statusEl.className = "tds-tag tds-tag--" + config.tone + " tds-tag--md";
-    statusEl.textContent = config.match;
-
-    shared.fillCountryMetaValue(document.getElementById("bv-result-country"), config.country);
+    shared.fillCountryMetaValue(
+      document.getElementById("bv-result-country"),
+      config.country,
+      document.getElementById("bv-result-flag")
+    );
     document.getElementById("bv-result-txn").textContent = config.transactionId;
     document.getElementById("bv-result-date").textContent = formatDate();
 
     var teBlock = document.getElementById("bv-result-te-block");
-    var collapseTe = document.getElementById("bv-sidebar-collapse-te");
-    var collapseScore = document.getElementById("bv-sidebar-collapse-score");
-    if (config.testEntityMode && config.testEntity) {
-      teBlock.hidden = false;
-      if (collapseTe) collapseTe.hidden = false;
-      if (collapseScore) collapseScore.hidden = true;
-      renderResultTestEntity(config);
-    } else {
-      teBlock.hidden = true;
-      if (collapseTe) collapseTe.hidden = true;
-      if (collapseScore) collapseScore.hidden = false;
-    }
+    var teDivider = document.getElementById("bv-result-te-divider");
+    var showTe = !!(config.testEntityMode && config.testEntity);
+    if (teBlock) teBlock.hidden = !showTe;
+    if (teDivider) teDivider.hidden = !showTe;
+    if (showTe) renderResultTestEntity(config);
 
     var gaugeEl = document.getElementById("bv-result-gauge");
     gaugeEl.setAttribute("data-score", String(config.score));
@@ -119,6 +169,8 @@
     gaugeEl.setAttribute("data-show-percent", "true");
     window.ScoreGauge.render(gaugeEl);
     document.getElementById("bv-result-truai").textContent = config.truAi;
+    renderHighlights(config);
+    renderAnnouncements(config);
 
     var appended = document.getElementById("bv-result-appended");
     appended.innerHTML = "";
@@ -139,34 +191,58 @@
       appended.appendChild(div);
     });
 
-    var matchCountEl = document.getElementById("bv-result-match-count");
-    matchCountEl.className = "tds-tag tds-tag--" + config.tone + " tds-tag--sm";
-    matchCountEl.textContent = config.matchCount + " Matches";
-
     var tbody = document.getElementById("bv-result-field-rows");
     tbody.innerHTML = "";
     config.fieldMatches.forEach(function (row) {
-      var tr = document.createElement("div");
-      tr.className = "dv-table__row";
+      var tr = document.createElement("tr");
 
-      var signalCell = document.createElement("div");
-      signalCell.className = "dv-table__text-cell";
+      var signalCell = document.createElement("td");
+      signalCell.className = "tds-data-table__text-cell";
       var signalTitle = document.createElement("span");
-      signalTitle.className = "dv-cell-title";
+      signalTitle.className = "tds-data-table__row-header";
       signalTitle.textContent = row.signal;
       signalCell.appendChild(signalTitle);
 
-      var labelCell = document.createElement("div");
-      labelCell.className = "dv-table__label-cell";
-      labelCell.innerHTML =
-        '<span class="' + statusClass(row.kind) + '">' +
-        '<span class="dv-status__icon">' + statusIcon(row.kind) + '</span>' + row.result + '</span>';
+      var resultCell = document.createElement("td");
+      var tone = signalsTone(row.kind);
+      resultCell.innerHTML =
+        '<span class="tds-data-table__signals tds-data-table__signals--' + tone + '">' +
+          '<span class="tds-data-table__signals-icon" aria-hidden="true">' + statusIcon(row.kind) + "</span>" +
+          escapeHtml(row.result) +
+        "</span>";
 
       tr.appendChild(signalCell);
       tr.appendChild(renderFieldDetailCell(row.detail));
-      tr.appendChild(labelCell);
+      tr.appendChild(resultCell);
       tbody.appendChild(tr);
     });
+
+    var capabilityRows = document.getElementById("bv-result-capability-rows");
+    if (capabilityRows) {
+      capabilityRows.innerHTML = "";
+      (config.paymentCapabilities || []).forEach(function (row) {
+        var tr = document.createElement("tr");
+
+        var signalCell = document.createElement("td");
+        signalCell.className = "tds-data-table__text-cell";
+        var signalTitle = document.createElement("span");
+        signalTitle.className = "tds-data-table__row-header";
+        signalTitle.textContent = row.signal;
+        signalCell.appendChild(signalTitle);
+
+        var resultCell = document.createElement("td");
+        var tone = signalsTone(row.kind);
+        resultCell.innerHTML =
+          '<span class="tds-data-table__signals tds-data-table__signals--' + tone + '">' +
+            '<span class="tds-data-table__signals-icon" aria-hidden="true">' + statusIcon(row.kind) + "</span>" +
+            escapeHtml(row.result) +
+          "</span>";
+
+        tr.appendChild(signalCell);
+        tr.appendChild(resultCell);
+        capabilityRows.appendChild(tr);
+      });
+    }
 
     var pre = document.getElementById("bv-result-raw");
     pre.textContent = JSON.stringify(config.raw, null, 2);
@@ -186,7 +262,7 @@
 
     var trigger = document.createElement("button");
     trigger.type = "button";
-    trigger.className = "tds-select__trigger tds-select__trigger--lg dv-select-trigger bv-test-entity__trigger";
+    trigger.className = "tds-select__trigger tds-select__trigger--sm dv-select-trigger dv-te-trigger bv-test-entity__trigger";
     trigger.setAttribute("aria-haspopup", "listbox");
     trigger.setAttribute("aria-expanded", "false");
 
@@ -201,6 +277,8 @@
     var textWrap = document.createElement("span");
     textWrap.className = "tds-select__text-wrapper";
     shared.fillTestEntityTriggerContent(trigger, textWrap, current);
+    var valueEl = textWrap.querySelector(".tds-select__value");
+    if (valueEl) valueEl.classList.add("dv-te-value");
 
     var trailing = document.createElement("span");
     trailing.className = "tds-select__trailing-group";
@@ -264,15 +342,17 @@
 
   function wireInteractions() {
     var columns = document.getElementById("bv-result-columns");
+    var collapseBtn = document.querySelector(".bv-result-shell .dv-sidebar-toggle--collapse");
+    var expandBtn = document.querySelector(".bv-result-shell .dv-sidebar-toggle--expand");
 
-    document.querySelectorAll(".bv-result-shell .dv-sidebar-toggle--collapse").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        columns.classList.add("dv-columns--sidebar-collapsed");
-      });
-    });
-    document.querySelector(".bv-result-shell .dv-sidebar-toggle--expand").addEventListener("click", function () {
-      columns.classList.remove("dv-columns--sidebar-collapsed");
-    });
+    function setSidebarCollapsed(collapsed) {
+      if (columns) columns.classList.toggle("dv-columns--sidebar-collapsed", collapsed);
+      if (collapseBtn) collapseBtn.setAttribute("aria-expanded", String(!collapsed));
+      if (expandBtn) expandBtn.setAttribute("aria-expanded", String(collapsed));
+    }
+
+    if (collapseBtn) collapseBtn.addEventListener("click", function () { setSidebarCollapsed(true); });
+    if (expandBtn) expandBtn.addEventListener("click", function () { setSidebarCollapsed(false); });
 
     document.querySelectorAll(".bv-result-shell .dv-collapsible__header").forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -327,14 +407,6 @@
 
     var backBtn = document.getElementById("bv-result-back-btn");
     if (backBtn) backBtn.addEventListener("click", goBackToForm);
-
-    var editBtn = document.getElementById("bv-result-edit");
-    if (editBtn) {
-      editBtn.addEventListener("click", function (event) {
-        event.preventDefault();
-        goBackToForm();
-      });
-    }
   }
 
   window.BVResult = {

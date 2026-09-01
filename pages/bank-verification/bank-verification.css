@@ -285,6 +285,12 @@ body {
   flex-shrink: 0;
 }
 
+.bv-test-entity:not(.tds-select--open) .tds-select__trigger .tds-tag {
+  background-color: var(--surface-neutral-02);
+  border-color: var(--border-subtle);
+  color: var(--text-description);
+}
+
 .bv-option__flag,
 .bv-test-entity__flag {
   flex-shrink: 0;
@@ -604,12 +610,6 @@ body {
   .bv-card__footer .tds-btn {
     width: 100%;
     justify-content: center;
-  }
-
-  .bv-result-te-select,
-  .bv-result-te-select .tds-select {
-    width: 100%;
-    max-width: 100%;
   }
 }
 

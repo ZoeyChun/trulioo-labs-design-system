@@ -32,13 +32,11 @@
   }
 
   function matchInfo() {
-    var statusEl = document.getElementById("bv-result-status");
-    var match = statusEl ? statusEl.textContent.trim() : "Strong Match";
+    var gauge = document.getElementById("bv-result-gauge");
+    var match = gauge ? gauge.getAttribute("data-label") || "Strong Match" : "Strong Match";
     var tone = "low";
     if (match === "Partial Match") tone = "medium";
     if (match === "No Match") tone = "high";
-
-    var gauge = document.getElementById("bv-result-gauge");
     var score = gauge ? gauge.getAttribute("data-score") || "92" : "92";
 
     return { match: match, tone: tone, score: score };
@@ -47,9 +45,9 @@
   function countFieldMatches() {
     var positive = 0;
     var negative = 0;
-    document.querySelectorAll("#bv-result-field-rows .dv-table__row").forEach(function (row) {
-      if (row.querySelector(".dv-status--negative, .tds-tag--negative")) negative += 1;
-      else if (row.querySelector(".dv-status--positive, .tds-tag--positive")) positive += 1;
+    document.querySelectorAll("#bv-result-field-rows tr").forEach(function (row) {
+      if (row.querySelector(".tds-data-table__signals--negative, .tds-tag--negative")) negative += 1;
+      else if (row.querySelector(".tds-data-table__signals--positive, .tds-tag--positive")) positive += 1;
     });
     if (positive || negative) return { positive: positive, negative: negative };
     var info = matchInfo();

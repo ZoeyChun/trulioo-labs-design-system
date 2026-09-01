@@ -19,10 +19,14 @@
   <link rel="stylesheet" href="../../Components/select/combobox.css">
   <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="../../Components/switch/switch.css">
+  <link rel="stylesheet" href="../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../Components/data-table/data-table.css">
 
   <!-- Page-local styles -->
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
+  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../shared/flag-icons.css">
   <link rel="stylesheet" href="../shared/app-shell.css">
@@ -30,7 +34,7 @@
   <link rel="stylesheet" href="../shared/truai-chat.css">
   <link rel="stylesheet" href="../document-verification/document-verification.css">
   <link rel="stylesheet" href="bank-verification.css">
-  <link rel="stylesheet" href="bank-verification-result.css?v=54">
+  <link rel="stylesheet" href="bank-verification-result.css?v=65">
 </head>
 <body>
 
@@ -316,7 +320,6 @@
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
             </button>
             <h1 class="dv-title" id="bv-result-title">Jane Doe</h1>
-            <span id="bv-result-status" class="tds-tag tds-tag--positive tds-tag--md"></span>
           </div>
           <div class="dv-header__actions">
             <button class="tds-btn tds-btn--secondary tds-btn--lg" type="button">
@@ -335,19 +338,43 @@
         </div>
 
         <div class="dv-meta">
+          <div class="dv-meta__item dv-meta__item--entity" id="bv-result-te-block" hidden>
+            <p class="tds-data-field__label">Test entity</p>
+            <div class="tds-select dv-te-select bv-result-te-select" id="bv-result-te-select"></div>
+          </div>
+          <span class="dv-meta__divider" id="bv-result-te-divider" hidden aria-hidden="true"></span>
           <div class="dv-meta__item">
-            <span class="dv-meta__label">Country / Jurisdiction</span>
-            <span class="dv-meta__value" id="bv-result-country"></span>
+            <div class="tds-data-field">
+              <p class="tds-data-field__label">Country / Jurisdiction</p>
+              <div class="tds-data-field__content">
+                <div class="tds-data-field__value-row">
+                  <p class="tds-data-field__value" id="bv-result-country"></p>
+                  <span class="tds-select__country-flag tds-data-field__flag" id="bv-result-flag" aria-hidden="true"></span>
+                </div>
+              </div>
+            </div>
           </div>
           <span class="dv-meta__divider" aria-hidden="true"></span>
           <div class="dv-meta__item">
-            <span class="dv-meta__label">Transaction ID</span>
-            <span class="dv-meta__value" id="bv-result-txn"></span>
+            <div class="tds-data-field">
+              <p class="tds-data-field__label">Transaction ID</p>
+              <div class="tds-data-field__content">
+                <div class="tds-data-field__value-row">
+                  <p class="tds-data-field__value" id="bv-result-txn"></p>
+                </div>
+              </div>
+            </div>
           </div>
           <span class="dv-meta__divider" aria-hidden="true"></span>
           <div class="dv-meta__item">
-            <span class="dv-meta__label">Date</span>
-            <span class="dv-meta__value" id="bv-result-date"></span>
+            <div class="tds-data-field">
+              <p class="tds-data-field__label">Date</p>
+              <div class="tds-data-field__content">
+                <div class="tds-data-field__value-row">
+                  <p class="tds-data-field__value" id="bv-result-date"></p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -356,77 +383,110 @@
         <div class="dv-columns" id="bv-result-columns">
 
           <aside class="dv-sidebar" id="bv-result-sidebar">
-            <div class="dv-sidebar__block dv-sidebar__block--entity" id="bv-result-te-block">
-              <div class="dv-sidebar__entity-head">
-                <h2 class="dv-sidebar__heading">Test Entity</h2>
-                <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--collapse" id="bv-sidebar-collapse-te" aria-expanded="true" aria-controls="bv-result-sidebar" aria-label="Collapse summary panel">
-                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
-                </button>
-              </div>
-              <div class="dv-sidebar__entity-select">
-                <div class="tds-select bv-result-te-select" id="bv-result-te-select"></div>
-              </div>
-            </div>
-
-            <div class="dv-sidebar__block" id="bv-result-match-score-block">
-              <div class="bv-match-score-block">
-                <div class="bv-match-score-block__head">
-                  <h2 class="bv-match-score-block__title">Match Score</h2>
-                  <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--collapse" id="bv-sidebar-collapse-score" hidden aria-expanded="true" aria-controls="bv-result-sidebar" aria-label="Collapse summary panel">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
+            <div class="dv-sidebar__summary" id="bv-summary-block">
+              <div class="dv-sidebar__summary-top">
+                <div class="dv-sidebar__summary-head">
+                  <h2 class="dv-sidebar__heading">Summary</h2>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--collapse" aria-expanded="true" aria-controls="bv-result-sidebar" aria-label="Collapse summary panel">
+                    <span class="tds-icon-btn__icon" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
+                    </span>
                   </button>
                 </div>
-                <div class="dv-di-gauge" id="bv-result-gauge" aria-hidden="true"></div>
+                <div class="dv-sidebar__gauge">
+                  <div class="dv-di-gauge" id="bv-result-gauge" aria-hidden="true"></div>
+                </div>
+                <div class="dv-highlights" id="bv-result-highlights"></div>
+              </div>
+              <div class="dv-ai-card" id="bv-truai-card">
+                <div class="dv-ai-card__intro">
+                  <div class="dv-ai-card__label">
+                    <span class="dv-ai-card__sparkles" aria-hidden="true">
+                      <svg viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>
+                    </span>
+                    TruAI:
+                  </div>
+                  <p class="dv-ai-text" id="bv-result-truai"></p>
+                </div>
+                <div class="dv-ai-card__ask">
+                  <p class="dv-ai-card__ask-label">Ask TruAI:</p>
+                  <button type="button" class="tds-ai-tag tds-ai-tag--sm" id="bv-truai-prompt" data-truai-prompt="Summarize this verification result">
+                    <span class="tds-ai-tag__icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 12.375 12.375" fill="none"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>
+                    </span>
+                    <span class="tds-ai-tag__label">Summarize this verification result</span>
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div class="dv-sidebar__block">
-              <h2 class="dv-section-title">Summary</h2>
-              <div class="dv-ai-card">
-                <span class="dv-ai-badge">
-                  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/></svg>
-                  TruAI
-                </span>
-                <p class="dv-ai-text" id="bv-result-truai"></p>
+            <div class="dv-sidebar__accordions">
+              <div class="dv-sidebar__block dv-collapsible dv-collapsible--right" id="bv-result-appended-block">
+                <button class="dv-collapsible__header" type="button" aria-expanded="false" aria-controls="bv-result-appended">
+                  <span class="dv-section-title">Appended Data</span>
+                  <span class="dv-chevron" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+                  </span>
+                </button>
+                <div class="dv-collapsible__body" id="bv-result-appended" hidden></div>
               </div>
-            </div>
-
-            <div class="dv-sidebar__block dv-collapsible dv-collapsible--open dv-sidebar__block--last">
-              <button class="dv-collapsible__header" type="button" aria-expanded="true">
-                <span class="dv-chevron" aria-hidden="true">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4l4 4-4 4"/></svg>
-                </span>
-                <span class="dv-section-title">Appended Data</span>
-              </button>
-              <div class="dv-collapsible__body" id="bv-result-appended"></div>
             </div>
           </aside>
 
+          <button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--secondary dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="bv-result-sidebar" aria-label="Show summary panel">
+            <span class="tds-icon-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3" width="11" height="10" rx="1.5"/><path d="M6.5 3v10"/></svg>
+            </span>
+          </button>
+
           <div class="dv-main bv-result-main">
-            <button type="button" class="dv-sidebar-toggle dv-sidebar-toggle--expand" aria-expanded="false" aria-controls="bv-result-sidebar" aria-label="Show summary panel">
-              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M8 4v12"/></svg>
-            </button>
 
             <section class="dv-doc-panel">
               <div class="dv-doc-panel__header dv-ni2-panelhead">
                 <div class="dv-ni2-panelhead__title">
                   <h2 class="dv-doc-panel__title">Verification Results</h2>
-                  <span id="bv-result-match-count" class="tds-tag tds-tag--positive tds-tag--sm"></span>
                 </div>
-                <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" id="bv-result-edit">Edit form</button>
               </div>
 
               <div class="dv-doc-panel__body bv-result-panel__body">
-                <h3 class="dv-section-title bv-result-subtitle">Field Match Results</h3>
+                <div class="bv-result-announcements" id="bv-result-announcements"></div>
 
-                <div class="dv-table bv-result-table">
-                  <div class="dv-table__row dv-table__head">
-                    <div class="dv-table__text-cell"><span class="dv-table__col-head">Signal</span></div>
-                    <div class="dv-table__detail-cell"><span class="dv-table__col-head">Detail</span></div>
-                    <div class="dv-table__label-cell"><span class="dv-table__col-head">Result</span></div>
+                <section class="bv-result-section" aria-labelledby="bv-result-field-heading">
+                  <h3 class="dv-section-title bv-result-subtitle" id="bv-result-field-heading">Field Match Results</h3>
+
+                  <div class="tds-data-table-container bv-result-table">
+                    <div class="tds-data-table__wrapper">
+                      <table class="tds-data-table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Signal</th>
+                            <th scope="col">Detail</th>
+                            <th scope="col">Result</th>
+                          </tr>
+                        </thead>
+                        <tbody id="bv-result-field-rows"></tbody>
+                      </table>
+                    </div>
                   </div>
-                  <div id="bv-result-field-rows"></div>
-                </div>
+                </section>
+
+                <section class="bv-result-section" aria-labelledby="bv-result-capability-heading">
+                  <h3 class="dv-section-title bv-result-subtitle" id="bv-result-capability-heading">Payment Capabilities</h3>
+
+                  <div class="tds-data-table-container bv-result-table bv-capabilities-table">
+                    <div class="tds-data-table__wrapper">
+                      <table class="tds-data-table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Signal</th>
+                            <th scope="col">Result</th>
+                          </tr>
+                        </thead>
+                        <tbody id="bv-result-capability-rows"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </section>
 
                 <div class="bv-raw-panel">
                   <div class="bv-raw-panel__header">
@@ -468,10 +528,10 @@
   </div>
 
   <script src="../../Components/score-gauge/score-gauge.js"></script>
-  <script src="bank-verification-shared.js?v=52"></script>
-  <script src="bank-verification-result.js?v=52"></script>
-  <script src="bank-verification.js?v=52"></script>
-  <script src="truai-responses.js?v=1"></script>
+  <script src="bank-verification-shared.js?v=57"></script>
+  <script src="bank-verification-result.js?v=62"></script>
+  <script src="bank-verification.js?v=55"></script>
+  <script src="truai-responses.js?v=3"></script>
   <script src="../shared/truai-chat.js?v=1"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>
   <script>TdsSideNav.init();</script>

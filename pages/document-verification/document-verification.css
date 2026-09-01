@@ -29,8 +29,18 @@
 }
 
 #dv-result-view.dv-panel {
+  --dv-result-content-max: 1400px; /* Figma 5332:95323 */
+  align-items: center;
   min-height: 0;
   overflow: hidden;
+}
+
+#dv-result-view .dv-header,
+#dv-result-view .dv-content {
+  width: 100%;
+  max-width: var(--dv-result-content-max);
+  min-width: 0;
+  margin-inline: auto;
 }
 
 html {
