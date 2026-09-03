@@ -10,8 +10,7 @@
 }
 
 .page-hero,
-.labs-hero,
-.history-hero {
+.labs-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,8 +20,7 @@
 }
 
 .page-hero__title,
-.labs-hero__title,
-.history-hero__title {
+.labs-hero__title {
   margin: 0;
   font-family: var(--font-ui);
   font-size: 40px;
@@ -33,8 +31,7 @@
 }
 
 .page-hero__desc,
-.labs-hero__desc,
-.history-hero__desc {
+.labs-hero__desc {
   margin: 0;
   max-width: 600px;
   font-size: var(--font-14);
@@ -44,14 +41,12 @@
 
 @media (max-width: 900px) {
   .page-hero,
-  .labs-hero,
-  .history-hero {
+  .labs-hero {
     padding: 48px 24px 0;
   }
 
   .page-hero__title,
-  .labs-hero__title,
-  .history-hero__title {
+  .labs-hero__title {
     font-size: 32px;
     line-height: 38px;
   }

@@ -496,6 +496,15 @@
   function initHomeNavigation() {
     var homeUrl = getHomeUrl();
 
+    var resultBack = document.getElementById("kyb-result-back");
+    if (resultBack) {
+      resultBack.addEventListener("click", function () {
+        if (window.LabsHistoryReturn && window.LabsHistoryReturn.go(homeUrl)) return;
+        var target = window.top && window.top !== window ? window.top : window;
+        target.location.href = homeUrl;
+      });
+    }
+
     document.querySelectorAll(".tds-side-nav__brand").forEach(function (el) {
       el.addEventListener("click", function () {
         window.location.href = homeUrl;

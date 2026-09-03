@@ -155,6 +155,11 @@
     return pad(date.getMonth() + 1) + "/" + pad(date.getDate()) + "/" + date.getFullYear();
   }
 
+  function parseFlexibleDate(str) {
+    if (!str) return null;
+    return parseDate(str) || parseDateKey(str);
+  }
+
   function parseDate(str) {
     if (!str) return null;
     var parts = str.split("/");
@@ -358,7 +363,9 @@
     var selected = parseDate(picker.dataset.value || valueEl.textContent.trim());
     if (selected) setFieldValue(field, valueEl, selected);
 
-    var viewDate = selected ? new Date(selected) : new Date();
+    var viewDate = selected
+      ? new Date(selected)
+      : parseFlexibleDate(picker.dataset.view) || new Date();
     var calendar = picker.querySelector(".tds-date-picker__calendar");
     if (!calendar) {
       calendar = createCalendar(picker.dataset.calendarLabel || "Choose date");
@@ -460,7 +467,7 @@
     if (rangeStart) setFieldValue(startField, startValue, rangeStart);
     if (rangeEnd) setFieldValue(endField, endValue, rangeEnd);
 
-    var viewDate = rangeStart || rangeEnd || new Date();
+    var viewDate = rangeStart || rangeEnd || parseFlexibleDate(range.dataset.view) || new Date();
     var fieldsRow = range.querySelector(".tds-date-picker-range__fields");
     var calendar = range.querySelector(".tds-date-picker__calendar");
     if (!calendar) {

@@ -3071,6 +3071,11 @@ ${renderSignalsToolbar()}
     wireSplitPanes();
     wireAppNavToggle();
     wireTestEntitySelect();
-    setScenario(INITIAL_SCENARIO);
+    var scenarioId = INITIAL_SCENARIO;
+    try {
+      var param = new URLSearchParams(window.location.search).get("scenario");
+      if (param && isScenarioId(param)) scenarioId = param;
+    } catch (e) { /* keep default */ }
+    setScenario(scenarioId);
   });
 })();

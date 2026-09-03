@@ -2210,6 +2210,7 @@
     var resultBack = byId("eid-result-back");
     if (resultBack) {
       resultBack.addEventListener("click", function () {
+        if (window.LabsHistoryReturn && window.LabsHistoryReturn.go()) return;
         if (window.EidResult) window.EidResult.hide();
         resetToStart();
       });
@@ -2239,6 +2240,15 @@
     var session = window.EidResult && window.EidResult.loadSession
       ? window.EidResult.loadSession()
       : null;
+    var countryParam = "";
+    try {
+      countryParam = (new URLSearchParams(location.search).get("country") || "").toLowerCase();
+    } catch (e) { countryParam = ""; }
+    if (countryParam) {
+      session = session || { view: "result" };
+      session.countryCode = countryParam;
+      session.view = "result";
+    }
     if (location.hash === "#result" || (session && session.view === "result")) {
       if (session) restoreFromSession(session);
       if (window.EidResult) window.EidResult.show();

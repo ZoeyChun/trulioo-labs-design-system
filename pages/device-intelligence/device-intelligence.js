@@ -346,6 +346,7 @@
     var back = document.getElementById("di-landing-back");
     if (back) {
       back.addEventListener("click", function () {
+        if (window.LabsHistoryReturn && window.LabsHistoryReturn.go()) return;
         window.location.href = getHomeUrl();
       });
     }
@@ -821,6 +822,7 @@
 
     function goToLanding() {
       if (analyzeTimer) window.clearTimeout(analyzeTimer);
+      if (window.LabsHistoryReturn && window.LabsHistoryReturn.go()) return;
       window.location.href = "index.html";
     }
 

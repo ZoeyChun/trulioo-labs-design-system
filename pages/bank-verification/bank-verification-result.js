@@ -328,6 +328,7 @@
   }
 
   function goBackToForm() {
+    if (window.LabsHistoryReturn && window.LabsHistoryReturn.go()) return;
     var current = shared.loadSession();
     if (current) {
       current.view = "form";

@@ -100,6 +100,7 @@
     /* Result header back — return home; the capture form is not part of this demo. */
     if (resultBack) {
       resultBack.addEventListener("click", function () {
+        if (window.LabsHistoryReturn && window.LabsHistoryReturn.go()) return;
         window.location.href = homeUrl;
       });
     }
