@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/page-hero.css">
-  <link rel="stylesheet" href="css/history.css?v=6">
+  <link rel="stylesheet" href="css/history.css?v=7">
   <link rel="stylesheet" href="css/truai-panel.css?v=4">
   <script src="js/truai-panel.js?v=4" defer></script>
 </head>
@@ -153,11 +153,11 @@
               </colgroup>
               <thead id="historyTableHead">
                 <tr>
-                  <th scope="col">Transaction</th>
-                  <th scope="col">Product type</th>
-                  <th scope="col">Country</th>
+                  <th scope="col" data-sort="transaction" aria-sort="none" tabindex="0"><span class="history-table__sort-label">Transaction <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>
+                  <th scope="col" data-sort="productType" aria-sort="none" tabindex="0"><span class="history-table__sort-label">Product type <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>
+                  <th scope="col" data-sort="country" aria-sort="none" tabindex="0"><span class="history-table__sort-label">Country <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>
                   <th scope="col" data-sort="date" aria-sort="descending" tabindex="0"><span class="history-table__sort-label">Date <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>
-                  <th scope="col">Status</th>
+                  <th scope="col" data-sort="status" aria-sort="none" tabindex="0"><span class="history-table__sort-label">Status <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>
                   <th scope="col" class="tds-data-table__actions-col"><span class="visually-hidden">Open</span></th>
                 </tr>
               </thead>
@@ -196,7 +196,7 @@
 <script src="js/history-data.js?v=5"></script>
 <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
 <script src="../../Components/date-picker/date-picker.js"></script>
-<script src="js/history.js?v=7"></script>
+<script src="js/history.js?v=8"></script>
 <script src="js/side-nav-experimental.js?v=2"></script>
 <script>SideNavExperimental.init();</script>
 </body>

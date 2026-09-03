@@ -52,6 +52,7 @@
 
   var state = {
     search: '',
+    sortKey: 'date',
     sortDir: 'desc',
     page: 1,
     pageSize: 10,
@@ -115,13 +116,26 @@
     return year + '-' + pad2(month) + '-' + pad2(day);
   }
 
-  function formatShortDay(iso) {
+  function formatShortDay(iso, withYear) {
     var parts = String(iso || '').split('-');
     if (parts.length !== 3) return '';
+    var year = parts[0];
     var month = Number(parts[1]) - 1;
     var day = Number(parts[2]);
     if (month < 0 || month > 11) return iso;
-    return MONTH_SHORT[month] + ' ' + day;
+    var label = MONTH_SHORT[month] + ' ' + day;
+    return withYear ? label + ', ' + year : label;
+  }
+
+  function formatDateRangeLabel(start, end) {
+    if (!start) return 'Date';
+    if (!end || end === start) return formatShortDay(start, true);
+    var startYear = start.split('-')[0];
+    var endYear = end.split('-')[0];
+    if (startYear === endYear) {
+      return formatShortDay(start, false) + ' – ' + formatShortDay(end, true);
+    }
+    return formatShortDay(start, true) + ' – ' + formatShortDay(end, true);
   }
 
   function matchesFilters(item) {
@@ -142,12 +156,25 @@
     return true;
   }
 
+  function compareText(a, b) {
+    return String(a || '').localeCompare(String(b || ''), undefined, { sensitivity: 'base' });
+  }
+
   function sortItems(items) {
     var dir = state.sortDir === 'asc' ? 1 : -1;
+    var key = state.sortKey || 'date';
     return items.slice().sort(function (a, b) {
-      var byDate = (parseDate(a.date) - parseDate(b.date)) * dir;
-      if (byDate !== 0) return byDate;
-      return a.name.localeCompare(b.name) * dir;
+      var cmp = 0;
+      if (key === 'date') cmp = parseDate(a.date) - parseDate(b.date);
+      else if (key === 'transaction') {
+        cmp = compareText(a.name, b.name);
+        if (!cmp) cmp = compareText(a.id, b.id);
+      } else if (key === 'productType') cmp = compareText(a.productType, b.productType);
+      else if (key === 'country') cmp = compareText(a.country, b.country);
+      else if (key === 'status') cmp = compareText(a.status, b.status);
+      if (!cmp && key !== 'date') cmp = parseDate(a.date) - parseDate(b.date);
+      if (!cmp) cmp = compareText(a.name, b.name);
+      return cmp * dir;
     });
   }
 
@@ -170,11 +197,7 @@
     var clear = range.querySelector('.history-date-filter__clear');
     var selected = !!state.dateStart;
     range.classList.toggle('history-date-filter--selected', selected);
-    if (label) {
-      if (!state.dateStart) label.textContent = 'Date';
-      else if (!state.dateEnd || state.dateEnd === state.dateStart) label.textContent = formatShortDay(state.dateStart);
-      else label.textContent = formatShortDay(state.dateStart) + ' – ' + formatShortDay(state.dateEnd);
-    }
+    if (label) label.textContent = formatDateRangeLabel(state.dateStart, state.dateEnd);
     if (clear) clear.hidden = !selected;
   }
 
@@ -248,22 +271,26 @@
 
   function syncSortHeaders() {
     if (!els.thead) return;
-    var th = els.thead.querySelector('th[data-sort="date"]');
-    if (!th) return;
-    var icon = th.querySelector('.tds-data-table__sort-icon');
-    th.setAttribute('aria-sort', state.sortDir === 'asc' ? 'ascending' : 'descending');
-    if (icon) icon.innerHTML = state.sortDir === 'asc' ? SORT_ICON_ASC : SORT_ICON_DESC;
+    els.thead.querySelectorAll('th[data-sort]').forEach(function (th) {
+      var key = th.getAttribute('data-sort');
+      var active = key === state.sortKey;
+      var icon = th.querySelector('.tds-data-table__sort-icon');
+      th.setAttribute('aria-sort', active ? (state.sortDir === 'asc' ? 'ascending' : 'descending') : 'none');
+      if (icon) icon.innerHTML = active && state.sortDir === 'asc' ? SORT_ICON_ASC : SORT_ICON_DESC;
+    });
   }
 
-  function setSortDir(dir) {
-    state.sortDir = dir === 'asc' ? 'asc' : 'desc';
+  function toggleColumnSort(key) {
+    if (!key) return;
+    if (state.sortKey === key) {
+      state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      state.sortKey = key;
+      state.sortDir = key === 'date' ? 'desc' : 'asc';
+    }
     state.page = 1;
     syncSortHeaders();
     renderRows();
-  }
-
-  function toggleDateSort() {
-    setSortDir(state.sortDir === 'asc' ? 'desc' : 'asc');
   }
 
   function pageSize() {
@@ -277,10 +304,28 @@
   }
 
   function computePageSize() {
-    var wrap = document.querySelector('.history-table-card .tds-data-table__wrapper');
+    var block = document.querySelector('.history-table-block');
+    var toolbar = document.querySelector('.history-toolbar');
+    var chips = els.activeFilters;
     var thead = els.thead;
-    if (!wrap) return MAX_PAGE_SIZE;
-    var available = wrap.clientHeight - (thead ? thead.getBoundingClientRect().height : 27);
+    if (!block) return MAX_PAGE_SIZE;
+
+    var gap = parseFloat(window.getComputedStyle(block).rowGap || window.getComputedStyle(block).gap) || 16;
+    var used = 0;
+    var sections = 1;
+    if (toolbar) {
+      used += toolbar.getBoundingClientRect().height;
+      sections += 1;
+    }
+    if (chips && !chips.hidden) {
+      used += chips.getBoundingClientRect().height;
+      sections += 1;
+    }
+    used += gap * Math.max(0, sections - 1);
+
+    var footerH = els.footer && els.footer.offsetHeight ? els.footer.getBoundingClientRect().height : 48;
+    var theadH = thead ? thead.getBoundingClientRect().height : 27;
+    var available = block.clientHeight - used - footerH - theadH - 2;
     if (available <= 0) return MAX_PAGE_SIZE;
     return Math.max(1, Math.min(MAX_PAGE_SIZE, Math.floor(available / estimatedRowHeight())));
   }
@@ -550,16 +595,16 @@
 
     if (els.thead) {
       els.thead.addEventListener('click', function (event) {
-        var th = event.target.closest('th[data-sort="date"]');
+        var th = event.target.closest('th[data-sort]');
         if (!th) return;
-        toggleDateSort();
+        toggleColumnSort(th.getAttribute('data-sort'));
       });
       els.thead.addEventListener('keydown', function (event) {
         if (event.key !== 'Enter' && event.key !== ' ') return;
-        var th = event.target.closest('th[data-sort="date"]');
+        var th = event.target.closest('th[data-sort]');
         if (!th) return;
         event.preventDefault();
-        toggleDateSort();
+        toggleColumnSort(th.getAttribute('data-sort'));
       });
     }
 
