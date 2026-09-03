@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ING — Mobile Confirmation</title>
-<link rel="stylesheet" href="embed-mockup.css">
+<link rel="stylesheet" href="embed-mockup.css?v=noscroll-1">
+<link rel="stylesheet" href="../../../Components/tap-indicator/tap-indicator.css?v=tap-cue-12">
+<script src="../../../Components/tap-indicator/tap-indicator.js?v=tap-cue-5"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
@@ -37,10 +39,8 @@
     height: 100%;
     background: #ffffff;
     border-radius: 42px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     position: relative;
-    -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
   }
@@ -96,6 +96,8 @@
   .content {
     padding: 6px 20px 0;
     flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .send-row {
@@ -162,8 +164,9 @@
 
   /* ---------- Footer buttons ---------- */
   .footer {
-    padding: 16px 18px 22px;
+    padding: 16px 24px 28px;
     flex-shrink: 0;
+    overflow: visible;
   }
 
   .btn {
@@ -182,6 +185,9 @@
     background: #ff6200;
     color: #ffffff;
     margin-bottom: 12px;
+    position: relative;
+    overflow: visible;
+    isolation: isolate;
   }
 
   .btn-decline {
@@ -190,8 +196,8 @@
     border-color: #ff6200;
   }
 
-  html.preview,
-  html.preview * {
+  html.preview:not(.eid-embed--interactive),
+  html.preview:not(.eid-embed--interactive) * {
     cursor: default !important;
     pointer-events: none !important;
   }
@@ -234,9 +240,14 @@
   }
 </style>
 <script>
-  if (window.self !== window.top) {
-    document.documentElement.classList.add("preview");
-  }
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var interactive = params.get("interactive") === "1";
+    if (window.self !== window.top) {
+      document.documentElement.classList.add("preview");
+    }
+    if (interactive) document.documentElement.classList.add("eid-embed--interactive");
+  })();
 </script>
 </head>
 <body>
@@ -304,11 +315,33 @@
 
     <!-- Footer buttons -->
     <div class="footer">
-      <span class="btn btn-accept">Accept</span>
+      <span class="btn btn-accept" role="button" tabindex="0" data-tds-tap-cue="outline">Accept</span>
       <span class="btn btn-decline">Decline</span>
     </div>
 
   </div>
  </div>
+ <script>
+  (function () {
+    var accept = document.querySelector(".btn-accept");
+    if (!accept) return;
+
+    if (window.TdsTapCue) window.TdsTapCue.show(accept);
+
+    function goNext() {
+      if (window.TdsTapCue) window.TdsTapCue.hide();
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ source: "eid-embed", type: "eid-consent-accept" }, "*");
+      }
+    }
+
+    accept.addEventListener("click", goNext);
+    accept.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      goNext();
+    });
+  })();
+ </script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   "use strict";
 
   var DEFAULT_PROMPTS = [
-    "Summarize this verification result",
+    "Summarize verified identity",
     "What identity data was verified?",
     "What device risk signals were detected?",
   ];
@@ -197,6 +197,7 @@
     var name = entityName();
 
     switch (prompt) {
+      case "Summarize verified identity":
       case "Summarize this verification result":
         return buildSummaryResponse(name);
       case "What identity data was verified?":

@@ -140,16 +140,70 @@
   };
 
   var COUNTRY_RESULT_META = {
-    "Brazil": { bank: "Banco do Brasil", currency: "BRL", code: "BR", city: "São Paulo", state: "SP" },
-    "South Korea": { bank: "Kookmin Bank", currency: "KRW", code: "KR", city: "Seoul", state: "Seoul" },
-    "Mexico": { bank: "Banco Nacional de México", currency: "MXN", code: "MX", city: "Mexico City", state: "CDMX" },
-    "United States": { bank: "Bank of America", currency: "USD", code: "US", city: "San Francisco", state: "California" },
-    "France": { bank: "BNP Paribas", currency: "EUR", code: "FR", city: "Paris", state: "Île-de-France" },
-    "Spain": { bank: "CaixaBank", currency: "EUR", code: "ES", city: "Madrid", state: "Madrid" },
-    "Germany": { bank: "Deutsche Bank", currency: "EUR", code: "DE", city: "Berlin", state: "Berlin" },
-    "Belgium": { bank: "KBC Bank", currency: "EUR", code: "BE", city: "Brussels", state: "Brussels" },
-    "India": { bank: "HDFC Bank", currency: "INR", code: "IN", city: "Mumbai", state: "Maharashtra" }
+    "Brazil": { bank: "Banco do Brasil", currency: "BRL", code: "BR", city: "São Paulo", state: "SP", address: "Av. Paulista 1000, Bela Vista, São Paulo, SP 01310-100" },
+    "South Korea": { bank: "Kookmin Bank", currency: "KRW", code: "KR", city: "Seoul", state: "Seoul", address: "58 Jongno, Jongno-gu, Seoul 03164" },
+    "Mexico": { bank: "Banco Nacional de México", currency: "MXN", code: "MX", city: "Mexico City", state: "CDMX", address: "Paseo de la Reforma 350, Cuauhtémoc, Mexico City, CDMX 06600" },
+    "United States": { bank: "Bank of America", currency: "USD", code: "US", city: "San Francisco", state: "California", address: "555 California St, San Francisco, CA 94104" },
+    "France": { bank: "BNP Paribas", currency: "EUR", code: "FR", city: "Paris", state: "Île-de-France", address: "16 boulevard des Italiens, 75009 Paris" },
+    "Spain": { bank: "CaixaBank", currency: "EUR", code: "ES", city: "Madrid", state: "Madrid", address: "Calle de Serrano 90, 28006 Madrid" },
+    "Germany": { bank: "Deutsche Bank", currency: "EUR", code: "DE", city: "Berlin", state: "Berlin", address: "Unter den Linden 13-15, 10117 Berlin" },
+    "Belgium": { bank: "KBC Bank", currency: "EUR", code: "BE", city: "Brussels", state: "Brussels", address: "Avenue du Port 2, 1080 Brussels" },
+    "India": { bank: "HDFC Bank", currency: "INR", code: "IN", city: "Mumbai", state: "Maharashtra", address: "HDFC Bank House, H.T. Parekh Marg, Churchgate, Mumbai 400020" },
+    "Indonesia": { bank: "Bank Mandiri", currency: "IDR", code: "ID", city: "Jakarta", state: "DKI Jakarta", address: "Jl. Jenderal Sudirman Kav. 54-55, Jakarta 12190" }
   };
+
+  var PAYMENT_CAPABILITIES = {
+    sepa_credit_transfer: "no",
+    sepa_direct_debit: "no",
+    core1_direct_debit: "no",
+    sepa_b2b: "no",
+    sepa_card_clearing: "no",
+    sepa_credit_transfer_instant: "no",
+    ach_credit: "yes",
+    ach_debit: "unknown",
+    fedwire: "yes",
+    swift_wire: "yes",
+    rtp: "unknown",
+    fednow: "unknown"
+  };
+
+  var PAYMENT_CAPABILITY_LABELS = {
+    sepa_credit_transfer: "SEPA Credit Transfer",
+    sepa_direct_debit: "SEPA Direct Debit",
+    core1_direct_debit: "CORE1 Direct Debit",
+    sepa_b2b: "SEPA B2B",
+    sepa_card_clearing: "SEPA Card Clearing",
+    sepa_credit_transfer_instant: "SEPA Instant Credit Transfer",
+    ach_credit: "ACH Credit",
+    ach_debit: "ACH Debit",
+    fedwire: "Fedwire",
+    swift_wire: "SWIFT Wire",
+    rtp: "RTP",
+    fednow: "FedNow"
+  };
+
+  function capabilityKind(value) {
+    if (value === "yes") return "positive";
+    if (value === "no") return "negative";
+    return "intermediate";
+  }
+
+  function capabilityResultLabel(value) {
+    if (value === "yes") return "Yes";
+    if (value === "no") return "No";
+    return "Unknown";
+  }
+
+  function buildPaymentCapabilities() {
+    return Object.keys(PAYMENT_CAPABILITIES).map(function (key) {
+      var value = PAYMENT_CAPABILITIES[key];
+      return {
+        signal: PAYMENT_CAPABILITY_LABELS[key] || key,
+        kind: capabilityKind(value),
+        result: capabilityResultLabel(value)
+      };
+    });
+  }
 
   var TEST_ENTITIES = {
     person: [
@@ -394,7 +448,8 @@
       currency: "—",
       code: cfg ? cfg.code : "—",
       city: "—",
-      state: "—"
+      state: "—",
+      address: "—"
     };
   }
 
@@ -431,18 +486,9 @@
     el.innerHTML = '<span class="fi fi-' + code + '"></span>';
   }
 
-  function fillCountryMetaValue(el, countryName) {
-    if (!el) return;
-    el.className = "dv-meta__value dv-meta__value--country";
-    el.textContent = "";
-    var nameSpan = document.createElement("span");
-    nameSpan.textContent = countryName;
-    el.appendChild(nameSpan);
-    var flagWrap = document.createElement("span");
-    flagWrap.className = "tds-select__country-flag dv-meta__flag";
-    flagWrap.setAttribute("aria-hidden", "true");
-    setFlagElement(flagWrap, countryName);
-    el.appendChild(flagWrap);
+  function fillCountryMetaValue(el, countryName, flagEl) {
+    if (el) el.textContent = countryName || "";
+    if (flagEl) setFlagElement(flagEl, countryName);
   }
 
   function saveSession(session) {
@@ -589,21 +635,19 @@
   }
 
   function buildAppended(values, matchInfo, country, accountType, meta) {
-    var rows = [
-      { label: accountType === "business" ? "Business Name" : "Full Name", value: displayName(values, accountType) }
-    ];
+    var rows = [];
     if (values["Bank Account Number"] || values["Account Number"]) {
       rows.push({ label: "Account Number", value: values["Bank Account Number"] || values["Account Number"] });
     }
     rows.push(
       { label: "Bank Name", value: meta.bank },
+      { label: "Bank Address", value: meta.address },
       { label: "Local Currency", value: meta.currency },
       { label: "City", value: meta.city },
       { label: "State", value: meta.state }
     );
     if (values["IBAN"]) rows.push({ label: "IBAN", value: values["IBAN"] });
     rows.push({ label: "Confidence Score", value: (matchInfo.score / 100).toFixed(2) });
-    rows.push({ label: "Country", value: meta.code });
     return rows;
   }
 
@@ -633,6 +677,12 @@
     var name = displayName(values, st.accountType);
     var fieldMatches = buildFieldMatches(values, matchInfo, st.accountType, country);
     var matchCount = fieldMatches.filter(function (r) { return r.kind === "positive"; }).length;
+    var accountDetailsVerified = fieldMatches.every(function (r) {
+      return !isAccountField(r.signal) || r.kind !== "negative";
+    });
+    var ownershipConfirmed = fieldMatches.every(function (r) {
+      return !isNameField(r.signal) || r.kind !== "negative";
+    });
     var txnId = uuid();
 
     return {
@@ -649,8 +699,11 @@
       testEntityMode: !!(st.testEntity && st.selectedTestEntity != null),
       accountType: st.accountType,
       matchCount: matchCount,
+      accountDetailsVerified: accountDetailsVerified,
+      ownershipConfirmed: ownershipConfirmed,
       truAi: buildTruAi(name, matchInfo),
       fieldMatches: fieldMatches,
+      paymentCapabilities: buildPaymentCapabilities(),
       appended: buildAppended(values, matchInfo, country, st.accountType, meta),
       raw: {
         transactionId: txnId,
@@ -659,7 +712,8 @@
         country: meta.code,
         accountType: st.accountType,
         input: values,
-        appended: buildAppended(values, matchInfo, country, st.accountType, meta)
+        appended: buildAppended(values, matchInfo, country, st.accountType, meta),
+        paymentCapabilities: PAYMENT_CAPABILITIES
       }
     };
   }

@@ -16,6 +16,7 @@
   var TRANSITION_MS = 3000;
   var IT_LAUNCH_ACCESS_MS = 2000;
   var CZ_KB_LAUNCH_MS = 750;
+  var CZ_COMPLETE_HOLD_MS = 2200;
   var BE_LAUNCH_MS = 750;
   var RESEND_SECONDS = 10;
   var IN_RESEND_SECONDS = 60;
@@ -184,9 +185,14 @@
     var list = byId("eid-country-list");
     if (!root || !input || !list) return;
     var flag = root.querySelector(".eid-country__flag");
+    var field = root.querySelector(".tds-combobox__field");
 
     function open() { root.classList.add("tds-combobox--open"); input.setAttribute("aria-expanded", "true"); }
     function close() { root.classList.remove("tds-combobox--open"); input.setAttribute("aria-expanded", "false"); }
+    function showList() {
+      renderOptions(state.country ? "" : input.value);
+      open();
+    }
 
     function renderOptions(filter) {
       list.innerHTML = "";
@@ -242,8 +248,8 @@
       updateConfigNext();
       updateCountryFieldTag();
     }
-    input.addEventListener("focus", function () { renderOptions(state.country ? "" : input.value); open(); });
-    input.addEventListener("click", function () { renderOptions(state.country ? "" : input.value); open(); });
+    input.addEventListener("focus", showList);
+    input.addEventListener("click", showList);
     input.addEventListener("input", function () {
       state.country = null;
       setFlag(flag, null);
@@ -255,6 +261,14 @@
     input.addEventListener("keydown", function (e) {
       if (e.key === "Escape") { close(); input.blur(); }
     });
+    if (field) {
+      field.addEventListener("mousedown", function (e) {
+        if (e.target === input) return;
+        e.preventDefault();
+        showList();
+        input.focus();
+      });
+    }
     document.addEventListener("click", function (e) {
       if (!root.contains(e.target)) close();
     });
@@ -353,8 +367,9 @@
     if (!root || !state.flowSteps.length) return;
     root.innerHTML = "";
     state.flowSteps.forEach(function (step, i) {
+      var completing = state.transientPanel === "eid-panel-completing";
       var itemState = "incomplete";
-      if (i < state.flowIndex) itemState = "completed";
+      if (completing || i < state.flowIndex) itemState = "completed";
       else if (i === state.flowIndex) itemState = "current";
 
       var li = document.createElement("li");
@@ -404,6 +419,185 @@
     return usesNlSimFlow() && state.bank && state.bank.id === "ing";
   }
 
+  var GUIDANCE_COPY = {
+    "select-bank": {
+      title: "Choose a bank",
+      description: "Verification starts with the bank already used for online banking.",
+      calloutText: "Select a bank."
+    },
+    "sign-in": {
+      title: "Sign in",
+      description: "Complete login in the banking app the same way as a real customer would.",
+      calloutText: "Continue on the keypad."
+    },
+    "select-provider": {
+      title: "Choose a provider",
+      description: "Pick the identity provider already set up on the phone.",
+      calloutText: "Select a provider."
+    },
+    "enter-details": {
+      title: "Enter sign-in details",
+      description: "Fill in the credentials on this screen before the app can confirm.",
+      calloutText: "Tap an empty field to fill it."
+    },
+    "otp": {
+      title: "Enter the one-time code",
+      description: "A short code was sent to the registered mobile number.",
+      calloutText: "Tap the code field to fill it."
+    },
+    "launch-app": {
+      title: "Confirm in the app",
+      description: "The mobile app has to approve this request before data can be shared.",
+      calloutText: "Continue in the app."
+    },
+    "consent": {
+      title: "Share identity data",
+      description: "Review the details that will be returned, then approve sharing.",
+      calloutText: "Tap the approval button."
+    }
+  };
+
+  var GUIDANCE_COPY_BY_COUNTRY = {
+    nl: {
+      "select-bank": {
+        title: "Choose a bank",
+        description: "iDIN asks which Dutch bank should handle this login.",
+        calloutText: "Select ING."
+      },
+      "sign-in": {
+        title: "Sign in to ING",
+        description: "The ING app asks for the usual 5-digit PIN.",
+        calloutText: "Tap a number on the keypad."
+      },
+      "consent": {
+        title: "Share iDIN data",
+        description: "ING will share name, date of birth, and address for verification.",
+        calloutText: "Tap Accept."
+      }
+    },
+    be: {
+      "consent": {
+        title: "Confirm with itsme",
+        description: "itsme shows the identity request from Trulioo before anything is shared.",
+        calloutText: "Tap Confirm."
+      }
+    },
+    cz: {
+      "select-bank": {
+        title: "Choose a bank",
+        description: "Bank iD starts with the Czech bank already used for login.",
+        calloutText: "Select Komerční banka."
+      },
+      "enter-details": {
+        title: "Enter Bank iD username",
+        description: "Komerční banka needs the username before it can confirm in the app.",
+        calloutText: "Tap the username field."
+      },
+      "enter-details-filled": {
+        title: "Continue to the app",
+        description: "The username is filled. Next, confirm login in the banking app.",
+        calloutText: "Tap Continue."
+      },
+      "launch-app": {
+        title: "Confirm in the app",
+        description: "Match the verification code shown in the Komerční banka app.",
+        calloutText: "Tap the verification code."
+      },
+      "consent": {
+        title: "Share Bank iD data",
+        description: "Confirm that Komerční banka can provide identity data through Bank iD.",
+        calloutText: "Tap Confirm."
+      }
+    },
+    dk: {
+      "enter-details": {
+        title: "Enter MitID",
+        description: "MitID starts with the user ID already registered to this person.",
+        calloutText: "Tap the user ID field."
+      },
+      "enter-details-filled": {
+        title: "Continue to MitID",
+        description: "The user ID is filled. The next step opens the MitID app.",
+        calloutText: "Tap Continue."
+      },
+      "launch-app": {
+        title: "Open the MitID app",
+        description: "MitID asks this person to approve a logon to Trulioo.",
+        calloutText: "Tap Open MitID app."
+      },
+      "consent": {
+        title: "Approve the logon",
+        description: "Approving tells MitID that this Trulioo request can go ahead.",
+        calloutText: "Tap Approve."
+      }
+    },
+    in: {
+      "enter-details": {
+        title: "Sign in to DigiLocker",
+        description: "Meri Pehchaan signs in with the mobile number linked to DigiLocker.",
+        calloutText: "Tap the phone number field."
+      },
+      "enter-details-filled": {
+        title: "Request an OTP",
+        description: "The phone number is filled. Sign in to send a one-time code.",
+        calloutText: "Tap Sign In."
+      },
+      "otp": {
+        title: "Enter the OTP",
+        description: "DigiLocker sent a one-time code to the registered mobile.",
+        calloutText: "Tap the OTP field."
+      },
+      "otp-filled": {
+        title: "Submit the OTP",
+        description: "The code is filled. Sign in to open the consent screen.",
+        calloutText: "Tap Sign In."
+      },
+      "consent": {
+        title: "Allow DigiLocker sharing",
+        description: "Allow DigiLocker to share name, date of birth, address, and ID details.",
+        calloutText: "Tap Allow."
+      }
+    },
+    it: {
+      "select-provider": {
+        title: "Choose a SPID provider",
+        description: "SPID lets this person pick the identity provider they already have.",
+        calloutText: "Select PosteID."
+      },
+      "enter-details": {
+        title: "Sign in with PosteID",
+        description: "PosteID needs the email used for this SPID account.",
+        calloutText: "Tap the email field."
+      },
+      "enter-details-filled": {
+        title: "Continue with SPID",
+        description: "Credentials are filled. Sign in to open the PosteID app.",
+        calloutText: "Tap Sign in with SPID."
+      },
+      "launch-app": {
+        title: "Authorize in PosteID",
+        description: "The PosteID app has to approve access before any data is sent.",
+        calloutText: "Tap Control your smartphone."
+      },
+      "consent": {
+        title: "Consent to share SPID data",
+        description: "PosteID lists the personal data that will be sent to Trulioo.",
+        calloutText: "Tap I CONSENT."
+      }
+    }
+  };
+
+  var PHONE_BANK_ITEMS = [
+    { id: "abn-amro", label: "ABN AMRO", shareName: "ABN AMRO" },
+    { id: "asn", label: "ASN Bank", shareName: "ASN Bank" },
+    { id: "asn-regio", label: "ASN Bank formerly RegioBank", shareName: "ASN Bank" },
+    { id: "sns", label: "ASN Bank formerly SNS", shareName: "SNS Bank" },
+    { id: "bunq", label: "bunq", shareName: "bunq" },
+    { id: "ing", label: "ING", shareName: "ING" },
+    { id: "itsme", label: "itsme", shareName: "itsme" },
+    { id: "rabo", label: "Rabobank", shareName: "Rabobank" }
+  ];
+
   function visibleFlowSteps(steps) {
     return (steps || []).filter(function (step) { return !step.hidden; });
   }
@@ -451,7 +645,7 @@
   }
 
   function shouldShowNlPhonePreview() {
-    if (!usesNlIngPhonePreview()) return false;
+    if (!usesNlSimFlow()) return false;
     return activeSimPanelId() !== "eid-panel-completing";
   }
 
@@ -485,8 +679,7 @@
       || panelId === "eid-panel-enter-details"
       || panelId === "eid-panel-launch-app"
       || panelId === "eid-panel-launch-loading"
-      || panelId === "eid-panel-consent-mobile"
-      || (panelId === "eid-panel-completing" && state.czConsentComplete);
+      || panelId === "eid-panel-consent-mobile";
   }
 
   function shouldShowDkPhonePreview() {
@@ -499,10 +692,7 @@
   }
 
   function shouldShowPhonePreview() {
-    var panelId = activeSimPanelId();
-    if (panelId === "eid-panel-completing") {
-      return usesCzSimFlow() && usesCzKbMobilePreview() && state.czConsentComplete;
-    }
+    if (activeSimPanelId() === "eid-panel-completing") return false;
     return shouldShowNlPhonePreview()
       || shouldShowBePhonePreview()
       || shouldShowInPhonePreview()
@@ -511,26 +701,96 @@
       || shouldShowDkPhonePreview();
   }
 
-  function shouldUseSplitCardLayout() {
+  function shouldUseCenteredPhoneLayout() {
     return shouldShowPhonePreview();
+  }
+
+  function shouldUseSplitCardLayout() {
+    return shouldShowPhonePreview() && !shouldUseCenteredPhoneLayout();
+  }
+
+  function shouldUseInteractivePhone() {
+    if (!shouldUseCenteredPhoneLayout()) return false;
+    var panelId = activeSimPanelId();
+    if (usesNlSimFlow()) {
+      return panelId === "eid-panel-select-bank"
+        || panelId === "eid-panel-sign-in"
+        || panelId === "eid-panel-consent-mobile";
+    }
+    if (usesBeSimFlow()) {
+      return panelId === "eid-panel-consent-mobile";
+    }
+    if (usesCzSimFlow() && usesCzKbMobilePreview()) {
+      return panelId === "eid-panel-select-bank"
+        || panelId === "eid-panel-enter-details"
+        || panelId === "eid-panel-launch-app"
+        || (panelId === "eid-panel-consent-mobile" && !state.czConsentComplete);
+    }
+    if (usesDkSimFlow()) {
+      return panelId === "eid-panel-enter-details"
+        || panelId === "eid-panel-launch-app"
+        || panelId === "eid-panel-consent-mobile";
+    }
+    if (usesInSimFlow()) {
+      return panelId === "eid-panel-enter-details"
+        || panelId === "eid-panel-otp"
+        || panelId === "eid-panel-consent-mobile";
+    }
+    if (usesItSimFlow() && usesItPosteMobilePreview()) {
+      return panelId === "eid-panel-select-provider"
+        || panelId === "eid-panel-enter-details"
+        || panelId === "eid-panel-launch-app"
+        || panelId === "eid-panel-consent-mobile";
+    }
+    return false;
+  }
+
+  function lockSimProgressWidth(stepRoot) {
+    if (!stepRoot || stepRoot.classList.contains("eid-step-simulated--progress-locked")) return;
+    var progress = byId("eid-sim-progress");
+    if (!progress) return;
+    var width = Math.round(progress.getBoundingClientRect().width);
+    if (width < 1) return;
+    stepRoot.style.setProperty("--eid-sim-progress-lock", width + "px");
+    stepRoot.classList.add("eid-step-simulated--progress-locked");
+  }
+
+  function unlockSimProgressWidth(stepRoot) {
+    if (!stepRoot) return;
+    stepRoot.classList.remove("eid-step-simulated--progress-locked");
+    stepRoot.style.removeProperty("--eid-sim-progress-lock");
   }
 
   function updateNlPhoneLayout() {
     var stepRoot = byId("eid-step-simulated");
     var phone = byId("eid-sim-phone");
     if (!stepRoot || !phone) return;
+    var completing = activeSimPanelId() === "eid-panel-completing";
+    if (completing) lockSimProgressWidth(stepRoot);
+    else unlockSimProgressWidth(stepRoot);
     var showPhone = shouldShowPhonePreview();
     var splitLayout = shouldUseSplitCardLayout();
+    var centeredLayout = shouldUseCenteredPhoneLayout();
+    if (completing) {
+      splitLayout = stepRoot.classList.contains("eid-step-simulated--nl-phone");
+      centeredLayout = stepRoot.classList.contains("eid-step-simulated--phone-centered");
+    }
+    var interactivePhone = shouldUseInteractivePhone();
     var wasVisible = phone.getAttribute("data-visible") === "true";
     stepRoot.classList.toggle("eid-step-simulated--nl-phone", splitLayout);
+    stepRoot.classList.toggle("eid-step-simulated--phone-centered", centeredLayout);
+    if (interactivePhone) stepRoot.setAttribute("data-eid-phone-interactive", "true");
+    else stepRoot.removeAttribute("data-eid-phone-interactive");
     phone.hidden = !showPhone;
     phone.setAttribute("aria-hidden", showPhone ? "false" : "true");
     phone.setAttribute("data-visible", showPhone ? "true" : "false");
     phone.classList.remove("eid-sim-phone--enter");
+    updateGuidanceCard();
+    updateCenteredChevrons();
     if (showPhone) {
       renderNlPhonePreview();
       bindNlPhoneResize();
-      scheduleNlPhoneSizeSync();
+      scheduleNlPhoneSizeSync(true);
       if (!wasVisible) {
         requestAnimationFrame(function () {
           phone.classList.add("eid-sim-phone--enter");
@@ -544,198 +804,108 @@
         screen.removeAttribute("data-embed-key");
       }
       phone.removeAttribute("data-nl-phone-scale");
-      hidePhoneMagnifier();
-      setPhoneMagnifierHitActive(false);
+    }
+  }
+
+  function currentGuidanceCopy() {
+    var step = currentStep();
+    var type = step && step.type;
+    if (type === "otp-phone" || type === "otp-email") type = "otp";
+    var base = type && GUIDANCE_COPY[type];
+    if (!base) return null;
+    var code = state.country && state.country.code;
+    var typeKey = type;
+    if (type === "enter-details" && detailsFilled()) typeKey = "enter-details-filled";
+    if ((type === "otp") && usesInSimFlow() && state.inOtpFilled) typeKey = "otp-filled";
+    var override = (code && GUIDANCE_COPY_BY_COUNTRY[code] && GUIDANCE_COPY_BY_COUNTRY[code][typeKey])
+      || (code && GUIDANCE_COPY_BY_COUNTRY[code] && GUIDANCE_COPY_BY_COUNTRY[code][type])
+      || {};
+    return {
+      title: override.title || base.title,
+      description: override.description || base.description,
+      calloutText: override.calloutText || base.calloutText
+    };
+  }
+
+  function applyGuidanceCard(props) {
+    var card = byId("eid-guidance-card");
+    if (!card) return;
+    var title = byId("eid-guidance-title");
+    var description = byId("eid-guidance-description");
+    var callout = byId("eid-guidance-callout");
+    var country = byId("eid-guidance-country");
+    var method = byId("eid-guidance-method");
+    var flag = byId("eid-guidance-flag");
+    var chipFlag = byId("eid-guidance-chip-flag");
+    var chipLabel = byId("eid-guidance-chip-label");
+    var code = String(props.countryCode || "").toLowerCase();
+    var codeLabel = code.toUpperCase();
+    var methodLabel = props.methodLabel || "";
+    if (title) title.textContent = props.title || "";
+    if (description) description.textContent = props.description || "";
+    if (callout) callout.textContent = props.calloutText || "";
+    if (country) country.textContent = props.countryName || "";
+    if (method) method.textContent = methodLabel;
+    if (flag) flag.innerHTML = code ? '<span class="fi fi-' + code + '"></span>' : "";
+    if (chipFlag) chipFlag.innerHTML = code ? '<span class="fi fi-' + code + '"></span>' : "";
+    if (chipLabel) {
+      chipLabel.textContent = codeLabel && methodLabel ? (codeLabel + " - " + methodLabel) : (codeLabel || methodLabel);
+    }
+  }
+
+  function updateGuidanceCard() {
+    var card = byId("eid-guidance-card");
+    if (!card) return;
+    var show = shouldUseCenteredPhoneLayout() && !isSimLoadingPanel(activeSimPanelId());
+    var copy = currentGuidanceCopy();
+    card.hidden = !show || !copy;
+    if (!show || !copy) {
+      card.classList.remove("tds-demo-guidance-card--compact");
+      return;
+    }
+    if (!state.country) return;
+    applyGuidanceCard({
+      title: copy.title,
+      description: copy.description,
+      calloutText: copy.calloutText,
+      countryCode: state.country.code,
+      countryName: state.country.country,
+      methodLabel: state.country.provider
+    });
+  }
+
+  function isFirstSimStep() {
+    return state.flowIndex <= 0 && !state.transientPanel;
+  }
+
+  function updateCenteredChevrons() {
+    var prev = byId("eid-sim-chevron-prev");
+    var next = byId("eid-sim-chevron-next");
+    var stepRoot = byId("eid-step-simulated");
+    var show = shouldUseCenteredPhoneLayout() && !isSimLoadingPanel(activeSimPanelId());
+    var showPrev = show && (!isFirstSimStep() || canRewindPhoneAction());
+    if (stepRoot) {
+      stepRoot.toggleAttribute("data-eid-first-step", isFirstSimStep() && !canRewindPhoneAction());
+    }
+    if (prev) prev.hidden = !showPrev;
+    if (next) {
+      next.hidden = !show;
+      next.removeAttribute("aria-disabled");
     }
   }
 
   var NL_MOBILE_EMBED_BASE = "embed/";
   var NL_PHONE_FRAME_W = 390;
   var NL_PHONE_FRAME_H = 800;
+  var NL_PHONE_COMPACT_H = 480;
   var NL_PHONE_PANEL_PAD = 32;
   var PHONE_EMBED_FADE_MS = 400;
   var nlPhoneResizeBound = false;
   var phoneEmbedFadeTimer = null;
-  var MAGNIFIER_ZOOM = 2;
-  var MAGNIFIER_SIZE = 140;
-  var phoneMagnifierBound = false;
-  var phoneMagnifierState = null;
-
-  function magnifierReducedMotion() {
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  }
-
-  function getPhoneEmbedScale(host) {
-    var embed = host && host.querySelector(".eid-mobile-embed:not(.eid-mobile-embed--lens)");
-    if (!embed) return 0.55;
-    var scale = parseFloat(getComputedStyle(embed).getPropertyValue("--eid-phone-scale"));
-    return Number.isFinite(scale) && scale > 0 ? scale : 0.55;
-  }
-
-  function syncPhoneMagnifierContent() {
-    if (!phoneMagnifierState) return;
-    var host = phoneMagnifierState.host;
-    var frame = host && host.querySelector(".eid-mobile-embed__frame:not([data-magnifier])");
-    if (!host || !frame) return;
-
-    var src = frame.src || "";
-    if (phoneMagnifierState.src === src && phoneMagnifierState.layer) {
-      syncPhoneMagnifierScale();
-      return;
-    }
-
-    phoneMagnifierState.src = src;
-    phoneMagnifierState.ready = false;
-
-    var viewport = phoneMagnifierState.viewport;
-    viewport.innerHTML = "";
-
-    var layer = document.createElement("div");
-    layer.className = "eid-mobile-magnifier__layer";
-
-    var embed = document.createElement("div");
-    embed.className = "eid-mobile-magnifier__embed";
-
-    var cloneFrame = document.createElement("iframe");
-    cloneFrame.className = "eid-mobile-magnifier__frame";
-    cloneFrame.setAttribute("data-magnifier", "true");
-    cloneFrame.src = src;
-    cloneFrame.title = (frame.title || "Mobile preview") + " (magnified)";
-    cloneFrame.tabIndex = -1;
-    cloneFrame.addEventListener("load", function () {
-      phoneMagnifierState.ready = true;
-    });
-    if (cloneFrame.contentWindow) {
-      try {
-        if (cloneFrame.contentWindow.document.readyState === "complete") {
-          phoneMagnifierState.ready = true;
-        }
-      } catch (err) {
-        /* cross-origin — wait for load event */
-      }
-    }
-
-    embed.appendChild(cloneFrame);
-    layer.appendChild(embed);
-    viewport.appendChild(layer);
-    phoneMagnifierState.layer = layer;
-    syncPhoneMagnifierScale();
-  }
-
-  function syncPhoneMagnifierScale() {
-    if (!phoneMagnifierState || !phoneMagnifierState.layer) return;
-    var host = phoneMagnifierState.host;
-    var embed = phoneMagnifierState.layer.querySelector(".eid-mobile-magnifier__embed");
-    if (!host || !embed) return;
-    var scale = getPhoneEmbedScale(host);
-    embed.style.transform = "scale(" + scale.toFixed(4) + ")";
-  }
-
-  function updatePhoneMagnifierPosition(e) {
-    if (!phoneMagnifierState || !phoneMagnifierState.layer) return;
-    var host = phoneMagnifierState.host;
-    var lens = phoneMagnifierState.lens;
-    var layer = phoneMagnifierState.layer;
-    if (!host || !lens || !layer) return;
-
-    var hostRect = host.getBoundingClientRect();
-    if (!hostRect.width || !hostRect.height) {
-      hidePhoneMagnifier();
-      return;
-    }
-
-    var radius = MAGNIFIER_SIZE / 2;
-    var hx = Math.min(Math.max(e.clientX - hostRect.left, 0), hostRect.width);
-    var hy = Math.min(Math.max(e.clientY - hostRect.top, 0), hostRect.height);
-
-    layer.style.width = hostRect.width + "px";
-    layer.style.height = hostRect.height + "px";
-    layer.style.left = (radius - hx) + "px";
-    layer.style.top = (radius - hy) + "px";
-    layer.style.transformOrigin = hx + "px " + hy + "px";
-    layer.style.transform = "scale(" + MAGNIFIER_ZOOM + ")";
-
-    lens.hidden = false;
-    lens.style.left = e.clientX + "px";
-    lens.style.top = e.clientY + "px";
-  }
-
-  function hidePhoneMagnifier() {
-    if (phoneMagnifierState && phoneMagnifierState.lens) {
-      phoneMagnifierState.lens.hidden = true;
-    }
-  }
-
-  function bindPhoneMagnifier() {
-    var phone = byId("eid-sim-phone");
-    if (!phone || phoneMagnifierBound) return;
-    phoneMagnifierBound = true;
-
-    var hitLayer = document.createElement("div");
-    hitLayer.className = "eid-sim-phone__magnifier-hit";
-    hitLayer.setAttribute("aria-hidden", "true");
-    hitLayer.hidden = true;
-    phone.appendChild(hitLayer);
-
-    var lens = document.createElement("div");
-    lens.className = "eid-mobile-magnifier";
-    lens.hidden = true;
-    lens.setAttribute("aria-hidden", "true");
-    var viewport = document.createElement("div");
-    viewport.className = "eid-mobile-magnifier__viewport";
-    lens.appendChild(viewport);
-    document.body.appendChild(lens);
-
-    phoneMagnifierState = {
-      phone: phone,
-      hitLayer: hitLayer,
-      lens: lens,
-      viewport: viewport,
-      layer: null,
-      src: "",
-      ready: false,
-      get host() {
-        return phone.querySelector(".eid-mobile-embed-host");
-      }
-    };
-
-    function onMove(e) {
-      if (phone.hidden || magnifierReducedMotion()) {
-        hidePhoneMagnifier();
-        return;
-      }
-      var host = phoneMagnifierState.host;
-      if (!host || !phoneMagnifierState.ready) {
-        hidePhoneMagnifier();
-        return;
-      }
-      updatePhoneMagnifierPosition(e);
-    }
-
-    hitLayer.addEventListener("mousemove", onMove);
-    hitLayer.addEventListener("mouseleave", hidePhoneMagnifier);
-  }
-
-  function setPhoneMagnifierHitActive(active) {
-    if (!phoneMagnifierState || !phoneMagnifierState.hitLayer) return;
-    phoneMagnifierState.hitLayer.hidden = !active;
-  }
-
-  function updatePhoneMagnifier() {
-    var phone = byId("eid-sim-phone");
-    if (!phone || phone.hidden || !phone.querySelector(".eid-mobile-embed-host")) {
-      hidePhoneMagnifier();
-      setPhoneMagnifierHitActive(false);
-      return;
-    }
-    bindPhoneMagnifier();
-    setPhoneMagnifierHitActive(true);
-    syncPhoneMagnifierContent();
-  }
 
   function nlPhoneLabelReserve(phone) {
     var stepRoot = byId("eid-step-simulated");
-    if (stepRoot && stepRoot.classList.contains("eid-step-simulated--nl-phone")) return 0;
+    if (stepRoot && (stepRoot.classList.contains("eid-step-simulated--nl-phone") || stepRoot.classList.contains("eid-step-simulated--phone-centered"))) return 0;
     if (!phone.querySelector(".eid-mobile-embed-host")) return 0;
     var label = phone.querySelector(".eid-sim-phone__label");
     if (!label || getComputedStyle(label).display === "none") return 0;
@@ -743,6 +913,70 @@
     var height = label.getBoundingClientRect().height;
     if (height < 1) height = 24;
     return height + gap;
+  }
+
+  function guidanceCardReserve() {
+    if (!shouldUseCenteredPhoneLayout()) return 0;
+    var card = byId("eid-guidance-card");
+    if (!card || card.hidden) return 0;
+    var height = card.getBoundingClientRect().height;
+    if (height < 1) height = 160;
+    return height + 24;
+  }
+
+  function centeredPhoneScale(phone) {
+    var cluster = phone.closest(".eid-sim-phone-cluster");
+    if (!cluster) return 0.85;
+
+    var width = cluster.clientWidth;
+    var height = cluster.clientHeight;
+    if (width < 8 || height < 8) {
+      var cached = parseFloat(phone.getAttribute("data-nl-phone-scale"));
+      return Number.isFinite(cached) && cached > 0 ? cached : 0.85;
+    }
+
+    var scaleByHeight = height / NL_PHONE_FRAME_H;
+    var scaleByWidth = width / NL_PHONE_FRAME_W;
+    return Math.min(scaleByHeight, scaleByWidth, 1);
+  }
+
+  function clusterHeightIfDefaultCard(cluster, card) {
+    var clusterH = cluster.clientHeight;
+    if (!card || card.hidden || !card.classList.contains("tds-demo-guidance-card--compact")) {
+      return clusterH;
+    }
+    var defaultH = parseFloat(card.getAttribute("data-default-height"));
+    if (!Number.isFinite(defaultH) || defaultH <= 0) return clusterH;
+    return Math.max(0, clusterH - (defaultH - card.offsetHeight));
+  }
+
+  function displayedPhoneHeight(clusterH, clusterW) {
+    var scale = Math.min(clusterH / NL_PHONE_FRAME_H, clusterW / NL_PHONE_FRAME_W, 1);
+    return scale * NL_PHONE_FRAME_H;
+  }
+
+  function syncGuidanceCardCompact(phone) {
+    var card = byId("eid-guidance-card");
+    var cluster = phone && phone.closest(".eid-sim-phone-cluster");
+    if (!card || card.hidden || !cluster) {
+      if (card && (card.hidden || !cluster)) card.classList.remove("tds-demo-guidance-card--compact");
+      return false;
+    }
+    if (cluster.clientHeight < 8 || cluster.clientWidth < 8) return false;
+
+    var isCompact = card.classList.contains("tds-demo-guidance-card--compact");
+    if (!isCompact) {
+      card.setAttribute("data-default-height", String(card.offsetHeight));
+    }
+
+    var nextCompact = displayedPhoneHeight(
+      clusterHeightIfDefaultCard(cluster, card),
+      cluster.clientWidth
+    ) < NL_PHONE_COMPACT_H;
+
+    if (nextCompact === isCompact) return false;
+    card.classList.toggle("tds-demo-guidance-card--compact", nextCompact);
+    return true;
   }
 
   function applyNlPhoneScale(phone, host, scaleStr) {
@@ -759,13 +993,23 @@
     if (!host) return;
 
     var cached = phone.getAttribute("data-nl-phone-scale");
-    if (!forceRecalc && cached) {
+    if (!forceRecalc && cached && !shouldUseCenteredPhoneLayout()) {
       applyNlPhoneScale(phone, host, cached);
-      syncPhoneMagnifierScale();
       return;
     }
 
-    var labelReserve = nlPhoneLabelReserve(phone);
+    if (shouldUseCenteredPhoneLayout()) {
+      syncGuidanceCardCompact(phone);
+      var cluster = phone.closest(".eid-sim-phone-cluster");
+      var measured = cluster && cluster.clientWidth >= 8 && cluster.clientHeight >= 8;
+      var centeredScale = centeredPhoneScale(phone);
+      var centeredStr = centeredScale.toFixed(4);
+      if (measured) phone.setAttribute("data-nl-phone-scale", centeredStr);
+      applyNlPhoneScale(phone, host, centeredStr);
+      return;
+    }
+
+    var labelReserve = nlPhoneLabelReserve(phone) + guidanceCardReserve();
     var panelStyle = getComputedStyle(phone);
     var padY = parseFloat(panelStyle.paddingTop) + parseFloat(panelStyle.paddingBottom);
     var padX = parseFloat(panelStyle.paddingLeft) + parseFloat(panelStyle.paddingRight);
@@ -787,7 +1031,6 @@
     var scaleStr = scale.toFixed(4);
     phone.setAttribute("data-nl-phone-scale", scaleStr);
     applyNlPhoneScale(phone, host, scaleStr);
-    syncPhoneMagnifierScale();
   }
 
   function scheduleNlPhoneSizeSync(forceRecalc) {
@@ -815,6 +1058,8 @@
       ro.observe(phone);
       var splitCard = phone.closest(".eid-sim-split-card");
       if (splitCard) ro.observe(splitCard);
+      var cluster = phone.closest(".eid-sim-phone-cluster");
+      if (cluster) ro.observe(cluster);
       var workspace = phone.closest(".eid-sim-stage__workspace");
       if (workspace) ro.observe(workspace);
     }
@@ -827,7 +1072,7 @@
       html: (
         '<div class="eid-mobile-embed-host">' +
         '<div class="eid-mobile-embed">' +
-        '<iframe class="eid-mobile-embed__frame" src="' + src + '" title="' + title + '" tabindex="-1" loading="lazy"></iframe>' +
+        '<iframe class="eid-mobile-embed__frame" src="' + src + '" title="' + title + '" tabindex="-1" loading="lazy" scrolling="no"></iframe>' +
         "</div></div>"
       )
     };
@@ -856,7 +1101,10 @@
 
   function setPhoneEmbedScreen(screen, embed) {
     if (!screen || !embed) return;
-    if (screen.getAttribute("data-embed-key") === embed.key) return;
+    if (screen.getAttribute("data-embed-key") === embed.key) {
+      postBankSelectionToPhone();
+      return;
+    }
 
     var existingHost = screen.querySelector(".eid-mobile-embed-host");
     if (!existingHost || !screen.getAttribute("data-embed-key")) {
@@ -895,7 +1143,10 @@
   function phoneEmbedForPanel(panelId) {
     if (panelId === "eid-panel-select-bank") {
       if (usesCzSimFlow() && usesCzKbMobilePreview()) {
-        return renderMobileEmbedScreen("CZ-bank.html", "Czech bank selection");
+        return renderMobileEmbedScreen("CZ-bank.html", "Czech bank selection", "?interactive=1");
+      }
+      if (usesNlSimFlow()) {
+        return renderMobileEmbedScreen("NE-idin-select-v2.html", "iDIN bank selection", "?interactive=1");
       }
       return renderMobileEmbedScreen("NE-idin-select-v2.html", "iDIN bank selection");
     }
@@ -903,34 +1154,34 @@
       return renderMobileEmbedScreen("NE-ing-launch.html", "ING launch");
     }
     if (panelId === "eid-panel-select-provider" && usesItSimFlow() && usesItPosteMobilePreview()) {
-      return renderMobileEmbedScreen("IT-select.html", "Italy SPID provider select");
+      return renderMobileEmbedScreen("IT-select.html", "Italy SPID provider select", "?interactive=1");
     }
     if (panelId === "eid-panel-enter-details" && usesInSimFlow()) {
       return renderMobileEmbedScreen(
         state.inSigninFilled ? "IN-signin-filled.html" : "IN-signin.html",
         state.inSigninFilled ? "India sign in filled" : "India sign in",
-        state.inSigninFilled ? indiaEmbedPhoneQuery() : ""
+        state.inSigninFilled ? indiaEmbedPhoneQuery() : "?interactive=1"
       );
     }
     if (panelId === "eid-panel-enter-details" && usesItSimFlow()) {
       return renderMobileEmbedScreen(
         state.itSigninFilled ? "IT-signin-complete.html" : "IT-signin.html",
         state.itSigninFilled ? "Italy SPID sign in complete" : "Italy SPID sign in",
-        state.itSigninFilled ? italyEmbedSigninQuery() : ""
+        state.itSigninFilled ? italyEmbedSigninQuery() : "?interactive=1"
       );
     }
     if (panelId === "eid-panel-enter-details" && usesCzSimFlow() && usesCzKbMobilePreview()) {
       return renderMobileEmbedScreen(
         state.czSigninFilled ? "CZ-signin-complete.html" : "CZ-signin.html",
         state.czSigninFilled ? "Czech Bank iD sign in complete" : "Czech Bank iD sign in",
-        state.czSigninFilled ? czechEmbedSigninQuery() : ""
+        state.czSigninFilled ? czechEmbedSigninQuery() : "?interactive=1"
       );
     }
     if (panelId === "eid-panel-enter-details" && usesDkSimFlow()) {
       return renderMobileEmbedScreen(
         state.dkSigninFilled ? "DE-signin-complete.html" : "DE-signin.html",
         state.dkSigninFilled ? "Denmark MitID sign in complete" : "Denmark MitID sign in",
-        state.dkSigninFilled ? denmarkEmbedSigninQuery() : ""
+        state.dkSigninFilled ? denmarkEmbedSigninQuery() : "?interactive=1"
       );
     }
     if (panelId === "eid-panel-otp" && usesInSimFlow()) {
@@ -941,22 +1192,17 @@
       );
     }
     if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesItSimFlow()) {
-      var launchEmbed = (panelId === "eid-panel-launch-loading" || state.itLaunchPhoneShown)
-        ? "IT-access-phone.html"
-        : "IT-access.html";
       return renderMobileEmbedScreen(
-        launchEmbed,
-        state.itLaunchPhoneShown ? "Italy SPID access with phone" : "Italy SPID access"
+        "IT-access-phone.html",
+        "Italy SPID access with phone",
+        "?interactive=1"
       );
     }
     if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesCzSimFlow() && usesCzKbMobilePreview()) {
-      return renderMobileEmbedScreen("CZ-confirm.html", "Czech Bank iD confirm");
+      return renderMobileEmbedScreen("CZ-confirm.html", "Czech Bank iD confirm", "?interactive=1");
     }
     if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesDkSimFlow()) {
-      return renderMobileEmbedScreen("DE-app.html", "Denmark MitID app");
-    }
-    if (panelId === "eid-panel-completing" && usesCzSimFlow() && usesCzKbMobilePreview() && state.czConsentComplete) {
-      return renderMobileEmbedScreen("CZ-complete.html", "Czech Bank iD complete");
+      return renderMobileEmbedScreen("DE-app.html", "Denmark MitID app", "?interactive=1");
     }
     if (panelId === "eid-panel-consent-mobile") {
       if (usesCzSimFlow() && usesCzKbMobilePreview()) {
@@ -964,26 +1210,26 @@
           return renderMobileEmbedScreen("CZ-complete.html", "Czech Bank iD complete");
         }
         if (state.czKbConsentShown) {
-          return renderMobileEmbedScreen("CZ-consent.html", "Czech Bank iD consent");
+          return renderMobileEmbedScreen("CZ-consent.html", "Czech Bank iD consent", "?interactive=1");
         }
         return renderMobileEmbedScreen("CZ-kb-launch.html", "Czech KB app launch");
       }
       if (usesBeSimFlow()) {
         if (state.beConsentShown) {
-          return renderMobileEmbedScreen("BE-consent.html", "Belgium consent");
+          return renderMobileEmbedScreen("BE-consent.html", "Belgium consent", "?interactive=1");
         }
         return renderMobileEmbedScreen("BE-launch.html", "itsme app launch");
       }
       if (usesInSimFlow()) {
-        return renderMobileEmbedScreen("IN-consent.html", "India consent");
+        return renderMobileEmbedScreen("IN-consent.html", "India consent", "?interactive=1");
       }
       if (usesItSimFlow()) {
-        return renderMobileEmbedScreen("IT-consent.html", "Italy SPID consent");
+        return renderMobileEmbedScreen("IT-consent.html", "Italy SPID consent", "?interactive=1");
       }
       if (usesDkSimFlow()) {
-        return renderMobileEmbedScreen("DE-approve.html", "Denmark MitID approve");
+        return renderMobileEmbedScreen("DE-approve.html", "Denmark MitID approve", "?interactive=1");
       }
-      return renderMobileEmbedScreen("NE-ing-consent.html", "ING consent");
+      return renderMobileEmbedScreen("NE-ing-consent.html", "ING consent", "?interactive=1");
     }
     return null;
   }
@@ -994,21 +1240,21 @@
 
   function indiaEmbedPhoneQuery() {
     var digits = indiaPhoneDigits(state.formValues.phone) || IN_MOCK_PHONE;
-    return "?phone=" + encodeURIComponent(digits);
+    return "?interactive=1&phone=" + encodeURIComponent(digits);
   }
 
   function italyEmbedSigninQuery() {
-    return "?email=" + encodeURIComponent(MOCK_VALUES.email);
+    return "?interactive=1&email=" + encodeURIComponent(MOCK_VALUES.email);
   }
 
   function czechEmbedSigninQuery() {
     var username = state.formValues.username || MOCK_VALUES.username;
-    return "?username=" + encodeURIComponent(username);
+    return "?interactive=1&username=" + encodeURIComponent(username);
   }
 
   function denmarkEmbedSigninQuery() {
     var username = state.formValues.username || MOCK_VALUES.username;
-    return "?username=" + encodeURIComponent(username);
+    return "?interactive=1&username=" + encodeURIComponent(username);
   }
 
   function scheduleCzKbConsentTransition() {
@@ -1019,7 +1265,7 @@
     czKbConsentTimer = setTimeout(function () {
       czKbConsentTimer = null;
       state.czKbConsentShown = true;
-      renderNlPhonePreview();
+      updateNlPhoneLayout();
     }, CZ_KB_LAUNCH_MS);
   }
 
@@ -1031,7 +1277,7 @@
     beConsentTimer = setTimeout(function () {
       beConsentTimer = null;
       state.beConsentShown = true;
-      renderNlPhonePreview();
+      updateNlPhoneLayout();
     }, BE_LAUNCH_MS);
   }
 
@@ -1064,15 +1310,11 @@
       clearPhoneEmbedFadeTimer();
       screen.removeAttribute("data-embed-key");
       screen.innerHTML = "";
-      updatePhoneMagnifier();
       return;
     }
 
     setPhoneEmbedScreen(screen, embed);
 
-    if (panelId === "eid-panel-launch-app" && usesItSimFlow() && !state.itLaunchPhoneShown) {
-      scheduleItLaunchPhoneTransition();
-    }
     if (panelId === "eid-panel-consent-mobile" && usesCzSimFlow() && usesCzKbMobilePreview()
       && !state.czKbConsentShown && !state.czConsentComplete) {
       scheduleCzKbConsentTransition();
@@ -1083,18 +1325,16 @@
   }
 
   function bindNlPhoneEmbedLoad(screen) {
-    var iframe = screen.querySelector(".eid-mobile-embed__frame:not([data-magnifier])");
+    var iframe = screen.querySelector(".eid-mobile-embed__frame");
     if (!iframe) {
       scheduleNlPhoneSizeSync();
-      updatePhoneMagnifier();
       return;
     }
     iframe.addEventListener("load", function () {
       scheduleNlPhoneSizeSync();
-      syncPhoneMagnifierContent();
+      postBankSelectionToPhone();
     });
     scheduleNlPhoneSizeSync();
-    updatePhoneMagnifier();
   }
 
   function panelIdForStep(step) {
@@ -1118,6 +1358,12 @@
     return panelIdForStep(currentStep());
   }
 
+  function isSimLoadingPanel(panelId) {
+    return panelId === "eid-panel-qr-loading"
+      || panelId === "eid-panel-launch-loading"
+      || panelId === "eid-panel-completing";
+  }
+
   function showSimPanel(id) {
     document.querySelectorAll(".eid-sim-panel").forEach(function (p) {
       p.hidden = p.id !== id;
@@ -1129,6 +1375,12 @@
   }
 
   function renderSimView() {
+    var stepRoot = byId("eid-step-simulated");
+    if (state.transientPanel === "eid-panel-completing") {
+      lockSimProgressWidth(stepRoot);
+    } else {
+      unlockSimProgressWidth(stepRoot);
+    }
     renderProgress();
     if (state.transientPanel) {
       showSimPanel(state.transientPanel);
@@ -1180,6 +1432,28 @@
     }
     state.flowIndex = Math.max(0, Math.min(index, state.flowSteps.length - 1));
     renderSimView();
+  }
+
+  function showCzCompleteThenResult() {
+    if (state.czConsentComplete) {
+      goToCompletingThenResult();
+      return;
+    }
+    state.czConsentComplete = true;
+    updateNlPhoneLayout();
+    clearPending();
+    state.pendingTimer = setTimeout(function () {
+      goToCompletingThenResult();
+    }, CZ_COMPLETE_HOLD_MS);
+  }
+
+  function goToCompletingThenResult() {
+    clearPending();
+    state.transientPanel = "eid-panel-completing";
+    renderSimView();
+    state.pendingTimer = setTimeout(function () {
+      if (window.EidResult) window.EidResult.show();
+    }, TRANSITION_MS);
   }
 
   function nextSimStep() {
@@ -1324,6 +1598,86 @@
     syncSelectionGrid("eid-provider-grid", "provider");
   }
 
+  function phoneBankItem(bankId) {
+    return PHONE_BANK_ITEMS.find(function (item) { return item.id === bankId; })
+      || BANKS.find(function (item) { return item.id === bankId; })
+      || CZ_BANKS.find(function (item) { return item.id === bankId; })
+      || null;
+  }
+
+  function postBankSelectionToPhone() {
+    var screen = byId("eid-sim-phone-screen");
+    var iframe = screen && screen.querySelector(".eid-mobile-embed__frame");
+    if (!iframe || !iframe.contentWindow) return;
+    iframe.contentWindow.postMessage({
+      source: "eid-sim",
+      type: "eid-set-bank",
+      bankId: state.bank && state.bank.id
+    }, "*");
+  }
+
+  function selectBankFromPhone(bankId) {
+    var item = phoneBankItem(bankId);
+    if (!item) return;
+    state.bank = item;
+    syncSelectionGrid("eid-bank-grid", "bank");
+    if (activeSimPanelId() === "eid-panel-select-bank") {
+      nextSimStep();
+    }
+  }
+
+  function selectProviderFromPhone(providerId) {
+    var item = PROVIDERS.find(function (p) { return p.id === providerId; });
+    if (!item) return;
+    state.provider = item;
+    syncSelectionGrid("eid-provider-grid", "provider");
+    if (activeSimPanelId() === "eid-panel-select-provider") {
+      nextSimStep();
+    }
+  }
+
+  function initPhoneEmbedMessages() {
+    window.addEventListener("message", function (event) {
+      var data = event.data;
+      if (!data || data.source !== "eid-embed") return;
+      if (data.type === "eid-bank-select") {
+        selectBankFromPhone(data.bankId);
+        return;
+      }
+      if (data.type === "eid-signin-complete") {
+        if (
+          activeSimPanelId() === "eid-panel-sign-in"
+          || activeSimPanelId() === "eid-panel-enter-details"
+          || activeSimPanelId() === "eid-panel-otp"
+        ) {
+          nextSimStep();
+        }
+        return;
+      }
+      if (data.type === "eid-details-filled") {
+        if (activeSimPanelId() === "eid-panel-enter-details") fillMockData();
+        return;
+      }
+      if (data.type === "eid-otp-filled") {
+        if (activeSimPanelId() === "eid-panel-otp") fillOtp();
+        return;
+      }
+      if (data.type === "eid-provider-select") {
+        selectProviderFromPhone(data.providerId);
+        return;
+      }
+      if (data.type === "eid-launch-confirm") {
+        if (activeSimPanelId() === "eid-panel-launch-app") nextSimStep();
+        return;
+      }
+      if (data.type === "eid-consent-accept") {
+        if (activeSimPanelId() === "eid-panel-consent-mobile") {
+          handleSimAction("simulate-approval");
+        }
+      }
+    });
+  }
+
   /* ===================================================================
      Enter details
      =================================================================== */
@@ -1413,6 +1767,92 @@
     }
 
     updateSimNextButtons();
+  }
+
+  function detailsFilled() {
+    if (usesInSimFlow()) return !!state.inSigninFilled;
+    if (usesItSimFlow()) return !!state.itSigninFilled;
+    if (usesCzSimFlow()) return !!state.czSigninFilled;
+    if (usesDkSimFlow()) return !!state.dkSigninFilled;
+    var step = currentStep();
+    return !!(step && step.type === "enter-details" && detailsValid(step));
+  }
+
+  function clearDetailsFill() {
+    var step = currentStep();
+    if (!step || step.type !== "enter-details") return;
+    var fields = expandedFields(step.fields || []);
+    fields.forEach(function (fieldName) {
+      var def = FIELD_DEFS[fieldName];
+      if (!def) return;
+      state.formValues[def.key] = "";
+      var input = byId("eid-field-" + def.key);
+      if (input) input.value = "";
+    });
+    state.inSigninFilled = false;
+    state.itSigninFilled = false;
+    state.czSigninFilled = false;
+    state.dkSigninFilled = false;
+    updateSimNextButtons();
+    updateNlPhoneLayout();
+  }
+
+  function clearOtpFill() {
+    var digits = byId("eid-otp-inputs");
+    state.otpDigits = [];
+    state.inOtpFilled = false;
+    if (digits) {
+      digits.querySelectorAll(".eid-otp-digit").forEach(function (input) {
+        input.value = "";
+      });
+    }
+    updateSimNextButtons();
+    updateNlPhoneLayout();
+  }
+
+  function canRewindPhoneAction() {
+    var step = currentStep();
+    if (!step || !shouldUseCenteredPhoneLayout()) return false;
+    if (isSimLoadingPanel(activeSimPanelId())) return false;
+    if (step.type === "enter-details") return detailsFilled();
+    if ((step.type === "otp-phone" || step.type === "otp-email") && usesInSimFlow()) return !!state.inOtpFilled;
+    if (step.type === "consent" && usesCzSimFlow() && usesCzKbMobilePreview()) return !!state.czConsentComplete;
+    return false;
+  }
+
+  function advancePhoneAction() {
+    var step = currentStep();
+    if (!step || !shouldUseCenteredPhoneLayout()) return false;
+    if (isSimLoadingPanel(activeSimPanelId())) return false;
+    if (step.type === "enter-details" && !detailsFilled()) {
+      fillMockData();
+      return true;
+    }
+    if ((step.type === "otp-phone" || step.type === "otp-email") && usesInSimFlow() && !state.inOtpFilled) {
+      fillOtp();
+      return true;
+    }
+    return false;
+  }
+
+  function rewindPhoneAction() {
+    if (!canRewindPhoneAction()) return false;
+    var step = currentStep();
+    if (step.type === "enter-details") {
+      clearDetailsFill();
+      return true;
+    }
+    if (step.type === "otp-phone" || step.type === "otp-email") {
+      clearOtpFill();
+      return true;
+    }
+    if (step.type === "consent" && usesCzSimFlow()) {
+      clearPending();
+      state.czConsentComplete = false;
+      updateNlPhoneLayout();
+      return true;
+    }
+    return false;
   }
 
   function detailsValid(step) {
@@ -1623,11 +2063,21 @@
     var step = currentStep();
 
     if (action === "back") {
+      if (rewindPhoneAction()) return;
       prevSimStep();
       return;
     }
 
     if (action === "next") {
+      if (shouldUseCenteredPhoneLayout()) {
+        if (advancePhoneAction()) return;
+        if (step && step.type === "consent") {
+          handleSimAction("simulate-approval", btn);
+          return;
+        }
+        nextSimStep();
+        return;
+      }
       if (btn && btn.getAttribute("aria-disabled") === "true") return;
       if (!stepValid(step)) return;
       nextSimStep();
@@ -1657,19 +2107,10 @@
       }
       if (panelId === "eid-panel-consent-mobile") {
         if (usesCzSimFlow() && usesCzKbMobilePreview()) {
-          state.czConsentComplete = true;
-          state.transientPanel = "eid-panel-completing";
-          renderSimView();
-          state.pendingTimer = setTimeout(function () {
-            if (window.EidResult) window.EidResult.show();
-          }, TRANSITION_MS);
+          showCzCompleteThenResult();
           return;
         }
-        state.transientPanel = "eid-panel-completing";
-        renderSimView();
-        state.pendingTimer = setTimeout(function () {
-          if (window.EidResult) window.EidResult.show();
-        }, TRANSITION_MS);
+        goToCompletingThenResult();
         return;
       }
       nextSimStep();
@@ -1790,6 +2231,7 @@
     initDenyDialog();
     initExitSimDialog();
     initSimActions();
+    initPhoneEmbedMessages();
     initNav();
     updateConfigNext();
     updateCountryFieldTag();

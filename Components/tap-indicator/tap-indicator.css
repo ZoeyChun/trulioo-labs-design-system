@@ -1,0 +1,163 @@
+/* ============================================================
+   Tap Cue
+   Adaptive “tap here” hint. One instance at a time. Attached to a
+   target via TdsTapCue.show(element) — no per-control variants.
+
+   Surface targets (visible bg / border / shadow): outline pulse that
+   follows the target’s bounds and border-radius.
+   Content-only targets (numbers, icons, text): circular halo behind
+   the content, min 72×72px, centered.
+
+   Colour is always design-system teal (--color-teal-20 fill,
+   --color-teal-60 stroke), never the target’s local accent.
+   On dark surfaces, set data-tds-tap-cue-theme="dark" (or
+   .tds-tap-cue--on-dark) so the outline uses teal-20.
+   Cue is pointer-events: none and paints behind target content.
+
+   Motion is defined once on the base cue. Variants (--outline, --halo)
+   only change shape and peak opacity — never delay, cycle, or easing.
+   ============================================================ */
+
+.tds-tap-cue-host {
+  isolation: isolate;
+  overflow: visible;
+  transform-origin: center center;
+  transition: transform 160ms ease-out;
+  cursor: pointer !important;
+}
+
+.tds-tap-cue-host * {
+  cursor: pointer !important;
+}
+
+.tds-tap-cue-host--static {
+  position: relative;
+}
+
+.tds-tap-cue-host--press {
+  transform: scale(0.96);
+}
+
+.tds-tap-cue {
+  --tap-cue-accent: var(--color-teal-60, #0e8a78);
+  --tap-cue-fill: var(--color-teal-20, #c2ede4);
+  --tap-cue-min-size: 4.5rem; /* 72px */
+  --tap-cue-delay: 0.85s;
+  --tap-cue-cycle: 3s; /* ~0.84s pulse, 0.06s gap, 0.84s pulse, 1.26s rest */
+  --tap-cue-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --tap-cue-scale-from: 1;
+  --tap-cue-scale-to: 1.1;
+  --tap-cue-opacity: 0.42;
+
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.tds-tap-cue[hidden] {
+  display: none !important;
+}
+
+.tds-tap-cue__pulse {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: scale(1);
+  transform-origin: center center;
+  will-change: transform, opacity;
+  animation: tds-tap-cue-pulse var(--tap-cue-cycle) var(--tap-cue-ease) var(--tap-cue-delay) infinite;
+}
+
+.tds-tap-cue--outline {
+  --tap-cue-scale-from: 1;
+  --tap-cue-scale-to: 1.08;
+  --tap-cue-opacity: 0.5;
+}
+
+.tds-tap-cue--outline .tds-tap-cue__pulse {
+  border: 2px solid var(--tap-cue-accent);
+  background-color: transparent;
+  animation: tds-tap-cue-pulse var(--tap-cue-cycle) var(--tap-cue-ease) var(--tap-cue-delay) infinite;
+}
+
+.tds-tap-cue--halo {
+  --tap-cue-scale-from: 1;
+  --tap-cue-scale-to: 1.1;
+  --tap-cue-opacity: 0.45;
+}
+
+.tds-tap-cue--halo .tds-tap-cue__pulse {
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--tap-cue-fill);
+  animation: tds-tap-cue-pulse var(--tap-cue-cycle) var(--tap-cue-ease) var(--tap-cue-delay) infinite;
+}
+
+[data-tds-tap-cue-theme="dark"] .tds-tap-cue,
+.tds-tap-cue--on-dark {
+  --tap-cue-accent: var(--color-teal-20, #c2ede4);
+  --tap-cue-fill: var(--color-teal-30, #8ed8ca);
+}
+
+[data-tds-tap-cue-theme="dark"] .tds-tap-cue--outline,
+.tds-tap-cue--on-dark.tds-tap-cue--outline {
+  --tap-cue-opacity: 0.9;
+}
+
+@keyframes tds-tap-cue-pulse {
+  /* Soft fade-in, then expand out. Two beats with a short breath between them. */
+  0% {
+    transform: scale(var(--tap-cue-scale-from));
+    opacity: 0;
+    animation-timing-function: ease-out;
+  }
+  6% {
+    transform: scale(var(--tap-cue-scale-from));
+    opacity: var(--tap-cue-opacity);
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  28% {
+    transform: scale(var(--tap-cue-scale-to));
+    opacity: 0;
+    animation-timing-function: linear;
+  }
+  28.01%,
+  30% {
+    transform: scale(var(--tap-cue-scale-from));
+    opacity: 0;
+    animation-timing-function: ease-out;
+  }
+  36% {
+    transform: scale(var(--tap-cue-scale-from));
+    opacity: var(--tap-cue-opacity);
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  58% {
+    transform: scale(var(--tap-cue-scale-to));
+    opacity: 0;
+    animation-timing-function: linear;
+  }
+  58.01%,
+  100% {
+    transform: scale(var(--tap-cue-scale-from));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tds-tap-cue-host,
+  .tds-tap-cue-host--press {
+    transition: none;
+    transform: none;
+  }
+
+  .tds-tap-cue__pulse {
+    animation: none;
+    opacity: 0.45;
+    transform: none;
+  }
+}

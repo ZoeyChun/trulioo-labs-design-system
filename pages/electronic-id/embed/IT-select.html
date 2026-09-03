@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Italy — SPID Provider Select</title>
-<link rel="stylesheet" href="embed-mockup.css">
+<link rel="stylesheet" href="embed-mockup.css?v=noscroll-1">
+<link rel="stylesheet" href="../../../Components/tap-indicator/tap-indicator.css?v=tap-cue-12">
+<script src="../../../Components/tap-indicator/tap-indicator.js?v=tap-cue-5"></script>
+<script src="eid-embed-tap.js?v=cursor-1"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html,
-  html * {
+  html.preview:not(.eid-embed--interactive),
+  html.preview:not(.eid-embed--interactive) * {
     cursor: default !important;
     pointer-events: none !important;
     user-select: none;
@@ -159,6 +162,10 @@
   }
 
   .idp-item {
+    overflow: visible;
+  }
+
+  .idp-item {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -244,9 +251,7 @@
   }
 </style>
 <script>
-  if (window.self !== window.top) {
-    document.documentElement.classList.add("preview");
-  }
+  EidEmbedTap.initInteractive();
 </script>
 </head>
 <body>
@@ -285,7 +290,7 @@
         <li class="idp-item">
           <img class="idp-item__logo idp-item__logo--intesi" src="../assets/embeds/italy/idp-intesi-group.svg" alt="INTESI GROUP">
         </li>
-        <li class="idp-item">
+        <li class="idp-item" role="button" tabindex="0" data-tds-tap-cue="outline">
           <img class="idp-item__logo idp-item__logo--posteid" src="../assets/embeds/italy/posteid-spid-enabled.png" alt="PosteID — New SPID Enabled">
         </li>
         <li class="idp-item">
@@ -304,5 +309,14 @@
 
   </div>
  </div>
+
+<script>
+  (function () {
+    if (!EidEmbedTap.initInteractive()) return;
+    var logo = document.querySelector(".idp-item__logo--posteid");
+    var item = logo && logo.closest(".idp-item");
+    EidEmbedTap.bindTap(item || logo, "eid-provider-select", { providerId: "poste" });
+  })();
+</script>
 </body>
 </html>

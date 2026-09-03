@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Italy — SPID Access with Phone Overlay</title>
-<link rel="stylesheet" href="embed-mockup.css">
+<link rel="stylesheet" href="embed-mockup.css?v=noscroll-1">
+<link rel="stylesheet" href="../../../Components/tap-indicator/tap-indicator.css?v=tap-cue-12">
+<script src="../../../Components/tap-indicator/tap-indicator.js?v=tap-cue-5"></script>
+<script src="eid-embed-tap.js?v=cursor-1"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html,
-  html * {
+  html.preview:not(.eid-embed--interactive),
+  html.preview:not(.eid-embed--interactive) * {
     cursor: default !important;
     pointer-events: none !important;
     user-select: none;
@@ -38,6 +41,7 @@
   .stack__overlay {
     position: absolute;
     border: 0;
+    overflow: hidden;
   }
 
   .stack__base {
@@ -82,17 +86,30 @@
     width: 100%;
     height: 100%;
   }
+
+  html.eid-embed--interactive .stack__overlay {
+    pointer-events: auto;
+  }
+
+  html.eid-embed--interactive .stack__base {
+    pointer-events: none;
+  }
 </style>
 <script>
-  if (window.self !== window.top) {
-    document.documentElement.classList.add("preview");
-  }
+  EidEmbedTap.initInteractive();
 </script>
 </head>
 <body>
   <div class="stack">
-    <iframe class="stack__base" src="IT-access.html" title="Italy SPID access" tabindex="-1"></iframe>
-    <iframe class="stack__overlay" src="IT-phone.html" title="Italy SPID phone authorization" tabindex="-1"></iframe>
+    <iframe class="stack__base" src="IT-access.html" title="Italy SPID access" tabindex="-1" scrolling="no"></iframe>
+    <iframe class="stack__overlay" src="IT-phone.html?interactive=1" title="Italy SPID phone authorization" scrolling="no"></iframe>
   </div>
+
+<script>
+  (function () {
+    EidEmbedTap.initInteractive();
+    EidEmbedTap.forwardEmbedMessages();
+  })();
+</script>
 </body>
 </html>
