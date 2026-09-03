@@ -451,12 +451,12 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
   color: var(--icon-default);
 }
 
-/* --- Footer --- */
+/* --- Footer (Figma 346:12346) --- */
 
 .tds-data-table__footer {
   display: flex;
   align-items: stretch;
-  justify-content: flex-end;
+  justify-content: space-between;
   width: 100%;
   min-height: 42px;
   box-sizing: border-box;
@@ -471,30 +471,29 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
   line-height: var(--line-height-sm);
   color: var(--text-description);
   white-space: nowrap;
-  text-align: right;
 }
 
 .tds-data-table__footer-pagination {
   display: flex;
   flex: 1 1 0;
   align-items: center;
+  justify-content: flex-end;
   padding: var(--padding-sm) var(--padding-lg);
   min-width: 0;
 }
 
 .tds-data-table__pagination {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
-  gap: var(--spacing-4);
-  width: 100%;
+  gap: var(--gap-xs);
+  width: auto;
 }
 
 .tds-data-table__pagination-direction {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-4);
-  padding: var(--spacing-4);
+  gap: var(--gap-xs);
+  padding: var(--padding-xs);
   border: none;
   border-radius: var(--radius-md);
   background: none;
@@ -504,14 +503,17 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
   color: var(--interactive-default);
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.tds-data-table__pagination-direction:first-child {
-  justify-self: start;
+.tds-data-table__pagination-direction--previous,
+.tds-data-table__pagination-direction:first-of-type {
+  padding-right: var(--padding-lg);
 }
 
-.tds-data-table__pagination-direction:last-child {
-  justify-self: end;
+.tds-data-table__pagination-direction--next,
+.tds-data-table__pagination-direction:last-of-type {
+  padding-left: var(--padding-lg);
 }
 
 .tds-data-table__pagination-direction:hover {
@@ -528,9 +530,8 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
 .tds-data-table__pagination-pages {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--spacing-8);
-  justify-self: center;
+  gap: var(--gap-sm);
+  flex-shrink: 0;
 }
 
 .tds-data-table__pagination-page {
@@ -538,14 +539,14 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
   align-items: center;
   justify-content: center;
   width: 32px;
-  height: 32px;
-  padding: 0;
+  min-height: 26px;
+  padding: var(--padding-xs) 0;
   border: none;
   border-radius: var(--radius-md);
   background: transparent;
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
-  line-height: 1;
+  line-height: var(--line-height-sm);
   color: var(--text-default);
   cursor: pointer;
   flex-shrink: 0;

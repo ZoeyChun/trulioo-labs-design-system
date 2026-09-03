@@ -2,7 +2,7 @@
    AITag
    Figma: AITag (1821:33907)
    Sizes:  small (20px) | medium (24px)
-   States: rest | hover
+   States: rest
 
    Markup:
    <span class="tds-ai-tag tds-ai-tag--sm">
@@ -35,7 +35,6 @@
   text-decoration: none;
   cursor: default;
   box-sizing: border-box;
-  transition: background-color 0.15s ease;
 }
 
 button.tds-ai-tag,
@@ -58,13 +57,6 @@ a.tds-ai-tag {
   min-height: 24px;
   padding-top: var(--padding-xs);
   padding-bottom: var(--padding-xs);
-}
-
-/* --- Hover --- */
-
-.tds-ai-tag:hover,
-.tds-ai-tag--hover-demo {
-  background-color: var(--ai-hover);
 }
 
 /* --- Icon --- */

@@ -1267,24 +1267,24 @@
   {
     "id": "components/tag/ai-tag",
     "title": "AI tag",
-    "description": "TruAI badge with required sparkles icon: small and medium sizes, rest and hover states (Figma 1821:33907).",
+    "description": "TruAI badge with required sparkles icon: small and medium sizes (Figma 1821:33907).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "tag",
     "path": "#/components/tag#ai-tag",
     "category": "Tag · Design",
-    "keywords": "Tag tag tag Shared Atoms tds-tag _shared/tag/tag.css tag chip pill label tag AI tag .tds-ai-tag · .tds-ai-tag--{sm|md} TruAI badge with required sparkles icon: small and medium sizes, rest and hover states (Figma 1821:33907)."
+    "keywords": "Tag tag tag Shared Atoms tds-tag _shared/tag/tag.css tag chip pill label tag AI tag .tds-ai-tag · .tds-ai-tag--{sm|md} TruAI badge with required sparkles icon: small and medium sizes (Figma 1821:33907)."
   },
   {
     "id": "components/ai-tag/ai-tag",
     "title": "AI tag",
-    "description": "TruAI badge with required sparkles icon: small and medium sizes, rest and hover states (Figma 1821:33907).",
+    "description": "TruAI badge with required sparkles icon: small and medium sizes (Figma 1821:33907).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "ai-tag",
     "path": "#/components/ai-tag#ai-tag",
     "category": "AITag · Design",
-    "keywords": "AITag ai-tag ai tag Data Display tds-ai-tag ai-tag/ai-tag.css ai tag ai chip ai label ai badge AI tag .tds-ai-tag · .tds-ai-tag--{sm|md} TruAI badge with required sparkles icon: small and medium sizes, rest and hover states (Figma 1821:33907)."
+    "keywords": "AITag ai-tag ai tag Data Display tds-ai-tag ai-tag/ai-tag.css ai tag ai chip ai label ai badge AI tag .tds-ai-tag · .tds-ai-tag--{sm|md} TruAI badge with required sparkles icon: small and medium sizes (Figma 1821:33907)."
   },
   {
     "id": "components/tag/counter-label-primary",
@@ -1861,13 +1861,13 @@
   {
     "id": "components/data-table/table-footer",
     "title": "Table footer",
-    "description": "Row counter and pagination controls.",
+    "description": "Row counter and pagination controls (Figma 346:12346).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "data-table",
     "path": "#/components/data-table#table-footer",
     "category": "DataTable · Design",
-    "keywords": "DataTable data-table data table Data Display tds-data-table tds-data-table-container data-table/data-table.css data table table grid data grid results table Table footer .tds-data-table__footer Row counter and pagination controls."
+    "keywords": "DataTable data-table data table Data Display tds-data-table tds-data-table-container data-table/data-table.css data table table grid data grid results table Table footer .tds-data-table__footer Row counter and pagination controls (Figma 346:12346)."
   },
   {
     "id": "components/data-table/ownership-table",
