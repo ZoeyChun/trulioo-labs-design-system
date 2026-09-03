@@ -152,19 +152,11 @@
     "Indonesia": { bank: "Bank Mandiri", currency: "IDR", code: "ID", city: "Jakarta", state: "DKI Jakarta", address: "Jl. Jenderal Sudirman Kav. 54-55, Jakarta 12190" }
   };
 
-  var PAYMENT_CAPABILITIES = {
-    sepa_credit_transfer: "no",
-    sepa_direct_debit: "no",
-    core1_direct_debit: "no",
-    sepa_b2b: "no",
-    sepa_card_clearing: "no",
-    sepa_credit_transfer_instant: "no",
-    ach_credit: "yes",
-    ach_debit: "unknown",
-    fedwire: "yes",
-    swift_wire: "yes",
-    rtp: "unknown",
-    fednow: "unknown"
+  var SEPA_COUNTRIES = {
+    "Austria": 1, "Belgium": 1, "Bulgaria": 1, "Croatia": 1, "Cyprus": 1, "Estonia": 1,
+    "Finland": 1, "France": 1, "Germany": 1, "Greece": 1, "Ireland": 1, "Italy": 1,
+    "Latvia": 1, "Lithuania": 1, "Luxembourg": 1, "Malta": 1, "Netherlands": 1, "Norway": 1,
+    "Portugal": 1, "Slovakia": 1, "Slovenia": 1, "Spain": 1
   };
 
   var PAYMENT_CAPABILITY_LABELS = {
@@ -177,10 +169,59 @@
     ach_credit: "ACH Credit",
     ach_debit: "ACH Debit",
     fedwire: "Fedwire",
-    swift_wire: "SWIFT Wire",
     rtp: "RTP",
-    fednow: "FedNow"
+    fednow: "FedNow",
+    pix: "PIX",
+    ted: "TED",
+    doc: "DOC",
+    spei: "SPEI",
+    kftc: "KFTC Electronic Banking",
+    bi_fast: "BI-FAST",
+    sknbi: "SKNBI",
+    bi_rtgs: "BI-RTGS",
+    upi: "UPI",
+    imps: "IMPS",
+    neft: "NEFT",
+    rtgs: "RTGS",
+    faster_payments: "Faster Payments",
+    bacs: "Bacs",
+    chaps: "CHAPS",
+    npp: "New Payments Platform",
+    becs: "BECS Direct Entry",
+    swift_wire: "SWIFT Wire"
   };
+
+  var PAYMENT_CAPABILITIES_SEPA = {
+    sepa_credit_transfer: "yes",
+    sepa_direct_debit: "yes",
+    core1_direct_debit: "yes",
+    sepa_b2b: "unknown",
+    sepa_card_clearing: "no",
+    sepa_credit_transfer_instant: "yes"
+  };
+
+  var PAYMENT_CAPABILITIES_BY_COUNTRY = {
+    "United States": {
+      ach_credit: "yes",
+      ach_debit: "yes",
+      fedwire: "yes",
+      rtp: "yes",
+      fednow: "unknown"
+    },
+    "Brazil": { pix: "yes", ted: "yes", doc: "unknown" },
+    "Mexico": { spei: "yes", swift_wire: "yes" },
+    "South Korea": { kftc: "yes", swift_wire: "yes" },
+    "Indonesia": { bi_fast: "yes", sknbi: "yes", bi_rtgs: "unknown" },
+    "India": { upi: "yes", imps: "yes", neft: "yes", rtgs: "yes" },
+    "United Kingdom": { faster_payments: "yes", bacs: "yes", chaps: "yes" },
+    "Australia": { npp: "yes", becs: "yes" }
+  };
+
+  function paymentCapabilityValues(country) {
+    if (PAYMENT_CAPABILITIES_BY_COUNTRY[country]) return PAYMENT_CAPABILITIES_BY_COUNTRY[country];
+    if (SEPA_COUNTRIES[country]) return PAYMENT_CAPABILITIES_SEPA;
+    return { swift_wire: "yes" };
+  }
 
   function capabilityKind(value) {
     if (value === "yes") return "positive";
@@ -194,9 +235,10 @@
     return "Unknown";
   }
 
-  function buildPaymentCapabilities() {
-    return Object.keys(PAYMENT_CAPABILITIES).map(function (key) {
-      var value = PAYMENT_CAPABILITIES[key];
+  function buildPaymentCapabilities(country) {
+    var values = paymentCapabilityValues(country);
+    return Object.keys(values).map(function (key) {
+      var value = values[key];
       return {
         signal: PAYMENT_CAPABILITY_LABELS[key] || key,
         kind: capabilityKind(value),
@@ -212,7 +254,8 @@
         values: { "First Name": "Jordan", "Middle Name": "Lee", "Last Name": "Rivera", "Bank Account Number": "US021000021987", "Clearing System ID": "USABA" } },
       { name: "Marketplace Withdrawal", country: "Brazil", match: "Partial Match", tone: "intermediate",
         description: "Verify a marketplace withdrawal account.",
-        values: { "First Name": "Maria", "Middle Name": "Aparecida", "Last Name": "Silva", "National ID Number": "529.982.247-25", "IBAN": "BR15 0000 0000 0001 0094 5432 1001 2345 6789 C1" } },
+        values: { "First Name": "Maria", "Middle Name": "Aparecida", "Last Name": "Silva", "National ID Number": "529.982.247-25", "IBAN": "BR15 0000 0000 0001 0094 5432 1001 2345 6789 C1" },
+        fieldResults: { "National ID Number": { status: "dsmissing" } } },
       { name: "Freelancer Payment", country: "Mexico", match: "Strong Match", tone: "positive",
         description: "Verify a freelancer\u2019s payout account.",
         values: { "First Name": "Ana", "Middle Name": "Maria", "First Surname": "Gutierrez", "Second Surname": "Lopez", "Bank Account Number": "012180001002345678901" } },
@@ -221,10 +264,17 @@
         values: { "First Name": "Pierre", "Last Name": "Dupont", "IBAN": "FR14 2004 1010 0505 0001 3M02 606" } },
       { name: "Gig Worker Payout", country: "South Korea", match: "Partial Match", tone: "intermediate",
         description: "Verify a gig worker\u2019s payout account.",
-        values: { "First Name": "Min-jun", "Middle Name": "Woo", "Last Name": "Kim", "Bank Account Number": "110-123-456789", "Clearing System ID": "KRABA" } },
+        values: { "First Name": "Min-jun", "Middle Name": "Woo", "Last Name": "Kim", "Bank Account Number": "110-123-456789", "Clearing System ID": "KRABA" },
+        fieldResults: { "Middle Name": { status: "dsmissing" } } },
       { name: "Failed Verification", country: "Spain", match: "No Match", tone: "negative",
         description: "Unable to verify the identity or bank account.",
-        values: { "First Name": "Ana", "First Surname": "García", "Second Surname": "López", "IBAN": "ES91 2100 0418 4502 0005 1332" } }
+        values: { "First Name": "Ana", "First Surname": "García", "Second Surname": "López", "IBAN": "ES91 2100 0418 4502 0005 1332" },
+        fieldResults: {
+          "First Name": { status: "nomatch", returned: "Carmen" },
+          "First Surname": { status: "nomatch", returned: "Martínez" },
+          "Second Surname": { status: "nomatch", returned: "Ruiz" },
+          "IBAN": { status: "nomatch", returned: "ES80 2100 0418 4502 0005 1332" }
+        } }
     ],
     business: [
       { name: "Supplier Payment", country: "Germany", match: "Strong Match", tone: "positive",
@@ -232,7 +282,8 @@
         values: { "Business Name": "Müller GmbH", "IBAN": "DE89 3704 0044 0532 0130 00", "Business Registration Number": "HRB 123456", "Tax ID Number": "DE123456789" } },
       { name: "Vendor Settlement", country: "Belgium", match: "Partial Match", tone: "intermediate",
         description: "Verify a vendor before settlement.",
-        values: { "Business Name": "Bruxelles SA", "IBAN": "BE68 5390 0754 7034", "Business Registration Number": "BE 0123.456.789", "Tax ID Number": "BE0123456789" } },
+        values: { "Business Name": "Bruxelles SA", "IBAN": "BE68 5390 0754 7034", "Business Registration Number": "BE 0123.456.789", "Tax ID Number": "BE0123456789" },
+        fieldResults: { "Business Registration Number": { status: "nomatch", returned: "BE 0987.654.321" } } },
       { name: "Enterprise Payout", country: "United States", match: "Strong Match", tone: "positive",
         description: "Verify a business payout account.",
         values: { "Business Name": "Acme Corp Ltd", "Bank Account Number": "778812340091", "Clearing System ID": "USABA" } },
@@ -244,13 +295,19 @@
           "BIC": "BMRIIDJA",
           "Business Registration Number": "31.234.567.8-901.000",
           "Tax ID Number": "01.234.567.8-901.000"
-        } },
+        },
+        fieldResults: { "Business Registration Number": { status: "nomatch", returned: "31.987.654.3-210.000" } } },
       { name: "Payroll Disbursement", country: "Brazil", match: "Strong Match", tone: "positive",
         description: "Verify a payroll disbursement account.",
         values: { "Business Name": "TechBrasil Ltda", "IBAN": "BR15 0000 0000 0001 0094 5432 1001 2345 6789 C1", "Business Registration Number": "12.345.678/0001-90", "Tax ID Number": "12.345.678/0001-90", "Bank Account Number": "1234567890" } },
       { name: "Failed Verification", country: "South Korea", match: "No Match", tone: "negative",
         description: "Unable to verify the business or bank account.",
-        values: { "Business Name": "Seoul Ventures", "Bank Account Number": "220-456-789012", "BIC": "CZNBKRSE" } }
+        values: { "Business Name": "Seoul Ventures", "Bank Account Number": "220-456-789012", "BIC": "CZNBKRSE" },
+        fieldResults: {
+          "Business Name": { status: "nomatch", returned: "Seoul Capital" },
+          "Bank Account Number": { status: "nomatch", returned: "220-456-000111" },
+          "BIC": { status: "nomatch", returned: "HZMBKRSE" }
+        } }
     ]
   };
 
@@ -589,47 +646,73 @@
     );
   }
 
-  function fieldResultKind(fieldLabel, matchInfo, countryFields) {
-    var secondaries = secondaryFields(countryFields);
-
-    if (matchInfo.match === "Strong Match") return "positive";
-
-    if (matchInfo.match === "No Match") {
-      if (isNameField(fieldLabel) || isAccountField(fieldLabel)) return "negative";
-      return "positive";
-    }
-
-    // Partial Match — identity + account must exact-match; only secondary fields may fail.
-    if (isNameField(fieldLabel) || isAccountField(fieldLabel)) return "positive";
-    if (secondaries.length && fieldLabel === secondaries[0]) return "negative";
+  function fieldStatusKind(status) {
+    if (status === "nomatch") return "negative";
+    if (status === "dsmissing") return "intermediate";
     return "positive";
   }
 
-  function buildFieldDetail(fieldLabel, value, kind, matchLevel) {
-    if (!value) return null;
-    if (kind === "negative") {
-      return { input: value, returned: null };
-    }
-    if (kind === "positive" && ACCOUNT_FIELDS.indexOf(fieldLabel) !== -1 && matchLevel === "Strong Match") {
-      return null;
-    }
-    if (kind === "positive") {
-      return { input: value, returned: value };
-    }
-    return null;
+  function fieldStatusLabel(status) {
+    if (status === "nomatch") return "No match";
+    if (status === "dsmissing") return "DSMissing";
+    return "Match";
   }
 
-  function buildFieldMatches(values, matchInfo, accountType, country) {
-    var fields = fieldsForCountry(accountType, country);
+  function alternateOnFile(fieldLabel, value) {
+    if (!value) return "—";
+    if (/\d/.test(value)) {
+      return value.replace(/(\d)(?!.*\d)/, function (digit) {
+        return String((Number(digit) + 1) % 10);
+      });
+    }
+    if (fieldLabel === "Business Name") return value + " Holdings";
+    return value;
+  }
 
-    return fields.map(function (fieldLabel) {
-      var kind = fieldResultKind(fieldLabel, matchInfo, fields);
-      var value = values[fieldLabel] || "";
+  function partialExceptionField(fields) {
+    var secondaries = secondaryFields(fields);
+    if (secondaries.length) return secondaries[0];
+    if (fields.indexOf("Middle Name") !== -1) return "Middle Name";
+    if (fields.indexOf("Second Surname") !== -1) return "Second Surname";
+    return fields[fields.length - 1];
+  }
+
+  function resolveFieldStatus(fieldLabel, value, matchInfo, fields, override) {
+    if (override && override.status) {
+      return {
+        status: override.status,
+        returned: override.status === "dsmissing" ? null : (override.returned != null ? override.returned : value)
+      };
+    }
+
+    if (matchInfo.match === "No Match" && (isNameField(fieldLabel) || isAccountField(fieldLabel))) {
+      return { status: "nomatch", returned: alternateOnFile(fieldLabel, value) };
+    }
+
+    if (matchInfo.match === "Partial Match" && fieldLabel === partialExceptionField(fields)) {
+      if (fieldLabel === "National ID Number" || fieldLabel === "Middle Name") {
+        return { status: "dsmissing", returned: null };
+      }
+      return { status: "nomatch", returned: alternateOnFile(fieldLabel, value) };
+    }
+
+    return { status: "match", returned: value };
+  }
+
+  function buildFieldMatches(values, matchInfo, accountType, country, entity) {
+    var fields = fieldsForCountry(accountType, country);
+    var overrides = (entity && entity.fieldResults) || {};
+
+    return fields.filter(function (fieldLabel) {
+      return !!(values[fieldLabel] || "").trim() || overrides[fieldLabel];
+    }).map(function (fieldLabel) {
+      var value = (values[fieldLabel] || "").trim();
+      var resolved = resolveFieldStatus(fieldLabel, value, matchInfo, fields, overrides[fieldLabel]);
       return {
         signal: fieldLabel,
-        detail: buildFieldDetail(fieldLabel, value, kind, matchInfo.match),
-        result: kind === "negative" ? "No match" : "Match",
-        kind: kind
+        detail: { input: value || "—", returned: resolved.returned },
+        result: fieldStatusLabel(resolved.status),
+        kind: fieldStatusKind(resolved.status)
       };
     });
   }
@@ -675,8 +758,10 @@
     var meta = getCountryResultMeta(country);
     var matchInfo = entity ? matchFromEntity(entity) : inferMatch(values);
     var name = displayName(values, st.accountType);
-    var fieldMatches = buildFieldMatches(values, matchInfo, st.accountType, country);
+    var fieldMatches = buildFieldMatches(values, matchInfo, st.accountType, country, entity);
     var matchCount = fieldMatches.filter(function (r) { return r.kind === "positive"; }).length;
+    var failCount = fieldMatches.filter(function (r) { return r.kind === "negative"; }).length;
+    var paymentValues = paymentCapabilityValues(country);
     var accountDetailsVerified = fieldMatches.every(function (r) {
       return !isAccountField(r.signal) || r.kind !== "negative";
     });
@@ -699,11 +784,12 @@
       testEntityMode: !!(st.testEntity && st.selectedTestEntity != null),
       accountType: st.accountType,
       matchCount: matchCount,
+      failCount: failCount,
       accountDetailsVerified: accountDetailsVerified,
       ownershipConfirmed: ownershipConfirmed,
       truAi: buildTruAi(name, matchInfo),
       fieldMatches: fieldMatches,
-      paymentCapabilities: buildPaymentCapabilities(),
+      paymentCapabilities: buildPaymentCapabilities(country),
       appended: buildAppended(values, matchInfo, country, st.accountType, meta),
       raw: {
         transactionId: txnId,
@@ -713,7 +799,7 @@
         accountType: st.accountType,
         input: values,
         appended: buildAppended(values, matchInfo, country, st.accountType, meta),
-        paymentCapabilities: PAYMENT_CAPABILITIES
+        paymentCapabilities: paymentValues
       }
     };
   }

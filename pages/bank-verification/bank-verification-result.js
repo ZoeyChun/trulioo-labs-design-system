@@ -82,12 +82,11 @@
     var host = document.getElementById("bv-result-highlights");
     if (!host) return;
     var total = config.fieldMatches.length;
-    var matched = config.matchCount;
-    var failed = total - matched;
-    var passRate = total === 0 ? 0 : Math.round((matched / total) * 100);
+    var failed = config.failCount != null
+      ? config.failCount
+      : config.fieldMatches.filter(function (row) { return row.kind === "negative"; }).length;
     host.innerHTML = [
       { label: "Fields checked", value: String(total) },
-      { label: "Pass rate", value: passRate + "%" },
       { label: "Failed checks", value: String(failed), negative: failed > 0 }
     ].map(renderHighlightField).join("");
   }

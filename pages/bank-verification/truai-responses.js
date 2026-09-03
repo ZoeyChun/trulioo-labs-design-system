@@ -45,15 +45,17 @@
   function countFieldMatches() {
     var positive = 0;
     var negative = 0;
+    var missing = 0;
     document.querySelectorAll("#bv-result-field-rows tr").forEach(function (row) {
       if (row.querySelector(".tds-data-table__signals--negative, .tds-tag--negative")) negative += 1;
+      else if (row.querySelector(".tds-data-table__signals--intermediate, .tds-tag--intermediate")) missing += 1;
       else if (row.querySelector(".tds-data-table__signals--positive, .tds-tag--positive")) positive += 1;
     });
-    if (positive || negative) return { positive: positive, negative: negative };
+    if (positive || negative || missing) return { positive: positive, negative: negative, missing: missing };
     var info = matchInfo();
-    if (info.match === "Strong Match") return { positive: 6, negative: 0 };
-    if (info.match === "Partial Match") return { positive: 4, negative: 2 };
-    return { positive: 1, negative: 5 };
+    if (info.match === "Strong Match") return { positive: 6, negative: 0, missing: 0 };
+    if (info.match === "Partial Match") return { positive: 4, negative: 0, missing: 1 };
+    return { positive: 1, negative: 5, missing: 0 };
   }
 
   function buildSummaryResponse(name) {
@@ -99,7 +101,7 @@
       return [
         { title: "Account holder name", badge: "Match", badgeTone: "positive", detail: "Name matches bank records." },
         { title: "Account number", badge: "Partial", badgeTone: "intermediate", detail: "Minor formatting discrepancy detected." },
-        { title: "National ID", badge: "No match", badgeTone: "negative", detail: "ID does not match institution data." },
+        { title: "National ID", badge: "DSMissing", badgeTone: "intermediate", detail: "No identifier was returned from the institution for this field." },
       ];
     }
     return [
@@ -118,10 +120,11 @@
   function buildFieldMismatchResponse(name) {
     var info = matchInfo();
     var counts = countFieldMatches();
+    var unmatched = counts.negative + (counts.missing || 0);
     var summary =
-      counts.negative === 0
+      unmatched === 0
         ? "All submitted fields matched the bank's records for " + name + "."
-        : counts.negative + " field" + (counts.negative === 1 ? "" : "s") + " did not match for " + name + ". Check the detail column for input vs. returned values.";
+        : unmatched + " field" + (unmatched === 1 ? "" : "s") + " did not fully match for " + name + ". Check the detail column for input vs. data on file.";
 
     return {
       thinkingLabel: "Comparing field matches for " + name + "…",
