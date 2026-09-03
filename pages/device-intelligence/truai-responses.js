@@ -1,5 +1,6 @@
 /**
  * TruAI chat response data — Device Intelligence static page.
+ * Shape must match pages/shared/truai-chat.js (summary + hero + drivers + findings).
  */
 (function (global) {
   "use strict";
@@ -41,6 +42,22 @@
     return el ? el.textContent.trim() : "";
   }
 
+  function highRiskDrivers() {
+    return [
+      { title: "Risk score", badge: riskLabel(), badgeTone: "negative", detail: "Overall device risk for this session." },
+      { title: "Identities", badge: "3 linked", badgeTone: "negative", detail: "This device has been linked to multiple identities." },
+      { title: "History", badge: "Declined", badgeTone: "negative", detail: "Previously seen in declined transactions." },
+    ];
+  }
+
+  function lowRiskDrivers() {
+    return [
+      { title: "Risk score", badge: riskLabel(), badgeTone: "positive", detail: "Overall device risk for this session." },
+      { title: "Environment", badge: "Consistent", badgeTone: "positive", detail: "Browser, OS, and location signals align with a genuine device." },
+      { title: "Integrity", badge: "No compromise", badgeTone: "positive", detail: "No emulator, jailbreak, or automation indicators." },
+    ];
+  }
+
   function buildSummaryResponse() {
     var id = deviceId();
     var risk = riskLabel();
@@ -54,19 +71,19 @@
     return {
       thinkingLabel: "Reviewing device intelligence for " + id + "…",
       sourceLabel: "Device signals checked",
-      headline: "Device " + id + " is " + risk.toLowerCase() + ".",
-      body: summary,
+      summary: summary,
+      hero: {
+        value: high ? "High" : "Low",
+        label: "Device risk",
+        meta: [id],
+        tone: high ? "high" : "low",
+      },
+      driversTitle: "Risk indicators",
+      drivers: high ? highRiskDrivers() : lowRiskDrivers(),
+      findingsTitle: "Key findings",
       findings: high
-        ? [
-            { title: "Risk score", badge: risk, badgeTone: "negative", detail: "Overall device risk for this session." },
-            { title: "Identities", badge: "3 linked", badgeTone: "negative", detail: "This device has been linked to multiple identities." },
-            { title: "History", badge: "Declined", badgeTone: "negative", detail: "Previously seen in declined transactions." },
-          ]
-        : [
-            { title: "Risk score", badge: risk, badgeTone: "positive", detail: "Overall device risk for this session." },
-            { title: "Environment", badge: "Consistent", badgeTone: "positive", detail: "Browser, OS, and location signals align with a genuine device." },
-            { title: "Integrity", badge: "No compromise", badgeTone: "positive", detail: "No emulator, jailbreak, or automation indicators." },
-          ],
+        ? ["Linked to multiple identities", "Previously seen in declined transactions"]
+        : ["No high-risk indicators on this session", "Environment signals are consistent"],
       primaryAction: { label: "View risk indicators", tab: "device-intelligence" },
     };
   }
@@ -78,29 +95,46 @@
       return {
         thinkingLabel: "Explaining device score…",
         sourceLabel: "Risk model",
-        headline: "The device score combines environment, integrity, and history signals.",
-        body: high
+        summary: high
           ? "A higher score means more risk indicators. This demo device scored in the high-risk range because it is linked to multiple identities and previously declined transactions."
           : "A lower score means fewer risk indicators. This demo device scored in the low-risk range because the browser, OS, fingerprint, and location were consistent with a legitimate session.",
-        findings: [],
+        hero: {
+          value: high ? "High" : "Low",
+          label: "Score band",
+          meta: ["Environment + integrity + history"],
+          tone: high ? "high" : "low",
+        },
+        driversTitle: "Score inputs",
+        drivers: high ? highRiskDrivers() : lowRiskDrivers(),
+        findingsTitle: "How it is calculated",
+        findings: [
+          "The device score combines environment, integrity, and history signals",
+          high ? "More indicators raise the score into the high-risk range" : "Fewer indicators keep the score in the low-risk range",
+        ],
+        primaryAction: { label: "View risk indicators", tab: "device-intelligence" },
       };
     }
     if (q.indexOf("indicator") >= 0 || q.indexOf("signal") >= 0) {
-      return high
-        ? {
-            thinkingLabel: "Reviewing risk indicators…",
-            sourceLabel: "Device signals",
-            headline: "High-risk indicators were raised on this device.",
-            body: "The session is linked to 3 different identities, was previously seen in a declined transaction, and shows high identity-switching velocity.",
-            findings: [],
-          }
-        : {
-            thinkingLabel: "Reviewing risk indicators…",
-            sourceLabel: "Device signals",
-            headline: "No high-risk indicators were raised on this device.",
-            body: "Trusted browser and OS, stable location, no VPN or proxy, and a consistent fingerprint were all observed.",
-            findings: [],
-          };
+      return {
+        thinkingLabel: "Reviewing risk indicators…",
+        sourceLabel: "Device signals",
+        summary: high
+          ? "The session is linked to 3 different identities, was previously seen in a declined transaction, and shows high identity-switching velocity."
+          : "Trusted browser and OS, stable location, no VPN or proxy, and a consistent fingerprint were all observed.",
+        hero: {
+          value: high ? "High" : "None",
+          label: "Indicators",
+          meta: high ? ["3 identities linked"] : ["Clean session"],
+          tone: high ? "high" : "low",
+        },
+        driversTitle: "Signals reviewed",
+        drivers: high ? highRiskDrivers() : lowRiskDrivers(),
+        findingsTitle: "Key findings",
+        findings: high
+          ? ["High-risk indicators were raised on this device", "Identity-switching velocity is elevated"]
+          : ["No high-risk indicators were raised on this device", "Browser, OS, and location signals are consistent"],
+        primaryAction: { label: "View risk indicators", tab: "device-intelligence" },
+      };
     }
     return buildSummaryResponse();
   }

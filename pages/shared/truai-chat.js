@@ -70,6 +70,15 @@
   }
 
   function collapseSidebarIfOpen() {
+    var kybLayout = document.querySelector(".kyb-tab-layout.dv-columns:not(.dv-columns--sidebar-collapsed)");
+    if (kybLayout) {
+      var kybBtn = kybLayout.querySelector(".dv-sidebar-toggle--collapse");
+      if (kybBtn) {
+        kybBtn.click();
+        return;
+      }
+    }
+
     var columns =
       document.getElementById("kyb-columns") ||
       document.getElementById("dv-columns") ||
@@ -82,6 +91,56 @@
 
   function toggleButtons() {
     return document.querySelectorAll("[data-truai-toggle], #app-truai-btn");
+  }
+
+  function promptFromToggleButton(btn) {
+    if (!btn) return "";
+
+    var explicit = btn.getAttribute("data-truai-prompt");
+    if (explicit) return explicit.trim();
+
+    var label = btn.querySelector(".tds-ai-tag__label");
+    if (label) {
+      return label.textContent.replace(/^Ask TruAI:\s*/i, "").trim();
+    }
+
+    if (btn.classList.contains("kyb-truai-prompt-chip")) {
+      var clone = btn.cloneNode(true);
+      var icon = clone.querySelector(".kyb-truai-prompt-chip__icon");
+      if (icon) icon.remove();
+      return clone.textContent.trim();
+    }
+
+    return "";
+  }
+
+  function handleTruAIClick(event) {
+    var target = event.target;
+    if (!target || !target.closest) return;
+
+    var promptBtn = target.closest("[data-truai-prompt]");
+    if (
+      promptBtn &&
+      !promptBtn.closest(".labs-truai-prompts") &&
+      !promptBtn.closest(".labs-truai-panel")
+    ) {
+      event.preventDefault();
+      ask(promptBtn.getAttribute("data-truai-prompt"));
+      return;
+    }
+
+    var toggleBtn = target.closest("[data-truai-toggle], #app-truai-btn");
+    if (!toggleBtn) return;
+
+    var prompt = promptFromToggleButton(toggleBtn);
+    if (prompt) {
+      event.preventDefault();
+      ask(prompt);
+      return;
+    }
+
+    event.preventDefault();
+    toggleChat();
   }
 
   function syncToggleButtons(next) {
@@ -106,6 +165,7 @@
   }
 
   function compactHeroValue(value) {
+    if (!value) return false;
     return value.length > 5 || /[a-z£]/i.test(value);
   }
 
@@ -124,65 +184,93 @@
     );
   }
 
+  function renderFinding(finding) {
+    if (typeof finding === "string") return "<li>" + finding + "</li>";
+    if (finding && finding.title) {
+      return (
+        "<li><strong>" +
+        finding.title +
+        "</strong>" +
+        (finding.detail ? " — " + finding.detail : "") +
+        "</li>"
+      );
+    }
+    return "";
+  }
+
   function renderRichBody(response) {
     var hero = response.hero;
-    var compact = compactHeroValue(hero.value);
-    var findings = response.findings
-      .map(function (f) {
-        return "<li>" + f + "</li>";
-      })
-      .join("");
-    var drivers = response.drivers.map(renderDriver).join("");
+    var findings = (response.findings || []).map(renderFinding).join("");
+    var drivers = (response.drivers || []).map(renderDriver).join("");
+    var html = '<div class="labs-truai-rich-body">';
 
-    return (
-      '<div class="labs-truai-rich-body">' +
-      '<div class="labs-truai-score ' +
-      scoreToneClass(hero.tone) +
-      '">' +
-      '<div class="labs-truai-score__value-wrap">' +
-      '<span class="labs-truai-score__value' +
-      (compact ? " labs-truai-score__value--compact" : "") +
-      '">' +
-      hero.value +
-      "</span>" +
-      '<span class="labs-truai-score__label">' +
-      hero.label +
-      "</span></div>" +
-      (hero.meta && hero.meta.length
-        ? '<div class="labs-truai-score__meta">' +
-          hero.meta
-            .map(function (m) {
-              return '<span class="labs-truai-score__meta-item">' + m + "</span>";
-            })
-            .join("") +
-          "</div>"
-        : "") +
-      "</div>" +
-      '<section class="labs-truai-section"><h3 class="labs-truai-section__title">' +
-      response.driversTitle +
-      '</h3><ul class="labs-truai-drivers">' +
-      drivers +
-      "</ul></section>" +
-      '<section class="labs-truai-section"><h3 class="labs-truai-section__title">' +
-      response.findingsTitle +
-      '</h3><ul class="labs-truai-findings">' +
-      findings +
-      "</ul></section>" +
-      '<div class="labs-truai-actions">' +
-      '<button type="button" class="tds-btn tds-btn--primary tds-btn--lg labs-truai-primary-action" data-truai-tab="' +
-      response.primaryAction.tab +
-      '">' +
-      response.primaryAction.label +
-      "</button>" +
-      (response.secondaryAction
-        ? '<button type="button" class="tds-btn tds-btn--secondary tds-btn--lg labs-truai-secondary-action" data-truai-tab="' +
-          response.secondaryAction.tab +
-          '">' +
-          response.secondaryAction.label +
-          "</button>"
-        : "") +
-      "</div></div>"
-    );
+    if (hero && hero.value) {
+      var compact = compactHeroValue(hero.value);
+      html +=
+        '<div class="labs-truai-score ' +
+        scoreToneClass(hero.tone) +
+        '">' +
+        '<div class="labs-truai-score__value-wrap">' +
+        '<span class="labs-truai-score__value' +
+        (compact ? " labs-truai-score__value--compact" : "") +
+        '">' +
+        hero.value +
+        "</span>" +
+        '<span class="labs-truai-score__label">' +
+        (hero.label || "") +
+        "</span></div>" +
+        (hero.meta && hero.meta.length
+          ? '<div class="labs-truai-score__meta">' +
+            hero.meta
+              .map(function (m) {
+                return '<span class="labs-truai-score__meta-item">' + m + "</span>";
+              })
+              .join("") +
+            "</div>"
+          : "") +
+        "</div>";
+    }
+
+    if (response.driversTitle && drivers) {
+      html +=
+        '<section class="labs-truai-section"><h3 class="labs-truai-section__title">' +
+        response.driversTitle +
+        '</h3><ul class="labs-truai-drivers">' +
+        drivers +
+        "</ul></section>";
+    }
+
+    if (response.findingsTitle && findings) {
+      html +=
+        '<section class="labs-truai-section"><h3 class="labs-truai-section__title">' +
+        response.findingsTitle +
+        '</h3><ul class="labs-truai-findings">' +
+        findings +
+        "</ul></section>";
+    } else if (!response.findingsTitle && findings) {
+      html += '<ul class="labs-truai-findings">' + findings + "</ul>";
+    }
+
+    if (response.primaryAction) {
+      html +=
+        '<div class="labs-truai-actions">' +
+        '<button type="button" class="tds-btn tds-btn--primary tds-btn--lg labs-truai-primary-action" data-truai-tab="' +
+        (response.primaryAction.tab || "") +
+        '">' +
+        response.primaryAction.label +
+        "</button>" +
+        (response.secondaryAction
+          ? '<button type="button" class="tds-btn tds-btn--secondary tds-btn--lg labs-truai-secondary-action" data-truai-tab="' +
+            (response.secondaryAction.tab || "") +
+            '">' +
+            response.secondaryAction.label +
+            "</button>"
+          : "") +
+        "</div>";
+    }
+
+    html += "</div>";
+    return html;
   }
 
   function scrollToBottom() {
@@ -192,24 +280,33 @@
 
   function startStreaming(response) {
     if (!els.lead) return;
-    var text = response.summary;
+    var text = response.summary || response.body || "";
     var index = 0;
     els.lead.textContent = "";
     els.cursor.style.display = "inline-block";
+
+    function finish() {
+      if (state.streamInterval) {
+        window.clearInterval(state.streamInterval);
+        state.streamInterval = null;
+      }
+      els.cursor.style.display = "none";
+      schedule(function () {
+        state.phase = "complete";
+        renderConversation();
+      }, 120);
+    }
+
+    if (!text) {
+      finish();
+      return;
+    }
 
     state.streamInterval = window.setInterval(function () {
       index += 1;
       els.lead.textContent = text.slice(0, index);
       scrollToBottom();
-      if (index >= text.length) {
-        window.clearInterval(state.streamInterval);
-        state.streamInterval = null;
-        els.cursor.style.display = "none";
-        schedule(function () {
-          state.phase = "complete";
-          renderConversation();
-        }, 120);
-      }
+      if (index >= text.length) finish();
     }, 14);
   }
 
@@ -255,6 +352,9 @@
 
     els.lead = els.conversation.querySelector(".labs-truai-response__lead");
     els.cursor = els.conversation.querySelector(".labs-truai-response__cursor");
+    if (els.lead && response && state.phase === "complete") {
+      els.lead.textContent = response.summary || response.body || "";
+    }
 
     els.conversation.querySelectorAll("[data-truai-tab]").forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -486,8 +586,9 @@
     toggleButtons().forEach(function (btn) {
       btn.setAttribute("aria-controls", "labs-truai-chat-rail");
       btn.setAttribute("aria-expanded", "false");
-      btn.addEventListener("click", toggleChat);
     });
+
+    document.addEventListener("click", handleTruAIClick);
 
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape" && state.open) closeChat();
@@ -495,16 +596,6 @@
 
     renderPrompts();
     renderIntro(false);
-
-    document.addEventListener("click", function (event) {
-      var target = event.target;
-      if (!target || !target.closest) return;
-      var btn = target.closest("[data-truai-prompt]");
-      if (!btn) return;
-      if (btn.closest(".labs-truai-prompts") || btn.closest(".labs-truai-panel")) return;
-      event.preventDefault();
-      ask(btn.getAttribute("data-truai-prompt"));
-    });
   }
 
   window.TruAIChat = { open: openChat, close: closeChat, toggle: toggleChat, ask: ask };

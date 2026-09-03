@@ -1,10 +1,10 @@
-<!-- Static reference implementation — Device Intelligence intermediate landing. -->
+<!-- Static reference implementation — KYC eIDAS landing (Figma 5875:191354). -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Device Intelligence — Trulioo Labs</title>
+  <title>KYC eIDAS — Trulioo Labs</title>
 
   <link rel="preload" href="../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -12,15 +12,13 @@
   <link rel="stylesheet" href="../../tokens/tokens.css">
   <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
-  <link rel="stylesheet" href="../../Components/select/select.css">
-  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../shared/app-shell.css">
   <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
   <link rel="stylesheet" href="../shared/truai-chat.css">
   <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
-  <link rel="stylesheet" href="device-intelligence.css">
+  <link rel="stylesheet" href="kyc-eidas.css">
   <style>
     button.tds-side-nav__nav-item,
     .tds-side-nav__nav-item {
@@ -118,11 +116,11 @@
                     <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg></span>
                     <span class="tds-side-nav__sub-item-text">Electronic ID</span>
                   </a>
-                  <a href="../KYC eIDAS/index.html" class="tds-side-nav__sub-item">
+                  <a href="index.html" class="tds-side-nav__sub-item tds-side-nav__sub-item--selected" aria-current="page">
                     <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="0.5"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="0.5"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="0.5"/><path d="M9 9h2v2H9zM12 9h1.5v2H12zM9 12h4.5v1.5H9z"/></svg></span>
                     <span class="tds-side-nav__sub-item-text">KYC eIDAS</span>
                   </a>
-                  <a href="index.html" class="tds-side-nav__sub-item tds-side-nav__sub-item--selected" aria-current="page">
+                  <a href="../device-intelligence/index.html" class="tds-side-nav__sub-item">
                     <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><path d="M7 12.5h2"/></svg></span>
                     <span class="tds-side-nav__sub-item-text">Device Intelligence</span>
                   </a>
@@ -178,13 +176,13 @@
         </svg>
       </button>
 
-      <div class="di-landing" id="di-landing">
-        <header class="di-landing__header">
-          <div class="di-landing__title-group">
-            <button type="button" class="dv-back-btn" id="di-landing-back" aria-label="Back to home">
+      <div class="eidas-landing" id="eidas-landing">
+        <header class="eidas-landing__header">
+          <div class="eidas-landing__title-group">
+            <button type="button" class="dv-back-btn" id="eidas-landing-back" aria-label="Back to home">
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
             </button>
-            <h1 class="di-landing__title">Device Intelligence</h1>
+            <h1 class="eidas-landing__title">KYC eIDAS</h1>
           </div>
           <button class="tds-btn tds-btn--primary tds-btn--lg app-truai-btn" type="button" data-truai-toggle aria-expanded="false">
             <span class="app-truai-btn__icon">
@@ -194,66 +192,51 @@
           </button>
         </header>
 
-        <div class="di-landing__body">
-          <article class="di-intro-card">
-            <div class="di-intro-card__top">
-              <div class="di-intro-card__hero">
-                <h2 class="di-intro-card__headline">See Device Intelligence in action</h2>
-                <p class="di-intro-card__copy">Discover what Device Intelligence can reveal about a device from basic attributes and environment details to signals that can help identify potentially risky behaviour.</p>
+        <div class="eidas-landing__body">
+          <article class="eidas-card">
+            <div class="eidas-card__qr">
+              <div class="eidas-card__qr-frame">
+                <img src="assets/qr-code.png" alt="QR code to continue KYC eIDAS verification on your phone" width="160" height="161">
               </div>
-              <div class="di-intro-card__discover">
-                <h3 class="di-intro-card__discover-title">What you’ll discover</h3>
-                <ul class="di-intro-card__list">
-                  <li class="di-intro-card__item">
-                    <p class="di-intro-card__item-title">Device details</p>
-                    <p class="di-intro-card__item-copy">Browser, operating system, device type, and other attributes.</p>
-                  </li>
-                  <li class="di-intro-card__item">
-                    <p class="di-intro-card__item-title">Environment signals</p>
-                    <p class="di-intro-card__item-copy">Indicators related to the device and its operating environment.</p>
-                  </li>
-                  <li class="di-intro-card__item">
-                    <p class="di-intro-card__item-title">Risk signals</p>
-                    <p class="di-intro-card__item-copy">Potential concerns such as device manipulation or other suspicious characteristics.</p>
-                  </li>
-                  <li class="di-intro-card__item">
-                    <p class="di-intro-card__item-title">Device history</p>
-                    <p class="di-intro-card__item-copy">Understand how the device has been observed across interactions, when available.</p>
-                  </li>
-                </ul>
-              </div>
+              <p class="eidas-card__qr-title">Scan this QR code</p>
+              <p class="eidas-card__qr-disclaimer">By scanning you consent to identity verification under GDPR Art. 6(1)(c) and eIDAS 2.0. Keep this tab open; refreshing ends the session.</p>
             </div>
-            <div class="di-intro-card__footer">
-              <div class="tds-select" id="di-test-entity">
-                <label class="tds-field-label" id="di-test-entity-label">Test Entity</label>
-                <button type="button" class="tds-select__trigger tds-select__trigger--lg" aria-labelledby="di-test-entity-label" aria-haspopup="listbox" aria-expanded="false">
-                  <span class="tds-select__text-wrapper">
-                    <span class="tds-select__value tds-select__placeholder" id="di-test-entity-value">Select</span>
-                  </span>
-                  <span class="tds-select__trailing-group">
-                    <span class="tds-caret tds-caret--default" aria-hidden="true">
-                      <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
-                    </span>
-                  </span>
-                </button>
-                <div class="tds-select__menu">
-                  <div class="tds-dropdown-panel" role="listbox" aria-labelledby="di-test-entity-label">
-                    <button type="button" class="tds-action-list-item" role="option" data-value="high">
-                      <span class="tds-action-list-item__content">
-                        <span class="tds-action-list-item__label">High-risk Device</span>
-                        <span class="tds-action-list-item__description">Suspicious device signals are detected.</span>
-                      </span>
-                    </button>
-                    <button type="button" class="tds-action-list-item" role="option" data-value="low">
-                      <span class="tds-action-list-item__content">
-                        <span class="tds-action-list-item__label">Low-risk Device</span>
-                        <span class="tds-action-list-item__description">No significant risk signals</span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
+
+            <div class="eidas-card__content">
+              <div class="eidas-card__intro">
+                <h2 class="eidas-card__headline">Verify once.<br>Trusted across Europe.</h2>
+                <p class="eidas-card__lead">Trulioo&rsquo;s KYC Verification across Europe confirms to the eIDAS 2.0 High level of assurance. Scan the code to continue on your phone; it takes about 10 seconds.</p>
               </div>
-              <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="di-analyze" disabled aria-disabled="true">Analyze now</button>
+
+              <ul class="eidas-card__features">
+                <li class="eidas-card__feature">
+                  <span class="eidas-card__feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4" width="13" height="9" rx="1.5"/><circle cx="6" cy="8" r="1.5"/><path d="M3.5 11.5c.4-1.2 1.4-2 2.5-2s2.1.8 2.5 2M10 7.5h2.5M10 10h2.5"/></svg>
+                  </span>
+                  <div class="eidas-card__feature-copy">
+                    <p class="eidas-card__feature-title">Your national eID or your document</p>
+                    <p class="eidas-card__feature-desc">We recommend the fastest route for your country.</p>
+                  </div>
+                </li>
+                <li class="eidas-card__feature">
+                  <span class="eidas-card__feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4.5" y="2" width="7" height="9" rx="3.5"/><path d="M3 14c.6-2.2 2.4-3.5 5-3.5s4.4 1.3 5 3.5"/></svg>
+                  </span>
+                  <div class="eidas-card__feature-copy">
+                    <p class="eidas-card__feature-title">A quick selfie check</p>
+                    <p class="eidas-card__feature-desc">Proves the document belongs to you. Deleted after the check.</p>
+                  </div>
+                </li>
+                <li class="eidas-card__feature">
+                  <span class="eidas-card__feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="7" width="8" height="6.5" rx="1"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>
+                  </span>
+                  <div class="eidas-card__feature-copy">
+                    <p class="eidas-card__feature-title">Only the attributes required</p>
+                    <p class="eidas-card__feature-desc">Data minimization by default — only results shown, not your raw scans.</p>
+                  </div>
+                </li>
+              </ul>
             </div>
           </article>
         </div>
@@ -264,10 +247,10 @@
 
   </div>
 
-  <script src="truai-responses.js"></script>
-  <script src="../shared/truai-chat.js"></script>
+  <script src="truai-responses.js?v=2"></script>
+  <script src="../shared/truai-chat.js?v=3"></script>
   <script src="../../Components/side-nav/side-nav.js"></script>
-  <script src="device-intelligence.js"></script>
+  <script src="kyc-eidas.js"></script>
   <script>TdsSideNav.init();</script>
 </body>
 </html>
