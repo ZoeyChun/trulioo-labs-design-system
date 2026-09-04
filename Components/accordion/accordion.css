@@ -3,7 +3,7 @@
    Figma: Accordion (810:5659)
    Sizes: small (12px pad) | medium (16px) | large (20px)
    States: enabled | hover | focused | disabled | skeleton
-   Slots: leadingIcon, tags, action, trailingIcon, counter, chevron
+   Slots: leadingIcon, titleGroup, subtext, tags, action, trailingIcon, counter, chevron
    ============================================================ */
 
 .tds-accordion {
@@ -24,6 +24,33 @@
   border-color: var(--border-focus);
 }
 
+/* Focus ring uses 2px border — compensate padding to avoid layout shift. */
+
+.tds-accordion--sm:focus-within .tds-accordion__header,
+.tds-accordion--sm.tds-accordion--focused .tds-accordion__header,
+.tds-accordion--sm:focus-within .tds-accordion__content,
+.tds-accordion--sm.tds-accordion--focused .tds-accordion__content {
+  padding: calc(var(--padding-md) - 1px);
+}
+
+.tds-accordion--md:focus-within .tds-accordion__header,
+.tds-accordion--md.tds-accordion--focused .tds-accordion__header,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg):focus-within .tds-accordion__header,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg).tds-accordion--focused .tds-accordion__header,
+.tds-accordion--md:focus-within .tds-accordion__content,
+.tds-accordion--md.tds-accordion--focused .tds-accordion__content,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg):focus-within .tds-accordion__content,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg).tds-accordion--focused .tds-accordion__content {
+  padding: calc(var(--padding-lg) - 1px);
+}
+
+.tds-accordion--lg:focus-within .tds-accordion__header,
+.tds-accordion--lg.tds-accordion--focused .tds-accordion__header,
+.tds-accordion--lg:focus-within .tds-accordion__content,
+.tds-accordion--lg.tds-accordion--focused .tds-accordion__content {
+  padding: calc(var(--spacing-16) + var(--spacing-4) - 1px);
+}
+
 /* --- Header trigger --- */
 
 .tds-accordion__header {
@@ -40,6 +67,7 @@
   font-family: inherit;
   color: inherit;
   box-sizing: border-box;
+  overflow: clip;
   transition: background-color 0.15s ease;
 }
 
@@ -95,7 +123,14 @@
   flex-shrink: 0;
 }
 
-/* --- Title --- */
+/* --- Title group + subtext --- */
+
+.tds-accordion__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  min-width: 0;
+}
 
 .tds-accordion__title {
   font-weight: var(--font-weight-semibold);
@@ -103,7 +138,14 @@
   white-space: nowrap;
 }
 
-.tds-accordion--disabled .tds-accordion__title {
+.tds-accordion__subtext {
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+  white-space: normal;
+}
+
+.tds-accordion--disabled .tds-accordion__title,
+.tds-accordion--disabled .tds-accordion__subtext {
   color: var(--text-disabled);
 }
 
@@ -146,6 +188,8 @@
 
 .tds-accordion--disabled .tds-tag {
   color: var(--text-disabled);
+  border-color: var(--border-subtle);
+  background-color: var(--surface-neutral-01);
 }
 
 .tds-accordion--disabled .tds-counter {
@@ -220,6 +264,11 @@
   line-height: var(--line-height-sm);
 }
 
+.tds-accordion--sm .tds-accordion__subtext {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
 .tds-accordion--sm .tds-accordion__action {
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
@@ -242,7 +291,13 @@
 .tds-accordion--md .tds-accordion__title,
 .tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__title {
   font-size: var(--font-size-md);
-  line-height: var(--line-height-sm);
+  line-height: var(--line-height-md);
+}
+
+.tds-accordion--md .tds-accordion__subtext,
+.tds-accordion:not(.tds-accordion--sm):not(.tds-accordion--lg) .tds-accordion__subtext {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
 }
 
 .tds-accordion--md .tds-accordion__action,
@@ -263,12 +318,17 @@
 }
 
 .tds-accordion--lg .tds-accordion__header {
-  padding: var(--padding-xl);
+  padding: calc(var(--spacing-16) + var(--spacing-4));
 }
 
 .tds-accordion--lg .tds-accordion__title {
   font-size: var(--font-size-lg);
   line-height: var(--line-height-lg);
+}
+
+.tds-accordion--lg .tds-accordion__subtext {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
 }
 
 .tds-accordion--lg .tds-accordion__action {
@@ -277,7 +337,7 @@
 }
 
 .tds-accordion--lg .tds-accordion__content {
-  padding: var(--padding-xl);
+  padding: calc(var(--spacing-16) + var(--spacing-4));
 }
 
 .tds-accordion--lg .tds-accordion__body {

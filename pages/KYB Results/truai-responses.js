@@ -244,16 +244,38 @@
     );
   }
 
+  function promptKind(prompt) {
+    var normalized = (prompt || "").trim().toLowerCase();
+    if (!normalized) return "risk";
+    if (
+      normalized === "why is this entity high risk?" ||
+      normalized === "why is this high risk?" ||
+      normalized.indexOf("high risk") !== -1
+    ) {
+      return "risk";
+    }
+    if (
+      normalized === "who ultimately owns this business?" ||
+      normalized === "who is the ubo?" ||
+      normalized.indexOf("ubo") !== -1 ||
+      normalized.indexOf("owns this") !== -1
+    ) {
+      return "ownership";
+    }
+    if (normalized.indexOf("traded") !== -1 || normalized.indexOf("trading") !== -1) {
+      return "trading";
+    }
+    return "risk";
+  }
+
   function buildTruAIResponse(prompt) {
     var name = entityName();
     var key = sampleKey();
 
-    switch (prompt) {
-      case "Why is this entity high risk?":
-        return buildRiskResponse(name, key);
-      case "Who ultimately owns this business?":
+    switch (promptKind(prompt)) {
+      case "ownership":
         return buildOwnershipResponse(name, key);
-      case "Has this entity ever traded?":
+      case "trading":
         return buildTradingResponse(name, key);
       default:
         return buildRiskResponse(name, key);

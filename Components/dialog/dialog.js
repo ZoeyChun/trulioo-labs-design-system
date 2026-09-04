@@ -10,8 +10,14 @@
   const DISMISS_SVG =
     '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg>';
 
+  const ANIMATION_MS = 320;
+
   function isLiveDialog(dialog) {
     return dialog && !dialog.classList.contains("tds-dialog--inline");
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
   function syncBodyScrollLock() {
@@ -19,11 +25,7 @@
     document.body.classList.toggle("tds-dialog-open", Boolean(hasOpenLive));
   }
 
-  function openDialog(id) {
-    const dialog = document.getElementById(id);
-    if (!dialog || !isLiveDialog(dialog)) return;
-    dialog.hidden = false;
-    syncBodyScrollLock();
+  function focusDialog(dialog) {
     const focusTarget =
       dialog.querySelector(".tds-dialog__dismiss") ||
       dialog.querySelector(".tds-dialog__actions .tds-btn") ||
@@ -31,10 +33,73 @@
     focusTarget?.focus?.();
   }
 
-  function closeDialog(dialog) {
-    if (!dialog || !isLiveDialog(dialog)) return;
+  function finishClose(dialog) {
+    dialog.classList.remove("tds-dialog--open", "tds-dialog--closing");
     dialog.hidden = true;
     syncBodyScrollLock();
+  }
+
+  function openDialog(id) {
+    const dialog = document.getElementById(id);
+    if (!dialog || !isLiveDialog(dialog)) return;
+
+    if (dialog.classList.contains("tds-dialog--closing")) {
+      dialog.classList.remove("tds-dialog--closing");
+      dialog.hidden = false;
+      dialog.classList.add("tds-dialog--open");
+      syncBodyScrollLock();
+      focusDialog(dialog);
+      return;
+    }
+
+    if (!dialog.hidden && dialog.classList.contains("tds-dialog--open")) return;
+
+    dialog.hidden = false;
+    dialog.classList.remove("tds-dialog--closing");
+    syncBodyScrollLock();
+
+    if (prefersReducedMotion()) {
+      dialog.classList.add("tds-dialog--open");
+    } else {
+      dialog.classList.remove("tds-dialog--open");
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          dialog.classList.add("tds-dialog--open");
+        });
+      });
+    }
+
+    focusDialog(dialog);
+  }
+
+  function closeDialog(dialog) {
+    if (!dialog || !isLiveDialog(dialog) || dialog.hidden) return;
+
+    if (prefersReducedMotion() || !dialog.classList.contains("tds-dialog--open")) {
+      finishClose(dialog);
+      return;
+    }
+
+    dialog.classList.remove("tds-dialog--open");
+    dialog.classList.add("tds-dialog--closing");
+
+    const panel = dialog.querySelector(".tds-dialog__panel");
+    var done = false;
+
+    function complete() {
+      if (done) return;
+      done = true;
+      if (panel) panel.removeEventListener("transitionend", onTransitionEnd);
+      clearTimeout(fallback);
+      finishClose(dialog);
+    }
+
+    function onTransitionEnd(event) {
+      if (event.target === panel) complete();
+    }
+
+    if (panel) panel.addEventListener("transitionend", onTransitionEnd);
+    var fallback = setTimeout(complete, ANIMATION_MS + 80);
   }
 
   document.addEventListener("click", (event) => {

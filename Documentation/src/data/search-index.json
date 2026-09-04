@@ -1630,13 +1630,13 @@
   {
     "id": "components/accordion/anatomy",
     "title": "Anatomy",
-    "description": "Boolean slots from Figma: leadingIcon (left), tags · action · trailingIcon · counter · chevron (right).",
+    "description": "Boolean slots from Figma: leadingIcon (left), title + optional subtext, tags · action · trailingIcon · counter · chevron (right).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "accordion",
     "path": "#/components/accordion#anatomy",
     "category": "Accordion · Design",
-    "keywords": "Accordion accordion accordion Containers tds-accordion accordion/accordion.css accordion collapse expandable disclosure Anatomy .tds-accordion · __header · __content Boolean slots from Figma: leadingIcon (left), tags · action · trailingIcon · counter · chevron (right)."
+    "keywords": "Accordion accordion accordion Containers tds-accordion accordion/accordion.css accordion collapse expandable disclosure Anatomy .tds-accordion · __header · __content Boolean slots from Figma: leadingIcon (left), title + optional subtext, tags · action · trailingIcon · counter · chevron (right)."
   },
   {
     "id": "components/accordion/sizes",
@@ -1648,6 +1648,17 @@
     "path": "#/components/accordion#sizes",
     "category": "Accordion · Design",
     "keywords": "Accordion accordion accordion Containers tds-accordion accordion/accordion.css accordion collapse expandable disclosure Sizes .tds-accordion--{sm|md|lg} Small (12px pad), medium (16px), large (20px): title scales heading/xs → heading/sm → heading/md."
+  },
+  {
+    "id": "components/accordion/subtext",
+    "title": "Subtext",
+    "description": "Optional description below the title: 4px gap inside .tds-accordion__title-group . Subtext scales body/xs (sm, md) or body/sm (lg).",
+    "section": "Components",
+    "sectionId": "components",
+    "pageId": "accordion",
+    "path": "#/components/accordion#subtext",
+    "category": "Accordion · Design",
+    "keywords": "Accordion accordion accordion Containers tds-accordion accordion/accordion.css accordion collapse expandable disclosure Subtext .tds-accordion__title-group · __subtext Optional description below the title: 4px gap inside .tds-accordion__title-group . Subtext scales body/xs (sm, md) or body/sm (lg)."
   },
   {
     "id": "components/accordion/interaction-states",

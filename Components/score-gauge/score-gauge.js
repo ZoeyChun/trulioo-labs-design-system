@@ -134,14 +134,14 @@
     if (hideScore) {
       badge.className = "score-gauge__label-text";
       badge.textContent = label;
-    } else {
+    } else if (label) {
       badge.className = "score-gauge__badge";
       badge.textContent = label;
       badge.style.backgroundColor = pal.fill;
       badge.style.borderColor = pal.border;
       badge.style.color = pal.tag;
     }
-    center.appendChild(badge);
+    if (label) center.appendChild(badge);
     root.appendChild(center);
 
     var t0 = null;

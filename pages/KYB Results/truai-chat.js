@@ -63,9 +63,9 @@
   }
 
   function collapseSidebarIfOpen() {
-    var columns = document.getElementById("kyb-columns");
-    if (!columns || columns.classList.contains("dv-columns--sidebar-collapsed")) return;
-    var btn = columns.querySelector(".dv-sidebar-toggle--collapse");
+    var layout = document.querySelector(".kyb-tab-layout.dv-columns:not(.dv-columns--sidebar-collapsed)");
+    if (!layout) return;
+    var btn = layout.querySelector(".dv-sidebar-toggle--collapse");
     if (btn) btn.click();
   }
 

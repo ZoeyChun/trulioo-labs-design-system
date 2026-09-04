@@ -27,6 +27,88 @@ body.tds-dialog-open {
   overflow: hidden;
 }
 
+/* --- Live dialog enter/exit --- */
+
+.tds-dialog:not(.tds-dialog--inline) .tds-dialog__backdrop {
+  transition: background-color 280ms ease;
+}
+
+.tds-dialog:not(.tds-dialog--inline):not(.tds-dialog--open) .tds-dialog__backdrop {
+  background-color: transparent;
+}
+
+.tds-dialog:not(.tds-dialog--inline).tds-dialog--open .tds-dialog__backdrop {
+  background-color: var(--surface-overlay);
+}
+
+.tds-dialog--right:not(.tds-dialog--inline) .tds-dialog__panel {
+  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tds-dialog--right:not(.tds-dialog--inline):not(.tds-dialog--open) .tds-dialog__panel {
+  transform: translateX(100%);
+}
+
+.tds-dialog--right:not(.tds-dialog--inline).tds-dialog--open .tds-dialog__panel {
+  transform: translateX(0);
+}
+
+.tds-dialog--left:not(.tds-dialog--inline) .tds-dialog__panel {
+  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tds-dialog--left:not(.tds-dialog--inline):not(.tds-dialog--open) .tds-dialog__panel {
+  transform: translateX(-100%);
+}
+
+.tds-dialog--left:not(.tds-dialog--inline).tds-dialog--open .tds-dialog__panel {
+  transform: translateX(0);
+}
+
+.tds-dialog--center:not(.tds-dialog--inline) .tds-dialog__panel {
+  transition:
+    transform 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 280ms ease;
+}
+
+.tds-dialog--center:not(.tds-dialog--inline):not(.tds-dialog--open) .tds-dialog__panel {
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+}
+
+.tds-dialog--center:not(.tds-dialog--inline).tds-dialog--open .tds-dialog__panel {
+  opacity: 1;
+  transform: none;
+}
+
+.tds-dialog--bottom:not(.tds-dialog--inline) .tds-dialog__panel {
+  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tds-dialog--bottom:not(.tds-dialog--inline):not(.tds-dialog--open) .tds-dialog__panel {
+  transform: translateY(100%);
+}
+
+.tds-dialog--bottom:not(.tds-dialog--inline).tds-dialog--open .tds-dialog__panel {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tds-dialog:not(.tds-dialog--inline) .tds-dialog__backdrop,
+  .tds-dialog:not(.tds-dialog--inline) .tds-dialog__panel {
+    transition: none;
+  }
+
+  .tds-dialog:not(.tds-dialog--inline):not(.tds-dialog--open) .tds-dialog__panel {
+    opacity: 1;
+    transform: none;
+  }
+
+  .tds-dialog:not(.tds-dialog--inline):not(.tds-dialog--open) .tds-dialog__backdrop {
+    background-color: var(--surface-overlay);
+  }
+}
+
 /* --- Backdrop --- */
 
 .tds-dialog__backdrop {
