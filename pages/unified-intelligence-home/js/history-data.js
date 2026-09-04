@@ -93,7 +93,7 @@ var historyTransactions = [
     countryCode: "nl",
     date: "2026-03-02T13:05:00",
     dateLabel: "March 2, 2026",
-    status: "Verified",
+    status: "Completed",
     href: "../electronic-id/index.html?country=nl#result"
   },
   {
@@ -106,7 +106,7 @@ var historyTransactions = [
     countryCode: "be",
     date: "2026-02-28T10:20:00",
     dateLabel: "February 28, 2026",
-    status: "Verified",
+    status: "Completed",
     href: "../electronic-id/index.html?country=be#result"
   },
   {
@@ -119,7 +119,7 @@ var historyTransactions = [
     countryCode: "it",
     date: "2026-02-26T16:44:00",
     dateLabel: "February 26, 2026",
-    status: "Verified",
+    status: "Completed",
     href: "../electronic-id/index.html?country=it#result"
   },
   {
@@ -132,7 +132,7 @@ var historyTransactions = [
     countryCode: "se",
     date: "2026-02-22T08:12:00",
     dateLabel: "February 22, 2026",
-    status: "Verified",
+    status: "Completed",
     href: "../electronic-id/index.html?country=se#result"
   },
   {
@@ -145,7 +145,7 @@ var historyTransactions = [
     countryCode: "dk",
     date: "2026-02-18T12:30:00",
     dateLabel: "February 18, 2026",
-    status: "Verified",
+    status: "Completed",
     href: "../electronic-id/index.html?country=dk#result"
   },
   {
@@ -158,7 +158,7 @@ var historyTransactions = [
     countryCode: "cz",
     date: "2026-02-16T09:55:00",
     dateLabel: "February 16, 2026",
-    status: "Review",
+    status: "Completed",
     href: "../electronic-id/index.html?country=cz#result"
   },
   {
@@ -171,7 +171,7 @@ var historyTransactions = [
     countryCode: "pl",
     date: "2026-02-12T17:08:00",
     dateLabel: "February 12, 2026",
-    status: "Review",
+    status: "Completed",
     href: "../electronic-id/index.html?country=pl#result"
   },
   {
@@ -184,7 +184,7 @@ var historyTransactions = [
     countryCode: "in",
     date: "2026-02-09T07:41:00",
     dateLabel: "February 9, 2026",
-    status: "Declined",
+    status: "Completed",
     href: "../electronic-id/index.html?country=in#result"
   },
   {

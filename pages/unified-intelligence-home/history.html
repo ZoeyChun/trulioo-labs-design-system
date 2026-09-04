@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/page-hero.css">
-  <link rel="stylesheet" href="css/history.css?v=7">
+  <link rel="stylesheet" href="css/history.css?v=11">
   <link rel="stylesheet" href="css/truai-panel.css?v=4">
   <script src="js/truai-panel.js?v=4" defer></script>
 </head>
@@ -171,6 +171,8 @@
   </main>
 </div>
 
+<div class="history-toast" id="historyToast" role="status" aria-live="polite" hidden></div>
+
 <dialog class="truai-dialog" id="truaiPanel" aria-label="TruAI Chat">
   <div class="truai-panel" id="truaiPanelSurface">
     <div class="truai-panel-bg" aria-hidden="true"></div>
@@ -193,10 +195,10 @@
   </div>
 </dialog>
 
-<script src="js/history-data.js?v=5"></script>
+<script src="js/history-data.js?v=6"></script>
 <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
 <script src="../../Components/date-picker/date-picker.js"></script>
-<script src="js/history.js?v=8"></script>
+<script src="js/history.js?v=10"></script>
 <script src="js/side-nav-experimental.js?v=2"></script>
 <script>SideNavExperimental.init();</script>
 </body>

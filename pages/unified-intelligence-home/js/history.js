@@ -6,6 +6,7 @@
   var SORT_ICON_ASC = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 9.8h7.6L8 4.6 4.2 9.8z"/></svg>';
   var SORT_ICON_DESC = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg>';
   var CHEVRON_RIGHT = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>';
+  var COPY_SVG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 5.5V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg>';
   var MAX_PAGE_SIZE = 10;
   var MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var DATE_RANGE_FIELDS_HTML =
@@ -71,7 +72,8 @@
     thead: document.getElementById('historyTableHead'),
     tbody: document.getElementById('historyTableBody'),
     footer: document.getElementById('historyTableFooter'),
-    dateRange: document.getElementById('historyDateRange')
+    dateRange: document.getElementById('historyDateRange'),
+    toast: document.getElementById('historyToast')
   };
 
   function escapeHtml(value) {
@@ -412,7 +414,12 @@
           '<td class="tds-data-table__text-cell">' +
             '<span class="history-table__stack">' +
               '<span class="history-table__name">' + escapeHtml(item.name) + '</span>' +
-              '<span class="history-table__id">' + escapeHtml(item.id) + '</span>' +
+              '<span class="history-table__id-row">' +
+                '<span class="history-table__id">' + escapeHtml(item.id) + '</span>' +
+                '<button type="button" class="history-table__copy" data-copy-id="' + escapeHtml(item.id) + '" tabindex="-1" aria-label="Copy transaction ID">' +
+                  COPY_SVG +
+                '</button>' +
+              '</span>' +
             '</span>' +
           '</td>' +
           '<td>' +
@@ -436,6 +443,61 @@
 
     renderFooter(total);
     if (!fittingPageSize) scheduleFit();
+  }
+
+  var toastTimer = 0;
+
+  function showToast(message) {
+    var toast = els.toast;
+    if (!toast) return;
+    toast.textContent = message;
+    toast.hidden = false;
+    toast.classList.add('is-visible');
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(function () {
+      toast.classList.remove('is-visible');
+      toastTimer = window.setTimeout(function () {
+        toast.hidden = true;
+        toast.textContent = '';
+      }, 180);
+    }, 2200);
+  }
+
+  function copyTransactionId(id, btn) {
+    if (!id) return;
+    if (btn) btn.blur();
+    var row = btn && btn.closest('tr');
+    if (row) {
+      row.classList.add('history-table__row--copied');
+      var clearCopied = function () {
+        row.classList.remove('history-table__row--copied');
+        row.removeEventListener('mouseleave', clearCopied);
+      };
+      row.addEventListener('mouseleave', clearCopied);
+    }
+    var done = function () { showToast('Transaction ID copied'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(id).then(done).catch(function () {
+        fallbackCopy(id, done);
+      });
+      return;
+    }
+    fallbackCopy(id, done);
+  }
+
+  function fallbackCopy(id, done) {
+    var field = document.createElement('textarea');
+    field.value = id;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.top = '-9999px';
+    document.body.appendChild(field);
+    field.select();
+    try {
+      document.execCommand('copy');
+      done();
+    } catch (e) { /* demo-only */ }
+    document.body.removeChild(field);
   }
 
   function findItemFromRow(row) {
@@ -624,11 +686,25 @@
 
     if (els.tbody) {
       els.tbody.addEventListener('click', function (event) {
+        var copyBtn = event.target.closest('[data-copy-id]');
+        if (copyBtn) {
+          event.preventDefault();
+          event.stopPropagation();
+          copyTransactionId(copyBtn.getAttribute('data-copy-id'), copyBtn);
+          return;
+        }
         var row = event.target.closest('[data-href]');
         if (row) openTransaction(findItemFromRow(row));
       });
       els.tbody.addEventListener('keydown', function (event) {
         if (event.key !== 'Enter' && event.key !== ' ') return;
+        var copyBtn = event.target.closest('[data-copy-id]');
+        if (copyBtn) {
+          event.preventDefault();
+          event.stopPropagation();
+          copyTransactionId(copyBtn.getAttribute('data-copy-id'), copyBtn);
+          return;
+        }
         var row = event.target.closest('[data-href]');
         if (!row) return;
         event.preventDefault();

@@ -271,20 +271,10 @@
   min-width: 880px;
 }
 
-.history-table col.history-col-product {
-  width: 220px;
-}
-
-.history-table col.history-col-country,
-.history-table col.history-col-date,
-.history-table col.history-col-status,
-.history-table th:nth-child(3),
-.history-table td:nth-child(3),
-.history-table th:nth-child(4),
-.history-table td:nth-child(4),
-.history-table th:nth-child(5),
-.history-table td:nth-child(5) {
-  width: 160px;
+.history-table col.history-col-transaction,
+.history-table th:nth-child(1),
+.history-table td:nth-child(1) {
+  width: 400px;
 }
 
 .history-table col.history-col-actions,
@@ -354,9 +344,13 @@
   align-items: flex-start;
   gap: 2px;
   min-width: 0;
+  width: 100%;
 }
 
 .history-table__name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 14px;
   line-height: 18px;
   font-weight: 400;
@@ -364,7 +358,16 @@
   white-space: nowrap;
 }
 
+.history-table__id-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .history-table__id {
+  min-width: 0;
   max-width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -373,6 +376,83 @@
   line-height: 16px;
   font-weight: 400;
   color: var(--text-caption, #617269);
+}
+
+.history-table__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-interactive, #004c45);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.history-table__copy svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.history-table__copy:hover,
+.history-table__copy:focus-visible {
+  color: var(--interactive-hover, #003530);
+}
+
+.history-table__copy:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.history-table tbody tr.history-table__row:hover .history-table__id,
+.history-table tbody tr.history-table__row:focus-visible .history-table__id {
+  max-width: none;
+}
+
+.history-table tbody tr.history-table__row:hover .history-table__copy,
+.history-table tbody tr.history-table__row:focus-visible .history-table__copy,
+.history-table__copy:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.history-table tbody tr.history-table__row--copied .history-table__copy {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.history-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 240;
+  min-width: 180px;
+  padding: 10px 16px;
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-inverse, #172d2d);
+  color: var(--text-inverse, #fff);
+  box-shadow: var(--elevation-md);
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  text-align: center;
+  transform: translate(-50%, 8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.history-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .history-product {
