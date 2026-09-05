@@ -29,6 +29,10 @@
   width: 100%;
 }
 
+.tds-select--no-label {
+  gap: 0;
+}
+
 .tds-select--disabled .tds-field-label {
   color: var(--text-disabled);
 }

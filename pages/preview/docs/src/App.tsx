@@ -267,16 +267,6 @@ export default function App() {
 
             <footer className="tds-preview__footer">
               <span>Trulioo Design System · Docs preview</span>
-              {!isHome && (
-                <>
-                  <a href="../index.html" className="tds-preview__footer-link">
-                    Classic preview
-                  </a>
-                  <a href="../react-dist/index.html" className="tds-preview__footer-link">
-                    Component preview
-                  </a>
-                </>
-              )}
             </footer>
           </main>
         </div>
