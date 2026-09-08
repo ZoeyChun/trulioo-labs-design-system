@@ -216,10 +216,11 @@
   color: var(--icon-faint);
 }
 
-.eidas-card__feature-icon svg {
+.eidas-card__feature-icon img {
   display: block;
   width: 16px;
   height: 16px;
+  object-fit: contain;
 }
 
 .eidas-card__feature-copy {
