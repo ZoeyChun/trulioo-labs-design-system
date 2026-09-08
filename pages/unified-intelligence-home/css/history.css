@@ -8,18 +8,13 @@
   height: calc(100dvh - (2 * var(--spacing-8)));
   max-height: calc(100dvh - (2 * var(--spacing-8)));
   background-color: var(--surface-page, #fff);
-  position: relative;
-}
-
-.history-main::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--hero-bg-image);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    var(--hero-bg-image);
   background-size: cover;
   background-position: center;
-  opacity: 0.5;
-  pointer-events: none;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
 .history-page {

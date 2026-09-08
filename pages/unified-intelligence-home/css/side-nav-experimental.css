@@ -2,6 +2,12 @@
 
 body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed {
   width: 72px;
+  cursor: default;
+}
+
+body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__icon-button,
+body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__brand {
+  cursor: pointer;
 }
 
 body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__nav-stack,
@@ -37,9 +43,25 @@ body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-button[aria-
 body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-button--active .icon,
 body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-button[aria-current="page"] .icon {
   stroke: #fff;
+  fill: #fff;
   color: #fff;
 }
 
 body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__profile--collapsed {
   justify-content: center;
+}
+
+/* Product pages keep the expanded nav-stack for the mobile drawer. */
+@media (max-width: 768px) {
+  body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed:has(.tds-side-nav__nav-stack) {
+    width: min(280px, calc(100vw - var(--spacing-16)));
+  }
+
+  body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed:has(.tds-side-nav__nav-stack) .tds-side-nav__nav-stack {
+    display: flex !important;
+  }
+
+  body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed:has(.tds-side-nav__nav-stack) .tds-side-nav__icon-rail {
+    display: none !important;
+  }
 }

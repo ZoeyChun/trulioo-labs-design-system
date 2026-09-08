@@ -703,23 +703,6 @@
     applyTestEntity();
   }
 
-  function getHomeUrl() {
-    try {
-      return new URL("../unified-intelligence-home/index.html", window.location.href).href;
-    } catch (e) {
-      return "../unified-intelligence-home/index.html";
-    }
-  }
-
-  function initFormBack() {
-    var backBtn = document.getElementById("bv-form-back-btn");
-    if (!backBtn) return;
-    var homeUrl = getHomeUrl();
-    backBtn.addEventListener("click", function () {
-      window.location.href = homeUrl;
-    });
-  }
-
   function initSubmit() {
     var btn = document.getElementById("bv-submit-btn");
     btn.addEventListener("click", function () {
@@ -798,7 +781,6 @@
     initCountry();
     initAccountType();
     initToggle();
-    initFormBack();
     initSubmit();
     window.BVShared.initAppNavToggle();
     resetFormToDefault();

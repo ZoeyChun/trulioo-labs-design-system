@@ -2216,8 +2216,7 @@
       });
     }
 
-    var homeBack = byId("eid-home-back");
-    if (homeBack) homeBack.addEventListener("click", function () {});
+    /* Page header back is wired by labs-landing-nav.js. */
   }
 
   /* ===================================================================

@@ -1507,51 +1507,14 @@
     },
   };
 
-  function getHomeUrl() {
-    try {
-      var stored = sessionStorage.getItem("kybHomeUrl");
-      if (stored) return stored;
-    } catch (e) {
-      /* ignore */
-    }
-
-    try {
-      return new URL("../unified-intelligence-home/index.html", window.location.href).href;
-    } catch (e) {
-      return "../unified-intelligence-home/index.html";
-    }
-  }
-
   function initHomeNavigation() {
-    var homeUrl = getHomeUrl();
-
-    var resultBack = document.getElementById("kyb-result-back");
-    if (resultBack) {
-      resultBack.addEventListener("click", function () {
-        if (window.LabsHistoryReturn && window.LabsHistoryReturn.go(homeUrl)) return;
-        var target = window.top && window.top !== window ? window.top : window;
-        target.location.href = homeUrl;
-      });
-    }
-
-    document.querySelectorAll(".tds-side-nav__brand").forEach(function (el) {
-      el.addEventListener("click", function () {
-        window.location.href = homeUrl;
-      });
-    });
-
     document.querySelectorAll(".tds-side-nav__nav-item").forEach(function (item) {
       var label = item.querySelector(".tds-side-nav__nav-item-text");
       if (!label || label.textContent.trim() !== "Home") return;
-      item.addEventListener("click", function () {
-        window.location.href = homeUrl;
-      });
-    });
-
-    document.querySelectorAll('.tds-side-nav__icon-button[aria-label="Home"]').forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        window.location.href = homeUrl;
-      });
+      if (item.hasAttribute("aria-expanded") || item.closest(".tds-side-nav__nav-group")) return;
+      var wrap = item.parentElement;
+      if (wrap && wrap !== item.closest(".tds-side-nav__nav-stack")) wrap.remove();
+      else item.remove();
     });
   }
 
