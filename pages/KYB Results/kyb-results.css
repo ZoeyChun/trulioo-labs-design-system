@@ -5,6 +5,7 @@
    ============================================================ */
 
 .kyb-panel {
+  --kyb-content-max: 1400px;
   --kyb-sidebar-width: 316px;
   --kyb-section-gap: var(--spacing-16);
   --kyb-section-inset: var(--padding-lg);
@@ -30,13 +31,48 @@
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   box-shadow: none;
+  align-items: center;
 }
 
 /* --- Page layout rhythm (scoped overrides) --- */
 
+.kyb-panel__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: var(--kyb-content-max);
+  min-width: 0;
+  margin-inline: auto;
+  gap: var(--spacing-32);
+}
+
 .kyb-panel .dv-header {
   flex-shrink: 0;
   gap: var(--gap-xl);
+}
+
+.kyb-panel .dv-header__top {
+  gap: var(--gap-lg);
+  min-width: 0;
+}
+
+.kyb-panel .dv-header__title-group {
+  flex: 1;
+  min-width: 0;
+  flex-wrap: nowrap;
+}
+
+.kyb-panel .dv-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kyb-panel .dv-header__actions {
+  flex-shrink: 0;
 }
 
 .kyb-panel .dv-content {
