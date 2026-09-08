@@ -8,7 +8,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="../../tokens/tokens.css">
   <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/text-input/text-input.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
+  <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
   <link rel="stylesheet" href="css/ds-nav-tokens.css">
   <link rel="stylesheet" href="css/side-nav.css">
   <link rel="stylesheet" href="css/side-nav-experimental.css">
@@ -16,8 +23,7 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/page-hero.css">
-  <link rel="stylesheet" href="css/demo-scenarios.css">
-  <link rel="stylesheet" href="css/labs.css">
+  <link rel="stylesheet" href="css/labs.css?v=6">
   <link rel="stylesheet" href="css/truai-panel.css?v=4">
   <script src="js/truai-panel.js?v=4" defer></script>
 </head>
@@ -57,24 +63,50 @@
   <main class="app-main labs-main">
     <button class="truai-btn" type="button" aria-controls="truaiPanel" aria-expanded="false" aria-label="Open TruAI chat" onclick="window.TruAIPanel && window.TruAIPanel.open()"><span aria-hidden="true">✦</span> TruAI</button>
 
-    <header class="labs-hero">
-      <h1 class="labs-hero__title">Labs</h1>
-      <p class="labs-hero__desc">Discover AI-powered experiences across Trulioo—from production capabilities to experimental concepts.</p>
-    </header>
+    <div class="labs-page">
+      <header class="labs-hero">
+        <h1 class="labs-hero__title">Labs Catalog</h1>
+        <p class="labs-hero__desc">Discover AI-powered experiences across Trulioo—from production capabilities to experimental concepts.</p>
+      </header>
 
-    <div class="labs-layout">
-      <aside class="labs-filters" id="labsFilters" aria-label="Filters"></aside>
+      <div class="labs-catalog">
+        <div class="labs-toolbar">
+          <div class="tds-text-input labs-search">
+            <div class="tds-text-input__field tds-text-input__field--md">
+              <span class="tds-text-input__leading-icon" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+              </span>
+              <input class="tds-text-input__native" id="labsSearchInput" type="search" placeholder="Search" autocomplete="off" aria-label="Search experiences">
+            </div>
+          </div>
 
-      <div class="labs-content">
-        <section class="labs-featured" id="labsFeaturedSection" aria-labelledby="labsFeaturedLabel">
-          <h2 class="labs-section-label" id="labsFeaturedLabel">⭐ Featured Experiences</h2>
-          <div class="labs-featured-row" id="labsFeaturedRow"></div>
-        </section>
+          <div class="labs-toolbar__actions">
+            <div class="tds-filter-button" data-dropdown-align="end" id="labsFilterBar" data-filter-key="filters">
+              <button type="button" class="tds-btn tds-btn--md tds-btn--secondary" aria-haspopup="menu" aria-expanded="false">
+                <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg></span>
+                <span class="tds-filter-button__trigger-default">Filter</span>
+                <span class="tds-filter-button__trigger-value"></span>
+                <span class="tds-counter tds-counter--primary tds-counter--sm tds-filter-button__counter" hidden></span>
+                <span class="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+              </button>
+              <div class="tds-dropdown-panel labs-filter-menu" role="menu" hidden id="labsFilterMenu"></div>
+            </div>
+          </div>
+        </div>
 
-        <section class="labs-browse" id="labsBrowseSection" aria-labelledby="labsBrowseTitle">
-          <h2 class="labs-browse-title" id="labsBrowseTitle">Browse All Experiences</h2>
-          <div class="labs-grid" id="labsGrid"></div>
-        </section>
+        <div class="labs-active-filters" id="labsActiveFilters" hidden aria-label="Active filters"></div>
+
+        <div class="labs-sections">
+          <section class="labs-featured" id="labsFeaturedSection" aria-labelledby="labsFeaturedLabel">
+            <h2 class="labs-section-label" id="labsFeaturedLabel">Featured</h2>
+            <div class="labs-featured-row" id="labsFeaturedRow"></div>
+          </section>
+
+          <section class="labs-browse" id="labsBrowseSection" aria-labelledby="labsBrowseTitle">
+            <h2 class="labs-section-label" id="labsBrowseTitle">All Experiences</h2>
+            <div class="labs-grid" id="labsGrid"></div>
+          </section>
+        </div>
       </div>
     </div>
   </main>
@@ -102,8 +134,9 @@
   </div>
 </dialog>
 
-<script src="js/labs-data.js?v=2"></script>
-<script src="js/labs.js"></script>
+<script src="js/labs-data.js?v=5"></script>
+<script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
+<script src="js/labs.js?v=5"></script>
 <script src="js/side-nav-experimental.js?v=2"></script>
 <script>SideNavExperimental.init();</script>
 </body>

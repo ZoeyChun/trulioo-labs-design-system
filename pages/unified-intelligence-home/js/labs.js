@@ -1,103 +1,104 @@
 (function () {
   'use strict';
 
-  var CHECK_SVG = '<svg viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1.5 4l2 2 3-3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-  var ENTITY_ICONS = {
-    Business: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2" y="4" width="12" height="10" rx="1"/><path d="M5 4V3a3 3 0 0 1 6 0v1"/></svg>',
-    Person: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 14c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg>',
-    Document: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M5 2h5l3 3v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M10 2v4h4"/></svg>',
-    Device: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="1.5" width="8" height="13" rx="1.5"/><path d="M7 12.5h2"/></svg>',
-    'Bank Account': '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2 6.5 8 3l6 3.5"/><path d="M3.5 7v5.5h9V7"/><path d="M6.5 12.5v-3h3v3"/></svg>',
+  var CHECK_SVG = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l3.5 3.5L13 5"/></svg>';
+  var TAG_REMOVE_SVG = '<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M2 2l6 6M8 2l-6 6"/></svg>';
+  var EXPERIENCE_TYPE_META = {
+    live: { tag: 'Live', tone: 'live' },
+    demo: { tag: 'Demo', tone: 'demo' },
+    experiment: { tag: 'Experiment', tone: 'experiment' }
   };
 
-  var ENTITY_SLUG = {
-    Business: 'business',
-    Person: 'person',
-    Document: 'document',
-    Device: 'device',
-    'Bank Account': 'bank-account',
-  };
-
-  var AVAILABILITY_META = {
-    live: { label: 'Live', tone: 'success' },
-    demo: { label: 'Demo', tone: 'warning' },
-    external: { label: 'External', tone: 'info' },
-  };
+  var FILTER_CONFIG = [
+    { key: 'experienceType', label: 'Experience Type', items: labsFilterGroups.experienceType },
+    { key: 'useCase', label: 'Use Case', items: labsFilterGroups.useCase },
+    { key: 'industry', label: 'Industry', items: labsFilterGroups.industry }
+  ];
 
   var state = {
     search: '',
-    entity: {},
-    capability: {},
-    availability: {},
+    experienceType: {},
+    useCase: {},
+    industry: {}
   };
 
   var els = {
+    filterBar: document.getElementById('labsFilterBar'),
+    filterMenu: document.getElementById('labsFilterMenu'),
+    activeFilters: document.getElementById('labsActiveFilters'),
     search: document.getElementById('labsSearchInput'),
     featuredSection: document.getElementById('labsFeaturedSection'),
     featured: document.getElementById('labsFeaturedRow'),
-    featuredLabel: document.getElementById('labsFeaturedLabel'),
+    browseSection: document.getElementById('labsBrowseSection'),
     browseTitle: document.getElementById('labsBrowseTitle'),
-    grid: document.getElementById('labsGrid'),
-    filters: document.getElementById('labsFilters'),
+    grid: document.getElementById('labsGrid')
   };
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function filterItemValue(item) {
+    return typeof item === 'string' ? item : item.id;
+  }
+
+  function filterItemLabel(item) {
+    return typeof item === 'string' ? item : item.label;
+  }
+
+  function labelFor(groupKey, value) {
+    var config = FILTER_CONFIG.find(function (item) { return item.key === groupKey; });
+    if (!config) return value;
+    var match = config.items.find(function (item) { return filterItemValue(item) === value; });
+    return match ? filterItemLabel(match) : value;
+  }
+
+  function getGroupState(key) {
+    return state[key] || {};
+  }
+
+  function selectedKeys(key) {
+    return Object.keys(getGroupState(key)).filter(function (k) { return getGroupState(key)[k]; });
+  }
+
+  function typeMeta(id) {
+    return EXPERIENCE_TYPE_META[id] || { tag: id, tone: 'experiment' };
+  }
 
   function hasActiveFilters() {
     if (state.search.trim()) return true;
-    if (Object.keys(state.entity).some(function (k) { return state.entity[k]; })) return true;
-    if (Object.keys(state.capability).some(function (k) { return state.capability[k]; })) return true;
-    if (Object.keys(state.availability).some(function (k) { return state.availability[k]; })) return true;
-    return false;
-  }
-
-  function availabilityMeta(id) {
-    return AVAILABILITY_META[id] || { label: id, tone: 'info' };
+    return FILTER_CONFIG.some(function (config) { return selectedKeys(config.key).length > 0; });
   }
 
   function matchesFilters(item) {
     var q = state.search.trim().toLowerCase();
     if (q) {
-      var hay = (item.title + ' ' + item.description).toLowerCase();
+      var type = typeMeta(item.experienceType);
+      var hay = [
+        item.title,
+        item.description,
+        type.tag,
+        labelFor('experienceType', item.experienceType),
+        item.useCase,
+        item.industry
+      ].join(' ').toLowerCase();
       if (hay.indexOf(q) === -1) return false;
     }
 
-    var entityKeys = Object.keys(state.entity).filter(function (k) { return state.entity[k]; });
-    if (entityKeys.length && entityKeys.indexOf(item.entity) === -1) return false;
+    var typeKeys = selectedKeys('experienceType');
+    if (typeKeys.length && typeKeys.indexOf(item.experienceType) === -1) return false;
 
-    var capKeys = Object.keys(state.capability).filter(function (k) { return state.capability[k]; });
-    if (capKeys.length && capKeys.indexOf(item.capability) === -1) return false;
+    var useCaseKeys = selectedKeys('useCase');
+    if (useCaseKeys.length && useCaseKeys.indexOf(item.useCase) === -1) return false;
 
-    var availKeys = Object.keys(state.availability).filter(function (k) { return state.availability[k]; });
-    if (availKeys.length && availKeys.indexOf(item.availability) === -1) return false;
+    var industryKeys = selectedKeys('industry');
+    if (industryKeys.length && industryKeys.indexOf(item.industry) === -1) return false;
 
     return true;
-  }
-
-  function renderExperienceCard(item) {
-    var icon = ENTITY_ICONS[item.entity] || '';
-    var meta = availabilityMeta(item.availability);
-    var entitySlug = ENTITY_SLUG[item.entity] || 'business';
-
-    return (
-      '<article class="demo-scenario-card labs-experience-card">' +
-        '<div class="labs-card-head">' +
-          '<div class="demo-scenario-tag labs-entity-tag labs-entity-tag--' + entitySlug + '">' + icon + '<span>' + item.entity + '</span></div>' +
-          '<span class="labs-card-availability">' +
-            '<span class="demo-scenario-status-dot demo-scenario-status-dot--' + meta.tone + '" aria-hidden="true"></span>' +
-            '<span class="labs-card-availability-label">' + meta.label + '</span>' +
-          '</span>' +
-        '</div>' +
-        '<div class="demo-scenario-body">' +
-          '<h3 class="demo-scenario-title">' + item.title + '</h3>' +
-          '<p class="demo-scenario-desc">' + item.description + '</p>' +
-        '</div>' +
-        '<div class="demo-scenario-divider" aria-hidden="true"></div>' +
-        '<div class="demo-scenario-foot labs-card-foot">' +
-          '<span class="labs-card-capability">' + item.capability + '</span>' +
-          '<a class="demo-scenario-try" href="' + item.url + '">Open</a>' +
-        '</div>' +
-      '</article>'
-    );
   }
 
   function sortByOrder(items) {
@@ -106,24 +107,72 @@
     });
   }
 
+  function hasLink(item) {
+    return !!(item.url && item.url !== '#');
+  }
+
+  function wrapCard(item, className, inner) {
+    if (hasLink(item)) {
+      return '<a class="' + className + '" href="' + escapeHtml(item.url) + '">' + inner + '</a>';
+    }
+    return '<div class="' + className + ' labs-card--static" role="group">' + inner + '</div>';
+  }
+
+  function renderFeaturedCard(item) {
+    var linked = hasLink(item);
+    var preview = linked && item.preview
+      ? '<img src="' + escapeHtml(item.preview) + '" alt="" width="1344" height="900">'
+      : '';
+    return wrapCard(
+      item,
+      'labs-featured-card',
+      '<div class="labs-featured-card__header">' +
+        '<h3 class="labs-featured-card__title">' + escapeHtml(item.title) + '</h3>' +
+        '<p class="labs-featured-card__desc">' + escapeHtml(item.description) + '</p>' +
+      '</div>' +
+      '<div class="labs-featured-card__preview">' +
+        '<div class="labs-featured-card__preview-frame' + (preview ? ' labs-featured-card__preview-frame--shot' : '') + '" aria-hidden="true">' +
+          preview +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderExperienceCard(item) {
+    var type = typeMeta(item.experienceType);
+    return wrapCard(
+      item,
+      'labs-card',
+      '<div class="labs-card__body">' +
+        '<h3 class="labs-card__title">' + escapeHtml(item.title) + '</h3>' +
+        '<p class="labs-card__desc">' + escapeHtml(item.description) + '</p>' +
+      '</div>' +
+      '<div class="labs-card__meta">' +
+        '<span class="labs-card__type labs-card__type--' + type.tone + '">' +
+          '<span class="labs-card__dot" aria-hidden="true"></span>' +
+          '<span>' + escapeHtml(type.tag) + '</span>' +
+        '</span>' +
+        '<span class="labs-card__sep" aria-hidden="true"></span>' +
+        '<span class="labs-card__tag">' + escapeHtml(item.useCase) + '</span>' +
+        '<span class="labs-card__sep" aria-hidden="true"></span>' +
+        '<span class="labs-card__tag">' + escapeHtml(item.industry) + '</span>' +
+      '</div>'
+    );
+  }
+
   function render() {
     var visible = sortByOrder(labsExperiences.filter(matchesFilters));
     var filtering = hasActiveFilters();
 
-    if (els.featuredSection) {
-      els.featuredSection.hidden = filtering;
-    }
-    if (els.browseTitle) {
-      els.browseTitle.hidden = filtering;
-    }
+    if (els.featuredSection) els.featuredSection.hidden = filtering;
+    if (els.browseTitle) els.browseTitle.textContent = filtering ? 'Results' : 'All Experiences';
 
     if (filtering) {
       if (els.featured) els.featured.innerHTML = '';
-
       if (els.grid) {
         els.grid.innerHTML = visible.length
           ? visible.map(renderExperienceCard).join('')
-          : '<p class="labs-empty">No experiences match your filters.</p>';
+          : '<p class="labs-empty">No experiences match your search or filters.</p>';
       }
       return;
     }
@@ -131,13 +180,9 @@
     var featured = visible.filter(function (item) { return item.featured; });
     var browse = visible.filter(function (item) { return !item.featured; });
 
-    if (els.featuredLabel) {
-      els.featuredLabel.textContent = '⭐ Featured Experiences (' + featured.length + ')';
-    }
-
     if (els.featured) {
       els.featured.innerHTML = featured.length
-        ? featured.map(renderExperienceCard).join('')
+        ? featured.map(renderFeaturedCard).join('')
         : '<p class="labs-empty">No featured experiences available.</p>';
     }
 
@@ -148,76 +193,139 @@
     }
   }
 
-  function toggleFilter(group, value, checked) {
-    if (group === 'entity') state.entity[value] = checked;
-    else if (group === 'capability') state.capability[value] = checked;
-    else if (group === 'availability') state.availability[value] = checked;
+  function allSelectedCount() {
+    return FILTER_CONFIG.reduce(function (sum, config) {
+      return sum + selectedKeys(config.key).length;
+    }, 0);
+  }
+
+  function firstSelectedLabel() {
+    var first = '';
+    FILTER_CONFIG.some(function (config) {
+      var keys = selectedKeys(config.key);
+      if (!keys.length) return false;
+      first = labelFor(config.key, keys[0]);
+      return true;
+    });
+    return first;
+  }
+
+  function syncFilterButton() {
+    if (!els.filterBar) return;
+    var count = allSelectedCount();
+    var valueEl = els.filterBar.querySelector('.tds-filter-button__trigger-value');
+    var counter = els.filterBar.querySelector('.tds-filter-button__counter');
+
+    els.filterBar.classList.toggle('tds-filter-button--selected', count > 0);
+    els.filterBar.classList.toggle('tds-filter-button--multi', count > 1);
+
+    if (valueEl) valueEl.textContent = count ? firstSelectedLabel() : '';
+    if (counter) {
+      counter.textContent = count > 1 ? '+' + (count - 1) : '';
+      counter.hidden = count <= 1;
+    }
+
+    if (!els.filterMenu) return;
+    els.filterMenu.querySelectorAll('[data-filter-value]').forEach(function (node) {
+      var group = node.getAttribute('data-filter-group');
+      var value = node.getAttribute('data-filter-value');
+      var active = !!getGroupState(group)[value];
+      node.classList.toggle('tds-action-list-item--selected', active);
+      node.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+  }
+
+  function renderActiveChips() {
+    if (!els.activeFilters) return;
+    var chips = [];
+    FILTER_CONFIG.forEach(function (config) {
+      selectedKeys(config.key).forEach(function (value) {
+        var label = labelFor(config.key, value);
+        chips.push(
+          '<span class="tds-tag tds-tag--md tds-tag--default tds-tag--removable">' +
+            '<span>' + escapeHtml(label) + '</span>' +
+            '<button type="button" class="tds-tag__remove" aria-label="Remove ' + escapeHtml(label) + ' filter" data-chip-group="' + config.key + '" data-chip-value="' + escapeHtml(value) + '">' + TAG_REMOVE_SVG + '</button>' +
+          '</span>'
+        );
+      });
+    });
+    els.activeFilters.innerHTML = chips.join('');
+    els.activeFilters.hidden = !chips.length;
+  }
+
+  function setFilterValue(groupKey, value, checked) {
+    if (checked) state[groupKey][value] = true;
+    else delete state[groupKey][value];
+    syncFilterButton();
+    renderActiveChips();
     render();
   }
 
-  function buildFilters() {
-    if (!els.filters) return;
+  function clearAllFilters() {
+    FILTER_CONFIG.forEach(function (config) { state[config.key] = {}; });
+    syncFilterButton();
+    renderActiveChips();
+    render();
+  }
 
-    var html = '';
-    html += '<label class="labs-search">' +
-      '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M14 14l3 3" stroke-linecap="round"/></svg>' +
-      '<input id="labsSearchInput" type="search" placeholder="Search" autocomplete="off">' +
-    '</label>';
+  function buildFilterMenu() {
+    if (!els.filterMenu) return;
+    els.filterMenu.innerHTML = FILTER_CONFIG.map(function (config) {
+      var items = config.items.map(function (item) {
+        var value = filterItemValue(item);
+        var label = filterItemLabel(item);
+        return (
+          '<button type="button" class="tds-action-list-item" role="menuitemcheckbox" data-filter-group="' + config.key + '" data-filter-value="' + escapeHtml(value) + '" aria-checked="false">' +
+            '<span class="tds-action-list-item__label">' + escapeHtml(label) + '</span>' +
+            '<span class="tds-action-list-item__trailing-visual" aria-hidden="true">' + CHECK_SVG + '</span>' +
+          '</button>'
+        );
+      }).join('');
+      return '<div class="labs-filter-group"><p class="labs-filter-group__label">' + escapeHtml(config.label) + '</p>' + items + '</div>';
+    }).join('');
+  }
 
-    html += buildFilterGroup('entity', 'Entity', labsFilterGroups.entity, false);
-    html += buildFilterGroup('capability', 'Capability', labsFilterGroups.capability, false);
-    html += buildFilterGroup('availability', 'Availability', labsFilterGroups.availability, true);
-
-    els.filters.innerHTML = html;
-    els.search = document.getElementById('labsSearchInput');
-
-    els.filters.querySelectorAll('[data-filter-group]').forEach(function (row) {
-      row.addEventListener('click', function () {
-        var group = row.getAttribute('data-filter-group');
-        var value = row.getAttribute('data-filter-value');
-        var checked = !row.classList.contains('is-checked');
-        row.classList.toggle('is-checked', checked);
-        row.querySelector('input').checked = checked;
-        toggleFilter(group, value, checked);
-      });
-    });
-
+  function bindEvents() {
     if (els.search) {
       els.search.addEventListener('input', function () {
         state.search = els.search.value;
         render();
       });
     }
+
+    if (els.filterBar) {
+      els.filterBar.addEventListener('tds-filter-clear', function () {
+        clearAllFilters();
+      });
+    }
+
+    if (els.activeFilters) {
+      els.activeFilters.addEventListener('click', function (event) {
+        var chip = event.target.closest('[data-chip-group]');
+        if (!chip) return;
+        setFilterValue(chip.getAttribute('data-chip-group'), chip.getAttribute('data-chip-value'), false);
+      });
+    }
   }
 
-  function buildFilterGroup(groupKey, label, items, isAvailability) {
-    var rows = items.map(function (item) {
-      var value = isAvailability ? item.id : item;
-      var text = isAvailability ? item.label : item;
-      var checked = false;
-
-      var dotHtml = isAvailability
-        ? '<span class="labs-filter-dot labs-filter-dot--' + item.dot + '" aria-hidden="true"></span>'
-        : '';
-
-      return (
-        '<button type="button" class="labs-filter-row' + (checked ? ' is-checked' : '') + '" data-filter-group="' + groupKey + '" data-filter-value="' + value + '">' +
-          '<input type="checkbox"' + (checked ? ' checked' : '') + ' tabindex="-1" aria-hidden="true">' +
-          '<span class="labs-filter-box">' + CHECK_SVG + '</span>' +
-          dotHtml +
-          '<span class="labs-filter-text">' + text + '</span>' +
-        '</button>'
-      );
-    }).join('');
-
-    return (
-      '<div class="labs-filter-group">' +
-        '<div class="labs-filter-label">' + label + '</div>' +
-        '<div class="labs-filter-list">' + rows + '</div>' +
-      '</div>'
-    );
+  buildFilterMenu();
+  bindEvents();
+  if (window.TdsDropdownPanel) {
+    var toolbarActions = document.querySelector('.labs-toolbar__actions');
+    if (toolbarActions) window.TdsDropdownPanel.initMenus(toolbarActions);
   }
-
-  buildFilters();
+  if (els.filterMenu) {
+    els.filterMenu.querySelectorAll('[data-filter-value]').forEach(function (node) {
+      node.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        var group = node.getAttribute('data-filter-group');
+        var value = node.getAttribute('data-filter-value');
+        setFilterValue(group, value, !getGroupState(group)[value]);
+      }, true);
+    });
+  }
+  syncFilterButton();
+  renderActiveChips();
   render();
 })();
