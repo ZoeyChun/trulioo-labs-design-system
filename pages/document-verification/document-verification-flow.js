@@ -68,22 +68,11 @@
     });
   }
 
-  function getHomeUrl() {
-    try {
-      return new URL("../unified-intelligence-home/index.html", window.location.href).href;
-    } catch (e) {
-      return "../unified-intelligence-home/index.html";
-    }
-  }
-
   function initNav() {
     var next = byId("dv-flow-next");
     var step1Back = byId("dv-flow-step1-back");
     var step2Back = byId("dv-flow-step2-back");
     var skip = byId("dv-flow-skip");
-    var homeBack = byId("dv-flow-home-back");
-    var resultBack = byId("dv-result-back");
-    var homeUrl = getHomeUrl();
 
     if (next) next.addEventListener("click", function () { goStep(2); });
     if (step2Back) step2Back.addEventListener("click", function () { goStep(1); });
@@ -91,19 +80,6 @@
       step1Back.addEventListener("click", function () { history.back(); });
     }
     if (skip) skip.addEventListener("click", showResultView);
-
-    if (homeBack) {
-      homeBack.addEventListener("click", function () {
-        window.location.href = homeUrl;
-      });
-    }
-    /* Result header back — return home; the capture form is not part of this demo. */
-    if (resultBack) {
-      resultBack.addEventListener("click", function () {
-        if (window.LabsHistoryReturn && window.LabsHistoryReturn.go()) return;
-        window.location.href = homeUrl;
-      });
-    }
   }
 
   document.addEventListener("DOMContentLoaded", function () {

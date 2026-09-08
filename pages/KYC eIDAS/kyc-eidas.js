@@ -6,9 +6,9 @@
 
   function getHomeUrl() {
     try {
-      return new URL("../unified-intelligence-home/index.html", window.location.href).href;
+      return new URL("../unified-intelligence-home/labs.html", window.location.href).href;
     } catch (e) {
-      return "../unified-intelligence-home/index.html";
+      return "../unified-intelligence-home/labs.html";
     }
   }
 
@@ -24,23 +24,13 @@
     document.querySelectorAll(".tds-side-nav__nav-item").forEach(function (item) {
       var label = item.querySelector(".tds-side-nav__nav-item-text");
       if (!label || label.textContent.trim() !== "Home") return;
-      item.addEventListener("click", function () {
-        window.location.href = homeUrl;
-      });
+      if (item.hasAttribute("aria-expanded") || item.closest(".tds-side-nav__nav-group")) return;
+      var wrap = item.parentElement;
+      if (wrap && wrap !== item.closest(".tds-side-nav__nav-stack")) wrap.remove();
+      else item.remove();
     });
 
-    document.querySelectorAll('.tds-side-nav__icon-button[aria-label="Home"]').forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        window.location.href = homeUrl;
-      });
-    });
-
-    var back = document.getElementById("eidas-landing-back");
-    if (back) {
-      back.addEventListener("click", function () {
-        window.location.href = homeUrl;
-      });
-    }
+    /* Page header back is wired by labs-landing-nav.js. */
   }
 
   function initAppNavToggle() {
