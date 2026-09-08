@@ -1,0 +1,25 @@
+{
+  "name": "trulioo-labs-ds",
+  "version": "1.0.0",
+  "description": "Design tokens and components for Trulioo Labs",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build:ubo-graph": "npm run build --prefix \"pages/KYB Results/ubo-graph-react\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZoeyChun/trulioo-labs-design-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ZoeyChun/trulioo-labs-design-system/issues"
+  },
+  "homepage": "https://github.com/ZoeyChun/trulioo-labs-design-system#readme"
+}
