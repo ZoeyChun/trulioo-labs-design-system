@@ -19,9 +19,7 @@ import {
   BuildingIcon,
   CloseIcon,
   FilterIcon,
-  FitIcon,
   FullscreenEnterIcon,
-  FullscreenExitIcon,
   graphIcon,
   PersonIcon,
   SearchIcon,
@@ -430,19 +428,10 @@ export function UboGraph({ tree, riskFilter }: UboGraphProps) {
           <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Zoom out" onClick={() => handleZoom("out")}>
             <ZoomOutIcon />
           </button>
-          {mode === "inline" ? (
+          {mode === "inline" && (
             <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Enter fullscreen" onClick={openFullscreen}>
               <FullscreenEnterIcon />
             </button>
-          ) : (
-            <>
-              <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Fit graph to view" onClick={() => handleZoom("fit")}>
-                <FitIcon />
-              </button>
-              <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Exit fullscreen" onClick={closeFullscreen}>
-                <FullscreenExitIcon />
-              </button>
-            </>
           )}
         </div>
       </div>
