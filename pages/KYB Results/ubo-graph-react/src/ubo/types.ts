@@ -75,3 +75,29 @@ export interface CanvasWire {
   d: string;
   childId: string;
 }
+
+export interface UboLayoutNode {
+  node: LabsTreeNode;
+  x: number;
+  y: number;
+  /**
+   * Filtered out by the entity-type toggle, but kept because visible
+   * descendants would otherwise be orphaned from the hierarchy.
+   */
+  structural: boolean;
+  /** Collapsed entities under this node that the type filter would let through. */
+  moreCount: number;
+  /** Centre of this node's "+N more" chip, when it has one. */
+  moreX: number;
+  moreY: number;
+}
+
+export interface UboLayout {
+  width: number;
+  height: number;
+  nodes: UboLayoutNode[];
+  wires: CanvasWire[];
+  slotById: Record<string, CanvasSlot>;
+  /** Entities the type toggle removed outright, for the toolbar hint. */
+  removedByType: number;
+}

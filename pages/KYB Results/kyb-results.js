@@ -1315,10 +1315,11 @@
               "Walter Decosta linked to 2 unscreened entities",
               "No verifiable national ID for either officer",
             ],
+            // Must mirror the root's direct edges in the tree below: steven, james, apex.
             connected: [
+              { id: "steven", type: "person", role: "Shareholder", name: "Steven", pct: "35%", address: "71 Queen Victoria St, San Francisco" },
               { id: "james", type: "person", role: "COO", name: "James Morton", pct: "65%", address: "71 Queen Victoria St, San Francisco" },
-              { id: "walter", type: "person", role: "Director", name: "Walter Decosta", address: "71 Queen Victoria St, San Francisco" },
-              { id: "apex", type: "business", role: "Subsidiary Company", name: "Apex Financials", address: "100 Canary Wharf, Chicago" },
+              { id: "apex", type: "business", role: "Subsidiary Company", name: "Apex Financial", address: "100 Canary Wharf, Chicago" },
             ],
           },
           children: [

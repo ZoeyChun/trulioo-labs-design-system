@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import type { LabsTreeNode } from "../ubo/types";
 import { ChevronDownIcon, graphIcon, SparkleIcon, WarningIcon } from "./icons";
 
+type ConnectedEntity = NonNullable<NonNullable<LabsTreeNode["details"]>["connected"]>[number];
+
 interface UboDrawerProps {
   node: LabsTreeNode;
+  connected: ConnectedEntity[];
   onConnectedSelect: (nodeId: string) => void;
 }
 
@@ -45,7 +48,7 @@ function DrawerAccordion({
   );
 }
 
-export function UboDrawer({ node, onConnectedSelect }: UboDrawerProps) {
+export function UboDrawer({ node, connected, onConnectedSelect }: UboDrawerProps) {
   const details = node.details || {
     fields: [
       { label: "Relationship", value: node.subtitle || "—" },
@@ -55,7 +58,6 @@ export function UboDrawer({ node, onConnectedSelect }: UboDrawerProps) {
 
   const statusTone = details.statusTone || "positive";
   const findings = details.findings || [];
-  const connected = details.connected || [];
 
   const findingsList = findings.length > 0 ? (
     <div className="kyb-ubo-drawer__findings-section">
@@ -176,7 +178,7 @@ export function UboDrawer({ node, onConnectedSelect }: UboDrawerProps) {
                     {item.pct && <span className="kyb-ubo-drawer__field-value">{item.pct}</span>}
                   </div>
                   <p className="kyb-ubo-drawer__connected-name">{item.name}</p>
-                  <p className="kyb-ubo-drawer__connected-address">{item.address}</p>
+                  {item.address && <p className="kyb-ubo-drawer__connected-address">{item.address}</p>}
                 </button>
               ))}
             </div>

@@ -2559,6 +2559,15 @@
 
 .kyb-ubo-graph__filter-btn .tds-dropdown-panel {
   width: 223px;
+  max-height: 316px;
+}
+
+/* A multi-select trigger reverts its label to "Filter" while the panel is open,
+   so hide the clear affordance for that state too — a cross sitting next to the
+   word "Filter" reads as though nothing is selected. */
+.kyb-ubo-graph__filter-btn.tds-filter-button--multi.tds-filter-button--open
+  .tds-btn__trailing-icon.tds-filter-button__clear {
+  display: none;
 }
 
 .kyb-ubo-graph__filter-menu .tds-dropdown-panel__header:first-child {
@@ -2660,7 +2669,8 @@
   user-select: none;
 }
 
-.kyb-ubo-graph__stage--dragging .kyb-ubo-canvas {
+.kyb-ubo-graph__stage--dragging .kyb-ubo-canvas,
+.kyb-ubo-graph__stage--zooming .kyb-ubo-canvas {
   transition: none;
 }
 
@@ -2700,23 +2710,26 @@
 .kyb-ubo-canvas__more-slot {
   z-index: 3;
   transform: translateX(-50%);
-  pointer-events: auto;
 }
 
-.kyb-ubo-canvas__more-btn {
+/* `.dv-panel .tds-tag` (document-verification.css) makes tags inert page-wide.
+   This tag is a real button, so it has to opt back in at equal specificity. */
+.kyb-ubo-canvas .kyb-ubo-canvas__more-btn {
+  pointer-events: auto;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
   font: inherit;
   margin: 0;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-.kyb-ubo-canvas__more-btn:hover {
+.kyb-ubo-canvas .kyb-ubo-canvas__more-btn:hover {
   border-color: var(--border-strong);
   background-color: var(--surface-neutral-02);
 }
 
-.kyb-ubo-canvas__more-btn:focus-visible {
+.kyb-ubo-canvas .kyb-ubo-canvas__more-btn:focus-visible {
   outline: 2px solid var(--border-focus);
   outline-offset: 2px;
 }
@@ -2790,8 +2803,17 @@
   opacity: 0.25;
 }
 
-.kyb-ubo-node--hidden {
-  visibility: hidden;
+/* Filtered out by the entity-type toggle, but kept so its visible descendants
+   keep a truthful path to the root. Dashed border marks it as context only. */
+.kyb-ubo-node--structural {
+  border-style: dashed;
+  background-color: var(--surface-neutral-02);
+}
+
+/* Held above the usual dimmed opacity: the ownership path is only readable if
+   the intermediate entity's name still is. */
+.kyb-ubo-node--structural.kyb-ubo-node--dimmed {
+  opacity: 0.55;
 }
 
 .kyb-ubo-node__icon {

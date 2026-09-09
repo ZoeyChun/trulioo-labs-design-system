@@ -6,6 +6,8 @@ import type {
   NodeIndexEntry,
   UboFilters,
   UboGraphState,
+  UboLayout,
+  UboLayoutNode,
 } from "./types";
 
 export const UBO_FILTER_GROUPS = [
@@ -40,34 +42,33 @@ export const UBO_FILTER_GROUPS = [
 ] as const;
 
 export const UBO_CANVAS = {
+  /* Smallest canvas box. Positions are computed per render, so this only keeps
+     the framing stable when a pruned tree would otherwise collapse the canvas. */
   width: 1010,
   height: 662,
   nodeWidth: 242,
   nodeHeight: 64,
   wireRadius: 8,
-  slots: {
-    root: { x: 472, y: 174 },
-    steven: { x: 59, y: 339 },
-    james: { x: 325, y: 339 },
-    apex: { x: 615, y: 339 },
-    walter: { x: 325, y: 470 },
-    connie: { x: 500, y: 470 },
-    sarah: { x: 758, y: 470 },
-    patricia: { x: 59, y: 470 },
-  },
-  moreTags: {
-    steven: { x: 180, y: 455 },
-    james: { x: 446, y: 455 },
-    apex: { x: 736, y: 455 },
-  },
+  /** Horizontal gap between adjacent sibling subtrees. */
+  columnGap: 12,
+  /** Distance from one tier's top edge to the next. */
+  tierPitch: 165,
+  /** Top inset of the root card. */
+  padTop: 174,
+  /** Space kept clear below the deepest tier. */
+  padBottom: 94,
+  /** Drop of a "+N more" chip below its branch's bottom edge. */
+  moreOffsetY: 52,
 } as const;
 
-export function createDefaultUboFilters(): UboFilters {
-  return {
-    risk: { high: true, medium: false, low: false },
-    relationships: { ownership: true, director: true, shareholder: true, ubo: true },
-    separation: { level1: true, level2: true, entireNetwork: false },
-  };
+export const UBO_ZOOM_MIN = 0.5;
+export const UBO_ZOOM_MAX = 2.5;
+/** Multiplicative step so each press moves the same perceived amount at any zoom level. */
+export const UBO_ZOOM_STEP = 1.2;
+
+export function clampUboZoom(zoom: number): number {
+  if (!Number.isFinite(zoom)) return 1;
+  return Math.min(UBO_ZOOM_MAX, Math.max(UBO_ZOOM_MIN, zoom));
 }
 
 export function createEmptyUboFilters(): UboFilters {
@@ -149,13 +150,22 @@ function uboNodeMatchesRelationshipFilter(node: LabsTreeNode, filters: UboFilter
   return selected.includes(uboInferRelationship(node));
 }
 
-function uboNodeMatchesSeparationFilter(depth: number, filters: UboFilters): boolean {
+/**
+ * Deepest tier the separation filter allows, or null when the group is untouched.
+ * Checkboxes union, so the broadest selected option wins.
+ */
+export function uboSeparationDepthLimit(filters: UboFilters): number | null {
   const separation = filters.separation;
-  if (!separation.level1 && !separation.level2 && !separation.entireNetwork) return true;
-  if (separation.entireNetwork) return true;
-  if (separation.level2 && depth <= 2) return true;
-  if (separation.level1 && depth <= 1) return true;
-  return false;
+  if (separation.entireNetwork) return Number.POSITIVE_INFINITY;
+  if (separation.level2) return 2;
+  if (separation.level1) return 1;
+  return null;
+}
+
+function uboNodeMatchesSeparationFilter(depth: number, filters: UboFilters): boolean {
+  const limit = uboSeparationDepthLimit(filters);
+  if (limit === null) return true;
+  return depth <= limit;
 }
 
 function uboIndexNodes(
@@ -211,6 +221,14 @@ function uboIsDirectConnection(
   return false;
 }
 
+/** The stored query is raw user input, so normalise only when comparing. */
+export function uboMatchesSearch(node: LabsTreeNode, searchQuery: string): boolean {
+  const query = searchQuery.trim().toLowerCase();
+  if (!query) return true;
+  const haystack = `${node.name} ${node.subtitle || ""}`.toLowerCase();
+  return haystack.includes(query);
+}
+
 export function uboShouldDimNode(
   node: LabsTreeNode,
   state: UboGraphState,
@@ -219,11 +237,11 @@ export function uboShouldDimNode(
 ): boolean {
   if (!state.showBusiness && node.type === "business") return true;
   if (!state.showPerson && node.type === "person") return true;
-  if (state.searchQuery && !node.name.toLowerCase().includes(state.searchQuery)) return true;
-  if (state.hoveredId && !state.selectedId) {
-    return !uboIsDirectConnection(node.id, state.hoveredId, index);
-  }
-  if (state.hoveredId && state.selectedId) {
+  if (!uboMatchesSearch(node, state.searchQuery)) return true;
+  // The selected card drives the drawer, so it stays prominent even when the
+  // pointer happens to rest on an unrelated node.
+  if (state.selectedId === node.id) return false;
+  if (state.hoveredId) {
     return !uboIsDirectConnection(node.id, state.hoveredId, index);
   }
   if (state.selectedId) {
@@ -245,15 +263,21 @@ export function uboShouldDimNode(
   return false;
 }
 
-export function uboGetSlot(nodeId: string): CanvasSlot | null {
-  const slots = UBO_CANVAS.slots as Record<string, CanvasSlot>;
-  return slots[nodeId] || null;
+/**
+ * Both toggles on (or both off) means "no type filter", which also keeps the
+ * canvas from going blank if the toolbar's guard is ever bypassed.
+ */
+export function uboTypeAllowed(node: LabsTreeNode, state: UboGraphState): boolean {
+  if (state.showBusiness === state.showPerson) return true;
+  return node.type === "person" ? state.showPerson : state.showBusiness;
 }
 
-export function uboMoreTagAnchor(branchId: string): { x: number; y: number } | null {
-  const slot = (UBO_CANVAS.moreTags as Record<string, CanvasSlot>)[branchId];
-  if (!slot) return null;
-  return { x: slot.x, y: slot.y };
+/** A collapsed entity is only worth counting if revealing it would show something. */
+function uboSubtreeHasAllowed(node: LabsTreeNode, state: UboGraphState): boolean {
+  if (uboTypeAllowed(node, state)) return true;
+  return [...(node.children || []), ...(node.moreHidden || [])].some((child) =>
+    uboSubtreeHasAllowed(child, state)
+  );
 }
 
 export function uboShouldShowGrandchildren(
@@ -263,7 +287,10 @@ export function uboShouldShowGrandchildren(
   tree: LabsTreeNode
 ): boolean {
   if (state.expandedChildren[branch.id]) return true;
-  if (state.selectedId === "root") return true;
+
+  const depthLimit = uboSeparationDepthLimit(state.filters);
+  if (depthLimit !== null) return depthLimit >= 2;
+
   if (state.selectedId) {
     const index = uboBuildNodeIndex(tree);
     const ancestors = uboGetAncestorIds(index, state.selectedId);
@@ -273,52 +300,121 @@ export function uboShouldShowGrandchildren(
   return false;
 }
 
-export function uboBranchMoreCount(
+/** Overflow entities sit one tier below their branch, so they follow the same depth rules. */
+export function uboShouldShowMoreHidden(
   branch: LabsTreeNode,
   state: UboGraphState,
   mode: GraphMode,
   tree: LabsTreeNode
-): number {
-  if (uboShouldShowGrandchildren(branch, state, mode, tree)) return 0;
-  if (branch.moreHidden?.length && !state.expandedMore[branch.id]) {
-    return branch.moreHidden.length;
-  }
-  if (branch.children?.length) return branch.children.length;
-  return 0;
+): boolean {
+  if (state.expandedMore[branch.id]) return true;
+  return uboShouldShowGrandchildren(branch, state, mode, tree);
 }
 
-export function uboCollectCanvasNodes(
-  tree: LabsTreeNode,
-  state: UboGraphState,
-  mode: GraphMode
-): Array<{ node: LabsTreeNode; slot: CanvasSlot }> {
-  const nodes: Array<{ node: LabsTreeNode; slot: CanvasSlot | null }> = [
-    { node: tree, slot: uboGetSlot(tree.id) },
-  ];
+/**
+ * The tree that is actually drawn: expansion rules decide which children are
+ * revealed, then the entity-type filter prunes what is left.
+ *
+ * A node filtered out by type is only dropped when nothing visible sits beneath
+ * it. Otherwise it is kept as a `structural` node, because removing an ancestor
+ * would either orphan its descendants or, worse for a compliance view, imply an
+ * ownership path that does not exist.
+ */
+interface UboVisibleNode {
+  node: LabsTreeNode;
+  children: UboVisibleNode[];
+  structural: boolean;
+  moreCount: number;
+}
 
-  (tree.children || []).forEach((branch) => {
-    nodes.push({ node: branch, slot: uboGetSlot(branch.id) });
-    if (state.expandedMore[branch.id] && branch.moreHidden) {
-      branch.moreHidden.forEach((hidden) => {
-        nodes.push({ node: hidden, slot: uboGetSlot(hidden.id) });
-      });
-    }
-    if (uboShouldShowGrandchildren(branch, state, mode, tree) && branch.children) {
-      branch.children.forEach((child) => {
-        nodes.push({ node: child, slot: uboGetSlot(child.id) });
-      });
-    }
+function uboBuildVisibleTree(
+  node: LabsTreeNode,
+  state: UboGraphState,
+  mode: GraphMode,
+  tree: LabsTreeNode,
+  isRoot: boolean,
+  removed: { count: number }
+): UboVisibleNode | null {
+  const childrenRevealed = isRoot || uboShouldShowGrandchildren(node, state, mode, tree);
+  const moreRevealed = isRoot || uboShouldShowMoreHidden(node, state, mode, tree);
+
+  const revealed: LabsTreeNode[] = [];
+  if (childrenRevealed) revealed.push(...(node.children || []));
+  if (moreRevealed) revealed.push(...(node.moreHidden || []));
+
+  const children = revealed
+    .map((child) => uboBuildVisibleTree(child, state, mode, tree, false, removed))
+    .filter((child): child is UboVisibleNode => !!child);
+
+  // The root is the subject of the report, so it is never filtered away, but it
+  // is still marked as context when it does not match the type filter.
+  const matchesType = uboTypeAllowed(node, state);
+  if (!matchesType && !isRoot && !children.length) {
+    removed.count += 1;
+    return null;
+  }
+
+  let moreCount = 0;
+  if (!childrenRevealed) {
+    moreCount += (node.children || []).filter((child) => uboSubtreeHasAllowed(child, state)).length;
+  }
+  if (!moreRevealed) {
+    moreCount += (node.moreHidden || []).filter((child) => uboSubtreeHasAllowed(child, state)).length;
+  }
+
+  return { node, children, structural: !matchesType, moreCount };
+}
+
+/** Bottom-up pass: a subtree is as wide as its children, or one card at minimum. */
+function uboMeasureSubtree(visible: UboVisibleNode, widths: Map<UboVisibleNode, number>): number {
+  const { nodeWidth, columnGap } = UBO_CANVAS;
+  let width: number = nodeWidth;
+
+  if (visible.children.length) {
+    const childrenWidth = visible.children.reduce(
+      (sum, child, i) => sum + uboMeasureSubtree(child, widths) + (i ? columnGap : 0),
+      0
+    );
+    width = Math.max(nodeWidth, childrenWidth);
+  }
+
+  widths.set(visible, width);
+  return width;
+}
+
+/** Top-down pass: centre each card over the span its children occupy. */
+function uboPlaceSubtree(
+  visible: UboVisibleNode,
+  left: number,
+  depth: number,
+  widths: Map<UboVisibleNode, number>,
+  out: Array<{ visible: UboVisibleNode; x: number; y: number; depth: number }>
+) {
+  const { nodeWidth, columnGap, tierPitch, padTop } = UBO_CANVAS;
+  const width = widths.get(visible) ?? nodeWidth;
+
+  out.push({
+    visible,
+    x: left + (width - nodeWidth) / 2,
+    y: padTop + depth * tierPitch,
+    depth,
   });
 
-  return nodes.filter((item): item is { node: LabsTreeNode; slot: CanvasSlot } => !!item.slot);
+  if (!visible.children.length) return;
+
+  const childrenWidth = visible.children.reduce(
+    (sum, child, i) => sum + (widths.get(child) ?? nodeWidth) + (i ? columnGap : 0),
+    0
+  );
+
+  let cursor = left + (width - childrenWidth) / 2;
+  visible.children.forEach((child) => {
+    uboPlaceSubtree(child, cursor, depth + 1, widths, out);
+    cursor += (widths.get(child) ?? nodeWidth) + columnGap;
+  });
 }
 
-function uboNodeAnchor(slot: CanvasSlot, edge: "top" | "bottom") {
-  const centerX = slot.x + UBO_CANVAS.nodeWidth / 2;
-  if (edge === "top") return { x: centerX, y: slot.y };
-  return { x: centerX, y: slot.y + UBO_CANVAS.nodeHeight };
-}
-
+/** Orthogonal connector with rounded corners, bending at `bendY`. */
 function uboRoundedWirePath(fromX: number, fromY: number, toX: number, toY: number, bendY: number) {
   const r = UBO_CANVAS.wireRadius;
   if (Math.abs(fromX - toX) < 0.5) {
@@ -329,90 +425,122 @@ function uboRoundedWirePath(fromX: number, fromY: number, toX: number, toY: numb
   if (toX > fromX) {
     path += ` Q ${fromX} ${bendY} ${fromX + r} ${bendY}`;
     path += ` L ${toX - r} ${bendY}`;
-    path += ` Q ${toX} ${bendY} ${toX} ${bendY + r}`;
   } else {
     path += ` Q ${fromX} ${bendY} ${fromX - r} ${bendY}`;
     path += ` L ${toX + r} ${bendY}`;
-    path += ` Q ${toX} ${bendY} ${toX} ${bendY + r}`;
   }
+  path += ` Q ${toX} ${bendY} ${toX} ${bendY + r}`;
   path += ` L ${toX} ${toY}`;
   return path;
 }
 
-export function buildUboCanvasWirePaths(
+export function buildUboLayout(
   tree: LabsTreeNode,
   state: UboGraphState,
   mode: GraphMode
-): CanvasWire[] {
-  const slots = UBO_CANVAS.slots as Record<string, CanvasSlot>;
-  const wires: CanvasWire[] = [];
-  const rootSlot = slots.root;
+): UboLayout {
+  const { nodeWidth, nodeHeight, padTop, padBottom, tierPitch, moreOffsetY } = UBO_CANVAS;
+  const removed = { count: 0 };
+  const root = uboBuildVisibleTree(tree, state, mode, tree, true, removed);
 
-  if (rootSlot) {
-    const rootBottom = uboNodeAnchor(rootSlot, "bottom");
-    const childrenBendY = 288;
-
-    (tree.children || []).forEach((branch) => {
-      const branchSlot = slots[branch.id];
-      if (!branchSlot) return;
-      const branchTop = uboNodeAnchor(branchSlot, "top");
-      wires.push({
-        d: uboRoundedWirePath(rootBottom.x, rootBottom.y, branchTop.x, branchTop.y, childrenBendY),
-        childId: branch.id,
-      });
-    });
+  if (!root) {
+    return {
+      width: UBO_CANVAS.width,
+      height: UBO_CANVAS.height,
+      nodes: [],
+      wires: [],
+      slotById: {},
+      removedByType: removed.count,
+    };
   }
 
-  (tree.children || []).forEach((branch) => {
-    const branchSlot = slots[branch.id];
-    if (!branchSlot) return;
+  const widths = new Map<UboVisibleNode, number>();
+  const contentWidth = uboMeasureSubtree(root, widths);
 
-    const branchBottom = uboNodeAnchor(branchSlot, "bottom");
-    const moreCount = uboBranchMoreCount(branch, state, mode, tree);
-    const moreAnchor = uboMoreTagAnchor(branch.id);
+  const width = Math.max(UBO_CANVAS.width, contentWidth);
+  const placed: Array<{ visible: UboVisibleNode; x: number; y: number; depth: number }> = [];
+  uboPlaceSubtree(root, (width - contentWidth) / 2, 0, widths, placed);
 
-    if (moreCount > 0 && moreAnchor) {
-      const bendY = Math.round((branchBottom.y + moreAnchor.y) / 2);
+  const maxDepth = placed.reduce((deepest, item) => Math.max(deepest, item.depth), 0);
+  const height = Math.max(
+    UBO_CANVAS.height,
+    padTop + maxDepth * tierPitch + nodeHeight + padBottom
+  );
+
+  const nodes: UboLayoutNode[] = placed.map(({ visible, x, y }) => ({
+    node: visible.node,
+    x,
+    y,
+    structural: visible.structural,
+    moreCount: visible.moreCount,
+    moreX: x + nodeWidth / 2,
+    moreY: y + nodeHeight + moreOffsetY,
+  }));
+
+  const slotById: Record<string, CanvasSlot> = {};
+  nodes.forEach((item) => {
+    slotById[item.node.id] = { x: item.x, y: item.y };
+  });
+
+  // Wires come from the same placed tree as the cards, so a pruned node can
+  // never leave a line hanging in empty space.
+  const wires: CanvasWire[] = [];
+  placed.forEach(({ visible, x, y }) => {
+    const fromX = x + nodeWidth / 2;
+    const fromY = y + nodeHeight;
+
+    visible.children.forEach((child) => {
+      const childSlot = slotById[child.node.id];
+      if (!childSlot) return;
+      const toX = childSlot.x + nodeWidth / 2;
+      const toY = childSlot.y;
       wires.push({
-        d: uboRoundedWirePath(branchBottom.x, branchBottom.y, moreAnchor.x, moreAnchor.y, bendY),
-        childId: `${branch.id}-more`,
+        d: uboRoundedWirePath(fromX, fromY, toX, toY, Math.round((fromY + toY) / 2)),
+        childId: child.node.id,
       });
-      return;
-    }
+    });
 
-    if (state.expandedMore[branch.id] && branch.moreHidden?.length) {
-      branch.moreHidden.forEach((hidden) => {
-        const hiddenSlot = slots[hidden.id];
-        if (!hiddenSlot) return;
-        const hiddenTop = uboNodeAnchor(hiddenSlot, "top");
-        wires.push({
-          d: uboRoundedWirePath(branchBottom.x, branchBottom.y, hiddenTop.x, hiddenTop.y, hiddenTop.y - 24),
-          childId: hidden.id,
-        });
-      });
-      return;
-    }
-
-    if (uboShouldShowGrandchildren(branch, state, mode, tree) && branch.children?.length) {
-      const grandchildBendY = branch.id === "apex" ? 436 : undefined;
-
-      branch.children.forEach((child) => {
-        const childSlot = slots[child.id];
-        if (!childSlot) return;
-        const childTop = uboNodeAnchor(childSlot, "top");
-        const bendY = grandchildBendY ?? childTop.y - 24;
-        wires.push({
-          d: uboRoundedWirePath(branchBottom.x, branchBottom.y, childTop.x, childTop.y, bendY),
-          childId: child.id,
-        });
+    if (visible.moreCount > 0) {
+      const toY = y + nodeHeight + moreOffsetY;
+      wires.push({
+        // Keyed to the branch, not a synthetic "-more" id, so the wire's dim
+        // state can be resolved from the node index like every other wire.
+        d: uboRoundedWirePath(fromX, fromY, fromX, toY, Math.round((fromY + toY) / 2)),
+        childId: visible.node.id,
       });
     }
   });
 
-  return wires;
+  return { width, height, nodes, wires, slotById, removedByType: removed.count };
 }
 
 export function uboFindParentId(tree: LabsTreeNode, nodeId: string): string | null {
   const index = uboBuildNodeIndex(tree);
   return index[nodeId]?.parentId ?? null;
+}
+
+type UboConnectedEntity = NonNullable<NonNullable<LabsTreeNode["details"]>["connected"]>[number];
+
+/**
+ * Authored connections win, but nodes without them fall back to their real tree
+ * edges so the drawer can never disagree with the graph or come up empty.
+ */
+export function uboConnectedEntities(
+  node: LabsTreeNode,
+  index: Record<string, NodeIndexEntry>
+): UboConnectedEntity[] {
+  const authored = node.details?.connected;
+  if (authored?.length) return authored;
+
+  const related: LabsTreeNode[] = [...(node.children || []), ...(node.moreHidden || [])];
+  const parentId = index[node.id]?.parentId;
+  const parent = parentId ? index[parentId]?.node : null;
+  if (parent) related.unshift(parent);
+
+  return related.map((item) => ({
+    id: item.id,
+    type: item.type,
+    role: item.subtitle || (item.type === "person" ? "Person" : "Business"),
+    name: item.name,
+  }));
 }
