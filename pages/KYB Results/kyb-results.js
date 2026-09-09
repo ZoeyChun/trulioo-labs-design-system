@@ -1708,6 +1708,14 @@
     };
   }
 
+  function uuid() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+      var r = (Math.random() * 16) | 0;
+      var v = c === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
   function slugifyDomain(name) {
     return name
       .toLowerCase()
@@ -2313,8 +2321,7 @@
       if (flag) flag.className = "fi fi-" + entity.countryCode;
     }
 
-    var txId = "KYB-2026-" + String(Math.floor(Math.random() * 900000 + 100000));
-    setFieldValue(document.getElementById("kyb-identity"), "Transaction ID", txId);
+    setFieldValue(document.getElementById("kyb-identity"), "Transaction ID", uuid());
     setFieldValue(
       document.getElementById("kyb-identity"),
       "Date",
