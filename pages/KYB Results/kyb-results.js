@@ -200,6 +200,80 @@
     });
   }
 
+  var kybToastTimer = 0;
+
+  function showKybToast(message) {
+    var toast = document.getElementById("kyb-toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "kyb-toast";
+      toast.className = "kyb-toast";
+      toast.setAttribute("role", "status");
+      toast.setAttribute("aria-live", "polite");
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.hidden = false;
+    toast.classList.add("is-visible");
+    window.clearTimeout(kybToastTimer);
+    kybToastTimer = window.setTimeout(function () {
+      toast.classList.remove("is-visible");
+      kybToastTimer = window.setTimeout(function () {
+        toast.hidden = true;
+        toast.textContent = "";
+      }, 180);
+    }, 2200);
+  }
+
+  function fallbackCopyText(text, done) {
+    var field = document.createElement("textarea");
+    field.value = text;
+    field.setAttribute("readonly", "");
+    field.style.position = "fixed";
+    field.style.left = "-9999px";
+    document.body.appendChild(field);
+    field.select();
+    try {
+      document.execCommand("copy");
+      if (done) done();
+    } catch (e) {
+      /* ignore */
+    }
+    document.body.removeChild(field);
+  }
+
+  function initTransactionIdCopy() {
+    var valueEl = document.getElementById("kyb-transaction-id");
+    var copyBtn = document.querySelector(".kyb-transaction-id__copy");
+    var row = document.querySelector(".kyb-transaction-id__row");
+    if (!valueEl || !copyBtn || copyBtn.dataset.kybBound) return;
+    copyBtn.dataset.kybBound = "1";
+
+    copyBtn.addEventListener("click", function () {
+      var id = valueEl.textContent.trim();
+      if (!id) return;
+      copyBtn.blur();
+      if (row) {
+        row.classList.add("kyb-transaction-id__row--copied");
+        var clearCopied = function () {
+          row.classList.remove("kyb-transaction-id__row--copied");
+          row.removeEventListener("mouseleave", clearCopied);
+        };
+        row.addEventListener("mouseleave", clearCopied);
+      }
+      var done = function () {
+        showKybToast("Transaction ID copied");
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(id).then(done).catch(function () {
+          fallbackCopyText(id, done);
+        });
+        return;
+      }
+      fallbackCopyText(id, done);
+    });
+  }
+
   function personalizeJsonPreText(pre, entity, domain) {
     if (!pre) return;
     var text = pre.textContent;
@@ -998,44 +1072,36 @@
       officerTone: "positive",
       summaryContributors: {
         signals: {
-          type: "score",
           tag: "Low Risk",
           tagTone: "positive",
-          metric: "1/12 signals flagged",
-          barPercent: 8,
-          barTone: "positive",
+          metricParts: ["Business Model: ", { text: "22", tone: "positive" }, "/100"],
+          detail: "12 signals detected, 1 increasing",
         },
         ownership: {
-          type: "text",
           tag: "Low Risk",
           tagTone: "positive",
           metric: "Verified ownership",
           detail: "Beneficial owner verified through US state registry filings.",
         },
         "business-insights": {
-          type: "score",
           tag: "Low Risk",
           tagTone: "positive",
-          metric: "Legitimacy 82/100",
-          barPercent: 82,
-          barTone: "positive",
+          metric: "Physical presence confirmed",
+          detail: "Registered address matches operating location",
         },
         financial: {
-          type: "text",
           tag: "Low Risk",
           tagTone: "positive",
           metric: "$2.1M revenue · 45 employees",
           detail: "Financial indicators within normal onboarding thresholds.",
         },
         presence: {
-          type: "text",
           tag: "Low Risk",
           tagTone: "positive",
           metric: "Active website and social presence",
           detail: "Domain registered and social profiles verified.",
         },
         "match-signals": {
-          type: "text",
           tag: "Low Risk",
           tagTone: "positive",
           metric: "4/4 signals matched",
@@ -1099,44 +1165,36 @@
       officerTone: "warning",
       summaryContributors: {
         signals: {
-          type: "score",
           tag: "Medium Risk",
           tagTone: "intermediate",
-          metric: "8/31 signals flagged",
-          barPercent: 26,
-          barTone: "medium",
+          metricParts: ["Business Model: ", { text: "66", tone: "intermediate" }, "/100"],
+          detail: "31 signals detected, 8 increasing",
         },
         ownership: {
-          type: "text",
           tag: "Medium Risk",
           tagTone: "intermediate",
           metric: "Inferred beneficial owner",
           detail: "Beneficial owner could not be independently verified from registry sources.",
         },
         "business-insights": {
-          type: "score",
           tag: "Medium Risk",
           tagTone: "intermediate",
-          metric: "Legitimacy 58/100",
-          barPercent: 58,
-          barTone: "medium",
+          metric: "Operating address mismatch",
+          detail: "Differs from registered corporate address",
         },
         financial: {
-          type: "text",
           tag: "Medium Risk",
           tagTone: "intermediate",
           metric: "$420K revenue · 12 employees",
           detail: "Limited financial disclosure across intermediate holding entities.",
         },
         presence: {
-          type: "text",
           tag: "Medium Risk",
           tagTone: "intermediate",
           metric: "Partial web presence",
           detail: "Operating address differs from registered corporate address.",
         },
         "match-signals": {
-          type: "text",
           tag: "Medium Risk",
           tagTone: "intermediate",
           metric: "3/4 signals matched",
@@ -1460,44 +1518,36 @@
       officerTone: "warning",
       summaryContributors: {
         signals: {
-          type: "score",
           tag: "Medium Risk",
           tagTone: "intermediate",
-          metric: "6/24 signals flagged",
-          barPercent: 25,
-          barTone: "medium",
+          metricParts: ["Business Model: ", { text: "58", tone: "intermediate" }, "/100"],
+          detail: "24 signals detected, 6 increasing",
         },
         ownership: {
-          type: "text",
           tag: "Medium Risk",
           tagTone: "intermediate",
           metric: "Partial ownership disclosure",
           detail: "Additional ownership review recommended based on available registry data.",
         },
         "business-insights": {
-          type: "score",
           tag: "Medium Risk",
           tagTone: "intermediate",
-          metric: "Legitimacy 55/100",
-          barPercent: 55,
-          barTone: "medium",
+          metric: "Limited operational footprint",
+          detail: "Registry filing gaps detected",
         },
         financial: {
-          type: "text",
           tag: "Medium Risk",
           tagTone: "intermediate",
           metric: "Limited financial data",
           detail: "Filing gaps detected across available registry sources.",
         },
         presence: {
-          type: "text",
           tag: "Medium Risk",
           tagTone: "intermediate",
           metric: "Limited public footprint",
           detail: "Limited public footprint relative to stated business activity.",
         },
         "match-signals": {
-          type: "text",
           tag: "Medium Risk",
           tagTone: "intermediate",
           metric: "2/4 signals matched",
@@ -2033,35 +2083,6 @@
     var copy = card.querySelector(".dv-summary-card__copy");
     if (!copy) return;
 
-    if (data.type === "score") {
-      var scoreWrap = copy.querySelector(".dv-summary-card__score");
-      if (!scoreWrap) {
-        copy.innerHTML =
-          '<div class="dv-summary-card__score">' +
-          '<span class="dv-summary-card__metric"></span>' +
-          '<span class="dv-summary-card__bar" aria-hidden="true"><span class="dv-summary-card__bar-fill"></span></span>' +
-          "</div>";
-        scoreWrap = copy.querySelector(".dv-summary-card__score");
-      } else {
-        copy.querySelectorAll(".dv-summary-card__detail").forEach(function (el) {
-          el.remove();
-        });
-      }
-
-      var metricEl = scoreWrap.querySelector(".dv-summary-card__metric");
-      var fill = scoreWrap.querySelector(".dv-summary-card__bar-fill");
-      if (metricEl) metricEl.textContent = data.metric || "";
-      if (fill) {
-        fill.style.width = (data.barPercent || 0) + "%";
-        fill.className = "dv-summary-card__bar-fill dv-summary-card__bar-fill--" + (data.barTone || "high");
-      }
-      return;
-    }
-
-    copy.querySelectorAll(".dv-summary-card__score").forEach(function (el) {
-      el.remove();
-    });
-
     var metricEl = copy.querySelector(".dv-summary-card__metric");
     var detailEl = copy.querySelector(".dv-summary-card__detail");
     if (!metricEl) {
@@ -2069,26 +2090,71 @@
       metricEl = copy.querySelector(".dv-summary-card__metric");
       detailEl = copy.querySelector(".dv-summary-card__detail");
     }
-    if (metricEl) metricEl.textContent = data.metric || "";
+    if (metricEl) setContributorMetric(metricEl, data);
     if (detailEl) detailEl.textContent = data.detail || "";
+  }
+
+  function setContributorMetric(el, data) {
+    if (!data.metricParts) {
+      el.textContent = data.metric || "";
+      return;
+    }
+
+    el.textContent = "";
+    data.metricParts.forEach(function (part) {
+      if (typeof part === "string") {
+        el.appendChild(document.createTextNode(part));
+        return;
+      }
+      var accent = document.createElement("span");
+      accent.className = "dv-summary-card__accent" + (part.tone ? " dv-summary-card__accent--" + part.tone : "");
+      accent.textContent = part.text;
+      el.appendChild(accent);
+    });
   }
 
   function computeSignalsContributorCard() {
     var rows = document.querySelectorAll("#kyb-signals [data-kyb-signal-row]");
-    var total = rows.length;
-    var flagged = 0;
+    var increasing = 0;
     rows.forEach(function (row) {
-      if (row.querySelector(".tds-data-table__signals--negative")) flagged++;
+      if (row.querySelector(".tds-data-table__signals--negative")) increasing++;
     });
-    var percent = total ? (flagged / total) * 100 : 0;
+
+    var detail = rows.length + " signals detected, " + increasing + " increasing";
+    var top = getTopSignalCategory();
+    if (!top) {
+      return {
+        tag: increasing ? "High Risk" : "Low Risk",
+        tagTone: increasing ? "negative" : "positive",
+        metric: increasing + " of " + rows.length + " signals increasing",
+        detail: detail,
+      };
+    }
+
     return {
-      type: "score",
-      tag: flagged >= total * 0.25 ? "High Risk" : "Low Risk",
-      tagTone: flagged >= total * 0.25 ? "negative" : "positive",
-      metric: flagged + "/" + total + " signals flagged",
-      barPercent: Math.round(percent * 10) / 10,
-      barTone: percent >= 50 ? "high" : percent >= 25 ? "medium" : "positive",
+      tag: top.risk,
+      tagTone: top.tone,
+      metricParts: [top.label + ": ", { text: String(top.score), tone: top.tone }, "/100"],
+      detail: detail,
     };
+  }
+
+  // The category scoring highest is the one contributing most to the overall risk score.
+  function getTopSignalCategory() {
+    var top = null;
+    document.querySelectorAll("#kyb-signals [data-kyb-signal-category]").forEach(function (category) {
+      var score = parseInt(category.getAttribute("data-kyb-category-score"), 10);
+      if (isNaN(score) || (top && score <= top.score)) return;
+
+      var title = category.querySelector(".tds-accordion__title");
+      top = {
+        score: score,
+        label: title ? title.textContent.split(":")[0].trim() : "Top category",
+        risk: category.getAttribute("data-kyb-category-risk") || "High Risk",
+        tone: category.getAttribute("data-kyb-category-risk-tone") || "negative",
+      };
+    });
+    return top;
   }
 
   function computeOwnershipContributorCard(profile) {
@@ -2118,7 +2184,6 @@
       detail = officerMsg.split(".")[0];
     }
     return {
-      type: "text",
       tag: tagTone === "positive" ? "Low Risk" : "High Risk",
       tagTone: tagTone,
       metric: metric,
@@ -2126,7 +2191,7 @@
     };
   }
 
-  function computeBusinessInsightsContributorCard() {
+  function computeBusinessInsightsContributorCard(profile) {
     var legitimacy = NaN;
     document.querySelectorAll("#kyb-business-insights .kyb-insight-score-card").forEach(function (card) {
       var label = card.querySelector(".kyb-insight-score-card__label");
@@ -2136,13 +2201,21 @@
       }
     });
 
+    var presenceRow = document.querySelector('#kyb-signals [data-kyb-anchor="signal-physical-presence"]');
+    var noPresence = !!(presenceRow && presenceRow.querySelector(".tds-data-table__signals--negative"));
+
+    // The address field is rewritten with the submitted entity address, so the office
+    // type only survives in the findings.
+    var findings = getFindingTextsFromProfile(profile, "business-insights") || getTabFindingTexts("business-insights");
+    var virtualOffice = findings.some(function (text) {
+      return /virtual office/i.test(text);
+    });
+
     return {
-      type: "score",
       tag: legitimacy <= 25 ? "High Risk" : legitimacy <= 50 ? "Medium Risk" : "Low Risk",
       tagTone: legitimacy <= 25 ? "negative" : legitimacy <= 50 ? "intermediate" : "positive",
-      metric: "Legitimacy " + (isNaN(legitimacy) ? "—" : legitimacy) + "/100",
-      barPercent: isNaN(legitimacy) ? 0 : legitimacy,
-      barTone: legitimacy <= 25 ? "high" : legitimacy <= 50 ? "medium" : "positive",
+      metric: noPresence ? "No physical presence detected" : "Physical presence confirmed",
+      detail: virtualOffice ? "Virtual office address" : findings[0] || "",
     };
   }
 
@@ -2157,7 +2230,6 @@
     if (!detail) detail = findings[findings.length - 1] || findings[0] || "";
 
     return {
-      type: "text",
       tag: sales === "$0" && employees === "0" ? "High Risk" : "Medium Risk",
       tagTone: sales === "$0" && employees === "0" ? "negative" : "intermediate",
       metric: sales + " revenue · " + employees + " employees",
@@ -2176,7 +2248,6 @@
     if (!detail) detail = findings[1] || findings[0] || "";
 
     return {
-      type: "text",
       tag: "Medium Risk",
       tagTone: "intermediate",
       metric: metric,
@@ -2202,7 +2273,6 @@
     var matchRate = total ? matched / total : 0;
     var findings = getFindingTextsFromProfile(profile, "match-signals") || getTabFindingTexts("match-signals");
     return {
-      type: "text",
       tag: matchRate >= 1 ? "Low Risk" : matchRate >= 0.5 ? "Medium Risk" : "High Risk",
       tagTone: matchRate >= 1 ? "positive" : matchRate >= 0.5 ? "intermediate" : "negative",
       metric: matched + "/" + total + " signals matched",
@@ -2221,7 +2291,7 @@
         return computeOwnershipContributorCard(profile);
       },
       "business-insights": function () {
-        return computeBusinessInsightsContributorCard();
+        return computeBusinessInsightsContributorCard(profile);
       },
       financial: function () {
         return computeFinancialContributorCard(profile);
@@ -3303,6 +3373,7 @@
     initScoreBreakdownLink();
     initMonitoringDialog();
     initRawCopy();
+    initTransactionIdCopy();
     initKybScoreGauge();
     renderWebSocialAccordions();
     if (window.ScoreGauge) ScoreGauge.renderAll(document);

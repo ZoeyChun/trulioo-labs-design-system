@@ -720,6 +720,77 @@
   min-width: 8.5rem;
 }
 
+.kyb-transaction-id__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-interactive);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.kyb-transaction-id__copy svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.kyb-transaction-id__copy:hover,
+.kyb-transaction-id__copy:focus-visible {
+  color: var(--interactive-hover);
+}
+
+.kyb-transaction-id__copy:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.kyb-transaction-id__row:hover .kyb-transaction-id__copy,
+.kyb-transaction-id__row:focus-within .kyb-transaction-id__copy,
+.kyb-transaction-id__copy:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.kyb-transaction-id__row--copied .kyb-transaction-id__copy {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.kyb-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 240;
+  min-width: 180px;
+  padding: 10px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+  box-shadow: var(--elevation-md);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  text-align: center;
+  transform: translateX(-50%) translateY(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.kyb-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .kyb-identity__monitoring-link {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);

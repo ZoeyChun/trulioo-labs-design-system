@@ -89,8 +89,10 @@
     if (btn) btn.click();
   }
 
-  function toggleButtons() {
-    return document.querySelectorAll("[data-truai-toggle], #app-truai-btn");
+  function panelToggleButtons() {
+    return document.querySelectorAll(
+      "#app-truai-btn, .app-truai-btn[data-truai-toggle], .dv-flow-truai-btn, .bv-truai-btn"
+    );
   }
 
   function promptFromToggleButton(btn) {
@@ -140,11 +142,17 @@
     }
 
     event.preventDefault();
+    var isPanelToggle = toggleBtn.matches(
+      "#app-truai-btn, .app-truai-btn[data-truai-toggle], .dv-flow-truai-btn, .bv-truai-btn"
+    );
     toggleChat();
+    if (isPanelToggle && typeof toggleBtn.focus === "function") {
+      toggleBtn.focus({ preventScroll: true });
+    }
   }
 
   function syncToggleButtons(next) {
-    toggleButtons().forEach(function (btn) {
+    panelToggleButtons().forEach(function (btn) {
       btn.classList.toggle("app-truai-btn--active", next);
       btn.setAttribute("aria-expanded", next ? "true" : "false");
     });
@@ -583,7 +591,7 @@
 
     injectShell();
 
-    toggleButtons().forEach(function (btn) {
+    panelToggleButtons().forEach(function (btn) {
       btn.setAttribute("aria-controls", "labs-truai-chat-rail");
       btn.setAttribute("aria-expanded", "false");
     });

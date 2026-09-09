@@ -78,13 +78,16 @@ body:has(.labs-kyb-layout) {
   width: 0;
   overflow: hidden;
   box-sizing: border-box;
-  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) 0;
+  padding: 0;
   background-color: var(--surface-neutral-03);
-  transition: width 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  transition:
+    width 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+    padding 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .labs-kyb-layout--chat-open .labs-truai-chat-rail {
   width: 396px;
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) 0;
 }
 
 .labs-truai-chat-rail__inner {
@@ -163,6 +166,7 @@ body:has(.labs-kyb-layout) {
 }
 
 @media (min-width: 1024px) {
+  /* Stay in the flex row so width can animate; padding stays 0 until open. */
   .labs-truai-chat-rail {
     display: flex;
   }
