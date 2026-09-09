@@ -421,8 +421,31 @@
 
 .tds-tag__leading-visual {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  width: 16px;
+  height: 16px;
   margin-right: var(--spacing-4);
+}
+
+.tds-tag__leading-visual svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Figma tags tint the leading icon with the type's icon token, which is a
+   step stronger than the label colour — so it does not inherit from the tag. */
+.tds-tag--positive .tds-tag__leading-visual {
+  color: var(--icon-positive);
+}
+
+.tds-tag--intermediate .tds-tag__leading-visual {
+  color: var(--icon-intermediate);
+}
+
+.tds-tag--negative .tds-tag__leading-visual {
+  color: var(--icon-negative);
 }
 
 /* --- Remove button --- */
