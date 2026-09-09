@@ -58,22 +58,6 @@
   color: var(--text-default);
 }
 
-.di-landing .app-truai-btn,
-.di-analyzing-panel .app-truai-btn,
-.di-result-view .app-truai-btn {
-  background-color: var(--interactive-default);
-  border: 1px solid var(--interactive-default);
-  border-radius: var(--radius-lg);
-  font-weight: var(--font-weight-medium);
-}
-
-.di-landing .app-truai-btn:hover,
-.di-analyzing-panel .app-truai-btn:hover,
-.di-result-view .app-truai-btn:hover {
-  background-color: var(--interactive-hover);
-  border-color: var(--interactive-hover);
-}
-
 .di-landing__body {
   display: flex;
   flex: 1;

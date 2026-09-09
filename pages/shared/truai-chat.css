@@ -112,10 +112,11 @@ body:has(.labs-kyb-layout) {
   min-height: 0;
 }
 
+/* Outer ring tracks the button's own fill, so it reads as one control. */
 .app-truai-btn--active {
   box-shadow:
     0 0 0 2px var(--surface-neutral-03),
-    0 0 0 4px var(--surface-inverse);
+    0 0 0 4px var(--interactive-default);
 }
 
 /* Mobile drawer */

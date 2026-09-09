@@ -221,21 +221,56 @@
    TruAI button (dark pill, used across pages)
    -------------------------------------------------------- */
 
+/* Mirrors the DS Button component, primary variant at large size
+   (Components/button/button.css: .tds-btn--primary.tds-btn--lg). Kept as its
+   own class because this is shared shell chrome rather than a tds-btn instance. */
 .app-truai-btn {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-sm);
+  justify-content: center;
+  gap: var(--spacing-8);
+  height: 42px;
   padding: var(--padding-md) var(--padding-lg);
-  border: none;
-  border-radius: var(--radius-modal);
-  background-color: var(--surface-inverse);
+  border: 1px solid var(--interactive-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--interactive-default);
   color: var(--text-inverse);
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
   cursor: pointer;
   white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.app-truai-btn:hover {
+  background-color: var(--interactive-hover);
+  border-color: var(--interactive-hover);
+}
+
+/* Focus ring thickens the border, so padding drops 1px to hold the label still. */
+.app-truai-btn:focus-visible {
+  border-color: var(--border-focus);
+  border-width: 2px;
+  padding: calc(var(--padding-md) - 1px) calc(var(--padding-lg) - 1px);
+  outline: none;
+}
+
+.app-truai-btn:active {
+  background-color: var(--interactive-active);
+  border-color: var(--interactive-hover);
+}
+
+.app-truai-btn:disabled,
+.app-truai-btn[aria-disabled="true"] {
+  background-color: var(--interactive-disabled);
+  border-color: var(--border-subtle);
+  color: var(--text-disabled);
+  cursor: not-allowed;
 }
 
 .app-truai-btn__icon {

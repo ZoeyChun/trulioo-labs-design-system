@@ -1183,7 +1183,7 @@
       signalCount: "38",
       signalsTabSummary: {
         truaiSummary:
-          "12 risk signals detected, 20 increasing and 8 decreasing. All 5 categories score High Risk except Third-Party & Market (Medium). Business Model (84) and Financial Health (68) are the top contributors to the overall 87/100 score.",
+          "14 risk signals detected, 7 increasing and 7 decreasing. All 5 categories score High Risk except Third-Party & Market (Medium). Business Model (84) and Financial Health (68) are the top contributors to the overall 87/100 score.",
         confidence: "86%",
         findings: [
           "Business Model 84/100: credit default risk + payment delinquencies",
@@ -1191,7 +1191,6 @@
           "2 operational signals: virtual office, expired domain",
         ],
       },
-      impactCounts: { all: 12, negative: 20, positive: 8 },
       summaryPage: {
         riskLabel: "High Risk Entity",
         verdictTitle: "{name} required manual review",
@@ -1572,18 +1571,6 @@
     if (view.anchor) attrs += ' data-kyb-jump-anchor="' + view.anchor + '"';
     if (view.signalCategory) attrs += ' data-kyb-jump-signal-category="' + view.signalCategory + '"';
     return "<button " + attrs + ">View</button>";
-  }
-
-  function renderSignalImpactCounts(profile) {
-    if (!profile || !profile.impactCounts) return;
-    var section = document.getElementById("kyb-signals");
-    if (!section) return;
-
-    Object.keys(profile.impactCounts).forEach(function (key) {
-      var counter = section.querySelector('[data-kyb-impact-count="' + key + '"]');
-      if (counter) counter.textContent = String(profile.impactCounts[key]);
-    });
-    section.dataset.kybImpactCountsOverride = "1";
   }
 
   function renderTabFindingItem(finding) {
@@ -2344,7 +2331,6 @@
     if (sidebarSummaryData) renderSidebarSummary(sidebarSummaryData);
     renderSignalsTabSummary(profile);
     renderTabSummaries(profile);
-    renderSignalImpactCounts(profile);
 
     var insightsSummaryEl = document.querySelector(".kyb-insights-summary");
     if (insightsSummaryEl) insightsSummaryEl.textContent = insightsSummary;
@@ -2677,8 +2663,6 @@
       counts.all += 1;
       if (counts[impact] !== undefined) counts[impact] += 1;
     });
-
-    if (section.dataset.kybImpactCountsOverride === "1") return;
 
     section.querySelectorAll("[data-kyb-impact-count]").forEach(function (counter) {
       var key = counter.getAttribute("data-kyb-impact-count");

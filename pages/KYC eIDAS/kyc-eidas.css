@@ -58,18 +58,6 @@
   color: var(--text-default);
 }
 
-.eidas-landing .app-truai-btn {
-  background-color: var(--interactive-default);
-  border: 1px solid var(--interactive-default);
-  border-radius: var(--radius-lg);
-  font-weight: var(--font-weight-medium);
-}
-
-.eidas-landing .app-truai-btn:hover {
-  background-color: var(--interactive-hover);
-  border-color: var(--interactive-hover);
-}
-
 .eidas-landing__body {
   display: flex;
   flex: 1;
