@@ -11,7 +11,6 @@ import {
   uboCountSelectedFilters,
   uboFindParentId,
   uboFirstSelectedFilterLabel,
-  uboHasActiveFilters,
   uboShouldDimNode,
 } from "../ubo/logic";
 import type { GraphMode, LabsTreeNode, NodeIndexEntry, RiskFilterMeta, UboGraphState } from "../ubo/types";
@@ -87,7 +86,7 @@ function GraphNodeButton({
   );
 }
 
-export function UboGraph({ tree, riskFilter }: UboGraphProps) {
+export function UboGraph({ tree }: UboGraphProps) {
   const surfaceRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<UboGraphState>(createInitialGraphState);
@@ -107,20 +106,18 @@ export function UboGraph({ tree, riskFilter }: UboGraphProps) {
   const selectedNode = state.selectedId ? index[state.selectedId]?.node : null;
   const showDrawer = !!selectedNode;
 
-  const filterCount = uboCountSelectedFilters(state.filters);
-  const hasFilterSelection = uboHasActiveFilters(state.filters);
-  const filterLabel = hasFilterSelection
-    ? uboFirstSelectedFilterLabel(state.filters)
-    : riskFilter?.label || "";
-  const filterCounter =
-    riskFilter?.count && riskFilter.count > 0
-      ? `+${riskFilter.count}`
-      : hasFilterSelection && filterCount > 1
-        ? `+${filterCount - 1}`
-        : "";
+  const userFilterCount = uboCountSelectedFilters(state.filters);
+  const isFilterActive = userFilterCount > 0;
+  const filterLabel = isFilterActive ? uboFirstSelectedFilterLabel(state.filters) : "";
+  const isFilterMulti = userFilterCount > 1;
+  const filterCounter = isFilterMulti ? `+${userFilterCount - 1}` : "";
 
   const refreshMode = useCallback(() => {
     setMode(isBrowserFullscreen() ? "fullscreen" : "inline");
+  }, []);
+
+  const updateState = useCallback((patch: Partial<UboGraphState> | ((current: UboGraphState) => UboGraphState)) => {
+    setState((current) => (typeof patch === "function" ? patch(current) : { ...current, ...patch }));
   }, []);
 
   useEffect(() => {
@@ -129,16 +126,44 @@ export function UboGraph({ tree, riskFilter }: UboGraphProps) {
   }, [refreshMode]);
 
   useEffect(() => {
- const surface = surfaceRef.current;
+    const surface = surfaceRef.current;
     if (!surface || !(window as Window & { TdsDropdownPanel?: { initMenus: (root: Element) => void } }).TdsDropdownPanel) {
       return;
     }
     (window as Window & { TdsDropdownPanel: { initMenus: (root: Element) => void } }).TdsDropdownPanel.initMenus(surface);
-  }, [state.filters, mode]);
-
-  const updateState = useCallback((patch: Partial<UboGraphState> | ((current: UboGraphState) => UboGraphState)) => {
-    setState((current) => (typeof patch === "function" ? patch(current) : { ...current, ...patch }));
   }, []);
+
+  useEffect(() => {
+    const filterBtn = surfaceRef.current?.querySelector<HTMLElement>("[data-kyb-ubo-filter]");
+    if (!filterBtn) return;
+
+    filterBtn.classList.toggle("tds-filter-button--selected", isFilterActive);
+    filterBtn.classList.toggle("tds-filter-button--multi", isFilterMulti);
+
+    const valueEl = filterBtn.querySelector(".tds-filter-button__trigger-value");
+    if (valueEl) valueEl.textContent = filterLabel;
+
+    const counter = filterBtn.querySelector<HTMLElement>(".tds-filter-button__counter");
+    if (counter) {
+      counter.textContent = filterCounter;
+      counter.hidden = !filterCounter;
+    }
+  }, [isFilterActive, isFilterMulti, filterLabel, filterCounter]);
+
+  useEffect(() => {
+    const filterBtn = surfaceRef.current?.querySelector("[data-kyb-ubo-filter]");
+    if (!filterBtn) return;
+
+    const onClear = () => {
+      updateState((current) => ({
+        ...current,
+        filters: createEmptyUboFilters(),
+      }));
+    };
+
+    filterBtn.addEventListener("tds-filter-clear", onClear);
+    return () => filterBtn.removeEventListener("tds-filter-clear", onClear);
+  }, [updateState]);
 
   const handleNodeSelect = useCallback(
     (nodeId: string) => {
@@ -156,6 +181,16 @@ export function UboGraph({ tree, riskFilter }: UboGraphProps) {
     },
     [updateState]
   );
+
+  const cancelStageDrag = useCallback((event: React.PointerEvent) => {
+    event.stopPropagation();
+    const stage = stageRef.current;
+    if (stage?.hasPointerCapture(event.pointerId)) {
+      stage.releasePointerCapture(event.pointerId);
+    }
+    stage?.classList.remove("kyb-ubo-graph__stage--dragging");
+    dragRef.current = null;
+  }, []);
 
   const handleMoreClick = useCallback(
     (branchId: string) => {
@@ -231,10 +266,6 @@ export function UboGraph({ tree, riskFilter }: UboGraphProps) {
     [updateState]
   );
 
-  const clearFilters = useCallback(() => {
-    updateState({ filters: createEmptyUboFilters() });
-  }, [updateState]);
-
   const endDrag = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
     const drag = dragRef.current;
     if (!drag || event.pointerId !== drag.pointerId) return;
@@ -252,7 +283,7 @@ export function UboGraph({ tree, riskFilter }: UboGraphProps) {
       const target = event.target as HTMLElement;
       if (
         target.closest(
-          "input, label, a, button, .kyb-ubo-graph__toolbar-card, .kyb-ubo-graph__legend, .kyb-ubo-graph__zoom, .kyb-ubo-graph__filter-btn, .kyb-ubo-graph__entity-toggle, .kyb-ubo-graph__search, .kyb-ubo-canvas__more-btn, .kyb-ubo-drawer, [data-kyb-ubo-node-id]"
+          "input, label, a, button, .kyb-ubo-graph__toolbar-card, .kyb-ubo-graph__legend, .kyb-ubo-graph__zoom, .kyb-ubo-graph__filter-btn, .kyb-ubo-graph__entity-toggle, .kyb-ubo-graph__search, .kyb-ubo-canvas__more-slot, .kyb-ubo-canvas__more-btn, .kyb-ubo-drawer, [data-kyb-ubo-node-id]"
         )
       ) {
         return;
@@ -295,20 +326,21 @@ export function UboGraph({ tree, riskFilter }: UboGraphProps) {
       const tagSlot = (UBO_CANVAS.moreTags as Record<string, { x: number; y: number }>)[branch.id];
       if (!moreCount || !tagSlot) return null;
       return (
-        <div
+        <button
           key={branch.id}
-          className="kyb-ubo-canvas__more-slot"
+          type="button"
+          className="kyb-ubo-canvas__more-slot tds-tag tds-tag--md tds-tag--default kyb-ubo-canvas__more-btn"
           style={{ left: `${tagSlot.x}px`, top: `${tagSlot.y}px` }}
+          data-kyb-ubo-more={branch.id}
+          aria-label={`Show ${moreCount} more connected ${moreCount === 1 ? "entity" : "entities"}`}
+          onPointerDown={cancelStageDrag}
+          onClick={(event) => {
+            event.stopPropagation();
+            handleMoreClick(branch.id);
+          }}
         >
-          <button
-            type="button"
-            className="tds-tag tds-tag--md tds-tag--default kyb-ubo-canvas__more-btn"
-            data-kyb-ubo-more={branch.id}
-            onClick={() => handleMoreClick(branch.id)}
-          >
-            +{moreCount} more
-          </button>
-        </div>
+          +{moreCount} more
+        </button>
       );
     })
     .filter(Boolean);
@@ -369,28 +401,21 @@ export function UboGraph({ tree, riskFilter }: UboGraphProps) {
         </div>
 
         <div
-          className={`tds-filter-button kyb-ubo-graph__filter-btn${hasFilterSelection ? " tds-filter-button--selected" : ""}${hasFilterSelection && filterCount > 1 ? " tds-filter-button--multi" : ""}`}
+          className={`tds-filter-button kyb-ubo-graph__filter-btn${isFilterActive ? " tds-filter-button--selected" : ""}${isFilterMulti ? " tds-filter-button--multi" : ""}`}
           data-kyb-ubo-filter
         >
-          <button type="button" className="tds-btn tds-btn--sm tds-btn--secondary" aria-expanded="false" aria-haspopup="menu">
+          <button type="button" className="tds-btn tds-btn--md tds-btn--secondary" aria-expanded="false" aria-haspopup="menu">
             <span className="tds-btn__leading-icon" aria-hidden="true">
               <FilterIcon />
             </span>
             <span className="tds-filter-button__trigger-default">Filter</span>
             <span className="tds-filter-button__trigger-value">{filterLabel}</span>
-            {filterCounter && (
+            {isFilterMulti && (
               <span className="tds-counter tds-counter--primary tds-counter--sm tds-filter-button__counter">
                 {filterCounter}
               </span>
             )}
-            <span
-              className="tds-btn__trailing-icon tds-filter-button__clear"
-              aria-hidden="true"
-              onClick={(event) => {
-                event.stopPropagation();
-                clearFilters();
-              }}
-            >
+            <span className="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true">
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                 <path d="M4 4l8 8M12 4l-8 8" />
               </svg>
@@ -409,7 +434,10 @@ export function UboGraph({ tree, riskFilter }: UboGraphProps) {
                       data-kyb-ubo-filter-group={group.id}
                       data-kyb-ubo-filter-value={option.id}
                       checked={state.filters[group.id][option.id]}
-                      onChange={(event) => handleFilterChange(group.id, option.id, event.target.checked)}
+                      onChange={(event) => {
+                        event.stopPropagation();
+                        handleFilterChange(group.id, option.id, event.target.checked);
+                      }}
                     />
                     <span className="tds-action-list-item__label">{option.label}</span>
                   </label>

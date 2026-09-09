@@ -56,9 +56,9 @@ export const UBO_CANVAS = {
     patricia: { x: 59, y: 470 },
   },
   moreTags: {
-    james: { x: 410, y: 455 },
-    apex: { x: 702, y: 455 },
-    steven: { x: 144, y: 455 },
+    steven: { x: 180, y: 455 },
+    james: { x: 446, y: 455 },
+    apex: { x: 736, y: 455 },
   },
 } as const;
 
@@ -108,7 +108,7 @@ export function uboFirstSelectedFilterLabel(filters: UboFilters): string {
   for (const group of UBO_FILTER_GROUPS) {
     for (const option of group.options) {
       if (filters[group.id][option.id]) {
-        return `${group.label}: ${option.label}`;
+        return option.label;
       }
     }
   }
@@ -250,6 +250,12 @@ export function uboGetSlot(nodeId: string): CanvasSlot | null {
   return slots[nodeId] || null;
 }
 
+export function uboMoreTagAnchor(branchId: string): { x: number; y: number } | null {
+  const slot = (UBO_CANVAS.moreTags as Record<string, CanvasSlot>)[branchId];
+  if (!slot) return null;
+  return { x: slot.x, y: slot.y };
+}
+
 export function uboShouldShowGrandchildren(
   branch: LabsTreeNode,
   state: UboGraphState,
@@ -338,44 +344,70 @@ export function buildUboCanvasWirePaths(
   state: UboGraphState,
   mode: GraphMode
 ): CanvasWire[] {
-  const slots = UBO_CANVAS.slots;
-  const root = uboNodeAnchor(slots.root, "bottom");
-  const steven = uboNodeAnchor(slots.steven, "top");
-  const james = uboNodeAnchor(slots.james, "top");
-  const apex = uboNodeAnchor(slots.apex, "top");
-  const childrenBendY = 288;
+  const slots = UBO_CANVAS.slots as Record<string, CanvasSlot>;
+  const wires: CanvasWire[] = [];
+  const rootSlot = slots.root;
 
-  const wires: CanvasWire[] = [
-    { d: uboRoundedWirePath(root.x, root.y, steven.x, steven.y, childrenBendY), childId: "steven" },
-    { d: uboRoundedWirePath(root.x, root.y, james.x, james.y, childrenBendY), childId: "james" },
-    { d: uboRoundedWirePath(root.x, root.y, apex.x, apex.y, childrenBendY), childId: "apex" },
-  ];
+  if (rootSlot) {
+    const rootBottom = uboNodeAnchor(rootSlot, "bottom");
+    const childrenBendY = 288;
 
-  let showJamesChild = false;
-  let showApexChildren = false;
+    (tree.children || []).forEach((branch) => {
+      const branchSlot = slots[branch.id];
+      if (!branchSlot) return;
+      const branchTop = uboNodeAnchor(branchSlot, "top");
+      wires.push({
+        d: uboRoundedWirePath(rootBottom.x, rootBottom.y, branchTop.x, branchTop.y, childrenBendY),
+        childId: branch.id,
+      });
+    });
+  }
+
   (tree.children || []).forEach((branch) => {
-    if (branch.id === "james" && uboShouldShowGrandchildren(branch, state, mode, tree)) {
-      showJamesChild = true;
+    const branchSlot = slots[branch.id];
+    if (!branchSlot) return;
+
+    const branchBottom = uboNodeAnchor(branchSlot, "bottom");
+    const moreCount = uboBranchMoreCount(branch, state, mode, tree);
+    const moreAnchor = uboMoreTagAnchor(branch.id);
+
+    if (moreCount > 0 && moreAnchor) {
+      const bendY = Math.round((branchBottom.y + moreAnchor.y) / 2);
+      wires.push({
+        d: uboRoundedWirePath(branchBottom.x, branchBottom.y, moreAnchor.x, moreAnchor.y, bendY),
+        childId: `${branch.id}-more`,
+      });
+      return;
     }
-    if (branch.id === "apex" && uboShouldShowGrandchildren(branch, state, mode, tree)) {
-      showApexChildren = true;
+
+    if (state.expandedMore[branch.id] && branch.moreHidden?.length) {
+      branch.moreHidden.forEach((hidden) => {
+        const hiddenSlot = slots[hidden.id];
+        if (!hiddenSlot) return;
+        const hiddenTop = uboNodeAnchor(hiddenSlot, "top");
+        wires.push({
+          d: uboRoundedWirePath(branchBottom.x, branchBottom.y, hiddenTop.x, hiddenTop.y, hiddenTop.y - 24),
+          childId: hidden.id,
+        });
+      });
+      return;
+    }
+
+    if (uboShouldShowGrandchildren(branch, state, mode, tree) && branch.children?.length) {
+      const grandchildBendY = branch.id === "apex" ? 436 : undefined;
+
+      branch.children.forEach((child) => {
+        const childSlot = slots[child.id];
+        if (!childSlot) return;
+        const childTop = uboNodeAnchor(childSlot, "top");
+        const bendY = grandchildBendY ?? childTop.y - 24;
+        wires.push({
+          d: uboRoundedWirePath(branchBottom.x, branchBottom.y, childTop.x, childTop.y, bendY),
+          childId: child.id,
+        });
+      });
     }
   });
-
-  if (showJamesChild) {
-    const jamesBottom = uboNodeAnchor(slots.james, "bottom");
-    const walter = uboNodeAnchor(slots.walter, "top");
-    wires.push({ d: uboRoundedWirePath(jamesBottom.x, jamesBottom.y, walter.x, walter.y, walter.y - 24), childId: "walter" });
-  }
-
-  if (showApexChildren) {
-    const apexBottom = uboNodeAnchor(slots.apex, "bottom");
-    const connie = uboNodeAnchor(slots.connie, "top");
-    const sarah = uboNodeAnchor(slots.sarah, "top");
-    const grandchildBendY = 436;
-    wires.push({ d: uboRoundedWirePath(apexBottom.x, apexBottom.y, connie.x, connie.y, grandchildBendY), childId: "connie" });
-    wires.push({ d: uboRoundedWirePath(apexBottom.x, apexBottom.y, sarah.x, sarah.y, grandchildBendY), childId: "sarah" });
-  }
 
   return wires;
 }

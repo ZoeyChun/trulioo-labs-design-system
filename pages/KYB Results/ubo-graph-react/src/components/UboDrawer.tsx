@@ -21,7 +21,7 @@ function DrawerAccordion({
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   return (
-    <div className={`tds-accordion tds-accordion--md kyb-ubo-drawer__accordion${expanded ? " tds-accordion--expanded" : ""}`}>
+    <div className={`tds-accordion tds-accordion--sm kyb-ubo-drawer__accordion${expanded ? " tds-accordion--expanded" : ""}`}>
       <button
         type="button"
         className="tds-accordion__header"
@@ -29,10 +29,12 @@ function DrawerAccordion({
         onClick={() => setExpanded((value) => !value)}
       >
         <span className="tds-accordion__leading">
-          <span className="tds-accordion__title">{title}</span>
+          <span className="tds-accordion__title-group">
+            <span className="tds-accordion__title">{title}</span>
+          </span>
         </span>
         <span className="tds-accordion__trailing">
-          {trailing}
+          {trailing && <span className="tds-accordion__tags">{trailing}</span>}
           <span className="tds-accordion__chevron" aria-hidden="true">
             <ChevronDownIcon />
           </span>
@@ -55,66 +57,58 @@ export function UboDrawer({ node, onConnectedSelect }: UboDrawerProps) {
   const findings = details.findings || [];
   const connected = details.connected || [];
 
-  const summaryContent = details.truai ? (
-    <div className="kyb-truai-summary-card">
-      <div className="kyb-truai-summary-card__block">
-        <div className="kyb-truai-summary-card__label-row">
-          <span className="kyb-truai-summary-card__sparkle" aria-hidden="true">
-            <SparkleIcon />
-          </span>
-          <span className="kyb-truai-summary-card__label">TruAI:</span>
-        </div>
-        <p className="kyb-truai-summary-card__text">{details.truai}</p>
-      </div>
-      {details.prompt && (
-        <div className="kyb-truai-summary-card__prompt">
-          <p className="kyb-truai-summary-card__prompt-label">Ask TruAI:</p>
-          <button
-            type="button"
-            className="kyb-truai-prompt-chip"
-            data-truai-toggle
-            data-truai-prompt={details.prompt}
-          >
-            <span className="kyb-truai-prompt-chip__icon" aria-hidden="true">
-              <SparkleIcon />
-            </span>
-            {details.prompt}
-          </button>
-        </div>
-      )}
-      {findings.length > 0 && (
-        <div className="kyb-tab-summary__findings">
-          <h4 className="kyb-tab-summary__findings-title">Key Findings</h4>
-          <ul className="kyb-ubo-drawer__findings">
-            {findings.map((finding, i) => (
-              <React.Fragment key={finding}>
-                {i > 0 && <hr className="kyb-ubo-drawer__finding-divider" />}
-                <li className="kyb-ubo-drawer__finding">
-                  <span className="kyb-ubo-drawer__finding-icon" aria-hidden="true">
-                    <WarningIcon />
-                  </span>
-                  <span>{finding}</span>
-                </li>
-              </React.Fragment>
-            ))}
-          </ul>
-        </div>
-      )}
+  const findingsList = findings.length > 0 ? (
+    <div className="kyb-ubo-drawer__findings-section">
+      <h4 className="kyb-tab-summary__findings-title">Key Findings</h4>
+      <ul className="kyb-ubo-drawer__findings">
+        {findings.map((finding, i) => (
+          <React.Fragment key={finding}>
+            {i > 0 && <hr className="kyb-ubo-drawer__finding-divider" />}
+            <li className="kyb-ubo-drawer__finding">
+              <span className="kyb-ubo-drawer__finding-icon" aria-hidden="true">
+                <WarningIcon />
+              </span>
+              <span>{finding}</span>
+            </li>
+          </React.Fragment>
+        ))}
+      </ul>
     </div>
-  ) : findings.length > 0 ? (
-    <ul className="kyb-ubo-drawer__findings">
-      {findings.map((finding, i) => (
-        <React.Fragment key={finding}>
-          {i > 0 && <hr className="kyb-ubo-drawer__finding-divider" />}
-          <li className="kyb-ubo-drawer__finding">
-            <span className="kyb-ubo-drawer__finding-icon" aria-hidden="true">
-              <WarningIcon />
-            </span>
-            <span>{finding}</span>
-          </li>
-        </React.Fragment>
-      ))}
-    </ul>
+  ) : null;
+
+  const summaryContent = details.truai || findings.length > 0 ? (
+    <div className="kyb-ubo-drawer__summary-slot">
+      {details.truai && (
+        <div className="kyb-truai-summary-card">
+          <div className="kyb-truai-summary-card__block">
+            <div className="kyb-truai-summary-card__label-row">
+              <span className="kyb-truai-summary-card__sparkle" aria-hidden="true">
+                <SparkleIcon />
+              </span>
+              <span className="kyb-truai-summary-card__label">TruAI:</span>
+            </div>
+            <p className="kyb-truai-summary-card__text">{details.truai}</p>
+          </div>
+          {details.prompt && (
+            <div className="kyb-truai-summary-card__prompt">
+              <p className="kyb-truai-summary-card__prompt-label">Ask TruAI:</p>
+              <button
+                type="button"
+                className="tds-ai-tag tds-ai-tag--sm kyb-truai-prompt-chip"
+                data-truai-toggle
+                data-truai-prompt={details.prompt}
+              >
+                <span className="tds-ai-tag__icon" aria-hidden="true">
+                  <SparkleIcon />
+                </span>
+                <span className="tds-ai-tag__label">{details.prompt}</span>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      {findingsList}
+    </div>
   ) : null;
 
   return (
@@ -147,7 +141,14 @@ export function UboDrawer({ node, onConnectedSelect }: UboDrawerProps) {
         {summaryContent && (
           <DrawerAccordion
             title="Summary"
-            trailing={<span className="tds-tag tds-tag--sm kyb-truai-prompt-chip">TruAI</span>}
+            trailing={
+              <span className="tds-ai-tag tds-ai-tag--sm">
+                <span className="tds-ai-tag__icon" aria-hidden="true">
+                  <SparkleIcon />
+                </span>
+                <span className="tds-ai-tag__label">TruAI</span>
+              </span>
+            }
           >
             {summaryContent}
           </DrawerAccordion>

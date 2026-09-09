@@ -54,11 +54,11 @@
 
 /* --- Clear affordance (xmark trailing icon) --- */
 
-.tds-filter-button__clear {
+.tds-filter-button .tds-btn__trailing-icon.tds-filter-button__clear {
   display: none;
 }
 
-.tds-filter-button--selected .tds-filter-button__clear {
+.tds-filter-button--selected .tds-btn__trailing-icon.tds-filter-button__clear {
   display: inline-flex;
 }
 
