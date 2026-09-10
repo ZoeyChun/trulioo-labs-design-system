@@ -1,0 +1,217 @@
+/* ============================================================
+   Select Verification Flow ("Ready to verify")
+   Figma: Demo App · Unified KYC Flow → Select Flow (523:7931)
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+.kyc-flow-page {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--surface-neutral-03);
+  font-family: var(--font-family);
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-32) var(--spacing-16);
+}
+
+.kyc-flow {
+  display: flex;
+  flex-direction: column;
+  width: 402px;
+  max-width: 100%;
+  height: 874px;
+  max-height: calc(100vh - var(--spacing-64));
+  background-color: var(--surface-neutral-01);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--elevation-lg);
+  overflow: hidden;
+}
+
+/* --- Header --- */
+
+.kyc-flow__header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 var(--padding-lg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.kyc-flow__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.kyc-flow__back-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* --- Scrollable body --- */
+
+.kyc-flow__scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.kyc-flow__intro {
+  padding: var(--padding-xl) var(--padding-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+}
+
+.kyc-flow__intro-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.kyc-flow__title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.kyc-flow__subtitle {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+/* Wraps the device-intelligence banner + country field into one bordered,
+   rounded group, per Figma (node 523:7990). */
+.kyc-flow__device-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+}
+
+/* Rounded to match the card's top corners instead of clipping the card
+   with overflow:hidden, which would also clip the country dropdown menu. */
+.kyc-flow__device-card .kyc-flow__announcement {
+  border-radius: 15px 15px 0 0;
+}
+
+.kyc-flow__announcement-text {
+  color: var(--text-default);
+}
+
+.kyc-flow__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding: var(--padding-lg);
+}
+
+/* --- Verification method section --- */
+
+.kyc-flow__methods {
+  background-color: var(--surface-neutral-02);
+  padding: var(--padding-xl) var(--padding-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+}
+
+.kyc-flow__methods-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.kyc-flow__section-title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.kyc-flow__section-subtitle {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.kyc-flow__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+}
+
+/* Figma spec calls for a 16px corner radius on these cards (larger than the
+   shared --radius-card default used elsewhere), so it's overridden locally. */
+.kyc-flow__card {
+  border-radius: var(--radius-2xl);
+}
+
+.kyc-flow__card-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--icon-interactive);
+}
+
+.kyc-flow__card-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.kyc-flow__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+  margin-top: var(--gap-xs);
+}
+
+/* --- Footer --- */
+
+.kyc-flow__footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-md);
+  padding: var(--padding-lg) var(--padding-lg) var(--padding-xl);
+  background-color: var(--surface-neutral-01);
+  box-shadow: 0 -6px 10px -2px rgba(0, 0, 0, 0.06);
+}
+
+.kyc-flow__footnote {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-caption);
+}
+
+.kyc-flow__footnote-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.kyc-flow__continue {
+  width: 100%;
+}

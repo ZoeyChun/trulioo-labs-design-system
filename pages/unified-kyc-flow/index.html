@@ -1,0 +1,138 @@
+<!-- Static reference implementation — visual spec only. Figma: Demo App · Unified KYC Flow → "Select Flow" (node 523:7931). -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Verification Flow — Trulioo Labs</title>
+
+  <link rel="preload" href="../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
+  <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="../shared/flag-icons.css">
+  <link rel="stylesheet" href="unified-kyc-flow.css">
+</head>
+<body class="kyc-flow-page">
+
+  <div class="kyc-flow" role="main">
+
+    <header class="kyc-flow__header">
+      <button type="button" class="kyc-flow__back">
+        <svg class="kyc-flow__back-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+        <span>Home</span>
+      </button>
+    </header>
+
+    <div class="kyc-flow__scroll">
+
+      <section class="kyc-flow__intro">
+        <div class="kyc-flow__intro-text">
+          <h1 class="kyc-flow__title">Ready to verify</h1>
+          <p class="kyc-flow__subtitle">We picked the strongest route for your location.</p>
+        </div>
+
+        <div class="kyc-flow__device-card">
+          <div class="tds-announcement tds-announcement--inline kyc-flow__announcement">
+            <span class="tds-announcement__icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5" y="1.5" width="6" height="13" rx="1.2"/><path d="M7 12.2h2"/></svg>
+            </span>
+            <div class="tds-announcement__content">
+              <p class="tds-announcement__message kyc-flow__announcement-text">Detected by device intelligence</p>
+            </div>
+          </div>
+
+          <div class="kyc-flow__field">
+            <span class="tds-field-label">Country</span>
+
+            <div class="tds-select tds-select--full-width" id="kyc-country-select">
+              <button type="button" class="tds-select__trigger tds-select__trigger--lg" id="kyc-country-trigger" aria-haspopup="listbox" aria-expanded="false">
+                <span class="tds-select__country-flag" aria-hidden="true"><span class="fi fi-nl" id="kyc-country-flag"></span></span>
+                <span class="tds-select__text-wrapper">
+                  <span class="tds-select__value" id="kyc-country-value">Netherlands</span>
+                </span>
+                <span class="tds-select__trailing-group">
+                  <span class="tds-caret tds-caret--default" aria-hidden="true">
+                    <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                  </span>
+                </span>
+              </button>
+              <div class="tds-select__menu">
+                <div class="tds-dropdown-panel" role="listbox" aria-label="Country" id="kyc-country-options"></div>
+              </div>
+            </div>
+
+            <p class="tds-field-caption">IP + timezone + SIM signals agree · confidence 94%</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="kyc-flow__methods">
+        <div class="kyc-flow__methods-heading">
+          <h2 class="kyc-flow__section-title">Verification method</h2>
+          <p class="kyc-flow__section-subtitle">We've recommended the best option based on your location. You can switch if you prefer another method.</p>
+        </div>
+
+        <div class="kyc-flow__cards" role="radiogroup" aria-label="Verification method">
+
+          <label class="tds-radio-card kyc-flow__card tds-radio-card--selected">
+            <input type="radio" name="kyc-verification-method" class="tds-radio" checked>
+            <div class="tds-radio-card__content">
+              <div class="tds-radio-card__label-row">
+                <span class="tds-radio-card__icon kyc-flow__card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 5V3.5A1.5 1.5 0 0 1 3.5 2H5M11 2h1.5A1.5 1.5 0 0 1 14 3.5V5M14 11v1.5a1.5 1.5 0 0 1-1.5 1.5H11M5 14H3.5A1.5 1.5 0 0 1 2 12.5V11"/><circle cx="8" cy="7" r="1.8"/><path d="M5 11.4c.5-1.4 1.6-2 3-2s2.5.6 3 2"/></svg>
+                </span>
+                <span class="tds-radio-card__label">Document + biometrics</span>
+              </div>
+              <p class="tds-radio-card__description">Scan your passport or driving licence and take a selfie. Works in every market we support.</p>
+              <div class="kyc-flow__tags">
+                <span class="tds-tag tds-tag--sm tds-tag--default">NFC chip read</span>
+                <span class="tds-tag tds-tag--sm tds-tag--default">~90 seconds</span>
+                <span class="tds-tag tds-tag--sm tds-tag--default">LoA High</span>
+              </div>
+            </div>
+          </label>
+
+          <label class="tds-radio-card kyc-flow__card">
+            <input type="radio" name="kyc-verification-method" class="tds-radio">
+            <div class="tds-radio-card__content">
+              <div class="tds-radio-card__label-row">
+                <span class="tds-radio-card__icon kyc-flow__card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><circle cx="5.5" cy="7.5" r="1.3"/><path d="M3.5 11c.3-1.1 1.1-1.6 2-1.6s1.7.5 2 1.6"/><path d="M9.5 6.5H13M9.5 9H12"/></svg>
+                </span>
+                <span class="tds-radio-card__label">Digital ID &middot; iDIN</span>
+              </div>
+              <p class="tds-radio-card__description">Confirm with your bank login. Fastest route in Netherlands and returns attributes at LoA High.</p>
+              <div class="kyc-flow__tags">
+                <span class="tds-tag tds-tag--sm tds-tag--default">No document scan</span>
+                <span class="tds-tag tds-tag--sm tds-tag--default">~30 seconds</span>
+                <span class="tds-tag tds-tag--sm tds-tag--default">LoA High</span>
+              </div>
+            </div>
+          </label>
+
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="kyc-flow__footer">
+      <p class="kyc-flow__footnote">
+        <svg class="kyc-flow__footnote-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.2l2.2 1.3"/></svg>
+        This flow typically takes around 30 seconds
+      </p>
+      <button type="button" class="tds-btn tds-btn--primary tds-btn--lg kyc-flow__continue">Continue</button>
+    </footer>
+
+  </div>
+
+  <script src="unified-kyc-flow.js"></script>
+</body>
+</html>
