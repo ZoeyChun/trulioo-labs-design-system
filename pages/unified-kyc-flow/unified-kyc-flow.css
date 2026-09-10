@@ -109,6 +109,7 @@
    with overflow:hidden, which would also clip the country dropdown menu. */
 .kyc-flow__device-card .kyc-flow__announcement {
   border-radius: 15px 15px 0 0;
+  background-color: var(--surface-neutral-03);
 }
 
 .kyc-flow__announcement-text {
@@ -165,9 +166,19 @@
   border-radius: var(--radius-2xl);
 }
 
+/* No radio dot in either state — selection is shown via border weight alone. */
+.kyc-flow__card .tds-radio {
+  display: none;
+}
+
+.kyc-flow__card.tds-radio-card--selected {
+  border-width: 2px;
+}
+
 .kyc-flow__card-icon {
   width: 20px;
   height: 20px;
+  font-size: 18px;
   color: var(--icon-interactive);
 }
 
