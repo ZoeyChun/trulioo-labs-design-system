@@ -18,6 +18,7 @@
 }
 
 .kyc-flow {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 402px;
@@ -123,6 +124,10 @@
   padding: var(--padding-lg);
 }
 
+.kyc-flow__field .tds-field-caption {
+  margin: 0;
+}
+
 /* --- Verification method section --- */
 
 .kyc-flow__methods {
@@ -187,13 +192,21 @@
   position: relative;
   margin-top: 24px;
   --kyc-ribbon-color: var(--border-subtle);
+  --kyc-card-border-width: 1px;
 }
+
+/* left/right offsets below are relative to the card's padding edge (the
+   containing block for its absolutely-positioned children), which sits
+   --kyc-card-border-width inside the card's actual outer edge. Every
+   offset is shifted by that amount so the ribbon lines up flush with the
+   card's true sides regardless of border width (1px default / 2px
+   selected). */
 
 .kyc-flow__recommended-bar {
   position: absolute;
   top: -24px;
-  left: var(--radius-2xl);
-  right: var(--radius-2xl);
+  left: calc(var(--radius-2xl) - var(--kyc-card-border-width));
+  right: calc(var(--radius-2xl) - var(--kyc-card-border-width));
   height: 24px;
   background-color: var(--kyc-ribbon-color);
 }
@@ -209,12 +222,12 @@
 }
 
 .kyc-flow__recommended-cap--left {
-  left: 0;
+  left: calc(-1 * var(--kyc-card-border-width));
   border-top-left-radius: var(--radius-2xl);
 }
 
 .kyc-flow__recommended-cap--right {
-  right: 0;
+  right: calc(-1 * var(--kyc-card-border-width));
   border-top-right-radius: var(--radius-2xl);
 }
 
@@ -229,12 +242,12 @@
 }
 
 .kyc-flow__recommended-notch--left {
-  left: 0;
+  left: calc(-1 * var(--kyc-card-border-width));
   background: radial-gradient(circle at bottom right, transparent var(--radius-2xl), var(--kyc-ribbon-color) calc(var(--radius-2xl) + 1px));
 }
 
 .kyc-flow__recommended-notch--right {
-  right: 0;
+  right: calc(-1 * var(--kyc-card-border-width));
   background: radial-gradient(circle at bottom left, transparent var(--radius-2xl), var(--kyc-ribbon-color) calc(var(--radius-2xl) + 1px));
 }
 
@@ -252,6 +265,7 @@
 
 .kyc-flow__card--recommended.tds-radio-card--selected {
   --kyc-ribbon-color: var(--color-neutral-100);
+  --kyc-card-border-width: 2px;
 }
 
 .kyc-flow__card--recommended.tds-radio-card--selected .kyc-flow__recommended-label {
@@ -308,4 +322,178 @@
 
 .kyc-flow__continue {
   width: 100%;
+}
+
+/* --- Country overlay (full-screen), per Figma node 525:13408 --- */
+
+.kyc-country-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-neutral-01);
+}
+
+.kyc-country-overlay[hidden] {
+  display: none;
+}
+
+.kyc-country-overlay__header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  padding: var(--padding-xl) var(--padding-lg) var(--padding-lg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.kyc-country-overlay__heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gap-md);
+}
+
+.kyc-country-overlay__title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.kyc-country-overlay__close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.kyc-country-overlay__close:hover {
+  background-color: var(--surface-hover);
+}
+
+.kyc-country-overlay__close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.kyc-country-overlay__subtitle {
+  margin: calc(-1 * var(--gap-md)) 0 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.kyc-country-overlay__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.kyc-country-overlay__search-icon {
+  position: absolute;
+  left: var(--padding-md);
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+  pointer-events: none;
+}
+
+.kyc-country-overlay__search-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 var(--padding-md) 0 calc(var(--padding-md) + 16px + var(--gap-xs));
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-neutral-01);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+}
+
+.kyc-country-overlay__search-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.kyc-country-overlay__search-input:focus-visible {
+  outline: none;
+  border-color: var(--border-focus);
+  border-width: 2px;
+}
+
+.kyc-country-overlay__list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--padding-lg);
+}
+
+.kyc-country-overlay__section + .kyc-country-overlay__section {
+  margin-top: var(--gap-lg);
+}
+
+.kyc-country-overlay__section[hidden] {
+  display: none;
+}
+
+.kyc-country-overlay__section-label {
+  margin: 0 0 calc(var(--gap-xs) + 12px);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.kyc-country-overlay__items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#kyc-country-all {
+  margin: var(--gap-lg) calc(-1 * var(--padding-lg)) 0;
+  padding: var(--padding-lg);
+  background-color: var(--surface-neutral-02);
+}
+
+.kyc-country-overlay__item {
+  padding: var(--padding-sm) var(--padding-xs);
+}
+
+.kyc-country-overlay__item[hidden] {
+  display: none;
+}
+
+.kyc-country-overlay__item .tds-action-list-item__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  overflow: visible;
+  white-space: normal;
+}
+
+.kyc-country-overlay__item .tds-action-list-item__trailing-visual svg {
+  width: 16px;
+  height: 16px;
+}
+
+.kyc-country-overlay__empty {
+  margin: var(--gap-xl) 0 0;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-description);
+}
+
+.kyc-country-overlay__empty[hidden] {
+  display: none;
 }
