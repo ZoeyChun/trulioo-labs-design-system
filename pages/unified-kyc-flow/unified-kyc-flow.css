@@ -175,6 +175,89 @@
   border-width: 2px;
 }
 
+/* Recommended ribbon, per Figma (node 876:10097): a strip sitting above the
+   card. Its outer bottom corners "hug" the card's own rounded corners
+   instead of meeting it in a flat line. Each notch piece overlaps DOWN into
+   the card by exactly one corner-radius, and uses a radial-gradient centered
+   on the card's own corner-circle center — transparent inside that radius
+   (so the card's already-rounded corner shows through untouched) and
+   ribbon-colored outside it (filling the sliver the card's rounding leaves
+   bare). Color varies with selected state via --kyc-ribbon-color. */
+.kyc-flow__card--recommended {
+  position: relative;
+  margin-top: 24px;
+  --kyc-ribbon-color: var(--border-subtle);
+}
+
+.kyc-flow__recommended-bar {
+  position: absolute;
+  top: -24px;
+  left: var(--radius-2xl);
+  right: var(--radius-2xl);
+  height: 24px;
+  background-color: var(--kyc-ribbon-color);
+}
+
+/* The ribbon's true outer top corner: a normal convex rounded corner,
+   same style as the card's own corners. */
+.kyc-flow__recommended-cap {
+  position: absolute;
+  top: -24px;
+  width: var(--radius-2xl);
+  height: var(--radius-2xl);
+  background-color: var(--kyc-ribbon-color);
+}
+
+.kyc-flow__recommended-cap--left {
+  left: 0;
+  border-top-left-radius: var(--radius-2xl);
+}
+
+.kyc-flow__recommended-cap--right {
+  right: 0;
+  border-top-right-radius: var(--radius-2xl);
+}
+
+/* The seam notch, directly below the cap: overlaps down into the card by
+   one corner-radius, transparent inside the card's own corner-circle
+   (revealing its rounded corner untouched) and ribbon-colored outside it. */
+.kyc-flow__recommended-notch {
+  position: absolute;
+  top: calc(-24px + var(--radius-2xl));
+  width: var(--radius-2xl);
+  height: 24px;
+}
+
+.kyc-flow__recommended-notch--left {
+  left: 0;
+  background: radial-gradient(circle at bottom right, transparent var(--radius-2xl), var(--kyc-ribbon-color) calc(var(--radius-2xl) + 1px));
+}
+
+.kyc-flow__recommended-notch--right {
+  right: 0;
+  background: radial-gradient(circle at bottom left, transparent var(--radius-2xl), var(--kyc-ribbon-color) calc(var(--radius-2xl) + 1px));
+}
+
+.kyc-flow__recommended-label {
+  position: absolute;
+  top: -20px;
+  left: var(--padding-md);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+.kyc-flow__card--recommended.tds-radio-card--selected {
+  --kyc-ribbon-color: var(--color-neutral-100);
+}
+
+.kyc-flow__card--recommended.tds-radio-card--selected .kyc-flow__recommended-label {
+  color: var(--text-inverse);
+}
+
 .kyc-flow__card-icon {
   width: 20px;
   height: 20px;
