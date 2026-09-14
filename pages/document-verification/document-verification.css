@@ -1590,12 +1590,6 @@ button.tds-side-nav__nav-item,
   transform: rotate(90deg);
 }
 
-/* Network Insights group headers use a chevron-down (collapsed) that flips
-   up when expanded, instead of the right→down rotation. */
-.dv-ni2-groups .dv-group.dv-collapsible--open > .dv-collapsible__header .dv-chevron {
-  transform: rotate(180deg);
-}
-
 /* Sidebar accordions: title left, chevron-down on the right (rotates up when open).
    Padding lives on the header/body (not the block) so the header's top section is
    the same height whether the accordion is collapsed or expanded. */
@@ -3235,6 +3229,12 @@ button.tds-side-nav__nav-item,
 }
 .dv-te-option__desc { font-size: var(--font-size-xs); line-height: var(--line-height-xs); color: var(--text-caption); }
 .dv-te-option .tds-tag { flex-shrink: 0; }
+
+.dv-te-select:not(.tds-select--open) .tds-select__trigger .tds-tag {
+  background-color: var(--surface-neutral-02);
+  border-color: var(--border-subtle);
+  color: var(--text-description);
+}
 
 /* Match the option list width to the trigger (default is content-width). */
 .dv-te-select .tds-select__menu,

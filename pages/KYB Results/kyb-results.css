@@ -2341,7 +2341,7 @@
 }
 
 .kyb-match-source-table td:last-child {
-  width: 12rem;
+  width: 120px;
   text-align: right;
   white-space: nowrap;
 }

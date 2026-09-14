@@ -192,7 +192,7 @@
 
 .bv-result-table .tds-data-table th:nth-child(3),
 .bv-result-table .tds-data-table td:nth-child(3) {
-  width: 8.75rem;
+  width: 120px;
 }
 
 .bv-capabilities-table .tds-data-table th:nth-child(1),
@@ -202,7 +202,7 @@
 
 .bv-capabilities-table .tds-data-table th:nth-child(2),
 .bv-capabilities-table .tds-data-table td:nth-child(2) {
-  width: 8.75rem;
+  width: 120px;
 }
 
 .bv-result-table .tds-data-table__signals-icon svg {

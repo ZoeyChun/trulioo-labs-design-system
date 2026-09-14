@@ -2,7 +2,8 @@
   /* Figma — Unified Intelligence Experience / Design_2_VioletLight */
   --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
   --font-display: "Tobias", Georgia, "Times New Roman", serif;
-  --font-brand: 'Inter', system-ui, sans-serif;
+  --font-founders: "Founders Grotesk", system-ui, sans-serif;
+  --font-brand: var(--font-founders);
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
   --text-primary: #172d2d;

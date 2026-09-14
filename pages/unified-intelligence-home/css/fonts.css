@@ -7,3 +7,83 @@
     url("../fonts/tobias-regular.woff2") format("woff2"),
     url("../fonts/tobias-regular.otf") format("opentype");
 }
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-Light.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-LightItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-RegularItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-Medium.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-MediumItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-Semibold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-SemiboldItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-Bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/FoundersGrotesk-BoldItalic.otf") format("opentype");
+}

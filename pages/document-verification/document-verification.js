@@ -1623,7 +1623,7 @@
     const flagged = label === "Flagged";
     return `<div class="dv-group dv-collapsible${open ? " dv-collapsible--open" : ""}" data-group-key="${escapeHtml(label.toLowerCase())}" data-group-tone="${flagged ? "negative" : "positive"}" data-group-severity="${flagged ? 0 : 2}">
   <button class="dv-group__header dv-collapsible__header" type="button" aria-expanded="${open ? "true" : "false"}">
-    <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON_DOWN}</span>
+    <span class="dv-chevron" aria-hidden="true">${ICON_CHEVRON}</span>
     <span class="dv-group__label">${escapeHtml(label)}</span>
     ${niGroupTag(insights.length, flagged ? "negative" : "positive")}
   </button>
@@ -1792,7 +1792,6 @@
   ${renderDiRiskIndicators(di)}
 </div>
 ${renderSignalsToolbar()}
-<p class="dv-di-evidence-label">Evidence</p>
 <div class="dv-di-groups">${evidence}</div>`;
   }
   function renderDetailPairs(pairs) {

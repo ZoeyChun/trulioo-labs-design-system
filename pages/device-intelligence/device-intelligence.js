@@ -649,7 +649,6 @@
           "</button>" +
         "</div>" +
       "</div>" +
-      '<p class="dv-di-evidence-label">Evidence</p>' +
       '<div class="dv-di-groups">' +
         scenario.evidence.map(renderEvidenceGroup).join("") +
       "</div>"

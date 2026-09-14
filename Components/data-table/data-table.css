@@ -259,11 +259,21 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-8);
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   font-weight: var(--font-weight-figma);
   font-variation-settings: var(--font-variation-figma-medium);
   white-space: nowrap;
+}
+
+.tds-data-table th:has(.tds-data-table__signals),
+.tds-data-table td:has(.tds-data-table__signals) {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
 }
 
 .tds-data-table__signals-icon {

@@ -143,6 +143,7 @@
     "eidas-landing-back",
     "di-landing-back",
     "di-analyzing-back",
+    "di-result-back",
     "kyb-result-back",
     "kyc-home-back",
   ];
