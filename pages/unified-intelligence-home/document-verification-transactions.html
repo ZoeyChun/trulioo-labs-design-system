@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transactions — Trulioo Labs</title>
+  <title>Document Verification Transactions — Trulioo Labs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="css/truai-panel.css?v=4">
   <script src="js/truai-panel.js?v=4" defer></script>
 </head>
-<body data-sidenav="experimental" data-sidenav-active="history">
+<body data-sidenav="experimental" data-sidenav-active="history" data-history-product="dv">
 <div class="app-shell" id="app-shell">
   <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
 
@@ -67,24 +67,14 @@
     <div class="history-page">
       <div class="history-intro">
         <header class="history-hero">
-          <h1 class="history-hero__title">Transactions</h1>
-          <p class="history-hero__desc">View, search, and review previous AI investigations and verification activities across Trulioo Labs.</p>
+          <div class="history-hero__title-row">
+            <button type="button" class="dv-back-btn" id="dv-transactions-back" aria-label="Back">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+            </button>
+            <h1 class="history-hero__title">Document Verification Transactions</h1>
+          </div>
+          <p class="history-hero__desc">View, search, and review previous Document Verification investigations.</p>
         </header>
-
-        <div class="history-stats" aria-label="Transaction summary">
-          <div class="history-stats__item">
-            <p class="history-stats__label">Signals checked</p>
-            <p class="history-stats__value" id="historyStatSignals">2,385</p>
-          </div>
-          <div class="history-stats__item">
-            <p class="history-stats__label">Pass rate</p>
-            <p class="history-stats__value" id="historyStatPassRate">87%</p>
-          </div>
-          <div class="history-stats__item">
-            <p class="history-stats__label">Failed checks</p>
-            <p class="history-stats__value" id="historyStatFailed">66</p>
-          </div>
-        </div>
       </div>
 
       <div class="history-table-block">
@@ -94,7 +84,7 @@
               <span class="tds-text-input__leading-icon" aria-hidden="true">
                 <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
               </span>
-              <input class="tds-text-input__native" id="historySearchInput" type="search" placeholder="Search" autocomplete="off" aria-label="Search transactions">
+              <input class="tds-text-input__native" id="historySearchInput" type="search" placeholder="Search" autocomplete="off" aria-label="Search document verification transactions">
             </div>
           </div>
 
@@ -138,10 +128,9 @@
 
         <div class="tds-data-table-container history-table-card">
           <div class="tds-data-table__wrapper">
-            <table class="tds-data-table history-table">
+            <table class="tds-data-table history-table history-table--no-product">
               <colgroup>
                 <col class="history-col-transaction">
-                <col class="history-col-product">
                 <col class="history-col-country">
                 <col class="history-col-date">
                 <col class="history-col-status">
@@ -150,7 +139,6 @@
               <thead id="historyTableHead">
                 <tr>
                   <th scope="col" data-sort="transaction" aria-sort="none" tabindex="0"><span class="history-table__sort-label">Transaction <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>
-                  <th scope="col" data-sort="productType" aria-sort="none" tabindex="0"><span class="history-table__sort-label">Product type <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>
                   <th scope="col" data-sort="country" aria-sort="none" tabindex="0"><span class="history-table__sort-label">Country <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>
                   <th scope="col" data-sort="date" aria-sort="descending" tabindex="0"><span class="history-table__sort-label">Date <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>
                   <th scope="col" data-sort="status" aria-sort="none" tabindex="0"><span class="history-table__sort-label">Status <span class="tds-data-table__sort-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.2 6.2h7.6L8 11.4 4.2 6.2z"/></svg></span></span></th>

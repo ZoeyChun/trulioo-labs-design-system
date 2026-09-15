@@ -8,6 +8,10 @@
   var CHEVRON_RIGHT = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>';
   var COPY_SVG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 5.5V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg>';
   var MAX_PAGE_SIZE = 10;
+  var pageConfig = {
+    product: (document.body && document.body.getAttribute('data-history-product')) || '',
+    hideProductColumn: !!(document.body && document.body.getAttribute('data-history-product'))
+  };
   var MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var DATE_RANGE_FIELDS_HTML =
     '<div class="tds-date-picker-range__fields">' +
@@ -45,11 +49,37 @@
     Completed: 'default'
   };
 
-  var FILTER_CONFIG = [
-    { key: 'productType', label: 'Product type', items: historyFilterGroups.productType },
-    { key: 'status', label: 'Status', items: historyFilterGroups.status },
-    { key: 'country', label: 'Country', items: historyFilterGroups.country }
-  ];
+  function scopedTransactions() {
+    var items = historyTransactions || [];
+    if (!pageConfig.product) return items;
+    return items.filter(function (item) { return item.product === pageConfig.product; });
+  }
+
+  function uniqueInPreferredOrder(items, key, preferred) {
+    var present = {};
+    items.forEach(function (item) {
+      if (item[key]) present[item[key]] = true;
+    });
+    var ordered = (preferred || []).filter(function (value) { return present[value]; });
+    Object.keys(present).forEach(function (value) {
+      if (ordered.indexOf(value) === -1) ordered.push(value);
+    });
+    return ordered;
+  }
+
+  var scopedItems = scopedTransactions();
+  var FILTER_CONFIG = [];
+  if (!pageConfig.product) {
+    FILTER_CONFIG.push({
+      key: 'productType',
+      label: 'Product type',
+      items: historyFilterGroups.productType
+    });
+  }
+  FILTER_CONFIG.push(
+    { key: 'status', label: 'Status', items: uniqueInPreferredOrder(scopedItems, 'status', historyFilterGroups.status) },
+    { key: 'country', label: 'Country', items: uniqueInPreferredOrder(scopedItems, 'country', historyFilterGroups.country) }
+  );
 
   var state = {
     search: '',
@@ -75,6 +105,20 @@
     dateRange: document.getElementById('historyDateRange'),
     toast: document.getElementById('historyToast')
   };
+
+  (function bindTransactionsBack() {
+    var backBtn = document.getElementById('dv-transactions-back');
+    if (!backBtn || backBtn.getAttribute('data-labs-back') === 'bound') return;
+    backBtn.setAttribute('data-labs-back', 'bound');
+    backBtn.addEventListener('click', function (event) {
+      event.preventDefault();
+      if (document.referrer) {
+        history.back();
+        return;
+      }
+      window.location.href = 'labs.html';
+    });
+  })();
 
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -181,7 +225,11 @@
   }
 
   function filteredItems() {
-    return sortItems(historyTransactions.filter(matchesFilters));
+    return sortItems(scopedTransactions().filter(matchesFilters));
+  }
+
+  function columnCount() {
+    return pageConfig.hideProductColumn ? 5 : 6;
   }
 
   function statusTagClass(status) {
@@ -396,7 +444,7 @@
     var total = visible.length;
 
     if (!total) {
-      els.tbody.innerHTML = '<tr><td colspan="6" class="history-empty">No transactions match your search or filters.</td></tr>';
+      els.tbody.innerHTML = '<tr><td colspan="' + columnCount() + '" class="history-empty">No transactions match your search or filters.</td></tr>';
       renderFooter(0);
       return;
     }
@@ -422,12 +470,13 @@
               '</span>' +
             '</span>' +
           '</td>' +
+          (pageConfig.hideProductColumn ? '' :
           '<td>' +
             '<span class="history-product">' +
               '<span class="history-product__icon" aria-hidden="true">' + productIcon(item) + '</span>' +
               '<span class="history-product__label">' + escapeHtml(item.productType) + '</span>' +
             '</span>' +
-          '</td>' +
+          '</td>') +
           '<td>' +
             '<span class="history-country">' +
               '<span class="history-country__flag" aria-hidden="true"><span class="fi fi-' + escapeHtml(item.countryCode) + '"></span></span>' +
@@ -518,7 +567,7 @@
     try {
       sessionStorage.setItem(
         'labsHistoryReturnUrl',
-        new URL('history.html', window.location.href).href
+        window.location.href.split('#')[0].split('?')[0]
       );
       if (item.product === 'eid') {
         sessionStorage.setItem('eid-demo-session', JSON.stringify({
@@ -550,7 +599,7 @@
           country: item.country,
           countryCode: item.countryCode
         }));
-        sessionStorage.setItem('kybHomeUrl', new URL('history.html', window.location.href).href);
+        sessionStorage.setItem('kybHomeUrl', window.location.href.split('#')[0].split('?')[0]);
       }
     } catch (e) { /* demo-only */ }
 

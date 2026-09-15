@@ -52,9 +52,43 @@
   width: 100%;
 }
 
+.history-hero__title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+}
+
+.dv-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-neutral-01);
+  color: var(--icon-interactive);
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--shadow-button-elevated);
+}
+
+.dv-back-btn:hover {
+  background-color: var(--surface-neutral-02);
+}
+
+.dv-back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 .history-hero__title {
   margin: 0;
-  width: 100%;
+  min-width: 0;
   font-family: var(--font-ui);
   font-size: 20px;
   font-weight: 600;
@@ -70,6 +104,10 @@
   font-size: 14px;
   line-height: 18px;
   color: var(--text-subtle, rgba(23, 45, 45, 0.7));
+}
+
+.history-hero:has(.history-hero__title-row) .history-hero__desc {
+  padding-left: 48px;
 }
 
 .history-stats {
@@ -274,7 +312,10 @@
 
 .history-table col.history-col-actions,
 .history-table th:nth-child(6),
-.history-table td:nth-child(6) {
+.history-table td:nth-child(6),
+.history-table--no-product col.history-col-actions,
+.history-table--no-product th:last-child,
+.history-table--no-product td:last-child {
   width: 40px;
 }
 

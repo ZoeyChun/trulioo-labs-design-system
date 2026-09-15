@@ -128,6 +128,40 @@ button.tds-side-nav__collapse-bar:hover {
   object-fit: cover;
 }
 
+.tds-side-nav__brand-expanded {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.tds-side-nav--collapsed .tds-side-nav__brand-expanded {
+  display: none;
+}
+
+.tds-side-nav:not(.tds-side-nav--collapsed) .tds-side-nav__logo {
+  display: none;
+}
+
+.tds-side-nav__brand-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 152px;
+  height: 24px;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.tds-side-nav__brand-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
 /* --- Main content (Figma: px 16, py 24, gap 16) --- */
 
 .tds-side-nav__main {

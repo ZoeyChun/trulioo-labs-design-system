@@ -1,17 +1,10 @@
-/* Experimental sidenav — Figma 975:11948 (icon rail when collapsed). Scoped to homepage experimental. */
+/* Labs SideNav — Figma 1187:10323 / 1188:10370. Scoped to experimental pages. */
 
 body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed {
   width: 72px;
-  cursor: default;
 }
 
-body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__icon-button,
-body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__brand {
-  cursor: pointer;
-}
-
-body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__nav-stack,
-body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__collapse-bar {
+body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed .tds-side-nav__nav-stack {
   display: none !important;
 }
 
@@ -43,12 +36,85 @@ body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-button[aria-
 body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-button--active .icon,
 body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-button[aria-current="page"] .icon {
   stroke: #fff;
-  fill: #fff;
   color: #fff;
+}
+
+body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-button--active .tds-labs-icon,
+body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__icon-button[aria-current="page"] .tds-labs-icon {
+  stroke: none;
+  fill: #fff;
 }
 
 body[data-sidenav="experimental"] .tds-side-nav .tds-side-nav__profile--collapsed {
   justify-content: center;
+}
+
+/* Home stays put; KYB/KYC list scrolls so the Home row is not clipped. */
+body[data-sidenav="experimental"] .tds-side-nav:not(.tds-side-nav--collapsed) .tds-side-nav__main {
+  overflow: hidden;
+}
+
+body[data-sidenav="experimental"] .tds-side-nav:not(.tds-side-nav--collapsed) .tds-side-nav__nav-stack {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body[data-sidenav="experimental"] .tds-side-nav:not(.tds-side-nav--collapsed) .tds-side-nav__nav-group {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Default (non-active) rows stay dark on the light sidenav — never inherit white. */
+body[data-sidenav="experimental"] .tds-side-nav__nav-item,
+body[data-sidenav="experimental"] button.tds-side-nav__nav-item,
+body[data-sidenav="experimental"] a.tds-side-nav__nav-item {
+  color: var(--text-default, #172d2d);
+  text-decoration: none;
+  background-color: transparent;
+}
+
+body[data-sidenav="experimental"] .tds-side-nav__nav-item .tds-side-nav__nav-item-icon,
+body[data-sidenav="experimental"] .tds-side-nav__nav-item .tds-side-nav__nav-item-chevron {
+  color: var(--icon-faint, #617269);
+}
+
+body[data-sidenav="experimental"] .tds-side-nav__nav-item .tds-side-nav__nav-item-icon svg {
+  color: inherit;
+}
+
+body[data-sidenav="experimental"] .tds-side-nav__nav-item--active,
+body[data-sidenav="experimental"] .tds-side-nav__nav-item[aria-current="page"],
+body[data-sidenav="experimental"] button.tds-side-nav__nav-item--active,
+body[data-sidenav="experimental"] button.tds-side-nav__nav-item[aria-current="page"],
+body[data-sidenav="experimental"] a.tds-side-nav__nav-item--active,
+body[data-sidenav="experimental"] a.tds-side-nav__nav-item[aria-current="page"] {
+  background-color: var(--surface-inverse, #172d2d);
+  color: var(--text-inverse, #fff);
+}
+
+body[data-sidenav="experimental"] .tds-side-nav__nav-item--active .tds-side-nav__nav-item-icon,
+body[data-sidenav="experimental"] .tds-side-nav__nav-item[aria-current="page"] .tds-side-nav__nav-item-icon,
+body[data-sidenav="experimental"] .tds-side-nav__nav-item--active .tds-side-nav__nav-item-chevron,
+body[data-sidenav="experimental"] .tds-side-nav__nav-item[aria-current="page"] .tds-side-nav__nav-item-chevron {
+  color: var(--icon-inverse, #fff);
+}
+
+/* Catalog icons keep native aspect ratio inside the 24px slot (max 16px glyph). */
+body[data-sidenav="experimental"] .tds-side-nav__sub-item-icon .fa-icon,
+body[data-sidenav="experimental"] .tds-side-nav__sub-item-icon .icon,
+body[data-sidenav="experimental"] .tds-side-nav__sub-item-icon svg {
+  width: auto;
+  height: auto;
+  max-width: 16px;
+  max-height: 16px;
+}
+
+body[data-sidenav="experimental"] .tds-side-nav__sub-nav {
+  background-color: #f4f6f4;
+  border-radius: 12px;
+  padding: 12px;
 }
 
 /* Product pages keep the expanded nav-stack for the mobile drawer. */
