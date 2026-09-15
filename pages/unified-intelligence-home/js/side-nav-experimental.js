@@ -25,7 +25,8 @@
     { id: "policy-review", title: "Policy Review" },
     { id: "kyb-self-serve", title: "KYB Self-Serve" },
     { id: "ubo-agent", title: "UBO Agent" },
-    { id: "deep-search", title: "Deep Search" }
+    { id: "deep-search", title: "Deep Search" },
+    { id: "trulioo-mcp-agent", title: "Trulioo MCP Agent" }
   ];
 
   var KYC_ITEMS = [
@@ -33,8 +34,7 @@
     { id: "bank-verification", title: "Bank Verification", path: "bank-verification/index.html", match: ["bank-verification"] },
     { id: "electronic-id", title: "Electronic ID", path: "electronic-id/index.html", match: ["electronic-id"] },
     { id: "kyc-eidas", title: "KYC eIDAS", path: "KYC eIDAS/index.html", match: ["kyc eidas", "kyc-eidas"] },
-    { id: "device-intelligence", title: "Device Intelligence", path: "device-intelligence/index.html", match: ["device-intelligence"] },
-    { id: "trulioo-mcp-agent", title: "Trulioo MCP Agent" }
+    { id: "device-intelligence", title: "Device Intelligence", path: "device-intelligence/index.html", match: ["device-intelligence"] }
   ];
 
   function currentPath() {
