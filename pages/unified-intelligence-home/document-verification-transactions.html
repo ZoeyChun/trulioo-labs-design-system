@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/page-hero.css">
-  <link rel="stylesheet" href="css/history.css?v=13">
+  <link rel="stylesheet" href="css/history.css?v=14">
   <link rel="stylesheet" href="css/truai-panel.css?v=4">
   <script src="js/truai-panel.js?v=4" defer></script>
 </head>
@@ -62,20 +62,16 @@
   </aside>
 
   <main class="app-main history-main">
-    <button class="truai-btn" type="button" aria-controls="truaiPanel" aria-expanded="false" aria-label="Open TruAI chat" onclick="window.TruAIPanel && window.TruAIPanel.open()"><span aria-hidden="true">✦</span> TruAI</button>
-
     <div class="history-page">
-      <div class="history-intro">
-        <header class="history-hero">
-          <div class="history-hero__title-row">
-            <button type="button" class="dv-back-btn" id="dv-transactions-back" aria-label="Back">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
-            </button>
-            <h1 class="history-hero__title">Document Verification Transactions</h1>
-          </div>
-          <p class="history-hero__desc">View, search, and review previous Document Verification investigations.</p>
-        </header>
-      </div>
+      <header class="history-hero">
+        <div class="history-hero__title-row">
+          <button type="button" class="dv-back-btn" id="dv-transactions-back" aria-label="Back">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+          </button>
+          <h1 class="history-hero__title">Document Verification Transactions</h1>
+          <button class="truai-btn" type="button" aria-controls="truaiPanel" aria-expanded="false" aria-label="Open TruAI chat" onclick="window.TruAIPanel && window.TruAIPanel.open()"><span aria-hidden="true">✦</span> TruAI</button>
+        </div>
+      </header>
 
       <div class="history-table-block">
         <div class="history-toolbar">

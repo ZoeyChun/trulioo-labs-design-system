@@ -110,6 +110,57 @@
   padding-left: 48px;
 }
 
+/* DocV transactions — Figma 7112:103626 PageHeader */
+body[data-history-product="dv"] .history-page {
+  padding-top: 24px;
+  gap: 48px;
+}
+
+body[data-history-product="dv"] .history-hero {
+  gap: 0;
+}
+
+body[data-history-product="dv"] .history-hero__title-row {
+  gap: 12px;
+}
+
+body[data-history-product="dv"] .history-hero__title {
+  flex: 1 1 auto;
+  font-size: 24px;
+  line-height: normal;
+  font-weight: 600;
+  color: var(--text-body, var(--text-primary, #172d2d));
+}
+
+body[data-history-product="dv"] .dv-back-btn {
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  box-shadow: none;
+  color: var(--icon-faint, #617269);
+  background-color: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
+}
+
+body[data-history-product="dv"] .dv-back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+body[data-history-product="dv"] .history-main .truai-btn {
+  position: static;
+  top: auto;
+  right: auto;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  body[data-history-product="dv"] .history-page {
+    padding-top: 24px;
+  }
+}
+
 .history-stats {
   display: flex;
   align-items: stretch;
