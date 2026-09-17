@@ -21,7 +21,7 @@
   var CHEVRON_UP = '<path d="M4 10l4-4 4 4"/>';
 
   var KYB_ITEMS = [
-    { id: "business-reputation-review", title: "Business Reputation Review", path: "KYB Results/index.html", match: ["/kyb results/", "/kyb-results"] },
+    { id: "business-reputation-review", title: "Business Reputation Review", path: "business-reputation-review/index.html", match: ["/business-reputation-review/", "/kyb results/", "/kyb-results"] },
     { id: "policy-review", title: "Policy Review" },
     { id: "kyb-self-serve", title: "KYB Self-Serve" },
     { id: "ubo-agent", title: "UBO Agent" },

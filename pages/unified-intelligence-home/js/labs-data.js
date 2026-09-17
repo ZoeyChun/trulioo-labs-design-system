@@ -82,7 +82,7 @@ var labsExperiences = [
     external: true,
     featured: true,
     order: 6,
-    url: '../KYB Results/index.html',
+    url: '../business-reputation-review/index.html',
     preview: 'assets/labs-preview-kyb-results.png',
   },
   {

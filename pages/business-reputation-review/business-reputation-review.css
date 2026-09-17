@@ -1,0 +1,308 @@
+/* ============================================================
+   Business Reputation Review — form page
+   Figma: KYB Horizon form (7110:168531) + pre-filled state (7140:171263)
+   Layout chrome from document-verification-flow.css + app-shell.
+   ============================================================ */
+
+.brr-form-step {
+  width: 100%;
+  max-width: 800px;
+}
+
+.brr-form-card .dv-flow-card__header {
+  padding: var(--spacing-24) var(--spacing-32);
+}
+
+.brr-form-card .dv-flow-card__title {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+}
+
+.brr-form-card__body {
+  padding-bottom: var(--spacing-24);
+}
+
+.brr-form-card__field {
+  padding: 0 var(--spacing-32) var(--spacing-24);
+}
+
+/* --- Combined country + business search field --- */
+
+.brr-search-field {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-inset);
+}
+
+.brr-search-field:focus-within {
+  border-color: var(--border-focus);
+}
+
+.brr-search-field:has(.brr-search-country.tds-select--open),
+.brr-search-field:has(.brr-search.tds-combobox--open) {
+  border-color: var(--border-focus);
+}
+
+.brr-search-country {
+  position: relative;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.brr-search-country.tds-select--interactive .tds-select__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  width: auto;
+  height: 100%;
+  min-height: 40px;
+  padding: 0 var(--spacing-12);
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  border-radius: var(--radius-button) 0 0 var(--radius-button);
+}
+
+.brr-search-country.tds-select--interactive .tds-select__trigger:hover {
+  background-color: var(--surface-hover);
+}
+
+.brr-search-country.tds-select--interactive .tds-select__trigger:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+
+.brr-search-country .tds-select__country-flag {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.brr-search-country .tds-select__country-flag .fi {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.brr-search-country__value {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.brr-search-country.tds-select--open {
+  z-index: 21;
+}
+
+.brr-search-country__menu {
+  min-width: 220px;
+}
+
+/* DropdownPanel menu type (Figma 320:21652): body/sm 14px, 30px rows */
+.brr-search-country__menu.tds-dropdown-panel .tds-action-list-item {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  padding: 6px var(--padding-xs);
+  box-sizing: border-box;
+}
+
+.brr-search-country__menu.tds-dropdown-panel .tds-action-list-item__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+.brr-search-country__menu .tds-action-list-item__leading-visual .fi {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.brr-search-field__divider {
+  width: 1px;
+  align-self: stretch;
+  margin: var(--spacing-8) 0;
+  background-color: var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.brr-search {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.brr-search__field {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 var(--radius-button) var(--radius-button) 0;
+}
+
+.brr-search-hint {
+  margin: var(--spacing-8) 0 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.brr-search-hint--active {
+  color: var(--text-default);
+}
+
+.brr-form-card:has(.brr-search.tds-combobox--open),
+.brr-form-card:has(.brr-search-country.tds-select--open) {
+  overflow: visible;
+}
+
+.brr-search.tds-combobox--open {
+  z-index: 20;
+}
+
+.brr-search__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.brr-search__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.brr-search__panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.brr-search__options {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.brr-search__footer {
+  padding: var(--spacing-8) var(--spacing-12);
+  border-top: 1px solid var(--border-subtle);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+  background-color: var(--surface-neutral-02);
+}
+
+.brr-search__options .tds-action-list-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.brr-search__options .tds-action-list-item__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.brr-search__options .tds-action-list-item__description {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.brr-search__options .tds-action-list-item--active,
+.brr-search__options .tds-action-list-item--active:hover {
+  background-color: var(--surface-selected);
+}
+
+/* --- Pre-filled section (Figma 7140:171604) --- */
+
+.brr-prefill {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  width: 100%;
+  padding: var(--spacing-32);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.brr-prefill[hidden] {
+  display: none !important;
+}
+
+.brr-prefill__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  align-self: flex-start;
+  padding: var(--spacing-4) var(--spacing-12);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-positive);
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-medium);
+}
+
+.brr-prefill__badge svg {
+  width: 11px;
+  height: 11px;
+  color: var(--icon-positive);
+}
+
+.brr-prefill__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-16) var(--spacing-16);
+}
+
+.brr-prefill__grid .tds-text-input {
+  min-width: 0;
+}
+
+.brr-prefill__field--full {
+  grid-column: 1 / -1;
+}
+
+.brr-prefill .tds-text-input__native[readonly] {
+  cursor: default;
+}
+
+@media (max-width: 720px) {
+  .brr-form-card .dv-flow-card__header,
+  .brr-form-card__field {
+    padding-left: var(--spacing-24);
+    padding-right: var(--spacing-24);
+  }
+
+  .brr-form-card .dv-flow-section__label {
+    padding-left: var(--spacing-24);
+    padding-right: var(--spacing-24);
+  }
+
+  .brr-prefill {
+    padding: var(--spacing-24);
+  }
+
+  .brr-prefill__grid {
+    grid-template-columns: 1fr;
+  }
+}

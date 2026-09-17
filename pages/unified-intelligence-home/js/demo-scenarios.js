@@ -28,6 +28,7 @@
       status: 'Elevated risk detected',
       statusTone: 'warning',
       sample: 'elevated',
+      url: '../business-reputation-review/index.html',
     },
     {
       id: 'business-credit-assessment',

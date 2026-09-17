@@ -29,6 +29,7 @@
     "dv-transactions-back",
     "kyb-result-back",
     "kyc-home-back",
+    "brr-home-back",
   ];
 
   function goBack() {
