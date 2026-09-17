@@ -21,12 +21,12 @@
   var CHEVRON_UP = '<path d="M4 10l4-4 4 4"/>';
 
   var KYB_ITEMS = [
-    { id: "business-reputation-review", title: "Business Reputation Review", path: "business-reputation-review/index.html", match: ["/business-reputation-review/", "/kyb results/", "/kyb-results"] },
+    { id: "business-reputation-review", title: "Business Horizon", path: "business-reputation-review/index.html", match: ["/business-reputation-review/", "/kyb results/", "/kyb-results"] },
     { id: "policy-review", title: "Policy Review" },
     { id: "kyb-self-serve", title: "KYB Self-Serve" },
     { id: "ubo-agent", title: "UBO Agent" },
     { id: "deep-search", title: "Deep Search" },
-    { id: "trulioo-mcp-agent", title: "Trulioo MCP Agent" }
+    { id: "trulioo-mcp-agent", title: "Orchestration Agent" }
   ];
 
   var KYC_ITEMS = [

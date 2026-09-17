@@ -84,7 +84,7 @@
   }
 
   function compactHeroValue(value) {
-    return value.length > 5 || /[a-z£]/i.test(value);
+    return value.length > 5 || /[a-z$]/i.test(value);
   }
 
   function renderDriver(driver) {

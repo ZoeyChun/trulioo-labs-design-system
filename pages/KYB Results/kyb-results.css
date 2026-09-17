@@ -2233,6 +2233,18 @@
   border-radius: var(--radius-modal);
 }
 
+.kyb-match-verification-banner--positive {
+  background-color: var(--surface-positive);
+}
+
+.kyb-match-verification-banner--positive .kyb-match-verification-banner__icon {
+  color: var(--icon-positive);
+}
+
+.kyb-match-verification-banner--positive .kyb-match-verification-banner__title {
+  color: var(--text-positive);
+}
+
 .kyb-match-verification-banner__main {
   display: flex;
   flex: 1 1 auto;

@@ -249,23 +249,7 @@
 }
 
 .brr-prefill__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-4);
   align-self: flex-start;
-  padding: var(--spacing-4) var(--spacing-12);
-  border-radius: var(--radius-full);
-  background-color: var(--surface-positive);
-  color: var(--text-default);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-md);
-  font-weight: var(--font-weight-medium);
-}
-
-.brr-prefill__badge svg {
-  width: 11px;
-  height: 11px;
-  color: var(--icon-positive);
 }
 
 .brr-prefill__grid {

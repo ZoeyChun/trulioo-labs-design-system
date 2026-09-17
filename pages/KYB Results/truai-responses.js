@@ -64,7 +64,7 @@
       hero: { value: "4", label: "Ownership layers", meta: ["UBO inferred"], tone: "high" },
       drivers: [
         { title: "Apex Holdings BVI Ltd.", badge: "Inferred", badgeTone: "intermediate", detail: "100% parent · BVI" },
-        { title: "James Whitmore", badge: "Verified", badgeTone: "positive", detail: "Director · UK registry" },
+        { title: "James Whitmore", badge: "Verified", badgeTone: "positive", detail: "Director · state registry" },
       ],
       findings: ["Offshore holding in chain", "UBO not independently verified"],
       primaryAction: { label: "Start enhanced due diligence", tab: "ownership" },
@@ -81,7 +81,7 @@
       hero: { value: "6", label: "Ownership layers", meta: ["Inferred UBO"], tone: "medium" },
       drivers: [
         { title: "Helix Meridian Holdings BVI Ltd.", badge: "Inferred", badgeTone: "intermediate", detail: "100% parent · BVI" },
-        { title: "David Okonkwo", badge: "Verified", badgeTone: "positive", detail: "Director · UK registry" },
+        { title: "David Okonkwo", badge: "Verified", badgeTone: "positive", detail: "Director · state registry" },
       ],
       findings: ["Multi-layer offshore structure", "Inferred beneficial owner"],
       primaryAction: { label: "Review ownership chain", tab: "ownership" },
@@ -100,9 +100,9 @@
 
   var TRADING = {
     elevated: {
-      hero: { value: "£0", label: "Reported revenue", meta: ["No trading evidence"], tone: "high" },
+      hero: { value: "$0", label: "Reported revenue", meta: ["No trading evidence"], tone: "high" },
       drivers: [
-        { title: "Companies House filings", badge: "Dormant", badgeTone: "negative", detail: "No turnover reported" },
+        { title: "Secretary of State filings", badge: "Dormant", badgeTone: "negative", detail: "No revenue reported" },
         { title: "Trade references", badge: "None", badgeTone: "negative", detail: "No supplier activity" },
       ],
       findings: ["No evidence of active trading", "Dormant company status"],
@@ -110,7 +110,7 @@
       secondaryAction: { label: "Check registry filings", tab: "sources" },
     },
     standard: {
-      hero: { value: "£2.4M", label: "Reported revenue", meta: ["Active since 2019"], tone: "low" },
+      hero: { value: "$2.4M", label: "Reported revenue", meta: ["Active since 2019"], tone: "low" },
       drivers: [
         { title: "Annual accounts", badge: "Filed", badgeTone: "positive", detail: "Consistent revenue growth" },
       ],
@@ -151,7 +151,7 @@
     return (
       document.body.getAttribute("data-kyb-entity-name") ||
       (document.querySelector(".dv-title") && document.querySelector(".dv-title").textContent.trim()) ||
-      "Meridian Apex Consulting Ltd."
+      "Meridian Apex Consulting Inc."
     );
   }
 

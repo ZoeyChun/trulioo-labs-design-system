@@ -4,3 +4,5 @@ docs/
 docs-dist/
 pages-artifact/
 *.xlsx
+scratch-*.png
+.claude/

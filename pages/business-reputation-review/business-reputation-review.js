@@ -20,6 +20,8 @@
     { code: "sg", name: "Singapore", registry: "ACRA business registry", broadTotal: 157 },
   ];
 
+  var DEFAULT_COUNTRY_CODE = "us";
+
   var MERIDIAN_APEX = {
     id: "meridian-apex",
     name: "Meridian Apex Consulting Ltd.",
@@ -60,7 +62,7 @@
   };
 
   var state = {
-    country: COUNTRIES[0],
+    country: getCountryByCode(DEFAULT_COUNTRY_CODE),
     selected: null,
     activeIndex: -1,
     menuOpen: false,

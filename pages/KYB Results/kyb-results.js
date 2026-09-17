@@ -278,13 +278,13 @@
     if (!pre) return;
     var text = pre.textContent;
     if (entity && entity.name) {
-      text = text.split("Meridian Apex Consulting Ltd.").join(entity.name);
-      var limitedName = entity.name.replace(/\.\s*$/, "");
-      if (!/limited$/i.test(limitedName)) limitedName += " Limited";
-      text = text.split("Meridian Apex Consulting Limited").join(limitedName);
+      text = text.split("Meridian Apex Consulting Inc.").join(entity.name);
+      var formalName = entity.name.replace(/\.\s*$/, "");
+      formalName = formalName.replace(/\binc$/i, "Incorporated").replace(/\bcorp$/i, "Corporation");
+      text = text.split("Meridian Apex Consulting Incorporated").join(formalName);
     }
     if (domain) {
-      text = text.replace(/info@meridianapexconsulting\.co\.uk/g, "info@" + domain);
+      text = text.replace(/info@meridianapexconsulting\.com/g, "info@" + domain);
     }
     pre.textContent = text;
   }
@@ -684,9 +684,72 @@
     );
   }
 
-  function renderWebSocialAccordions() {
+  var activeProfile = null;
+  var activeEntity = null;
+
+  var DEFAULT_SOCIAL_PROFILE = {
+    handle: "meridian",
+    shortName: "Meridian Apex",
+    linkedinAbout: "Management consultancy services for enterprise clients across the United States.",
+    instagramAbout: "US-based management consultancy.",
+    tiktokBiography: "Management consultancy | Delaware",
+    industries: ["Management Consulting", "Professional Services"],
+    specialities: ["Business advisory", "Corporate governance", "Risk consulting"],
+    businessCategory: "Management Consulting",
+    category: "Professional Services",
+    orgType: "Corporation",
+    companySize: "0 employees",
+    employees: "0",
+    founded: "2020",
+    locations: ["Wilmington, DE"],
+    headquarters: "Wilmington, Delaware, US",
+    countryCodes: ["USA"],
+    linkedinFollowers: "12",
+    instagramFollowers: "48",
+    instagramFollowing: "3",
+    instagramPostCount: "0",
+    highlightsCount: "0",
+    avgEngagement: "0%",
+    twitterFollowers: "7",
+    twitterFollowing: "2",
+    twitterSubscriptions: "0",
+    twitterPostCount: "3",
+    twitterDateJoined: "March 2019",
+    tiktokFollowers: "0",
+    tiktokFollowing: "0",
+    tiktokLikeCount: "0",
+    tiktokLikes: "0",
+    tiktokPostCount: "0",
+    tiktokDateJoined: "Not Available",
+    businessAccount: true,
+    professionalAccount: false,
+    verified: false,
+  };
+
+  function socialProfileContext(profile, entity) {
+    var social = {};
+    Object.keys(DEFAULT_SOCIAL_PROFILE).forEach(function (key) {
+      social[key] = DEFAULT_SOCIAL_PROFILE[key];
+    });
+
+    var overrides = (profile && profile.detail && profile.detail.social) || {};
+    Object.keys(overrides).forEach(function (key) {
+      social[key] = overrides[key];
+    });
+
+    var domainSlug = entity && entity.name ? slugifyDomain(entity.name) : "";
+    social.name = (entity && entity.name) || DEFAULT_COMPANY_NAME;
+    social.domain = social.domain || (domainSlug ? domainSlug + ".com" : DEFAULT_DOMAIN);
+    social.email = social.email || "info@" + social.domain;
+    return social;
+  }
+
+  function renderWebSocialAccordions(profile, entity) {
     var container = document.getElementById("kyb-web-accordions");
     if (!container) return;
+
+    var s = socialProfileContext(profile, entity);
+    var siteLink = webAccordionLink("https://" + s.domain, s.domain);
 
     var accordions = [
       {
@@ -694,29 +757,21 @@
         title: "LinkedIn",
         expanded: true,
         left: [
-          { label: "Profile Name", value: webAccordionTextValue("Meridian Apex Consulting Ltd.") },
-          {
-            label: "About",
-            value: webAccordionTextValue(
-              "Management consultancy services for enterprise clients across the UK and Europe."
-            ),
-          },
-          { label: "Industries", value: webAccordionTags(["Management Consulting", "Professional Services"]), tagRow: true },
-          { label: "Specialities", value: webAccordionTags(["Business advisory", "Corporate governance", "Risk consulting"]), tagRow: true },
-          {
-            label: "Website",
-            value: webAccordionLink("https://meridianapexconsulting.co.uk", "meridianapexconsulting.co.uk"),
-          },
-          { label: "Followers", value: webAccordionTextValue("12") },
-          { label: "Founded", value: webAccordionTextValue("2020") },
+          { label: "Profile Name", value: webAccordionTextValue(s.name) },
+          { label: "About", value: webAccordionTextValue(s.linkedinAbout) },
+          { label: "Industries", value: webAccordionTags(s.industries), tagRow: true },
+          { label: "Specialities", value: webAccordionTags(s.specialities), tagRow: true },
+          { label: "Website", value: siteLink },
+          { label: "Followers", value: webAccordionTextValue(s.linkedinFollowers) },
+          { label: "Founded", value: webAccordionTextValue(s.founded) },
         ],
         right: [
-          { label: "Organization Type", value: webAccordionTextValue("Private Company") },
-          { label: "Company Size", value: webAccordionTextValue("0 employees") },
-          { label: "Locations", value: webAccordionTags(["London, UK"]), tagRow: true },
-          { label: "Headquarters", value: webAccordionTextValue("London, England, UK") },
-          { label: "Country Codes", value: webAccordionTags(["GBR"]), tagRow: true },
-          { label: "Employees", value: webAccordionTextValue("0") },
+          { label: "Organization Type", value: webAccordionTextValue(s.orgType) },
+          { label: "Company Size", value: webAccordionTextValue(s.companySize) },
+          { label: "Locations", value: webAccordionTags(s.locations), tagRow: true },
+          { label: "Headquarters", value: webAccordionTextValue(s.headquarters) },
+          { label: "Country Codes", value: webAccordionTags(s.countryCodes), tagRow: true },
+          { label: "Employees", value: webAccordionTextValue(s.employees) },
         ],
       },
       {
@@ -724,32 +779,26 @@
         title: "Instagram",
         expanded: false,
         left: [
-          { label: "Profile Name", value: webAccordionTextValue("meridian") },
-          { label: "Name", value: webAccordionTextValue("Meridian Apex Consulting Ltd.") },
-          { label: "About", value: webAccordionTextValue("UK-based management consultancy.") },
-          { label: "Business Category", value: webAccordionTextValue("Management Consulting") },
-          { label: "Category", value: webAccordionTextValue("Professional Services") },
-          {
-            label: "Website",
-            value: webAccordionLink("https://meridianapexconsulting.co.uk", "meridianapexconsulting.co.uk"),
-          },
-          { label: "Business Account", value: webAccordionBool(true) },
-          { label: "Professional Account", value: webAccordionBool(false) },
-          { label: "Verified", value: webAccordionBool(false) },
+          { label: "Profile Name", value: webAccordionTextValue(s.handle) },
+          { label: "Name", value: webAccordionTextValue(s.name) },
+          { label: "About", value: webAccordionTextValue(s.instagramAbout) },
+          { label: "Business Category", value: webAccordionTextValue(s.businessCategory) },
+          { label: "Category", value: webAccordionTextValue(s.category) },
+          { label: "Website", value: siteLink },
+          { label: "Business Account", value: webAccordionBool(s.businessAccount) },
+          { label: "Professional Account", value: webAccordionBool(s.professionalAccount) },
+          { label: "Verified", value: webAccordionBool(s.verified) },
         ],
         right: [
           { label: "Private", value: webAccordionBool(false) },
           { label: "Joined Recently", value: webAccordionBool(false) },
-          { label: "Locations", value: webAccordionTextValue("London, UK") },
-          {
-            label: "Email",
-            value: webAccordionLink("mailto:info@meridianapexconsulting.co.uk", "info@meridianapexconsulting.co.uk"),
-          },
-          { label: "Followers", value: webAccordionTextValue("48") },
-          { label: "Following", value: webAccordionTextValue("3") },
-          { label: "Post Count", value: webAccordionTextValue("0") },
-          { label: "Highlights Count", value: webAccordionTextValue("0") },
-          { label: "Avg Engagement", value: webAccordionTextValue("0%") },
+          { label: "Locations", value: webAccordionTextValue(s.locations[0]) },
+          { label: "Email", value: webAccordionLink("mailto:" + s.email, s.email) },
+          { label: "Followers", value: webAccordionTextValue(s.instagramFollowers) },
+          { label: "Following", value: webAccordionTextValue(s.instagramFollowing) },
+          { label: "Post Count", value: webAccordionTextValue(s.instagramPostCount) },
+          { label: "Highlights Count", value: webAccordionTextValue(s.highlightsCount) },
+          { label: "Avg Engagement", value: webAccordionTextValue(s.avgEngagement) },
         ],
       },
       {
@@ -757,24 +806,21 @@
         title: "Twitter/X",
         expanded: false,
         left: [
-          { label: "Profile Name", value: webAccordionTextValue("Meridian Apex") },
-          { label: "Name", value: webAccordionTextValue("Meridian Apex Consulting Ltd.") },
-          { label: "Category", value: webAccordionTextValue("Management Consulting") },
-          {
-            label: "Website",
-            value: webAccordionLink("https://meridianapexconsulting.co.uk", "meridianapexconsulting.co.uk"),
-          },
-          { label: "Verified", value: webAccordionBool(false) },
-          { label: "Business Account", value: webAccordionBool(false) },
+          { label: "Profile Name", value: webAccordionTextValue(s.shortName) },
+          { label: "Name", value: webAccordionTextValue(s.name) },
+          { label: "Category", value: webAccordionTextValue(s.businessCategory) },
+          { label: "Website", value: siteLink },
+          { label: "Verified", value: webAccordionBool(s.verified) },
+          { label: "Business Account", value: webAccordionBool(s.businessAccount) },
           { label: "Government Account", value: webAccordionBool(false) },
         ],
         right: [
-          { label: "Locations", value: webAccordionTags(["London, UK"]), tagRow: true },
-          { label: "Followers", value: webAccordionTextValue("7") },
-          { label: "Following", value: webAccordionTextValue("2") },
-          { label: "Subscriptions", value: webAccordionTextValue("0") },
-          { label: "Date Joined", value: webAccordionTextValue("March 2019") },
-          { label: "Post Count", value: webAccordionTextValue("3") },
+          { label: "Locations", value: webAccordionTags(s.locations), tagRow: true },
+          { label: "Followers", value: webAccordionTextValue(s.twitterFollowers) },
+          { label: "Following", value: webAccordionTextValue(s.twitterFollowing) },
+          { label: "Subscriptions", value: webAccordionTextValue(s.twitterSubscriptions) },
+          { label: "Date Joined", value: webAccordionTextValue(s.twitterDateJoined) },
+          { label: "Post Count", value: webAccordionTextValue(s.twitterPostCount) },
         ],
       },
       {
@@ -782,21 +828,18 @@
         title: "TikTok",
         expanded: false,
         left: [
-          { label: "Nickname", value: webAccordionTextValue("meridian") },
-          { label: "Biography", value: webAccordionTextValue("Management consultancy | London") },
-          { label: "Verified", value: webAccordionBool(false) },
-          { label: "Followers", value: webAccordionTextValue("0") },
-          { label: "Following", value: webAccordionTextValue("0") },
-          { label: "Like Count", value: webAccordionTextValue("0") },
+          { label: "Nickname", value: webAccordionTextValue(s.handle) },
+          { label: "Biography", value: webAccordionTextValue(s.tiktokBiography) },
+          { label: "Verified", value: webAccordionBool(s.verified) },
+          { label: "Followers", value: webAccordionTextValue(s.tiktokFollowers) },
+          { label: "Following", value: webAccordionTextValue(s.tiktokFollowing) },
+          { label: "Like Count", value: webAccordionTextValue(s.tiktokLikeCount) },
         ],
         right: [
-          { label: "Likes", value: webAccordionTextValue("0") },
-          { label: "Post Count", value: webAccordionTextValue("0") },
-          { label: "Date Joined", value: webAccordionTextValue("Not Available") },
-          {
-            label: "Website",
-            value: webAccordionLink("https://meridianapexconsulting.co.uk", "meridianapexconsulting.co.uk"),
-          },
+          { label: "Likes", value: webAccordionTextValue(s.tiktokLikes) },
+          { label: "Post Count", value: webAccordionTextValue(s.tiktokPostCount) },
+          { label: "Date Joined", value: webAccordionTextValue(s.tiktokDateJoined) },
+          { label: "Website", value: siteLink },
           { label: "Private", value: webAccordionBool(false) },
           { label: "Commerce User", value: webAccordionBool(false) },
         ],
@@ -995,9 +1038,9 @@
     return { risk: "high", label: "High Risk" };
   }
 
-  var DEFAULT_COMPANY_NAME = "Meridian Apex Consulting Ltd.";
-  var DEFAULT_COMPANY_ALT = "Meridian Apex Consulting Limited";
-  var DEFAULT_DOMAIN = "meridianapexconsulting.co.uk";
+  var DEFAULT_COMPANY_NAME = "Meridian Apex Consulting Inc.";
+  var DEFAULT_COMPANY_ALT = "Meridian Apex Consulting Incorporated";
+  var DEFAULT_DOMAIN = "meridianapexconsulting.com";
 
   var ANNOUNCEMENT_ERROR_ICON =
     '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">' +
@@ -1053,6 +1096,16 @@
       employees: "45",
       parentEntity: "None identified",
       signalCount: "12",
+      signalsTabSummary: {
+        truaiSummary:
+          "12 risk signals detected, 1 increasing and 11 decreasing. All 5 categories score Low Risk. Business Model (22) is the top contributor to the overall 28/100 score, driven by a single unconfirmed secondary address.",
+        confidence: "94%",
+        findings: [
+          { text: "Business Model 22/100: Low Risk", tone: "positive" },
+          { text: "Financial Health 18/100: on-time filings, no delinquencies", tone: "positive" },
+          "1 operational signal: unconfirmed secondary address",
+        ],
+      },
       summaryPage: {
         riskLabel: "Low Risk Entity",
         verdictTitle: "{name} cleared for standard onboarding",
@@ -1061,6 +1114,315 @@
           "Direct ownership structure with verified officers.",
           "No elevated AML or adverse signals detected across core KYB checks.",
         ],
+      },
+      tabSummaries: {
+        ownership: {
+          truai:
+            "Ownership resolves directly to a single verified individual with no intermediate holding entities.\n\nSarah Chen holds 100% of shares and is confirmed against US state registry filings.",
+          prompt: "Who is the UBO?",
+          findings: [
+            { text: "Single beneficial owner at 100%", tone: "positive" },
+            { text: "No offshore or intermediate entities", tone: "positive" },
+            { text: "Officer identity verified against registry", tone: "positive" },
+          ],
+        },
+        "business-insights": {
+          truai:
+            "{name} is active and commercially operating.\n\n45 employees, confirmed operating premises, and a live website after 8 years of incorporation. Legitimacy and confidence scores are both strong.",
+          prompt: "What drives these scores?",
+          findings: [
+            { text: "Legitimacy 86, Suspicion 9, Confidence 94", tone: "positive" },
+            { text: "Registered address matches operating premises", tone: "positive" },
+            "1 operational signal: unconfirmed secondary address",
+          ],
+        },
+        presence: {
+          truai:
+            "Active digital footprint. Domain registered in 2018 and renewed through 2027.\n\nFour social profiles found, all consistent with the legal entity name.",
+          prompt: "Is the web presence consistent?",
+          findings: [
+            { text: "Domain active and renewed through 2027", tone: "positive" },
+            { text: "Live website matches declared activity", tone: "positive" },
+            { text: "4 social profiles found and verified", tone: "positive" },
+          ],
+        },
+        financial: {
+          truai:
+            "Financial indicators are consistent with an operating services business. $2.1M estimated annual sales, 45 employees, and positive net equity.\n\nNo delinquencies across 24 trade records.",
+          prompt: "Compare to NAICS 561499 financials",
+          findings: [
+            { text: "$2.1M annual sales across latest filings", tone: "positive" },
+            { text: "45 employees registered with official bodies", tone: "positive" },
+            { text: "No severe delinquency reported", tone: "positive" },
+          ],
+        },
+        monitoring: {
+          truai:
+            "No registry changes detected in the past 24 months. Legal name, registered address, and BRN have remained stable since incorporation.",
+          prompt: "Has anything changed recently?",
+          findings: [
+            { text: "No name or address changes on record", tone: "positive" },
+            { text: "Annual filings submitted on schedule", tone: "positive" },
+          ],
+        },
+        sources: {
+          truai:
+            "Assessment draws from 6 external sources and 4 Trulioo capabilities.\n\nAll responding sources corroborated core identity fields.",
+          prompt: "Which findings lack corroboration?",
+          findings: [
+            { text: "State registry: 4 filings accessed", tone: "positive" },
+            { text: "WHOIS: domain timeline confirmed", tone: "positive" },
+            { text: "Trulioo internal record matched", tone: "positive" },
+          ],
+        },
+        "match-signals": {
+          truai:
+            "All 4 checked fields matched across responding datasources. With a 100% field match rate and 6 of 7 sources confirming the record, this entity meets the KYB Standard verification rule.",
+          prompt: "Show non-responding sources",
+          findings: [
+            { text: "Business Name matched 4 of 4 sources", tone: "positive" },
+            { text: "City matched 4 of 4 sources", tone: "positive" },
+            { text: "1 of 7 datasources did not respond", tone: "intermediate" },
+          ],
+        },
+        "additional-data": {
+          truai:
+            "Supplemental registry fields corroborate core verification. NAICS code aligns with declared business support activity and no alternate names are on file.",
+          prompt: "Which supplemental fields were returned?",
+          findings: [
+            { text: "NAICS 561499 matches business support services", tone: "positive" },
+            { text: "No previous legal names on record", tone: "positive" },
+            { text: "EIN and state BRN on file", tone: "positive" },
+          ],
+        },
+      },
+      detail: {
+        jurisdiction: "United States",
+        signalCategories: [
+          {
+            id: "business-model",
+            score: 22,
+            rows: [
+              {
+                impact: "positive",
+                text: "Verified physical business address with confirmed operating premises.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-physical-presence",
+              },
+              {
+                impact: "positive",
+                text: "Business activity is consistent with the declared industry classification.",
+                applicable: "Yes",
+                data: "Present",
+              },
+              {
+                impact: "negative",
+                text: "Secondary trading address reported but not independently confirmed.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-operating-footprint",
+              },
+            ],
+          },
+          {
+            id: "financial-health",
+            score: 18,
+            rows: [
+              { impact: "positive", text: "Credit profile indicates a low risk of default.", applicable: "Yes", data: "Present" },
+              { impact: "positive", text: "No payment delinquencies reported against the entity.", applicable: "Yes", data: "Present" },
+              {
+                impact: "positive",
+                text: "Annual reports filed on time with revenue consistent with stated business scope.",
+                applicable: "Yes",
+                data: "Present",
+              },
+            ],
+          },
+          {
+            id: "fraud-financial-crimes",
+            score: 12,
+            rows: [
+              { impact: "positive", text: "No sanctions or watchlist matches found for the entity or associated persons.", applicable: "Yes" },
+              { impact: "positive", text: "No adverse media related to fraud, money laundering, or financial crime detected.", applicable: "Yes" },
+              { impact: "positive", text: "No politically exposed person (PEP) links identified for directors or beneficial owners.", applicable: "Yes" },
+            ],
+          },
+          {
+            id: "governance-compliance",
+            score: 15,
+            rows: [
+              {
+                impact: "positive",
+                text: "Company is active on the state registry with current annual filings submitted.",
+                applicable: "Yes",
+                data: "Present",
+              },
+              {
+                impact: "positive",
+                text: "Beneficial ownership resolves directly to a verified individual with no intermediate entities.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-offshore-ownership",
+              },
+            ],
+          },
+          {
+            id: "third-party-market",
+            score: 26,
+            rows: [
+              {
+                impact: "positive",
+                text: "Registered address is used exclusively by this entity.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-shared-address",
+              },
+            ],
+          },
+        ],
+        insightScores: [
+          { label: "Legitimacy Score", value: 86, tag: "Low", tone: "positive" },
+          { label: "Suspicion Score", value: 9, tag: "Low", tone: "positive" },
+          { label: "Confidence Score", value: 94, tag: "High", tone: "positive" },
+        ],
+        businessFields: {
+          "Operations and industry": {
+            value: "Registered under NAICS 561499",
+            description: "(other business support services), matching declared activity. Consistent trading history with reported clients and revenue.",
+          },
+          "Registration date": "Incorporated 18 Jun 2018 (Delaware)",
+          "Legal form": "Corporation",
+          "Business address": "Suite 210, 1400 Market Street, Wilmington, DE 19801 — confirmed operating premises.",
+          Sizing: "45 employees; $250,000 authorized / $250,000 paid-in capital.",
+          "Reg Numbers": "BRN 6142887",
+          "Registration number": "BRN 6142887",
+          "Tax ID": "EIN 47-2019388",
+          Telephone: "+1 302 555 0148",
+        },
+        financial: {
+          creditText: "Yes - Creditworthy",
+          industryTags: ["Business Support Services", "NAICS 561499"],
+          metrics: {
+            "Years in Business": "8",
+            "Est. Annual Sales": "$2.1M",
+            "Est. Employees": "45",
+            "Total Assets": "$1.4M",
+            "Total Liabilities": "$420K",
+            "Shareholder Funds": "$980K",
+            "Payment Experience": "24",
+            "Severe Delinquency": "No",
+          },
+        },
+        presence: {
+          expiryTone: "positive",
+          previewText: "Website preview available",
+          fields: {
+            Description: "Business support services provider operating across the United States.",
+            "Social Media Links": "4 profiles found",
+            "Website Status": "Live — site resolves and matches declared business activity",
+            "Domain Registrar": "Cloudflare, Inc.",
+            "Domain Registered": "22 Jun 2018",
+            "Domain Expired": "22 Jun 2027",
+          },
+          socialLinks: {
+            LinkedIn: "linkedin.com/company/brightline-services",
+            Instagram: "instagram.com/brightlineservices",
+            "Twitter/X": "x.com/brightlineserv",
+            TikTok: "tiktok.com/@brightlineservices",
+          },
+        },
+        social: {
+          handle: "brightlineservices",
+          shortName: "Brightline Services",
+          linkedinAbout: "Business support services for mid-market operators across the United States.",
+          instagramAbout: "US-based business support services provider.",
+          tiktokBiography: "Business support services | Delaware",
+          industries: ["Business Support Services", "Professional Services"],
+          specialities: ["Back-office operations", "Vendor management", "Compliance support"],
+          businessCategory: "Business Support Services",
+          category: "Professional Services",
+          orgType: "Corporation",
+          companySize: "45 employees",
+          employees: "45",
+          founded: "2018",
+          locations: ["Wilmington, DE"],
+          headquarters: "Wilmington, Delaware, US",
+          countryCodes: ["USA"],
+          linkedinFollowers: "2,140",
+          instagramFollowers: "1,860",
+          instagramFollowing: "112",
+          instagramPostCount: "148",
+          highlightsCount: "6",
+          avgEngagement: "3.4%",
+          twitterFollowers: "1,205",
+          twitterFollowing: "184",
+          twitterSubscriptions: "2",
+          twitterPostCount: "426",
+          twitterDateJoined: "July 2018",
+          tiktokFollowers: "640",
+          tiktokFollowing: "38",
+          tiktokLikeCount: "3,120",
+          tiktokLikes: "3,120",
+          tiktokPostCount: "27",
+          tiktokDateJoined: "April 2021",
+          businessAccount: true,
+          professionalAccount: true,
+          verified: true,
+        },
+        matchSignals: {
+          verified: true,
+          rule: "Verification Rule: KYB Standard: 1 Records Match (BRN)",
+          metrics: {
+            "Fields Checked": "4 fields",
+            "Sources Responded": "6 of 7 datasources",
+          },
+          rows: {
+            "business-name": {
+              status: "match",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+            jurisdiction: {
+              status: "match",
+              input: "Delaware",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+            city: {
+              status: "match",
+              input: "Wilmington",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+            "state-province": {
+              status: "match",
+              input: "Delaware",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+          },
+        },
       },
       ownershipRows: [
         { name: "Sarah Chen", subtitle: "Chief Executive Officer", pct: "100%", address: "—", status: "Verified", statusTone: "positive" },
@@ -1110,7 +1472,7 @@
       },
     },
     complex: {
-      score: 72,
+      score: 54,
       riskLevel: "Medium",
       summary: "{name} resolves through nested corporate layers across multiple jurisdictions with inferred offshore ownership links.",
       overviewNarrative:
@@ -1137,14 +1499,24 @@
         ],
       },
       insightsSummary: "{name} operates through a multi-layer holding structure with cross-border subsidiaries. Ownership tracing surfaced inferred UBOs and limited transparency across intermediate entities.",
-      overallRisk: 72,
+      overallRisk: 54,
       registryMatch: 88,
       operationalFootprint: 41,
-      entityType: "Private limited",
+      entityType: "Corporation",
       industry: "Holding company",
       employees: "12",
       parentEntity: "Helix Meridian Holdings BVI Ltd.",
-      signalCount: "31",
+      signalCount: "14",
+      signalsTabSummary: {
+        truaiSummary:
+          "14 risk signals detected, 5 increasing and 9 decreasing. Business Model (58), Governance & Compliance (56), and Third-Party & Market (48) score Medium Risk; Fraud & Financial Crimes is Low. Business Model is the top contributor to the overall 54/100 score.",
+        confidence: "78%",
+        findings: [
+          "Business Model 58/100: Medium Risk",
+          "Governance & Compliance 56/100: inferred beneficial ownership",
+          "2 operational signals: address mismatch, subsidiary trading",
+        ],
+      },
       summaryPage: {
         riskLabel: "Medium Risk Entity",
         verdictTitle: "{name} requires enhanced due diligence",
@@ -1153,6 +1525,305 @@
           "Beneficial owner could not be independently verified from registry sources.",
           "Operating address differs from registered corporate address.",
         ],
+      },
+      tabSummaries: {
+        ownership: {
+          truai:
+            "Ownership resolves through a BVI holding company before reaching a named individual.\n\nThe parent is disclosed on the registry, but the ultimate beneficial owner is inferred rather than directly confirmed.",
+          prompt: "Who is the UBO?",
+          findings: [
+            "Ownership chain passes through an offshore parent",
+            "Beneficial owner inferred, not directly disclosed",
+            { text: "Director identity verified against registry", tone: "positive" },
+          ],
+        },
+        "business-insights": {
+          truai:
+            "{name} is an active holding company with trading conducted through subsidiaries.\n\n12 employees at the parent and a registered address that differs from the declared operating location.",
+          prompt: "What would improve these scores?",
+          findings: [
+            "Legitimacy 54, Suspicion 46, Confidence 61",
+            "Registered address differs from operating address",
+            { text: "Filings current with Secretary of State", tone: "positive" },
+          ],
+        },
+        presence: {
+          truai:
+            "Digital footprint is live but thin. The domain is registered and renewed, though site content describes the group rather than the legal entity.\n\nTwo social profiles found, both group-level.",
+          prompt: "Is this consistent with a holding company?",
+          findings: [
+            { text: "Domain active and renewed through 2026", tone: "positive" },
+            "Site content describes the group, not the entity",
+            { text: "Limited social footprint for the parent", tone: "intermediate" },
+          ],
+        },
+        financial: {
+          truai:
+            "Financials reflect a holding structure. $420K parent-level revenue against $3.8M in assets, with most trading activity recorded in subsidiaries.\n\nNo delinquencies reported.",
+          prompt: "Compare to NAICS 551112 financials",
+          findings: [
+            "Limited parent-level disclosure across subsidiaries",
+            { text: "No severe delinquency reported", tone: "positive" },
+            { text: "Positive net equity position", tone: "positive" },
+          ],
+        },
+        monitoring: {
+          truai:
+            "Two registry changes detected in the past 18 months: a registered address update and the addition of an intermediate holding entity to the ownership chain.",
+          prompt: "What changed in the ownership chain?",
+          findings: [
+            "Registered address updated 6 Feb 2025",
+            "Intermediate holding entity added to the chain",
+          ],
+        },
+        sources: {
+          truai:
+            "Assessment draws from 5 external sources and 4 Trulioo capabilities.\n\nThe BVI registry returned limited disclosure, so the ultimate beneficial owner is inferred from filings rather than confirmed.",
+          prompt: "Which findings lack corroboration?",
+          findings: [
+            { text: "Secretary of State: 3 filings accessed", tone: "positive" },
+            { text: "BVI registry: limited public disclosure", tone: "warning" },
+            { text: "Trulioo internal record matched", tone: "positive" },
+          ],
+        },
+        "match-signals": {
+          truai:
+            "Three of 4 checked fields matched across responding datasources. City returned no match because the registered address differs from the declared operating address. With a 75% field match rate, this entity meets the KYB Standard rule but warrants address confirmation.",
+          prompt: "Show non-responding sources",
+          findings: [
+            { text: "Business Name matched 4 of 4 sources", tone: "positive" },
+            "City returned 1 of 4 matches",
+            { text: "2 of 7 datasources did not respond", tone: "intermediate" },
+          ],
+        },
+        "additional-data": {
+          truai:
+            "Supplemental registry fields provide group context. The NAICS code reflects holding-company activity rather than the trading operations described in the application.",
+          prompt: "Which fields differ from the application?",
+          findings: [
+            "NAICS 551112 reflects holding activity, not trading",
+            { text: "EIN and state BRN on file", tone: "positive" },
+          ],
+        },
+      },
+      detail: {
+        jurisdiction: "United States",
+        signalCategories: [
+          {
+            id: "business-model",
+            score: 58,
+            rows: [
+              {
+                impact: "negative",
+                text: "Operating address differs from the registered corporate address.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-shared-address",
+              },
+              {
+                impact: "negative",
+                text: "Trading activity is recorded in subsidiaries rather than the applying entity.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-operating-footprint",
+              },
+              {
+                impact: "positive",
+                text: "Physical presence confirmed at the registered office.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-physical-presence",
+              },
+            ],
+          },
+          {
+            id: "financial-health",
+            score: 44,
+            rows: [
+              {
+                impact: "negative",
+                text: "Financial disclosure is limited across intermediate holding entities.",
+                applicable: "Yes",
+                data: "Missing",
+              },
+              { impact: "positive", text: "No payment delinquencies reported against the entity.", applicable: "Yes", data: "Present" },
+              { impact: "positive", text: "Annual accounts filed on time with a positive net equity position.", applicable: "Yes", data: "Present" },
+            ],
+          },
+          {
+            id: "fraud-financial-crimes",
+            score: 28,
+            rows: [
+              { impact: "positive", text: "No sanctions or watchlist matches found for the entity or associated persons.", applicable: "Yes" },
+              { impact: "positive", text: "No adverse media related to fraud, money laundering, or financial crime detected.", applicable: "Yes" },
+              { impact: "positive", text: "No politically exposed person (PEP) links identified for directors or beneficial owners.", applicable: "Yes" },
+            ],
+          },
+          {
+            id: "governance-compliance",
+            score: 56,
+            rows: [
+              {
+                impact: "negative",
+                text: "Beneficial ownership resolves through an offshore holding company with limited transparency.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-offshore-ownership",
+              },
+              {
+                impact: "negative",
+                text: "Ultimate beneficial owner is inferred from filings rather than directly disclosed.",
+                applicable: "Yes",
+                data: "Missing",
+              },
+              { impact: "positive", text: "Company is active on registry with current annual filings submitted.", applicable: "Yes", data: "Present" },
+            ],
+          },
+          {
+            id: "third-party-market",
+            score: 48,
+            rows: [
+              { impact: "positive", text: "No supplier or customer dispute records found in available commercial databases.", applicable: "Yes" },
+              { impact: "positive", text: "Domain registration aligns with the group name and jurisdiction.", applicable: "Yes", data: "Present" },
+            ],
+          },
+        ],
+        insightScores: [
+          { label: "Legitimacy Score", value: 54, tag: "Medium", tone: "intermediate" },
+          { label: "Suspicion Score", value: 46, tag: "Medium", tone: "intermediate" },
+          { label: "Confidence Score", value: 61, tag: "Medium", tone: "intermediate" },
+        ],
+        businessFields: {
+          "Operations and industry": {
+            value: "Registered under NAICS 551112",
+            description: "(other holding companies), a holding-company code. Trading activity is conducted through subsidiaries rather than the applying entity.",
+          },
+          "Registration date": "Incorporated 4 Nov 2020 (Delaware)",
+          "Legal form": "Domestic corporation",
+          "Business address": "Floor 12, 200 Bellevue Parkway, Wilmington, DE 19809 — differs from the declared operating address.",
+          Sizing: "12 employees; $50,000 authorized / $50,000 paid-in capital.",
+          "Reg Numbers": "BRN 12984317",
+          "Registration number": "BRN 12984317",
+          "Tax ID": "EIN 41-8902773",
+          Telephone: "+1 302 555 0812",
+        },
+        financial: {
+          creditText: "Yes - Creditworthy",
+          industryTags: ["Holding Company", "NAICS 551112"],
+          metrics: {
+            "Years in Business": "6",
+            "Est. Annual Sales": "$420K",
+            "Est. Employees": "12",
+            "Total Assets": "$3.8M",
+            "Total Liabilities": "$2.9M",
+            "Shareholder Funds": "$900K",
+            "Payment Experience": "11",
+            "Severe Delinquency": "No",
+          },
+        },
+        presence: {
+          expiryTone: "positive",
+          previewText: "Limited website preview available",
+          fields: {
+            Description: "Holding company for a group of cross-border trading subsidiaries.",
+            "Social Media Links": "4 profiles found",
+            "Website Status": "Live — group-level content, limited entity detail",
+            "Domain Registrar": "Network Solutions LLC",
+            "Domain Registered": "12 Nov 2020",
+            "Domain Expired": "12 Nov 2026",
+          },
+        },
+        social: {
+          handle: "helixtierglobal",
+          shortName: "Helix Tier Global",
+          linkedinAbout: "Holding company for a group of cross-border trading subsidiaries.",
+          instagramAbout: "US-registered holding company.",
+          tiktokBiography: "Helix Tier Global | Delaware",
+          industries: ["Holding Companies", "Investment Management"],
+          specialities: ["Group treasury", "Corporate structuring", "Subsidiary oversight"],
+          businessCategory: "Holding Company",
+          category: "Financial Services",
+          orgType: "Corporation",
+          companySize: "12 employees",
+          employees: "12",
+          founded: "2020",
+          locations: ["Wilmington, DE"],
+          headquarters: "Wilmington, Delaware, US",
+          countryCodes: ["USA", "VGB"],
+          linkedinFollowers: "310",
+          instagramFollowers: "84",
+          instagramFollowing: "12",
+          instagramPostCount: "9",
+          highlightsCount: "1",
+          avgEngagement: "0.6%",
+          twitterFollowers: "126",
+          twitterFollowing: "31",
+          twitterSubscriptions: "0",
+          twitterPostCount: "18",
+          twitterDateJoined: "January 2021",
+          tiktokFollowers: "0",
+          tiktokFollowing: "0",
+          tiktokLikeCount: "0",
+          tiktokLikes: "0",
+          tiktokPostCount: "0",
+          tiktokDateJoined: "Not Available",
+          businessAccount: true,
+          professionalAccount: false,
+          verified: false,
+        },
+        matchSignals: {
+          verified: true,
+          rule: "Verification Rule: KYB Standard: 1 Records Match (BRN)",
+          metrics: {
+            "Fields Checked": "4 fields",
+            "Sources Responded": "5 of 7 datasources",
+          },
+          rows: {
+            "business-name": {
+              status: "match",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+            jurisdiction: {
+              status: "match",
+              input: "Delaware",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+            city: {
+              status: "no-match",
+              input: "Wilmington",
+              sources: "1/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "no-match" },
+                { name: "Business Insights 773174", status: "no-match" },
+                { name: "Ownership Tree 480052", status: "missing" },
+              ],
+            },
+            "state-province": {
+              status: "match",
+              input: "Delaware",
+              sources: "3/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "missing" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+          },
+        },
       },
       ownershipRows: [
         { name: "Helix Meridian Holdings BVI Ltd.", subtitle: "Parent company", pct: "100%", address: "—", status: "Inferred", statusTone: "intermediate" },
@@ -1167,8 +1838,8 @@
         signals: {
           tag: "Medium Risk",
           tagTone: "intermediate",
-          metricParts: ["Business Model: ", { text: "66", tone: "intermediate" }, "/100"],
-          detail: "31 signals detected, 8 increasing",
+          metricParts: ["Business Model: ", { text: "58", tone: "intermediate" }, "/100"],
+          detail: "14 signals detected, 5 increasing",
         },
         ownership: {
           tag: "Medium Risk",
@@ -1207,13 +1878,13 @@
       riskLevel: "High",
       summary: "{name} returned elevated AML signals including adverse media indicators and high-risk jurisdiction exposure.",
       overviewNarrative:
-        "{name} presents elevated onboarding risk driven by a commercially dormant operating profile and opaque offshore ownership structure. Registry data confirms active status, but no verifiable trading activity, an expired web presence, and micro-entity filings suggest a shell or pass-through entity rather than an active consultancy. Payment delinquencies and industry-activity mismatches further increase default and AML exposure.",
+        "{name} presents elevated onboarding risk driven by a commercially dormant operating profile and opaque offshore ownership structure. Registry data confirms good standing, but no verifiable trading activity, an expired web presence, and zero-activity annual reports suggest a shell or pass-through entity rather than an active consultancy. Payment delinquencies and industry-activity mismatches further increase default and AML exposure.",
       sidebarSummary: {
         overview:
-          "{name} is an active UK private company registered at a formations-agent address, with no verifiable trading activity and ownership routed through an offshore BVI holding.",
+          "{name} is an active US corporation registered at a registered-agent address, with no verifiable trading activity and ownership routed through an offshore BVI holding.",
         alerts: [
           {
-            text: "No verifiable business activity at the registered Formation House address",
+            text: "No verifiable business activity at the registered agent address",
             featured: true,
             view: { tab: "signals", signalCategory: "business-model", anchor: "signal-credit-default" },
           },
@@ -1234,7 +1905,7 @@
       overallRisk: 79,
       registryMatch: 92,
       operationalFootprint: 18,
-      entityType: "Private limited",
+      entityType: "Corporation",
       industry: "Management consultancy",
       employees: "0",
       parentEntity: "Apex Holdings BVI Ltd.",
@@ -1261,21 +1932,21 @@
       tabSummaries: {
         ownership: {
           truai:
-            "Ownership resolves to two shareholders at the same formations-agent address. Neither officer has a verifiable national ID.\n\nOwnership chain passes through a BVI holding company with no public disclosure.",
+            "Ownership resolves to two shareholders at the same registered-agent address. Neither officer has a verifiable national ID.\n\nOwnership chain passes through a BVI holding company with no public disclosure.",
           prompt: "Who is the UBO?",
           findings: [
-            "Both shareholders share a formations-agent address",
+            "Both shareholders share a registered-agent address",
             "Walter Decosta linked to 2 unscreened entities",
             "No verifiable national ID for either officer",
           ],
         },
         "business-insights": {
           truai:
-            "Meridian Apex Consulting Ltd. is active but commercially dormant.\n\nZero employees, £1 capital, expired website, and a virtual office address after 6 years of incorporation. All three risk scores are critical (18/100).",
+            "{name} is active but commercially dormant.\n\nZero employees, $1 capital, expired website, and a virtual office address after 6 years of incorporation. All three risk scores are critical (18/100).",
           prompt: "What would improve these scores?",
           findings: [
             "Legitimacy 18, Suspicion 18, Confidence 18",
-            "Virtual office at known formations-agent suite",
+            "Virtual office at known registered-agent suite",
             "2 operational signals: virtual office, expired domain",
           ],
         },
@@ -1292,8 +1963,8 @@
         },
         financial: {
           truai:
-            "Shell entity characteristics across all financial indicators. Zero revenue, zero employees, and minimum legal capital (£1) over 6 years.\n\nNo financial stability data filed.",
-          prompt: "Compare to SIC 70229 financials",
+            "Shell entity characteristics across all financial indicators. Zero revenue, zero employees, and minimum legal capital ($1) over 6 years.\n\nNo financial stability data filed.",
+          prompt: "Compare to NAICS 541611 financials",
           findings: [
             "$0 annual sales across all reporting periods",
             "0 employees registered with official bodies",
@@ -1316,7 +1987,7 @@
             "Assessment draws from 5 external sources and 4 Trulioo capabilities.\n\nBVI Financial Services Commission returned no public disclosure, limiting ownership verification.",
           prompt: "Which findings lack corroboration?",
           findings: [
-            { text: "Companies House: 2 filings accessed", tone: "positive" },
+            { text: "Secretary of State: 2 filings accessed", tone: "positive" },
             { text: "WHOIS: domain timeline confirmed", tone: "positive" },
             { text: "BVI registry: no public disclosure", tone: "warning" },
             { text: "Trulioo internal record matched", tone: "positive" },
@@ -1334,25 +2005,25 @@
         },
         "additional-data": {
           truai:
-            "Supplemental registry fields provide context beyond core verification. SIC code aligns with declared consultancy activity, though alternate names reflect the recent rebrand.",
+            "Supplemental registry fields provide context beyond core verification. NAICS code aligns with declared consultancy activity, though alternate names reflect the recent rebrand.",
           prompt: "Which fields changed after rebrand?",
           findings: [
-            { text: "SIC 70229 matches management consultancy", tone: "positive" },
-            "Previous legal name: Apex Meridian Ltd.",
-            { text: "VAT and BRN on file with Companies House", tone: "positive" },
+            { text: "NAICS 541611 matches management consultancy", tone: "positive" },
+            "Previous legal name: Apex Meridian Inc.",
+            { text: "EIN and state BRN on file", tone: "positive" },
           ],
         },
       },
       ownershipRows: [
-        { name: "James Morton", subtitle: "Shareholder", pct: "65%", address: "71 Queen Victoria St, San Francisco", status: "Clear", statusTone: "positive" },
-        { name: "Walter Decosta", subtitle: "Shareholder", pct: "35%", address: "71 Queen Victoria St, San Francisco", status: "2 more entities connected", statusTone: "negative" },
+        { name: "James Morton", subtitle: "Shareholder", pct: "65%", address: "71 Stevenson St, San Francisco", status: "Clear", statusTone: "positive" },
+        { name: "Walter Decosta", subtitle: "Shareholder", pct: "35%", address: "71 Stevenson St, San Francisco", status: "2 more entities connected", statusTone: "negative" },
       ],
       ownershipGraph: {
         riskFilter: { label: "Risk Signals: High", count: 6 },
         tree: {
           id: "root",
           type: "business",
-          name: "Meridian holdings ltd.",
+          name: "Meridian Holdings Inc.",
           subtitle: "Root Business",
           risk: "high",
           details: {
@@ -1365,18 +2036,18 @@
               { label: "Tax ID", value: "19498172498" },
             ],
             truai:
-              "Meridian Holdings Ltd. is a Texas-registered entity linked to 3 connected entities. Both shareholders use a formations-agent address, and neither has a verified national ID on file.",
+              "Meridian Holdings Inc. is a Texas-registered entity linked to 3 connected entities. Both shareholders use a registered-agent address, and neither has a verified national ID on file.",
             prompt: "Is this a shell company?",
             findings: [
-              "Both shareholders share a formations-agent address",
+              "Both shareholders share a registered-agent address",
               "Walter Decosta linked to 2 unscreened entities",
               "No verifiable national ID for either officer",
             ],
             // Must mirror the root's direct edges in the tree below: steven, james, apex.
             connected: [
-              { id: "steven", type: "person", role: "Shareholder", name: "Steven", pct: "35%", address: "71 Queen Victoria St, San Francisco" },
-              { id: "james", type: "person", role: "COO", name: "James Morton", pct: "65%", address: "71 Queen Victoria St, San Francisco" },
-              { id: "apex", type: "business", role: "Subsidiary Company", name: "Apex Financial", address: "100 Canary Wharf, Chicago" },
+              { id: "steven", type: "person", role: "Shareholder", name: "Steven", pct: "35%", address: "71 Stevenson St, San Francisco" },
+              { id: "james", type: "person", role: "COO", name: "James Morton", pct: "65%", address: "71 Stevenson St, San Francisco" },
+              { id: "apex", type: "business", role: "Subsidiary Company", name: "Apex Financial", address: "100 N Riverside Plaza, Chicago" },
             ],
           },
           children: [
@@ -1400,22 +2071,22 @@
                   { label: "Ownership %", value: "65%" },
                   { label: "Position", value: "Chief Operating Officer" },
                   { label: "Country", value: "United States" },
-                  { label: "Address", value: "1 Microsoft Way, Redmond, WA 98052" },
+                  { label: "Address", value: "71 Stevenson St, San Francisco" },
                   { label: "Appointed", value: "Jan 2023" },
                   { label: "Phone", value: "+1 979 323-7166" },
                   { label: "Email", value: "mortonj@gmail.com" },
                   { label: "Date of Birth", value: "1st Jan, 1990" },
                 ],
                 truai:
-                  "Ownership resolves to two shareholders at the same formations-agent address. Neither officer has a verifiable national ID.",
+                  "Ownership resolves to two shareholders at the same registered-agent address. Neither officer has a verifiable national ID.",
                 prompt: "Who is the UBO?",
                 findings: [
-                  "Both shareholders share a formations-agent address",
+                  "Both shareholders share a registered-agent address",
                   "Walter Decosta linked to 2 unscreened entities",
                   "No verifiable national ID for either officer",
                 ],
                 connected: [
-                  { id: "walter", type: "person", role: "Director", name: "Walter Decosta", address: "71 Queen Victoria St, San Francisco" },
+                  { id: "walter", type: "person", role: "Director", name: "Walter Decosta", address: "71 Stevenson St, San Francisco" },
                 ],
               },
               children: [{ id: "walter", type: "person", name: "Walter Decosta", subtitle: "Director", risk: "high", details: {
@@ -1424,9 +2095,9 @@
                 fields: [
                   { label: "Position", value: "Director" },
                   { label: "Country", value: "United States" },
-                  { label: "Address", value: "71 Queen Victoria St, San Francisco" },
+                  { label: "Address", value: "71 Stevenson St, San Francisco" },
                 ],
-                truai: "Director appointed alongside shareholders at a formations-agent address with no verifiable national ID on file.",
+                truai: "Director appointed alongside shareholders at a registered-agent address with no verifiable national ID on file.",
                 prompt: "Who is the UBO?",
                 findings: [
                   "Linked to 2 unscreened entities",
@@ -1463,7 +2134,7 @@
       },
       officers: [
         { name: "Robert James Halsted", note: "Director (active since 1 Feb 2019)" },
-        { name: "Anya Voronova - Company Secretary", note: "(Active since 1 Feb 2019; registered at the formations-agent address)" },
+        { name: "Anya Voronova - Corporate Secretary", note: "(Active since 1 Feb 2019; registered at the registered-agent address)" },
       ],
       directorName: "Robert James Halsted",
       directorDate: "1 Feb 2019",
@@ -1506,7 +2177,306 @@
       industry: "Not classified",
       employees: "—",
       parentEntity: "Under review",
-      signalCount: "24",
+      signalCount: "14",
+      summaryPage: {
+        riskLabel: "Medium Risk Entity",
+        verdictTitle: "{name} requires additional review",
+        findings: [
+          "Registry status is active but filing gaps were detected across available sources.",
+          "Beneficial ownership is partially disclosed with one unresolved layer.",
+          "Public footprint is limited relative to the stated business activity.",
+        ],
+      },
+      signalsTabSummary: {
+        truaiSummary:
+          "14 risk signals detected, 4 increasing and 10 decreasing. Business Model (58) and Governance & Compliance (54) score Medium Risk; Fraud & Financial Crimes is Low. Registry filing gaps are the main contributor to the overall 55/100 score.",
+        confidence: "72%",
+        findings: [
+          "Business Model 58/100: Medium Risk",
+          "Governance & Compliance 54/100: partial ownership disclosure",
+          "2 operational signals: filing gaps, limited footprint",
+        ],
+      },
+      tabSummaries: {
+        ownership: {
+          truai:
+            "Ownership resolves to a registry parent with one unresolved layer.\n\nThe named director is verified, but the ultimate beneficial owner could not be confirmed from available sources.",
+          prompt: "Who is the UBO?",
+          findings: [
+            "One ownership layer remains unresolved",
+            "Beneficial owner inferred from registry filings",
+            { text: "Director identity verified against registry", tone: "positive" },
+          ],
+        },
+        "business-insights": {
+          truai:
+            "{name} is an active registered entity with partial registry coverage.\n\nFiling gaps and an unclassified industry code limit what can be confirmed about operating activity.",
+          prompt: "What would improve these scores?",
+          findings: [
+            "Legitimacy 58, Suspicion 42, Confidence 57",
+            "Registry filing gaps detected",
+            { text: "Registration status confirmed active", tone: "positive" },
+          ],
+        },
+        presence: {
+          truai:
+            "Digital footprint is limited relative to the stated business activity.\n\nThe domain resolves, but social presence is sparse and content is minimal.",
+          prompt: "Is the web presence consistent?",
+          findings: [
+            { text: "Domain active and renewed", tone: "positive" },
+            "Limited public footprint for stated activity",
+            { text: "Sparse social presence", tone: "intermediate" },
+          ],
+        },
+        financial: {
+          truai:
+            "Financial data is incomplete. Available filings cover registration and status but not revenue or balance sheet detail.\n\nNo delinquencies reported across available records.",
+          prompt: "What financial data is missing?",
+          findings: [
+            "Filing gaps across available registry sources",
+            { text: "No severe delinquency reported", tone: "positive" },
+            "Turnover and balance sheet detail unavailable",
+          ],
+        },
+        monitoring: {
+          truai:
+            "One registry change detected in the past 12 months: an update to the registered address. No changes to legal name or company number.",
+          prompt: "What changed recently?",
+          findings: [
+            "Registered address updated in the past year",
+            { text: "Legal name and company number unchanged", tone: "positive" },
+          ],
+        },
+        sources: {
+          truai:
+            "Assessment draws from 4 external sources and 4 Trulioo capabilities.\n\nCoverage gaps in registry filings limit corroboration for ownership and financial fields.",
+          prompt: "Which findings lack corroboration?",
+          findings: [
+            { text: "Registry: status and identity confirmed", tone: "positive" },
+            { text: "Filing history: partial coverage", tone: "warning" },
+            { text: "Trulioo internal record matched", tone: "positive" },
+          ],
+        },
+        "match-signals": {
+          truai:
+            "Two of 4 checked fields matched across responding datasources. Business Name and City returned inconsistent results, giving a 50% field match rate that falls short of the KYB Standard verification rule.",
+          prompt: "Show non-responding sources",
+          findings: [
+            "Business Name matched 2 of 4 sources",
+            "City returned 1 of 4 matches",
+            { text: "3 of 7 datasources did not respond", tone: "intermediate" },
+          ],
+        },
+        "additional-data": {
+          truai:
+            "Supplemental registry fields are sparse. No industry classification or alternate names were returned alongside core identity data.",
+          prompt: "Which supplemental fields were returned?",
+          findings: [
+            "No industry classification on file",
+            { text: "Company number and status confirmed", tone: "positive" },
+          ],
+        },
+      },
+      detail: {
+        signalCategories: [
+          {
+            id: "business-model",
+            score: 58,
+            rows: [
+              {
+                impact: "negative",
+                text: "Limited public footprint relative to the stated business activity.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-operating-footprint",
+              },
+              {
+                impact: "negative",
+                text: "Industry classification is not recorded on the registry.",
+                applicable: "Yes",
+                data: "Missing",
+              },
+              {
+                impact: "positive",
+                text: "Physical presence confirmed at the registered address.",
+                applicable: "Yes",
+                data: "Present",
+                anchor: "signal-physical-presence",
+              },
+            ],
+          },
+          {
+            id: "financial-health",
+            score: 46,
+            rows: [
+              { impact: "negative", text: "Turnover and balance sheet detail unavailable in filed accounts.", applicable: "Yes", data: "Missing" },
+              { impact: "positive", text: "No payment delinquencies reported against the entity.", applicable: "Yes", data: "Present" },
+              { impact: "positive", text: "Credit profile indicates no elevated risk of default.", applicable: "Yes", data: "Present" },
+            ],
+          },
+          {
+            id: "fraud-financial-crimes",
+            score: 24,
+            rows: [
+              { impact: "positive", text: "No sanctions or watchlist matches found for the entity or associated persons.", applicable: "Yes" },
+              { impact: "positive", text: "No adverse media related to fraud, money laundering, or financial crime detected.", applicable: "Yes" },
+              { impact: "positive", text: "No politically exposed person (PEP) links identified for directors or beneficial owners.", applicable: "Yes" },
+            ],
+          },
+          {
+            id: "governance-compliance",
+            score: 54,
+            rows: [
+              {
+                impact: "negative",
+                text: "Beneficial ownership is partially disclosed with one unresolved layer.",
+                applicable: "Yes",
+                data: "Missing",
+                anchor: "signal-offshore-ownership",
+              },
+              { impact: "positive", text: "Company is active on registry with a current registration status.", applicable: "Yes", data: "Present" },
+              { impact: "positive", text: "Registered office address confirmed against registry records.", applicable: "Yes", data: "Present" },
+            ],
+          },
+          {
+            id: "third-party-market",
+            score: 38,
+            rows: [
+              { impact: "positive", text: "No supplier or customer dispute records found in available commercial databases.", applicable: "Yes" },
+              { impact: "positive", text: "Registered address is used exclusively by this entity.", applicable: "Yes", data: "Present", anchor: "signal-shared-address" },
+            ],
+          },
+        ],
+        insightScores: [
+          { label: "Legitimacy Score", value: 58, tag: "Medium", tone: "intermediate" },
+          { label: "Suspicion Score", value: 42, tag: "Medium", tone: "intermediate" },
+          { label: "Confidence Score", value: 57, tag: "Medium", tone: "intermediate" },
+        ],
+        businessFields: {
+          "Operations and industry": {
+            value: "No industry classification on file",
+            description: "Registry did not return a classification code. Operating activity could not be corroborated from available filings.",
+          },
+          "Registration date": "Registration date on file with the registry",
+          "Legal form": "Registered business",
+          "Business address": "Registered address confirmed against registry records.",
+          Sizing: "Employee count and capital not disclosed.",
+        },
+        financial: {
+          creditText: "Yes - Creditworthy",
+          industryTags: ["Not Classified"],
+          metrics: {
+            "Years in Business": "—",
+            "Est. Annual Sales": "—",
+            "Est. Employees": "—",
+            "Total Assets": "--",
+            "Total Liabilities": "--",
+            "Shareholder Funds": "--",
+            "Payment Experience": "—",
+            "Severe Delinquency": "No",
+          },
+        },
+        presence: {
+          expiryTone: "positive",
+          previewText: "Limited website preview available",
+          fields: {
+            Description: "No description returned by available sources.",
+            "Social Media Links": "2 profiles found",
+            "Website Status": "Live — limited content available to verify",
+            "Domain Registrar": "Not disclosed",
+            "Domain Registered": "Not available",
+            "Domain Expired": "Not available",
+          },
+        },
+        social: {
+          handle: "company",
+          shortName: "Company",
+          linkedinAbout: "No profile description returned by available sources.",
+          instagramAbout: "No profile description returned by available sources.",
+          tiktokBiography: "No profile description returned by available sources.",
+          industries: ["Not Classified"],
+          specialities: ["Not disclosed"],
+          businessCategory: "Not Classified",
+          category: "Not Classified",
+          orgType: "Registered Business",
+          companySize: "Not disclosed",
+          employees: "—",
+          founded: "Not available",
+          locations: ["Not disclosed"],
+          headquarters: "Not disclosed",
+          countryCodes: ["—"],
+          linkedinFollowers: "—",
+          instagramFollowers: "—",
+          instagramFollowing: "—",
+          instagramPostCount: "—",
+          highlightsCount: "—",
+          avgEngagement: "—",
+          twitterFollowers: "—",
+          twitterFollowing: "—",
+          twitterSubscriptions: "—",
+          twitterPostCount: "—",
+          twitterDateJoined: "Not available",
+          tiktokFollowers: "—",
+          tiktokFollowing: "—",
+          tiktokLikeCount: "—",
+          tiktokLikes: "—",
+          tiktokPostCount: "—",
+          tiktokDateJoined: "Not available",
+          businessAccount: false,
+          professionalAccount: false,
+          verified: false,
+        },
+        matchSignals: {
+          verified: false,
+          rule: "Verification Rule: KYB Standard: 1 Records Match (BRN)",
+          metrics: {
+            "Fields Checked": "4 fields",
+            "Sources Responded": "4 of 7 datasources",
+          },
+          rows: {
+            "business-name": {
+              status: "no-match",
+              sources: "2/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "no-match" },
+                { name: "Ownership Tree 480052", status: "no-match" },
+              ],
+            },
+            jurisdiction: {
+              status: "match",
+              sources: "3/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "missing" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+            city: {
+              status: "no-match",
+              sources: "1/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "no-match" },
+                { name: "Business Insights 773174", status: "no-match" },
+                { name: "Ownership Tree 480052", status: "missing" },
+              ],
+            },
+            "state-province": {
+              status: "match",
+              sources: "3/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "missing" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+          },
+        },
+      },
       ownershipRows: [
         { name: "Registry parent entity", subtitle: "Parent company", pct: "100%", address: "—", status: "Inferred", statusTone: "intermediate" },
         { name: "Registered director", subtitle: "Director", pct: "—", address: "—", status: "Verified", statusTone: "positive" },
@@ -1521,7 +2491,7 @@
           tag: "Medium Risk",
           tagTone: "intermediate",
           metricParts: ["Business Model: ", { text: "58", tone: "intermediate" }, "/100"],
-          detail: "24 signals detected, 6 increasing",
+          detail: "14 signals detected, 4 increasing",
         },
         ownership: {
           tag: "Medium Risk",
@@ -1576,7 +2546,7 @@
       return {
         name: name,
         country: params.get("country") || "",
-        countryCode: (params.get("countryCode") || "gb").toLowerCase(),
+        countryCode: (params.get("countryCode") || "us").toLowerCase(),
         brn: params.get("brn") || "",
         sample: params.get("sample") || "",
         address1: params.get("address1") || "",
@@ -1598,13 +2568,14 @@
 
     return {
       name: DEFAULT_COMPANY_NAME,
-      country: "United Kingdom",
-      countryCode: "gb",
+      country: "United States",
+      countryCode: "us",
       brn: "12847362",
       sample: "elevated",
-      address1: "Suite 4, 123 Formation House",
-      city: "London",
-      postal: "EC2A 4NE",
+      address1: "Suite 400, 1209 Orange Street",
+      city: "Wilmington",
+      state: "DE",
+      postal: "19801",
     };
   }
 
@@ -1653,15 +2624,17 @@
     );
   }
 
-  function renderTabSummaries(profile) {
+  function renderTabSummaries(profile, entity) {
     if (!profile || !profile.tabSummaries) return;
+
+    var extras = { director: profile.directorName || "the appointed director" };
 
     Object.keys(profile.tabSummaries).forEach(function (tabKey) {
       var data = profile.tabSummaries[tabKey];
       if (!data) return;
 
       var truaiEl = document.querySelector('[data-kyb-tab-truai="' + tabKey + '"]');
-      if (truaiEl && data.truai) truaiEl.textContent = data.truai;
+      if (truaiEl && data.truai) truaiEl.textContent = entity ? fillTemplate(data.truai, entity, extras) : data.truai;
 
       var promptBtn = document.querySelector('[data-kyb-tab-prompt="' + tabKey + '"]');
       if (promptBtn && data.prompt) {
@@ -1695,17 +2668,324 @@
 
     var findingsList = document.querySelector("[data-kyb-signals-findings]");
     if (findingsList && data.findings && data.findings.length) {
-      findingsList.innerHTML = data.findings
-        .map(function (text) {
+      findingsList.innerHTML = data.findings.map(renderTabFindingItem).join("");
+    }
+  }
+
+  var TABLE_TREND_UP_ICON =
+    '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11.5 6 8l2.5 2L13.5 4"/><path d="M10.5 4H13.5V7"/></svg>';
+  var TABLE_TREND_DOWN_ICON =
+    '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5 6 8l2.5-2L13.5 12"/><path d="M10.5 12H13.5V9"/></svg>';
+  var TABLE_CHECK_ICON =
+    '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var TABLE_CROSS_ICON =
+    '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="m5.5 5.5 5 5M10.5 5.5l-5 5" stroke-linecap="round"/></svg>';
+  var TABLE_WARNING_ICON =
+    '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg>';
+  var TABLE_ROW_CHEVRON_ICON =
+    '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>';
+
+  function signalToneClass(score) {
+    var tier = kybRiskFromScore(score);
+    if (tier.risk === "high") return "negative";
+    if (tier.risk === "medium") return "intermediate";
+    return "positive";
+  }
+
+  function buildSignalsCell(label, tone, icon) {
+    var toneClass = tone ? " tds-data-table__signals--" + tone : "";
+    return (
+      '<span class="tds-data-table__signals' +
+      toneClass +
+      '"><span class="tds-data-table__signals-icon" aria-hidden="true">' +
+      icon +
+      "</span>" +
+      label +
+      "</span>"
+    );
+  }
+
+  function buildSignalRowsHtml(rows) {
+    return rows
+      .map(function (row) {
+        var impactTone = row.impact === "negative" ? "negative" : row.impact === "positive" ? "positive" : "";
+        var impactLabel = row.impact === "negative" ? "Increased" : row.impact === "positive" ? "Decreased" : "No impact";
+        var impactIcon = row.impact === "negative" ? TABLE_TREND_UP_ICON : TABLE_TREND_DOWN_ICON;
+        var applicable = row.applicable || "Yes";
+        var applicableIcon = applicable === "Yes" ? TABLE_CHECK_ICON : TABLE_CROSS_ICON;
+        var dataCell = row.data
+          ? "<td>" +
+            buildSignalsCell(row.data, "", row.data === "Present" ? TABLE_CHECK_ICON : TABLE_WARNING_ICON) +
+            "</td>"
+          : '<td class="tds-data-table__text-cell">—</td>';
+        var anchorAttr = row.anchor ? ' data-kyb-anchor="' + row.anchor + '"' : "";
+
+        return (
+          "<tr data-kyb-signal-row" +
+          anchorAttr +
+          ">" +
+          "<td>" +
+          buildSignalsCell(impactLabel, impactTone, impactIcon) +
+          "</td>" +
+          '<td class="tds-data-table__text-cell">' +
+          row.text +
+          "</td>" +
+          "<td>" +
+          buildSignalsCell(applicable, "", applicableIcon) +
+          "</td>" +
+          dataCell +
+          '<td data-align="right"><span class="tds-data-table__actions-cell">' +
+          '<button type="button" class="tds-data-table__action-icon kyb-signal-row__toggle" aria-label="Show signal details" aria-expanded="false">' +
+          TABLE_ROW_CHEVRON_ICON +
+          "</button></span></td>" +
+          "</tr>" +
+          '<tr class="kyb-signal-detail-row" hidden><td colspan="5">' +
+          '<div class="kyb-signal-detail">' +
+          '<p class="kyb-signal-detail__label">Value</p>' +
+          '<p class="kyb-signal-detail__value">' +
+          (row.value || "True") +
+          "</p>" +
+          '<p class="kyb-signal-detail__description">' +
+          (row.description || row.text) +
+          "</p>" +
+          "</div></td></tr>"
+        );
+      })
+      .join("");
+  }
+
+  function renderSignalCategories(categories) {
+    if (!categories || !categories.length) return;
+
+    categories.forEach(function (category) {
+      var accordion = document.querySelector('[data-kyb-signal-category="' + category.id + '"]');
+      if (!accordion) return;
+
+      var tone = category.tone || signalToneClass(category.score);
+      var riskLabel = category.risk || kybRiskFromScore(category.score).label;
+      accordion.setAttribute("data-kyb-category-score", String(category.score));
+      accordion.setAttribute("data-kyb-category-risk", riskLabel);
+      accordion.setAttribute("data-kyb-category-risk-tone", tone);
+
+      var scoreEl = accordion.querySelector(".kyb-signal-category__score");
+      if (scoreEl) {
+        scoreEl.textContent = String(category.score);
+        scoreEl.className =
+          "kyb-signal-category__score kyb-signal-category__score--" + kybRiskFromScore(category.score).risk;
+      }
+
+      var tag = accordion.querySelector(".tds-accordion__tags .tds-tag");
+      if (tag) {
+        tag.className = "tds-tag tds-tag--sm tds-tag--" + tone;
+        tag.textContent = riskLabel;
+      }
+
+      var tbody = accordion.querySelector("tbody");
+      if (tbody && category.rows && category.rows.length) {
+        tbody.innerHTML = buildSignalRowsHtml(category.rows);
+      }
+    });
+  }
+
+  function renderInsightScoreCards(scores) {
+    if (!scores || !scores.length) return;
+
+    scores.forEach(function (score) {
+      document.querySelectorAll(".kyb-insight-score-card").forEach(function (card) {
+        var label = card.querySelector(".kyb-insight-score-card__label");
+        if (!label || label.textContent.trim() !== score.label) return;
+
+        var valueEl = card.querySelector(".kyb-insight-score-card__value");
+        if (valueEl) valueEl.textContent = String(score.value);
+
+        var tag = card.querySelector(".tds-tag");
+        if (tag) {
+          tag.className = "tds-tag tds-tag--sm tds-tag--" + (score.tone || "positive");
+          tag.textContent = score.tag;
+        }
+      });
+    });
+  }
+
+  function setDataFieldDescription(root, label, description) {
+    (root || document).querySelectorAll(".tds-data-field").forEach(function (field) {
+      var fieldLabel = field.querySelector(".tds-data-field__label");
+      if (!fieldLabel || fieldLabel.textContent.trim() !== label) return;
+      var descEl = field.querySelector(".tds-data-field__description");
+      if (descEl) descEl.textContent = description;
+    });
+  }
+
+  function renderFieldOverrides(root, fields) {
+    if (!fields) return;
+    Object.keys(fields).forEach(function (label) {
+      var entry = fields[label];
+      if (typeof entry === "string") {
+        setFieldValue(root, label, entry);
+        return;
+      }
+      if (entry && entry.value) setFieldValue(root, label, entry.value);
+      if (entry && typeof entry.description === "string") setDataFieldDescription(root, label, entry.description);
+    });
+  }
+
+  function renderMetricCards(metrics) {
+    if (!metrics) return;
+    Object.keys(metrics).forEach(function (label) {
+      document.querySelectorAll(".kyb-financial-metric-card").forEach(function (card) {
+        var cardLabel = card.querySelector(".kyb-financial-metric-card__label");
+        if (!cardLabel || cardLabel.textContent.trim() !== label) return;
+        var valueEl = card.querySelector(".kyb-financial-metric-card__value");
+        if (valueEl) valueEl.textContent = String(metrics[label]);
+      });
+    });
+  }
+
+  function renderFinancialDetail(financial) {
+    if (!financial) return;
+
+    renderMetricCards(financial.metrics);
+
+    if (financial.industryTags && financial.industryTags.length) {
+      var tagHost = document.querySelector(".kyb-financial-metric-card--tags .kyb-financial-metric-card__tags");
+      if (tagHost) {
+        tagHost.innerHTML = financial.industryTags
+          .map(function (tag) {
+            return '<span class="tds-tag tds-tag--md">' + tag + "</span>";
+          })
+          .join("");
+      }
+    }
+
+    if (financial.creditText) {
+      var creditText = document.querySelector(".kyb-financial-credit-banner__text");
+      if (creditText) creditText.textContent = financial.creditText;
+    }
+  }
+
+  function renderPresenceDetail(presence) {
+    if (!presence) return;
+
+    renderFieldOverrides(document.getElementById("kyb-presence-detail-body"), presence.fields);
+
+    if (presence.expiryTone) {
+      document.querySelectorAll("#kyb-presence-detail-body .tds-data-field").forEach(function (field) {
+        var label = field.querySelector(".tds-data-field__label");
+        if (!label || label.textContent.trim() !== "Domain Expired") return;
+        var valueEl = field.querySelector(".tds-data-field__value");
+        if (valueEl) valueEl.classList.toggle("kyb-web-value--negative", presence.expiryTone === "negative");
+      });
+    }
+
+    if (presence.previewText) {
+      var placeholder = document.querySelector(".kyb-browser-mock__placeholder");
+      if (placeholder) placeholder.textContent = presence.previewText;
+    }
+
+  }
+
+  var SOCIAL_LINK_PATTERNS = {
+    LinkedIn: "linkedin.com/company/",
+    Instagram: "instagram.com/",
+    "Twitter/X": "x.com/",
+    TikTok: "tiktok.com/@",
+  };
+
+  function renderSocialLinks(overrides, entity) {
+    var handle = entity && entity.name ? slugifyDomain(entity.name) : "";
+
+    document.querySelectorAll(".kyb-web-social-rows .tds-data-field").forEach(function (field) {
+      var label = field.querySelector(".tds-data-field__label");
+      var link = field.querySelector(".kyb-web-link");
+      if (!label || !link) return;
+
+      var key = label.textContent.trim();
+      var href = overrides && overrides[key];
+      if (!href && handle && SOCIAL_LINK_PATTERNS[key]) href = SOCIAL_LINK_PATTERNS[key] + handle;
+      if (!href) return;
+
+      link.setAttribute("href", "https://" + href);
+      link.childNodes[0].nodeValue = href;
+    });
+  }
+
+  function buildMatchResultCell(status) {
+    if (status === "missing") {
+      return buildSignalsCell("Missing", "intermediate", TABLE_WARNING_ICON);
+    }
+    if (status === "match") {
+      return buildSignalsCell("Match", "positive", TABLE_CHECK_ICON);
+    }
+    return buildSignalsCell("No Match", "negative", TABLE_CROSS_ICON);
+  }
+
+  function renderMatchSignalsDetail(match) {
+    if (!match) return;
+
+    var banner = document.querySelector(".kyb-match-verification-banner");
+    if (banner && match.verified !== undefined) {
+      banner.classList.toggle("kyb-match-verification-banner--positive", !!match.verified);
+      var icon = banner.querySelector(".kyb-match-verification-banner__icon");
+      if (icon) icon.innerHTML = match.verified ? TABLE_CHECK_ICON : TABLE_CROSS_ICON;
+      var title = banner.querySelector(".kyb-match-verification-banner__title");
+      if (title) title.textContent = match.verified ? "Verified" : "Not Verified";
+    }
+
+    if (banner && match.rule) {
+      var rule = banner.querySelector(".kyb-match-verification-banner__rule");
+      if (rule) rule.textContent = match.rule;
+    }
+
+    renderFieldOverrides(banner, match.metrics);
+
+    if (!match.rows) return;
+    Object.keys(match.rows).forEach(function (rowId) {
+      var row = document.querySelector('[data-kyb-match-row="' + rowId + '"]');
+      if (!row) return;
+
+      var result = match.rows[rowId];
+      var cells = row.querySelectorAll("td");
+      if (cells[1] && result.input && !cells[1].hasAttribute("data-kyb-match-business-name")) {
+        cells[1].textContent = result.input;
+      }
+      if (cells[2]) cells[2].innerHTML = buildMatchResultCell(result.status || (result.matched ? "match" : "no-match"));
+      if (cells[3] && result.sources) cells[3].textContent = result.sources;
+
+      var detailRow = row.nextElementSibling;
+      if (!detailRow || !result.sourceRows) return;
+      var sourceBody = detailRow.querySelector(".kyb-match-source-table tbody");
+      if (!sourceBody) return;
+      sourceBody.innerHTML = result.sourceRows
+        .map(function (source) {
           return (
-            '<li class="kyb-tab-summary__finding">' +
-            '<span class="kyb-tab-summary__finding-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>' +
-            '<span class="kyb-tab-summary__finding-text">' + text + "</span>" +
-            "</li>"
+            '<tr><td class="tds-data-table__text-cell">' +
+            source.name +
+            "</td><td>" +
+            buildMatchResultCell(source.status || (source.matched ? "match" : "no-match")) +
+            "</td></tr>"
           );
         })
         .join("");
+    });
+  }
+
+  function renderProfileDetail(profile, entity) {
+    var detail = (profile && profile.detail) || {};
+    renderSocialLinks(detail.presence && detail.presence.socialLinks, entity);
+    if (!profile || !profile.detail) return;
+
+    if (detail.jurisdiction) {
+      var businessRoot = document.getElementById("kyb-business-insights-detail-body");
+      setFieldValue(businessRoot, "Jurisdiction", detail.jurisdiction);
+      setFieldValue(businessRoot, "Country", entity && entity.country ? entity.country : detail.jurisdiction);
     }
+
+    renderSignalCategories(detail.signalCategories);
+    renderInsightScoreCards(detail.insightScores);
+    renderFieldOverrides(document.getElementById("kyb-business-insights-detail-body"), detail.businessFields);
+    renderFinancialDetail(detail.financial);
+    renderPresenceDetail(detail.presence);
+    renderMatchSignalsDetail(detail.matchSignals);
   }
 
   function renderSidebarSummary(summaryData) {
@@ -2407,7 +3687,8 @@
     var sidebarSummaryData = sidebarSummaryFromProfile(profile, entity);
     if (sidebarSummaryData) renderSidebarSummary(sidebarSummaryData);
     renderSignalsTabSummary(profile);
-    renderTabSummaries(profile);
+    renderTabSummaries(profile, entity);
+    renderProfileDetail(profile, entity);
 
     var insightsSummaryEl = document.querySelector(".kyb-insights-summary");
     if (insightsSummaryEl) insightsSummaryEl.textContent = insightsSummary;
@@ -2447,6 +3728,9 @@
     if (matchBusinessName && entity && entity.name) {
       matchBusinessName.textContent = entity.name;
     }
+
+    activeProfile = profile;
+    activeEntity = entity;
 
     document.body.setAttribute("data-kyb-entity-applied", entity.sample || "custom");
     document.body.setAttribute("data-kyb-entity-name", entity.name);
@@ -3375,7 +4659,7 @@
     initRawCopy();
     initTransactionIdCopy();
     initKybScoreGauge();
-    renderWebSocialAccordions();
+    renderWebSocialAccordions(activeProfile, activeEntity);
     if (window.ScoreGauge) ScoreGauge.renderAll(document);
   }
 
