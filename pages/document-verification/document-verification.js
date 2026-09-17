@@ -521,7 +521,7 @@
     biometricsAiSummary: "Face match scored above the acceptance threshold. The selfie matches the document portrait and liveness passed.",
     biometricsAiPrompt: "How is face match scored?",
     networkAiSummary: "No network-level risk signals detected. Face, document and IP activity are consistent with a single identity.",
-    networkAiPrompt: "What does network insights cover?",
+    networkAiPrompt: "What does identity insights cover?",
     deviceAiSummary: "Device environment shows no risk indicators. The session looks consistent with a typical legitimate device.",
     deviceAiPrompt: "How is device score calculated?",
     summaryHeadline: "Jane Doe\u2019s identity was verified",
@@ -2006,18 +2006,18 @@ ${renderSignalsToolbar()}
     const accepted2 = groupRowCount(groups, "accepted");
     const evaluated = declined + review + accepted2;
     const passed = accepted2;
-    let tag = "Clear";
-    let tagTone = "default";
-    if (declined > 0) {
-      tag = "Declined";
-      tagTone = "negative";
-    } else if (review > 0) {
-      tag = "Review";
-      tagTone = "intermediate";
-    }
-    const info = config.documentInfo;
-    return {
-      tab: "document",
+    let tag = "Accepted";
+  let tagTone = "positive";
+  if (declined > 0) {
+    tag = "Declined";
+    tagTone = "negative";
+  } else if (review > 0) {
+    tag = "Review";
+    tagTone = "intermediate";
+  }
+  const info = config.documentInfo;
+  return {
+    tab: "document",
       caption: "Document",
       icon: ICON_ID_CARD,
       tag,
@@ -2036,8 +2036,8 @@ ${renderSignalsToolbar()}
     const faceScore = findDetailValue(groups, "Face match score");
     const threshold = findDetailValue(groups, "Required threshold");
     const deepfake = findDetailValue(groups, "Deepfake confidence");
-    let tag = "Clear";
-    let tagTone = "default";
+    let tag = "Accepted";
+    let tagTone = "positive";
     if (declined > 0 || knownHits > 0) {
       tag = "Declined";
       tagTone = "negative";
@@ -2078,10 +2078,10 @@ ${renderSignalsToolbar()}
     const isFlagged = flagged > 0;
     return {
       tab: "network-insights",
-      caption: "Network Insights",
+      caption: "Identity Insights",
       icon: ICON_GLOBE,
-      tag: isFlagged ? "High Risk" : "Clear",
-      tagTone: isFlagged ? "negative" : "default",
+      tag: isFlagged ? "High Risk" : "Accepted",
+      tagTone: isFlagged ? "negative" : "positive",
       metricHtml: `${flagged}/${total} signals flagged`,
       detail: `Checked across ${total} categories.`
     };

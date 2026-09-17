@@ -215,13 +215,14 @@ html {
 }
 
 .labs-featured-card {
-  height: 323px;
+  height: auto;
+  min-height: 323px;
   gap: 8px;
 }
 
 .labs-featured-card__header {
-  flex: 0 0 150px;
-  height: 150px;
+  flex: 1 1 auto;
+  height: auto;
   padding: 24px 16px 0;
   box-sizing: border-box;
 }
@@ -230,6 +231,7 @@ html {
   flex: 0 0 163px;
   height: 163px;
   min-height: 163px;
+  margin-top: auto;
   display: flex;
   align-items: stretch;
   padding: 8px 24px 0;
@@ -274,7 +276,8 @@ html {
 }
 
 .labs-card {
-  height: 177px;
+  height: auto;
+  min-height: 177px;
 }
 
 .labs-card__body {
@@ -282,7 +285,7 @@ html {
   min-height: 0;
   height: 100%;
   padding: 24px 16px 0;
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
 }
 
@@ -321,12 +324,11 @@ html {
 
 .labs-card-title-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 4px;
   min-width: 0;
   width: 100%;
-  height: 18px;
-  overflow: hidden;
 }
 
 .labs-card-title {
@@ -337,9 +339,6 @@ html {
   font-weight: 600;
   line-height: 18px;
   color: var(--text-primary, #172d2d);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .labs-card-ext {
@@ -360,15 +359,10 @@ html {
 
 .labs-card-desc {
   margin: 0;
-  height: calc(var(--line-height-md) * 2);
-  overflow: hidden;
-  font-size: var(--font-size-sm);
+  font-size: 12px;
   font-weight: 400;
-  line-height: var(--line-height-md);
+  line-height: 16px;
   color: var(--text-description, #526660);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }
 
 .labs-card-tags {
@@ -474,6 +468,5 @@ html {
   .labs-featured-card__header {
     flex-basis: auto;
     height: auto;
-    min-height: 150px;
   }
 }

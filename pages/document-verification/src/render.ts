@@ -989,8 +989,8 @@ function documentEvidence(config: ScenarioConfig): EvidenceCard {
   const accepted = groupRowCount(groups, "accepted");
   const evaluated = declined + review + accepted;
   const passed = accepted;
-  let tag = "Clear";
-  let tagTone: Tone = "default";
+  let tag = "Accepted";
+  let tagTone: Tone = "positive";
   if (declined > 0) {
     tag = "Declined";
     tagTone = "negative";
@@ -1019,8 +1019,8 @@ function biometricsEvidence(config: ScenarioConfig): EvidenceCard {
   const faceScore = findDetailValue(groups, "Face match score");
   const threshold = findDetailValue(groups, "Required threshold");
   const deepfake = findDetailValue(groups, "Deepfake confidence");
-  let tag = "Clear";
-  let tagTone: Tone = "default";
+  let tag = "Accepted";
+  let tagTone: Tone = "positive";
   if (declined > 0 || knownHits > 0) {
     tag = "Declined";
     tagTone = "negative";
@@ -1069,10 +1069,10 @@ function networkEvidence(config: ScenarioConfig): EvidenceCard {
   const isFlagged = flagged > 0;
   return {
     tab: "network-insights",
-    caption: "Network Insights",
+    caption: "Identity Insights",
     icon: ICON_GLOBE,
-    tag: isFlagged ? "High Risk" : "Clear",
-    tagTone: isFlagged ? "negative" : "default",
+    tag: isFlagged ? "High Risk" : "Accepted",
+    tagTone: isFlagged ? "negative" : "positive",
     metricHtml: `${flagged}/${total} signals flagged`,
     detail: `Checked across ${total} categories.`,
   };

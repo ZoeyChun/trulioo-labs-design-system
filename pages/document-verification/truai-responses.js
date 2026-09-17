@@ -129,7 +129,7 @@
         tab: meta.defaultTab,
       },
       secondaryAction: {
-        label: "View network insights",
+        label: "View identity insights",
         tab: "network-insights",
       },
     };
@@ -239,7 +239,7 @@
       summary: summary,
       hero: {
         value: hasFraud ? "3" : "0",
-        label: hasFraud ? "Signals found" : "Clear",
+        label: hasFraud ? "Signals found" : "Accepted",
         meta: [hasFraud ? "Elevated risk" : "No network risk"],
         tone: hasFraud ? "high" : "low",
       },
@@ -248,14 +248,14 @@
         hasFraud
           ? buildCheckDrivers(key)
           : [
-              { title: "Known Faces", badge: "Clear", badgeTone: "positive", detail: "No prior fraud association." },
-              { title: "Network Insights", badge: "Clear", badgeTone: "positive", detail: "No cross-transaction anomalies." },
+              { title: "Known Faces", badge: "Accepted", badgeTone: "positive", detail: "No prior fraud association." },
+              { title: "Identity Insights", badge: "Accepted", badgeTone: "positive", detail: "No cross-transaction anomalies." },
               { title: "Device Intelligence", badge: "Low risk", badgeTone: "positive", detail: "Trusted device and session." },
             ],
       findingsTitle: "Key findings",
       findings: buildFindings(key).slice(0, 2),
       primaryAction: {
-        label: hasFraud ? "Review network insights" : "View device intelligence",
+        label: hasFraud ? "Review identity insights" : "View device intelligence",
         tab: hasFraud ? "network-insights" : "device-intelligence",
       },
       secondaryAction: { label: "View biometrics", tab: "biometrics" },
@@ -327,12 +327,12 @@
         ? "This face is linked to multiple identities. Network intelligence flagged synthetic identity and document conflict."
         : "No network-level risk signals were detected. Any decline comes from another check, not network activity.");
     return {
-      thinkingLabel: "Reviewing network insights for " + name + "…",
+      thinkingLabel: "Reviewing identity insights for " + name + "…",
       sourceLabel: flagged ? "Network fraud signals" : "4 categories checked",
       summary: summary,
       hero: {
         value: flagged ? "Flagged" : "Clean",
-        label: "Network insights",
+        label: "Identity insights",
         meta: flagged
           ? ["Synthetic identity", "Document conflict"]
           : ["Transactions", "Identities", "Documents", "Devices"],
@@ -349,7 +349,7 @@
       findings: flagged
         ? ["Face reused across identities", "Document numbers conflict across history"]
         : ["No network-level risk signals", "Any decline is from another check, not the network"],
-      primaryAction: { label: "View network insights", tab: "network-insights" },
+      primaryAction: { label: "View identity insights", tab: "network-insights" },
       secondaryAction: { label: "View device intelligence", tab: "device-intelligence" },
     };
   }
@@ -390,7 +390,7 @@
         ? ["Device risk contributed to the decline", "Review Device Information and evidence signals"]
         : ["No device risk indicators", "Any decline is from another check, not the device"],
       primaryAction: { label: "View device intelligence", tab: "device-intelligence" },
-      secondaryAction: { label: "View network insights", tab: "network-insights" },
+      secondaryAction: { label: "View identity insights", tab: "network-insights" },
     };
   }
 
@@ -415,6 +415,7 @@
       case "Why was this sent to review?":
       case "Why does the date of birth need review?":
         return buildSummaryResponse(name, key);
+      case "What does identity insights cover?":
       case "What does network insights cover?":
         return buildNetworkInsightsResponse(name, key);
       case "How is device score calculated?":
