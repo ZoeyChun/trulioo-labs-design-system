@@ -32,14 +32,20 @@
     "brr-home-back",
   ];
 
-  function goBack() {
-    var target = window.top && window.top !== window ? window.top : window;
-    if (window.LabsHistoryReturn && window.LabsHistoryReturn.go()) return;
-    if (document.referrer || (target !== window && target.document && target.document.referrer)) {
-      target.history.back();
+  function goBack(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    var fallback = labsUrl();
+    var btn = event && event.currentTarget;
+    var explicit = btn && btn.getAttribute("data-labs-back-href");
+    if (explicit) fallback = resolve(explicit);
+    if (window.LabsHistoryReturn && window.LabsHistoryReturn.pageBack) {
+      window.LabsHistoryReturn.pageBack(fallback);
       return;
     }
-    target.location.href = labsUrl();
+    window.location.href = fallback;
   }
 
   function wirePageBackButtons() {
@@ -48,10 +54,7 @@
       if (!btn || btn.getAttribute("data-labs-back") === "bound") return;
       btn.setAttribute("data-labs-back", "bound");
       btn.setAttribute("aria-label", "Back");
-      btn.addEventListener("click", function (event) {
-        event.preventDefault();
-        goBack();
-      });
+      btn.addEventListener("click", goBack);
     });
   }
 

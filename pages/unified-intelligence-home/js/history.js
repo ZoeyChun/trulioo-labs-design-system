@@ -112,8 +112,9 @@
     backBtn.setAttribute('data-labs-back', 'bound');
     backBtn.addEventListener('click', function (event) {
       event.preventDefault();
-      if (document.referrer) {
-        history.back();
+      event.stopPropagation();
+      if (window.LabsHistoryReturn && window.LabsHistoryReturn.pageBack) {
+        window.LabsHistoryReturn.pageBack('labs.html');
         return;
       }
       window.location.href = 'labs.html';

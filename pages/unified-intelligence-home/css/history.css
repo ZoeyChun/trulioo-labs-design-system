@@ -75,6 +75,8 @@
   cursor: pointer;
   text-decoration: none;
   box-shadow: var(--shadow-button-elevated);
+  position: relative;
+  z-index: 2;
 }
 
 .dv-back-btn:hover {

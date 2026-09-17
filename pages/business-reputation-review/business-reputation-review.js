@@ -523,10 +523,11 @@
     if (submit) submit.addEventListener("click", submitForm);
 
     if (cardBack) {
-      cardBack.addEventListener("click", function () {
-        if (window.LabsHistoryReturn && window.LabsHistoryReturn.go()) return;
-        if (document.referrer) {
-          window.history.back();
+      cardBack.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (window.LabsHistoryReturn && window.LabsHistoryReturn.pageBack) {
+          window.LabsHistoryReturn.pageBack("../unified-intelligence-home/labs.html");
           return;
         }
         window.location.href = "../unified-intelligence-home/labs.html";

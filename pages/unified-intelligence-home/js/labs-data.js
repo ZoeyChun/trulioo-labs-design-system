@@ -79,7 +79,6 @@ var labsExperiences = [
     icon: 'business-reputation-review',
     tags: ['KYB'],
     badge: 'demo',
-    external: true,
     featured: true,
     order: 6,
     url: '../business-reputation-review/index.html',
