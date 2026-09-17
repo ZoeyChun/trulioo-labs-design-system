@@ -335,9 +335,9 @@ html {
   margin: 0;
   flex: 0 1 auto;
   min-width: 0;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 18px;
+  font-size: var(--font-size-md);       /* heading/sm — 16px */
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-md);   /* 20px */
   color: var(--text-primary, #172d2d);
 }
 
