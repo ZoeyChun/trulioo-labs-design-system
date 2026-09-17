@@ -43,7 +43,7 @@ var labsExperiences = [
   },
   {
     id: 'kyc-eidas',
-    title: 'KYC eIDAS',
+    title: 'eIDAS compliant KYC',
     description: 'Complete eIDAS 2.0 identity verification across Europe with a national eID or document.',
     experienceType: 'live',
     useCase: 'KYC',
@@ -140,7 +140,7 @@ var labsExperiences = [
   {
     id: 'kyb-self-serve',
     title: 'KYB Self-Serve',
-    description: 'Map ultimate beneficial owners and relationship networks across entities and jurisdictions.',
+    description: 'Verify businesses quickly with a simple, self-serve KYB workflow.',
     experienceType: 'live',
     useCase: 'KYB',
     industry: 'Marketplace',

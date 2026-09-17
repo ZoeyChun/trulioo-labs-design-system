@@ -37,10 +37,10 @@ SUB_ITEM_ICON_BY_LABEL = {
     "UBO Agent": UBO_ICON,
     "Deep Search": SEARCH_ICON,
     "Orchestration Agent": ORCH_ICON,
-    "Document Verification": DOC_ICON,
+    "KYC Documents": DOC_ICON,
     "Bank Verification": BANK_ICON,
     "Electronic ID": EID_ICON,
-    "KYC eIDAS": KYC_EIDAS_ICON,
+    "eIDAS compliant KYC": KYC_EIDAS_ICON,
     "Device Intelligence": DEVICE_ICON,
 }
 
@@ -54,10 +54,10 @@ KYB_NAV_LABELS = [
 ]
 
 KYC_NAV_LABELS = [
-    "Document Verification",
+    "KYC Documents",
     "Bank Verification",
     "Electronic ID",
-    "KYC eIDAS",
+    "eIDAS compliant KYC",
     "Device Intelligence",
 ]
 
@@ -115,7 +115,7 @@ def build(
     def kyc_item(label: str) -> str:
         href = None
         selected = False
-        if label == "Document Verification":
+        if label == "KYC Documents":
             href = dv_href if kyc_links else None
             selected = active_page == "document-verification"
         elif label == "Bank Verification":
@@ -303,7 +303,7 @@ def sync_pages() -> None:
 PREVIEW_SUB_INDENT = "              "
 
 
-def preview_kyb_kyc_blocks(selected_kyc: str = "Document Verification") -> tuple[str, str]:
+def preview_kyb_kyc_blocks(selected_kyc: str = "KYC Documents") -> tuple[str, str]:
     kyb_items = "\n".join(
         sub_item(label, None, False, SUB_ITEM_ICON_BY_LABEL.get(label, POLICY_ICON), PREVIEW_SUB_INDENT)
         for label in KYB_NAV_LABELS
