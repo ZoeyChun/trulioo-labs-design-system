@@ -303,9 +303,12 @@ html {
   color: var(--icon-faint, #617269);
 }
 
+/* Same 24x24 symbols as the side nav (Figma SideNavIcons 7225:32904). */
 .labs-card-icon svg {
   display: block;
   flex-shrink: 0;
+  width: 24px;
+  height: 24px;
 }
 
 .labs-card-copy {
@@ -357,11 +360,11 @@ html {
 
 .labs-card-desc {
   margin: 0;
-  height: 32px;
+  height: calc(var(--line-height-md) * 2);
   overflow: hidden;
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   font-weight: 400;
-  line-height: 16px;
+  line-height: var(--line-height-md);
   color: var(--text-description, #526660);
   display: -webkit-box;
   -webkit-line-clamp: 2;

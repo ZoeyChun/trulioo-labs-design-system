@@ -30,7 +30,7 @@
   ];
 
   var KYC_ITEMS = [
-    { id: "document-verification", title: "Document Verification", path: "unified-intelligence-home/document-verification-transactions.html", match: ["document-verification"] },
+    { id: "document-verification", title: "KYC Documents", path: "unified-intelligence-home/document-verification-transactions.html", match: ["document-verification"] },
     { id: "bank-verification", title: "Bank Verification", path: "bank-verification/index.html", match: ["bank-verification"] },
     { id: "electronic-id", title: "Electronic ID", path: "electronic-id/index.html", match: ["electronic-id"] },
     { id: "kyc-eidas", title: "KYC eIDAS", path: "KYC eIDAS/index.html", match: ["kyc eidas", "kyc-eidas"] },

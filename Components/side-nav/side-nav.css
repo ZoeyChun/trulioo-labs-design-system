@@ -3,7 +3,7 @@
 
 /* ============================================================
    SideNav
-   Figma: SideNav (1198:20540) · expanded 1187:10323 · collapsed 1188:10370
+   Figma: SideNav (5450:198391) · expanded 1187:10323 · collapsed 1188:10370
    Footer/profile: 1187:10384 · collapsed-hover tooltips: 1201:10370
    Sub-components: NavItem, SubItem, SectionTitle, Divider, UserProfile
    Modes: expanded (232px) | collapsed (72px)
@@ -73,6 +73,13 @@ button.tds-side-nav__collapse-bar:hover {
 }
 
 .tds-side-nav__collapse-label {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
   color: var(--text-description);
 }
 
@@ -131,6 +138,16 @@ button.tds-side-nav__collapse-bar:hover {
   height: 40px;
   border-radius: var(--radius-lg);
   object-fit: cover;
+}
+
+.tds-side-nav--collapsed .tds-side-nav__logo {
+  background-color: var(--interactive-default);
+}
+
+.tds-side-nav--collapsed .tds-side-nav__logo img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .tds-side-nav__brand-expanded {
@@ -209,7 +226,7 @@ button.tds-side-nav__nav-item {
   min-height: 40px;
   padding: var(--padding-xs) var(--padding-sm);
   border: none;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-full);
   background: none;
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
@@ -359,6 +376,10 @@ button.tds-side-nav__icon-button {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+}
+
+.tds-side-nav--collapsed .tds-side-nav__icon-button:not(.tds-side-nav__icon-button--active):not([aria-current="page"]) {
+  border-radius: 0;
 }
 
 .tds-labs-icon--ondark {
@@ -591,7 +612,7 @@ a.tds-side-nav__sub-item:focus-visible {
   display: flex;
   flex-shrink: 0;
   width: 100%;
-  padding: var(--padding-lg) var(--padding-sm);
+  padding: var(--padding-md);
   box-sizing: border-box;
 }
 

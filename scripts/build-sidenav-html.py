@@ -20,18 +20,46 @@ DOC_ICON = load_icon("document-verification.svg")
 BANK_ICON = load_icon("bank-verification.svg")
 EID_ICON = load_icon("electronic-id.svg")
 HOME_ICON = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>'
+BUSINESS_ICON = load_icon("business-reputation.svg")
 UBO_ICON = load_icon("ubo-agent.svg")
 POLICY_ICON = load_icon("policy-review.svg")
+KYB_SELF_ICON = load_icon("kyb-self-serve.svg")
 SEARCH_ICON = load_icon("deep-search.svg")
+ORCH_ICON = load_icon("orchestration-agent.svg")
+KYC_EIDAS_ICON = load_icon("kyc-eidas.svg")
+DEVICE_ICON = load_icon("device-intelligence.svg")
 
+# Figma SideNavIcons 7225:32904
 SUB_ITEM_ICON_BY_LABEL = {
-    "UBO Agent": UBO_ICON,
+    "Business Reputation": BUSINESS_ICON,
     "Policy Review": POLICY_ICON,
+    "KYB Self-Serve": KYB_SELF_ICON,
+    "UBO Agent": UBO_ICON,
     "Deep Search": SEARCH_ICON,
+    "Orchestration Agent": ORCH_ICON,
     "Document Verification": DOC_ICON,
     "Bank Verification": BANK_ICON,
     "Electronic ID": EID_ICON,
+    "KYC eIDAS": KYC_EIDAS_ICON,
+    "Device Intelligence": DEVICE_ICON,
 }
+
+KYB_NAV_LABELS = [
+    "Business Reputation",
+    "Policy Review",
+    "KYB Self-Serve",
+    "UBO Agent",
+    "Deep Search",
+    "Orchestration Agent",
+]
+
+KYC_NAV_LABELS = [
+    "Document Verification",
+    "Bank Verification",
+    "Electronic ID",
+    "KYC eIDAS",
+    "Device Intelligence",
+]
 
 CHEVRON_UP = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg>'
 CHEVRON_RIGHT = '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>'
@@ -84,14 +112,23 @@ def build(
 
     dv_href = "../document-verification/index.html"
     bv_href = "../bank-verification/index.html"
-    if active_page == "document-verification":
-        dv_href = "index.html" if kyc_links else dv_href
-        doc_item = sub_item("Document Verification", dv_href if kyc_links else None, True, DOC_ICON, sub_indent)
-        bank_item = sub_item("Bank Verification", bv_href if kyc_links else None, False, BANK_ICON, sub_indent)
-    else:
-        bv_href = "index.html" if kyc_links else bv_href
-        doc_item = sub_item("Document Verification", dv_href if kyc_links else None, False, DOC_ICON, sub_indent)
-        bank_item = sub_item("Bank Verification", bv_href if kyc_links else None, True, BANK_ICON, sub_indent)
+    def kyc_item(label: str) -> str:
+        href = None
+        selected = False
+        if label == "Document Verification":
+            href = dv_href if kyc_links else None
+            selected = active_page == "document-verification"
+        elif label == "Bank Verification":
+            href = bv_href if kyc_links else None
+            selected = active_page == "bank-verification"
+        icon = SUB_ITEM_ICON_BY_LABEL.get(label, DOC_ICON)
+        return sub_item(label, href, selected, icon, sub_indent)
+
+    kyb_items = "\n".join(
+        sub_item(label, None, False, SUB_ITEM_ICON_BY_LABEL.get(label, BUSINESS_ICON), sub_indent)
+        for label in KYB_NAV_LABELS
+    )
+    kyc_items = "\n".join(kyc_item(label) for label in KYC_NAV_LABELS)
 
     nav_classes = ["tds-side-nav"]
     if collapsed:
@@ -160,9 +197,7 @@ def build(
 {child}        <div class="tds-side-nav__section">
 {child}          <div class="tds-side-nav__section-title">KYB</div>
 {child}          <div class="tds-side-nav__section-items">
-{child}            {sub_item("UBO Agent", None, False, UBO_ICON, sub_indent)}
-{child}            {sub_item("Policy Review", None, False, POLICY_ICON, sub_indent)}
-{child}            {sub_item("Deep Search", None, False, SEARCH_ICON, sub_indent)}
+{kyb_items}
 {child}          </div>
 {child}        </div>
 
@@ -171,9 +206,7 @@ def build(
 {child}        <div class="tds-side-nav__section">
 {child}          <div class="tds-side-nav__section-title">KYC</div>
 {child}          <div class="tds-side-nav__section-items">
-{child}            {doc_item}
-{child}            {bank_item}
-{child}            {sub_item("Electronic ID", None, False, EID_ICON, sub_indent)}
+{kyc_items}
 {child}          </div>
 {child}        </div>
 {child}      </div>
@@ -267,6 +300,64 @@ def sync_pages() -> None:
         print(f"synced icons in {path.relative_to(ROOT)}")
 
 
+PREVIEW_SUB_INDENT = "              "
+
+
+def preview_kyb_kyc_blocks(selected_kyc: str = "Document Verification") -> tuple[str, str]:
+    kyb_items = "\n".join(
+        sub_item(label, None, False, SUB_ITEM_ICON_BY_LABEL.get(label, POLICY_ICON), PREVIEW_SUB_INDENT)
+        for label in KYB_NAV_LABELS
+    )
+    kyc_items = "\n".join(
+        sub_item(
+            label,
+            None,
+            label == selected_kyc,
+            SUB_ITEM_ICON_BY_LABEL.get(label, DOC_ICON),
+            PREVIEW_SUB_INDENT,
+        )
+        for label in KYC_NAV_LABELS
+    )
+    return kyb_items, kyc_items
+
+
+def patch_preview_section_items(html: str, section_title: str, items: str) -> str:
+    pat = re.compile(
+        rf'(<div class="tds-side-nav__section-title">{section_title}</div>\s*'
+        rf'<div class="tds-side-nav__section-items">)\s*[\s\S]*?(</div>)',
+        re.MULTILINE,
+    )
+    return pat.sub(rf"\1\n{items}\n            \2", html, count=1)
+
+
+def sync_preview_index_showcases() -> None:
+    path = ROOT / "pages/preview/index.html"
+    html = path.read_text()
+    kyb_items, kyc_items = preview_kyb_kyc_blocks()
+
+    expanded_pat = re.compile(
+        r'(<div class="tds-side-nav-preview">\s*'
+        r'<aside class="tds-side-nav tds-side-nav--demo-figma">)'
+        r"([\s\S]*?)"
+        r"(</aside>\s*</div>)",
+        re.MULTILINE,
+    )
+    match = expanded_pat.search(html)
+    if not match:
+        raise ValueError("Expanded SideNav showcase block not found in pages/preview/index.html")
+    block = match.group(2)
+    block = patch_preview_section_items(block, "KYB", kyb_items)
+    block = patch_preview_section_items(block, "KYC", kyc_items)
+    html = expanded_pat.sub(match.group(1) + block + match.group(3), html, count=1)
+
+    html = html.replace(
+        "KYB/KYC sections, and profile footer (Figma 1187:10323).",
+        "KYB/KYC sections, and profile footer (Figma 5450:198391 · 1187:10323).",
+    )
+    path.write_text(html)
+    print(f"synced expanded showcase in {path.relative_to(ROOT)}")
+
+
 def sync_preview() -> None:
     preview = ROOT / "Components/side-nav/preview.html"
     html = preview.read_text()
@@ -312,6 +403,7 @@ if __name__ == "__main__":
     try:
         sync_pages()
         sync_preview()
+        sync_preview_index_showcases()
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(1)

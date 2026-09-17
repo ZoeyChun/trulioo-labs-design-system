@@ -101,14 +101,13 @@ body[data-sidenav="experimental"] .tds-side-nav__nav-item[aria-current="page"] .
   color: var(--icon-inverse, #fff);
 }
 
-/* Catalog icons keep native aspect ratio inside the 24px slot (max 16px glyph). */
+/* Figma SideNavIcons (7225:32904) ships 24x24 symbols with the glyph already
+   inset, so the artwork fills the slot 1:1 with no rescaling. */
 body[data-sidenav="experimental"] .tds-side-nav__sub-item-icon .fa-icon,
 body[data-sidenav="experimental"] .tds-side-nav__sub-item-icon .icon,
 body[data-sidenav="experimental"] .tds-side-nav__sub-item-icon svg {
-  width: auto;
-  height: auto;
-  max-width: 16px;
-  max-height: 16px;
+  width: 24px;
+  height: 24px;
 }
 
 body[data-sidenav="experimental"] .tds-side-nav__sub-nav {

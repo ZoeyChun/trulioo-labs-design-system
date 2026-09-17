@@ -1,7 +1,7 @@
 var labsExperiences = [
   {
     id: 'document-verification',
-    title: 'Document Verification',
+    title: 'KYC Documents',
     description: 'Verify passports and identity documents using AI-assisted authenticity checks.',
     experienceType: 'live',
     useCase: 'KYC',
