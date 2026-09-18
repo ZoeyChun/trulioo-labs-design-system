@@ -7,7 +7,7 @@
   var EXPERIENCE_TYPE_META = {
     live: { tag: 'Live', tone: 'live' },
     demo: { tag: 'Demo', tone: 'demo' },
-    external: { tag: 'External', tone: 'external' }
+    external: { tag: 'Experiment', tone: 'external' }
   };
 
   var CARD_ICONS = window.LabsIcons || {};

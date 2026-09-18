@@ -78,9 +78,15 @@
     bindCollapseControl(sideNav, collapseBtn, toggleBtn, collapseBtn);
     bindCollapseControl(sideNav, collapseBtn, toggleBtn, toggleBtn);
 
+    window.addEventListener("pageshow", function (event) {
+      if (!event.persisted) return;
+      setCollapsed(sideNav, collapseBtn, toggleBtn, true);
+    });
+
     sideNav.addEventListener("click", function (e) {
       if (sideNav.classList.contains("tds-side-nav--collapsed")) {
         if (e.target.closest(".tds-side-nav__brand")) return;
+        if (e.target.closest(".tds-side-nav__icon-button")) return;
         setCollapsed(sideNav, collapseBtn, toggleBtn, false);
         return;
       }

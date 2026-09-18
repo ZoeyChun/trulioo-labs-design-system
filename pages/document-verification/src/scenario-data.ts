@@ -368,7 +368,7 @@ const happyPath: ScenarioConfig = {
   biometricsAiPrompt: "How is face match scored?",
   networkAiSummary:
     "No network-level risk signals detected. Face, document and IP activity are consistent with a single identity.",
-  networkAiPrompt: "What does network insights cover?",
+  networkAiPrompt: "What does identity insights cover?",
   deviceAiSummary:
     "Device environment shows no risk indicators. The session looks consistent with a typical legitimate device.",
   deviceAiPrompt: "How is device score calculated?",

@@ -77,7 +77,15 @@
     if (next) next.addEventListener("click", function () { goStep(2); });
     if (step2Back) step2Back.addEventListener("click", function () { goStep(1); });
     if (step1Back) {
-      step1Back.addEventListener("click", function () { history.back(); });
+      step1Back.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (window.LabsHistoryReturn && window.LabsHistoryReturn.pageBack) {
+          window.LabsHistoryReturn.pageBack("../unified-intelligence-home/labs.html");
+          return;
+        }
+        window.location.href = "../unified-intelligence-home/labs.html";
+      });
     }
     if (skip) skip.addEventListener("click", showResultView);
   }
