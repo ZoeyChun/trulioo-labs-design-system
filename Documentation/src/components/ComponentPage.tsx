@@ -135,10 +135,7 @@ function ShowcaseBlock({ showcase }: { showcase: PreviewShowcase }) {
     const el = containerRef.current;
     if (!el) return;
 
-    if (el.dataset.showcaseSource !== showcase.slug) {
-      el.innerHTML = html;
-      el.dataset.showcaseSource = showcase.slug;
-    }
+    el.innerHTML = html;
 
     const frame = requestAnimationFrame(() => initPreviewDemos(el));
     return () => cancelAnimationFrame(frame);

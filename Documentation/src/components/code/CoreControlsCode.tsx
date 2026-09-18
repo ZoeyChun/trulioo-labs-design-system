@@ -343,6 +343,11 @@ export function SpinnerCode({ basePath }: CodePageProps) {
               description: "Red tone variant for error or destructive loading contexts.",
               type: "CSS class",
             },
+            {
+              name: ".tds-spinner--on-dark",
+              description: "Inverse spinner ring for dark backgrounds (e.g. primary buttons, teal panels).",
+              type: "CSS class",
+            },
           ]}
         />
       </CodeSection>
@@ -353,28 +358,28 @@ export function SpinnerCode({ basePath }: CodePageProps) {
           props={[
             {
               name: ".tds-spinner--xs",
-              description: "12px. Use inside icon buttons (.tds-icon-btn--loading).",
+              description: "16px. Use inside small buttons and icon buttons.",
               type: "xs | sm | md | lg | xl",
             },
             {
               name: ".tds-spinner--sm",
-              description: "16px. Use inside text buttons (.tds-btn--loading).",
+              description: "24px. Use inside medium and large text buttons.",
               type: "xs | sm | md | lg | xl",
             },
             {
               name: ".tds-spinner--md",
-              description: "24px. Default for inline section loading.",
+              description: "36px. Default for inline section loading.",
               type: "xs | sm | md | lg | xl",
               default: "Recommended default",
             },
             {
               name: ".tds-spinner--lg",
-              description: "32px. Page-section loading indicators.",
+              description: "48px. Page-section loading indicators.",
               type: "xs | sm | md | lg | xl",
             },
             {
               name: ".tds-spinner--xl",
-              description: "48px. Full-page or modal loading states.",
+              description: "64px. Full-page or modal loading states.",
               type: "xs | sm | md | lg | xl",
             },
           ]}
@@ -399,6 +404,11 @@ export function SpinnerCode({ basePath }: CodePageProps) {
               name: ".tds-spinner-block--{xs|sm|md|lg|xl}",
               description: "Controls label font size to match spinner scale.",
               type: "xs | sm | md | lg | xl",
+            },
+            {
+              name: ".tds-spinner-block--on-dark",
+              description: "Inverse spinner and label for dark surfaces (Figma surface=dark).",
+              type: "CSS class",
             },
           ]}
         />

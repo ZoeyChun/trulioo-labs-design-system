@@ -256,14 +256,3 @@
   flex-shrink: 0;
 }
 
-.tds-icon-btn--primary.tds-icon-btn--loading .tds-spinner,
-.tds-icon-btn--primary[aria-busy="true"] .tds-spinner {
-  --spinner-track: color-mix(in srgb, var(--icon-inverse) 35%, transparent);
-  --spinner-accent: var(--icon-inverse);
-}
-
-.tds-icon-btn--danger.tds-icon-btn--loading .tds-spinner,
-.tds-icon-btn--danger[aria-busy="true"] .tds-spinner {
-  --spinner-track: var(--surface-negative);
-  --spinner-accent: var(--icon-negative);
-}

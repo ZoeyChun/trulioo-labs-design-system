@@ -767,7 +767,7 @@
     "pageId": "spinner",
     "path": "#/components/spinner#spinner",
     "category": "Spinner · Design",
-    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Spinner .tds-spinner--{xs|sm|md|lg|xl} · .tds-spinner--negative · .tds-spinner-block Standalone loading indicator: five sizes with optional label (Figma 2092:18230)."
+    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Spinner .tds-spinner--{xs|sm|md|lg|xl} · .tds-spinner--negative · .tds-spinner-block--on-dark Standalone loading indicator: five sizes with optional label (Figma 2092:18230)."
   },
   {
     "id": "components/button/button-menu",
@@ -1597,13 +1597,13 @@
   {
     "id": "components/side-nav/side-nav-expanded",
     "title": "Side nav: Expanded",
-    "description": "Full workspace rail with brand header, expandable Labs group, KYB/KYC sections, and profile footer (Figma 1187:10323).",
+    "description": "Full workspace rail with brand header, expandable Labs group, KYB/KYC sections, and profile footer (Figma 5450:198391 · 1187:10323).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "side-nav",
     "path": "#/components/side-nav#side-nav-expanded",
     "category": "SideNav · Design",
-    "keywords": "SideNav side-nav side nav Navigation tds-side-nav tds-side-nav-preview side-nav/side-nav.css side nav sidebar side navigation nav rail left nav Side nav: Expanded .tds-side-nav · .tds-side-nav--expanded Full workspace rail with brand header, expandable Labs group, KYB/KYC sections, and profile footer (Figma 1187:10323)."
+    "keywords": "SideNav side-nav side nav Navigation tds-side-nav tds-side-nav-preview side-nav/side-nav.css side nav sidebar side navigation nav rail left nav Side nav: Expanded .tds-side-nav · .tds-side-nav--expanded Full workspace rail with brand header, expandable Labs group, KYB/KYC sections, and profile footer (Figma 5450:198391 · 1187:10323)."
   },
   {
     "id": "components/side-nav/side-nav-collapsed",
