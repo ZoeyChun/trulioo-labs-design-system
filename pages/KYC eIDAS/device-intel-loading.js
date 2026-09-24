@@ -4,42 +4,26 @@
  * Dots are drawn individually so size, color, and shimmer
  * do not scale or recolor the sphere.
  */
-const CONFIG_URL = new URL("./device-intel-loading.json", import.meta.url);
+const CONFIG_URL = new URL("./device-intel-loading.json?v=pos", import.meta.url);
 
 const LAND_MASK =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAACAAQAAAADMzoqnAAAAAXNSR0IArs4c6QAABA5JREFUeNrV179uHEUAx/Hf3JpbF+E2VASBsmVKTBcpKJs3SMEDcDwBiVJAAewYEBUivIHT0uUBIt0YCovKD0CRjUC4QfHYh8hYXu+P25vZ2Zm9c66gMd/GJ/tz82d3bk8GN4SrByYF2366FNTACIAkivVAAazQdnf3MvAlbNUQfOPAdQDvSAimMWhwy4I2g4SU+Kp04ISLpPBAKLxPyic3O/CCi+Y7rUJbiodcpDOFY7CgxCEXmdYD2EYK2s5lApOx5pEDDYCUwM1XdJUwBV11QQMg59kePSCaPAASQMEL2hwo6TJFgxpg+TgC2ymXPbuvc40awr3D1QCFfbH9kcoqAOkZozpQo0aqAGQRKCog/+tjkgbNFEtg2FffBvBGlSxHoAaAa1u6X4PBAwDiR8FFsrQgeUhfJTSALaB9jy5NCybJPn1SVFiWk7ywN+KzhH1aKAuydhGkbEF4lWohLXDXavlyFgHY7LBnLRdlAP6BS5Cc8RfVDXbkwN/oIvmY+6obbNeBP0JwTuMGu9gTzy1Q4RS/cWpfzszeYwd+CAFrtBW/Hur0gLbJGlD+/OjVwe/drfBxkbbg63dndEDfiEBlAd7ac0BPe1D6Jd8dfbLH+RI0OzseFB5s01/M+gMdAeluLOCAuaUA9Lezo/vSgXoCX9rtEiXnp7Q1W/CNyWcd8DXoS6jH/YZ5vAJEWY2dXFQe2TUgaFaNejCzJ98g6HnlVrsE58sDcYqg+9XY75fPqdoh/kRQWiXKg8MWlJQxUFMPjqnyujhFBE7UxIMjyszk0QwQlFsezImsyvUYYYVED2pk6m0Tg8T04Fwjk2kdAwSACqlM6gRRt3vQYAFGX0Ah7Ebx1H+MDRI5ui0QldH4j7FGcm90XdxD2Jg1AOEAVAKhEFXSn4cKUELurIAKwJ3MArypPscQaLhJFICJ0ohjDySAdH8AhDtCiTuMycH8CXzhH9jUACAO5uMhoAwA5i+T6WAKmmAqnLy80wxHqIPFYpqCwxGaYLt4Dyievg5kEoVEUAhs6pqKgFtDQYOuaXypaWKQfIuwwoGSZgfLsu/XAtI8cGN+h7Cc1A5oLOMhwlIPXuhu48AIvsSBkvtV9wsJRKCyYLfq5lTrQMFd1a262oqBck9K1V0YjQg0iEYYgpS1A9GlXQV5cykwm4A7BzVsxQqo7E+zCegO7Ma7yKgsuOcfKbMBwLC8wvVNYDsANYalEpOAa6zpWjTeMKGwEwC1CiQewJc5EKfgy7GmRAZA4vUVGwE2dPM/g0xuAInE/yG5aZ8ISxWGfYigUVbdyBElTHh2uCwGdfCkOLGgQVBh3Ewp+/QK4CDlR5Ws/Zf7yhCf8pH7vinWAvoVCQ6zz0NX5V/6GkAVV+2/5qsJ/gU8bsxpM8IeAQAAAABJRU5ErkJggg==";
 
-function applyBackground(config, backgroundColor) {
+function applyBackground(config) {
   const root = document.querySelector(".dil");
   const radial = document.getElementById("dil-radial");
   const wash = document.getElementById("dil-wash");
-  const canvas = document.getElementById("dil-canvas");
   if (!root || !config.background) return;
 
   const bg = config.background;
-  root.style.backgroundColor = backgroundColor || bg.base || "#f4fff9";
+  const from = bg.gradientOverlay?.from || "#FFFFFF";
+  const to = bg.gradientOverlay?.to || "#CFFFE2";
+  const gradient = `linear-gradient(180deg, ${from} 0%, ${to} 100%)`;
+  root.style.background = gradient;
 
-  if (wash) {
-    wash.style.background = `linear-gradient(180deg, rgba(255,255,255,0.72), ${root.style.backgroundColor})`;
-  }
+  if (wash) wash.style.background = gradient;
+  if (radial) radial.style.opacity = "0";
 
-  if (radial && bg.radialGlow) {
-    const glow = bg.radialGlow;
-    const stops = (glow.stops || [])
-      .map((s) => `${s.color} ${s.offset * 100}%`)
-      .join(", ");
-    const cx = ((glow.centerX / (config.frame?.width || 402)) * 100).toFixed(2);
-    const cy = ((glow.centerY / (config.frame?.height || 874)) * 100).toFixed(2);
-    radial.style.opacity = "0.28";
-    radial.style.background = `radial-gradient(120% 70% at ${cx}% ${cy}%, ${stops})`;
-  }
-
-  if (canvas && config.layout) {
-    const layout = config.layout;
-    canvas.style.width = `${layout.sizeVmin ?? 100}vmin`;
-    canvas.style.height = `${layout.sizeVmin ?? 100}vmin`;
-    canvas.style.marginBottom = `${layout.marginBottomVmin ?? -42}vmin`;
-  }
 }
 
 function isLand(data, width, height, x, y, z) {
@@ -98,34 +82,47 @@ function mountGlobe(canvas, config, params) {
   const anim = config.animation || {};
   let phi = globeCfg.phi ?? 0.4;
   const theta = globeCfg.theta ?? 0.22;
-  const phiDelta = anim.phiDelta ?? 0.0032;
+  if (params.spinSpeed == null) params.spinSpeed = anim.phiDelta ?? 0.0005;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  let cssSize = 1;
+  let layoutSize = 1;
   let points = [];
   let imageData = null;
   let gridKey = "";
   let running = true;
 
   function resize() {
-    const rect = canvas.getBoundingClientRect();
-    cssSize = Math.max(1, Math.floor(Math.min(rect.width, rect.height) || rect.width));
-    canvas.width = cssSize * dpr;
-    canvas.height = cssSize * dpr;
-    canvas.style.width = `${cssSize}px`;
-    canvas.style.height = `${cssSize}px`;
+    const parent = canvas.parentElement.getBoundingClientRect();
+    layoutSize = Math.max(1, Math.floor(parent.width || 402));
   }
 
   function frame(now) {
     if (!running) return;
     const time = now / 1000;
-    phi += phiDelta;
+    phi += params.spinSpeed;
+
+    const radius = layoutSize * 0.46 * params.scale;
+    const cx = layoutSize / 2 + params.offsetX;
+    const cy = layoutSize / 2 + params.offsetY;
+    const pad = params.dotSize + 4;
+    const left = Math.floor(cx - radius - pad);
+    const top = Math.floor(cy - radius - pad);
+    const size = Math.ceil((radius + pad) * 2);
+
+    if (canvas.width !== Math.floor(size * dpr) || canvas.height !== Math.floor(size * dpr)) {
+      canvas.width = Math.floor(size * dpr);
+      canvas.height = Math.floor(size * dpr);
+    }
+    canvas.style.left = `${left}px`;
+    canvas.style.top = `${top}px`;
+    canvas.style.width = `${size}px`;
+    canvas.style.height = `${size}px`;
+    canvas.style.margin = "0";
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, cssSize, cssSize);
+    ctx.clearRect(0, 0, size, size);
 
-    const radius = cssSize * 0.46;
     if (imageData) {
-      const key = `${cssSize}|${params.dotSize}|${params.density}`;
+      const key = `${layoutSize}|${params.dotSize}|${params.density}|${params.scale}`;
       if (key !== gridKey) {
         gridKey = key;
         points = buildSphereDots(imageData, radius, params.dotSize, params.density);
@@ -133,8 +130,8 @@ function mountGlobe(canvas, config, params) {
     }
 
     if (points.length) {
-      const cx = cssSize / 2;
-      const cy = cssSize / 2;
+      const drawX = cx - left;
+      const drawY = cy - top;
       const shine = params.shine;
       const dotRadius = params.dotSize;
 
@@ -153,8 +150,8 @@ function mountGlobe(canvas, config, params) {
         const depth = q.z;
         ctx.globalAlpha = params.opacity * Math.max(0.08, flicker) * (0.5 + 0.5 * depth);
 
-        const px = cx + q.x * radius;
-        const py = cy - q.y * radius;
+        const px = drawX + q.x * radius;
+        const py = drawY - q.y * radius;
         ctx.beginPath();
         ctx.arc(px, py, Math.max(0.4, dotRadius * (0.22 + 0.78 * depth)), 0, Math.PI * 2);
         ctx.fill();
@@ -200,11 +197,19 @@ function bindWidget(params, root) {
   const ctrlDotColor = document.getElementById("ctrl-dot-color");
   const ctrlDensity = document.getElementById("ctrl-density");
   const ctrlShine = document.getElementById("ctrl-shine");
+  const ctrlX = document.getElementById("ctrl-x");
+  const ctrlY = document.getElementById("ctrl-y");
+  const ctrlScale = document.getElementById("ctrl-scale");
+  const ctrlSpin = document.getElementById("ctrl-spin");
 
   const outOpacity = document.getElementById("out-opacity");
   const outDotSize = document.getElementById("out-dot-size");
   const outDensity = document.getElementById("out-density");
   const outShine = document.getElementById("out-shine");
+  const outX = document.getElementById("out-x");
+  const outY = document.getElementById("out-y");
+  const outScale = document.getElementById("out-scale");
+  const outSpin = document.getElementById("out-spin");
 
   function setCollapsed(collapsed) {
     widget.classList.toggle("is-collapsed", collapsed);
@@ -213,10 +218,9 @@ function bindWidget(params, root) {
   }
 
   function paintBackground(color) {
-    root.style.backgroundColor = color;
-    if (wash) {
-      wash.style.background = `linear-gradient(180deg, rgba(255,255,255,0.72), ${color})`;
-    }
+    const gradient = `linear-gradient(180deg, #ffffff 0%, ${color} 100%)`;
+    root.style.background = gradient;
+    if (wash) wash.style.background = gradient;
   }
 
   toggle.addEventListener("click", () => setCollapsed(false));
@@ -228,11 +232,19 @@ function bindWidget(params, root) {
   ctrlDotColor.value = params.dotColor;
   ctrlDensity.value = String(params.density);
   ctrlShine.value = String(params.shine);
+  ctrlX.value = String(params.offsetX);
+  ctrlY.value = String(params.offsetY);
+  ctrlScale.value = String(params.scale);
+  ctrlSpin.value = String(params.spinSpeed);
 
   outOpacity.value = Number(params.opacity).toFixed(2);
   outDotSize.value = `${Number(params.dotSize).toFixed(1)}px`;
   outDensity.value = `${Math.round(params.density * 100)}%`;
   outShine.value = Number(params.shine).toFixed(2);
+  outX.value = String(params.offsetX);
+  outY.value = String(params.offsetY);
+  outScale.value = Number(params.scale).toFixed(2);
+  outSpin.value = Number(params.spinSpeed).toFixed(4);
 
   ctrlBg.addEventListener("input", () => {
     params.backgroundColor = ctrlBg.value;
@@ -263,7 +275,27 @@ function bindWidget(params, root) {
     outShine.value = params.shine.toFixed(2);
   });
 
-  setCollapsed(false);
+  ctrlX.addEventListener("input", () => {
+    params.offsetX = Number(ctrlX.value);
+    outX.value = String(params.offsetX);
+  });
+
+  ctrlY.addEventListener("input", () => {
+    params.offsetY = Number(ctrlY.value);
+    outY.value = String(params.offsetY);
+  });
+
+  ctrlScale.addEventListener("input", () => {
+    params.scale = Number(ctrlScale.value);
+    outScale.value = params.scale.toFixed(2);
+  });
+
+  ctrlSpin.addEventListener("input", () => {
+    params.spinSpeed = Number(ctrlSpin.value);
+    outSpin.value = params.spinSpeed.toFixed(4);
+  });
+
+  setCollapsed(true);
 }
 
 async function init() {
@@ -273,15 +305,19 @@ async function init() {
   const globeCfg = config.globe || {};
 
   const params = {
-    backgroundColor: config.background?.base || "#f4fff9",
+    backgroundColor: config.background?.gradientOverlay?.to || "#CFFFE2",
     opacity: globeCfg.opacity ?? 0.85,
-    dotSize: 1.6,
-    dotColor: "#3d8f80",
+    dotSize: globeCfg.dotSize ?? 4.2,
+    dotColor: globeCfg.dotColor || "#94E1C4",
     density: 0.7,
-    shine: 0.65,
+    shine: 0.8,
+    offsetX: config.layout?.offsetX ?? -80,
+    offsetY: config.layout?.offsetY ?? 10,
+    scale: config.layout?.scale ?? 1.4,
+    spinSpeed: config.animation?.phiDelta ?? 0.0005,
   };
 
-  applyBackground(config, params.backgroundColor);
+  applyBackground(config);
 
   const root = document.querySelector(".dil");
   const canvas = document.getElementById("dil-canvas");

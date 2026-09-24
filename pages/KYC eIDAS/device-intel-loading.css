@@ -29,7 +29,7 @@
   box-shadow: var(--elevation-lg);
   overflow: hidden;
   isolation: isolate;
-  background-color: #f4fff9;
+  background: linear-gradient(180deg, #ffffff 0%, #cfffe2 100%);
 }
 
 .dil__bg {
@@ -43,7 +43,7 @@
   position: absolute;
   inset: 0;
   mix-blend-mode: screen;
-  opacity: 0.6;
+  opacity: 0;
   background: radial-gradient(
     120% 70% at 18% 57%,
     rgba(209, 255, 227, 1) 0%,
@@ -57,11 +57,7 @@
 .dil__wash {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.8) 0%,
-    rgba(207, 255, 226, 0.8) 100%
-  );
+  background: linear-gradient(180deg, #ffffff 0%, #cfffe2 100%);
 }
 
 /* Matches trulioo.com <canvas id="c" class="… -mb-[42vmin] xs:-mb-[30vmin]"> */
@@ -70,26 +66,25 @@
   left: 50%;
   bottom: 0;
   width: 100%;
+  aspect-ratio: 1;
   transform: translateX(-50%);
   z-index: 1;
   pointer-events: none;
-  display: flex;
-  justify-content: center;
+  overflow: visible;
 }
 
 .dil__canvas {
+  position: absolute;
   display: block;
-  width: 100vmin;
-  height: 100vmin;
   max-width: none;
-  margin: 0 auto -42vmin;
+  margin: 0;
   touch-action: none;
   transition: opacity 0.5s ease;
 }
 
 @media (max-width: 480px) {
   .dil__canvas {
-    margin-bottom: -30vmin;
+    margin-bottom: 0;
   }
 }
 
@@ -146,7 +141,7 @@
 
 .dil-widget__panel {
   width: 220px;
-  max-height: min(420px, calc(100% - 32px));
+  max-height: min(560px, calc(100% - 32px));
   overflow: auto;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(10px);

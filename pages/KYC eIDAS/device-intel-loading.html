@@ -23,12 +23,12 @@
       <canvas class="dil__canvas" id="dil-canvas"></canvas>
     </div>
 
-    <div class="dil-widget" id="dil-widget">
-      <button type="button" class="dil-widget__toggle" id="dil-widget-toggle" aria-expanded="true" aria-controls="dil-widget-panel">
+    <div class="dil-widget is-collapsed" id="dil-widget">
+      <button type="button" class="dil-widget__toggle" id="dil-widget-toggle" aria-expanded="false" aria-controls="dil-widget-panel">
         Controls
       </button>
 
-      <aside class="dil-widget__panel" id="dil-widget-panel" aria-label="Globe controls">
+      <aside class="dil-widget__panel" id="dil-widget-panel" aria-label="Globe controls" hidden>
         <header class="dil-widget__header">
           <h2 class="dil-widget__title">Globe</h2>
           <button type="button" class="dil-widget__close" id="dil-widget-close" aria-label="Hide controls">×</button>
@@ -37,7 +37,7 @@
         <div class="dil-widget__body">
           <label class="dil-widget__field">
             <span class="dil-widget__label">Background color</span>
-            <input type="color" id="ctrl-bg" value="#f4fff9">
+            <input type="color" id="ctrl-bg" value="#cfffe2">
           </label>
 
           <label class="dil-widget__field">
@@ -46,13 +46,13 @@
           </label>
 
           <label class="dil-widget__field">
-            <span class="dil-widget__label">Dot size <output id="out-dot-size">1.6px</output></span>
-            <input type="range" id="ctrl-dot-size" min="0.4" max="4" step="0.05" value="1.6">
+            <span class="dil-widget__label">Dot size <output id="out-dot-size">4.2px</output></span>
+            <input type="range" id="ctrl-dot-size" min="0.4" max="6" step="0.1" value="4.2">
           </label>
 
           <label class="dil-widget__field">
             <span class="dil-widget__label">Dot color</span>
-            <input type="color" id="ctrl-dot-color" value="#3d8f80">
+            <input type="color" id="ctrl-dot-color" value="#94e1c4">
           </label>
 
           <label class="dil-widget__field">
@@ -61,8 +61,28 @@
           </label>
 
           <label class="dil-widget__field">
-            <span class="dil-widget__label">Shine variation <output id="out-shine">0.65</output></span>
-            <input type="range" id="ctrl-shine" min="0" max="1" step="0.01" value="0.65">
+            <span class="dil-widget__label">Shine variation <output id="out-shine">0.80</output></span>
+            <input type="range" id="ctrl-shine" min="0" max="1" step="0.01" value="0.8">
+          </label>
+
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Position X <output id="out-x">-80</output></span>
+            <input type="range" id="ctrl-x" min="-400" max="400" step="1" value="-80">
+          </label>
+
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Position Y <output id="out-y">10</output></span>
+            <input type="range" id="ctrl-y" min="-400" max="400" step="1" value="10">
+          </label>
+
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Scale <output id="out-scale">1.40</output></span>
+            <input type="range" id="ctrl-scale" min="0.4" max="2.4" step="0.01" value="1.4">
+          </label>
+
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Spin speed <output id="out-spin">0.0005</output></span>
+            <input type="range" id="ctrl-spin" min="0" max="0.008" step="0.0001" value="0.0005">
           </label>
 
           <p class="dil-widget__hint">Dots sit on the sphere and shrink toward the edge. Larger dots spread apart so they do not overlap. Shine flickers each dot; set it to 0 to hold them steady.</p>
@@ -71,6 +91,6 @@
     </div>
   </div>
 
-  <script type="module" src="device-intel-loading.js"></script>
+  <script type="module" src="device-intel-loading.js?v=pos"></script>
 </body>
 </html>

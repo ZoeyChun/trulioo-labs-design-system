@@ -18,8 +18,8 @@
   "background": {
     "base": "#f4fff9",
     "gradientOverlay": {
-      "from": "rgba(255, 255, 255, 0.8)",
-      "to": "rgba(207, 255, 226, 0.8)"
+      "from": "#FFFFFF",
+      "to": "#CFFFE2"
     },
     "radialGlow": {
       "opacity": 0.6,
@@ -39,7 +39,10 @@
     "sizeMode": "vmin",
     "sizeVmin": 100,
     "marginBottomVmin": -42,
-    "marginBottomVminNarrow": -30
+    "marginBottomVminNarrow": -30,
+    "offsetX": -80,
+    "offsetY": 10,
+    "scale": 1.4
   },
   "globe": {
     "devicePixelRatio": 2,
@@ -55,11 +58,13 @@
     "glowColor": [0.82, 1.0, 0.89],
     "markers": [],
     "opacity": 0.7,
+    "dotSize": 4.2,
+    "dotColor": "#94E1C4",
     "scale": 1.05,
     "offset": [0, 0]
   },
   "animation": {
     "autoRotate": true,
-    "phiDelta": 0.0032
+    "phiDelta": 0.0005
   }
 }
