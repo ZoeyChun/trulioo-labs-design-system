@@ -1,0 +1,76 @@
+<!-- Device IntelLoading background — Figma 1300:2338. Spinning globe via COBE (MIT). -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Intel Loading — Trulioo Labs</title>
+
+  <link rel="preload" href="../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="device-intel-loading.css">
+</head>
+<body class="dil-page">
+
+  <div class="dil" role="img" aria-label="Loading background with spinning globe" data-node-id="1300:2338">
+    <div class="dil__bg" aria-hidden="true">
+      <div class="dil__radial" id="dil-radial"></div>
+      <div class="dil__wash" id="dil-wash"></div>
+    </div>
+
+    <div class="dil__globe" aria-hidden="true">
+      <canvas class="dil__canvas" id="dil-canvas"></canvas>
+    </div>
+
+    <div class="dil-widget" id="dil-widget">
+      <button type="button" class="dil-widget__toggle" id="dil-widget-toggle" aria-expanded="true" aria-controls="dil-widget-panel">
+        Controls
+      </button>
+
+      <aside class="dil-widget__panel" id="dil-widget-panel" aria-label="Globe controls">
+        <header class="dil-widget__header">
+          <h2 class="dil-widget__title">Globe</h2>
+          <button type="button" class="dil-widget__close" id="dil-widget-close" aria-label="Hide controls">×</button>
+        </header>
+
+        <div class="dil-widget__body">
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Background color</span>
+            <input type="color" id="ctrl-bg" value="#f4fff9">
+          </label>
+
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Opacity <output id="out-opacity">0.70</output></span>
+            <input type="range" id="ctrl-opacity" min="0.1" max="1" step="0.01" value="0.7">
+          </label>
+
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Dot size <output id="out-dot-size">1.6px</output></span>
+            <input type="range" id="ctrl-dot-size" min="0.4" max="4" step="0.05" value="1.6">
+          </label>
+
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Dot color</span>
+            <input type="color" id="ctrl-dot-color" value="#3d8f80">
+          </label>
+
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Dot density <output id="out-density">70%</output></span>
+            <input type="range" id="ctrl-density" min="0.25" max="1" step="0.01" value="0.7">
+          </label>
+
+          <label class="dil-widget__field">
+            <span class="dil-widget__label">Shine variation <output id="out-shine">0.65</output></span>
+            <input type="range" id="ctrl-shine" min="0" max="1" step="0.01" value="0.65">
+          </label>
+
+          <p class="dil-widget__hint">Dots sit on the sphere and shrink toward the edge. Larger dots spread apart so they do not overlap. Shine flickers each dot; set it to 0 to hold them steady.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script type="module" src="device-intel-loading.js"></script>
+</body>
+</html>
