@@ -611,7 +611,7 @@
     ae: {
       "enter-details": {
         title: "Sign in to UAE PASS",
-        description: "UAE PASS starts with the email registered for this account.",
+        description: "UAE PASS needs the email before it can confirm in the app.",
         calloutText: "Tap the email field."
       },
       "enter-details-filled": {
@@ -626,7 +626,7 @@
       },
       "launch-app-ready": {
         title: "Match the number",
-        description: "This code has to match the number selected in the UAE PASS app.",
+        description: "Match the verification code shown in the UAE PASS app.",
         calloutText: "Tap 74."
       },
       "consent": {
@@ -842,7 +842,7 @@
     }
     if (usesAeSimFlow()) {
       return panelId === "eid-panel-enter-details"
-        || (panelId === "eid-panel-launch-app" && state.aeLaunchShown)
+        || (panelId === "eid-panel-launch-app" && !state.aeLaunchShown)
         || panelId === "eid-panel-consent-mobile";
     }
     if (usesSeSimFlow()) {
@@ -923,7 +923,7 @@
     var typeKey = type;
     if (type === "enter-details" && detailsFilled()) typeKey = "enter-details-filled";
     if ((type === "otp") && usesInSimFlow() && state.inOtpFilled) typeKey = "otp-filled";
-    if (usesAeSimFlow() && type === "launch-app" && state.aeLaunchShown) typeKey = "launch-app-ready";
+    if (usesAeSimFlow() && type === "launch-app" && !state.aeLaunchShown) typeKey = "launch-app-ready";
     if (usesAeSimFlow() && type === "consent" && state.aePinShown) typeKey = "consent-pin";
     else if (usesAeSimFlow() && type === "consent" && state.aeRequestSelected) typeKey = "consent-selected";
     var override = (code && GUIDANCE_COPY_BY_COUNTRY[code] && GUIDANCE_COPY_BY_COUNTRY[code][typeKey])
@@ -1322,9 +1322,9 @@
     }
     if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesAeSimFlow()) {
       if (state.aeLaunchShown) {
-        return renderMobileEmbedScreen("UAE-confirm.html", "UAE PASS confirmation code", "?interactive=1");
+        return renderMobileEmbedScreen("UAE-launch.html", "UAE PASS launch");
       }
-      return renderMobileEmbedScreen("UAE-launch.html", "UAE PASS launch");
+      return renderMobileEmbedScreen("UAE-confirm.html", "UAE PASS confirmation code", "?interactive=1");
     }
     if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesDkSimFlow()) {
       return renderMobileEmbedScreen("DE-app.html", "Denmark MitID app", "?interactive=1");
@@ -1418,13 +1418,13 @@
   }
 
   function scheduleAeLaunchTransition() {
-    if (!usesAeSimFlow() || state.aeLaunchShown) return;
+    if (!usesAeSimFlow() || !state.aeLaunchShown) return;
     if (activeSimPanelId() !== "eid-panel-launch-app") return;
     if (aeLaunchTimer) return;
     aeLaunchTimer = setTimeout(function () {
       aeLaunchTimer = null;
-      state.aeLaunchShown = true;
-      updateNlPhoneLayout();
+      if (!usesAeSimFlow() || activeSimPanelId() !== "eid-panel-launch-app" || !state.aeLaunchShown) return;
+      nextSimStep();
     }, UAE_LAUNCH_MS);
   }
 
@@ -1482,7 +1482,7 @@
     if (panelId === "eid-panel-consent-mobile" && usesBeSimFlow() && !state.beConsentShown) {
       scheduleBeConsentTransition();
     }
-    if (panelId === "eid-panel-launch-app" && usesAeSimFlow() && !state.aeLaunchShown) {
+    if (panelId === "eid-panel-launch-app" && usesAeSimFlow() && state.aeLaunchShown) {
       scheduleAeLaunchTransition();
     }
     if (panelId === "eid-panel-launch-app" && usesSeSimFlow()) {
@@ -1839,6 +1839,11 @@
         return;
       }
       if (data.type === "eid-launch-confirm") {
+        if (usesAeSimFlow() && activeSimPanelId() === "eid-panel-launch-app" && !state.aeLaunchShown) {
+          state.aeLaunchShown = true;
+          updateNlPhoneLayout();
+          return;
+        }
         if (activeSimPanelId() === "eid-panel-launch-app") nextSimStep();
         return;
       }
