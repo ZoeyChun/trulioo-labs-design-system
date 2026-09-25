@@ -610,23 +610,23 @@
     },
     ae: {
       "enter-details": {
-        title: "Sign in to UAE PASS",
-        description: "UAE PASS needs the email before it can confirm in the app.",
+        title: "Login to UAE PASS",
+        description: "UAE Pass needs the email before it can confirm in the app.",
         calloutText: "Tap the email field."
       },
       "enter-details-filled": {
-        title: "Continue to UAE PASS",
-        description: "The email is filled. Sign in to open the UAE PASS app.",
+        title: "Continue to UAE Pass",
+        description: "The email is filled. Login to continue.",
         calloutText: "Tap Login."
       },
       "launch-app": {
-        title: "Open UAE PASS",
-        description: "UAE PASS is opening the login request from Trulioo.",
+        title: "Open UAE Pass",
+        description: "UAE Pass is opening the login request from Trulioo.",
         calloutText: "Wait for the request."
       },
       "launch-app-ready": {
         title: "Match the number",
-        description: "Match the verification code shown in the UAE PASS app.",
+        description: "Match the verification code shown in the UAE Pass app.",
         calloutText: "Tap 74."
       },
       "consent": {
@@ -640,8 +640,8 @@
         calloutText: "Tap Confirm."
       },
       "consent-pin": {
-        title: "Enter the UAE PASS PIN",
-        description: "UAE PASS asks for the PIN before this login is approved.",
+        title: "Enter the UAE Pass PIN",
+        description: "UAE Pass asks for the PIN before this confirmation is completed",
         calloutText: "Tap 1."
       }
     },
@@ -1289,7 +1289,7 @@
     if (panelId === "eid-panel-enter-details" && usesAeSimFlow()) {
       return renderMobileEmbedScreen(
         state.aeSigninFilled ? "UAE-login-filled.html" : "UAE-login.html",
-        state.aeSigninFilled ? "UAE PASS login filled" : "UAE PASS login",
+        state.aeSigninFilled ? "UAE Pass login filled" : "UAE Pass login",
         "?interactive=1"
       );
     }
@@ -1322,9 +1322,9 @@
     }
     if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesAeSimFlow()) {
       if (state.aeLaunchShown) {
-        return renderMobileEmbedScreen("UAE-launch.html", "UAE PASS launch");
+        return renderMobileEmbedScreen("UAE-launch.html", "UAE Pass launch");
       }
-      return renderMobileEmbedScreen("UAE-confirm.html", "UAE PASS confirmation code", "?interactive=1");
+      return renderMobileEmbedScreen("UAE-confirm.html", "UAE Pass confirmation code", "?interactive=1");
     }
     if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesDkSimFlow()) {
       return renderMobileEmbedScreen("DE-app.html", "Denmark MitID app", "?interactive=1");
@@ -1335,12 +1335,12 @@
       }
       if (usesAeSimFlow()) {
         if (state.aePinShown) {
-          return renderMobileEmbedScreen("UAE-pin.html", "UAE PASS PIN", "?interactive=1");
+          return renderMobileEmbedScreen("UAE-pin.html", "UAE Pass PIN", "?interactive=1");
         }
         if (state.aeRequestSelected) {
-          return renderMobileEmbedScreen("UAE-request-selected.html", "UAE PASS request selected", "?interactive=1");
+          return renderMobileEmbedScreen("UAE-request-selected.html", "UAE Pass request selected", "?interactive=1");
         }
-        return renderMobileEmbedScreen("UAE-request.html", "UAE PASS login request", "?interactive=1");
+        return renderMobileEmbedScreen("UAE-request.html", "UAE Pass login request", "?interactive=1");
       }
       if (usesCzSimFlow() && usesCzKbMobilePreview()) {
         if (state.czConsentComplete) {

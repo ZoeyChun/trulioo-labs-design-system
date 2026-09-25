@@ -479,7 +479,7 @@ window.EID_FLOW_DATA = [
   {
     "country": "UAE",
     "code": "ae",
-    "provider": "UAE PASS",
+    "provider": "UAE Pass",
     "selectable": true,
     "logo": "assets/providers/provider-placeholder.svg",
     "steps": [
