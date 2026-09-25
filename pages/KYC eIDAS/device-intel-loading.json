@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "name": "Device IntelLoading",
+    "figma": {
+      "fileKey": "33k0rNBk5KVuFlOkEFoNfh",
+      "nodeId": "1300:2338",
+      "url": "https://www.figma.com/design/33k0rNBk5KVuFlOkEFoNfh/Demo-App---Unified-KYC-Flow?node-id=1300-2338"
+    },
+    "library": "cobe",
+    "libraryVersion": "0.6.3",
+    "libraryUrl": "https://github.com/shuding/cobe",
+    "reference": "https://www.trulioo.com/"
+  },
+  "frame": {
+    "width": 402,
+    "height": 874
+  },
+  "background": {
+    "base": "#f4fff9",
+    "gradientOverlay": {
+      "from": "#FFFFFF",
+      "to": "#CFFFE2"
+    },
+    "radialGlow": {
+      "opacity": 0.6,
+      "centerX": 74.5,
+      "centerY": 498.5,
+      "stops": [
+        { "offset": 0, "color": "rgba(209, 255, 227, 1)" },
+        { "offset": 0.25, "color": "rgba(157, 210, 187, 0.75)" },
+        { "offset": 0.5, "color": "rgba(105, 166, 148, 0.5)" },
+        { "offset": 0.75, "color": "rgba(52, 121, 108, 0.25)" },
+        { "offset": 1, "color": "rgba(0, 76, 69, 0)" }
+      ]
+    }
+  },
+  "layout": {
+    "comment": "Mirrors trulioo.com canvas#c: square canvas, -mb-[42vmin] (xs: -30vmin)",
+    "sizeMode": "vmin",
+    "sizeVmin": 100,
+    "marginBottomVmin": -42,
+    "marginBottomVminNarrow": -30,
+    "offsetX": -80,
+    "offsetY": 10,
+    "scale": 1.4
+  },
+  "globe": {
+    "devicePixelRatio": 2,
+    "phi": 0.4,
+    "theta": 0.18,
+    "dark": 0,
+    "diffuse": 1.2,
+    "mapSamples": 24000,
+    "mapBrightness": 3.6,
+    "mapBaseBrightness": 0.015,
+    "baseColor": [0.52, 0.76, 0.7],
+    "markerColor": [0.52, 0.76, 0.7],
+    "glowColor": [0.82, 1.0, 0.89],
+    "markers": [],
+    "opacity": 0.7,
+    "dotSize": 4.2,
+    "dotColor": "#94E1C4",
+    "scale": 1.05,
+    "offset": [0, 0]
+  },
+  "animation": {
+    "autoRotate": true,
+    "phiDelta": 0.0005
+  }
+}
