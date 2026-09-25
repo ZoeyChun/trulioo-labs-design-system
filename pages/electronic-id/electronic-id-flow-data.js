@@ -162,13 +162,13 @@ window.EID_FLOW_DATA = [
     "logo": "assets/providers/provider-placeholder.svg",
     "steps": [
       {
-        "type": "scan-qr",
-        "label": "Scan QR",
+        "type": "launch-app",
+        "label": "Launch app",
         "fields": []
       },
       {
         "type": "consent",
-        "label": "Consent",
+        "label": "Identify",
         "fields": []
       }
     ],
@@ -367,7 +367,7 @@ window.EID_FLOW_DATA = [
     "country": "Poland",
     "code": "pl",
     "provider": "MojeID",
-    "selectable": true,
+    "selectable": false,
     "logo": "assets/providers/provider-placeholder.svg",
     "steps": [
       {
@@ -480,10 +480,33 @@ window.EID_FLOW_DATA = [
     "country": "UAE",
     "code": "ae",
     "provider": "UAE PASS / Local Entity",
-    "selectable": false,
+    "selectable": true,
     "logo": "assets/providers/provider-placeholder.svg",
-    "steps": [],
-    "consentItems": []
+    "steps": [
+      {
+        "type": "enter-details",
+        "label": "Login",
+        "fields": [
+          "Email"
+        ]
+      },
+      {
+        "type": "launch-app",
+        "label": "Launch app",
+        "fields": []
+      },
+      {
+        "type": "consent",
+        "label": "Confirm",
+        "fields": []
+      }
+    ],
+    "consentItems": [
+      "Full name",
+      "Email",
+      "Mobile number",
+      "Nationality"
+    ]
   },
   {
     "country": "USA",

@@ -1,0 +1,226 @@
+/* ============================================================
+   Stepper
+   Figma: Stepper (1242:22104)
+            _Stepper item (1238:21018)
+            icon-margin (1412:23912)
+   Directions: horizontal | vertical
+   Item states: incomplete | current | completed | error | disabled | skeleton
+   Steps: 2–10
+   ============================================================ */
+
+.tds-stepper {
+  display: flex;
+  gap: 1px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tds-stepper--horizontal {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.tds-stepper--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+  width: auto;
+}
+
+/* --- Item --- */
+
+.tds-stepper__item {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.tds-stepper--horizontal .tds-stepper__item {
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 128px;
+}
+
+.tds-stepper--vertical .tds-stepper__item {
+  flex-direction: row;
+  align-items: stretch;
+  flex: 0 0 auto;
+  width: 160px;
+  min-height: 58px;
+}
+
+/* --- Progress line --- */
+
+.tds-stepper__line {
+  flex-shrink: 0;
+  background-color: var(--border-subtle);
+}
+
+.tds-stepper--horizontal .tds-stepper__line {
+  width: 100%;
+  height: 4px;
+}
+
+.tds-stepper--vertical .tds-stepper__line {
+  width: 4px;
+  align-self: stretch;
+}
+
+.tds-stepper__item--current .tds-stepper__line {
+  background-color: var(--surface-inverse);
+}
+
+.tds-stepper__item--completed .tds-stepper__line {
+  background-color: var(--icon-positive);
+}
+
+.tds-stepper__item--error .tds-stepper__line {
+  background-color: var(--icon-negative);
+}
+
+.tds-stepper__item--disabled .tds-stepper__line,
+.tds-stepper__item--skeleton .tds-stepper__line {
+  background-color: var(--surface-neutral-03);
+}
+
+/* --- Content --- */
+
+.tds-stepper__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tds-stepper--horizontal .tds-stepper__content {
+  padding: var(--padding-lg) var(--padding-lg) 0 0;
+}
+
+.tds-stepper--vertical .tds-stepper__content {
+  flex: 1 1 auto;
+  padding: 0 var(--padding-lg) 0 10px;
+}
+
+.tds-stepper--horizontal .tds-stepper__item--skeleton .tds-stepper__content {
+  padding-top: 10px;
+}
+
+/* --- Label row --- */
+
+.tds-stepper__label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  min-width: 0;
+}
+
+/* --- Step icon --- */
+
+.tds-stepper__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.tds-stepper__icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+}
+
+.tds-stepper__item--incomplete .tds-stepper__icon-badge,
+.tds-stepper__item--disabled .tds-stepper__icon-badge {
+  border: 1px dashed var(--border-strong);
+  background-color: var(--color-white);
+  color: var(--text-description);
+}
+
+.tds-stepper__item--current .tds-stepper__icon-badge {
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+}
+
+.tds-stepper__item--disabled .tds-stepper__icon-badge {
+  color: var(--text-disabled);
+}
+
+.tds-stepper__item--skeleton .tds-stepper__icon-badge {
+  border: 1px dashed var(--border-strong);
+  background-color: var(--color-white);
+}
+
+.tds-stepper__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tds-stepper__item--completed .tds-stepper__icon {
+  color: var(--icon-positive);
+}
+
+.tds-stepper__item--error .tds-stepper__icon {
+  color: var(--icon-negative);
+}
+
+/* --- Title & caption --- */
+
+.tds-stepper__title {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.tds-stepper__item--disabled .tds-stepper__title {
+  color: var(--text-disabled);
+}
+
+.tds-stepper__caption {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-description);
+}
+
+.tds-stepper--horizontal .tds-stepper__caption {
+  padding-left: 32px;
+}
+
+.tds-stepper--vertical .tds-stepper__caption {
+  padding-left: 42px;
+  padding-right: var(--padding-lg);
+}
+
+.tds-stepper__item--disabled .tds-stepper__caption {
+  color: var(--text-disabled);
+}
+
+.tds-stepper__item--no-caption .tds-stepper__caption {
+  display: none;
+}
+
+/* --- Skeleton --- */
+
+.tds-stepper__skeleton-title {
+  display: block;
+  width: 88px;
+  height: 8px;
+  border-radius: 2px;
+  background-color: var(--surface-neutral-03);
+}

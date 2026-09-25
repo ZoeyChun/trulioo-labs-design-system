@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1304" height="986" viewBox="0 0 1304 986" fill="none">
+  <title>Login confirmation illustration</title>
+  <desc>A browser window behind a mobile device with a hand pressing a green confirmation button.</desc>
+  <defs>
+    <linearGradient id="browserFill" x1="323" y1="247" x2="736" y2="735" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EDF8F4"/>
+      <stop offset="1" stop-color="#E6F1ED"/>
+    </linearGradient>
+    <linearGradient id="browserBar" x1="323" y1="247" x2="733" y2="335" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#AFCBC1"/>
+      <stop offset="1" stop-color="#BDD3CB"/>
+    </linearGradient>
+    <linearGradient id="phoneFill" x1="615" y1="168" x2="960" y2="804" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#FAFCFB"/>
+    </linearGradient>
+    <linearGradient id="uiFill" x1="685" y1="207" x2="888" y2="648" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EDF4F2"/>
+      <stop offset="1" stop-color="#DCE9E5"/>
+    </linearGradient>
+    <linearGradient id="buttonFill" x1="759" y1="596" x2="812" y2="648" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#04B878"/>
+      <stop offset="1" stop-color="#00A766"/>
+    </linearGradient>
+    <linearGradient id="handFill" x1="736" y1="625" x2="861" y2="775" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D4A900"/>
+      <stop offset="1" stop-color="#BE9200"/>
+    </linearGradient>
+    <linearGradient id="dashStroke" x1="406" y1="734" x2="867" y2="858" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A7A817"/>
+      <stop offset="1" stop-color="#929D16"/>
+    </linearGradient>
+    <filter id="softShadow" x="250" y="110" width="790" height="810" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="12" stdDeviation="26" flood-color="#5E8178" flood-opacity="0.22"/>
+    </filter>
+    <filter id="phoneShadow" x="545" y="105" width="485" height="780" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="15" stdDeviation="24" flood-color="#68877F" flood-opacity="0.22"/>
+    </filter>
+    <filter id="handShadow" x="693" y="603" width="224" height="220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#526B64" flood-opacity="0.33"/>
+    </filter>
+    <filter id="ambientBlur" x="203" y="66" width="892" height="881" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="42"/>
+    </filter>
+  </defs>
+
+  <rect width="1304" height="986" fill="#FFFFFF"/>
+
+  <g opacity="0.26" filter="url(#ambientBlur)">
+    <rect x="300" y="190" width="696" height="680" rx="85" fill="#DCEAE6"/>
+  </g>
+
+  <path d="M408 732V814C408 838.301 427.699 858 452 858H824C848.301 858 868 838.301 868 814V786"
+        stroke="url(#dashStroke)" stroke-width="7" stroke-linecap="round" stroke-dasharray="18 17"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="323" y="247" width="411" height="488" rx="31" fill="url(#browserFill)"/>
+    <path d="M323 278C323 260.879 336.879 247 354 247H703C720.121 247 734 260.879 734 278V335H323V278Z" fill="url(#browserBar)"/>
+    <circle cx="372" cy="292" r="16" fill="#FFFFFF"/>
+    <circle cx="420" cy="292" r="16" fill="#FFFFFF"/>
+    <circle cx="470" cy="292" r="16" fill="#FFFFFF"/>
+    <rect x="388" y="418" width="280" height="55" rx="5" fill="#B8D0C7"/>
+    <rect x="388" y="499" width="280" height="55" rx="5" fill="#B8D0C7"/>
+    <rect x="390" y="596" width="51" height="52" rx="7" fill="#B9D1C8"/>
+  </g>
+
+  <g filter="url(#phoneShadow)">
+    <rect x="615" y="168" width="346" height="636" rx="51" fill="url(#phoneFill)"/>
+  </g>
+
+  <rect x="728" y="208" width="118" height="20" rx="10" fill="url(#uiFill)"/>
+  <rect x="704" y="288" width="163" height="30" rx="15" fill="url(#uiFill)"/>
+  <rect x="704" y="337" width="163" height="30" rx="15" fill="url(#uiFill)"/>
+
+  <rect x="690" y="596" width="51" height="52" rx="10" fill="url(#uiFill)"/>
+  <rect x="760" y="596" width="52" height="52" rx="10" fill="url(#buttonFill)"/>
+  <rect x="831" y="596" width="51" height="52" rx="10" fill="url(#uiFill)"/>
+
+  <g filter="url(#handShadow)">
+    <path d="M783 622
+             C795 622 805 632 805 644
+             V669
+             C808 659 816 653 826 653
+             C839 653 849 664 849 677
+             V681
+             H858
+             C873 681 884 695 880 709
+             L868 753
+             C864 770 849 781 832 781
+             H784
+             C768 781 753 774 745 762
+             L711 712
+             C704 700 707 685 718 677
+             C728 670 741 672 749 681
+             L762 696
+             V644
+             C762 632 771 622 783 622Z"
+          fill="url(#handFill)" stroke="#FFFFFF" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M783 701V642" stroke="#A77E00" stroke-width="5" stroke-linecap="round" opacity="0.46"/>
+    <path d="M809 705V672" stroke="#A77E00" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+    <path d="M849 706V679" stroke="#A77E00" stroke-width="5" stroke-linecap="round" opacity="0.36"/>
+  </g>
+</svg>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>UAE — UAE PASS Login filled</title>
+<link rel="stylesheet" href="embed-mockup.css?v=noscroll-1">
+<link rel="stylesheet" href="../../../Components/tap-indicator/tap-indicator.css?v=tap-cue-12">
+<script src="../../../Components/tap-indicator/tap-indicator.js?v=tap-cue-5"></script>
+<script src="eid-embed-tap.js?v=cursor-1"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { color-scheme: light only; }
+
+  html.preview:not(.eid-embed--interactive),
+  html.preview:not(.eid-embed--interactive) * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: "Segoe UI", Arial, "Helvetica Neue", Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 26px 36px;
+  }
+
+  .mark {
+    width: 58px;
+    height: 58px;
+    display: block;
+    margin-bottom: 22px;
+  }
+
+  .title {
+    font-size: 22px;
+    font-weight: 500;
+    color: #565a65;
+    letter-spacing: 0.01em;
+    margin-bottom: 28px;
+  }
+
+  .field {
+    width: 100%;
+    height: 48px;
+    border: 1.5px solid #c5ced6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    color: #2c3138;
+    border-color: #8ea0b8;
+    font-weight: 500;
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+
+  .remember {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: #4b4e53;
+    font-size: 14.5px;
+  }
+
+  .remember__box {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    background: #008dff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .remember__box svg {
+    width: 11px;
+    height: 11px;
+    display: block;
+  }
+
+  .login {
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+    background: #4d6d94;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .login:hover { background: #3f5e84; }
+
+  .rule {
+    width: 100%;
+    height: 1px;
+    background: #ececec;
+    margin-bottom: 16px;
+  }
+
+  .links {
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #3a3a3a;
+  }
+
+  .links a {
+    color: #1faf78;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .links p + p { margin-top: 8px; }
+  .links__signup { white-space: nowrap; }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  EidEmbedTap.initInteractive();
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+    <div class="page">
+      <img class="mark" src="../assets/embeds/uae/uaepass-mark.png" alt="">
+      <h1 class="title">Login to UAE PASS</h1>
+      <div class="field">jp@trulioo.id</div>
+      <div class="remember">
+        <span class="remember__box" aria-hidden="true">
+          <svg viewBox="0 0 12 12" fill="none">
+            <path d="M2 6.2 4.6 8.8 10 3.2" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>Remember me</span>
+      </div>
+      <button class="login" type="button" data-tds-tap-cue="outline">Login</button>
+      <div class="rule"></div>
+      <div class="links">
+        <p class="links__signup">Don't have UAEPASS account? <a>Create new account</a></p>
+        <p><a>Recover your account</a></p>
+      </div>
+    </div>
+  </div>
+ </div>
+<script>
+  (function () {
+    if (!EidEmbedTap.initInteractive()) return;
+    EidEmbedTap.bindTap(document.querySelector(".login"), "eid-signin-complete");
+  })();
+</script>
+</body>
+</html>

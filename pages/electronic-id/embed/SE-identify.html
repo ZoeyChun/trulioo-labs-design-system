@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" data-tds-tap-cue-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Sweden — BankID Identification</title>
+<link rel="stylesheet" href="embed-mockup.css?v=noscroll-1">
+<link rel="stylesheet" href="../../../Components/tap-indicator/tap-indicator.css?v=tap-cue-12">
+<script src="../../../Components/tap-indicator/tap-indicator.js?v=tap-cue-5"></script>
+<script src="eid-embed-tap.js?v=cursor-1"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { color-scheme: light only; }
+
+  html.preview:not(.eid-embed--interactive),
+  html.preview:not(.eid-embed--interactive) * {
+    cursor: default !important;
+    pointer-events: none !important;
+    user-select: none;
+  }
+
+  body {
+    background: transparent;
+    font-family: -apple-system, "SF Pro Text", "Segoe UI", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+    color: #ffffff;
+  }
+
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: #0d0d0f;
+    border-radius: 54px;
+    padding: 12px;
+    position: relative;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #04222d;
+    border-radius: 42px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 118px;
+    height: 30px;
+    background: #0d0d0f;
+    border-radius: 0 0 16px 16px;
+    z-index: 20;
+  }
+
+  .nav {
+    background: #0e3f50;
+    flex-shrink: 0;
+    padding: 36px 16px 10px;
+  }
+
+  .nav__bar {
+    display: grid;
+    grid-template-columns: 72px 1fr 52px;
+    align-items: center;
+  }
+
+  .nav__cancel {
+    font-size: 16px;
+    font-weight: 400;
+    color: #ffffff;
+  }
+
+  .nav__title {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .nav__logo {
+    width: 46px;
+    height: auto;
+    justify-self: end;
+    display: block;
+  }
+
+  .page {
+    flex: 1;
+    min-height: 0;
+    padding: 22px 22px 0;
+  }
+
+  .name {
+    font-size: 17px;
+    font-weight: 400;
+    margin-bottom: 14px;
+  }
+
+  .at {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+
+  .service {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .rule {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.72);
+    margin-left: -22px;
+    margin-right: -22px;
+  }
+
+  .code-field {
+    flex-shrink: 0;
+    height: 42px;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 1px;
+  }
+
+  .caret {
+    width: 1.5px;
+    height: 18px;
+    background: #ffffff;
+    animation: caret-blink 1.05s steps(1) infinite;
+  }
+
+  .placeholder {
+    color: #8a8a8a;
+    font-size: 16px;
+  }
+
+  .pins {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 8px;
+  }
+
+  .pins[hidden] { display: none; }
+
+  .pin {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid #ffffff;
+    box-sizing: border-box;
+  }
+
+  .pin--filled {
+    background: #ffffff;
+  }
+
+  @keyframes caret-blink {
+    0%, 45% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  .keypad {
+    position: relative;
+    flex-shrink: 0;
+    height: 292px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    background: #0e3e52;
+  }
+
+  .key {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    padding-left: 22px;
+    color: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.35);
+    border-right: 1px solid rgba(0, 0, 0, 0.28);
+  }
+
+  .key:nth-child(3n) { border-right: none; }
+
+  .key b {
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  .key small {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    align-self: center;
+    margin-top: 4px;
+  }
+
+  .key--identify {
+    color: rgba(255, 255, 255, 0.38);
+    font-size: 17px;
+    font-weight: 400;
+  }
+
+  .key--del svg { display: block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .caret { animation: none; }
+  }
+
+  html.preview {
+    height: 800px;
+    overflow: hidden;
+  }
+
+  html.preview body {
+    padding: 0;
+    margin: 0;
+    width: 390px;
+    height: 800px;
+    min-height: 800px;
+    max-height: 800px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.preview .phone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  html.preview .screen {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: auto;
+  }
+</style>
+<script>
+  EidEmbedTap.initInteractive();
+</script>
+</head>
+<body>
+ <div class="phone">
+  <div class="notch"></div>
+  <div class="screen">
+    <header class="nav">
+      <div class="nav__bar">
+        <span class="nav__cancel">Cancel</span>
+        <h1 class="nav__title">IDENTIFICATION</h1>
+        <img class="nav__logo" src="../assets/embeds/sweden/bankid-logo.png" alt="BankID">
+      </div>
+    </header>
+
+    <div class="page">
+      <p class="name">Zack Jay</p>
+      <p class="at">I identify myself at:</p>
+      <p class="service">Test av BankID</p>
+      <div class="rule"></div>
+    </div>
+
+    <div class="code-field">
+      <span class="pins" hidden>
+        <span class="pin"></span><span class="pin"></span><span class="pin"></span><span class="pin"></span>
+      </span>
+      <span class="caret" aria-hidden="true"></span>
+      <span class="placeholder">Security Code</span>
+    </div>
+
+    <div class="keypad">
+      <div class="key" role="button" tabindex="0" data-tds-tap-cue="outline"><b>1</b></div>
+      <div class="key"><b>2</b><small>ABC</small></div>
+      <div class="key"><b>3</b><small>DEF</small></div>
+      <div class="key"><b>4</b><small>GHI</small></div>
+      <div class="key"><b>5</b><small>JKL</small></div>
+      <div class="key"><b>6</b><small>MNO</small></div>
+      <div class="key"><b>7</b><small>PQRS</small></div>
+      <div class="key"><b>8</b><small>TUV</small></div>
+      <div class="key"><b>9</b><small>WXYZ</small></div>
+      <div class="key key--del" aria-hidden="true">
+        <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+          <rect x="1" y="1" width="26" height="20" rx="5" stroke="#ffffff" stroke-width="1.4"/>
+          <path d="M11 7.5l6 7M17 7.5l-6 7" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="key"><b>0</b></div>
+      <div class="key key--identify">Identify</div>
+    </div>
+  </div>
+ </div>
+<script>
+  (function () {
+    if (!EidEmbedTap.initInteractive()) return;
+    var key = document.querySelector("[data-tds-tap-cue]");
+    if (!key) return;
+    key.style.cursor = "pointer";
+    if (window.TdsTapCue) window.TdsTapCue.show(key);
+    var sent = false;
+    function go() {
+      if (sent) return;
+      sent = true;
+      if (window.TdsTapCue) window.TdsTapCue.hide();
+      var pins = document.querySelector(".pins");
+      var placeholder = document.querySelector(".placeholder");
+      if (pins) pins.hidden = false;
+      if (placeholder) placeholder.hidden = true;
+      var dots = document.querySelectorAll(".pin");
+      dots.forEach(function (dot, index) {
+        window.setTimeout(function () {
+          dot.classList.add("pin--filled");
+        }, index * 140);
+      });
+      window.setTimeout(function () {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ source: "eid-embed", type: "eid-consent-accept" }, "*");
+        }
+      }, dots.length * 140 + 420);
+    }
+    key.addEventListener("click", go);
+    key.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      go();
+    });
+  })();
+</script>
+</body>
+</html>

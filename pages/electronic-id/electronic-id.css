@@ -628,7 +628,7 @@
   gap: var(--spacing-48);
 }
 
-#eid-step-simulated.eid-step-simulated--phone-centered .tds-progress-indicator {
+#eid-step-simulated.eid-step-simulated--phone-centered .tds-stepper {
   max-width: none;
   flex-shrink: 0;
 }
@@ -987,29 +987,29 @@
 
 /* NL phone — narrow operator column: compact stepper + stacked bank labels */
 @container eid-nl-sim-column (max-width: 520px) {
-  .tds-progress-indicator,
+  .tds-stepper,
   .eid-sim-stage__main,
   .eid-sim-stage__main .eid-sim-panel.dv-flow-card {
     width: 100%;
     max-width: 100%;
   }
 
-  .tds-progress-indicator--horizontal .tds-progress-indicator__item {
+  .tds-stepper--horizontal .tds-stepper__item {
     min-width: 0;
     flex: 1 1 0;
   }
 
-  .tds-progress-indicator--horizontal .tds-progress-indicator__content {
+  .tds-stepper--horizontal .tds-stepper__content {
     padding: var(--padding-sm) var(--padding-xs) 0 0;
     align-items: center;
   }
 
-  .tds-progress-indicator__label-row {
+  .tds-stepper__label-row {
     justify-content: center;
     width: 100%;
   }
 
-  .tds-progress-indicator__title {
+  .tds-stepper__title {
     display: none;
   }
 
@@ -1499,7 +1499,7 @@
   font-weight: var(--font-weight-semibold);
 }
 
-#eid-step-simulated .tds-progress-indicator {
+#eid-step-simulated .tds-stepper {
   width: 100%;
   max-width: var(--eid-sim-block-width, 895px);
   margin-bottom: 0;
@@ -1562,7 +1562,7 @@
   display: flex;
 }
 
-#eid-step-simulated.eid-step-simulated--progress-locked:has(#eid-panel-completing:not([hidden])) .tds-progress-indicator {
+#eid-step-simulated.eid-step-simulated--progress-locked:has(#eid-panel-completing:not([hidden])) .tds-stepper {
   width: var(--eid-sim-progress-lock);
   max-width: var(--eid-sim-progress-lock);
   flex-shrink: 0;
