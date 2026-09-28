@@ -105,8 +105,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 180px;
-  height: 180px;
+  width: 260px;
+  height: 260px;
   overflow: hidden;
   background-color: var(--surface-neutral-01);
   border-radius: 10.8px;
@@ -114,8 +114,8 @@
 
 .eidas-card__qr-frame img {
   display: block;
-  width: 160px;
-  height: 161px;
+  width: 240px;
+  height: 240px;
   object-fit: cover;
 }
 
