@@ -68,7 +68,7 @@
   };
 
   var IN_MOCK_PHONE = "9876543210";
-  var UAE_MOCK_EMAIL = "jp@trulioo.id";
+  var UAE_MOCK_EMAIL = "fatima.mansoori@testmail.ae";
 
   var REDIRECT_DESC = "This option will connect you to an external {provider} site to complete your verification.";
 
@@ -1353,7 +1353,7 @@
       }
       if (usesBeSimFlow()) {
         if (state.beConsentShown) {
-          return renderMobileEmbedScreen("BE-consent.html", "Belgium consent", "?interactive=1");
+          return renderMobileEmbedScreen("BE-consent.html", "Belgium consent", "?interactive=1&v=be-share-1");
         }
         return renderMobileEmbedScreen("BE-launch.html", "itsme app launch");
       }
@@ -1665,7 +1665,7 @@
     label = label.replace(/\bFull Nae\b/gi, "Full name");
     label = label.replace(/\bissueing\b/gi, "issuing");
     label = label.replace(/^\)\s*/, "");
-    label = label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
+    label = label.charAt(0).toUpperCase() + label.slice(1);
     return label;
   }
 

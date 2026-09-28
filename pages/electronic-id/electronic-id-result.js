@@ -50,6 +50,7 @@
     in: "Indian",
     it: "Italian",
     se: "Swedish",
+    ae: "United Arab Emirates",
     cz: "Czech",
     dk: "Danish",
     pl: "Polish"
@@ -61,6 +62,7 @@
     in: "+91 98765 43210",
     it: "+39 347 123 4567",
     se: "+46 70 123 45 67",
+    ae: "+971 50 123 4567",
     cz: "+420 601 234 567",
     dk: "+45 20 12 34 56",
     pl: "+48 601 234 567"
@@ -78,7 +80,8 @@
     be: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Full address", "Document number", "Document issuing country", "Document expiry"],
     in: ["Full name", "Date of birth", "Gender", "Full address", "Document number", "Document portrait (selfie)"],
     it: ["First name", "Last name", "Date of birth", "Document type", "Document number", "Issue date", "Issuing authority"],
-    se: ["First name", "Last name", "Date of birth", "Gender"],
+    se: ["Full Name", "DoB", "Gender", "National ID"],
+    ae: ["Full Name", "Nationality", "Gender", "Phone number", "National ID", "Email"],
     cz: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Phone number", "Full address", "Document type", "Document number", "Issue date", "Expiry date", "Issuing country", "Issuing authority"],
     dk: ["Full name", "Date of birth"],
     pl: ["First name", "Last name", "Date of birth"]
@@ -121,11 +124,13 @@
       case "address":
       case "full address": return address;
       case "address 1": return street;
-      case "date of birth": return dob;
+      case "date of birth":
+      case "dob": return dob;
       case "gender": return genderForScenario(scenario);
-      case "email address": return emailFromName(name);
+      case "email":
+      case "email address": return code === "ae" ? "fatima.mansoori@testmail.ae" : emailFromName(name);
       case "phone number": return PHONE_BY_COUNTRY[code] || "+31 6 1234 5678";
-      case "national id": return "AB1234567";
+      case "national id": return (code === "se" ? "19831205-1234" : code === "ae" ? "784-1990-3456789-1" : "AB1234567");
       case "document number": return doc.number || "DOC-8847291";
       case "document expiry":
       case "expiry date": return doc.expiry || "2031/08/15";
@@ -154,7 +159,10 @@
     "Postal Code", "City", "Region", "Country of Residence", "Provider Match", "Consent Timestamp"
   ];
 
-  var PORTRAIT_COUNTRY_CODES = { in: true };
+  var PORTRAIT_BY_COUNTRY = {
+    in: "assets/indian-man-portrait.jpg",
+    be: "assets/belgian-man-portrait.jpg"
+  };
 
   var ASSURANCE_BY_COUNTRY = {
     nl: "High",
@@ -410,6 +418,25 @@
       diScore: 2,
       diLabel: "Low Risk"
     },
+    ae: {
+      overallStatus: "Verified",
+      overallTone: "positive",
+      personName: "Fatima Ahmed Al Mansoori",
+      transactionId: "c3a6d812-0e17-4b4c-9765-2d1b8e9c4567",
+      truAiTitle: "Verification complete",
+      truAiSummary: "Fatima Ahmed Al Mansoori\u2019s UAE Pass verification completed with all signals passing.",
+      clientDetails: [
+        { label: "Full name", value: "Fatima Ahmed Al Mansoori" },
+        { label: "Date of birth", value: "1990/03/24" },
+        { label: "Address", value: "Dubai, United Arab Emirates" }
+      ],
+      signalCount: 6,
+      declinedCount: 0,
+      verificationRate: 100,
+      diRisk: "low",
+      diScore: 1,
+      diLabel: "Low Risk"
+    },
     se: {
       overallStatus: "Verified",
       overallTone: "positive",
@@ -555,7 +582,7 @@
         diLabel: "Low Risk"
       };
     }
-    scenario.documentType = PORTRAIT_COUNTRY_CODES[code] ? "document-portrait" : null;
+    scenario.documentType = PORTRAIT_BY_COUNTRY[code] ? "document-portrait" : null;
     scenario.countryCode = code;
     scenario.assuranceLevel = assuranceLevelForCountry(code);
     return scenario;
@@ -855,6 +882,9 @@
     if (divider) divider.hidden = !showPortrait;
     if (viewer) viewer.hidden = !showPortrait;
     if (showPortrait) {
+      var portrait = document.querySelector("#eid-document-portrait img");
+      var code = String(scenario.countryCode || "").toLowerCase();
+      if (portrait && PORTRAIT_BY_COUNTRY[code]) portrait.src = PORTRAIT_BY_COUNTRY[code];
       sharedSplitEnd = SPLIT_DEFAULT_END;
       syncEidSplitPane();
     }
@@ -983,10 +1013,6 @@
     root.addEventListener("click", function (event) {
       var target = event.target;
       if (!(target instanceof Element)) return;
-      if (target.closest("[data-eid-modal-close]")) {
-        closeImageModal();
-        return;
-      }
       var expandBtn = target.closest("#eid-eid-document-viewer .dv-doc-image .dv-icon-btn");
       var media = expandBtn ? null : target.closest("#eid-eid-document-viewer .dv-doc-image__media");
       var figure = (expandBtn || media) ? (expandBtn || media).closest(".dv-doc-image") : null;
@@ -995,10 +1021,21 @@
       openImageModal(figure);
     });
 
+    var modal = byId("eid-image-modal");
+    if (modal) {
+      modal.addEventListener("click", function (event) {
+        var target = event.target;
+        if (!(target instanceof Element)) return;
+        if (!target.closest("[data-eid-modal-close]")) return;
+        event.preventDefault();
+        closeImageModal();
+      });
+    }
+
     document.addEventListener("keydown", function (event) {
       if (event.key !== "Escape") return;
-      var modal = byId("eid-image-modal");
-      if (modal && !modal.hidden) closeImageModal();
+      var openModal = byId("eid-image-modal");
+      if (openModal && !openModal.hidden) closeImageModal();
     });
   }
 

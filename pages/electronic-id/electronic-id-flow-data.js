@@ -173,10 +173,10 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "First name",
-      "Last name",
-      "Date of birth",
-      "Gender"
+      "Full Name",
+      "DoB",
+      "Gender",
+      "National ID"
     ]
   },
   {
@@ -502,10 +502,12 @@ window.EID_FLOW_DATA = [
       }
     ],
     "consentItems": [
-      "Full name",
-      "Email",
-      "Mobile number",
-      "Nationality"
+      "Full Name",
+      "Nationality",
+      "Gender",
+      "Phone number",
+      "National ID",
+      "Email"
     ]
   },
   {

@@ -2110,10 +2110,22 @@
 }
 
 #eid-result-view #eid-document-portrait .dv-doc-image__media,
-#eid-result-view #eid-document-portrait .dv-doc-image__media svg {
+#eid-result-view #eid-document-portrait .dv-doc-image__media svg,
+#eid-result-view #eid-document-portrait .dv-doc-image__media img {
   width: 100%;
   height: auto;
   max-height: none;
+}
+
+#eid-result-view #eid-document-portrait .dv-doc-image__media {
+  padding: 0;
+  background: var(--surface-neutral-01);
+}
+
+#eid-result-view #eid-document-portrait .dv-doc-image__media img {
+  display: block;
+  object-fit: cover;
+  object-position: center 18%;
 }
 
 .eid-result-panel__body {
@@ -2687,7 +2699,8 @@
 }
 
 #eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-document-portrait .dv-doc-image__media,
-#eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-document-portrait .dv-doc-image__media svg {
+#eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-document-portrait .dv-doc-image__media svg,
+#eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-document-portrait .dv-doc-image__media img {
   width: 100%;
   height: auto;
   max-height: none;
