@@ -3,6 +3,15 @@
    Composes shared .dv-flow-* chrome with e-ID-specific layout.
    ============================================================ */
 
+/* Buttons and fields keep the browser font unless they inherit.
+   The page font is Inter. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 .eid-step[hidden] {
   display: none;
 }
