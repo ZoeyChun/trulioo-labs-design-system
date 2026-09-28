@@ -80,7 +80,7 @@
     be: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Full address", "Document number", "Document issuing country", "Document expiry"],
     in: ["Full name", "Date of birth", "Gender", "Full address", "Document number", "Document portrait (selfie)"],
     it: ["First name", "Last name", "Date of birth", "Document type", "Document number", "Issue date", "Issuing authority"],
-    se: ["Full Name", "DoB", "Gender", "National ID"],
+    se: ["Full Name", "Date of birth", "Gender", "National ID"],
     ae: ["Full Name", "Nationality", "Gender", "Phone number", "National ID", "Email"],
     cz: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Phone number", "Full address", "Document type", "Document number", "Issue date", "Expiry date", "Issuing country", "Issuing authority"],
     dk: ["Full name", "Date of birth"],

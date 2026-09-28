@@ -174,7 +174,7 @@ window.EID_FLOW_DATA = [
     ],
     "consentItems": [
       "Full Name",
-      "DoB",
+      "Date of birth",
       "Gender",
       "National ID"
     ]
