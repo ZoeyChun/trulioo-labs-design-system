@@ -41,7 +41,7 @@
 
   function genderForScenario(scenario) {
     var code = String(scenario.countryCode || "").toLowerCase();
-    return (code === "be" || code === "in") ? "Male" : "Female";
+    return (code === "be" || code === "in" || code === "se") ? "Male" : "Female";
   }
 
   var NATIONALITY_BY_COUNTRY = {
