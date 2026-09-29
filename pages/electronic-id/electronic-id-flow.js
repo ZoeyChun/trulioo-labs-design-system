@@ -627,7 +627,7 @@
       "launch-app-ready": {
         title: "Match the number",
         description: "Match the verification code shown in the UAE Pass app.",
-        calloutText: "Wait for the next screen."
+        calloutText: "Tap Next."
       },
       "consent": {
         title: "Confirm the login request",
@@ -1324,7 +1324,7 @@
       if (state.aeLaunchShown) {
         return renderMobileEmbedScreen("UAE-launch.html", "UAE Pass launch");
       }
-      return renderMobileEmbedScreen("UAE-confirm.html", "UAE Pass confirmation code", "?interactive=1&v=uae-confirm-auto-1");
+      return renderMobileEmbedScreen("UAE-confirm.html", "UAE Pass confirmation code", "?interactive=1&v=uae-confirm-manual-1");
     }
     if ((panelId === "eid-panel-launch-app" || panelId === "eid-panel-launch-loading") && usesDkSimFlow()) {
       return renderMobileEmbedScreen("DE-app.html", "Denmark MitID app", "?interactive=1");
