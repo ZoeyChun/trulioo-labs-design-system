@@ -319,7 +319,7 @@
 
       <p class="instructions">Open your UAE Pass app, select the number shown and confirm to login</p>
 
-      <div class="code" role="button" tabindex="0" data-tds-tap-cue="outline" aria-label="74">
+      <div class="code" aria-label="74">
         <div class="code__face"></div>
         <svg class="code__ring" viewBox="0 0 92 88" aria-hidden="true">
           <path class="code__track" d="M46 1.5H76.5A14 14 0 0 1 90.5 15.5V72.5A14 14 0 0 1 76.5 86.5H15.5A14 14 0 0 1 1.5 72.5V15.5A14 14 0 0 1 15.5 1.5H46"></path>
@@ -366,7 +366,11 @@
   })();
   (function () {
     if (!EidEmbedTap.initInteractive()) return;
-    EidEmbedTap.bindTap(document.querySelector(".code"), "eid-launch-confirm");
+    setTimeout(function () {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ source: "eid-embed", type: "eid-launch-confirm" }, "*");
+      }
+    }, 1500);
   })();
 </script>
 </body>
