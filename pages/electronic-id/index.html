@@ -45,7 +45,7 @@
   <link rel="stylesheet" href="../shared/truai-chat.css?v=2">
   <link rel="stylesheet" href="../document-verification/document-verification.css">
   <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
-  <link rel="stylesheet" href="electronic-id.css?v=font-inherit-1">
+  <link rel="stylesheet" href="electronic-id.css?v=passport-stack-1">
   <style>
     /* Nav item spec — inlined because Cursor preview often skips ../../ component CSS */
     button.tds-side-nav__nav-item,
@@ -783,13 +783,30 @@
                   </div>
                   <div class="dv-split-pane__divider" id="eid-eid-split-divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" tabindex="0" hidden></div>
                   <div class="dv-viewer dv-split-pane__end" id="eid-eid-document-viewer" hidden>
-                    <h3 class="dv-section-title">Document Portrait</h3>
+                    <h3 class="dv-section-title" id="eid-viewer-title">Document Portrait</h3>
                     <figure class="dv-doc-image dv-doc-image--selfie" id="eid-document-portrait">
+                      <figcaption class="dv-doc-image__caption" hidden>
+                        Document Portrait
+                        <button class="dv-icon-btn" type="button" aria-label="Expand document portrait">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                        </button>
+                      </figcaption>
                       <button class="dv-icon-btn dv-doc-image__expand" type="button" aria-label="Expand document portrait">
                         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
                       </button>
                       <div class="dv-doc-image__media">
-                        <img src="assets/indian-man-portrait.jpg" alt="Document portrait">
+                        <img src="assets/indian-man-portrait.jpg?v=studio-2" alt="Document portrait">
+                      </div>
+                    </figure>
+                    <figure class="dv-doc-image" id="eid-passport-image" hidden>
+                      <figcaption class="dv-doc-image__caption">
+                        Passport
+                        <button class="dv-icon-btn" type="button" aria-label="Expand passport">
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4"/></svg>
+                        </button>
+                      </figcaption>
+                      <div class="dv-doc-image__media">
+                        <img src="assets/indian-passport.jpg?v=3" alt="Indian passport">
                       </div>
                     </figure>
                   </div>
@@ -926,7 +943,7 @@
   <script src="../../Components/dialog/dialog.js"></script>
   <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
   <script src="electronic-id-flow-data.js?v=se-dob-1"></script>
-  <script src="electronic-id-result.js?v=se-gender-1"></script>
+  <script src="electronic-id-result.js?v=be-passport-3"></script>
   <script src="electronic-id-flow.js?v=uae-confirm-auto-1"></script>
   <script src="truai-responses.js?v=result-summary-1"></script>
   <script src="../shared/truai-chat.js?v=1"></script>

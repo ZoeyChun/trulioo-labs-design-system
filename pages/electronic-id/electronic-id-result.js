@@ -78,7 +78,7 @@
   var IDENTITY_FIELDS_BY_COUNTRY = {
     nl: ["First initials", "Last name", "Date of birth", "Gender", "Address 1", "City", "Postal code", "Country of residence"],
     be: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Full address", "Document number", "Document issuing country", "Document expiry"],
-    in: ["Full name", "Date of birth", "Gender", "Full address", "Document number", "Document portrait (selfie)"],
+    in: ["Full name", "Date of birth", "Gender", "Full address", "Document number", "Document portrait"],
     it: ["First name", "Last name", "Date of birth", "Document type", "Document number", "Issue date", "Issuing authority"],
     se: ["Full Name", "Date of birth", "Gender", "National ID"],
     ae: ["Full Name", "Nationality", "Gender", "Phone number", "National ID", "Email"],
@@ -148,6 +148,7 @@
       case "country of residence": return countryName || lastPart || "—";
       case "provider match": return "Match";
       case "consent timestamp": return "17 Jun 2026, 2:14 PM";
+      case "document portrait":
       case "document portrait selfie": return "Captured";
       default: return kind === "review" ? "Partial match" : "Verified";
     }
@@ -160,8 +161,13 @@
   ];
 
   var PORTRAIT_BY_COUNTRY = {
-    in: "assets/indian-man-portrait.jpg",
-    be: "assets/belgian-man-portrait.jpg"
+    in: "assets/indian-man-portrait.jpg?v=studio-2",
+    be: "assets/belgian-man-portrait.jpg?v=studio-1"
+  };
+
+  var PASSPORT_BY_COUNTRY = {
+    in: "assets/indian-passport.jpg?v=3",
+    be: "assets/belgian-passport.jpg?v=3"
   };
 
   var ASSURANCE_BY_COUNTRY = {
@@ -885,6 +891,25 @@
       var portrait = document.querySelector("#eid-document-portrait img");
       var code = String(scenario.countryCode || "").toLowerCase();
       if (portrait && PORTRAIT_BY_COUNTRY[code]) portrait.src = PORTRAIT_BY_COUNTRY[code];
+      var passportSrc = PASSPORT_BY_COUNTRY[code];
+      var stacked = Boolean(passportSrc);
+      var portraitFigure = byId("eid-document-portrait");
+      var passportFigure = byId("eid-passport-image");
+      var passport = passportFigure && passportFigure.querySelector("img");
+      if (passport && passportSrc) {
+        passport.src = passportSrc;
+        passport.alt = code === "be" ? "Belgian passport" : "Indian passport";
+      }
+      var viewerTitle = byId("eid-viewer-title");
+      if (viewerTitle) viewerTitle.hidden = stacked;
+      if (portraitFigure) {
+        portraitFigure.classList.toggle("dv-doc-image--selfie", !stacked);
+        var caption = portraitFigure.querySelector(".dv-doc-image__caption");
+        var floatingExpand = portraitFigure.querySelector(".dv-doc-image__expand");
+        if (caption) caption.hidden = !stacked;
+        if (floatingExpand) floatingExpand.hidden = stacked;
+      }
+      if (passportFigure) passportFigure.hidden = !stacked;
       sharedSplitEnd = SPLIT_DEFAULT_END;
       syncEidSplitPane();
     }

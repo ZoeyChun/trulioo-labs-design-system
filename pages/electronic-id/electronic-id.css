@@ -2114,6 +2114,12 @@ textarea {
   min-width: 0;
 }
 
+#eid-result-view .dv-doc-image[hidden],
+#eid-result-view .dv-doc-image__caption[hidden],
+#eid-result-view .dv-doc-image__expand[hidden] {
+  display: none;
+}
+
 #eid-result-view #eid-document-portrait {
   width: 100%;
 }
@@ -2131,10 +2137,10 @@ textarea {
   background: var(--surface-neutral-01);
 }
 
-#eid-result-view #eid-document-portrait .dv-doc-image__media img {
+#eid-result-view #eid-passport-image .dv-doc-image__media img {
   display: block;
-  object-fit: cover;
-  object-position: center 18%;
+  width: 100%;
+  height: auto;
 }
 
 .eid-result-panel__body {
