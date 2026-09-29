@@ -77,7 +77,7 @@
 
   var IDENTITY_FIELDS_BY_COUNTRY = {
     nl: ["First initials", "Last name", "Date of birth", "Gender", "Address 1", "City", "Postal code", "Country of residence"],
-    be: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Full address", "Document number", "Document issuing country", "Document expiry", "Document image"],
+    be: ["First name", "Last name", "Date of birth", "Place of birth", "Nationality", "Gender", "Full address", "Document number", "Document issuing country", "Document expiry", "Document image"],
     in: ["Full name", "Date of birth", "Gender", "Full address", "Document number", "Document image"],
     it: ["First name", "Last name", "Date of birth", "Document type", "Document number", "Issue date", "Issuing authority"],
     se: ["Full Name", "Date of birth", "Gender", "National ID"],
@@ -126,6 +126,7 @@
       case "address 1": return street;
       case "date of birth":
       case "dob": return dob;
+      case "place of birth": return code === "be" ? "Namur" : "—";
       case "gender": return genderForScenario(scenario);
       case "email":
       case "email address": return code === "ae" ? "fatima.mansoori@testmail.ae" : emailFromName(name);
