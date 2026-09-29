@@ -1353,7 +1353,7 @@
       }
       if (usesBeSimFlow()) {
         if (state.beConsentShown) {
-          return renderMobileEmbedScreen("BE-consent.html", "Belgium consent", "?interactive=1&v=be-share-1");
+          return renderMobileEmbedScreen("BE-consent.html", "Belgium consent", "?interactive=1&v=be-doc-image-1");
         }
         return renderMobileEmbedScreen("BE-launch.html", "itsme app launch");
       }

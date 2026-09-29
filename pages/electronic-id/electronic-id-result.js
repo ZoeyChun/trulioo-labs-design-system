@@ -77,8 +77,8 @@
 
   var IDENTITY_FIELDS_BY_COUNTRY = {
     nl: ["First initials", "Last name", "Date of birth", "Gender", "Address 1", "City", "Postal code", "Country of residence"],
-    be: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Full address", "Document number", "Document issuing country", "Document expiry"],
-    in: ["Full name", "Date of birth", "Gender", "Full address", "Document number", "Document portrait"],
+    be: ["First name", "Last name", "Date of birth", "Nationality", "Gender", "Full address", "Document number", "Document issuing country", "Document expiry", "Document image"],
+    in: ["Full name", "Date of birth", "Gender", "Full address", "Document number", "Document image"],
     it: ["First name", "Last name", "Date of birth", "Document type", "Document number", "Issue date", "Issuing authority"],
     se: ["Full Name", "Date of birth", "Gender", "National ID"],
     ae: ["Full Name", "Nationality", "Gender", "Phone number", "National ID", "Email"],
@@ -148,6 +148,7 @@
       case "country of residence": return countryName || lastPart || "—";
       case "provider match": return "Match";
       case "consent timestamp": return "17 Jun 2026, 2:14 PM";
+      case "document image":
       case "document portrait":
       case "document portrait selfie": return "Captured";
       default: return kind === "review" ? "Partial match" : "Verified";
