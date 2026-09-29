@@ -2120,27 +2120,25 @@ textarea {
   display: none;
 }
 
-#eid-result-view #eid-document-portrait {
+#eid-result-view #eid-passport-image {
   width: 100%;
 }
 
-#eid-result-view #eid-document-portrait .dv-doc-image__media,
-#eid-result-view #eid-document-portrait .dv-doc-image__media svg,
-#eid-result-view #eid-document-portrait .dv-doc-image__media img {
+#eid-result-view #eid-passport-image .dv-doc-image__media,
+#eid-result-view #eid-passport-image .dv-doc-image__media svg,
+#eid-result-view #eid-passport-image .dv-doc-image__media img {
   width: 100%;
   height: auto;
   max-height: none;
 }
 
-#eid-result-view #eid-document-portrait .dv-doc-image__media {
+#eid-result-view #eid-passport-image .dv-doc-image__media {
   padding: 0;
   background: var(--surface-neutral-01);
 }
 
 #eid-result-view #eid-passport-image .dv-doc-image__media img {
   display: block;
-  width: 100%;
-  height: auto;
 }
 
 .eid-result-panel__body {
@@ -2713,9 +2711,9 @@ textarea {
   flex-shrink: 0;
 }
 
-#eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-document-portrait .dv-doc-image__media,
-#eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-document-portrait .dv-doc-image__media svg,
-#eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-document-portrait .dv-doc-image__media img {
+#eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-passport-image .dv-doc-image__media,
+#eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-passport-image .dv-doc-image__media svg,
+#eid-result-view:has(#eid-eid-document-viewer:not([hidden])) #eid-passport-image .dv-doc-image__media img {
   width: 100%;
   height: auto;
   max-height: none;
