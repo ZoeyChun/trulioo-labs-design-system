@@ -162,9 +162,9 @@
     "Postal Code", "City", "Region", "Country of Residence", "Provider Match", "Consent Timestamp"
   ];
 
-  var PASSPORT_BY_COUNTRY = {
-    in: "assets/indian-passport.jpg?v=3",
-    be: "assets/belgian-passport.jpg?v=4"
+  var PORTRAIT_BY_COUNTRY = {
+    in: "assets/indian-man-portrait.jpg?v=studio-2",
+    be: "assets/belgian-man-portrait.jpg?v=studio-1"
   };
 
   var ASSURANCE_BY_COUNTRY = {
@@ -585,7 +585,7 @@
         diLabel: "Low Risk"
       };
     }
-    scenario.documentType = PASSPORT_BY_COUNTRY[code] ? "passport" : null;
+    scenario.documentType = PORTRAIT_BY_COUNTRY[code] ? "document-portrait" : null;
     scenario.countryCode = code;
     scenario.assuranceLevel = assuranceLevelForCountry(code);
     return scenario;
@@ -870,27 +870,27 @@
   }
 
   function applyDocumentSection(scenario) {
-    var showPassport = scenario && scenario.documentType === "passport";
+    var showPortrait = scenario && scenario.documentType === "document-portrait";
     var panelBody = byId("eid-eid-panel-body");
     var divider = byId("eid-eid-split-divider");
     var viewer = byId("eid-eid-document-viewer");
     var indicators = byId("eid-eid-indicators");
 
     if (panelBody) {
-      panelBody.classList.toggle("dv-split-pane", showPassport);
-      if (showPassport) panelBody.setAttribute("data-split-pane", "");
+      panelBody.classList.toggle("dv-split-pane", showPortrait);
+      if (showPortrait) panelBody.setAttribute("data-split-pane", "");
       else panelBody.removeAttribute("data-split-pane");
     }
-    if (indicators) indicators.classList.toggle("dv-split-pane__start", showPassport);
-    if (divider) divider.hidden = !showPassport;
-    if (viewer) viewer.hidden = !showPassport;
-    if (showPassport) {
+    if (indicators) indicators.classList.toggle("dv-split-pane__start", showPortrait);
+    if (divider) divider.hidden = !showPortrait;
+    if (viewer) viewer.hidden = !showPortrait;
+    if (showPortrait) {
       var code = String(scenario.countryCode || "").toLowerCase();
-      var passport = document.querySelector("#eid-passport-image img");
-      var passportSrc = PASSPORT_BY_COUNTRY[code];
-      if (passport && passportSrc) {
-        passport.src = passportSrc;
-        passport.alt = code === "be" ? "Belgian passport" : "Indian passport";
+      var portrait = document.querySelector("#eid-document-portrait img");
+      var portraitSrc = PORTRAIT_BY_COUNTRY[code];
+      if (portrait && portraitSrc) {
+        portrait.src = portraitSrc;
+        portrait.alt = "Document image";
       }
       sharedSplitEnd = SPLIT_DEFAULT_END;
       syncEidSplitPane();
