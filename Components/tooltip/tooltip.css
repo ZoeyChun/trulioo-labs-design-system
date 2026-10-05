@@ -21,13 +21,13 @@
   flex-direction: column;
   gap: var(--spacing-8);
   max-width: 320px;
-  padding: var(--spacing-8) var(--spacing-12);
+  padding: var(--padding-sm) var(--padding-md);
   border-radius: var(--radius-lg);
   box-sizing: border-box;
 }
 
 .tds-tooltip--rich .tds-tooltip__body {
-  padding: var(--spacing-16);
+  padding: var(--padding-lg);
   border-radius: var(--radius-md);
 }
 

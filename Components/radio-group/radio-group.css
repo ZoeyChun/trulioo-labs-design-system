@@ -15,7 +15,7 @@
 .tds-radio-group__item {
   position: relative;
   display: block;
-  padding-left: var(--spacing-24);
+  padding-left: var(--padding-xl);
   cursor: pointer;
 }
 

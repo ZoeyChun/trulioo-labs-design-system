@@ -220,14 +220,14 @@ body:has(.labs-kyb-layout) {
   flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-12);
-  padding: var(--spacing-16) var(--spacing-16) var(--spacing-12);
+  gap: var(--gap-md);
+  padding: var(--padding-lg) var(--padding-lg) var(--padding-md);
 }
 
 .labs-truai-panel__intro {
   flex-shrink: 0;
   overflow: hidden;
-  padding: 0 var(--spacing-16) var(--spacing-24);
+  padding: 0 var(--padding-lg) var(--padding-xl);
 }
 
 .labs-truai-panel__intro[hidden] {
@@ -314,15 +314,15 @@ body:has(.labs-kyb-layout) {
   height: 0;
   min-height: 0;
   flex-direction: column;
-  gap: var(--spacing-16);
+  gap: var(--gap-lg);
   overflow-y: auto;
-  padding: 0 var(--spacing-16) var(--spacing-12);
+  padding: 0 var(--padding-lg) var(--padding-md);
 }
 
 .labs-truai-conversation {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-16);
+  gap: var(--gap-lg);
   width: 100%;
   min-width: 0;
   align-self: stretch;
@@ -332,8 +332,8 @@ body:has(.labs-kyb-layout) {
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
-  gap: var(--spacing-8);
-  padding: 0 var(--spacing-16) var(--spacing-12);
+  gap: var(--gap-sm);
+  padding: 0 var(--padding-lg) var(--padding-md);
 }
 
 .labs-truai-panel__prompts[hidden] {
@@ -344,8 +344,8 @@ body:has(.labs-kyb-layout) {
   display: flex;
   width: 100%;
   align-items: flex-start;
-  gap: var(--spacing-8);
-  padding: var(--spacing-12) var(--spacing-16);
+  gap: var(--gap-sm);
+  padding: var(--padding-md) var(--padding-lg);
   border: none;
   border-radius: var(--labs-truai-radius);
   background-color: var(--labs-truai-surface-muted);
@@ -388,7 +388,7 @@ body:has(.labs-kyb-layout) {
 .labs-truai-user-bubble {
   margin-left: auto;
   max-width: 88%;
-  padding: var(--spacing-12) var(--spacing-16);
+  padding: var(--padding-md) var(--padding-lg);
   border-radius: var(--labs-truai-radius);
   background-color: var(--labs-truai-surface-muted);
 }
@@ -405,10 +405,10 @@ body:has(.labs-kyb-layout) {
 .labs-truai-thinking {
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   width: 100%;
   align-self: stretch;
-  padding: var(--spacing-12) var(--spacing-16);
+  padding: var(--padding-md) var(--padding-lg);
   border-radius: var(--labs-truai-radius);
   background-color: var(--labs-truai-surface-soft);
 }
@@ -454,7 +454,7 @@ body:has(.labs-kyb-layout) {
 .labs-truai-response {
   width: 100%;
   max-width: 100%;
-  padding: var(--spacing-16) var(--spacing-24);
+  padding: var(--padding-lg) var(--padding-xl);
   border: none;
   border-radius: var(--labs-truai-radius);
   background-color: var(--labs-truai-surface-muted);
@@ -469,7 +469,7 @@ body:has(.labs-kyb-layout) {
 }
 
 .labs-truai-response--rich {
-  padding: var(--spacing-24);
+  padding: var(--padding-xl);
   background: var(--labs-truai-surface-soft);
   box-shadow: none;
 }
@@ -477,16 +477,16 @@ body:has(.labs-kyb-layout) {
 .labs-truai-response-block--rich {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-12);
+  gap: var(--gap-md);
   width: 100%;
 }
 
 .labs-truai-source-count {
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
-  margin: 0 0 var(--spacing-12);
-  padding: 0 var(--spacing-8);
+  gap: var(--gap-sm);
+  margin: 0 0 var(--gap-md);
+  padding: 0 var(--padding-sm);
   color: var(--text-description);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
@@ -503,9 +503,9 @@ body:has(.labs-kyb-layout) {
 .labs-truai-rich-body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-24);
+  gap: var(--gap-xl);
   width: 100%;
-  margin-top: var(--spacing-16);
+  margin-top: var(--gap-lg);
 }
 
 .labs-truai-rich-body[hidden] {
@@ -516,9 +516,9 @@ body:has(.labs-kyb-layout) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-24);
+  gap: var(--gap-xl);
   width: 100%;
-  padding: var(--spacing-24);
+  padding: var(--padding-xl);
   border: 1px solid var(--border-subtle);
   border-radius: var(--labs-truai-radius);
   background-color: var(--labs-truai-surface-inset);
@@ -555,7 +555,7 @@ body:has(.labs-kyb-layout) {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
 }
 
 .labs-truai-score__value {
@@ -595,13 +595,13 @@ body:has(.labs-kyb-layout) {
 .labs-truai-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   width: 100%;
 }
 
 .labs-truai-section__title {
   margin: 0;
-  padding: 0 var(--spacing-12);
+  padding: 0 var(--padding-md);
   color: var(--text-caption);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
@@ -611,7 +611,7 @@ body:has(.labs-kyb-layout) {
 
 .labs-truai-drivers {
   margin: 0;
-  padding: var(--spacing-16) var(--spacing-24);
+  padding: var(--padding-lg) var(--padding-xl);
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -622,8 +622,8 @@ body:has(.labs-kyb-layout) {
 }
 
 .labs-truai-driver:not(:last-child) {
-  padding-bottom: var(--spacing-16);
-  margin-bottom: var(--spacing-16);
+  padding-bottom: var(--padding-lg);
+  margin-bottom: var(--padding-lg);
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -631,8 +631,8 @@ body:has(.labs-kyb-layout) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-12);
-  margin-bottom: var(--spacing-8);
+  gap: var(--gap-md);
+  margin-bottom: var(--gap-sm);
 }
 
 .labs-truai-driver__title {
@@ -650,11 +650,11 @@ body:has(.labs-kyb-layout) {
 
 .labs-truai-findings {
   margin: 0;
-  padding: var(--spacing-16) var(--spacing-24);
+  padding: var(--padding-lg) var(--padding-xl);
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-12);
+  gap: var(--gap-md);
   width: 100%;
   border: 1px solid var(--border-subtle);
   border-radius: var(--labs-truai-radius);
@@ -664,7 +664,7 @@ body:has(.labs-kyb-layout) {
 .labs-truai-findings li {
   position: relative;
   margin: 0;
-  padding: var(--spacing-4) 0 var(--spacing-4) calc(var(--spacing-12) + var(--spacing-8));
+  padding: var(--padding-xs) 0 var(--padding-xs) calc(var(--spacing-12) + var(--spacing-8));
   color: var(--text-default);
   font-size: var(--font-size-xs);
 }
@@ -690,7 +690,7 @@ body:has(.labs-kyb-layout) {
   display: flex;
   width: 100%;
   flex-direction: column;
-  gap: var(--spacing-12);
+  gap: var(--gap-md);
   padding: var(--spacing-4) 0 0;
 }
 
@@ -717,7 +717,7 @@ body:has(.labs-kyb-layout) {
 
 .labs-truai-composer-wrap {
   flex-shrink: 0;
-  padding: 0 var(--spacing-16) var(--spacing-16);
+  padding: 0 var(--padding-lg) var(--padding-lg);
 }
 
 .labs-truai-composer {
@@ -737,8 +737,8 @@ body:has(.labs-kyb-layout) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-12);
-  padding: var(--spacing-12) var(--spacing-12) var(--spacing-16);
+  gap: var(--gap-md);
+  padding: var(--padding-md) var(--padding-md) var(--padding-lg);
 }
 
 .labs-truai-composer__field {
@@ -746,7 +746,7 @@ body:has(.labs-kyb-layout) {
   min-width: 0;
   flex: 1;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
 }
 
 .labs-truai-composer__field svg {
@@ -795,7 +795,7 @@ body:has(.labs-kyb-layout) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-8) var(--spacing-12);
+  padding: var(--padding-sm) var(--padding-md);
   background-color: var(--surface-neutral-02);
   font-size: var(--font-size-xs);
 }
@@ -805,6 +805,6 @@ body:has(.labs-kyb-layout) {
 }
 
 .labs-truai-panel .tds-ai-tag--md {
-  padding: var(--spacing-8) var(--spacing-12);
+  padding: var(--padding-sm) var(--padding-md);
   font-size: var(--font-size-sm);
 }

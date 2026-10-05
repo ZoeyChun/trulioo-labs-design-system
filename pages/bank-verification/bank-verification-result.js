@@ -61,15 +61,15 @@
     }
 
     host.innerHTML =
-      '<div class="tds-alert tds-alert--' + variant + '" role="status">' +
-        '<span class="tds-alert__icon" aria-hidden="true">' + icon + "</span>" +
-        '<div class="tds-alert__content">' +
-          '<p class="tds-alert__title">' +
+      '<div class="tds-announcement tds-announcement--' + variant + '" role="status">' +
+        '<span class="tds-announcement__icon" aria-hidden="true">' + icon + "</span>" +
+        '<div class="tds-announcement__content">' +
+          '<p class="tds-announcement__title">' +
             escapeHtml(detailsVerified
               ? "Bank account details are verified"
               : "Bank account details could not be verified") +
           "</p>" +
-          '<p class="tds-alert__message">' +
+          '<p class="tds-announcement__message">' +
             escapeHtml(ownershipConfirmed
               ? "Account ownership is confirmed."
               : "Account ownership is not confirmed.") +

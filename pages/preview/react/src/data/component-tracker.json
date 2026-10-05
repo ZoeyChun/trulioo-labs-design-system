@@ -1048,9 +1048,9 @@
       "category": "Feedback",
       "figmaStatus": "Done",
       "figmaVariants": 10,
-      "cssFile": "alert/alert.css",
+      "cssFile": "announcement/announcement.css",
       "classPrefixes": [
-        "tds-alert"
+        "tds-announcement"
       ],
       "figmaNodeId": "866:13118",
       "cssStatus": "Done",

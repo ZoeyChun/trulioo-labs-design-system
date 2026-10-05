@@ -29,7 +29,7 @@
 .tds-nav-list__divider {
   height: 1px;
   margin: var(--spacing-4) 0;
-  background-color: var(--border-subtle);
+  background-color: var(--border-divider);
 }
 
 /* --- Collapsible section --- */

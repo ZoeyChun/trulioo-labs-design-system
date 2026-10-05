@@ -21,10 +21,10 @@
 .tds-stat-card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-24);
-  padding: var(--spacing-16);
+  gap: var(--gap-xl);
+  padding: var(--padding-lg);
   background-color: var(--surface-neutral-01);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-divider);
   border-radius: var(--radius-xl);
   font-family: var(--font-family);
   box-sizing: border-box;
@@ -47,7 +47,7 @@
 .tds-stat-card__value-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   overflow: hidden;
 }
 
@@ -75,7 +75,7 @@
 .tds-stat-card__footer {
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   width: 100%;
 }
 

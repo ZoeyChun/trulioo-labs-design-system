@@ -10,7 +10,7 @@
   flex: 1;
   min-height: 0;
   gap: var(--spacing-32);
-  padding: var(--spacing-24);
+  padding: var(--padding-xl);
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-section);
   box-shadow: var(--elevation-md);
@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-16);
+  gap: var(--gap-lg);
   width: 100%;
   flex-shrink: 0;
 }

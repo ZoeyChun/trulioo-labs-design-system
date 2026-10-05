@@ -40,13 +40,13 @@
 .tds-icon-btn:not([class*="tds-icon-btn--sm"]):not([class*="tds-icon-btn--lg"]) {
   width: 32px;
   height: 32px;
-  padding: var(--spacing-8);
+  padding: var(--padding-sm);
 }
 
 .tds-icon-btn--lg {
   width: 40px;
   height: 40px;
-  padding: var(--spacing-12);
+  padding: var(--padding-md);
 }
 
 /* --- Shape --- */

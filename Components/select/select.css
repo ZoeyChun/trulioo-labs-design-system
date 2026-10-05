@@ -17,7 +17,7 @@
 .tds-select {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   font-family: var(--font-family);
   position: relative;
   width: 100%;
@@ -43,7 +43,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
@@ -61,20 +61,20 @@
 /* Sizes */
 .tds-select__trigger--sm {
   min-height: 28px;
-  padding: var(--spacing-4) var(--spacing-8);
+  padding: var(--padding-xs) var(--padding-sm);
   overflow: hidden;
 }
 
 .tds-select__trigger--md,
 .tds-select__trigger:not([class*="__trigger--sm"]):not([class*="__trigger--lg"]) {
   height: 32px;
-  padding: var(--spacing-8);
+  padding: var(--padding-sm);
   overflow: hidden;
 }
 
 .tds-select__trigger--lg {
   min-height: 40px;
-  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--spacing-12);
+  padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) var(--padding-md);
 }
 
 /* --- Value text --- */
@@ -154,7 +154,7 @@
 .tds-select__trailing-group {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   flex-shrink: 0;
 }
 
@@ -175,7 +175,7 @@
 .tds-select__trigger--sm:focus-visible,
 .tds-select__trigger--sm.tds-select__trigger--focus,
 .tds-select--open .tds-select__trigger--sm {
-  padding: calc(var(--spacing-4) - 1px) calc(var(--spacing-8) - 1px);
+  padding: calc(var(--padding-xs) - 1px) calc(var(--padding-sm) - 1px);
 }
 
 .tds-select__trigger--md:focus-visible,
@@ -184,13 +184,13 @@
 .tds-select__trigger:not([class*="__trigger--sm"]):not([class*="__trigger--lg"]).tds-select__trigger--focus,
 .tds-select--open .tds-select__trigger--md,
 .tds-select--open .tds-select__trigger:not([class*="__trigger--sm"]):not([class*="__trigger--lg"]) {
-  padding: calc(var(--spacing-8) - 1px);
+  padding: calc(var(--padding-sm) - 1px);
 }
 
 .tds-select__trigger--lg:focus-visible,
 .tds-select__trigger--lg.tds-select__trigger--focus,
 .tds-select--open .tds-select__trigger--lg {
-  padding: calc(var(--spacing-8) - 1px) calc(var(--spacing-8) - 1px) calc(var(--spacing-8) - 1px) calc(var(--spacing-12) - 1px);
+  padding: calc(var(--padding-sm) - 1px) calc(var(--padding-sm) - 1px) calc(var(--padding-sm) - 1px) calc(var(--padding-md) - 1px);
 }
 
 .tds-select--disabled .tds-select__trigger {
@@ -223,7 +223,7 @@
 .tds-select__menu {
   display: none;
   position: absolute;
-  top: calc(100% + var(--spacing-4));
+  top: calc(100% + var(--gap-xs));
   left: 0;
   z-index: 100;
   min-width: 100%;
@@ -258,5 +258,5 @@
 .tds-select__footer {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
 }

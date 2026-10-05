@@ -7,7 +7,7 @@
    <div class="tds-risk-category-card">
      <div class="tds-risk-category-card__title-row">
        <p class="tds-risk-category-card__title">Category</p>
-       <span class="tds-tag tds-tag--lg tds-tag--negative">High Risk</span>
+       <span class="tds-tag tds-tag--xl tds-tag--negative">High Risk</span>
      </div>
      <div class="tds-risk-category-card__details-row">
        <div class="tds-risk-category-card__signals">
@@ -31,10 +31,10 @@
 .tds-risk-category-card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   width: 284px;
   max-width: 100%;
-  padding: var(--spacing-12);
+  padding: var(--padding-md);
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
@@ -47,7 +47,7 @@
 .tds-risk-category-card__title-row {
   display: flex;
   align-items: center;
-  gap: var(--spacing-12);
+  gap: var(--gap-md);
   width: 100%;
   min-width: 0;
 }
@@ -78,7 +78,7 @@
   display: flex;
   flex: 1 0 0;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   min-width: 0;
 }
 

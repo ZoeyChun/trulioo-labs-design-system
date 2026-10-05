@@ -154,12 +154,12 @@ body.tds-dialog-open {
 
 .tds-dialog--left .tds-dialog__backdrop {
   justify-content: flex-start;
-  padding: var(--spacing-8) 0 var(--spacing-8) var(--spacing-8);
+  padding: var(--padding-sm) 0 var(--padding-sm) var(--padding-sm);
 }
 
 .tds-dialog--right .tds-dialog__backdrop {
   justify-content: flex-end;
-  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) 0;
+  padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) 0;
 }
 
 /* Xlarge left drawer is flush to the viewport edge (Figma). */
@@ -186,7 +186,7 @@ body.tds-dialog-open {
 .tds-dialog--bottom .tds-dialog__backdrop {
   align-items: flex-end;
   justify-content: center;
-  padding: 0 var(--spacing-8) var(--spacing-8);
+  padding: 0 var(--padding-sm) var(--padding-sm);
 }
 
 .tds-dialog--bottom .tds-dialog__panel {
@@ -289,9 +289,9 @@ body.tds-dialog-open {
 .tds-dialog__header-row {
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   width: 100%;
-  padding: var(--spacing-12) var(--spacing-12) var(--spacing-12) var(--spacing-16);
+  padding: var(--padding-md) var(--padding-md) var(--padding-md) var(--padding-lg);
   box-sizing: border-box;
 }
 
@@ -312,7 +312,7 @@ body.tds-dialog-open {
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  padding: var(--spacing-4) var(--spacing-8);
+  padding: var(--spacing-4) var(--padding-sm);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-badge);
   background-color: var(--surface-neutral-02);
@@ -328,7 +328,7 @@ body.tds-dialog-open {
 .tds-dialog__header-actions {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   flex-shrink: 0;
 }
 
@@ -351,7 +351,7 @@ body.tds-dialog-open {
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
-  padding: var(--spacing-16);
+  padding: var(--padding-lg);
   box-sizing: border-box;
 }
 
@@ -381,9 +381,9 @@ body.tds-dialog-open {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-16);
+  gap: var(--gap-lg);
   width: 100%;
-  padding: var(--spacing-12) var(--spacing-16) var(--spacing-16);
+  padding: var(--padding-md) var(--padding-lg) var(--padding-lg);
   box-sizing: border-box;
 }
 
@@ -424,7 +424,7 @@ body.tds-dialog-open {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   flex-shrink: 0;
 }
 

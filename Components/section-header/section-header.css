@@ -24,9 +24,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-16);
+  gap: var(--gap-lg);
   width: 100%;
-  padding: var(--spacing-16);
+  padding: var(--padding-lg);
   background-color: var(--surface-neutral-02);
   border: none;
   font-family: var(--font-family);
@@ -37,7 +37,7 @@
   display: flex;
   flex: 1 0 0;
   align-items: center;
-  gap: var(--spacing-12);
+  gap: var(--gap-md);
   min-width: 0;
 }
 
@@ -66,7 +66,7 @@
 .tds-section-header__title-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   min-width: 0;
 }
 

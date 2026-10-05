@@ -34,7 +34,7 @@
   position: relative;
   align-items: center;
   gap: var(--spacing-40);
-  padding: var(--spacing-24);
+  padding: var(--padding-xl);
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-section);
   box-shadow: var(--elevation-md);
@@ -93,14 +93,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-16);
+  gap: var(--gap-lg);
   width: 100%;
 }
 
 .dv-flow-header__title-group {
   display: flex;
   align-items: center;
-  gap: var(--spacing-16);
+  gap: var(--gap-lg);
   min-width: 0;
 }
 
@@ -115,8 +115,8 @@
 .dv-flow-truai-btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-8);
-  padding: var(--spacing-12) var(--spacing-16);
+  gap: var(--gap-sm);
+  padding: var(--padding-md) var(--padding-lg);
   border: none;
   border-radius: var(--radius-modal);
   background-color: var(--surface-inverse);
@@ -153,7 +153,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-32);
+  gap: var(--gap-2xl);
   width: 100%;
   max-width: 896px;
 }

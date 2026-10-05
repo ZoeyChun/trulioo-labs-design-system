@@ -15,7 +15,7 @@
 .tds-date-picker {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   font-family: var(--font-family);
   position: relative;
   width: 100%;
@@ -33,7 +33,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   width: 288px;
   max-width: 100%;
 }
@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
@@ -73,18 +73,18 @@
 
 .tds-date-picker__field--sm {
   height: 28px;
-  padding: 0 var(--spacing-8);
+  padding: 0 var(--padding-sm);
 }
 
 .tds-date-picker__field--md,
 .tds-date-picker__field:not([class*="__field--sm"]):not([class*="__field--lg"]) {
   height: 32px;
-  padding: 0 var(--spacing-8);
+  padding: 0 var(--padding-sm);
 }
 
 .tds-date-picker__field--lg {
   height: 40px;
-  padding: 0 var(--spacing-12);
+  padding: 0 var(--padding-md);
 }
 
 /* --- Icon + value --- */
@@ -136,7 +136,7 @@
 .tds-date-picker__field--sm:focus-visible,
 .tds-date-picker__field--sm.tds-date-picker__field--focus,
 .tds-date-picker--open .tds-date-picker__field--sm {
-  padding: 0 calc(var(--spacing-8) - 1px);
+  padding: 0 calc(var(--padding-sm) - 1px);
 }
 
 .tds-date-picker__field--md:focus-visible,
@@ -145,13 +145,13 @@
 .tds-date-picker__field:not([class*="__field--sm"]):not([class*="__field--lg"]):focus-visible,
 .tds-date-picker__field:not([class*="__field--sm"]):not([class*="__field--lg"]).tds-date-picker__field--focus,
 .tds-date-picker--open .tds-date-picker__field:not([class*="__field--sm"]):not([class*="__field--lg"]) {
-  padding: 0 calc(var(--spacing-8) - 1px);
+  padding: 0 calc(var(--padding-sm) - 1px);
 }
 
 .tds-date-picker__field--lg:focus-visible,
 .tds-date-picker__field--lg.tds-date-picker__field--focus,
 .tds-date-picker--open .tds-date-picker__field--lg {
-  padding: 0 calc(var(--spacing-12) - 1px);
+  padding: 0 calc(var(--padding-md) - 1px);
 }
 
 .tds-date-picker--disabled .tds-field-label {
@@ -250,11 +250,11 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   width: 288px;
   max-width: min(288px, 100%);
-  margin-top: var(--spacing-4);
-  padding: var(--spacing-4) var(--spacing-4) var(--spacing-8);
+  margin-top: var(--gap-xs);
+  padding: var(--padding-xs) var(--padding-xs) var(--padding-sm);
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-lg);
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
@@ -272,7 +272,7 @@
   flex-shrink: 0;
   width: 40px;
   height: 40px;
-  padding: var(--spacing-12);
+  padding: var(--padding-md);
   border: none;
   border-radius: var(--radius-lg);
   background: transparent;
@@ -294,11 +294,11 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   flex: 1;
   min-width: 0;
   height: 40px;
-  padding: var(--spacing-8) 0;
+  padding: var(--padding-sm) 0;
 }
 
 .tds-date-picker__month,
@@ -312,8 +312,8 @@
 }
 
 .tds-date-picker__year {
-  padding-left: var(--spacing-4);
-  padding-right: var(--spacing-4);
+  padding-left: var(--padding-xs);
+  padding-right: var(--padding-xs);
 }
 
 /* --- Weekday row --- */
@@ -437,5 +437,5 @@
 .tds-date-picker__footer {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
 }

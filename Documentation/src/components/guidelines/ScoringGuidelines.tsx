@@ -68,7 +68,7 @@ export function RiskCategoryCardGuidelines() {
             <div className="tds-risk-category-card" style={{ maxWidth: 284 }}>
               <div className="tds-risk-category-card__title-row">
                 <p className="tds-risk-category-card__title">Sanctions</p>
-                <span className="tds-tag tds-tag--lg tds-tag--negative">High Risk</span>
+                <span className="tds-tag tds-tag--xl tds-tag--negative">High Risk</span>
               </div>
             </div>
           }
@@ -77,7 +77,7 @@ export function RiskCategoryCardGuidelines() {
             <div className="tds-risk-category-card" style={{ maxWidth: 284 }}>
               <div className="tds-risk-category-card__title-row">
                 <p className="tds-risk-category-card__title">Sanctions</p>
-                <span className="tds-tag tds-tag--lg tds-tag--positive">High Risk</span>
+                <span className="tds-tag tds-tag--xl tds-tag--positive">High Risk</span>
               </div>
             </div>
           }

@@ -2992,7 +2992,7 @@
     var root = document.querySelector(".kyb-sidebar-summary");
     if (!root || !summaryData) return;
 
-    var overview = root.querySelector(":scope > .tds-alert__message");
+    var overview = root.querySelector(":scope > .tds-announcement__message");
     if (overview) overview.textContent = summaryData.overview;
 
     var findings = root.querySelector(".kyb-sidebar-summary__findings");
@@ -3002,14 +3002,14 @@
           var featuredClass = alert.featured ? " kyb-sidebar-summary__finding--featured" : "";
           var viewBtn = buildSidebarViewButton(alert.view);
           return (
-            '<div class="tds-alert tds-alert--error tds-alert--inline kyb-sidebar-summary__finding' +
+            '<div class="tds-announcement tds-announcement--error tds-announcement--inline kyb-sidebar-summary__finding' +
             featuredClass +
             '" role="status">' +
-            '<span class="tds-alert__icon" aria-hidden="true">' +
+            '<span class="tds-announcement__icon" aria-hidden="true">' +
             ANNOUNCEMENT_ERROR_ICON +
             "</span>" +
-            '<div class="tds-alert__content">' +
-            '<p class="tds-alert__message">' +
+            '<div class="tds-announcement__content">' +
+            '<p class="tds-announcement__message">' +
             alert.text +
             "</p>" +
             viewBtn +
@@ -3265,17 +3265,17 @@
     }
 
     var announcement = document.querySelector("[data-kyb-officer-announcement]");
-    if (!announcement) announcement = document.querySelector(".kyb-officer-block .tds-alert");
-    var message = announcement && announcement.querySelector(".tds-alert__message");
-    var title = announcement && announcement.querySelector(".tds-alert__title");
+    if (!announcement) announcement = document.querySelector(".kyb-officer-block .tds-announcement");
+    var message = announcement && announcement.querySelector(".tds-announcement__message");
+    var title = announcement && announcement.querySelector(".tds-announcement__title");
     if (announcement && message && profile.officerNote) {
       message.textContent = profile.officerNote;
       if (title) {
         title.textContent = profile.officerNoteTitle || "";
         title.hidden = !profile.officerNoteTitle;
       }
-      announcement.classList.remove("tds-alert--warning", "tds-alert--positive");
-      announcement.classList.add(profile.officerTone === "positive" ? "tds-alert--positive" : "tds-alert--warning");
+      announcement.classList.remove("tds-announcement--warning", "tds-announcement--positive");
+      announcement.classList.add(profile.officerTone === "positive" ? "tds-announcement--positive" : "tds-announcement--warning");
       announcement.hidden = false;
     } else if (announcement) {
       announcement.hidden = !profile.officerNote;
@@ -3441,7 +3441,7 @@
     var findings = getFindingTextsFromProfile(profile, "ownership") || getTabFindingTexts("ownership");
     var officerMsg = profile && profile.officerNote;
     if (!officerMsg) {
-      var officerEl = document.querySelector("[data-kyb-officer-announcement]:not([hidden]) .tds-alert__message");
+      var officerEl = document.querySelector("[data-kyb-officer-announcement]:not([hidden]) .tds-announcement__message");
       officerMsg = officerEl ? officerEl.textContent.trim() : "";
     }
 

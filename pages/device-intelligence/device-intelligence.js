@@ -624,11 +624,11 @@
 
     return (
       '<div class="dv-di-summary-block">' +
-        '<div class="tds-alert tds-alert--' + scenario.announcement.variant + '">' +
-          '<span class="tds-alert__icon" aria-hidden="true">' + announcementIcon + "</span>" +
-          '<div class="tds-alert__content">' +
-            '<p class="tds-alert__title">' + escapeHtml(scenario.announcement.title) + "</p>" +
-            '<p class="tds-alert__message">' + escapeHtml(scenario.announcement.message) + "</p>" +
+        '<div class="tds-announcement tds-announcement--' + scenario.announcement.variant + '">' +
+          '<span class="tds-announcement__icon" aria-hidden="true">' + announcementIcon + "</span>" +
+          '<div class="tds-announcement__content">' +
+            '<p class="tds-announcement__title">' + escapeHtml(scenario.announcement.title) + "</p>" +
+            '<p class="tds-announcement__message">' + escapeHtml(scenario.announcement.message) + "</p>" +
           "</div>" +
         "</div>" +
         '<section class="dv-di-indicators" aria-label="Risk Indicators">' +

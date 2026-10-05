@@ -536,7 +536,7 @@
     "pageId": "announcement",
     "path": "#/components/announcement",
     "category": "Components · Feedback",
-    "keywords": "Announcement announcement announcement Feedback tds-alert alert/alert.css announcement banner alert bar notice inline alert"
+    "keywords": "Announcement announcement announcement Feedback tds-announcement announcement/announcement.css announcement banner alert bar notice inline alert"
   },
   {
     "id": "components/accordion",
@@ -1218,7 +1218,7 @@
     "pageId": "switch",
     "path": "#/components/switch#announcement",
     "category": "Switch · Design",
-    "keywords": "Switch switch switch Core Controls tds-switch switch/switch.css switch toggle toggle switch on off boolean flip Announcement .tds-alert--{variant}--{stacked|inline} Inline messaging with semantic surfaces, optional actions, and dismiss (Figma 866:13118)."
+    "keywords": "Switch switch switch Core Controls tds-switch switch/switch.css switch toggle toggle switch on off boolean flip Announcement .tds-announcement--{variant}--{stacked|inline} Inline messaging with semantic surfaces, optional actions, and dismiss (Figma 866:13118)."
   },
   {
     "id": "components/tag/tag-sizes",
@@ -2384,7 +2384,7 @@
     "pageId": "tracker",
     "path": "#/getting-started/tracker",
     "category": "Tracker · Feedback",
-    "keywords": "Announcement announcement announcement Feedback tds-alert alert/alert.css announcement banner alert bar notice inline alert"
+    "keywords": "Announcement announcement announcement Feedback tds-announcement announcement/announcement.css announcement banner alert bar notice inline alert"
   },
   {
     "id": "tracker/accordion",

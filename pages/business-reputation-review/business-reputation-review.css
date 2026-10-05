@@ -120,7 +120,7 @@
   height: 30px;
   min-height: 30px;
   max-height: 30px;
-  padding: 6px var(--spacing-4);
+  padding: 6px var(--padding-xs);
   box-sizing: border-box;
 }
 

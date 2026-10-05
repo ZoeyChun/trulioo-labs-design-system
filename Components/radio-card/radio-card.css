@@ -13,8 +13,8 @@
 .tds-radio-card {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-16);
-  padding: var(--spacing-12);
+  gap: var(--gap-lg);
+  padding: var(--padding-md);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-card);
   background-color: var(--surface-neutral-01);
@@ -53,7 +53,7 @@
 .tds-radio-card__content {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   flex: 1;
   min-width: 0;
 }
@@ -61,7 +61,7 @@
 .tds-radio-card__label-row {
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
 }
 
 .tds-radio-card__icon {

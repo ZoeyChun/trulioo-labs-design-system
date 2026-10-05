@@ -1,7 +1,7 @@
 /* ============================================================
    Trulioo Design Tokens
    Generated from Figma: Trulioo-ADS---2026
-   Last updated: 2026-10-05
+   Last updated: 2026-07-22
    ============================================================ */
 
 :root {
@@ -49,43 +49,19 @@
   --color-neutral-90: #2a3f3b;
   --color-neutral-100: #172d2d;
   --color-white: #ffffff;
-  --color-black: #000000;
 
-  /* Red */
-  --color-red-10: #fff1f1;
-  --color-red-20: #f4bfbf;
-  --color-red-30: #ed9595;
-  --color-red-40: #e66b6b;
-  --color-red-50: #db2b2b;
-  --color-red-60: #ba151d;
-  --color-red-70: #831a1a;
-  --color-red-80: #581111;
-  --color-red-90: #2c0909;
-  --color-red-100: #160404;
-
-  /* Amber */
-  --color-amber-10: #fff4db;
-  --color-amber-20: #efd9b1;
-  --color-amber-30: #e8c789;
-  --color-amber-40: #e0b462;
-  --color-amber-50: #d8a13b;
-  --color-amber-60: #b07a1a;
-  --color-amber-70: #977129;
-  --color-amber-80: #775516;
-  --color-amber-90: #413012;
-  --color-amber-100: #161006;
-
-  /* Green */
-  --color-green-10: #eaf7f0;
-  --color-green-20: #b1d1bf;
-  --color-green-30: #8bb99e;
-  --color-green-40: #64a27e;
-  --color-green-50: #3d8b5e;
-  --color-green-60: #2d7448;
-  --color-green-70: #166534;
-  --color-green-80: #1f462f;
-  --color-green-90: #122a1c;
-  --color-green-100: #060e09;
+  /* Status */
+  --color-red-border: #db2b2b;
+  --color-red-bg: #fff1f1;
+  --color-red-text: #ba151d;
+  --color-amber-border: #d8a13b;
+  --color-amber-bg: #fff4db;
+  --color-amber-text: #775516;
+  --color-amber-icon: #b07a1a;
+  --color-green-border: #6fb38a;
+  --color-green-bg: #eaf7f0;
+  --color-green-text: #166534;
+  --color-green-icon: #3d8b5e;
 
 
   /* --------------------------------------------------------
@@ -98,42 +74,38 @@
   --text-description: var(--color-neutral-70);      /* #526660 */
   --text-caption: var(--color-neutral-60);          /* #617269 */
   --text-placeholder: var(--color-neutral-50);      /* #8a9a90 */
-  --text-inverse: var(--color-neutral-10);          /* #f4f6f4 */
+  --text-inverse: var(--color-white);               /* #ffffff */
   --text-disabled: var(--color-neutral-50);         /* #8a9a90 */
   --text-link: var(--color-teal-70);                /* #006b5c */
-  --text-ai: var(--color-violet-80);                /* #592d80 */
-  --text-positive: var(--color-green-70);           /* #166534 */
-  --text-intermediate: var(--color-amber-80);       /* #775516 */
-  --text-negative: var(--color-red-60);             /* #ba151d */
+  --text-negative: var(--color-red-text);           /* #ba151d */
+  --text-intermediate: var(--color-amber-text);     /* #775516 */
+  --text-positive: var(--color-green-text);         /* #166534 */
 
   /* Surface */
   --surface-neutral-01: var(--color-white);         /* #ffffff */
   --surface-neutral-02: var(--color-neutral-10);    /* #f4f6f4 */
   --surface-neutral-03: var(--color-neutral-15);    /* #e8ede8 */
   --surface-neutral-04: var(--color-neutral-20);    /* #dde2de */
-  --surface-neutral-05: var(--color-neutral-30);    /* #c5cec8 */
-  --surface-neutral-06: var(--color-neutral-40);    /* #a8b4ac */
   --surface-disabled: var(--color-neutral-20);      /* #dde2de */
   --surface-hover: var(--color-neutral-10);         /* #f4f6f4 */
   --surface-selected: var(--color-teal-10);         /* #e6f8f4 */
   --surface-overlay: rgba(23, 28, 26, 0.5);        /* #171c1a @ 50% */
   --surface-inverse: var(--color-neutral-100);      /* #172d2d */
-  --surface-ai: var(--color-violet-10);             /* #f5eefb */
-  --surface-positive: var(--color-green-10);        /* #eaf7f0 */
-  --surface-intermediate: var(--color-amber-10);    /* #fff4db */
-  --surface-negative: var(--color-red-10);          /* #fff1f1 */
+  --surface-negative: var(--color-red-bg);          /* #fff1f1 */
+  --surface-intermediate: var(--color-amber-bg);    /* #fff4db */
+  --surface-positive: var(--color-green-bg);        /* #eaf7f0 */
 
   /* Border */
   --border-subtle: var(--color-neutral-20);         /* #dde2de */
   --border-strong: var(--color-neutral-30);         /* #c5cec8 */
   --border-interactive: var(--color-teal-80);       /* #004c45 */
+  --border-divider: var(--color-neutral-15);        /* #e8ede8 */
   --border-disabled: var(--color-neutral-30);       /* #c5cec8 */
   --border-focus: var(--color-teal-60);             /* #0e8a78 */
   --border-selected: var(--color-teal-80);          /* #004c45 */
-  --border-ai: var(--color-violet-50);              /* #b080dc */
-  --border-positive: var(--color-green-40);         /* #64a27e */
-  --border-intermediate: var(--color-amber-50);     /* #d8a13b */
-  --border-negative: var(--color-red-50);           /* #db2b2b */
+  --border-negative: var(--color-red-border);       /* #db2b2b */
+  --border-intermediate: var(--color-amber-border); /* #d8a13b */
+  --border-positive: var(--color-green-border);     /* #6fb38a */
 
   /* Interactive */
   --interactive-default: var(--color-teal-80);      /* #004c45 */
@@ -141,11 +113,6 @@
   --interactive-active: var(--color-teal-100);      /* #00201e */
   --interactive-subtle: var(--color-teal-10);       /* #e6f8f4 */
   --interactive-disabled: var(--color-neutral-40);  /* #a8b4ac */
-  --interactive-ai: var(--color-violet-30);         /* #dcc0f5 */
-  --interactive-ai-hover: var(--color-violet-20);   /* #e8d8f5 */
-  --interactive-positive: var(--color-green-50);    /* #3d8b5e */
-  --interactive-intermediate: var(--color-amber-50); /* #d8a13b */
-  --interactive-negative: var(--color-red-50);      /* #db2b2b */
 
   /* Icon */
   --icon-default: var(--color-neutral-100);         /* #172d2d */
@@ -154,21 +121,21 @@
   --icon-disabled: var(--color-neutral-50);         /* #8a9a90 */
   --icon-inverse: var(--color-white);               /* #ffffff */
   --icon-interactive: var(--color-teal-80);         /* #004c45 */
+  --icon-negative: var(--color-red-border);         /* #db2b2b */
+  --icon-intermediate: var(--color-amber-icon);     /* #b07a1a */
+  --icon-positive: var(--color-green-icon);         /* #3d8b5e */
   --icon-ai: var(--color-violet-80);                /* #592d80 */
-  --icon-positive: var(--color-green-60);           /* #2d7448 */
-  --icon-intermediate: var(--color-amber-60);       /* #b07a1a */
-  --icon-negative: var(--color-red-50);             /* #db2b2b */
 
-  /* Legacy names still used by AI summary cards and AI tags */
-  --ai-accent: var(--icon-ai);
-  --ai-surface: var(--surface-ai);
-  --ai-badge: var(--interactive-ai);
-  --ai-hover: var(--interactive-ai-hover);
+  /* AI */
+  --ai-accent: var(--color-violet-80);              /* #592d80 */
+  --ai-surface: var(--color-violet-10);             /* #f5eefb */
+  --ai-badge: var(--color-violet-30);               /* #dcc0f5 */
+  --ai-hover: var(--color-violet-20);               /* #e8d8f5 */
 
 
   /* --------------------------------------------------------
      CORE / SPACING
-     Single spacing scale — use for padding, gap, margin and sizing.
+     Raw spacing scale in px — use semantic tokens in layouts.
      -------------------------------------------------------- */
 
   --spacing-2: 0.125rem;   /*  2px */
@@ -185,12 +152,45 @@
   --spacing-96: 6rem;      /* 96px */
   --spacing-160: 10rem;    /* 160px */
   --spacing-200: 12.5rem;  /* 200px */
+  --spacing-280: 17.5rem;  /* 280px */
+
+
+  /* --------------------------------------------------------
+     SEMANTIC / SPACING
+     Contextual spacing — use in component padding, gaps, margins.
+     -------------------------------------------------------- */
+
+  /* Padding */
+  --padding-xs: var(--spacing-4);     /*  4px */
+  --padding-sm: var(--spacing-8);     /*  8px */
+  --padding-md: var(--spacing-12);    /* 12px */
+  --padding-lg: var(--spacing-16);    /* 16px */
+  --padding-xl: var(--spacing-24);    /* 24px */
+  --padding-2xl: var(--spacing-32);   /* 32px */
+  --padding-3xl: var(--spacing-40);   /* 40px */
+
+  /* Gap */
+  --gap-xs: var(--spacing-4);        /*  4px */
+  --gap-sm: var(--spacing-8);        /*  8px */
+  --gap-md: var(--spacing-12);       /* 12px */
+  --gap-lg: var(--spacing-16);       /* 16px */
+  --gap-xl: var(--spacing-24);       /* 24px */
+  --gap-2xl: var(--spacing-32);      /* 32px */
+
+  /* Margin */
+  --margin-sm: var(--spacing-16);    /* 16px */
+  --margin-md: var(--spacing-24);    /* 24px */
+  --margin-lg: var(--spacing-32);    /* 32px */
+  --margin-xl: var(--spacing-48);    /* 48px */
+  --margin-2xl: var(--spacing-64);   /* 64px */
+  --margin-3xl: var(--spacing-96);   /* 96px */
 
 
   /* --------------------------------------------------------
      CORE / RADIUS
      -------------------------------------------------------- */
 
+  --radius-none: 0;
   --radius-xs: 0.125rem;    /*  2px */
   --radius-sm: 0.25rem;     /*  4px */
   --radius-md: 0.375rem;    /*  6px */
@@ -296,8 +296,6 @@
   --line-height-xl: 1.5rem;    /* 24px */
   --line-height-2xl: 1.625rem; /* 26px */
   --line-height-3xl: 1.875rem; /* 30px */
-  --line-height-28: 1.75rem;   /* 28px — heading-lg */
-  --line-height-32: 2rem;      /* 32px — heading-xl */
   --line-height-4xl: 2.25rem;  /* 36px */
   --line-height-5xl: 2.5rem;   /* 40px */
 
@@ -321,10 +319,10 @@
    -------------------------------------------------------- */
 
 /* Body */
-.text-body-xs   { font-size: var(--font-size-xs);  line-height: var(--line-height-sm);  font-weight: var(--font-weight-regular); }
-.text-body-sm   { font-size: var(--font-size-sm);  line-height: var(--line-height-lg);  font-weight: var(--font-weight-regular); }
-.text-body-md   { font-size: var(--font-size-md);  line-height: var(--line-height-xl);  font-weight: var(--font-weight-regular); }
-.text-body-lg   { font-size: var(--font-size-lg);  line-height: var(--line-height-2xl);  font-weight: var(--font-weight-regular); }
+.text-body-xs   { font-size: var(--font-size-xs);  line-height: var(--line-height-xs);  font-weight: var(--font-weight-regular); }
+.text-body-sm   { font-size: var(--font-size-sm);  line-height: var(--line-height-sm);  font-weight: var(--font-weight-regular); }
+.text-body-md   { font-size: var(--font-size-md);  line-height: var(--line-height-md);  font-weight: var(--font-weight-regular); }
+.text-body-lg   { font-size: var(--font-size-lg);  line-height: var(--line-height-lg);  font-weight: var(--font-weight-regular); }
 
 /* Label — Inter Medium */
 .text-label-sm  { font-size: var(--font-size-xs);  line-height: var(--line-height-xs);  font-weight: var(--font-weight-medium); }
@@ -340,13 +338,13 @@
 }
 
 /* Heading */
-.text-heading-xs  { font-size: var(--font-size-sm);  line-height: var(--line-height-md);  font-weight: var(--font-weight-semibold); }
-.text-heading-sm  { font-size: var(--font-size-md);  line-height: var(--line-height-xl);  font-weight: var(--font-weight-semibold); }
-.text-heading-md  { font-size: var(--font-size-lg);  line-height: var(--line-height-2xl);  font-weight: var(--font-weight-semibold); }
-.text-heading-lg  { font-size: var(--font-size-xl);  line-height: var(--line-height-28);  font-weight: var(--font-weight-semibold); }
-.text-heading-xl  { font-size: var(--font-size-2xl); line-height: var(--line-height-32); font-weight: var(--font-weight-semibold); }
-.text-heading-2xl { font-size: var(--font-size-3xl); line-height: var(--line-height-4xl); font-weight: var(--font-weight-semibold); }
-.text-heading-3xl { font-size: var(--font-size-4xl); line-height: var(--line-height-5xl); font-weight: var(--font-weight-semibold); }
+.text-heading-xs  { font-size: var(--font-size-sm);  line-height: var(--line-height-sm);  font-weight: var(--font-weight-semibold); }
+.text-heading-sm  { font-size: var(--font-size-md);  line-height: var(--line-height-md);  font-weight: var(--font-weight-semibold); }
+.text-heading-md  { font-size: var(--font-size-lg);  line-height: var(--line-height-lg);  font-weight: var(--font-weight-semibold); }
+.text-heading-lg  { font-size: var(--font-size-xl);  line-height: var(--line-height-xl);  font-weight: var(--font-weight-semibold); }
+.text-heading-xl  { font-size: var(--font-size-2xl); line-height: var(--line-height-2xl); font-weight: var(--font-weight-semibold); }
+.text-heading-2xl { font-size: var(--font-size-3xl); line-height: var(--line-height-3xl); font-weight: var(--font-weight-semibold); }
+.text-heading-3xl { font-size: var(--font-size-4xl); line-height: var(--line-height-4xl); font-weight: var(--font-weight-semibold); }
 
 /* Display — Tobias serif */
 .text-display-sm  { font-family: var(--font-family-display); font-size: var(--font-size-display-sm);  line-height: 2.75rem;  font-weight: var(--font-weight-regular); }

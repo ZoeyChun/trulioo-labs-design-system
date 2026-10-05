@@ -58,15 +58,15 @@
 .tds-data-table__header {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-8);
-  padding: 0 0 var(--spacing-8);
+  gap: var(--gap-sm);
+  padding: 0 0 var(--padding-sm);
 }
 
 .tds-data-table__header-toolbar {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--spacing-16);
+  gap: var(--gap-lg);
   width: 100%;
 }
 
@@ -95,7 +95,7 @@
 .tds-data-table__header-filter-actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   flex-shrink: 0;
 }
 
@@ -112,11 +112,11 @@
 }
 
 .tds-data-table__header--stacked {
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
 }
 
 .tds-data-table__header--toolbar-only {
-  padding-top: var(--spacing-8);
+  padding-top: var(--padding-sm);
 }
 
 /* --- Column header --- */
@@ -186,8 +186,8 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
 }
 
 .tds-data-table__text-cell {
-  padding-top: var(--spacing-16);
-  padding-bottom: var(--spacing-16);
+  padding-top: var(--padding-lg);
+  padding-bottom: var(--padding-lg);
 }
 
 .tds-data-table td:has(.tds-data-table__actions-cell) {
@@ -447,7 +447,7 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
   justify-content: center;
   width: 32px;
   height: 32px;
-  padding: var(--spacing-8);
+  padding: var(--padding-sm);
   border: none;
   border-radius: var(--radius-md);
   background: none;
@@ -476,7 +476,7 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  padding: var(--spacing-8) var(--spacing-16);
+  padding: var(--padding-sm) var(--padding-lg);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   color: var(--text-description);
@@ -488,22 +488,22 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
   flex: 1 1 0;
   align-items: center;
   justify-content: flex-end;
-  padding: var(--spacing-8) var(--spacing-16);
+  padding: var(--padding-sm) var(--padding-lg);
   min-width: 0;
 }
 
 .tds-data-table__pagination {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: var(--gap-xs);
   width: auto;
 }
 
 .tds-data-table__pagination-direction {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-4);
-  padding: var(--spacing-4);
+  gap: var(--gap-xs);
+  padding: var(--padding-xs);
   border: none;
   border-radius: var(--radius-md);
   background: none;
@@ -518,12 +518,12 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
 
 .tds-data-table__pagination-direction--previous,
 .tds-data-table__pagination-direction:first-of-type {
-  padding-right: var(--spacing-16);
+  padding-right: var(--padding-lg);
 }
 
 .tds-data-table__pagination-direction--next,
 .tds-data-table__pagination-direction:last-of-type {
-  padding-left: var(--spacing-16);
+  padding-left: var(--padding-lg);
 }
 
 .tds-data-table__pagination-direction:hover {
@@ -540,7 +540,7 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
 .tds-data-table__pagination-pages {
   display: flex;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: var(--gap-sm);
   flex-shrink: 0;
 }
 
@@ -550,7 +550,7 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
   justify-content: center;
   width: 32px;
   min-height: 26px;
-  padding: var(--spacing-4) 0;
+  padding: var(--padding-xs) 0;
   border: none;
   border-radius: var(--radius-md);
   background: transparent;

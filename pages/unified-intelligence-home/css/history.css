@@ -250,7 +250,7 @@ body[data-history-product="dv"] .history-main .truai-btn {
   width: auto;
   max-width: none;
   height: 32px;
-  padding: var(--spacing-8) var(--spacing-12);
+  padding: var(--padding-sm) var(--padding-md);
   gap: var(--spacing-8);
   box-shadow: var(--shadow-button-resting);
   background-color: var(--surface-neutral-01);
@@ -259,7 +259,7 @@ body[data-history-product="dv"] .history-main .truai-btn {
 .history-date-filter__trigger.tds-btn--md:focus-visible,
 .history-date-filter__trigger.tds-date-picker__field:focus-visible,
 .history-date-filter .tds-date-picker--open .history-date-filter__trigger {
-  padding: calc(var(--spacing-8) - 1px) calc(var(--spacing-12) - 1px);
+  padding: calc(var(--padding-sm) - 1px) calc(var(--padding-md) - 1px);
   border-color: var(--border-focus);
   border-width: 2px;
   box-shadow: none;

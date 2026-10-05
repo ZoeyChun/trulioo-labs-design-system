@@ -1652,11 +1652,11 @@
   function renderNiAnnouncement(summary, collapsible) {
     const toggle = collapsible ? `<button type="button" class="dv-ni-announce__toggle" aria-expanded="false" aria-label="Toggle details"><span class="dv-chevron dv-ni-announce__chevron" aria-hidden="true">${ICON_CHEVRON_DOWN}</span></button>` : "";
     const mod = collapsible ? " dv-ni-announce dv-ni-announce--collapsible dv-ni-announce--collapsed" : "";
-    return `<div class="tds-alert tds-alert--${NI_SUMMARY_VARIANT[summary.status]}${mod}">
-  <span class="tds-alert__icon" aria-hidden="true">${NI_SUMMARY_ICON[summary.status]}</span>
-  <div class="tds-alert__content">
-    <p class="tds-alert__title">${escapeHtml(summary.title)}</p>
-    <p class="tds-alert__message">${escapeHtml(summary.message)}</p>
+    return `<div class="tds-announcement tds-announcement--${NI_SUMMARY_VARIANT[summary.status]}${mod}">
+  <span class="tds-announcement__icon" aria-hidden="true">${NI_SUMMARY_ICON[summary.status]}</span>
+  <div class="tds-announcement__content">
+    <p class="tds-announcement__title">${escapeHtml(summary.title)}</p>
+    <p class="tds-announcement__message">${escapeHtml(summary.message)}</p>
   </div>
   ${toggle}
 </div>`;
@@ -1750,11 +1750,11 @@
   function renderDiAnnouncement(di) {
     const variant = di.risk === "high" ? "error" : di.risk === "medium" ? "warning" : "success";
     const icon = di.risk === "high" ? ICON_DIAMOND_EXCLAMATION : di.risk === "medium" ? ICON_CIRCLE_INFO : ICON_CIRCLE_CHECK;
-    return `<div class="tds-alert tds-alert--${variant}">
-  <span class="tds-alert__icon" aria-hidden="true">${icon}</span>
-  <div class="tds-alert__content">
-    <p class="tds-alert__title">${escapeHtml(diHeadline(di))}</p>
-    <p class="tds-alert__message">${escapeHtml(di.summary)}</p>
+    return `<div class="tds-announcement tds-announcement--${variant}">
+  <span class="tds-announcement__icon" aria-hidden="true">${icon}</span>
+  <div class="tds-announcement__content">
+    <p class="tds-announcement__title">${escapeHtml(diHeadline(di))}</p>
+    <p class="tds-announcement__message">${escapeHtml(di.summary)}</p>
   </div>
 </div>`;
   }

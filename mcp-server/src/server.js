@@ -163,7 +163,7 @@ Every component MUST use the exact \`tds-*\` class names from this design system
 - Dialog: \`tds-dialog\` with \`tds-dialog__header\`, \`tds-dialog__body\`, \`tds-dialog__footer\`
 - Tabs: \`tds-tabs\` with \`tds-tab-item\`
 - Data table: \`tds-data-table\`
-- Alert (formerly Announcement): \`tds-alert\`
+- Announcement: \`tds-announcement\`
 - Accordion: \`tds-accordion\`
 - Tag: \`tds-tag\`
 - Spinner: \`tds-spinner tds-spinner--{xs|sm|md|lg|xl}\`
@@ -196,7 +196,7 @@ TDS has no generic "card" component. Build cards from tokens:
   background: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-card);
-  padding: var(--spacing-24);
+  padding: var(--padding-xl);
   box-shadow: var(--elevation-sm);
 }
 .tds-custom-card:hover {
