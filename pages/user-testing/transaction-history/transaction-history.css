@@ -1,0 +1,1078 @@
+/* Transaction History — User Testing
+   Portal 2.0 Transactions (540:22723) + Table (301:20195) */
+
+body {
+  margin: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ut-tx-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  height: calc(100dvh - (2 * var(--spacing-8)));
+  max-height: calc(100dvh - (2 * var(--spacing-8)));
+  overflow: auto;
+  background-color: var(--surface-neutral-01);
+  border-radius: var(--radius-card);
+}
+
+.ut-tx-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1344px;
+  margin: 0 auto;
+  padding: 32px 96px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Figma 627:74128 — Alert above Transactions title */
+.ut-tx-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ut-tx-config-alert {
+  box-shadow: inset 0 0 0 1px var(--color-teal-50);
+}
+
+.ut-tx-config-alert .tds-announcement__message {
+  line-height: 22px;
+}
+
+.ut-tx-config-alert .tds-btn--invisible {
+  background-color: transparent;
+}
+
+.ut-tx-config-alert .tds-btn--invisible:hover,
+.ut-tx-config-alert .tds-btn--invisible:focus-visible,
+.ut-tx-config-alert .tds-btn--invisible.tds-btn--focus,
+.ut-tx-config-alert .tds-btn--invisible:active {
+  background-color: transparent;
+}
+
+.ut-tx-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 42px;
+  flex: 0 0 auto;
+}
+
+.ut-tx-header__title {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--text-default);
+}
+
+.ut-tx-block {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.ut-tx-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ut-tx-toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/*
+ * Shared chrome for Search / Date / Product / Filter —
+ * 1px border-strong, inset shadow, 32px height, radius-button
+ */
+.ut-tx-toolbar .tds-text-input__field,
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary {
+  box-sizing: border-box;
+  height: 32px;
+  min-height: 32px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-neutral-01);
+  box-shadow: var(--shadow-inset);
+}
+
+.ut-tx-toolbar .tds-text-input__field:focus-within,
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary:focus-visible,
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary.tds-btn--focus {
+  border-color: var(--border-focus);
+  border-width: 2px;
+  box-shadow: none;
+}
+
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary:hover {
+  background-color: var(--surface-neutral-02);
+  box-shadow: var(--shadow-inset);
+}
+
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary:active {
+  background-color: var(--surface-neutral-03);
+  box-shadow: var(--shadow-inset);
+}
+
+.ut-tx-search {
+  width: 320px;
+  max-width: 100%;
+}
+
+.ut-tx-search .tds-text-input__field {
+  gap: 8px;
+  padding: 0 4px 0 8px;
+}
+
+.ut-tx-search .tds-text-input__leading-icon {
+  color: var(--text-caption);
+  width: 17px;
+  height: 17px;
+}
+
+.ut-tx-search .tds-text-input__leading-icon .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.ut-tx-search .tds-text-input__native {
+  font-size: 14px;
+  line-height: 22px;
+  min-width: 0;
+}
+
+.ut-tx-search .tds-text-input__native::placeholder {
+  color: var(--text-placeholder);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.ut-tx-search__submit {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  padding: 6px;
+  border-radius: var(--radius-button);
+  color: var(--text-default);
+}
+
+.ut-tx-search__submit .tds-icon-btn__icon,
+.ut-tx-search__submit .icon {
+  width: 17px;
+  height: 13px;
+}
+
+.ut-tx-date {
+  width: 229px;
+}
+
+/* .tds-text-input { display:flex } beats the UA [hidden] rule */
+.ut-tx-date[hidden],
+.ut-tx-product[hidden] {
+  display: none !important;
+}
+
+.ut-tx-date .tds-text-input__field {
+  gap: 8px;
+  padding: 0 8px;
+}
+
+.ut-tx-date .tds-text-input__leading-icon {
+  color: var(--text-caption);
+  width: 14px;
+  height: 16px;
+}
+
+.ut-tx-date .tds-text-input__leading-icon .icon {
+  width: 14px;
+  height: 16px;
+}
+
+/* Product select — Figma Select 339:49763 */
+.ut-tx-product .tds-text-input__field {
+  gap: 8px;
+  padding: 0 8px;
+}
+
+.ut-tx-product__select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
+  color: var(--text-default);
+}
+
+.ut-tx-product__select:invalid,
+.ut-tx-product__select option[value=""] {
+  color: var(--text-placeholder);
+}
+
+.ut-tx-product__select option:not([value=""]) {
+  color: var(--text-default);
+}
+
+.ut-tx-product .tds-caret {
+  pointer-events: none;
+  color: var(--icon-faint);
+}
+
+.ut-tx-table .tds-data-table__sort-icon svg {
+  width: 8px;
+  height: 11px;
+  display: block;
+}
+
+.ut-tx-table-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--surface-neutral-01);
+}
+
+.ut-tx-table {
+  min-width: 1314px;
+  width: 1314px;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.ut-tx-table .tds-data-table__sort-label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ut-tx-table th,
+.ut-tx-table td {
+  height: 40px;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.ut-tx-table thead th {
+  height: 27px;
+  background-color: var(--surface-neutral-02);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-description);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 4px 8px;
+}
+
+.ut-tx-table tbody td {
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 8px;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.ut-tx-table tbody td.ut-tx-td-name {
+  font-weight: 500;
+}
+
+/* Sticky checkbox + Transaction — Cell 2 (Figma 301:20333) */
+.ut-tx-table thead th.tds-data-table__checkbox-cell,
+.ut-tx-table tbody td.tds-data-table__checkbox-cell {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+.ut-tx-table thead th.ut-tx-th-name,
+.ut-tx-table tbody td.ut-tx-td-name {
+  position: sticky;
+  left: 32px;
+  z-index: 3;
+  box-shadow: 1px 0 0 0 var(--border-subtle);
+}
+
+.ut-tx-table thead th.tds-data-table__checkbox-cell,
+.ut-tx-table thead th.ut-tx-th-name {
+  z-index: 4;
+  background-color: var(--surface-neutral-02);
+}
+
+.ut-tx-table tbody td.tds-data-table__checkbox-cell,
+.ut-tx-table tbody td.ut-tx-td-name {
+  background-color: var(--surface-neutral-01);
+}
+
+.ut-tx-col-check { width: 32px; min-width: 32px; max-width: 32px; }
+.ut-tx-col-name,
+.ut-tx-th-name,
+.ut-tx-td-name {
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
+}
+.ut-tx-col-outcome { width: 120px; min-width: 120px; max-width: 120px; }
+.ut-tx-col-date { width: 150px; min-width: 150px; max-width: 150px; }
+.ut-tx-col-product { width: 180px; min-width: 180px; max-width: 180px; }
+.ut-tx-col-country { width: 180px; min-width: 180px; max-width: 180px; }
+
+.ut-tx-table--flag-only {
+  min-width: 1254px;
+  width: 1254px;
+}
+
+.ut-tx-table--flag-only.ut-tx-table--trid {
+  min-width: 1404px;
+  width: 1404px;
+}
+
+.ut-tx-table--flag-only .ut-tx-col-country {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+}
+.ut-tx-col-score { width: 180px; min-width: 180px; max-width: 180px; }
+.ut-tx-col-source { width: 120px; min-width: 120px; max-width: 120px; }
+.ut-tx-col-type { width: 80px; min-width: 80px; max-width: 80px; }
+.ut-tx-col-actions,
+.ut-tx-table .tds-data-table__actions-col {
+  width: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  padding: 8px !important;
+  text-align: center;
+}
+
+.ut-tx-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ut-tx-expand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--icon-faint);
+  cursor: pointer;
+}
+
+.ut-tx-expand:hover {
+  color: var(--icon-default);
+}
+
+.ut-tx-expand .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Expanded parent — surface-neutral-02 (incl. sticky Transaction col) */
+.ut-tx-table tbody tr.ut-tx-row--expanded > td {
+  background-color: var(--surface-neutral-02);
+}
+
+.ut-tx-table tbody tr.ut-tx-row--expanded > td.tds-data-table__checkbox-cell,
+.ut-tx-table tbody tr.ut-tx-row--expanded > td.ut-tx-td-name {
+  background-color: var(--surface-neutral-02);
+}
+
+/*
+ * Child Transaction cells — Figma Cell 33 (mid) / Cell 36 (end)
+ * Mid: border-r only, continuous tree
+ * End: border-b + border-r, L-shaped tree
+ */
+/*
+ * Child Transaction cells — Figma Cell 33 (mid) / Cell 36 (end)
+ * Tree is absolutely pinned to the td so the stroke spans full row
+ * height (no gaps between segments when name-stack grows the row).
+ */
+.ut-tx-table tbody tr.ut-tx-row--child > td {
+  border-bottom: none;
+  background-color: var(--surface-neutral-01);
+}
+
+.ut-tx-table tbody tr.ut-tx-row--child > td.tds-data-table__checkbox-cell,
+.ut-tx-table tbody tr.ut-tx-row--child > td.ut-tx-td-name {
+  background-color: var(--surface-neutral-01);
+}
+
+.ut-tx-table tbody tr.ut-tx-row--child > td.ut-tx-td-name,
+.ut-tx-table--name-stack tbody tr.ut-tx-row--child > td.ut-tx-td-name {
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  border-bottom: none;
+  box-shadow: 1px 0 0 0 var(--border-subtle);
+}
+
+/* Name + detail / Name + TRID — allow cell to grow; tree still fills td */
+.ut-tx-table--name-stack tbody tr.ut-tx-row--child > td.ut-tx-td-name {
+  height: auto;
+  min-height: 40px;
+  max-height: none;
+}
+
+.ut-tx-table tbody tr.ut-tx-row--child-last > td {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ut-tx-table tbody tr.ut-tx-row--child-last > td.ut-tx-td-name,
+.ut-tx-table--name-stack tbody tr.ut-tx-row--child-last > td.ut-tx-td-name {
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 1px 0 0 0 var(--border-subtle);
+}
+
+.ut-tx-row--child .ut-tx-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  /* left inset: 8 pad + 16 tree + 8 gap — tree is out of flow */
+  padding: 0 8px 0 32px;
+}
+
+.ut-tx-table--name-stack .ut-tx-row--child .ut-tx-name-cell {
+  height: auto;
+  min-height: 40px;
+  padding: 8px 8px 8px 32px;
+}
+
+/* Pin tree to the sticky name td so it always spans full cell height */
+.ut-tx-row--child .ut-tx-tree-wrap {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  display: block;
+  width: 16px;
+  margin: 0;
+  color: var(--border-subtle);
+  pointer-events: none;
+}
+
+.ut-tx-row--child .ut-tx-tree {
+  display: block;
+  width: 16px;
+  height: 100%;
+}
+
+.ut-tx-row--child .ut-tx-name-stack {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.ut-tx-row--child .ut-tx-name {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--text-default);
+}
+
+.ut-tx-name {
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--text-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ut-product-tag {
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: 24px;
+  padding: 4px 8px;
+  border-radius: var(--radius-button);
+  background-color: #e0ebf9;
+  color: #1460b6;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.ut-tx-country {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ut-tx-country__flag {
+  display: inline-flex;
+  width: 16px;
+  height: 11px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ut-tx-country__flag .fi {
+  width: 16px;
+  height: 11px;
+  border-radius: 1px;
+  background-size: cover;
+}
+
+.ut-tx-country--flag-only .ut-tx-country__flag {
+  cursor: default;
+  outline: none;
+}
+
+.ut-tx-country--flag-only .ut-tx-country__flag:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.ut-tx-empty {
+  color: var(--text-placeholder);
+}
+
+/* Score = Tag shell + CounterLabel + label (Figma Cell 7) */
+.ut-tx-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 4px 8px 4px 4px;
+  border-radius: var(--radius-badge);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  font-variation-settings: var(--font-variation-figma-medium);
+}
+
+.ut-tx-score--positive { color: var(--text-positive); }
+.ut-tx-score--intermediate { color: var(--text-intermediate); }
+.ut-tx-score--negative { color: var(--text-negative); }
+
+.ut-tx-score .tds-counter {
+  flex-shrink: 0;
+}
+
+.ut-tx-score__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ut-tx-table .tds-data-table__signals {
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+
+.ut-tx-table .tds-data-table__signals--intermediate {
+  color: var(--text-intermediate);
+}
+
+.ut-tx-table .tds-data-table__footer {
+  border-top: none;
+}
+
+.ut-tx-table .tds-tag {
+  max-width: 100%;
+}
+
+.ut-tx-product {
+  width: 200px;
+  max-width: 100%;
+}
+
+.ut-tx-col-trid {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+}
+
+.ut-tx-table--trid {
+  min-width: 1464px;
+  width: 1464px;
+}
+
+.ut-tx-trid-cell .ut-tx-id-row--column {
+  width: 100%;
+  max-width: 100%;
+}
+
+.ut-tx-trid-text {
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--text-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ut-tx-trid-cell .ut-tx-id-copy {
+  width: 16px;
+  height: 16px;
+}
+
+.ut-tx-row-menu {
+  display: inline-flex;
+}
+
+/* Row … menu — DropdownPanel + NavItem sm (Figma 318:49180) */
+.ut-tx-row-menu__panel.tds-dropdown-panel {
+  min-width: 172px;
+}
+
+.ut-tx-row-menu__panel .tds-nav-item {
+  width: 100%;
+  min-width: 100%;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-default);
+}
+
+.ut-tx-row-menu__panel .tds-nav-item__label {
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+}
+
+.ut-tx-table .tds-data-table__actions-col {
+  overflow: visible;
+}
+
+.ut-tx-table--copy-icon .ut-tx-col-actions,
+.ut-tx-table--copy-icon .tds-data-table__actions-col {
+  width: 56px;
+  min-width: 56px;
+  max-width: 56px;
+}
+
+
+.ut-tx-name-stack {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ut-tx-name-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ut-tx-name-row .tds-counter--sm {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+}
+
+.ut-tx-name-sub {
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--text-caption);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ut-tx-id-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ut-tx-id-copy,
+.ut-tx-copy-trid {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--icon-interactive);
+  cursor: pointer;
+}
+
+.ut-tx-id-copy:hover,
+.ut-tx-copy-trid:hover {
+  color: var(--icon-interactive);
+  opacity: 0.85;
+}
+
+.ut-tx-id-copy .icon,
+.ut-tx-copy-trid .icon {
+  width: 10px;
+  height: 11px;
+  display: block;
+}
+
+.ut-tx-id-copy.is-copied,
+.ut-tx-copy-trid.is-copied {
+  color: var(--icon-interactive);
+}
+
+.ut-tx-id-copy.is-copied .icon,
+.ut-tx-copy-trid.is-copied .icon {
+  width: 10px;
+  height: 9px;
+}
+
+.ut-tx-flow-status {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  color: var(--icon-muted);
+}
+
+.ut-tx-flow-status .icon {
+  width: auto;
+  height: auto;
+  max-width: 12px;
+  max-height: 11px;
+  display: block;
+}
+
+.ut-tx-flow-status--in-progress {
+  color: var(--icon-intermediate);
+}
+
+.ut-tx-flow-status--failed,
+.ut-tx-flow-status--abandoned,
+.ut-tx-flow-status--timed-out {
+  color: var(--icon-muted);
+}
+
+/* Floating TDS tooltip — compact icon label; portaled to avoid table clipping */
+.ut-tx-floating-tooltip {
+  position: fixed;
+  z-index: 250;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.ut-tx-floating-tooltip[hidden] {
+  display: none !important;
+}
+
+.ut-tx-floating-tooltip .tds-tooltip__body {
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-md);
+}
+
+.ut-tx-floating-tooltip .tds-tooltip__text {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+/* Floating Alert — dark surface like Tooltip · dark */
+.ut-tx-toast.tds-announcement {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 240;
+  width: min(360px, calc(100vw - 32px));
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+  transform: translateX(-50%) translateY(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.ut-tx-toast.tds-announcement .tds-announcement__icon {
+  color: var(--icon-inverse);
+}
+
+.ut-tx-toast.tds-announcement .tds-announcement__title,
+.ut-tx-toast.tds-announcement .tds-announcement__message {
+  color: var(--text-inverse);
+}
+
+.ut-tx-toast.tds-announcement .tds-dismiss {
+  color: var(--icon-inverse);
+}
+
+.ut-tx-toast.tds-announcement .tds-dismiss:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: var(--icon-inverse);
+}
+
+.ut-tx-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.ut-tx-toast[hidden] {
+  display: none !important;
+}
+
+.ut-tx-toast .tds-dismiss .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.ut-tx-table--name-stack tbody td:nth-child(2),
+.ut-tx-table--date-double tbody td {
+  height: auto;
+  min-height: 40px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  white-space: normal;
+}
+
+.ut-tx-date-stack {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ut-tx-date-stack__day {
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.ut-tx-date-stack__time {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-caption);
+}
+
+
+.ut-tx-outcome-cell {
+  white-space: nowrap;
+}
+
+/* Figma 621:73886 — TextContent gap spacing-2; cell ~68px / padding-lg */
+.ut-tx-outcome-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-8);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ut-tx-outcome-sub {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-caption);
+}
+
+.ut-tx-table--score-combined tbody td.ut-tx-outcome-cell {
+  white-space: normal;
+}
+
+.ut-tx-table--score-combined tbody td.ut-tx-outcome-cell--with-sub {
+  height: 68px;
+  min-height: 68px;
+  padding-top: var(--padding-lg);
+  padding-bottom: var(--padding-lg);
+  vertical-align: middle;
+}
+
+/* Settings drawer — Figma Filters 540:26737 · 396px */
+.ut-tx-settings {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 396px;
+  height: calc(100dvh - (2 * var(--spacing-8)));
+  max-height: calc(100dvh - (2 * var(--spacing-8)));
+  padding: 16px;
+  gap: 16px;
+  overflow: auto;
+  background: var(--surface-neutral-01);
+  border-radius: var(--radius-section);
+}
+
+.ut-tx-settings[hidden] {
+  display: none;
+}
+
+.ut-tx-settings__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.ut-tx-settings__title {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-default);
+}
+
+.ut-tx-settings__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.ut-tx-settings__section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.ut-tx-settings__heading {
+  margin: 0;
+  padding: 4px 0;
+  width: 100%;
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--text-caption);
+}
+
+.ut-tx-settings__radios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.ut-tx-settings__option {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 20px;
+  padding-left: 0;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+
+.ut-tx-settings__option .tds-radio {
+  margin-top: 2px;
+}
+
+.ut-tx-settings__option span {
+  padding-top: 1px;
+}
+
+.app-shell.ut-tx-settings-open .ut-tx-page {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+@media (max-width: 1100px) {
+  .ut-tx-page {
+    padding: 24px 32px 32px;
+  }
+
+  .ut-tx-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .ut-tx-toolbar__left {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .ut-tx-search,
+  .ut-tx-date,
+  .ut-tx-product {
+    width: 100%;
+  }
+
+  .ut-tx-settings {
+    position: fixed;
+    top: var(--spacing-8);
+    right: var(--spacing-8);
+    bottom: var(--spacing-8);
+    z-index: 40;
+    width: min(396px, calc(100vw - 24px));
+    box-shadow: var(--elevation-xl);
+  }
+}

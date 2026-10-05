@@ -452,11 +452,15 @@
         });
       });
 
-      menu.querySelectorAll("button.tds-action-list-item").forEach(function (item) {
-        item.addEventListener("click", function () {
-          close(panel);
+      menu
+        .querySelectorAll(
+          "button.tds-action-list-item, button.tds-nav-item, [role='menuitem']"
+        )
+        .forEach(function (item) {
+          item.addEventListener("click", function () {
+            close(panel);
+          });
         });
-      });
 
       if (menu.classList.contains("tds-filter-button")) {
         var filterClearEl = menu.querySelector(".tds-filter-button__clear");
