@@ -10,7 +10,7 @@
   align-items: flex-start;
   gap: var(--spacing-8);
   width: 100%;
-  padding: var(--padding-md) var(--padding-md) var(--padding-md) var(--padding-lg);
+  padding: var(--spacing-12) var(--spacing-12) var(--spacing-12) var(--spacing-16);
   border-radius: var(--radius-card);
   font-family: var(--font-family);
   box-sizing: border-box;
@@ -19,7 +19,7 @@
 .tds-announcement--inline {
   align-items: center;
   min-height: 44px;
-  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--padding-lg);
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--spacing-16);
 }
 
 /* --- Variants --- */

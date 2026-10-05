@@ -20,8 +20,9 @@
   <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
   <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
   <link rel="stylesheet" href="../../Components/data-field/data-field.css">
-  <link rel="stylesheet" href="../../Components/data-table/data-table.css?v=signals-120">
+  <link rel="stylesheet" href="../../Components/data-table/data-table.css">
   <link rel="stylesheet" href="../../Components/date-picker/date-picker.css">
+  <link rel="stylesheet" href="../../Components/demo-guidance-card/demo-guidance-card.css">
   <link rel="stylesheet" href="../../Components/dialog/dialog.css">
   <link rel="stylesheet" href="../../Components/dismiss-action/dismiss-action.css">
   <link rel="stylesheet" href="../../Components/dismiss-issue-badge/dismiss-issue-badge.css">
@@ -39,11 +40,13 @@
   <link rel="stylesheet" href="../../Components/segmented-control/segmented-control.css">
   <link rel="stylesheet" href="../../Components/select/combobox.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
-  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css?v=2">
+  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../Components/spinner/spinner.css">
   <link rel="stylesheet" href="../../Components/stat-card/stat-card.css">
+  <link rel="stylesheet" href="../../Components/stepper/stepper.css">
   <link rel="stylesheet" href="../../Components/switch/switch.css">
   <link rel="stylesheet" href="../../Components/tabs/tabs.css">
+  <link rel="stylesheet" href="../../Components/tap-indicator/tap-indicator.css">
   <link rel="stylesheet" href="../../Components/text-input/text-input.css">
   <link rel="stylesheet" href="../../Components/textarea/textarea.css">
   <link rel="stylesheet" href="../../Components/tooltip/tooltip.css">
@@ -472,7 +475,7 @@ body {
 </div>
 </div></div>
         <div class="ds-state-demo" style="grid-column: 1 / -1;"><span class="ds-state-demo__label">Dark surface · spinner + label</span>
-<div class="row" style="background: var(--interactive-default); border-radius: var(--radius-lg); padding: var(--padding-lg);">
+<div class="row" style="background: var(--interactive-default); border-radius: var(--radius-lg); padding: var(--spacing-16);">
 <div class="tds-spinner-block tds-spinner-block--md tds-spinner-block--on-dark">
   <span class="tds-spinner tds-spinner--md" aria-hidden="true"></span>
   <span class="tds-spinner-block__label">Loading…</span>
@@ -2739,15 +2742,15 @@ body {
             <span class="tds-action-list-item__label">Violet</span>
           </div>
           <div class="tds-action-list-item">
-            <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-amber-border);"></span></span>
+            <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-amber-50);"></span></span>
             <span class="tds-action-list-item__label">Amber</span>
           </div>
           <div class="tds-action-list-item">
-            <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-red-border);"></span></span>
+            <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-red-50);"></span></span>
             <span class="tds-action-list-item__label">Red</span>
           </div>
           <div class="tds-action-list-item">
-            <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-green-border);"></span></span>
+            <span class="tds-action-list-item__leading-visual"><span style="display:block;width:14px;height:14px;border-radius:3px;background:var(--color-green-40);"></span></span>
             <span class="tds-action-list-item__label">Green</span>
           </div>
         </div>
@@ -4558,137 +4561,377 @@ body {
     <span class="ds-token-swatch" style="background: var(--color-white)" aria-hidden="true"></span>
     <span class="ds-token-row__hex">#ffffff</span>
   </div>
-</div><div class="ds-token-group-label">Status</div><div class="ds-token-row ds-token-row--core">
+</div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/red/border</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-border)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-border)" aria-label="Copy var(--color-red-border)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/black</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-black)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-black)" aria-label="Copy var(--color-black)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
-  <div class="ds-token-row__usage">#db2b2b</div>
+  <div class="ds-token-row__usage">#000000</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-red-border)" aria-hidden="true"></span>
-    <span class="ds-token-row__hex">#db2b2b</span>
+    <span class="ds-token-swatch" style="background: var(--color-black)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#000000</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/red/bg</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-bg)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-bg)" aria-label="Copy var(--color-red-bg)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/red/10</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-10)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-10)" aria-label="Copy var(--color-red-10)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
   <div class="ds-token-row__usage">#fff1f1</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-red-bg)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--color-red-10)" aria-hidden="true"></span>
     <span class="ds-token-row__hex">#fff1f1</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/red/text</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-text)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-text)" aria-label="Copy var(--color-red-text)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/red/20</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-20)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-20)" aria-label="Copy var(--color-red-20)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#f4bfbf</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-20)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#f4bfbf</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/red/30</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-30)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-30)" aria-label="Copy var(--color-red-30)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#ed9595</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-30)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#ed9595</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/red/40</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-40)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-40)" aria-label="Copy var(--color-red-40)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#e66b6b</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-40)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#e66b6b</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/red/50</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-50)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-50)" aria-label="Copy var(--color-red-50)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#db2b2b</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-50)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#db2b2b</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/red/60</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-60)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-60)" aria-label="Copy var(--color-red-60)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
   <div class="ds-token-row__usage">#ba151d</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-red-text)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--color-red-60)" aria-hidden="true"></span>
     <span class="ds-token-row__hex">#ba151d</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/amber/border</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-border)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-border)" aria-label="Copy var(--color-amber-border)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/red/70</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-70)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-70)" aria-label="Copy var(--color-red-70)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
-  <div class="ds-token-row__usage">#d8a13b</div>
+  <div class="ds-token-row__usage">#831a1a</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-amber-border)" aria-hidden="true"></span>
-    <span class="ds-token-row__hex">#d8a13b</span>
+    <span class="ds-token-swatch" style="background: var(--color-red-70)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#831a1a</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/amber/bg</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-bg)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-bg)" aria-label="Copy var(--color-amber-bg)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/red/80</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-80)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-80)" aria-label="Copy var(--color-red-80)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#581111</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-80)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#581111</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/red/90</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-90)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-90)" aria-label="Copy var(--color-red-90)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#2c0909</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-90)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#2c0909</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/red/100</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-red-100)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-red-100)" aria-label="Copy var(--color-red-100)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#160404</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-red-100)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#160404</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/10</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-10)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-10)" aria-label="Copy var(--color-amber-10)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
   <div class="ds-token-row__usage">#fff4db</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-amber-bg)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--color-amber-10)" aria-hidden="true"></span>
     <span class="ds-token-row__hex">#fff4db</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/amber/text</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-text)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-text)" aria-label="Copy var(--color-amber-text)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/amber/20</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-20)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-20)" aria-label="Copy var(--color-amber-20)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
-  <div class="ds-token-row__usage">#775516</div>
+  <div class="ds-token-row__usage">#efd9b1</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-amber-text)" aria-hidden="true"></span>
-    <span class="ds-token-row__hex">#775516</span>
+    <span class="ds-token-swatch" style="background: var(--color-amber-20)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#efd9b1</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/amber/icon</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-icon)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-icon)" aria-label="Copy var(--color-amber-icon)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/amber/30</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-30)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-30)" aria-label="Copy var(--color-amber-30)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#e8c789</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-30)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#e8c789</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/40</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-40)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-40)" aria-label="Copy var(--color-amber-40)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#e0b462</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-40)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#e0b462</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/50</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-50)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-50)" aria-label="Copy var(--color-amber-50)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#d8a13b</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-50)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#d8a13b</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/60</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-60)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-60)" aria-label="Copy var(--color-amber-60)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
   <div class="ds-token-row__usage">#b07a1a</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-amber-icon)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--color-amber-60)" aria-hidden="true"></span>
     <span class="ds-token-row__hex">#b07a1a</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/green/border</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-border)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-border)" aria-label="Copy var(--color-green-border)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/amber/70</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-70)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-70)" aria-label="Copy var(--color-amber-70)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
-  <div class="ds-token-row__usage">#6fb38a</div>
+  <div class="ds-token-row__usage">#977129</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-green-border)" aria-hidden="true"></span>
-    <span class="ds-token-row__hex">#6fb38a</span>
+    <span class="ds-token-swatch" style="background: var(--color-amber-70)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#977129</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/green/bg</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-bg)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-bg)" aria-label="Copy var(--color-green-bg)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/amber/80</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-80)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-80)" aria-label="Copy var(--color-amber-80)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#775516</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-80)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#775516</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/90</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-90)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-90)" aria-label="Copy var(--color-amber-90)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#413012</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-90)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#413012</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/amber/100</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-amber-100)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-amber-100)" aria-label="Copy var(--color-amber-100)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#161006</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-amber-100)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#161006</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/10</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-10)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-10)" aria-label="Copy var(--color-green-10)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
   <div class="ds-token-row__usage">#eaf7f0</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-green-bg)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--color-green-10)" aria-hidden="true"></span>
     <span class="ds-token-row__hex">#eaf7f0</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/green/text</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-text)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-text)" aria-label="Copy var(--color-green-text)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/green/20</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-20)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-20)" aria-label="Copy var(--color-green-20)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
-  <div class="ds-token-row__usage">#166534</div>
+  <div class="ds-token-row__usage">#b1d1bf</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-green-text)" aria-hidden="true"></span>
-    <span class="ds-token-row__hex">#166534</span>
+    <span class="ds-token-swatch" style="background: var(--color-green-20)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#b1d1bf</span>
   </div>
 </div><div class="ds-token-row ds-token-row--core">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">color/green/icon</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-icon)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-icon)" aria-label="Copy var(--color-green-icon)" title="Copy CSS variable">
+    <span class="ds-token-row__name">color/green/30</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-30)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-30)" aria-label="Copy var(--color-green-30)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#8bb99e</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-30)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#8bb99e</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/40</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-40)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-40)" aria-label="Copy var(--color-green-40)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#64a27e</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-40)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#64a27e</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/50</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-50)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-50)" aria-label="Copy var(--color-green-50)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
   </div>
   <div class="ds-token-row__usage">#3d8b5e</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--color-green-icon)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--color-green-50)" aria-hidden="true"></span>
     <span class="ds-token-row__hex">#3d8b5e</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/60</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-60)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-60)" aria-label="Copy var(--color-green-60)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#2d7448</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-60)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#2d7448</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/70</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-70)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-70)" aria-label="Copy var(--color-green-70)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#166534</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-70)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#166534</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/80</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-80)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-80)" aria-label="Copy var(--color-green-80)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#1f462f</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-80)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#1f462f</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/90</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-90)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-90)" aria-label="Copy var(--color-green-90)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#122a1c</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-90)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#122a1c</span>
+  </div>
+</div><div class="ds-token-row ds-token-row--core">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">color/green/100</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--color-green-100)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--color-green-100)" aria-label="Copy var(--color-green-100)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">#060e09</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--color-green-100)" aria-hidden="true"></span>
+    <span class="ds-token-row__hex">#060e09</span>
   </div>
 </div>
     </div>
@@ -4772,13 +5015,13 @@ body {
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">text/inverse</span>
-    <span class="ds-token-row__alias">→ white</span>
+    <span class="ds-token-row__alias">→ neutral/10</span>
   </div>
   <div class="ds-token-row__usage">Text on dark or colored backgrounds</div>
   <div class="ds-token-row__preview">
     <span class="ds-token-swatch" style="background: var(--text-inverse)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#ffffff</span>
+      <span class="ds-token-row__hex">#f4f6f4</span>
       <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--text-inverse)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--text-inverse)" aria-label="Copy var(--text-inverse)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
@@ -4816,15 +5059,30 @@ body {
   </div>
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">text/negative</span>
-    <span class="ds-token-row__alias">→ red/text</span>
+    <span class="ds-token-row__name">text/ai</span>
+    <span class="ds-token-row__alias">→ violet/80</span>
   </div>
-  <div class="ds-token-row__usage">Error messages and destructive status text</div>
+  <div class="ds-token-row__usage">Semantic color token</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--text-negative)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--text-ai)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#ba151d</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--text-negative)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--text-negative)" aria-label="Copy var(--text-negative)" title="Copy CSS variable">
+      <span class="ds-token-row__hex">#592d80</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--text-ai)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--text-ai)" aria-label="Copy var(--text-ai)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">text/positive</span>
+    <span class="ds-token-row__alias">→ green/70</span>
+  </div>
+  <div class="ds-token-row__usage">Success and verified status text</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--text-positive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#166534</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--text-positive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--text-positive)" aria-label="Copy var(--text-positive)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
     </div>
@@ -4832,7 +5090,7 @@ body {
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">text/intermediate</span>
-    <span class="ds-token-row__alias">→ amber/text</span>
+    <span class="ds-token-row__alias">→ amber/80</span>
   </div>
   <div class="ds-token-row__usage">Warning and pending status text</div>
   <div class="ds-token-row__preview">
@@ -4846,15 +5104,15 @@ body {
   </div>
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">text/positive</span>
-    <span class="ds-token-row__alias">→ green/text</span>
+    <span class="ds-token-row__name">text/negative</span>
+    <span class="ds-token-row__alias">→ red/60</span>
   </div>
-  <div class="ds-token-row__usage">Success and verified status text</div>
+  <div class="ds-token-row__usage">Error messages and destructive status text</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--text-positive)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--text-negative)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#166534</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--text-positive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--text-positive)" aria-label="Copy var(--text-positive)" title="Copy CSS variable">
+      <span class="ds-token-row__hex">#ba151d</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--text-negative)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--text-negative)" aria-label="Copy var(--text-negative)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
     </div>
@@ -4915,6 +5173,36 @@ body {
     <div class="ds-token-row__values">
       <span class="ds-token-row__hex">#dde2de</span>
       <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--surface-neutral-04)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--surface-neutral-04)" aria-label="Copy var(--surface-neutral-04)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/neutral/05</span>
+    <span class="ds-token-row__alias">→ neutral/30</span>
+  </div>
+  <div class="ds-token-row__usage">Semantic color token</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-neutral-05)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#c5cec8</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--surface-neutral-05)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--surface-neutral-05)" aria-label="Copy var(--surface-neutral-05)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/neutral/06</span>
+    <span class="ds-token-row__alias">→ neutral/40</span>
+  </div>
+  <div class="ds-token-row__usage">Semantic color token</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-neutral-06)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#a8b4ac</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--surface-neutral-06)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--surface-neutral-06)" aria-label="Copy var(--surface-neutral-06)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
     </div>
@@ -4996,15 +5284,30 @@ body {
   </div>
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">surface/negative</span>
-    <span class="ds-token-row__alias">→ red/bg</span>
+    <span class="ds-token-row__name">surface/ai</span>
+    <span class="ds-token-row__alias">→ violet/10</span>
   </div>
-  <div class="ds-token-row__usage">Error alert and validation message backgrounds</div>
+  <div class="ds-token-row__usage">Semantic color token</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--surface-negative)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--surface-ai)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#fff1f1</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--surface-negative)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--surface-negative)" aria-label="Copy var(--surface-negative)" title="Copy CSS variable">
+      <span class="ds-token-row__hex">#f5eefb</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--surface-ai)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--surface-ai)" aria-label="Copy var(--surface-ai)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/positive</span>
+    <span class="ds-token-row__alias">→ green/10</span>
+  </div>
+  <div class="ds-token-row__usage">Success alert and verified state backgrounds</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--surface-positive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#eaf7f0</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--surface-positive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--surface-positive)" aria-label="Copy var(--surface-positive)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
     </div>
@@ -5012,7 +5315,7 @@ body {
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">surface/intermediate</span>
-    <span class="ds-token-row__alias">→ amber/bg</span>
+    <span class="ds-token-row__alias">→ amber/10</span>
   </div>
   <div class="ds-token-row__usage">Warning alert backgrounds</div>
   <div class="ds-token-row__preview">
@@ -5026,15 +5329,15 @@ body {
   </div>
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">surface/positive</span>
-    <span class="ds-token-row__alias">→ green/bg</span>
+    <span class="ds-token-row__name">surface/negative</span>
+    <span class="ds-token-row__alias">→ red/10</span>
   </div>
-  <div class="ds-token-row__usage">Success alert and verified state backgrounds</div>
+  <div class="ds-token-row__usage">Error alert and validation message backgrounds</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--surface-positive)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--surface-negative)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#eaf7f0</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--surface-positive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--surface-positive)" aria-label="Copy var(--surface-positive)" title="Copy CSS variable">
+      <span class="ds-token-row__hex">#fff1f1</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--surface-negative)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--surface-negative)" aria-label="Copy var(--surface-negative)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
     </div>
@@ -5044,7 +5347,7 @@ body {
     <span class="ds-token-row__name">border/subtle</span>
     <span class="ds-token-row__alias">→ neutral/20</span>
   </div>
-  <div class="ds-token-row__usage">Default borders on cards, inputs, and dividers</div>
+  <div class="ds-token-row__usage">Section dividers and list separators</div>
   <div class="ds-token-row__preview">
     <span class="ds-token-swatch" style="background: var(--border-subtle)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
@@ -5080,21 +5383,6 @@ body {
     <div class="ds-token-row__values">
       <span class="ds-token-row__hex">#004c45</span>
       <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--border-interactive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--border-interactive)" aria-label="Copy var(--border-interactive)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-    </div>
-  </div>
-</div><div class="ds-token-row">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">border/divider</span>
-    <span class="ds-token-row__alias">→ neutral/15</span>
-  </div>
-  <div class="ds-token-row__usage">Section dividers and list separators</div>
-  <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--border-divider)" aria-hidden="true"></span>
-    <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#e8ede8</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--border-divider)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--border-divider)" aria-label="Copy var(--border-divider)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
     </div>
@@ -5146,15 +5434,30 @@ body {
   </div>
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">border/negative</span>
-    <span class="ds-token-row__alias">→ red/border</span>
+    <span class="ds-token-row__name">border/ai</span>
+    <span class="ds-token-row__alias">→ violet/50</span>
   </div>
-  <div class="ds-token-row__usage">Error state borders</div>
+  <div class="ds-token-row__usage">Semantic color token</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--border-negative)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--border-ai)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#db2b2b</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--border-negative)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--border-negative)" aria-label="Copy var(--border-negative)" title="Copy CSS variable">
+      <span class="ds-token-row__hex">#b080dc</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--border-ai)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--border-ai)" aria-label="Copy var(--border-ai)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">border/positive</span>
+    <span class="ds-token-row__alias">→ green/40</span>
+  </div>
+  <div class="ds-token-row__usage">Success state borders</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--border-positive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#64a27e</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--border-positive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--border-positive)" aria-label="Copy var(--border-positive)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
     </div>
@@ -5162,7 +5465,7 @@ body {
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">border/intermediate</span>
-    <span class="ds-token-row__alias">→ amber/border</span>
+    <span class="ds-token-row__alias">→ amber/50</span>
   </div>
   <div class="ds-token-row__usage">Warning state borders</div>
   <div class="ds-token-row__preview">
@@ -5176,15 +5479,15 @@ body {
   </div>
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">border/positive</span>
-    <span class="ds-token-row__alias">→ green/border</span>
+    <span class="ds-token-row__name">border/negative</span>
+    <span class="ds-token-row__alias">→ red/50</span>
   </div>
-  <div class="ds-token-row__usage">Success state borders</div>
+  <div class="ds-token-row__usage">Error state borders</div>
   <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--border-positive)" aria-hidden="true"></span>
+    <span class="ds-token-swatch" style="background: var(--border-negative)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#6fb38a</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--border-positive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--border-positive)" aria-label="Copy var(--border-positive)" title="Copy CSS variable">
+      <span class="ds-token-row__hex">#db2b2b</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--border-negative)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--border-negative)" aria-label="Copy var(--border-negative)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
     </div>
@@ -5260,6 +5563,81 @@ body {
     <div class="ds-token-row__values">
       <span class="ds-token-row__hex">#a8b4ac</span>
       <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--interactive-disabled)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--interactive-disabled)" aria-label="Copy var(--interactive-disabled)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/ai</span>
+    <span class="ds-token-row__alias">→ violet/30</span>
+  </div>
+  <div class="ds-token-row__usage">Semantic color token</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-ai)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#dcc0f5</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--interactive-ai)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--interactive-ai)" aria-label="Copy var(--interactive-ai)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/ai/hover</span>
+    <span class="ds-token-row__alias">→ violet/20</span>
+  </div>
+  <div class="ds-token-row__usage">Semantic color token</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-ai-hover)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#e8d8f5</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--interactive-ai-hover)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--interactive-ai-hover)" aria-label="Copy var(--interactive-ai-hover)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/positive</span>
+    <span class="ds-token-row__alias">→ green/50</span>
+  </div>
+  <div class="ds-token-row__usage">Semantic color token</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-positive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#3d8b5e</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--interactive-positive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--interactive-positive)" aria-label="Copy var(--interactive-positive)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/intermediate</span>
+    <span class="ds-token-row__alias">→ amber/50</span>
+  </div>
+  <div class="ds-token-row__usage">Semantic color token</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-intermediate)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#d8a13b</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--interactive-intermediate)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--interactive-intermediate)" aria-label="Copy var(--interactive-intermediate)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">interactive/negative</span>
+    <span class="ds-token-row__alias">→ red/50</span>
+  </div>
+  <div class="ds-token-row__usage">Semantic color token</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--interactive-negative)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#db2b2b</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--interactive-negative)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--interactive-negative)" aria-label="Copy var(--interactive-negative)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
     </div>
@@ -5356,51 +5734,6 @@ body {
   </div>
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
-    <span class="ds-token-row__name">icon/negative</span>
-    <span class="ds-token-row__alias">→ red/border</span>
-  </div>
-  <div class="ds-token-row__usage">Error and destructive action icons</div>
-  <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--icon-negative)" aria-hidden="true"></span>
-    <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#db2b2b</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--icon-negative)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--icon-negative)" aria-label="Copy var(--icon-negative)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-    </div>
-  </div>
-</div><div class="ds-token-row">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">icon/intermediate</span>
-    <span class="ds-token-row__alias">→ amber/icon</span>
-  </div>
-  <div class="ds-token-row__usage">Warning status icons</div>
-  <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--icon-intermediate)" aria-hidden="true"></span>
-    <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#b07a1a</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--icon-intermediate)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--icon-intermediate)" aria-label="Copy var(--icon-intermediate)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-    </div>
-  </div>
-</div><div class="ds-token-row">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">icon/positive</span>
-    <span class="ds-token-row__alias">→ green/icon</span>
-  </div>
-  <div class="ds-token-row__usage">Success and verified status icons</div>
-  <div class="ds-token-row__preview">
-    <span class="ds-token-swatch" style="background: var(--icon-positive)" aria-hidden="true"></span>
-    <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#3d8b5e</span>
-      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--icon-positive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--icon-positive)" aria-label="Copy var(--icon-positive)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-    </div>
-  </div>
-</div><div class="ds-token-row">
-  <div class="ds-token-row__token">
     <span class="ds-token-row__name">icon/ai</span>
     <span class="ds-token-row__alias">→ violet/80</span>
   </div>
@@ -5414,16 +5747,61 @@ body {
   </button></span>
     </div>
   </div>
-</div><div class="ds-token-group-label">AI</div><div class="ds-token-row">
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/positive</span>
+    <span class="ds-token-row__alias">→ green/60</span>
+  </div>
+  <div class="ds-token-row__usage">Success and verified status icons</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-positive)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#2d7448</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--icon-positive)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--icon-positive)" aria-label="Copy var(--icon-positive)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/intermediate</span>
+    <span class="ds-token-row__alias">→ amber/60</span>
+  </div>
+  <div class="ds-token-row__usage">Warning status icons</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-intermediate)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#b07a1a</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--icon-intermediate)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--icon-intermediate)" aria-label="Copy var(--icon-intermediate)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">icon/negative</span>
+    <span class="ds-token-row__alias">→ red/50</span>
+  </div>
+  <div class="ds-token-row__usage">Error and destructive action icons</div>
+  <div class="ds-token-row__preview">
+    <span class="ds-token-swatch" style="background: var(--icon-negative)" aria-hidden="true"></span>
+    <div class="ds-token-row__values">
+      <span class="ds-token-row__hex">#db2b2b</span>
+      <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--icon-negative)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--icon-negative)" aria-label="Copy var(--icon-negative)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+    </div>
+  </div>
+</div><div class="ds-token-row">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">ai/accent</span>
-    <span class="ds-token-row__alias">→ violet/80</span>
+    <span class="ds-token-row__alias">→ var(//icon/ai)</span>
   </div>
   <div class="ds-token-row__usage">AI feature accent color</div>
   <div class="ds-token-row__preview">
     <span class="ds-token-swatch" style="background: var(--ai-accent)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#592d80</span>
+      <span class="ds-token-row__hex">var(--icon-ai)</span>
       <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--ai-accent)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--ai-accent)" aria-label="Copy var(--ai-accent)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
@@ -5432,13 +5810,13 @@ body {
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">ai/surface</span>
-    <span class="ds-token-row__alias">→ violet/10</span>
+    <span class="ds-token-row__alias">→ var(//surface/ai)</span>
   </div>
   <div class="ds-token-row__usage">AI panel and badge backgrounds</div>
   <div class="ds-token-row__preview">
     <span class="ds-token-swatch" style="background: var(--ai-surface)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#f5eefb</span>
+      <span class="ds-token-row__hex">var(--surface-ai)</span>
       <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--ai-surface)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--ai-surface)" aria-label="Copy var(--ai-surface)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
@@ -5447,13 +5825,13 @@ body {
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">ai/badge</span>
-    <span class="ds-token-row__alias">→ violet/30</span>
+    <span class="ds-token-row__alias">→ var(//interactive/ai)</span>
   </div>
   <div class="ds-token-row__usage">AI badge fill</div>
   <div class="ds-token-row__preview">
     <span class="ds-token-swatch" style="background: var(--ai-badge)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#dcc0f5</span>
+      <span class="ds-token-row__hex">var(--interactive-ai)</span>
       <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--ai-badge)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--ai-badge)" aria-label="Copy var(--ai-badge)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
@@ -5462,13 +5840,13 @@ body {
 </div><div class="ds-token-row">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">ai/hover</span>
-    <span class="ds-token-row__alias">→ violet/20</span>
+    <span class="ds-token-row__alias">→ var(//interactive/ai/hover)</span>
   </div>
   <div class="ds-token-row__usage">AI interactive hover background</div>
   <div class="ds-token-row__preview">
     <span class="ds-token-swatch" style="background: var(--ai-hover)" aria-hidden="true"></span>
     <div class="ds-token-row__values">
-      <span class="ds-token-row__hex">#e8d8f5</span>
+      <span class="ds-token-row__hex">var(--interactive-ai-hover)</span>
       <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--ai-hover)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--ai-hover)" aria-label="Copy var(--ai-hover)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
   </button></span>
@@ -5729,6 +6107,24 @@ body {
   <div class="ds-token-row__preview"><span class="ds-token-row__meta">30px</span></div>
 </div><div class="ds-token-row ds-token-row--simple">
   <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/28</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--line-height-28)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--line-height-28)" aria-label="Copy var(--line-height-28)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">1.75rem (28px)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">28px — heading-lg</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">line/height/32</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--line-height-32)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--line-height-32)" aria-label="Copy var(--line-height-32)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">2rem (32px)</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">32px — heading-xl</span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
     <span class="ds-token-row__name">line/height/4xl</span>
     <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--line-height-4xl)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--line-height-4xl)" aria-label="Copy var(--line-height-4xl)" title="Copy CSS variable">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
@@ -5962,186 +6358,6 @@ body {
   </div>
   <div class="ds-token-row__usage">12.5rem (200px)</div>
   <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--spacing-200)"></span></div>
-</div><div class="ds-token-group-label">Padding</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">padding/xs</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--padding-xs)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--padding-xs)" aria-label="Copy var(--padding-xs)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-4)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-xs)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">padding/sm</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--padding-sm)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--padding-sm)" aria-label="Copy var(--padding-sm)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-8)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-sm)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">padding/md</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--padding-md)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--padding-md)" aria-label="Copy var(--padding-md)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-12)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-md)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">padding/lg</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--padding-lg)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--padding-lg)" aria-label="Copy var(--padding-lg)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-16)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-lg)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">padding/xl</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--padding-xl)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--padding-xl)" aria-label="Copy var(--padding-xl)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-24)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-xl)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">padding/2xl</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--padding-2xl)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--padding-2xl)" aria-label="Copy var(--padding-2xl)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-32)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-2xl)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">padding/3xl</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--padding-3xl)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--padding-3xl)" aria-label="Copy var(--padding-3xl)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-40)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--padding-3xl)"></span></div>
-</div><div class="ds-token-group-label">Gap</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">gap/xs</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--gap-xs)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--gap-xs)" aria-label="Copy var(--gap-xs)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-4)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-xs)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">gap/sm</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--gap-sm)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--gap-sm)" aria-label="Copy var(--gap-sm)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-8)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-sm)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">gap/md</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--gap-md)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--gap-md)" aria-label="Copy var(--gap-md)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-12)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-md)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">gap/lg</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--gap-lg)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--gap-lg)" aria-label="Copy var(--gap-lg)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-16)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-lg)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">gap/xl</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--gap-xl)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--gap-xl)" aria-label="Copy var(--gap-xl)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-24)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-xl)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">gap/2xl</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--gap-2xl)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--gap-2xl)" aria-label="Copy var(--gap-2xl)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-32)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--gap-2xl)"></span></div>
-</div><div class="ds-token-group-label">Margin</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">margin/sm</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--margin-sm)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--margin-sm)" aria-label="Copy var(--margin-sm)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-16)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-sm)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">margin/md</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--margin-md)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--margin-md)" aria-label="Copy var(--margin-md)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-24)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-md)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">margin/lg</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--margin-lg)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--margin-lg)" aria-label="Copy var(--margin-lg)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-32)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-lg)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">margin/xl</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--margin-xl)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--margin-xl)" aria-label="Copy var(--margin-xl)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-48)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-xl)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">margin/2xl</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--margin-2xl)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--margin-2xl)" aria-label="Copy var(--margin-2xl)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-64)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-2xl)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">margin/3xl</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--margin-3xl)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--margin-3xl)" aria-label="Copy var(--margin-3xl)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">var(--spacing-96)</div>
-  <div class="ds-token-row__preview"><span class="ds-token-spacing-preview" style="width: var(--margin-3xl)"></span></div>
-</div><div class="ds-token-row ds-token-row--simple">
-  <div class="ds-token-row__token">
-    <span class="ds-token-row__name">radius/none</span>
-    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--radius-none)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--radius-none)" aria-label="Copy var(--radius-none)" title="Copy CSS variable">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
-  </button></span>
-  </div>
-  <div class="ds-token-row__usage">0</div>
-  <div class="ds-token-row__preview"><span class="ds-token-radius-preview" style="border-radius: var(--radius-none)"></span></div>
 </div><div class="ds-token-row ds-token-row--simple">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">radius/xs</span>
@@ -6332,6 +6548,15 @@ body {
   </div>
   <div class="ds-token-row__usage">Maximum elevation for overlays</div>
   <div class="ds-token-row__preview"><span class="ds-token-elevation-preview" style="box-shadow: var(--elevation-2xl)"></span></div>
+</div><div class="ds-token-row ds-token-row--simple">
+  <div class="ds-token-row__token">
+    <span class="ds-token-row__name">surface/flow/glow</span>
+    <span class="ds-token-row__var-wrap"><code class="ds-token-row__var">var(--surface-flow-glow)</code><button type="button" class="ds-token-copy-btn" data-copy="var(--surface-flow-glow)" aria-label="Copy var(--surface-flow-glow)" title="Copy CSS variable">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 00-1.5-1.5H3.5A1.5 1.5 0 002 3.5V9a1.5 1.5 0 001.5 1.5h2"/></svg>
+  </button></span>
+  </div>
+  <div class="ds-token-row__usage">url(&quot;data:image/svg+xml</div>
+  <div class="ds-token-row__preview"><span class="ds-token-row__meta">Design token</span></div>
 </div><div class="ds-token-group-label">Component shadows</div><div class="ds-token-row ds-token-row--simple">
   <div class="ds-token-row__token">
     <span class="ds-token-row__name">shadow/button/resting</span>

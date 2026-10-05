@@ -10,7 +10,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0;
-  padding: var(--padding-xs);
+  padding: var(--spacing-4);
   background-color: var(--surface-neutral-03);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -22,9 +22,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   margin: 0;
-  padding: var(--padding-sm) var(--padding-md);
+  padding: var(--spacing-8) var(--spacing-12);
   border: 1px solid transparent;
   border-radius: var(--radius-button);
   background: transparent;
@@ -121,8 +121,8 @@
 
 .tds-segmented-control--sm .tds-segmented-control__item {
   min-height: 28px;
-  padding: var(--padding-xs) var(--padding-sm);
-  gap: var(--gap-xs);
+  padding: var(--spacing-4) var(--spacing-8);
+  gap: var(--spacing-4);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
 }
@@ -133,7 +133,7 @@
   width: 32px;
   min-width: 32px;
   height: 32px;
-  padding: var(--padding-sm);
+  padding: var(--spacing-8);
 }
 
 .tds-segmented-control--icon-only.tds-segmented-control--sm .tds-segmented-control__item {
@@ -141,7 +141,7 @@
   min-width: 28px;
   height: 28px;
   min-height: 28px;
-  padding: var(--padding-xs);
+  padding: var(--spacing-4);
 }
 
 .tds-segmented-control--icon-only .tds-segmented-control__item--selected,

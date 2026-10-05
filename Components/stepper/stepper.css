@@ -90,18 +90,18 @@
 .tds-stepper__content {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   min-width: 0;
   overflow: hidden;
 }
 
 .tds-stepper--horizontal .tds-stepper__content {
-  padding: var(--padding-lg) var(--padding-lg) 0 0;
+  padding: var(--spacing-16) var(--spacing-16) 0 0;
 }
 
 .tds-stepper--vertical .tds-stepper__content {
   flex: 1 1 auto;
-  padding: 0 var(--padding-lg) 0 10px;
+  padding: 0 var(--spacing-16) 0 10px;
 }
 
 .tds-stepper--horizontal .tds-stepper__item--skeleton .tds-stepper__content {
@@ -204,7 +204,7 @@
 
 .tds-stepper--vertical .tds-stepper__caption {
   padding-left: 42px;
-  padding-right: var(--padding-lg);
+  padding-right: var(--spacing-16);
 }
 
 .tds-stepper__item--disabled .tds-stepper__caption {

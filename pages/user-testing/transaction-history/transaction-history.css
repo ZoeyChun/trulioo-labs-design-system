@@ -825,7 +825,7 @@ body {
 }
 
 .ut-tx-floating-tooltip .tds-tooltip__body {
-  padding: var(--padding-xs) var(--padding-sm);
+  padding: var(--spacing-4) var(--spacing-8);
   border-radius: var(--radius-md);
 }
 
@@ -942,8 +942,8 @@ body {
 .ut-tx-table--score-combined tbody td.ut-tx-outcome-cell--with-sub {
   height: 68px;
   min-height: 68px;
-  padding-top: var(--padding-lg);
-  padding-bottom: var(--padding-lg);
+  padding-top: var(--spacing-16);
+  padding-bottom: var(--spacing-16);
   vertical-align: middle;
 }
 

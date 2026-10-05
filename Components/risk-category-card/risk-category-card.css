@@ -31,10 +31,10 @@
 .tds-risk-category-card {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   width: 284px;
   max-width: 100%;
-  padding: var(--padding-md);
+  padding: var(--spacing-12);
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
@@ -47,7 +47,7 @@
 .tds-risk-category-card__title-row {
   display: flex;
   align-items: center;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
   width: 100%;
   min-width: 0;
 }
@@ -78,7 +78,7 @@
   display: flex;
   flex: 1 0 0;
   align-items: center;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   min-width: 0;
 }
 

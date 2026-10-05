@@ -46,7 +46,7 @@
 .dv-meta__value--country {
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
 }
 
 .dv-meta__flag {

@@ -49,7 +49,7 @@ a.tds-breadcrumb-item:hover {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 0 var(--padding-xs);
+  padding: 0 var(--spacing-4);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-md);
   font-weight: var(--font-weight-regular);

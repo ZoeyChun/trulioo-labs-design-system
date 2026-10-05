@@ -8,7 +8,7 @@
   position: fixed;
   z-index: 9999;
   max-width: min(20rem, calc(100vw - 16px));
-  padding: var(--padding-xs) var(--padding-sm);
+  padding: var(--spacing-4) var(--spacing-8);
   border-radius: var(--radius-button);
   background-color: var(--surface-inverse);
   color: var(--text-inverse);
@@ -130,7 +130,7 @@
 
 #bv-result-view .dv-doc-panel__header {
   height: 56px;
-  padding: var(--padding-lg) var(--padding-xl);
+  padding: var(--spacing-16) var(--spacing-24);
   box-sizing: border-box;
 }
 
@@ -285,7 +285,7 @@
   display: grid;
   grid-template-columns: minmax(4.5rem, 42%) minmax(0, 1fr);
   align-items: start;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
   min-width: 0;
 }
 
@@ -331,7 +331,7 @@
   align-items: center;
   border: 1px solid;
   border-radius: var(--radius-badge);
-  padding: var(--padding-xs) var(--padding-sm);
+  padding: var(--spacing-4) var(--spacing-8);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
   font-weight: var(--font-weight-medium);
@@ -347,14 +347,14 @@
 .bv-raw-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
 }
 
 .bv-raw-panel__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
 }
 
 .bv-raw-panel__title {
@@ -376,7 +376,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--padding-sm) var(--padding-md);
+  padding: var(--spacing-8) var(--spacing-12);
   border-bottom: 1px solid var(--border-subtle);
   background-color: var(--surface-neutral-01);
 }
@@ -391,7 +391,7 @@
 
 .bv-raw-panel__pre {
   margin: 0;
-  padding: var(--padding-md);
+  padding: var(--spacing-12);
   max-height: 200px;
   overflow: auto;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -407,7 +407,7 @@
 }
 
 .bv-raw-panel__footer {
-  padding: var(--padding-sm) var(--padding-md);
+  padding: var(--spacing-8) var(--spacing-12);
   border-top: 1px solid var(--border-subtle);
   background-color: var(--surface-neutral-01);
 }

@@ -29,7 +29,7 @@
 .tds-risk-category-strip {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   width: 100%;
   min-width: 0;
 }
@@ -59,7 +59,7 @@
   min-width: 0;
   min-height: 6.875rem;
   margin: 0;
-  padding: var(--padding-lg);
+  padding: var(--spacing-16);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-2xl);
   background-color: var(--surface-neutral-01);
@@ -109,7 +109,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   min-width: 0;
   width: 100%;
 }

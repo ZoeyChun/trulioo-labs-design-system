@@ -196,7 +196,7 @@ TDS has no generic "card" component. Build cards from tokens:
   background: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-card);
-  padding: var(--padding-xl);
+  padding: var(--spacing-24);
   box-shadow: var(--elevation-sm);
 }
 .tds-custom-card:hover {

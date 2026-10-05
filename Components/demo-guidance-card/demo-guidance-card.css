@@ -25,7 +25,7 @@
   flex-direction: column;
   gap: var(--spacing-24);
   width: 100%;
-  padding: var(--padding-lg);
+  padding: var(--spacing-16);
   padding-bottom: 0;
   box-sizing: border-box;
 }
@@ -44,7 +44,7 @@
 
 .tds-demo-guidance-card__callout.tds-announcement {
   width: auto;
-  margin: var(--spacing-24) var(--padding-lg) var(--padding-lg);
+  margin: var(--spacing-24) var(--spacing-16) var(--spacing-16);
   box-sizing: border-box;
 }
 
@@ -70,9 +70,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
   width: 100%;
-  padding: var(--padding-md);
+  padding: var(--spacing-12);
   border-top: 1px solid var(--border-subtle);
   box-sizing: border-box;
 }
@@ -80,7 +80,7 @@
 .tds-demo-guidance-card__locale {
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
   min-width: 0;
 }
 
@@ -124,7 +124,7 @@
   flex-direction: row;
   align-items: flex-start;
   gap: var(--spacing-24);
-  padding: var(--padding-lg);
+  padding: var(--spacing-16);
 }
 
 .tds-demo-guidance-card--compact .tds-demo-guidance-card__copy {
@@ -136,7 +136,7 @@
   align-items: center;
   gap: var(--spacing-8);
   flex-shrink: 0;
-  padding: var(--padding-xs) var(--padding-sm);
+  padding: var(--spacing-4) var(--spacing-8);
   background-color: var(--surface-neutral-02);
   border-radius: var(--radius-lg);
   box-sizing: border-box;
@@ -156,7 +156,7 @@
   margin: 0;
   width: 100%;
   min-height: var(--spacing-40);
-  padding: var(--padding-md) var(--padding-sm) var(--padding-md) var(--padding-lg);
+  padding: var(--spacing-12) var(--spacing-8) var(--spacing-12) var(--spacing-16);
   border-radius: 0;
 }
 

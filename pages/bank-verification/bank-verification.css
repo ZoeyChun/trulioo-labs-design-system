@@ -53,8 +53,8 @@ body {
 .bv-main {
   position: relative;
   align-items: center;
-  gap: var(--gap-2xl);
-  padding: var(--padding-xl);
+  gap: var(--spacing-32);
+  padding: var(--spacing-24);
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-section);
   box-shadow: var(--elevation-md);
@@ -89,7 +89,7 @@ body {
 .bv-header__title-group {
   display: flex;
   align-items: center;
-  gap: var(--gap-lg);
+  gap: var(--spacing-16);
   min-width: 0;
 }
 
@@ -105,8 +105,8 @@ body {
 .bv-truai-btn {
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-sm);
-  padding: var(--padding-md) var(--padding-lg);
+  gap: var(--spacing-8);
+  padding: var(--spacing-12) var(--spacing-16);
   border: none;
   border-radius: var(--radius-modal);
   background-color: var(--surface-inverse);
@@ -173,8 +173,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--gap-lg);
-  padding: var(--padding-xl) var(--padding-2xl);
+  gap: var(--spacing-16);
+  padding: var(--spacing-24) var(--spacing-32);
 }
 
 .bv-card__title {
@@ -229,7 +229,7 @@ body {
 
 /* Country / test entity slot */
 .bv-card__section-country {
-  padding: 0 var(--padding-2xl) var(--padding-xl);
+  padding: 0 var(--spacing-32) var(--spacing-24);
   overflow: visible;
 }
 
@@ -249,9 +249,9 @@ body {
 .bv-option {
   display: flex;
   align-items: flex-start;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   width: 100%;
-  padding: var(--padding-sm);
+  padding: var(--spacing-8);
   border: none;
   background: none;
   border-radius: var(--radius-button);
@@ -328,7 +328,7 @@ body {
   position: fixed;
   z-index: 9999;
   max-width: min(20rem, calc(100vw - 16px));
-  padding: var(--padding-xs) var(--padding-sm);
+  padding: var(--spacing-4) var(--spacing-8);
   border-radius: var(--radius-button);
   background-color: var(--surface-inverse);
   color: var(--text-inverse);
@@ -342,7 +342,7 @@ body {
 }
 
 .bv-option--entity {
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
 }
 
 .bv-option--entity .tds-tag {
@@ -402,15 +402,15 @@ body {
 .bv-card__row-label {
   display: flex;
   align-items: center;
-  padding: var(--padding-md) var(--padding-2xl);
+  padding: var(--spacing-12) var(--spacing-32);
 }
 
 .bv-radio-row {
   display: flex;
   align-items: flex-start;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
   width: 100%;
-  padding: 0 var(--padding-2xl) var(--padding-xl);
+  padding: 0 var(--spacing-32) var(--spacing-24);
 }
 
 .bv-radio-row .tds-radio-card {
@@ -422,9 +422,9 @@ body {
 .bv-details {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-xl);
+  gap: var(--spacing-24);
   width: 100%;
-  padding: var(--padding-2xl);
+  padding: var(--spacing-32);
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -443,13 +443,13 @@ body {
 .bv-details__fields {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-xl);
+  gap: var(--spacing-24);
   width: 100%;
 }
 
 .bv-form-errors {
   margin: 0;
-  padding: var(--padding-sm) var(--padding-md);
+  padding: var(--spacing-8) var(--spacing-12);
   border: 1px solid var(--border-negative);
   border-radius: var(--radius-button);
   background-color: var(--surface-negative);
@@ -464,7 +464,7 @@ body {
 
 .bv-form-errors ul {
   margin: 0;
-  padding-left: var(--padding-lg);
+  padding-left: var(--spacing-16);
 }
 
 .bv-form-errors li + li {
@@ -481,7 +481,7 @@ body {
 .bv-form-row {
   display: flex;
   align-items: flex-start;
-  gap: var(--gap-lg);
+  gap: var(--spacing-16);
   width: 100%;
 }
 
@@ -503,7 +503,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--padding-lg) var(--padding-2xl);
+  padding: var(--spacing-16) var(--spacing-32);
   background-color: var(--surface-neutral-03);
 }
 
@@ -517,12 +517,12 @@ body {
 
 @media (max-width: 960px) {
   .bv-content {
-    padding: 0 var(--padding-lg);
+    padding: 0 var(--spacing-16);
   }
 
   .bv-card__header {
     flex-wrap: wrap;
-    gap: var(--gap-md);
+    gap: var(--spacing-12);
   }
 
   #bv-test-entity-wrap,
@@ -542,14 +542,14 @@ body {
 @media (max-width: 768px) {
   .bv-form-shell .bv-main {
     align-items: stretch;
-    gap: var(--gap-lg);
-    padding: var(--padding-md);
+    gap: var(--spacing-16);
+    padding: var(--spacing-12);
     border-radius: var(--radius-card);
   }
 
   .bv-header {
     flex-wrap: wrap;
-    gap: var(--gap-md);
+    gap: var(--spacing-12);
   }
 
   .bv-header__title {
@@ -569,8 +569,8 @@ body {
   .bv-card__header {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--gap-md);
-    padding: var(--padding-lg);
+    gap: var(--spacing-12);
+    padding: var(--spacing-16);
   }
 
   .bv-card__row-label,
@@ -578,33 +578,33 @@ body {
   .bv-card__section-country,
   .bv-details,
   .bv-card__footer {
-    padding-left: var(--padding-lg);
-    padding-right: var(--padding-lg);
+    padding-left: var(--spacing-16);
+    padding-right: var(--spacing-16);
   }
 
   .bv-radio-row {
-    padding-bottom: var(--padding-lg);
+    padding-bottom: var(--spacing-16);
   }
 
   .bv-card__section-country {
-    padding-bottom: var(--padding-lg);
+    padding-bottom: var(--spacing-16);
   }
 
   .bv-details {
-    padding-top: var(--padding-lg);
-    padding-bottom: var(--padding-lg);
-    gap: var(--gap-lg);
+    padding-top: var(--spacing-16);
+    padding-bottom: var(--spacing-16);
+    gap: var(--spacing-16);
   }
 
   .bv-details__fields {
-    gap: var(--gap-lg);
+    gap: var(--spacing-16);
   }
 
   .bv-card__footer {
     flex-direction: column-reverse;
     align-items: stretch;
-    gap: var(--gap-md);
-    padding: var(--padding-lg);
+    gap: var(--spacing-12);
+    padding: var(--spacing-16);
   }
 
   .bv-card__footer .tds-btn {
@@ -615,7 +615,7 @@ body {
 
 @media (max-width: 480px) {
   .bv-form-shell .bv-main {
-    padding: var(--padding-sm);
+    padding: var(--spacing-8);
   }
 
   .bv-radio-row {
@@ -623,7 +623,7 @@ body {
   }
 
   .bv-card__header {
-    padding: var(--padding-md);
+    padding: var(--spacing-12);
   }
 
   .bv-card__row-label,
@@ -631,7 +631,7 @@ body {
   .bv-card__section-country,
   .bv-details,
   .bv-card__footer {
-    padding-left: var(--padding-md);
-    padding-right: var(--padding-md);
+    padding-left: var(--spacing-12);
+    padding-right: var(--spacing-12);
   }
 }

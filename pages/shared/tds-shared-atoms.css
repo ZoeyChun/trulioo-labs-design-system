@@ -61,7 +61,7 @@
 .tds-field-validation {
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-xs);
+  gap: var(--spacing-4);
   font-family: var(--font-family);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
@@ -152,7 +152,7 @@
   min-width: 0;
   max-width: calc(100vw - var(--spacing-32));
   max-height: 466px;
-  padding: var(--padding-sm);
+  padding: var(--spacing-8);
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
@@ -206,7 +206,7 @@
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   font-weight: var(--font-weight-regular);
-  padding: 6px var(--padding-xs);
+  padding: 6px var(--spacing-4);
   box-sizing: border-box;
 }
 
@@ -235,7 +235,7 @@
   height: 30px;
   min-height: 30px;
   max-height: 30px;
-  padding: 0 var(--padding-xs);
+  padding: 0 var(--spacing-4);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
 }
@@ -264,7 +264,7 @@
 /* --- Header (GroupHeading) --- */
 
 .tds-dropdown-panel__header {
-  padding: var(--padding-xs);
+  padding: var(--spacing-4);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
   font-weight: var(--font-weight-regular);
@@ -277,7 +277,7 @@
 .tds-dropdown-panel__toolbar .tds-btn--link {
   display: block;
   width: 100%;
-  padding: var(--padding-xs);
+  padding: var(--spacing-4);
   border: none;
   background: none;
   font-family: var(--font-family);
@@ -309,7 +309,7 @@
 .tds-dropdown-panel__divider {
   height: 1px;
   margin: var(--spacing-4) 0;
-  background-color: var(--border-divider);
+  background-color: var(--border-subtle);
 }
 
 /* --- tag --- */
