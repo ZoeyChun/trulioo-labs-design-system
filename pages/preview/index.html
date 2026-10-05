@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="../../Components/accordion/accordion.css">
   <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
   <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
-  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../Components/alert/alert.css">
   <link rel="stylesheet" href="../../Components/breadcrumb/breadcrumb.css">
   <link rel="stylesheet" href="../../Components/button-group/button-group.css">
   <link rel="stylesheet" href="../../Components/button-menu/button-menu.css">
@@ -1988,41 +1988,41 @@ body {
         <div class="ds-showcase__head">
           <h3 class="ds-showcase__title">Announcement</h3>
           <p class="ds-showcase__desc">Inline messaging with semantic surfaces, optional actions, and dismiss (Figma 866:13118).</p>
-          <div class="ds-showcase__meta"><code class="ds-api">.tds-announcement--{variant}--{stacked|inline}</code></div>
+          <div class="ds-showcase__meta"><code class="ds-api">.tds-alert--{variant}--{stacked|inline}</code></div>
         </div>
         <div class="ds-showcase__canvas ds-showcase__canvas--grid">
 <div class="ds-state-grid" style="grid-template-columns: 1fr; gap: var(--spacing-16);">
         <div class="ds-state-demo"><span class="ds-state-demo__label">Warning · stacked</span>
-<div class="tds-announcement tds-announcement--warning" role="status">
-  <span class="tds-announcement__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>
-  <div class="tds-announcement__content">
-    <p class="tds-announcement__title">Title</p>
-    <p class="tds-announcement__message">Message text goes here.</p>
-    <div class="tds-announcement__actions">
+<div class="tds-alert tds-alert--warning" role="status">
+  <span class="tds-alert__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.75" r=".6" fill="currentColor"/></svg></span>
+  <div class="tds-alert__content">
+    <p class="tds-alert__title">Title</p>
+    <p class="tds-alert__message">Message text goes here.</p>
+    <div class="tds-alert__actions">
       <button type="button" class="tds-btn tds-btn--md tds-btn--secondary">Button</button>
       <button type="button" class="tds-btn tds-btn--md tds-btn--invisible">Button</button>
     </div>
   </div>
-  <button type="button" class="tds-dismiss tds-dismiss--sm tds-announcement__dismiss" aria-label="Dismiss"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  <button type="button" class="tds-dismiss tds-dismiss--sm tds-alert__dismiss" aria-label="Dismiss"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
 </div></div>
         <div class="ds-state-demo"><span class="ds-state-demo__label">Success · inline</span>
-<div class="tds-announcement tds-announcement--success tds-announcement--inline" role="status">
-  <span class="tds-announcement__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-  <div class="tds-announcement__content">
-    <p class="tds-announcement__title">Title</p>
-    <p class="tds-announcement__message">Message text goes here.</p>
-    <div class="tds-announcement__actions"><button type="button" class="tds-btn tds-btn--md tds-btn--invisible">Button</button></div>
+<div class="tds-alert tds-alert--success tds-alert--inline" role="status">
+  <span class="tds-alert__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 8.5 7 10l3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+  <div class="tds-alert__content">
+    <p class="tds-alert__title">Title</p>
+    <p class="tds-alert__message">Message text goes here.</p>
+    <div class="tds-alert__actions"><button type="button" class="tds-btn tds-btn--md tds-btn--invisible">Button</button></div>
   </div>
-  <button type="button" class="tds-dismiss tds-dismiss--sm tds-announcement__dismiss" aria-label="Dismiss"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  <button type="button" class="tds-dismiss tds-dismiss--sm tds-alert__dismiss" aria-label="Dismiss"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
 </div></div>
         <div class="ds-state-demo"><span class="ds-state-demo__label">Error · stacked</span>
-<div class="tds-announcement tds-announcement--error" role="alert">
-  <span class="tds-announcement__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M8 1.5 14.5 8 8 14.5 1.5 8 8 1.5z"/><path d="M8 5.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.25" r=".6" fill="currentColor"/></svg></span>
-  <div class="tds-announcement__content">
-    <p class="tds-announcement__title">Verification failed</p>
-    <p class="tds-announcement__message">Business registry could not be reached. Retry or upload documents manually.</p>
+<div class="tds-alert tds-alert--error" role="alert">
+  <span class="tds-alert__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M8 1.5 14.5 8 8 14.5 1.5 8 8 1.5z"/><path d="M8 5.5v3.5" stroke-linecap="round"/><circle cx="8" cy="11.25" r=".6" fill="currentColor"/></svg></span>
+  <div class="tds-alert__content">
+    <p class="tds-alert__title">Verification failed</p>
+    <p class="tds-alert__message">Business registry could not be reached. Retry or upload documents manually.</p>
   </div>
-  <button type="button" class="tds-dismiss tds-dismiss--sm tds-announcement__dismiss" aria-label="Dismiss"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  <button type="button" class="tds-dismiss tds-dismiss--sm tds-alert__dismiss" aria-label="Dismiss"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
 </div></div>
       </div>
         </div>
@@ -2047,9 +2047,8 @@ body {
         <div class="ds-showcase__canvas">
 <div class="row">
         <span class="tds-tag tds-tag--sm tds-tag--positive">Small 20px</span>
-        <span class="tds-tag tds-tag--md tds-tag--positive">Medium 24px</span>
-        <span class="tds-tag tds-tag--lg tds-tag--positive">Large 26px</span>
-        <span class="tds-tag tds-tag--xl tds-tag--positive">XLarge 28px</span>
+        <span class="tds-tag tds-tag--md tds-tag--positive">Medium 26px</span>
+        <span class="tds-tag tds-tag--lg tds-tag--positive">Large 34px</span>
       </div>
         </div>
       </article>
@@ -4008,9 +4007,9 @@ body {
         </div>
         <div class="ds-showcase__canvas">
 <div class="ds-state-grid" style="grid-template-columns: repeat(auto-fit, minmax(284px, 1fr)); gap: var(--spacing-16);">
-            <div class="ds-state-demo"><span class="ds-state-demo__label">High risk</span><div class="tds-risk-category-card"><div class="tds-risk-category-card__title-row"><p class="tds-risk-category-card__title">Sanctions</p><span class="tds-tag tds-tag--xl tds-tag--negative">High Risk</span></div><div class="tds-risk-category-card__details-row"><div class="tds-risk-category-card__signals"><span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span><p class="tds-risk-category-card__signal-count">3 signals</p></div><div class="tds-risk-category-card__score-group"><p class="tds-risk-category-card__score">82</p><p class="tds-risk-category-card__score-suffix">/100</p></div></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">High risk</span><div class="tds-risk-category-card"><div class="tds-risk-category-card__title-row"><p class="tds-risk-category-card__title">Sanctions</p><span class="tds-tag tds-tag--lg tds-tag--negative">High Risk</span></div><div class="tds-risk-category-card__details-row"><div class="tds-risk-category-card__signals"><span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span><p class="tds-risk-category-card__signal-count">3 signals</p></div><div class="tds-risk-category-card__score-group"><p class="tds-risk-category-card__score">82</p><p class="tds-risk-category-card__score-suffix">/100</p></div></div></div></div>
             <div class="ds-state-demo"><span class="ds-state-demo__label">Medium risk</span><div class="tds-risk-category-card"><div class="tds-risk-category-card__title-row"><p class="tds-risk-category-card__title">Adverse media</p><span class="tds-tag tds-tag--md tds-tag--intermediate">Medium Risk</span></div><div class="tds-risk-category-card__details-row"><div class="tds-risk-category-card__signals"><span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span><p class="tds-risk-category-card__signal-count">1 signal</p></div><div class="tds-risk-category-card__score-group"><p class="tds-risk-category-card__score">45</p><p class="tds-risk-category-card__score-suffix">/100</p></div></div></div></div>
-            <div class="ds-state-demo"><span class="ds-state-demo__label">Low risk</span><div class="tds-risk-category-card"><div class="tds-risk-category-card__title-row"><p class="tds-risk-category-card__title">Identity</p><span class="tds-tag tds-tag--xl tds-tag--positive">Low Risk</span></div><div class="tds-risk-category-card__details-row"><div class="tds-risk-category-card__signals"><span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span><p class="tds-risk-category-card__signal-count">0 signals</p></div><div class="tds-risk-category-card__score-group"><p class="tds-risk-category-card__score">12</p><p class="tds-risk-category-card__score-suffix">/100</p></div></div></div></div>
+            <div class="ds-state-demo"><span class="ds-state-demo__label">Low risk</span><div class="tds-risk-category-card"><div class="tds-risk-category-card__title-row"><p class="tds-risk-category-card__title">Identity</p><span class="tds-tag tds-tag--lg tds-tag--positive">Low Risk</span></div><div class="tds-risk-category-card__details-row"><div class="tds-risk-category-card__signals"><span class="tds-risk-category-card__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5 14 13.5H2L8 2.5z"/><path d="M8 6.5v2.5"/><circle cx="8" cy="11.75" r="0.55" fill="currentColor" stroke="none"/></svg></span><p class="tds-risk-category-card__signal-count">0 signals</p></div><div class="tds-risk-category-card__score-group"><p class="tds-risk-category-card__score">12</p><p class="tds-risk-category-card__score-suffix">/100</p></div></div></div></div>
           </div>
         </div>
       </article>

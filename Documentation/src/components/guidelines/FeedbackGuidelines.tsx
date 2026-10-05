@@ -53,14 +53,14 @@ export function AnnouncementGuidelines() {
       >
         <DoDontPair
           doPreview={
-            <div className="tds-announcement tds-announcement--warning">
-              <p className="tds-announcement__title">Verification incomplete</p>
+            <div className="tds-alert tds-alert--warning">
+              <p className="tds-alert__title">Verification incomplete</p>
             </div>
           }
           doCaption="Pick the variant that matches the situation, not decorative color."
           dontPreview={
-            <div className="tds-announcement tds-announcement--success">
-              <p className="tds-announcement__title">Critical error — action required</p>
+            <div className="tds-alert tds-alert--success">
+              <p className="tds-alert__title">Critical error — action required</p>
             </div>
           }
           dontCaption="Don't use success styling for errors or warnings."

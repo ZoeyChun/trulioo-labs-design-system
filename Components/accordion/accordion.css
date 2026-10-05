@@ -3,7 +3,7 @@
    Figma: Accordion (810:5659)
    Sizes: small (12px pad) | medium (16px) | large (20px)
    States: enabled | hover | focused | disabled | skeleton
-   Slots: leadingIcon, titleGroup, subtext, tags, action, trailingIcon, counter, chevron
+   Slots: leadingIcon, titleGroup, subtext (Figma: description), tags, action, trailingIcon, counter, chevron
    ============================================================ */
 
 .tds-accordion {

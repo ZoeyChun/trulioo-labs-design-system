@@ -42,7 +42,7 @@
   display: none;
 }
 
-.tds-demo-guidance-card__callout.tds-announcement {
+.tds-demo-guidance-card__callout.tds-alert {
   width: auto;
   margin: var(--spacing-24) var(--spacing-16) var(--spacing-16);
   box-sizing: border-box;
@@ -152,7 +152,7 @@
   white-space: nowrap;
 }
 
-.tds-demo-guidance-card--compact .tds-demo-guidance-card__callout.tds-announcement {
+.tds-demo-guidance-card--compact .tds-demo-guidance-card__callout.tds-alert {
   margin: 0;
   width: 100%;
   min-height: var(--spacing-40);

@@ -36,27 +36,27 @@ export function AnnouncementAnatomy() {
   return (
     <ComponentAnatomyCard
       desc="Inline or stacked banner with semantic variant, title, message, and optional dismiss."
-      api=".tds-announcement · __title · __dismiss"
+      api=".tds-alert · __title · __dismiss"
       tag="Figma 866:13118"
       parts={[
-        { number: 1, name: "Container", api: ".tds-announcement", detail: "Full-width banner with semantic background variant." },
-        { number: 2, name: "Title", api: ".tds-announcement__title", detail: "Primary announcement headline." },
-        { number: 3, name: "Dismiss", api: ".tds-announcement__dismiss", detail: "Optional close control — needs aria-label." },
+        { number: 1, name: "Container", api: ".tds-alert", detail: "Full-width banner with semantic background variant." },
+        { number: 2, name: "Title", api: ".tds-alert__title", detail: "Primary announcement headline." },
+        { number: 3, name: "Dismiss", api: ".tds-alert__dismiss", detail: "Optional close control — needs aria-label." },
       ]}
     >
       <AnatomyPinLayer
         pins={[
-          { number: 1, direction: "right", selector: ".tds-announcement", anchor: { y: 0.4 } },
-          { number: 2, direction: "top", selector: ".tds-announcement__title" },
-          { number: 3, direction: "right", selector: ".tds-announcement__dismiss", anchor: { y: 0.5 } },
+          { number: 1, direction: "right", selector: ".tds-alert", anchor: { y: 0.4 } },
+          { number: 2, direction: "top", selector: ".tds-alert__title" },
+          { number: 3, direction: "right", selector: ".tds-alert__dismiss", anchor: { y: 0.5 } },
         ]}
       >
-        <div className="tds-announcement tds-announcement--info" style={{ maxWidth: 420 }}>
-          <div className="tds-announcement__content">
-            <p className="tds-announcement__title">New verification rules</p>
-            <p className="tds-announcement__message">Review updated requirements before submitting.</p>
+        <div className="tds-alert tds-alert--info" style={{ maxWidth: 420 }}>
+          <div className="tds-alert__content">
+            <p className="tds-alert__title">New verification rules</p>
+            <p className="tds-alert__message">Review updated requirements before submitting.</p>
           </div>
-          <button type="button" className="tds-announcement__dismiss" aria-label="Dismiss announcement">
+          <button type="button" className="tds-alert__dismiss" aria-label="Dismiss announcement">
             ×
           </button>
         </div>

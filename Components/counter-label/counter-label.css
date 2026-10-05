@@ -53,17 +53,17 @@
 
 /* Positive */
 .tds-counter--primary.tds-counter--positive {
-  background-color: var(--border-positive);
+  background-color: var(--interactive-positive);
 }
 
 /* Intermediate */
 .tds-counter--primary.tds-counter--intermediate {
-  background-color: var(--border-intermediate);
+  background-color: var(--interactive-intermediate);
 }
 
 /* Negative */
 .tds-counter--primary.tds-counter--negative {
-  background-color: var(--border-negative);
+  background-color: var(--interactive-negative);
 }
 
 

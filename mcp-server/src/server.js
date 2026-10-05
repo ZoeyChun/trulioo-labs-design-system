@@ -163,7 +163,7 @@ Every component MUST use the exact \`tds-*\` class names from this design system
 - Dialog: \`tds-dialog\` with \`tds-dialog__header\`, \`tds-dialog__body\`, \`tds-dialog__footer\`
 - Tabs: \`tds-tabs\` with \`tds-tab-item\`
 - Data table: \`tds-data-table\`
-- Announcement: \`tds-announcement\`
+- Alert (formerly Announcement): \`tds-alert\`
 - Accordion: \`tds-accordion\`
 - Tag: \`tds-tag\`
 - Spinner: \`tds-spinner tds-spinner--{xs|sm|md|lg|xl}\`

@@ -52,7 +52,7 @@ body {
   box-shadow: inset 0 0 0 1px var(--color-teal-50);
 }
 
-.ut-tx-config-alert .tds-announcement__message {
+.ut-tx-config-alert .tds-alert__message {
   line-height: 22px;
 }
 
@@ -835,7 +835,7 @@ body {
 }
 
 /* Floating Alert — dark surface like Tooltip · dark */
-.ut-tx-toast.tds-announcement {
+.ut-tx-toast.tds-alert {
   position: fixed;
   left: 50%;
   bottom: 24px;
@@ -849,20 +849,20 @@ body {
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-.ut-tx-toast.tds-announcement .tds-announcement__icon {
+.ut-tx-toast.tds-alert .tds-alert__icon {
   color: var(--icon-inverse);
 }
 
-.ut-tx-toast.tds-announcement .tds-announcement__title,
-.ut-tx-toast.tds-announcement .tds-announcement__message {
+.ut-tx-toast.tds-alert .tds-alert__title,
+.ut-tx-toast.tds-alert .tds-alert__message {
   color: var(--text-inverse);
 }
 
-.ut-tx-toast.tds-announcement .tds-dismiss {
+.ut-tx-toast.tds-alert .tds-dismiss {
   color: var(--icon-inverse);
 }
 
-.ut-tx-toast.tds-announcement .tds-dismiss:hover {
+.ut-tx-toast.tds-alert .tds-dismiss:hover {
   background-color: rgba(255, 255, 255, 0.12);
   color: var(--icon-inverse);
 }

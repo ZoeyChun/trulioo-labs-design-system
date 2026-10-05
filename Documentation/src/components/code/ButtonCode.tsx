@@ -196,19 +196,6 @@ export function ButtonCode({ basePath }: ButtonCodeProps) {
         />
       </CodeSection>
 
-      <CodeSection title="Modifiers" id="modifiers">
-        <PropsTable
-          title="Layout modifiers"
-          props={[
-            {
-              name: ".tds-btn--align-start",
-              description:
-                "Left-aligns button content instead of center. Use in dropdown triggers or full-width contexts where start-alignment matches the surrounding text.",
-              type: "CSS class",
-            },
-          ]}
-        />
-      </CodeSection>
     </ComponentCodeLayout>
   );
 }

@@ -8,7 +8,7 @@ import "../../../assets/flag-icons/css/flag-icons.min.css";
 import "../../../Components/accordion/accordion.css";
 import "../../../Components/action-list-item/action-list-item.css";
 import "../../../Components/ai-tag/ai-tag.css";
-import "../../../Components/announcement/announcement.css";
+import "../../../Components/alert/alert.css";
 import "../../../Components/breadcrumb/breadcrumb.css";
 import "../../../Components/button-group/button-group.css";
 import "../../../Components/button-menu/button-menu.css";

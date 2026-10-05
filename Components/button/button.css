@@ -70,17 +70,6 @@
   padding: calc(var(--spacing-12) - 1px) calc(var(--spacing-16) - 1px);
 }
 
-/* --- Align content: start --- */
-
-.tds-btn--align-start {
-  justify-content: flex-start;
-}
-
-.tds-btn--align-start.tds-btn--sm { height: 24px; }
-.tds-btn--align-start.tds-btn--md,
-.tds-btn--align-start:not([class*="tds-btn--sm"]):not([class*="tds-btn--lg"]) { height: 32px; }
-.tds-btn--align-start.tds-btn--lg { height: 42px; }
-
 
 /* ============================================================
    VARIANT: Secondary (default)
@@ -348,5 +337,26 @@
 .tds-btn--loading .tds-spinner,
 .tds-btn[aria-busy="true"] .tds-spinner {
   flex-shrink: 0;
+}
+
+/* Primary buttons sit on a dark fill — loading spinner uses the dark-surface asset */
+.tds-btn--primary .tds-spinner--xs {
+  background-image: url('../../assets/spinner/spinner-dark-xs.svg');
+}
+
+.tds-btn--primary .tds-spinner--sm {
+  background-image: url('../../assets/spinner/spinner-dark-sm.svg');
+}
+
+.tds-btn--primary .tds-spinner--md {
+  background-image: url('../../assets/spinner/spinner-dark-md.svg');
+}
+
+.tds-btn--primary .tds-spinner--lg {
+  background-image: url('../../assets/spinner/spinner-dark-lg.svg');
+}
+
+.tds-btn--primary .tds-spinner--xl {
+  background-image: url('../../assets/spinner/spinner-dark-xl.svg');
 }
 

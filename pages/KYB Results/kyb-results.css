@@ -868,7 +868,7 @@
   width: 100%;
 }
 
-.kyb-sidebar-summary > .tds-announcement__message {
+.kyb-sidebar-summary > .tds-alert__message {
   font-size: var(--font-size-sm);
   line-height: var(--line-height-md);
   color: var(--text-description);
@@ -884,7 +884,7 @@
   gap: var(--spacing-8);
 }
 
-.kyb-sidebar-summary .tds-announcement--inline.kyb-sidebar-summary__finding {
+.kyb-sidebar-summary .tds-alert--inline.kyb-sidebar-summary__finding {
   align-items: flex-start;
   min-height: 0;
   gap: var(--spacing-8);
@@ -893,24 +893,24 @@
   background-color: var(--surface-negative);
 }
 
-.kyb-sidebar-summary .tds-announcement--inline .tds-announcement__content {
+.kyb-sidebar-summary .tds-alert--inline .tds-alert__content {
   align-items: flex-start;
   gap: var(--spacing-8);
 }
 
-.kyb-sidebar-summary .tds-announcement--inline .tds-announcement__message {
+.kyb-sidebar-summary .tds-alert--inline .tds-alert__message {
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
   color: var(--text-description);
 }
 
-.kyb-sidebar-summary .tds-announcement__icon {
+.kyb-sidebar-summary .tds-alert__icon {
   width: 12px;
   height: 12px;
   margin-top: var(--spacing-2);
 }
 
-.kyb-sidebar-summary .tds-announcement__icon svg {
+.kyb-sidebar-summary .tds-alert__icon svg {
   width: 12px;
   height: 12px;
 }
@@ -4053,7 +4053,7 @@
   font-weight: var(--font-weight-semibold);
 }
 
-.kyb-overview-hero .tds-announcement__message {
+.kyb-overview-hero .tds-alert__message {
   margin: 0;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-md);
