@@ -72,6 +72,7 @@
     </aside>
 
     <main class="ut-tx-main" id="main">
+      <div class="ut-tx-main__scroll">
       <div class="ut-tx-page">
         <header class="ut-tx-header">
           <div class="ut-tx-header__title-row">
@@ -156,6 +157,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </main>
 
@@ -249,6 +251,7 @@
       </header>
 
       <div class="ut-tx-filters__body">
+        <div class="ut-tx-filters__body-inner">
         <section class="ut-tx-filters__section" aria-labelledby="utFiltOutcome">
           <h3 class="ut-tx-filters__heading" id="utFiltOutcome">Outcome</h3>
           <div class="ut-tx-filters__options">
@@ -256,7 +259,7 @@
               <input class="tds-checkbox" type="checkbox" name="ut-filt-outcome" value="positive">
               <span class="ut-tx-filters__option-text">
                 <span class="ut-tx-filters__option-label ut-tx-filters__option-label--positive">Positive</span>
-                <span class="ut-tx-filters__option-desc">Verified, Clear, No Hits Found</span>
+                <span class="ut-tx-filters__option-desc">Verified, No Hits Found</span>
               </span>
             </label>
             <label class="ut-tx-filters__option">
@@ -277,7 +280,7 @@
               <input class="tds-checkbox" type="checkbox" name="ut-filt-outcome" value="not-completed">
               <span class="ut-tx-filters__option-text">
                 <span class="ut-tx-filters__option-label">Not Completed</span>
-                <span class="ut-tx-filters__option-desc">Abandoned, Timed Out, Failed</span>
+                <span class="ut-tx-filters__option-desc">Abandoned, Timed Out, Failed, Not Started</span>
               </span>
             </label>
           </div>
@@ -354,8 +357,10 @@
 
         <section class="ut-tx-filters__section">
           <button type="button" class="ut-tx-filters__advanced-toggle" id="utFiltAdvancedToggle" aria-expanded="false" aria-controls="utFiltAdvancedBody">
-            Advanced filters
-            <svg class="icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="ut-tx-filters__advanced-toggle-inner">
+              <svg class="icon ut-tx-filters__advanced-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Advanced filters
+            </span>
           </button>
           <div class="ut-tx-filters__advanced-body" id="utFiltAdvancedBody" hidden>
             <div class="ut-tx-filters__section" aria-labelledby="utFiltDocType">
@@ -383,6 +388,7 @@
             </div>
           </div>
         </section>
+        </div>
       </div>
     </aside>
   </div>

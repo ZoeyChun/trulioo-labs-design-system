@@ -82,24 +82,12 @@
   };
   var PRODUCT_VISIBLE = 3;
   var OUTCOME_LABELS = {
-    positive: [
-      "Accepted",
-      "Verified",
-      "Clear",
-      "Completed",
-      "No Hits Found",
-      "Match"
-    ],
+    positive: ["Verified", "No Hits Found"],
     intermediate: ["Review", "Pending Review", "In Progress"],
-    negative: [
-      "Declined",
-      "Not Verified",
-      "Flagged",
-      "Hits Found",
-      "No Match"
-    ],
-    "not-completed": ["Abandoned", "Timed Out", "Failed"]
+    negative: ["Not Verified", "Hits Found"],
+    "not-completed": ["Abandoned", "Timed Out", "Failed", "Not Started"]
   };
+  var KYC_DATA_PACKAGES = ["Package1_KYC_Doc", "Package2_KYC_Doc"];
   /* Figma Cell 33 (mid) / Cell 36 (end) tree dividers */
   var TREE_MID =
     '<svg class="ut-tx-tree" width="16" height="40" viewBox="0 0 16 40" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 20C11.5817 20 8 16.4183 8 12V0L8 40" stroke="currentColor"/></svg>';
@@ -482,30 +470,53 @@
     });
   }
 
+  function productOptionHtml(product, opts) {
+    opts = opts || {};
+    var cls = "ut-tx-filters__option";
+    if (opts.nested) cls += " ut-tx-filters__option--nested";
+    var attrs = opts.hidden ? ' hidden data-ut-filt-extra="1"' : "";
+    var name = opts.nested ? "ut-filt-kyc-package" : "ut-filt-product";
+    return (
+      '<label class="' +
+      cls +
+      '"' +
+      attrs +
+      '><input class="tds-checkbox" type="checkbox" name="' +
+      name +
+      '" value="' +
+      escapeHtml(product) +
+      '"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">' +
+      escapeHtml(product) +
+      "</span></span></label>"
+    );
+  }
+
   function buildProductOptions() {
     var host = document.getElementById("utFiltProductOptions");
     if (!host) return;
     var products = allProducts();
     var html = "";
     products.forEach(function (product, index) {
-      var hidden = index >= PRODUCT_VISIBLE ? ' hidden data-ut-filt-extra="1"' : "";
-      html +=
-        '<label class="ut-tx-filters__option"' +
-        hidden +
-        '><input class="tds-checkbox" type="checkbox" name="ut-filt-product" value="' +
-        escapeHtml(product) +
-        '"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">' +
-        escapeHtml(product) +
-        "</span></span></label>";
+      var hidden = index >= PRODUCT_VISIBLE;
+      html += productOptionHtml(product, { hidden: hidden });
+      if (product === "KYC Data") {
+        KYC_DATA_PACKAGES.forEach(function (pkg) {
+          html += productOptionHtml(pkg, { nested: true, hidden: hidden });
+        });
+      }
     });
     var extra = products.length - PRODUCT_VISIBLE;
     if (extra > 0) {
       html +=
-        '<button type="button" class="ut-tx-filters__more" id="utFiltProductMore" data-extra="' +
+        '<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary ut-tx-filters__more" id="utFiltProductMore" data-extra="' +
         extra +
-        '">+ ' +
+        '">' +
+        '<span class="tds-btn__leading-icon" aria-hidden="true">' +
+        '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg>' +
+        "</span>" +
+        "<span>" +
         extra +
-        " more products</button>";
+        " more products</span></button>";
     }
     host.innerHTML = html;
   }

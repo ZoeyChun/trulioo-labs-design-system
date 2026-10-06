@@ -21,15 +21,53 @@ body {
   border: 0;
 }
 
+/* Subtle page scrollbars — shared across main, drawers, table */
+.app-shell,
+.app-shell * {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-neutral-40) 28%, transparent) transparent;
+}
+
+.app-shell *::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.app-shell *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-shell *::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--color-neutral-40) 28%, transparent);
+  border-radius: var(--radius-full);
+}
+
+.app-shell *::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--color-neutral-40) 48%, transparent);
+}
+
 .ut-tx-main {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
   height: calc(100dvh - (2 * var(--spacing-8)));
   max-height: calc(100dvh - (2 * var(--spacing-8)));
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background-color: var(--surface-neutral-01);
   border-radius: var(--radius-card);
+}
+
+.ut-tx-main__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.ut-tx-main__scroll::-webkit-scrollbar-track {
+  margin-block: var(--radius-card);
 }
 
 .ut-tx-page {
@@ -1181,6 +1219,11 @@ body {
   border-radius: var(--radius-section);
 }
 
+/* Scrollbar flush to the right edge; content keeps 16px inset via body/header padding */
+.ut-tx-filters {
+  padding-right: 0;
+}
+
 .ut-tx-settings[hidden],
 .ut-tx-filters[hidden] {
   display: none;
@@ -1194,6 +1237,10 @@ body {
   gap: 12px;
   padding-bottom: 8px;
   flex-shrink: 0;
+}
+
+.ut-tx-filters__header {
+  padding-right: 16px;
 }
 
 .ut-tx-settings__title,
@@ -1236,6 +1283,25 @@ body {
   overscroll-behavior: contain;
 }
 
+/* Content inset; scrollbar stays on .ut-tx-filters__body (flush to panel edge) */
+.ut-tx-filters__body-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 16px;
+}
+
+.ut-tx-filters__body {
+  gap: 0;
+}
+
+.ut-tx-settings__body::-webkit-scrollbar-track,
+.ut-tx-filters__body::-webkit-scrollbar-track {
+  margin-block: var(--radius-section);
+}
+
 .ut-tx-settings__section,
 .ut-tx-filters__section {
   display: flex;
@@ -1256,11 +1322,19 @@ body {
   color: var(--text-caption);
 }
 
-.ut-tx-settings__radios,
-.ut-tx-filters__options {
+.ut-tx-settings__radios {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Figma 301:48285 — NavItems stack flush; spacing comes from item padding */
+.ut-tx-filters__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   align-items: flex-start;
   width: 100%;
 }
@@ -1291,7 +1365,7 @@ body {
 
 .ut-tx-filters__option {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
   width: 100%;
   padding: 0 4px;
@@ -1301,7 +1375,7 @@ body {
 }
 
 .ut-tx-filters__option .tds-checkbox {
-  margin-top: 8px;
+  margin: 0;
   flex-shrink: 0;
 }
 
@@ -1341,29 +1415,19 @@ body {
 
 .ut-tx-filters__option--nested {
   padding-left: 24px;
+  padding-right: 4px;
 }
 
 .ut-tx-filters__option[hidden],
-.ut-tx-filters__more-block[hidden] {
+.ut-tx-filters__more-block[hidden],
+.ut-tx-filters__more[hidden] {
   display: none !important;
 }
 
-.ut-tx-filters__more {
-  margin: 0;
-  padding: 4px 8px;
-  border: none;
-  background: transparent;
-  color: var(--interactive-default);
-  font-family: var(--font-family);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 18px;
-  font-variation-settings: var(--font-variation-figma-medium);
-  cursor: pointer;
-}
-
-.ut-tx-filters__more:hover {
-  color: var(--interactive-hover);
+/* Figma 301:48303 — secondary sm Button with plus leading icon */
+.ut-tx-filters__more.tds-btn {
+  margin-top: 4px;
+  align-self: flex-start;
 }
 
 .ut-tx-filters__select {
@@ -1413,12 +1477,12 @@ body {
   background-color: var(--border-divider);
 }
 
+/* Figma 301:48326 — chevron left of uppercase label; right closed / down open */
 .ut-tx-filters__advanced-toggle {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
-  padding: 4px 0;
+  padding: 8px 0;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -1428,17 +1492,25 @@ body {
   line-height: 16px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: var(--text-caption);
+  color: var(--text-description);
 }
 
-.ut-tx-filters__advanced-toggle .icon {
-  width: 12px;
-  height: 12px;
+.ut-tx-filters__advanced-toggle-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ut-tx-filters__advanced-chevron {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--icon-faint);
   transition: transform 0.15s ease;
 }
 
-.ut-tx-filters__advanced-toggle[aria-expanded="false"] .icon {
-  transform: rotate(-90deg);
+.ut-tx-filters__advanced-toggle[aria-expanded="true"] .ut-tx-filters__advanced-chevron {
+  transform: rotate(90deg);
 }
 
 .ut-tx-filters__advanced-body {
@@ -1446,7 +1518,6 @@ body {
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  padding-top: 8px;
 }
 
 .ut-tx-filters__advanced-body[hidden] {
