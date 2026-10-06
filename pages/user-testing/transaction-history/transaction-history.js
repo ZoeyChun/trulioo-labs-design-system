@@ -44,6 +44,61 @@
   var copyTimers = new WeakMap();
   var copyUid = 0;
   var expandedRows = {};
+  var dateFilter = { start: null, end: null };
+  var dateFilterBound = false;
+  var searchQuery = "";
+  var productFilter = "";
+  var currentPage = 1;
+  var lastFilterTotal = -1;
+  var PAGE_SIZE = 15;
+  var DATE_RANGE_FIELDS_HTML =
+    '<div class="tds-date-picker-range__fields">' +
+      '<div class="tds-date-picker" data-date-picker-part="start">' +
+        '<button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false" aria-label="Filter by date">' +
+          '<span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>' +
+          '<span class="tds-date-picker__value tds-date-picker__placeholder visually-hidden">mm/dd/yyyy</span>' +
+          '<span class="ut-tx-date__label tds-date-picker__placeholder">mm/dd/yyyy</span>' +
+          '<span class="ut-tx-date__clear" hidden role="button" tabindex="0" aria-label="Clear date">' +
+            '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>' +
+          "</span>" +
+        "</button>" +
+      "</div>" +
+      '<div class="tds-date-picker ut-tx-date__end" data-date-picker-part="end">' +
+        '<button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false" tabindex="-1" aria-label="End date">' +
+          '<span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>' +
+        "</button>" +
+      "</div>" +
+    "</div>";
+  var panelFilters = {
+    outcomes: [],
+    products: [],
+    country: "",
+    risks: [],
+    sources: [],
+    types: [],
+    user: "",
+    watchlist: []
+  };
+  var PRODUCT_VISIBLE = 3;
+  var OUTCOME_LABELS = {
+    positive: [
+      "Accepted",
+      "Verified",
+      "Clear",
+      "Completed",
+      "No Hits Found",
+      "Match"
+    ],
+    intermediate: ["Review", "Pending Review", "In Progress"],
+    negative: [
+      "Declined",
+      "Not Verified",
+      "Flagged",
+      "Hits Found",
+      "No Match"
+    ],
+    "not-completed": ["Abandoned", "Timed Out", "Failed"]
+  };
   /* Figma Cell 33 (mid) / Cell 36 (end) tree dividers */
   var TREE_MID =
     '<svg class="ut-tx-tree" width="16" height="40" viewBox="0 0 16 40" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 20C11.5817 20 8 16.4183 8 12V0L8 40" stroke="currentColor"/></svg>';
@@ -74,6 +129,8 @@
       settings.transaction = "name-trid";
       settings.transactionId = "copy-under-menu";
     }
+    if (settings.date === "12hr") settings.date = "long";
+    if (settings.date === "24hr") settings.date = "numeric";
   }
 
   function saveSettings() {
@@ -101,6 +158,571 @@
 
   function showNameTrid() {
     return settings.transaction === "name-trid";
+  }
+
+  function pad2(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function parseMmDdYyyy(text) {
+    var parts = String(text || "").trim().split("/");
+    if (parts.length !== 3) return null;
+    var month = Number(parts[0]);
+    var day = Number(parts[1]);
+    var year = Number(parts[2]);
+    if (!year || !month || !day) return null;
+    return year + "-" + pad2(month) + "-" + pad2(day);
+  }
+
+  function parsePickerValue(el) {
+    if (!el || el.classList.contains("tds-date-picker__placeholder")) return null;
+    return parseMmDdYyyy(el.textContent);
+  }
+
+  function itemDateKey(item) {
+    var numeric = item.dateNumeric || "";
+    var match = numeric.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (match) {
+      return match[3] + "-" + pad2(Number(match[1])) + "-" + pad2(Number(match[2]));
+    }
+    var d = new Date(item.date);
+    if (isNaN(d.getTime())) return "";
+    return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+  }
+
+  function matchesDateFilter(item) {
+    if (!dateFilter.start) return true;
+    var day = itemDateKey(item);
+    if (!day) return true;
+    var start = dateFilter.start;
+    var end = dateFilter.end || dateFilter.start;
+    return day >= start && day <= end;
+  }
+
+  function uniqueSorted(values) {
+    return values
+      .filter(Boolean)
+      .filter(function (v, i, arr) {
+        return arr.indexOf(v) === i;
+      })
+      .sort(function (a, b) {
+        return String(a).localeCompare(String(b));
+      });
+  }
+
+  function allProducts() {
+    var list = [];
+    rows.forEach(function (item) {
+      list.push(item.product);
+      if (item.children) {
+        item.children.forEach(function (child) {
+          list.push(child.product);
+        });
+      }
+    });
+    return uniqueSorted(list);
+  }
+
+  function allCountries() {
+    return uniqueSorted(rows.map(function (item) {
+      return item.country;
+    }));
+  }
+
+  function outcomeGroup(item) {
+    var label = (item.outcome && item.outcome.label) || "";
+    var keys = Object.keys(OUTCOME_LABELS);
+    for (var i = 0; i < keys.length; i++) {
+      if (OUTCOME_LABELS[keys[i]].indexOf(label) !== -1) return keys[i];
+    }
+    return "";
+  }
+
+  function riskBucket(item) {
+    if (!item.score || !item.score.label) return "";
+    var label = item.score.label.toLowerCase();
+    if (label.indexOf("high") !== -1) return "high";
+    if (label.indexOf("medium") !== -1) return "medium";
+    if (label.indexOf("low") !== -1) return "low";
+    return "";
+  }
+
+  function watchlistBucket(item) {
+    var product = item.product || "";
+    if (product.indexOf("Watchlist") === -1) return "";
+    var label = ((item.outcome && item.outcome.label) || "").toLowerCase();
+    if (label.indexOf("no hits") !== -1 || label === "clear") return "no-hit";
+    if (label.indexOf("hit") !== -1) return "hit";
+    return "";
+  }
+
+  function selectedValues(name) {
+    return Array.prototype.slice
+      .call(document.querySelectorAll('input[name="' + name + '"]:checked'))
+      .map(function (el) {
+        return el.value;
+      });
+  }
+
+  function syncPanelFiltersFromDom() {
+    panelFilters.outcomes = selectedValues("ut-filt-outcome");
+    panelFilters.products = selectedValues("ut-filt-product");
+    panelFilters.risks = selectedValues("ut-filt-risk");
+    panelFilters.sources = selectedValues("ut-filt-source");
+    panelFilters.types = selectedValues("ut-filt-type");
+    panelFilters.watchlist = selectedValues("ut-filt-watchlist");
+    var countryEl = document.getElementById("utFiltCountrySelect");
+    var userEl = document.getElementById("utFiltUserSelect");
+    panelFilters.country = countryEl && countryEl.value ? countryEl.value : "";
+    panelFilters.user = userEl && userEl.value ? userEl.value : "";
+  }
+
+  function activeFilterCount() {
+    return (
+      panelFilters.outcomes.length +
+      panelFilters.products.length +
+      panelFilters.risks.length +
+      panelFilters.sources.length +
+      panelFilters.types.length +
+      panelFilters.watchlist.length +
+      (panelFilters.country ? 1 : 0) +
+      (panelFilters.user ? 1 : 0)
+    );
+  }
+
+  function updateFilterChrome() {
+    var count = activeFilterCount();
+    var clearBtn = document.getElementById("utTxFiltersClear");
+    var countEl = document.getElementById("utTxFilterCount");
+    var filterWrap = document.getElementById("utTxFilter");
+    if (clearBtn) clearBtn.disabled = count === 0;
+    if (countEl) {
+      countEl.textContent = String(count);
+      countEl.hidden = count === 0;
+    }
+    if (filterWrap) {
+      filterWrap.classList.toggle("tds-filter-button--selected", count > 0);
+      filterWrap.classList.toggle("tds-filter-button--multi", count > 1);
+    }
+  }
+
+  function matchesPanelFilters(item) {
+    if (panelFilters.outcomes.length) {
+      if (panelFilters.outcomes.indexOf(outcomeGroup(item)) === -1) return false;
+    }
+    if (panelFilters.products.length) {
+      if (panelFilters.products.indexOf(item.product) === -1) return false;
+    }
+    if (panelFilters.country && item.country !== panelFilters.country) return false;
+    if (panelFilters.risks.length) {
+      var risk = riskBucket(item);
+      if (!risk || panelFilters.risks.indexOf(risk) === -1) return false;
+    }
+    if (panelFilters.sources.length) {
+      if (panelFilters.sources.indexOf(item.source) === -1) return false;
+    }
+    if (panelFilters.types.length) {
+      if (panelFilters.types.indexOf(item.type) === -1) return false;
+    }
+    if (panelFilters.user) {
+      if (panelFilters.user === "Jane Doe" && item.name !== "Jane Doe") return false;
+      if (panelFilters.user === "API User" && item.source !== "API") return false;
+    }
+    if (panelFilters.watchlist.length) {
+      var watch = watchlistBucket(item);
+      if (!watch || panelFilters.watchlist.indexOf(watch) === -1) return false;
+    }
+    return true;
+  }
+
+  function matchesSearch(item) {
+    if (!searchQuery) return true;
+    var hay = [
+      item.name,
+      item.country,
+      item.trid,
+      item.detail,
+      item.product
+    ]
+      .join(" ")
+      .toLowerCase();
+    return hay.indexOf(searchQuery) !== -1;
+  }
+
+  function matchesProductFilter(item) {
+    if (!productFilter) return true;
+    if (item.product === productFilter) return true;
+    if (item.children) {
+      return item.children.some(function (child) {
+        return child.product === productFilter;
+      });
+    }
+    return false;
+  }
+
+  function filteredRows() {
+    return rows.filter(function (item) {
+      return (
+        matchesDateFilter(item) &&
+        matchesPanelFilters(item) &&
+        matchesSearch(item) &&
+        matchesProductFilter(item)
+      );
+    });
+  }
+
+  function pageCount(total) {
+    if (!total) return 1;
+    return Math.max(1, Math.ceil(total / PAGE_SIZE));
+  }
+
+  function pagedRows() {
+    var list = filteredRows();
+    var total = list.length;
+    if (lastFilterTotal !== -1 && lastFilterTotal !== total) currentPage = 1;
+    lastFilterTotal = total;
+    var pages = pageCount(total);
+    if (currentPage > pages) currentPage = pages;
+    if (currentPage < 1) currentPage = 1;
+    var start = (currentPage - 1) * PAGE_SIZE;
+    return {
+      list: list.slice(start, start + PAGE_SIZE),
+      total: total,
+      start: start
+    };
+  }
+
+  function renderFooter(total) {
+    var footer = document.getElementById("utTxFooter");
+    if (!footer) return;
+    var pages = pageCount(total);
+    var start = total ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+    var end = Math.min(currentPage * PAGE_SIZE, total);
+    var pageButtons = "";
+    for (var i = 1; i <= pages; i += 1) {
+      pageButtons +=
+        '<button type="button" class="tds-data-table__pagination-page' +
+        (i === currentPage ? " tds-data-table__pagination-page--active" : "") +
+        '" data-ut-page="' +
+        i +
+        '"' +
+        (i === currentPage ? ' aria-current="page"' : "") +
+        ">" +
+        i +
+        "</button>";
+    }
+    footer.innerHTML =
+      '<div class="tds-data-table__footer-counter">' +
+      start +
+      "–" +
+      end +
+      " of " +
+      total +
+      "</div>" +
+      '<div class="tds-data-table__footer-pagination">' +
+      '<div class="tds-data-table__pagination">' +
+      '<button type="button" class="tds-data-table__pagination-direction tds-data-table__pagination-direction--previous" data-ut-page-dir="prev"' +
+      (currentPage === 1 ? " disabled" : "") +
+      ">" +
+      '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 3 5.5 8 10 13"/></svg>' +
+      "Previous</button>" +
+      '<div class="tds-data-table__pagination-pages">' +
+      pageButtons +
+      "</div>" +
+      '<button type="button" class="tds-data-table__pagination-direction tds-data-table__pagination-direction--next" data-ut-page-dir="next"' +
+      (currentPage === pages ? " disabled" : "") +
+      ">Next" +
+      '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 3 10.5 8 6 13"/></svg>' +
+      "</button></div></div>";
+  }
+
+  function bindPagination() {
+    var footer = document.getElementById("utTxFooter");
+    if (!footer || footer.dataset.bound) return;
+    footer.dataset.bound = "1";
+    footer.addEventListener("click", function (e) {
+      var pageBtn = e.target.closest("[data-ut-page]");
+      if (pageBtn) {
+        e.preventDefault();
+        currentPage = Number(pageBtn.getAttribute("data-ut-page")) || 1;
+        render();
+        return;
+      }
+      var dirBtn = e.target.closest("[data-ut-page-dir]");
+      if (!dirBtn || dirBtn.disabled) return;
+      e.preventDefault();
+      if (dirBtn.getAttribute("data-ut-page-dir") === "prev") currentPage -= 1;
+      else currentPage += 1;
+      render();
+    });
+  }
+
+  function buildProductOptions() {
+    var host = document.getElementById("utFiltProductOptions");
+    if (!host) return;
+    var products = allProducts();
+    var html = "";
+    products.forEach(function (product, index) {
+      var hidden = index >= PRODUCT_VISIBLE ? ' hidden data-ut-filt-extra="1"' : "";
+      html +=
+        '<label class="ut-tx-filters__option"' +
+        hidden +
+        '><input class="tds-checkbox" type="checkbox" name="ut-filt-product" value="' +
+        escapeHtml(product) +
+        '"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">' +
+        escapeHtml(product) +
+        "</span></span></label>";
+    });
+    var extra = products.length - PRODUCT_VISIBLE;
+    if (extra > 0) {
+      html +=
+        '<button type="button" class="ut-tx-filters__more" id="utFiltProductMore" data-extra="' +
+        extra +
+        '">+ ' +
+        extra +
+        " more products</button>";
+    }
+    host.innerHTML = html;
+  }
+
+  function buildCountryOptions() {
+    var select = document.getElementById("utFiltCountrySelect");
+    if (!select) return;
+    var current = select.value;
+    var html = '<option value="" selected disabled>Select Country</option>';
+    allCountries().forEach(function (country) {
+      html +=
+        '<option value="' +
+        escapeHtml(country) +
+        '">' +
+        escapeHtml(country) +
+        "</option>";
+    });
+    select.innerHTML = html;
+    if (current) select.value = current;
+  }
+
+  function clearAllFilters() {
+    document
+      .querySelectorAll(
+        '#utTxFilters input[type="checkbox"], #utTxFilters select'
+      )
+      .forEach(function (el) {
+        if (el.tagName === "SELECT") {
+          el.selectedIndex = 0;
+        } else {
+          el.checked = false;
+        }
+      });
+    syncPanelFiltersFromDom();
+    updateFilterChrome();
+    render();
+  }
+
+  function setDrawerOpenClass() {
+    var shell = document.getElementById("app-shell");
+    if (!shell) return;
+    var settingsPanel = document.getElementById("utTxSettings");
+    var filtersPanel = document.getElementById("utTxFilters");
+    var settingsOpen = settingsPanel && !settingsPanel.hidden;
+    var filtersOpen = filtersPanel && !filtersPanel.hidden;
+    shell.classList.toggle("ut-tx-drawer-open", !!(settingsOpen || filtersOpen));
+    shell.classList.toggle("ut-tx-settings-open", !!(settingsOpen || filtersOpen));
+  }
+
+  function buildToolbarProductOptions() {
+    var select = document.getElementById("utTxProduct");
+    if (!select) return;
+    var current = productFilter || select.value;
+    var html = '<option value="">Product</option>';
+    allProducts().forEach(function (product) {
+      html +=
+        '<option value="' +
+        escapeHtml(product) +
+        '">' +
+        escapeHtml(product) +
+        "</option>";
+    });
+    select.innerHTML = html;
+    if (current) select.value = current;
+  }
+
+  function toolbarFiltersActive() {
+    return !!(searchQuery || dateFilter.start || productFilter);
+  }
+
+  function updateToolbarFilterChrome() {
+    var range = document.getElementById("utTxDateWrap");
+    var label = range && range.querySelector(".ut-tx-date__label");
+    var clear = range && range.querySelector(".ut-tx-date__clear");
+    var selected = !!dateFilter.start;
+    if (range) range.classList.toggle("ut-tx-date--selected", selected);
+    if (label) {
+      if (!dateFilter.start) {
+        label.textContent = "mm/dd/yyyy";
+        label.classList.add("tds-date-picker__placeholder");
+      } else {
+        label.classList.remove("tds-date-picker__placeholder");
+        if (dateFilter.end && dateFilter.end !== dateFilter.start) {
+          label.textContent =
+            formatPickerDisplay(dateFilter.start) +
+            " - " +
+            formatPickerDisplay(dateFilter.end);
+        } else {
+          label.textContent = formatPickerDisplay(dateFilter.start);
+        }
+      }
+    }
+    if (clear) clear.hidden = !selected;
+
+    var searchClear = document.getElementById("utTxSearchClear");
+    if (searchClear) searchClear.hidden = !searchQuery;
+
+    var productWrap = document.getElementById("utTxProductWrap");
+    if (productWrap) {
+      productWrap.classList.toggle("ut-tx-product--filled", !!productFilter);
+    }
+
+    var reset = document.getElementById("utTxToolbarReset");
+    if (reset) reset.hidden = !toolbarFiltersActive();
+  }
+
+  function formatPickerDisplay(iso) {
+    var parts = String(iso || "").split("-");
+    if (parts.length !== 3) return "";
+    return pad2(Number(parts[1])) + "/" + pad2(Number(parts[2])) + "/" + parts[0];
+  }
+
+  function pickerIsOpen() {
+    var range = document.getElementById("utTxDateWrap");
+    return !!(range && range.classList.contains("tds-date-picker-range--open"));
+  }
+
+  function syncDateFilterFromPicker() {
+    var range = document.getElementById("utTxDateWrap");
+    if (!range || pickerIsOpen()) return;
+    var startEl = range.querySelector(
+      '[data-date-picker-part="start"] .tds-date-picker__value'
+    );
+    var endEl = range.querySelector(
+      '[data-date-picker-part="end"] .tds-date-picker__value'
+    );
+    var start = parsePickerValue(startEl);
+    var end = parsePickerValue(endEl);
+    var nextStart = start || null;
+    var nextEnd = end || (start ? start : null);
+    var changed =
+      dateFilter.start !== nextStart || dateFilter.end !== nextEnd;
+    dateFilter.start = nextStart;
+    dateFilter.end = nextEnd;
+    updateToolbarFilterChrome();
+    if (changed) render();
+  }
+
+  function resetDateFilter(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    dateFilter.start = null;
+    dateFilter.end = null;
+    var range = document.getElementById("utTxDateWrap");
+    if (range) {
+      range.classList.remove("tds-date-picker-range--open", "ut-tx-date--selected");
+      delete range.dataset.start;
+      delete range.dataset.end;
+      delete range.dataset.datePickerRangeBound;
+      range.innerHTML = DATE_RANGE_FIELDS_HTML;
+      if (window.initDatePickers) window.initDatePickers(range);
+      bindDateClear();
+    }
+    updateToolbarFilterChrome();
+    render();
+  }
+
+  function bindDateClear() {
+    var range = document.getElementById("utTxDateWrap");
+    if (!range) return;
+    var clear = range.querySelector(".ut-tx-date__clear");
+    if (!clear) return;
+    clear.addEventListener("click", resetDateFilter);
+    clear.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      resetDateFilter(event);
+    });
+  }
+
+  function bindDateFilter() {
+    var range = document.getElementById("utTxDateWrap");
+    if (!range) return;
+
+    function onPickerChange(event) {
+      if (event.target.closest(".ut-tx-date__clear")) return;
+      window.setTimeout(syncDateFilterFromPicker, 0);
+    }
+
+    if (!dateFilterBound) {
+      dateFilterBound = true;
+      range.addEventListener("click", onPickerChange, true);
+      range.addEventListener("mousedown", onPickerChange, true);
+      document.addEventListener("click", function (event) {
+        if (event.target.closest("#utTxDateWrap")) return;
+        window.setTimeout(syncDateFilterFromPicker, 0);
+      });
+    }
+
+    bindDateClear();
+  }
+
+  function applySearch(value) {
+    searchQuery = String(value || "").trim().toLowerCase();
+    var input = document.getElementById("utTxSearch");
+    if (input && input.value !== value && !value) input.value = "";
+    updateToolbarFilterChrome();
+    render();
+  }
+
+  function bindSearch() {
+    var input = document.getElementById("utTxSearch");
+    var btn = document.querySelector(".ut-tx-search__submit");
+    var clear = document.getElementById("utTxSearchClear");
+    function apply() {
+      applySearch(input ? input.value : "");
+    }
+    if (input) {
+      input.addEventListener("input", apply);
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") e.preventDefault();
+      });
+    }
+    if (btn) btn.addEventListener("click", apply);
+    if (clear) {
+      clear.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (input) input.value = "";
+        applySearch("");
+      });
+    }
+  }
+
+  function bindProductFilter() {
+    var select = document.getElementById("utTxProduct");
+    if (!select) return;
+    select.addEventListener("change", function () {
+      productFilter = select.value || "";
+      updateToolbarFilterChrome();
+      render();
+    });
+  }
+
+  function resetToolbarFilters() {
+    var input = document.getElementById("utTxSearch");
+    var select = document.getElementById("utTxProduct");
+    if (input) input.value = "";
+    searchQuery = "";
+    if (select) select.value = "";
+    productFilter = "";
+    resetDateFilter();
   }
 
   function hideToast() {
@@ -265,6 +887,47 @@
     );
   }
 
+  function combinedScoreKind(item) {
+    var product = (item.product || "").toLowerCase();
+    if (product === "device intelligence") return "score-level";
+    if (product.indexOf("bank verification") !== -1) return "result-tag";
+    if (product === "kyc data") return "result-tag";
+    if (product === "kyc documents") return "result-tag";
+    if (product === "electronic id") return "result-tag";
+    if (product.indexOf("business ") === 0) return "result-tag";
+    return "stack";
+  }
+
+  function outcomeTagHtml(item) {
+    var outcome = item.outcome;
+    if (!outcome) return "";
+    if (outcome.tone === "signals" || outcome.tone === "signals-intermediate") {
+      var cls =
+        outcome.tone === "signals-intermediate"
+          ? "tds-data-table__signals tds-data-table__signals--intermediate"
+          : "tds-data-table__signals";
+      return '<span class="' + cls + '">' + escapeHtml(outcome.label) + "</span>";
+    }
+    return (
+      '<span class="tds-tag tds-tag--' +
+      escapeHtml(outcome.tone) +
+      '">' +
+      escapeHtml(outcome.label) +
+      "</span>"
+    );
+  }
+
+  function riskLevelHtml(score) {
+    if (!score || !score.label) return "";
+    return (
+      '<span class="ut-tx-risk-level ut-tx-score--' +
+      escapeHtml(score.tone || "positive") +
+      '">' +
+      escapeHtml(score.label) +
+      "</span>"
+    );
+  }
+
   function outcomeHtml(item) {
     var outcome = item.outcome;
     if (!outcome) return "";
@@ -273,25 +936,17 @@
       return '<span class="ut-tx-empty">--</span>';
     }
 
-    var primary;
-    if (outcome.tone === "signals" || outcome.tone === "signals-intermediate") {
-      var cls =
-        outcome.tone === "signals-intermediate"
-          ? "tds-data-table__signals tds-data-table__signals--intermediate"
-          : "tds-data-table__signals";
-      primary =
-        '<span class="' + cls + '">' + escapeHtml(outcome.label) + "</span>";
-    } else {
-      primary =
-        '<span class="tds-tag tds-tag--' +
-        escapeHtml(outcome.tone) +
-        '">' +
-        escapeHtml(outcome.label) +
-        "</span>";
+    var primary = outcomeTagHtml(item);
+
+    if (combinedScoreKind(item) === "score-level" && item.score) {
+      return scoreHtml(item.score);
     }
 
-    /* Score combined with Outcome — subtext: value + risk level */
-    if (settings.score === "combined-outcome" && item.score) {
+    if (settings.score !== "combined-outcome") return primary;
+
+    var kind = combinedScoreKind(item);
+    if (kind === "result-tag") return primary;
+    if (item.score) {
       return (
         '<span class="ut-tx-outcome-stack">' +
         primary +
@@ -302,7 +957,6 @@
         "</span></span>"
       );
     }
-
     return primary;
   }
 
@@ -324,21 +978,24 @@
   }
 
   function dateHtml(item) {
+    var day = item.dateDay || item.date;
+    var time12 = item.dateTime || "10:00";
     if (settings.date === "numeric") {
-      return escapeHtml(item.dateNumeric || item.date);
+      var numeric = String(item.dateNumeric || "").split(",")[0].trim();
+      return escapeHtml((numeric || "03/12/2026") + ", 22:00");
     }
     if (settings.date === "double-line") {
       return (
         '<span class="ut-tx-date-stack">' +
         '<span class="ut-tx-date-stack__day">' +
-        escapeHtml(item.dateDay || item.date) +
+        escapeHtml(day) +
         "</span>" +
         '<span class="ut-tx-date-stack__time">' +
-        escapeHtml(item.dateTime || "") +
+        escapeHtml(time12) +
         "</span></span>"
       );
     }
-    return escapeHtml(item.date);
+    return escapeHtml(day + ", " + time12);
   }
 
   function countryHtml(item) {
@@ -490,17 +1147,15 @@
     }
 
     var cells =
-      '<td class="tds-data-table__checkbox-cell">' +
-      '<input class="tds-checkbox ut-tx-row-check" type="checkbox" aria-label="Select ' +
-      escapeHtml(item.name) +
-      '"></td>' +
       '<td class="ut-tx-td-name">' +
       nameHtml(item, opts) +
       "</td>";
 
     cells +=
       '<td class="ut-tx-outcome-cell' +
-      (settings.score === "combined-outcome" && item.score
+      (settings.score === "combined-outcome" &&
+      combinedScoreKind(item) === "stack" &&
+      item.score
         ? " ut-tx-outcome-cell--with-sub"
         : "") +
       '">' +
@@ -553,9 +1208,6 @@
 
     var html =
       "<tr>" +
-      '<th scope="col" class="tds-data-table__checkbox-cell">' +
-      '<input class="tds-checkbox" type="checkbox" id="utTxSelectAll" aria-label="Select all transactions">' +
-      "</th>" +
       '<th scope="col" class="ut-tx-th-name">Transaction</th>';
 
     function sortTh(label, className) {
@@ -572,7 +1224,7 @@
 
     html +=
       sortTh("Outcome") +
-      sortTh("Date") +
+      sortTh("Date (UTC)") +
       sortTh("Product") +
       sortTh("Country", "ut-tx-th-country");
 
@@ -583,7 +1235,7 @@
     html += sortTh("Source") + sortTh("Type");
 
     if (showTridColumn()) {
-      html += '<th scope="col" class="ut-tx-col-trid">Copy TRID</th>';
+      html += '<th scope="col" class="ut-tx-col-trid">TRID</th>';
     }
 
     html +=
@@ -591,14 +1243,12 @@
       "</tr>";
 
     head.innerHTML = html;
-    bindSelectAll();
   }
 
   function renderCols() {
     var cols = document.getElementById("utTxCols");
     if (!cols) return;
     var html =
-      '<col class="ut-tx-col-check">' +
       '<col class="ut-tx-col-name">' +
       '<col class="ut-tx-col-outcome">' +
       '<col class="ut-tx-col-date">' +
@@ -657,8 +1307,9 @@
     applyTableMods();
     var tbody = document.getElementById("utTxBody");
     if (!tbody) return;
+    var paged = pagedRows();
     var html = "";
-    rows.forEach(function (item) {
+    paged.list.forEach(function (item) {
       html += rowHtml(item);
       if (
         item.expandable &&
@@ -675,45 +1326,121 @@
       }
     });
     tbody.innerHTML = html;
+    renderFooter(paged.total);
     if (window.TdsDropdownPanel && typeof window.TdsDropdownPanel.initMenus === "function") {
       window.TdsDropdownPanel.initMenus(tbody);
     }
-  }
-
-  function bindSelectAll() {
-    var selectAll = document.getElementById("utTxSelectAll");
-    if (!selectAll) return;
-    selectAll.addEventListener("change", function () {
-      document.querySelectorAll(".ut-tx-row-check").forEach(function (box) {
-        box.checked = selectAll.checked;
-      });
-    });
+    updateToolbarFilterChrome();
   }
 
   function openSettings() {
+    closeFilters(true);
     var panel = document.getElementById("utTxSettings");
-    var shell = document.getElementById("app-shell");
     var btn = document.getElementById("utTxSettingsBtn");
     if (!panel) return;
     panel.hidden = false;
     panel.setAttribute("aria-hidden", "false");
-    if (shell) shell.classList.add("ut-tx-settings-open");
+    setDrawerOpenClass();
     if (btn) btn.setAttribute("aria-expanded", "true");
     var closeBtn = panel.querySelector(".ut-tx-settings__close");
     if (closeBtn) closeBtn.focus();
   }
 
-  function closeSettings() {
+  function closeSettings(skipFocus) {
     var panel = document.getElementById("utTxSettings");
-    var shell = document.getElementById("app-shell");
     var btn = document.getElementById("utTxSettingsBtn");
     if (!panel) return;
     panel.hidden = true;
     panel.setAttribute("aria-hidden", "true");
-    if (shell) shell.classList.remove("ut-tx-settings-open");
+    setDrawerOpenClass();
     if (btn) {
       btn.setAttribute("aria-expanded", "false");
-      btn.focus();
+      if (!skipFocus) btn.focus();
+    }
+  }
+
+  function openFilters() {
+    closeSettings(true);
+    var panel = document.getElementById("utTxFilters");
+    var btn = document.getElementById("utTxFilterBtn");
+    if (!panel) return;
+    panel.hidden = false;
+    panel.setAttribute("aria-hidden", "false");
+    setDrawerOpenClass();
+    if (btn) btn.setAttribute("aria-expanded", "true");
+    var closeBtn = panel.querySelector(".ut-tx-filters__close");
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeFilters(skipFocus) {
+    var panel = document.getElementById("utTxFilters");
+    var btn = document.getElementById("utTxFilterBtn");
+    if (!panel) return;
+    panel.hidden = true;
+    panel.setAttribute("aria-hidden", "true");
+    setDrawerOpenClass();
+    if (btn) {
+      btn.setAttribute("aria-expanded", "false");
+      if (!skipFocus) btn.focus();
+    }
+  }
+
+  function bindFilters() {
+    var btn = document.getElementById("utTxFilterBtn");
+    var panel = document.getElementById("utTxFilters");
+    var clearBtn = document.getElementById("utTxFiltersClear");
+    var advancedToggle = document.getElementById("utFiltAdvancedToggle");
+    var advancedBody = document.getElementById("utFiltAdvancedBody");
+
+    buildProductOptions();
+    buildCountryOptions();
+    updateFilterChrome();
+
+    if (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (panel && !panel.hidden) closeFilters();
+        else openFilters();
+      });
+    }
+
+    if (panel) {
+      panel.querySelectorAll(".ut-tx-filters__close").forEach(function (el) {
+        el.addEventListener("click", function () {
+          closeFilters();
+        });
+      });
+
+      panel.addEventListener("change", function () {
+        syncPanelFiltersFromDom();
+        updateFilterChrome();
+        render();
+      });
+
+      panel.addEventListener("click", function (e) {
+        var more = e.target.closest("#utFiltProductMore");
+        if (!more) return;
+        e.preventDefault();
+        panel.querySelectorAll('[data-ut-filt-extra="1"]').forEach(function (el) {
+          el.hidden = false;
+        });
+        more.hidden = true;
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        clearAllFilters();
+      });
+    }
+
+    if (advancedToggle && advancedBody) {
+      advancedToggle.addEventListener("click", function () {
+        var open = advancedToggle.getAttribute("aria-expanded") === "true";
+        advancedToggle.setAttribute("aria-expanded", open ? "false" : "true");
+        advancedBody.hidden = open;
+      });
     }
   }
 
@@ -779,7 +1506,15 @@
     }
 
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && panel && !panel.hidden) {
+      if (e.key !== "Escape") return;
+      var settingsPanel = document.getElementById("utTxSettings");
+      var filtersPanel = document.getElementById("utTxFilters");
+      if (filtersPanel && !filtersPanel.hidden) {
+        e.preventDefault();
+        closeFilters();
+        return;
+      }
+      if (settingsPanel && !settingsPanel.hidden) {
         e.preventDefault();
         closeSettings();
       }
@@ -815,7 +1550,15 @@
     loadSettings();
     syncRadios();
     bindSettings();
+    bindFilters();
     bindTooltips();
+    bindDateFilter();
+    bindSearch();
+    bindProductFilter();
+    buildToolbarProductOptions();
+    var reset = document.getElementById("utTxToolbarReset");
+    if (reset) reset.addEventListener("click", resetToolbarFilters);
+    bindPagination();
     render();
     var dismiss = document.getElementById("utTxToastDismiss");
     if (dismiss) dismiss.addEventListener("click", hideToast);
