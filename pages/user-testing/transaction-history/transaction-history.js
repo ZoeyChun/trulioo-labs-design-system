@@ -47,6 +47,7 @@
   var dateFilter = { start: null, end: null };
   var dateFilterBound = false;
   var searchQuery = "";
+  var searchDisplay = "";
   var productFilter = "";
   var currentPage = 1;
   var lastFilterTotal = -1;
@@ -115,6 +116,27 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
+  }
+
+  function highlightMatch(text) {
+    var raw = String(text == null ? "" : text);
+    if (!searchQuery) return escapeHtml(raw);
+    var lower = raw.toLowerCase();
+    var q = searchQuery;
+    if (!q || lower.indexOf(q) === -1) return escapeHtml(raw);
+    var out = "";
+    var i = 0;
+    var idx;
+    while ((idx = lower.indexOf(q, i)) !== -1) {
+      out += escapeHtml(raw.slice(i, idx));
+      out +=
+        '<mark class="ut-tx-search-mark">' +
+        escapeHtml(raw.slice(idx, idx + q.length)) +
+        "</mark>";
+      i = idx + q.length;
+    }
+    out += escapeHtml(raw.slice(i));
+    return out;
   }
 
   function loadSettings() {
@@ -337,6 +359,9 @@
 
   function matchesSearch(item) {
     if (!searchQuery) return true;
+    if (isClientIdSearch()) {
+      return CLIENT_ID_NAMES.indexOf(item.name) !== -1;
+    }
     var hay = [
       item.name,
       item.country,
@@ -575,8 +600,8 @@
     }
     if (clear) clear.hidden = !selected;
 
-    var searchClear = document.getElementById("utTxSearchClear");
-    if (searchClear) searchClear.hidden = !searchQuery;
+    syncSearchClearVisibility();
+    updateSearchStatus();
 
     var productWrap = document.getElementById("utTxProductWrap");
     if (productWrap) {
@@ -585,6 +610,20 @@
 
     var reset = document.getElementById("utTxToolbarReset");
     if (reset) reset.hidden = !toolbarFiltersActive();
+  }
+
+  function updateSearchStatus() {
+    var status = document.getElementById("utTxSearchStatus");
+    if (!status) return;
+    if (!searchDisplay) {
+      status.hidden = true;
+      status.textContent = "";
+      return;
+    }
+    status.hidden = false;
+    var label = 'Showing results for \u201c' + searchDisplay + '\u201d';
+    if (isClientIdSearch()) label += " (Client ID)";
+    status.textContent = label;
   }
 
   function formatPickerDisplay(iso) {
@@ -674,12 +713,34 @@
     bindDateClear();
   }
 
+  var RESULTS_TRID = "1f1aa883-420e-41fa-838f-55bf0fa03d0e";
+  var CLIENT_ID_SEARCH = "12195123";
+  var CLIENT_ID_NAMES = ["Maya Johnson", "Olivia Brown"];
+
+  function isClientIdSearch() {
+    return searchQuery === CLIENT_ID_SEARCH;
+  }
+
   function applySearch(value) {
-    searchQuery = String(value || "").trim().toLowerCase();
+    var raw = String(value || "").trim();
+    if (raw.toLowerCase() === RESULTS_TRID) {
+      window.location.href = "result.html";
+      return;
+    }
+    searchQuery = raw.toLowerCase();
+    searchDisplay = raw;
     var input = document.getElementById("utTxSearch");
     if (input && input.value !== value && !value) input.value = "";
     updateToolbarFilterChrome();
     render();
+  }
+
+  function syncSearchClearVisibility() {
+    var input = document.getElementById("utTxSearch");
+    var clear = document.getElementById("utTxSearchClear");
+    if (!clear) return;
+    var hasDraft = !!(input && String(input.value || "").trim());
+    clear.hidden = !(hasDraft || searchQuery);
   }
 
   function bindSearch() {
@@ -690,9 +751,11 @@
       applySearch(input ? input.value : "");
     }
     if (input) {
-      input.addEventListener("input", apply);
+      input.addEventListener("input", syncSearchClearVisibility);
       input.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") e.preventDefault();
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        apply();
       });
     }
     if (btn) btn.addEventListener("click", apply);
@@ -720,6 +783,7 @@
     var select = document.getElementById("utTxProduct");
     if (input) input.value = "";
     searchQuery = "";
+    searchDisplay = "";
     if (select) select.value = "";
     productFilter = "";
     resetDateFilter();
@@ -1017,7 +1081,7 @@
       escapeHtml(item.countryCode) +
       '"></span></span>' +
       '<span class="ut-tx-country__name">' +
-      escapeHtml(item.country) +
+      highlightMatch(item.country) +
       "</span></span>"
     );
   }
@@ -1027,7 +1091,7 @@
     return (
       '<span class="ut-tx-id-row">' +
       '<span class="ut-tx-name-sub">' +
-      escapeHtml(item.trid) +
+      highlightMatch(item.trid) +
       "</span>" +
       '<button type="button" class="ut-tx-id-copy ut-tx-tip-host" data-trid="' +
       escapeHtml(item.trid) +
@@ -1064,7 +1128,7 @@
 
     var primary =
       '<span class="ut-tx-name">' +
-      escapeHtml(item.name) +
+      highlightMatch(item.name) +
       "</span>" +
       (opts.isChild ? "" : statusIconHtml(item));
 
@@ -1078,7 +1142,7 @@
     var secondary = "";
     if (settings.transaction === "name-additional" && item.detail) {
       secondary =
-        '<span class="ut-tx-name-sub">' + escapeHtml(item.detail) + "</span>";
+        '<span class="ut-tx-name-sub">' + highlightMatch(item.detail) + "</span>";
     } else if (showNameTrid()) {
       secondary = tridSecondaryHtml(item);
     }
@@ -1165,7 +1229,7 @@
       dateHtml(item) +
       "</td>" +
       '<td><span class="ut-product-tag">' +
-      escapeHtml(item.product) +
+      highlightMatch(item.product) +
       "</span></td>" +
       '<td class="ut-tx-td-country">' +
       countryHtml(item) +
@@ -1188,7 +1252,7 @@
         '<td class="ut-tx-trid-cell">' +
         '<span class="ut-tx-id-row ut-tx-id-row--column">' +
         '<span class="ut-tx-trid-text">' +
-        escapeHtml(item.trid || "--") +
+        highlightMatch(item.trid || "--") +
         "</span>" +
         '<button type="button" class="ut-tx-id-copy ut-tx-tip-host" data-trid="' +
         escapeHtml(item.trid || "") +

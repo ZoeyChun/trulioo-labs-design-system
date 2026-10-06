@@ -124,6 +124,29 @@ body {
   overflow: visible;
 }
 
+.ut-tx-table-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  width: 100%;
+}
+
+.ut-tx-search-status {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.ut-tx-search-status[hidden] {
+  display: none !important;
+}
+
 .ut-tx-toolbar__left {
   display: flex;
   align-items: center;
@@ -1096,6 +1119,14 @@ body {
 .ut-tx-outcome-cell {
   white-space: nowrap;
   overflow: visible;
+}
+
+.ut-tx-search-mark {
+  background-color: var(--surface-selected);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+  font: inherit;
 }
 
 /* Figma 621:73886 — TextContent gap spacing-2; cell ~68px / padding-lg */
