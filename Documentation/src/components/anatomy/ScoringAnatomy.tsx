@@ -63,7 +63,7 @@ export function RiskCategoryCardAnatomy() {
         <div className="tds-risk-category-card">
           <div className="tds-risk-category-card__title-row">
             <p className="tds-risk-category-card__title">Sanctions</p>
-            <span className="tds-tag tds-tag--xl tds-tag--negative">High Risk</span>
+            <span className="tds-tag tds-tag--lg tds-tag--negative">High Risk</span>
           </div>
           <div className="tds-risk-category-card__details-row">
             <p className="tds-risk-category-card__signal-count">3 signals</p>

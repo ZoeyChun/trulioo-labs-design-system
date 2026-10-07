@@ -67,12 +67,20 @@ body[data-sidenav="experimental"] .tds-side-nav:not(.tds-side-nav--collapsed) .t
 }
 
 /* Default (non-active) rows stay dark on the light sidenav — never inherit white. */
-body[data-sidenav="experimental"] .tds-side-nav__nav-item,
-body[data-sidenav="experimental"] button.tds-side-nav__nav-item,
-body[data-sidenav="experimental"] a.tds-side-nav__nav-item {
+body[data-sidenav="experimental"] .tds-side-nav__nav-item:not(.tds-side-nav__nav-item--active):not([aria-current="page"]),
+body[data-sidenav="experimental"] button.tds-side-nav__nav-item:not(.tds-side-nav__nav-item--active):not([aria-current="page"]),
+body[data-sidenav="experimental"] a.tds-side-nav__nav-item:not(.tds-side-nav__nav-item--active):not([aria-current="page"]) {
   color: var(--text-default, #172d2d);
   text-decoration: none;
   background-color: transparent;
+  border-radius: var(--radius-full);
+}
+
+body[data-sidenav="experimental"] .tds-side-nav__nav-item:hover:not(.tds-side-nav__nav-item--active):not([aria-current="page"]),
+body[data-sidenav="experimental"] button.tds-side-nav__nav-item:hover:not(.tds-side-nav__nav-item--active):not([aria-current="page"]),
+body[data-sidenav="experimental"] a.tds-side-nav__nav-item:hover:not(.tds-side-nav__nav-item--active):not([aria-current="page"]) {
+  border-radius: var(--radius-full);
+  background-color: var(--tds-side-nav-item-hover, var(--surface-neutral-02));
 }
 
 body[data-sidenav="experimental"] .tds-side-nav__nav-item .tds-side-nav__nav-item-icon,
@@ -90,6 +98,7 @@ body[data-sidenav="experimental"] button.tds-side-nav__nav-item--active,
 body[data-sidenav="experimental"] button.tds-side-nav__nav-item[aria-current="page"],
 body[data-sidenav="experimental"] a.tds-side-nav__nav-item--active,
 body[data-sidenav="experimental"] a.tds-side-nav__nav-item[aria-current="page"] {
+  border-radius: var(--radius-lg);
   background-color: var(--surface-inverse, #172d2d);
   color: var(--text-inverse, #fff);
 }

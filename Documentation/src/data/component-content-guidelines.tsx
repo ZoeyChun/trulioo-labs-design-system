@@ -37,9 +37,9 @@ import {
 } from "../components/guidelines/FormInputsGuidelines";
 import {
   ListedProgressItemGuidelines,
-  ProgressIndicatorGuidelines,
+  StepperGuidelines,
   StepProgressGuidelines,
-} from "../components/guidelines/ProgressGuidelines";
+} from "../components/guidelines/StepperGuidelines";
 import {
   RiskCategoryCardGuidelines,
   ScoreCardGuidelines,
@@ -101,7 +101,7 @@ const COMPONENT_CONTENT_GUIDELINES: Partial<Record<ComponentPageId, () => ReactN
   announcement: () => <AnnouncementGuidelines />,
   dialog: () => <DialogGuidelines />,
   accordion: () => <AccordionGuidelines />,
-  "progress-indicator": () => <ProgressIndicatorGuidelines />,
+  "stepper": () => <StepperGuidelines />,
   "step-progress": () => <StepProgressGuidelines />,
   "listed-progress-item": () => <ListedProgressItemGuidelines />,
   "score-gauge": () => <ScoreGaugeGuidelines />,

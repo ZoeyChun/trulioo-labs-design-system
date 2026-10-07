@@ -43,7 +43,7 @@ textarea {
 .eid-config-card__header {
   display: flex;
   align-items: center;
-  padding: var(--padding-xl) var(--spacing-32);
+  padding: var(--spacing-24) var(--spacing-32);
 }
 
 .eid-config-card__title {
@@ -77,8 +77,8 @@ textarea {
 .eid-config-radio-row .tds-radio-card {
   flex: 1 1 0;
   min-width: 0;
-  gap: var(--padding-md);
-  padding: var(--padding-md);
+  gap: var(--spacing-12);
+  padding: var(--spacing-12);
   align-items: flex-start;
 }
 
@@ -107,7 +107,7 @@ textarea {
 
 .eid-floating-tooltip .tds-tooltip__body {
   gap: var(--spacing-4);
-  padding: var(--padding-xs) var(--padding-sm);
+  padding: var(--spacing-4) var(--spacing-8);
   border-radius: var(--radius-md);
   white-space: normal;
 }
@@ -198,7 +198,7 @@ textarea {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   flex: 1;
   min-width: 0;
 }
@@ -224,7 +224,7 @@ textarea {
 
 .eid-country .tds-combobox__option {
   align-items: center;
-  padding: var(--padding-xs);
+  padding: var(--spacing-4);
 }
 
 /* --- Device Intelligence panel --- */
@@ -320,7 +320,7 @@ textarea {
 }
 
 #eid-step-redirect .eid-config-card__header {
-  padding: var(--padding-xl) var(--spacing-32) 0;
+  padding: var(--spacing-24) var(--spacing-32) 0;
 }
 
 .eid-redirect-stage {
@@ -405,7 +405,7 @@ textarea {
   align-items: center;
   justify-content: center;
   min-height: 120px;
-  padding: var(--padding-lg);
+  padding: var(--spacing-16);
   border: 1px dashed var(--border-subtle);
   border-radius: var(--radius-card);
   background-color: var(--surface-neutral-01);
@@ -420,12 +420,12 @@ textarea {
 
 /* Figma 2976:57599 — flow panel: 24px padding, 32px header→content gap */
 #eid-flow-view {
-  --eid-flow-padding-x: var(--spacing-280);
+  --eid-flow-padding-x: 17.5rem;
   --eid-flow-padding-y: var(--spacing-64);
   --eid-form-inset-x: var(--spacing-160);
   --eid-details-inset-x: 15rem; /* 240px */
-  gap: var(--padding-2xl);
-  padding: var(--padding-xl);
+  gap: var(--spacing-32);
+  padding: var(--spacing-24);
 }
 
 #eid-flow-view::before {
@@ -912,7 +912,7 @@ textarea {
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card {
   gap: var(--spacing-12);
-  padding: var(--padding-md);
+  padding: var(--spacing-12);
 }
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-bank-card__badge {
@@ -989,7 +989,7 @@ textarea {
 
 #eid-step-simulated.eid-step-simulated--nl-phone .eid-sim-panel .tds-btn--lg {
   min-height: 40px;
-  padding: var(--padding-sm) var(--padding-lg);
+  padding: var(--spacing-8) var(--spacing-16);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
 }
@@ -1009,7 +1009,7 @@ textarea {
   }
 
   .tds-stepper--horizontal .tds-stepper__content {
-    padding: var(--padding-sm) var(--padding-xs) 0 0;
+    padding: var(--spacing-8) var(--spacing-4) 0 0;
     align-items: center;
   }
 
@@ -1101,7 +1101,7 @@ textarea {
   margin: 0;
   border-radius: 0 0 var(--radius-card) 0;
   background-color: var(--surface-neutral-03);
-  padding: var(--spacing-2) var(--padding-sm);
+  padding: var(--spacing-2) var(--spacing-8);
 }
 
 .eid-sim-phone.eid-sim-phone--enter {
@@ -1336,7 +1336,7 @@ textarea {
   justify-content: center;
   min-width: 160px;
   margin-top: var(--spacing-8);
-  padding: var(--padding-md) var(--padding-lg);
+  padding: var(--spacing-12) var(--spacing-16);
   border-radius: var(--radius-button);
   background-color: var(--interactive-default);
   color: var(--text-inverse);
@@ -1656,7 +1656,7 @@ textarea {
 
 .eid-sim-panel .dv-flow-card__header {
   flex-shrink: 0;
-  padding: var(--padding-xl) var(--spacing-32) 0;
+  padding: var(--spacing-24) var(--spacing-32) 0;
 }
 
 .eid-sim-panel .dv-flow-card__title {
@@ -1695,7 +1695,7 @@ textarea {
   flex-shrink: 0;
   box-sizing: border-box;
   height: var(--spacing-48);
-  padding: var(--padding-xl) var(--spacing-32) 0;
+  padding: var(--spacing-24) var(--spacing-32) 0;
 }
 
 .eid-sim-panel .eid-bank-body,
@@ -1724,9 +1724,9 @@ textarea {
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--padding-md);
+  gap: var(--spacing-12);
   width: 100%;
-  padding: var(--padding-lg);
+  padding: var(--spacing-16);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-card);
   background-color: var(--surface-neutral-01);
@@ -1933,7 +1933,7 @@ textarea {
 .eid-details-field {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-xs);
+  gap: var(--spacing-4);
   min-width: 0;
   width: 100%;
 }
@@ -1993,7 +1993,7 @@ textarea {
 }
 
 .eid-otp-resend__btn {
-  padding: var(--padding-sm);
+  padding: var(--spacing-8);
   border: none;
   border-radius: var(--radius-md);
   background: none;
@@ -2048,7 +2048,7 @@ textarea {
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-16);
-  padding: var(--padding-md) var(--padding-lg);
+  padding: var(--spacing-12) var(--spacing-16);
   border-bottom: 1px solid var(--border-subtle);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
@@ -2167,9 +2167,9 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
-  padding: var(--padding-lg);
+  padding: var(--spacing-16);
   background-color: var(--surface-neutral-01);
-  border: 1px solid var(--border-divider);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
 }
 
@@ -2443,7 +2443,7 @@ textarea {
 }
 
 #eid-result-view .eid-result-header {
-  gap: var(--gap-xl);
+  gap: var(--spacing-24);
 }
 
 #eid-result-view .dv-title {
@@ -2458,7 +2458,7 @@ textarea {
 }
 
 #eid-result-view .dv-meta {
-  gap: var(--gap-2xl);
+  gap: var(--spacing-32);
 }
 
 #eid-result-view .dv-meta .tds-data-field__label {
@@ -2511,7 +2511,7 @@ textarea {
 
 #eid-result-view .dv-main .tds-section-header {
   height: 56px;
-  padding: var(--padding-lg) var(--padding-xl);
+  padding: var(--spacing-16) var(--spacing-24);
   box-sizing: border-box;
 }
 

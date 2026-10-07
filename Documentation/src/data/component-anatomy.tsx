@@ -37,9 +37,9 @@ import {
 } from "../components/anatomy/FeedbackAnatomy";
 import {
   ListedProgressItemAnatomy,
-  ProgressIndicatorAnatomy,
+  StepperAnatomy,
   StepProgressAnatomy,
-} from "../components/anatomy/ProgressAnatomy";
+} from "../components/anatomy/StepperAnatomy";
 import {
   RiskCategoryCardAnatomy,
   ScoreCardAnatomy,
@@ -100,7 +100,7 @@ const COMPONENT_ANATOMY: Partial<Record<ComponentPageId, () => ReactNode>> = {
   announcement: () => <AnnouncementAnatomy />,
   dialog: () => <DialogAnatomy />,
   accordion: () => <AccordionAnatomy />,
-  "progress-indicator": () => <ProgressIndicatorAnatomy />,
+  "stepper": () => <StepperAnatomy />,
   "step-progress": () => <StepProgressAnatomy />,
   "listed-progress-item": () => <ListedProgressItemAnatomy />,
   "score-gauge": () => <ScoreGaugeAnatomy />,

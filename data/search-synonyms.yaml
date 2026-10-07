@@ -162,7 +162,7 @@ components:
     - error message
     - validation error
     - error text
-  progress-indicator:
+  stepper:
     - stepper
     - steps
     - wizard

@@ -92,7 +92,7 @@ export const SHOWCASE_SLUG_ALIASES: Record<string, string> = {
 const SHOWCASE_SLUG_PREFIX_OWNERS: Record<string, string> = {
   "side-nav-": "side-nav",
   "dropdown-panel-": "dropdown-panel",
-  "progress-indicator-": "progress-indicator",
+  "stepper-": "stepper",
   "text-input-": "text-input",
   "textarea-": "textarea",
   "segmented-control-": "segmented-control",

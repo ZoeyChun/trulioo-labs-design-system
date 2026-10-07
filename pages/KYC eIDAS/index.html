@@ -13,20 +13,20 @@
   <link rel="stylesheet" href="../shared/tds-shared-atoms.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
-  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css?v=2">
+  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css?v=4">
   <link rel="stylesheet" href="../shared/app-shell.css?v=2">
-  <link rel="stylesheet" href="../unified-intelligence-home/css/side-nav-experimental.css?v=5">
+  <link rel="stylesheet" href="../unified-intelligence-home/css/side-nav-experimental.css?v=7">
   <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
   <link rel="stylesheet" href="../shared/truai-chat.css?v=2">
   <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
   <link rel="stylesheet" href="kyc-eidas.css?v=qr-240-1">
   <style>
-    button.tds-side-nav__nav-item,
-    .tds-side-nav__nav-item {
+    button.tds-side-nav__nav-item:not(.tds-side-nav__nav-item--active):not([aria-current="page"]),
+    .tds-side-nav__nav-item:not(.tds-side-nav__nav-item--active):not([aria-current="page"]) {
       height: 40px;
       min-height: 40px;
-      padding: var(--padding-xs) var(--padding-sm);
-      border-radius: var(--radius-lg);
+      padding: var(--spacing-4) var(--spacing-8);
+      border-radius: var(--radius-full);
     }
 
     .tds-side-nav__nav-item-label {
@@ -169,7 +169,7 @@
             </button>
             <h1 class="eidas-landing__title">KYC eIDAS</h1>
           </div>
-          <button class="tds-btn tds-btn--primary tds-btn--lg app-truai-btn" type="button" data-truai-toggle aria-expanded="false">
+          <button class="app-truai-btn" type="button" data-truai-toggle aria-expanded="false">
             <span class="app-truai-btn__icon">
               <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
             </span>

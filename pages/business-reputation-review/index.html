@@ -18,23 +18,23 @@
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/select/combobox.css">
   <link rel="stylesheet" href="../../Components/_shared/dropdown-panel/dropdown-panel.css">
-  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css?v=2">
+  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css?v=4">
 
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../shared/flag-icons.css">
   <link rel="stylesheet" href="../shared/app-shell.css?v=2">
-  <link rel="stylesheet" href="../unified-intelligence-home/css/side-nav-experimental.css?v=5">
+  <link rel="stylesheet" href="../unified-intelligence-home/css/side-nav-experimental.css?v=7">
   <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
   <link rel="stylesheet" href="../shared/truai-chat.css?v=2">
   <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
   <link rel="stylesheet" href="business-reputation-review.css">
   <style>
-    button.tds-side-nav__nav-item,
-    .tds-side-nav__nav-item {
+    button.tds-side-nav__nav-item:not(.tds-side-nav__nav-item--active):not([aria-current="page"]),
+    .tds-side-nav__nav-item:not(.tds-side-nav__nav-item--active):not([aria-current="page"]) {
       height: 40px;
       min-height: 40px;
-      padding: var(--padding-xs) var(--padding-sm);
-      border-radius: var(--radius-lg);
+      padding: var(--spacing-4) var(--spacing-8);
+      border-radius: var(--radius-full);
     }
 
     .tds-side-nav__nav-item-label {
@@ -93,8 +93,8 @@
             </button>
             <h1 class="dv-flow-header__title">Business Horizon</h1>
           </div>
-          <button class="dv-flow-truai-btn" type="button" data-truai-toggle aria-expanded="false">
-            <span class="dv-flow-truai-btn__icon">
+          <button class="app-truai-btn" type="button" data-truai-toggle aria-expanded="false">
+            <span class="app-truai-btn__icon">
               <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                 <path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/>
                 <path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/>
@@ -182,7 +182,7 @@
               </div>
 
               <div class="brr-prefill" id="brr-prefill" hidden>
-                <span class="tds-tag tds-tag--xl tds-tag--positive brr-prefill__badge" aria-hidden="true">
+                <span class="tds-tag tds-tag--lg tds-tag--positive brr-prefill__badge" aria-hidden="true">
                   <span class="tds-tag__leading-visual" aria-hidden="true">
                     <svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg>
                   </span>

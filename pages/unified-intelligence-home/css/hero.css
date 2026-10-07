@@ -944,7 +944,7 @@
     line-height: 1.2;
   }
   .hero-card { padding: 16px; }
-  .truai-btn { top: 12px; right: 12px; padding: 10px 12px; font-size: 13px; }
+  .hero-zone > .app-truai-btn { top: 12px; right: 12px; }
   .person-services-grid { grid-template-columns: 1fr; }
   .plan-features { grid-template-columns: 1fr; }
   .assessment-plan-foot { flex-direction: column; align-items: stretch; }

@@ -45,14 +45,14 @@ export function TooltipCode({ basePath }: CodePageProps) {
 
 export function AnnouncementCode({ basePath }: CodePageProps) {
   return atomCode(
-    "announcement/announcement.css",
+    "alert/alert.css",
     "Announcement",
     [
-      { name: ".tds-announcement", description: "Banner container with semantic variant.", type: "<div>", required: true },
-      { name: ".tds-announcement__title", description: "Primary headline.", type: "<p>" },
-      { name: ".tds-announcement__dismiss", description: "Dismiss button — requires aria-label.", type: "<button>" },
+      { name: ".tds-alert", description: "Banner container with semantic variant.", type: "<div>", required: true },
+      { name: ".tds-alert__title", description: "Primary headline.", type: "<p>" },
+      { name: ".tds-alert__dismiss", description: "Dismiss button — requires aria-label.", type: "<button>" },
     ],
-    `<div class="tds-announcement tds-announcement--info">\n  <p class="tds-announcement__title">Title</p>\n  <button type="button" class="tds-announcement__dismiss" aria-label="Dismiss">×</button>\n</div>`,
+    `<div class="tds-alert tds-alert--info">\n  <p class="tds-alert__title">Title</p>\n  <button type="button" class="tds-alert__dismiss" aria-label="Dismiss">×</button>\n</div>`,
     basePath,
   );
 }

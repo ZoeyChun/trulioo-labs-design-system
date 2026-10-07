@@ -690,9 +690,9 @@
   var DEFAULT_SOCIAL_PROFILE = {
     handle: "meridian",
     shortName: "Meridian Apex",
-    linkedinAbout: "Management consultancy services for enterprise clients across the United States.",
-    instagramAbout: "US-based management consultancy.",
-    tiktokBiography: "Management consultancy | Delaware",
+    linkedinAbout: "Management consulting services for enterprise clients across the United States.",
+    instagramAbout: "US-based management consulting firm.",
+    tiktokBiography: "Management consulting | Delaware",
     industries: ["Management Consulting", "Professional Services"],
     specialities: ["Business advisory", "Corporate governance", "Risk consulting"],
     businessCategory: "Management Consulting",
@@ -1291,7 +1291,7 @@
             value: "Registered under NAICS 561499",
             description: "(other business support services), matching declared activity. Consistent trading history with reported clients and revenue.",
           },
-          "Registration date": "Incorporated 18 Jun 2018 (Delaware)",
+          "Registration date": "Incorporated Jun 18, 2018 (Delaware)",
           "Legal form": "Corporation",
           "Business address": "Suite 210, 1400 Market Street, Wilmington, DE 19801 — confirmed operating premises.",
           Sizing: "45 employees; $250,000 authorized / $250,000 paid-in capital.",
@@ -1322,8 +1322,8 @@
             "Social Media Links": "4 profiles found",
             "Website Status": "Live — site resolves and matches declared business activity",
             "Domain Registrar": "Cloudflare, Inc.",
-            "Domain Registered": "22 Jun 2018",
-            "Domain Expired": "22 Jun 2027",
+            "Domain Registered": "Jun 22, 2018",
+            "Domain Expired": "Jun 22, 2027",
           },
           socialLinks: {
             LinkedIn: "linkedin.com/company/brightline-services",
@@ -1427,9 +1427,9 @@
       ownershipRows: [
         { name: "Sarah Chen", subtitle: "Chief Executive Officer", pct: "100%", address: "—", status: "Verified", statusTone: "positive" },
       ],
-      officers: [{ name: "Sarah Chen", role: "Chief Executive Officer", note: "Active since 18 Jun 2018" }],
+      officers: [{ name: "Sarah Chen", role: "Chief Executive Officer", note: "Active since Jun 18, 2018" }],
       directorName: "Sarah Chen",
-      directorDate: "18 Jun 2018",
+      directorDate: "Jun 18, 2018",
       officerNote: "Beneficial owner verified through US state registry filings.",
       officerTone: "positive",
       summaryContributors: {
@@ -1572,7 +1572,7 @@
             "Two registry changes detected in the past 18 months: a registered address update and the addition of an intermediate holding entity to the ownership chain.",
           prompt: "What changed in the ownership chain?",
           findings: [
-            "Registered address updated 6 Feb 2025",
+            "Registered address updated Feb 6, 2025",
             "Intermediate holding entity added to the chain",
           ],
         },
@@ -1698,7 +1698,7 @@
             value: "Registered under NAICS 551112",
             description: "(other holding companies), a holding-company code. Trading activity is conducted through subsidiaries rather than the applying entity.",
           },
-          "Registration date": "Incorporated 4 Nov 2020 (Delaware)",
+          "Registration date": "Incorporated Nov 4, 2020 (Delaware)",
           "Legal form": "Domestic corporation",
           "Business address": "Floor 12, 200 Bellevue Parkway, Wilmington, DE 19809 — differs from the declared operating address.",
           Sizing: "12 employees; $50,000 authorized / $50,000 paid-in capital.",
@@ -1729,8 +1729,8 @@
             "Social Media Links": "4 profiles found",
             "Website Status": "Live — group-level content, limited entity detail",
             "Domain Registrar": "Network Solutions LLC",
-            "Domain Registered": "12 Nov 2020",
-            "Domain Expired": "12 Nov 2026",
+            "Domain Registered": "Nov 12, 2020",
+            "Domain Expired": "Nov 12, 2026",
           },
         },
         social: {
@@ -1829,9 +1829,9 @@
         { name: "Helix Meridian Holdings BVI Ltd.", subtitle: "Parent company", pct: "100%", address: "—", status: "Inferred", statusTone: "intermediate" },
         { name: "David Okonkwo", subtitle: "Director", pct: "—", address: "—", status: "Verified", statusTone: "positive" },
       ],
-      officers: [{ name: "David Okonkwo", role: "Director", note: "Active since 4 Nov 2020" }],
+      officers: [{ name: "David Okonkwo", role: "Director", note: "Active since Nov 4, 2020" }],
       directorName: "David Okonkwo",
-      directorDate: "04 Nov 2020",
+      directorDate: "Nov 4, 2020",
       officerNote: "Beneficial owner could not be independently verified from registry sources.",
       officerTone: "warning",
       summaryContributors: {
@@ -1878,7 +1878,7 @@
       riskLevel: "High",
       summary: "{name} returned elevated AML signals including adverse media indicators and high-risk jurisdiction exposure.",
       overviewNarrative:
-        "{name} presents elevated onboarding risk driven by a commercially dormant operating profile and opaque offshore ownership structure. Registry data confirms good standing, but no verifiable trading activity, an expired web presence, and zero-activity annual reports suggest a shell or pass-through entity rather than an active consultancy. Payment delinquencies and industry-activity mismatches further increase default and AML exposure.",
+        "{name} presents elevated onboarding risk driven by a commercially dormant operating profile and opaque offshore ownership structure. Registry data confirms good standing, but no verifiable trading activity, an expired web presence, and zero-activity annual reports suggest a shell or pass-through entity rather than an active consulting firm. Payment delinquencies and industry-activity mismatches further increase default and AML exposure.",
       sidebarSummary: {
         overview:
           "{name} is an active US corporation registered at a registered-agent address, with no verifiable trading activity and ownership routed through an offshore BVI holding.",
@@ -1901,12 +1901,12 @@
         ],
       },
       insightsSummary:
-        "{name} is an active but commercially dormant private company with no verifiable operating footprint. The profile is consistent with a shell or pass-through entity rather than a trading consultancy.",
+        "{name} is an active but commercially dormant private company with no verifiable operating footprint. The profile is consistent with a shell or pass-through entity rather than a trading consulting firm.",
       overallRisk: 79,
       registryMatch: 92,
       operationalFootprint: 18,
       entityType: "Corporation",
-      industry: "Management consultancy",
+      industry: "Management consulting",
       employees: "0",
       parentEntity: "Apex Holdings BVI Ltd.",
       signalCount: "38",
@@ -1977,8 +1977,8 @@
             "Four registry changes detected in the past 15 months, including a full legal rebrand and BRN amendment. The entity changed name twice and updated its registered address — pattern consistent with identity obfuscation.",
           prompt: "Why did this entity rebrand?",
           findings: [
-            "Legal name changed on 10 Jan 2025",
-            "Trading name updated 18 Mar 2025",
+            "Legal name changed on Jan 10, 2025",
+            "Trading name updated Mar 18, 2025",
             "BRN and registered address amended same day",
           ],
         },
@@ -2005,10 +2005,10 @@
         },
         "additional-data": {
           truai:
-            "Supplemental registry fields provide context beyond core verification. NAICS code aligns with declared consultancy activity, though alternate names reflect the recent rebrand.",
+            "Supplemental registry fields provide context beyond core verification. NAICS code aligns with declared consulting activity, though alternate names reflect the recent rebrand.",
           prompt: "Which fields changed after rebrand?",
           findings: [
-            { text: "NAICS 541611 matches management consultancy", tone: "positive" },
+            { text: "NAICS 541611 matches management consulting", tone: "positive" },
             "Previous legal name: Apex Meridian Inc.",
             { text: "EIN and state BRN on file", tone: "positive" },
           ],
@@ -2133,11 +2133,11 @@
         },
       },
       officers: [
-        { name: "Robert James Halsted", note: "Director (active since 1 Feb 2019)" },
-        { name: "Anya Voronova - Corporate Secretary", note: "(Active since 1 Feb 2019; registered at the registered-agent address)" },
+        { name: "Robert James Halsted", note: "Director (active since Feb 1, 2019)" },
+        { name: "Anya Voronova - Corporate Secretary", note: "(Active since Feb 1, 2019; registered at the registered-agent address)" },
       ],
       directorName: "Robert James Halsted",
-      directorDate: "1 Feb 2019",
+      directorDate: "Feb 1, 2019",
       officerNote: "No verifiable national ID for either officer. Full officer detail in Supporting Records.",
       officerNoteTitle: "Note",
       officerTone: "warning",
@@ -2992,7 +2992,7 @@
     var root = document.querySelector(".kyb-sidebar-summary");
     if (!root || !summaryData) return;
 
-    var overview = root.querySelector(":scope > .tds-announcement__message");
+    var overview = root.querySelector(":scope > .tds-alert__message");
     if (overview) overview.textContent = summaryData.overview;
 
     var findings = root.querySelector(".kyb-sidebar-summary__findings");
@@ -3002,14 +3002,14 @@
           var featuredClass = alert.featured ? " kyb-sidebar-summary__finding--featured" : "";
           var viewBtn = buildSidebarViewButton(alert.view);
           return (
-            '<div class="tds-announcement tds-announcement--error tds-announcement--inline kyb-sidebar-summary__finding' +
+            '<div class="tds-alert tds-alert--error tds-alert--inline kyb-sidebar-summary__finding' +
             featuredClass +
             '" role="status">' +
-            '<span class="tds-announcement__icon" aria-hidden="true">' +
+            '<span class="tds-alert__icon" aria-hidden="true">' +
             ANNOUNCEMENT_ERROR_ICON +
             "</span>" +
-            '<div class="tds-announcement__content">' +
-            '<p class="tds-announcement__message">' +
+            '<div class="tds-alert__content">' +
+            '<p class="tds-alert__message">' +
             alert.text +
             "</p>" +
             viewBtn +
@@ -3265,17 +3265,17 @@
     }
 
     var announcement = document.querySelector("[data-kyb-officer-announcement]");
-    if (!announcement) announcement = document.querySelector(".kyb-officer-block .tds-announcement");
-    var message = announcement && announcement.querySelector(".tds-announcement__message");
-    var title = announcement && announcement.querySelector(".tds-announcement__title");
+    if (!announcement) announcement = document.querySelector(".kyb-officer-block .tds-alert");
+    var message = announcement && announcement.querySelector(".tds-alert__message");
+    var title = announcement && announcement.querySelector(".tds-alert__title");
     if (announcement && message && profile.officerNote) {
       message.textContent = profile.officerNote;
       if (title) {
         title.textContent = profile.officerNoteTitle || "";
         title.hidden = !profile.officerNoteTitle;
       }
-      announcement.classList.remove("tds-announcement--warning", "tds-announcement--positive");
-      announcement.classList.add(profile.officerTone === "positive" ? "tds-announcement--positive" : "tds-announcement--warning");
+      announcement.classList.remove("tds-alert--warning", "tds-alert--positive");
+      announcement.classList.add(profile.officerTone === "positive" ? "tds-alert--positive" : "tds-alert--warning");
       announcement.hidden = false;
     } else if (announcement) {
       announcement.hidden = !profile.officerNote;
@@ -3441,7 +3441,7 @@
     var findings = getFindingTextsFromProfile(profile, "ownership") || getTabFindingTexts("ownership");
     var officerMsg = profile && profile.officerNote;
     if (!officerMsg) {
-      var officerEl = document.querySelector("[data-kyb-officer-announcement]:not([hidden]) .tds-announcement__message");
+      var officerEl = document.querySelector("[data-kyb-officer-announcement]:not([hidden]) .tds-alert__message");
       officerMsg = officerEl ? officerEl.textContent.trim() : "";
     }
 
@@ -3675,7 +3675,7 @@
     setFieldValue(
       document.getElementById("kyb-identity"),
       "Date",
-      new Intl.DateTimeFormat("en-GB", {
+      new Intl.DateTimeFormat("en-US", {
         day: "numeric",
         month: "short",
         year: "numeric",

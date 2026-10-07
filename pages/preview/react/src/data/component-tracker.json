@@ -1048,9 +1048,9 @@
       "category": "Feedback",
       "figmaStatus": "Done",
       "figmaVariants": 10,
-      "cssFile": "announcement/announcement.css",
+      "cssFile": "alert/alert.css",
       "classPrefixes": [
-        "tds-announcement"
+        "tds-alert"
       ],
       "figmaNodeId": "866:13118",
       "cssStatus": "Done",
@@ -1116,16 +1116,16 @@
       }
     },
     {
-      "id": "progress-indicator",
-      "name": "ProgressIndicator",
+      "id": "stepper",
+      "name": "Stepper",
       "category": "Progress",
       "figmaStatus": "Done",
       "figmaVariants": 18,
-      "cssFile": "progress-indicator/progress-indicator.css",
+      "cssFile": "stepper/stepper.css",
       "classPrefixes": [
-        "tds-progress-indicator"
+        "tds-stepper"
       ],
-      "subComponents": "_ProgressIndicatorItem",
+      "subComponents": "_StepperItem",
       "figmaNodeId": "1242:22104",
       "notes": "Horizontal step progress",
       "cssStatus": "Done",

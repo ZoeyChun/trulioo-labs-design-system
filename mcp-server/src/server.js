@@ -106,8 +106,8 @@ server.prompt(
             "",
             "Rules:",
             "- Use only tds-* CSS classes from this design system",
-            "- Use only semantic tokens (--text-*, --surface-*, --border-*, --padding-*, --gap-*, --margin-*, --radius-button/card/modal/section/badge)",
-            "- Never use core tokens (--color-*, --spacing-*, --radius-xs/sm/md/lg/xl) directly",
+            "- Use semantic tokens (--text-*, --surface-*, --border-*, --interactive-*) and the spacing scale (--spacing-*)",
+            "- Never use core color tokens (--color-*) directly",
             "- Follow BEM-like class naming: .tds-{component}--{variant}",
             "- Use Inter font family (var(--font-family))",
             "- Include proper ARIA attributes",
@@ -163,7 +163,7 @@ Every component MUST use the exact \`tds-*\` class names from this design system
 - Dialog: \`tds-dialog\` with \`tds-dialog__header\`, \`tds-dialog__body\`, \`tds-dialog__footer\`
 - Tabs: \`tds-tabs\` with \`tds-tab-item\`
 - Data table: \`tds-data-table\`
-- Announcement: \`tds-announcement\`
+- Alert (formerly Announcement): \`tds-alert\`
 - Accordion: \`tds-accordion\`
 - Tag: \`tds-tag\`
 - Spinner: \`tds-spinner tds-spinner--{xs|sm|md|lg|xl}\`
@@ -196,7 +196,7 @@ TDS has no generic "card" component. Build cards from tokens:
   background: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-card);
-  padding: var(--padding-xl);
+  padding: var(--spacing-24);
   box-shadow: var(--elevation-sm);
 }
 .tds-custom-card:hover {

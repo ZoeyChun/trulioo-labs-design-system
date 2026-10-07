@@ -1,25 +1,25 @@
 import { ComponentAnatomyCard } from "./ComponentAnatomyCard";
 
-export function ProgressIndicatorAnatomy() {
+export function StepperAnatomy() {
   return (
     <ComponentAnatomyCard
       desc="Horizontal or vertical step list with stateful items and connecting lines."
-      api=".tds-progress-indicator · __item"
+      api=".tds-stepper · __item"
       tag="Figma 1242:22104"
       parts={[
-        { number: 1, name: "Indicator list", api: ".tds-progress-indicator", detail: "Ordered list of steps — horizontal or vertical direction modifier." },
-        { number: 2, name: "Step item", api: ".tds-progress-indicator__item", detail: "Individual step with incomplete, current, completed, or error state." },
+        { number: 1, name: "Indicator list", api: ".tds-stepper", detail: "Ordered list of steps — horizontal or vertical direction modifier." },
+        { number: 2, name: "Step item", api: ".tds-stepper__item", detail: "Individual step with incomplete, current, completed, or error state." },
       ]}
     >
-      <ol className="tds-progress-indicator tds-progress-indicator--horizontal" style={{ maxWidth: 420 }}>
-        <li className="tds-progress-indicator__item tds-progress-indicator__item--completed">
-          <span className="tds-progress-indicator__label">Business info</span>
+      <ol className="tds-stepper tds-stepper--horizontal" style={{ maxWidth: 420 }}>
+        <li className="tds-stepper__item tds-stepper__item--completed">
+          <span className="tds-stepper__label">Business info</span>
         </li>
-        <li className="tds-progress-indicator__item tds-progress-indicator__item--current">
-          <span className="tds-progress-indicator__label">Verification</span>
+        <li className="tds-stepper__item tds-stepper__item--current">
+          <span className="tds-stepper__label">Verification</span>
         </li>
-        <li className="tds-progress-indicator__item">
-          <span className="tds-progress-indicator__label">Review</span>
+        <li className="tds-stepper__item">
+          <span className="tds-stepper__label">Review</span>
         </li>
       </ol>
     </ComponentAnatomyCard>

@@ -37,10 +37,10 @@ button.tds-side-nav__collapse-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   flex-shrink: 0;
   width: 100%;
-  padding: var(--padding-md) var(--padding-lg);
+  padding: var(--spacing-12) var(--spacing-16);
   border: none;
   border-top: 1px solid var(--border-subtle);
   border-bottom: 1px solid var(--border-subtle);
@@ -82,8 +82,8 @@ button.tds-side-nav__collapse-bar:hover {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  gap: var(--gap-md);
-  padding: calc(var(--spacing-16) + var(--spacing-4)) var(--padding-lg) var(--padding-lg);
+  gap: var(--spacing-12);
+  padding: calc(var(--spacing-16) + var(--spacing-4)) var(--spacing-16) var(--spacing-16);
   overflow: hidden;
 }
 
@@ -94,7 +94,7 @@ button.tds-side-nav__collapse-bar:hover {
 .tds-side-nav__brand {
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
   border: none;
   background: none;
   padding: 0;
@@ -169,7 +169,7 @@ button.tds-side-nav__collapse-bar:hover {
   flex: 1 1 auto;
   flex-direction: column;
   min-height: 0;
-  padding: var(--padding-xl) var(--padding-lg);
+  padding: var(--spacing-24) var(--spacing-16);
   overflow: hidden auto;
 }
 
@@ -181,14 +181,14 @@ button.tds-side-nav__collapse-bar:hover {
 .tds-side-nav__nav-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-lg);
+  gap: var(--spacing-16);
   width: 100%;
 }
 
 .tds-side-nav__nav-group {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   width: 100%;
 }
 
@@ -198,13 +198,13 @@ button.tds-side-nav__collapse-bar:hover {
 button.tds-side-nav__nav-item {
   display: flex;
   align-items: center;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
   width: 100%;
   height: 40px;
   min-height: 40px;
-  padding: var(--padding-xs) var(--padding-sm);
+  padding: var(--spacing-4) var(--spacing-8);
   border: none;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-full);
   background: none;
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
@@ -234,9 +234,13 @@ button.tds-side-nav__nav-item:hover:not(.tds-side-nav__nav-item--active):not([ar
 }
 
 .tds-side-nav__nav-item--active,
-.tds-side-nav__nav-item[aria-current="page"] {
+.tds-side-nav__nav-item[aria-current="page"],
+button.tds-side-nav__nav-item--active,
+button.tds-side-nav__nav-item[aria-current="page"],
+a.tds-side-nav__nav-item--active,
+a.tds-side-nav__nav-item[aria-current="page"] {
   height: 40px;
-  padding: var(--padding-xs) var(--padding-sm);
+  padding: var(--spacing-4) var(--spacing-8);
   border-radius: var(--radius-lg);
   background-color: var(--surface-inverse);
   color: var(--text-inverse);
@@ -253,7 +257,7 @@ button.tds-side-nav__nav-item[aria-current="page"]:hover {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   flex: 1 1 auto;
   min-width: 0;
 }
@@ -321,7 +325,7 @@ button.tds-side-nav__nav-item[aria-current="page"]:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--gap-lg);
+  gap: var(--spacing-16);
   width: 100%;
   overflow: visible;
 }
@@ -400,7 +404,7 @@ button.tds-side-nav__icon-button[aria-current="page"]:hover {
 
 .tds-side-nav__tooltip {
   position: absolute;
-  left: calc(100% + var(--gap-xs));
+  left: calc(100% + var(--spacing-4));
   top: 50%;
   transform: translateY(-50%);
   display: none;
@@ -434,7 +438,7 @@ button.tds-side-nav__icon-button:focus-visible .tds-side-nav__tooltip {
 }
 
 .tds-side-nav__tooltip-body {
-  padding: var(--padding-sm) var(--padding-md);
+  padding: var(--spacing-8) var(--spacing-12);
   border-radius: var(--radius-lg);
   background-color: var(--surface-inverse);
   font-family: var(--font-family);
@@ -450,9 +454,9 @@ button.tds-side-nav__icon-button:focus-visible .tds-side-nav__tooltip {
 .tds-side-nav__sub-nav {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-lg);
+  gap: var(--spacing-16);
   width: 100%;
-  padding: var(--padding-md);
+  padding: var(--spacing-12);
   border-radius: var(--radius-xl);
   background-color: var(--surface-neutral-02);
   box-sizing: border-box;
@@ -461,7 +465,7 @@ button.tds-side-nav__icon-button:focus-visible .tds-side-nav__tooltip {
 .tds-side-nav__section {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-md);
+  gap: var(--spacing-12);
   width: 100%;
 }
 
@@ -479,7 +483,7 @@ button.tds-side-nav__icon-button:focus-visible .tds-side-nav__tooltip {
 .tds-side-nav__section-items {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-xs);
+  gap: var(--spacing-4);
   width: 100%;
 }
 
@@ -499,10 +503,10 @@ button.tds-side-nav__sub-item,
 a.tds-side-nav__sub-item {
   display: flex;
   align-items: center;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   width: 100%;
   height: 32px;
-  padding: var(--padding-xs);
+  padding: var(--spacing-4);
   border: none;
   border-radius: 0;
   background: none;
@@ -586,23 +590,23 @@ a.tds-side-nav__sub-item:focus-visible {
   display: flex;
   flex-shrink: 0;
   width: 100%;
-  padding: var(--padding-lg) var(--padding-sm);
+  padding: var(--spacing-16) var(--spacing-8);
   box-sizing: border-box;
 }
 
 .tds-side-nav--collapsed .tds-side-nav__footer {
   justify-content: center;
-  padding: calc(var(--spacing-16) + var(--spacing-4)) var(--padding-lg) var(--padding-lg);
+  padding: calc(var(--spacing-16) + var(--spacing-4)) var(--spacing-16) var(--spacing-16);
 }
 
 .tds-side-nav__profile,
 button.tds-side-nav__profile {
   display: flex;
   align-items: center;
-  gap: var(--gap-sm);
+  gap: var(--spacing-8);
   width: 100%;
   height: 56px;
-  padding: var(--padding-sm);
+  padding: var(--spacing-8);
   border: none;
   border-radius: var(--radius-card);
   background-color: var(--surface-neutral-01);
@@ -667,7 +671,7 @@ button.tds-side-nav__profile--collapsed:hover {
 .tds-side-nav__profile-name-row {
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-xs);
+  gap: var(--spacing-4);
   min-width: 0;
 }
 
@@ -732,7 +736,7 @@ button.tds-side-nav__profile--collapsed:hover {
 
 .tds-side-nav--demo-tooltip .tds-side-nav__main {
   overflow: visible;
-  padding-top: var(--padding-xl);
+  padding-top: var(--spacing-24);
 }
 
 .tds-side-nav--demo-tooltip .tds-side-nav__icon-rail {

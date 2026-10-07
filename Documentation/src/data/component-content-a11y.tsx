@@ -37,9 +37,9 @@ import {
 } from "../components/a11y/FeedbackA11y";
 import {
   ListedProgressItemA11y,
-  ProgressIndicatorA11y,
+  StepperA11y,
   StepProgressA11y,
-} from "../components/a11y/ProgressA11y";
+} from "../components/a11y/StepperA11y";
 import {
   RiskCategoryCardA11y,
   ScoreCardA11y,
@@ -135,7 +135,7 @@ const COMPONENT_CONTENT_A11Y: Partial<Record<ComponentPageId, () => ReactNode>> 
   announcement: () => <AnnouncementA11y />,
   dialog: () => <DialogA11y />,
   accordion: () => <AccordionA11y />,
-  "progress-indicator": () => <ProgressIndicatorA11y />,
+  "stepper": () => <StepperA11y />,
   "step-progress": () => <StepProgressA11y />,
   "listed-progress-item": () => <ListedProgressItemA11y />,
   "score-gauge": () => <ScoreGaugeA11y />,

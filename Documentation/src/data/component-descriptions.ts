@@ -94,8 +94,8 @@ const COMPONENT_PAGE_DESCRIPTIONS: Partial<Record<ComponentPageId, string>> = {
     "Accordions expand and collapse dense KYB sections. Composes tags, counters, and data field lists.",
   dialog:
     "Dialogs focus attention for confirmations and multi-step tasks. Supports center modals, drawers, sheets, and full-screen layouts.",
-  "progress-indicator":
-    "Progress indicators show horizontal step progress through multi-step verification flows.",
+  "stepper":
+    "Steppers show horizontal step progress through multi-step verification flows.",
   "step-progress":
     "Step progress is a listed variant of verification step tracking. CSS is pending — refer to Figma for structure.",
   "listed-progress-item":

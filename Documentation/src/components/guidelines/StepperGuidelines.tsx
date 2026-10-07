@@ -1,35 +1,35 @@
 import { DoDontPair, GuidelineSection } from "./GuidelineDoDont";
 
-export function ProgressIndicatorGuidelines() {
+export function StepperGuidelines() {
   return (
     <div className="tds-preview__content-guidelines">
       <GuidelineSection
         title="Label every step clearly"
         lead={
           <p>
-            Progress indicators show where users are in a multi-step flow. Each step needs a short
+            Steppers show where users are in a multi-step flow. Each step needs a short
             label; mark the current step and completed steps with the correct item states.
           </p>
         }
       >
         <DoDontPair
           doPreview={
-            <ol className="tds-progress-indicator tds-progress-indicator--horizontal">
-              <li className="tds-progress-indicator__item tds-progress-indicator__item--completed">
+            <ol className="tds-stepper tds-stepper--horizontal">
+              <li className="tds-stepper__item tds-stepper__item--completed">
                 Business info
               </li>
-              <li className="tds-progress-indicator__item tds-progress-indicator__item--current">
+              <li className="tds-stepper__item tds-stepper__item--current">
                 Verification
               </li>
-              <li className="tds-progress-indicator__item">Review</li>
+              <li className="tds-stepper__item">Review</li>
             </ol>
           }
           doCaption="Use descriptive step names users recognize from the flow."
           dontPreview={
-            <ol className="tds-progress-indicator tds-progress-indicator--horizontal">
-              <li className="tds-progress-indicator__item tds-progress-indicator__item--current">1</li>
-              <li className="tds-progress-indicator__item">2</li>
-              <li className="tds-progress-indicator__item">3</li>
+            <ol className="tds-stepper tds-stepper--horizontal">
+              <li className="tds-stepper__item tds-stepper__item--current">1</li>
+              <li className="tds-stepper__item">2</li>
+              <li className="tds-stepper__item">3</li>
             </ol>
           }
           dontCaption="Don't use numbers alone — they don't explain what's happening."

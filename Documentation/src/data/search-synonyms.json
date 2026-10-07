@@ -192,7 +192,7 @@
       "validation error",
       "error text"
     ],
-    "progress-indicator": [
+    "stepper": [
       "stepper",
       "steps",
       "wizard",
@@ -1484,9 +1484,9 @@
       "overlay",
       "popup"
     ],
-    "progress indicator": [
-      "progress indicator",
-      "progress-indicator",
+    "stepper": [
+      "stepper",
+      "stepper",
       "step indicator",
       "stepper",
       "steps",
@@ -1505,9 +1505,9 @@
       "step progress",
       "step-progress"
     ],
-    "progress-indicator": [
-      "progress indicator",
-      "progress-indicator",
+    "stepper": [
+      "stepper",
+      "stepper",
       "step indicator",
       "stepper",
       "steps",
@@ -1826,8 +1826,8 @@
       "step-progress"
     ],
     "step indicator": [
-      "progress indicator",
-      "progress-indicator",
+      "stepper",
+      "stepper",
       "step indicator",
       "stepper",
       "steps",
@@ -1846,16 +1846,16 @@
       "step-progress"
     ],
     "stepper": [
-      "progress indicator",
-      "progress-indicator",
+      "stepper",
+      "stepper",
       "step indicator",
       "stepper",
       "steps",
       "wizard"
     ],
     "steps": [
-      "progress indicator",
-      "progress-indicator",
+      "stepper",
+      "stepper",
       "step indicator",
       "stepper",
       "steps",
@@ -2083,8 +2083,8 @@
       "wayfinding"
     ],
     "wizard": [
-      "progress indicator",
-      "progress-indicator",
+      "stepper",
+      "stepper",
       "step indicator",
       "stepper",
       "steps",

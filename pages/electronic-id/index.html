@@ -15,7 +15,7 @@
   <!-- Design system components -->
   <link rel="stylesheet" href="../../Components/button/button.css">
   <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
-  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../Components/alert/alert.css">
   <link rel="stylesheet" href="../../Components/select/select.css">
   <link rel="stylesheet" href="../../Components/select/combobox.css">
   <link rel="stylesheet" href="../../Components/spinner/spinner.css">
@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="../../Components/tooltip/tooltip.css">
   <link rel="stylesheet" href="../../Components/dialog/dialog.css">
   <link rel="stylesheet" href="../../Components/demo-guidance-card/demo-guidance-card.css?v=compact-1">
-  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css?v=2">
+  <link rel="stylesheet" href="../../Components/side-nav/side-nav.css?v=4">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
   <link rel="stylesheet" href="../../Components/data-table/data-table.css?v=signals-120">
   <link rel="stylesheet" href="../../Components/tabs/tabs.css">
@@ -40,7 +40,7 @@
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../shared/flag-icons.css">
   <link rel="stylesheet" href="../shared/app-shell.css?v=2">
-  <link rel="stylesheet" href="../unified-intelligence-home/css/side-nav-experimental.css?v=5">
+  <link rel="stylesheet" href="../unified-intelligence-home/css/side-nav-experimental.css?v=7">
   <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
   <link rel="stylesheet" href="../shared/truai-chat.css?v=2">
   <link rel="stylesheet" href="../document-verification/document-verification.css">
@@ -48,12 +48,12 @@
   <link rel="stylesheet" href="electronic-id.css?v=portrait-single-1">
   <style>
     /* Nav item spec — inlined because Cursor preview often skips ../../ component CSS */
-    button.tds-side-nav__nav-item,
-    .tds-side-nav__nav-item {
+    button.tds-side-nav__nav-item:not(.tds-side-nav__nav-item--active):not([aria-current="page"]),
+    .tds-side-nav__nav-item:not(.tds-side-nav__nav-item--active):not([aria-current="page"]) {
       height: 40px;
       min-height: 40px;
-      padding: var(--padding-xs) var(--padding-sm);
-      border-radius: var(--radius-lg);
+      padding: var(--spacing-4) var(--spacing-8);
+      border-radius: var(--radius-full);
     }
 
     .tds-side-nav__nav-item-label {
@@ -199,8 +199,8 @@
             </button>
             <h1 class="dv-flow-header__title">Electronic ID</h1>
           </div>
-          <button class="dv-flow-truai-btn" type="button" data-truai-toggle aria-expanded="false">
-            <span class="dv-flow-truai-btn__icon">
+          <button class="app-truai-btn" type="button" data-truai-toggle aria-expanded="false">
+            <span class="app-truai-btn__icon">
               <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
             </span>
             TruAI
@@ -585,12 +585,12 @@
                     <span class="tds-demo-guidance-card__chip-label" id="eid-guidance-chip-label">NL - iDIN</span>
                   </div>
                 </div>
-                <div class="tds-announcement tds-announcement--info tds-announcement--inline tds-demo-guidance-card__callout" role="status">
-                  <span class="tds-announcement__icon" aria-hidden="true">
+                <div class="tds-alert tds-alert--info tds-alert--inline tds-demo-guidance-card__callout" role="status">
+                  <span class="tds-alert__icon" aria-hidden="true">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.25v3.5M8 5.5h.01" stroke-linecap="round"/></svg>
                   </span>
-                  <div class="tds-announcement__content">
-                    <p class="tds-announcement__title" id="eid-guidance-callout">Select ING.</p>
+                  <div class="tds-alert__content">
+                    <p class="tds-alert__title" id="eid-guidance-callout">Select ING.</p>
                   </div>
                 </div>
                 <footer class="tds-demo-guidance-card__footer">

@@ -1,52 +1,53 @@
 /* ============================================================
-   Announcement
-   Figma: Announcement (866:13118)
+   Alert (formerly Announcement)
+   Figma: Alert (866:13118)
    Variants: warning | error | info | success | neutral
    Layout: stacked | inline
+   Option: showBorder → add .tds-alert--bordered
    ============================================================ */
 
-.tds-announcement {
+.tds-alert {
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-8);
   width: 100%;
-  padding: var(--padding-md) var(--padding-md) var(--padding-md) var(--padding-lg);
+  padding: var(--spacing-12) var(--spacing-12) var(--spacing-12) var(--spacing-16);
   border-radius: var(--radius-card);
   font-family: var(--font-family);
   box-sizing: border-box;
 }
 
-.tds-announcement--inline {
+.tds-alert--inline {
   align-items: center;
   min-height: 44px;
-  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--padding-lg);
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--spacing-16);
 }
 
 /* --- Variants --- */
 
-.tds-announcement--warning {
+.tds-alert--warning {
   background-color: var(--surface-intermediate);
 }
 
-.tds-announcement--error {
+.tds-alert--error {
   background-color: var(--surface-negative);
 }
 
-.tds-announcement--info {
+.tds-alert--info {
   background-color: var(--interactive-subtle);
 }
 
-.tds-announcement--success {
+.tds-alert--success {
   background-color: var(--surface-positive);
 }
 
-.tds-announcement--neutral {
+.tds-alert--neutral {
   background-color: var(--surface-neutral-02);
 }
 
 /* --- Icon --- */
 
-.tds-announcement__icon {
+.tds-alert__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -55,34 +56,34 @@
   height: 16px;
 }
 
-.tds-announcement__icon svg {
+.tds-alert__icon svg {
   width: 16px;
   height: 16px;
 }
 
-.tds-announcement--warning .tds-announcement__icon {
+.tds-alert--warning .tds-alert__icon {
   color: var(--icon-intermediate);
 }
 
-.tds-announcement--error .tds-announcement__icon {
+.tds-alert--error .tds-alert__icon {
   color: var(--icon-negative);
 }
 
-.tds-announcement--info .tds-announcement__icon {
+.tds-alert--info .tds-alert__icon {
   color: var(--icon-interactive);
 }
 
-.tds-announcement--success .tds-announcement__icon {
+.tds-alert--success .tds-alert__icon {
   color: var(--icon-positive);
 }
 
-.tds-announcement--neutral .tds-announcement__icon {
+.tds-alert--neutral .tds-alert__icon {
   color: var(--icon-muted);
 }
 
 /* --- Content --- */
 
-.tds-announcement__content {
+.tds-alert__content {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -91,14 +92,14 @@
   overflow: hidden;
 }
 
-.tds-announcement--inline .tds-announcement__content {
+.tds-alert--inline .tds-alert__content {
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--spacing-8);
 }
 
-.tds-announcement__title {
+.tds-alert__title {
   margin: 0;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
@@ -107,7 +108,7 @@
   color: var(--text-default);
 }
 
-.tds-announcement__message {
+.tds-alert__message {
   margin: 0;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
@@ -115,23 +116,44 @@
   color: var(--text-description);
 }
 
-.tds-announcement--inline .tds-announcement__message {
+.tds-alert--inline .tds-alert__message {
   flex: 1;
   color: var(--text-default);
 }
 
-.tds-announcement__actions {
+.tds-alert__actions {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-8);
   padding-top: var(--spacing-4);
 }
 
-.tds-announcement--inline .tds-announcement__actions {
+.tds-alert--inline .tds-alert__actions {
   padding-top: 0;
   flex-shrink: 0;
 }
 
-.tds-announcement__dismiss {
+.tds-alert__dismiss {
   flex-shrink: 0;
 }
+
+/* --- Border (Figma showBorder) ---
+   Absolutely-positioned overlay so the stroke never shifts layout. */
+
+.tds-alert--bordered {
+  position: relative;
+}
+
+.tds-alert--bordered::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.tds-alert--bordered.tds-alert--warning::after { border-color: var(--border-intermediate); }
+.tds-alert--bordered.tds-alert--error::after   { border-color: var(--border-negative); }
+.tds-alert--bordered.tds-alert--success::after { border-color: var(--border-positive); }
+.tds-alert--bordered.tds-alert--info::after    { border-color: var(--border-focus); }

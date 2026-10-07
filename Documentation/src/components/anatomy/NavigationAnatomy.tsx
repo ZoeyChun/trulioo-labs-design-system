@@ -18,7 +18,7 @@ export function SideNavAnatomy() {
     <ComponentAnatomyCard
       desc="Expanded workspace rail with brand header, Home + expandable Labs group, KYB/KYC sub-nav sections, collapse control, and profile footer."
       api=".tds-side-nav · __brand-logo · __nav-item · __sub-item · __section-title · __collapse-bar · __profile"
-      tag="Figma 1187:10323"
+      tag="Figma 5450:198391"
       parts={[
         {
           number: 1,

@@ -1,5 +1,5 @@
 {
-  "lastBuiltAt": "2026-08-10T22:05:21.849Z",
+  "lastBuiltAt": "2026-09-10T16:06:05.469Z",
   "summary": {
     "totalComponents": 52,
     "cssDone": 48,
@@ -8,8 +8,8 @@
     "figmaDone": 52,
     "figmaEligible": 52,
     "figmaDonePercent": 100,
-    "demoPageCount": 8,
-    "avgAdoptionPercent": 38,
+    "demoPageCount": 10,
+    "avgAdoptionPercent": 39,
     "builtForAdoption": 47
   },
   "pages": [
@@ -17,9 +17,9 @@
       "id": "bank-verification",
       "label": "Bank Verification",
       "path": "pages/bank-verification",
-      "used": 14,
+      "used": 19,
       "total": 47,
-      "percent": 30
+      "percent": 40
     },
     {
       "id": "preview",
@@ -30,20 +30,28 @@
       "percent": 94
     },
     {
+      "id": "device-intelligence",
+      "label": "Device Intelligence",
+      "path": "pages/device-intelligence",
+      "used": 16,
+      "total": 47,
+      "percent": 34
+    },
+    {
       "id": "document-verification",
       "label": "Document Verification",
       "path": "pages/document-verification",
-      "used": 17,
+      "used": 23,
       "total": 47,
-      "percent": 36
+      "percent": 49
     },
     {
       "id": "electronic-id",
       "label": "Electronic Id",
       "path": "pages/electronic-id",
-      "used": 17,
+      "used": 26,
       "total": 47,
-      "percent": 36
+      "percent": 55
     },
     {
       "id": "experiments-ubo-graph",
@@ -57,9 +65,17 @@
       "id": "kyb-results",
       "label": "KYB Results",
       "path": "pages/KYB Results",
-      "used": 23,
+      "used": 26,
       "total": 47,
-      "percent": 49
+      "percent": 55
+    },
+    {
+      "id": "kyc-eidas",
+      "label": "KYC eIDAS",
+      "path": "pages/KYC eIDAS",
+      "used": 4,
+      "total": 47,
+      "percent": 9
     },
     {
       "id": "kyc-form",
@@ -73,9 +89,9 @@
       "id": "unified-intelligence-home",
       "label": "Unified Intelligence Home",
       "path": "pages/unified-intelligence-home",
-      "used": 14,
+      "used": 13,
       "total": 47,
-      "percent": 30
+      "percent": 28
     }
   ],
   "components": [
@@ -95,10 +111,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": true,
         "kyc-form": true,
         "unified-intelligence-home": true
       }
@@ -117,14 +135,16 @@
       "notes": "4 variants x 3 sizes x 7 states x 2 shapes; loading swaps icon for .tds-spinner--xs",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
         "preview": true,
-        "document-verification": false,
+        "device-intelligence": true,
+        "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": true
+        "unified-intelligence-home": false
       }
     },
     {
@@ -144,10 +164,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -168,10 +190,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -193,10 +217,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -218,10 +244,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -241,10 +269,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -264,10 +294,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
         "unified-intelligence-home": false
       }
@@ -287,10 +319,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -312,10 +346,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": true,
         "unified-intelligence-home": true
       }
@@ -337,10 +373,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -363,10 +401,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
         "unified-intelligence-home": false
       }
@@ -388,12 +428,14 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -412,10 +454,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -436,10 +480,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -461,10 +507,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -485,10 +533,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": false,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": true,
         "unified-intelligence-home": false
       }
@@ -508,10 +558,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -532,10 +584,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -556,12 +610,14 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true
       }
     },
     {
@@ -581,10 +637,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
         "unified-intelligence-home": true
       }
@@ -605,10 +663,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": true
       }
@@ -627,12 +687,14 @@
       "notes": "TruAI badge; sparkles icon always required",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "device-intelligence": true,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -655,10 +717,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": true,
         "kyc-form": true,
         "unified-intelligence-home": true
       }
@@ -678,10 +742,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": true,
         "kyc-form": true,
         "unified-intelligence-home": true
       }
@@ -701,10 +767,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -725,10 +793,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "device-intelligence": false,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -749,10 +819,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "device-intelligence": false,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -774,10 +846,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -798,10 +872,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -819,10 +895,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -843,12 +921,14 @@
       "notes": "Complex composite with many sub-components",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": true
       }
@@ -866,14 +946,16 @@
       "figmaNodeId": "856:13029",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "device-intelligence": true,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": true
+        "unified-intelligence-home": false
       }
     },
     {
@@ -891,10 +973,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": true
       }
@@ -915,10 +999,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "device-intelligence": true,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": true,
+        "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -938,10 +1024,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -963,10 +1051,12 @@
       "usedInPages": {
         "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": true,
         "kyb-results": true,
+        "kyc-eidas": true,
         "kyc-form": true,
         "unified-intelligence-home": true
       }
@@ -986,10 +1076,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
         "unified-intelligence-home": true
       }
@@ -1009,10 +1101,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
-        "kyb-results": true,
+        "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1034,10 +1128,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": false,
+        "device-intelligence": false,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1048,19 +1144,21 @@
       "category": "Feedback",
       "figmaStatus": "Done",
       "figmaVariants": 10,
-      "cssFile": "announcement/announcement.css",
+      "cssFile": "alert/alert.css",
       "classPrefixes": [
-        "tds-announcement"
+        "tds-alert"
       ],
       "figmaNodeId": "866:13118",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
         "preview": true,
+        "device-intelligence": true,
         "document-verification": true,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1082,10 +1180,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1107,35 +1207,39 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": true
+        "unified-intelligence-home": false
       }
     },
     {
-      "id": "progress-indicator",
-      "name": "ProgressIndicator",
+      "id": "stepper",
+      "name": "Stepper",
       "category": "Progress",
       "figmaStatus": "Done",
       "figmaVariants": 18,
-      "cssFile": "progress-indicator/progress-indicator.css",
+      "cssFile": "stepper/stepper.css",
       "classPrefixes": [
-        "tds-progress-indicator"
+        "tds-stepper"
       ],
-      "subComponents": "_ProgressIndicatorItem",
+      "subComponents": "_StepperItem",
       "figmaNodeId": "1242:22104",
       "notes": "Horizontal step progress",
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": true,
         "unified-intelligence-home": false
       }
@@ -1154,10 +1258,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1176,10 +1282,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1199,10 +1307,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": false,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1221,10 +1331,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1245,10 +1357,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1266,10 +1380,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1291,10 +1407,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": true
       }
@@ -1316,10 +1434,12 @@
       "usedInPages": {
         "bank-verification": false,
         "preview": true,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
         "unified-intelligence-home": false
       }
@@ -1455,6 +1575,8 @@
     }
   ],
   "warnings": [
-    "Unlisted component folder in Components/: risk-category-strip"
+    "Unlisted component folder in Components/: demo-guidance-card",
+    "Unlisted component folder in Components/: risk-category-strip",
+    "Unlisted component folder in Components/: tap-indicator"
   ]
 }

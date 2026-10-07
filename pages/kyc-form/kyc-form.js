@@ -45,19 +45,19 @@
   function progressItemHTML(index, label, stateName) {
     var icon =
       stateName === "completed"
-        ? '<span class="tds-progress-indicator__icon">' + CHECK_ICON + "</span>"
-        : '<span class="tds-progress-indicator__icon"><span class="tds-progress-indicator__icon-badge">' +
+        ? '<span class="tds-stepper__icon">' + CHECK_ICON + "</span>"
+        : '<span class="tds-stepper__icon"><span class="tds-stepper__icon-badge">' +
           (index + 1) +
           "</span></span>";
     return (
-      '<li class="tds-progress-indicator__item tds-progress-indicator__item--' +
+      '<li class="tds-stepper__item tds-stepper__item--' +
       stateName +
       '">' +
-      '<div class="tds-progress-indicator__line" aria-hidden="true"></div>' +
-      '<div class="tds-progress-indicator__content">' +
-      '<div class="tds-progress-indicator__label-row">' +
+      '<div class="tds-stepper__line" aria-hidden="true"></div>' +
+      '<div class="tds-stepper__content">' +
+      '<div class="tds-stepper__label-row">' +
       icon +
-      '<span class="tds-progress-indicator__title">' +
+      '<span class="tds-stepper__title">' +
       label +
       "</span></div></div></li>"
     );

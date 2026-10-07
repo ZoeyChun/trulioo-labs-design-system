@@ -37,9 +37,9 @@ import {
 } from "../components/code/FeedbackCode";
 import {
   ListedProgressItemCode,
-  ProgressIndicatorCode,
+  StepperCode,
   StepProgressCode,
-} from "../components/code/ProgressCode";
+} from "../components/code/StepperCode";
 import {
   RiskCategoryCardCode,
   ScoreCardCode,
@@ -105,7 +105,7 @@ const COMPONENT_CONTENT_CODE: Partial<Record<ComponentPageId, (ctx: CodeContentC
   announcement: (ctx) => <AnnouncementCode {...ctx} />,
   dialog: (ctx) => <DialogCode {...ctx} />,
   accordion: (ctx) => <AccordionCode {...ctx} />,
-  "progress-indicator": (ctx) => <ProgressIndicatorCode {...ctx} />,
+  "stepper": (ctx) => <StepperCode {...ctx} />,
   "step-progress": (ctx) => <StepProgressCode {...ctx} />,
   "listed-progress-item": (ctx) => <ListedProgressItemCode {...ctx} />,
   "score-gauge": (ctx) => <ScoreGaugeCode {...ctx} />,

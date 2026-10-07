@@ -536,7 +536,7 @@
     "pageId": "announcement",
     "path": "#/components/announcement",
     "category": "Components · Feedback",
-    "keywords": "Announcement announcement announcement Feedback tds-announcement announcement/announcement.css announcement banner alert bar notice inline alert"
+    "keywords": "Announcement announcement announcement Feedback tds-alert alert/alert.css announcement banner alert bar notice inline alert"
   },
   {
     "id": "components/accordion",
@@ -561,15 +561,15 @@
     "keywords": "Dialog dialog dialog Feedback tds-dialog dialog/dialog.css dialog modal popup overlay lightbox"
   },
   {
-    "id": "components/progress-indicator",
-    "title": "ProgressIndicator",
+    "id": "components/stepper",
+    "title": "Stepper",
     "description": "Horizontal step progress",
     "section": "Components",
     "sectionId": "components",
-    "pageId": "progress-indicator",
-    "path": "#/components/progress-indicator",
+    "pageId": "stepper",
+    "path": "#/components/stepper",
     "category": "Components · Progress",
-    "keywords": "ProgressIndicator progress-indicator progress indicator Progress tds-progress-indicator progress-indicator/progress-indicator.css progress indicator stepper steps wizard step indicator"
+    "keywords": "Stepper stepper stepper Progress tds-stepper stepper/stepper.css stepper stepper steps wizard step indicator"
   },
   {
     "id": "components/step-progress",
@@ -1218,7 +1218,7 @@
     "pageId": "switch",
     "path": "#/components/switch#announcement",
     "category": "Switch · Design",
-    "keywords": "Switch switch switch Core Controls tds-switch switch/switch.css switch toggle toggle switch on off boolean flip Announcement .tds-announcement--{variant}--{stacked|inline} Inline messaging with semantic surfaces, optional actions, and dismiss (Figma 866:13118)."
+    "keywords": "Switch switch switch Core Controls tds-switch switch/switch.css switch toggle toggle switch on off boolean flip Announcement .tds-alert--{variant}--{stacked|inline} Inline messaging with semantic surfaces, optional actions, and dismiss (Figma 866:13118)."
   },
   {
     "id": "components/tag/tag-sizes",
@@ -1507,37 +1507,37 @@
     "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Dropdown panel: With colored leading visuals .tds-action-list-item__leading-visual Swatches and flags as leading visuals for color/region pickers."
   },
   {
-    "id": "components/dropdown-panel/progress-indicator-item-states",
-    "title": "Progress indicator: item states",
+    "id": "components/dropdown-panel/stepper-item-states",
+    "title": "Stepper: item states",
     "description": "Individual step anatomy with progress line, numbered badge, heading, and optional caption (Figma 1238:21018).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "dropdown-panel",
-    "path": "#/components/dropdown-panel#progress-indicator-item-states",
+    "path": "#/components/dropdown-panel#stepper-item-states",
     "category": "DropdownPanel · Design",
-    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Progress indicator: item states .tds-progress-indicator__item--{state} Individual step anatomy with progress line, numbered badge, heading, and optional caption (Figma 1238:21018)."
+    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Stepper: item states .tds-stepper__item--{state} Individual step anatomy with progress line, numbered badge, heading, and optional caption (Figma 1238:21018)."
   },
   {
-    "id": "components/dropdown-panel/progress-indicator-horizontal",
-    "title": "Progress indicator: horizontal",
+    "id": "components/dropdown-panel/stepper-horizontal",
+    "title": "Stepper: horizontal",
     "description": "Multi-step KYB flow with 4 steps: completed, current, and upcoming (Figma 1242:22104).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "dropdown-panel",
-    "path": "#/components/dropdown-panel#progress-indicator-horizontal",
+    "path": "#/components/dropdown-panel#stepper-horizontal",
     "category": "DropdownPanel · Design",
-    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Progress indicator: horizontal .tds-progress-indicator--horizontal Multi-step KYB flow with 4 steps: completed, current, and upcoming (Figma 1242:22104)."
+    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Stepper: horizontal .tds-stepper--horizontal Multi-step KYB flow with 4 steps: completed, current, and upcoming (Figma 1242:22104)."
   },
   {
-    "id": "components/dropdown-panel/progress-indicator-vertical",
-    "title": "Progress indicator: vertical",
+    "id": "components/dropdown-panel/stepper-vertical",
+    "title": "Stepper: vertical",
     "description": "Vertical layout for sidebar or narrow panels: same states and anatomy.",
     "section": "Components",
     "sectionId": "components",
     "pageId": "dropdown-panel",
-    "path": "#/components/dropdown-panel#progress-indicator-vertical",
+    "path": "#/components/dropdown-panel#stepper-vertical",
     "category": "DropdownPanel · Design",
-    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Progress indicator: vertical .tds-progress-indicator--vertical Vertical layout for sidebar or narrow panels: same states and anatomy."
+    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Stepper: vertical .tds-stepper--vertical Vertical layout for sidebar or narrow panels: same states and anatomy."
   },
   {
     "id": "components/side-nav/side-nav-nav-item",
@@ -2384,7 +2384,7 @@
     "pageId": "tracker",
     "path": "#/getting-started/tracker",
     "category": "Tracker · Feedback",
-    "keywords": "Announcement announcement announcement Feedback tds-announcement announcement/announcement.css announcement banner alert bar notice inline alert"
+    "keywords": "Announcement announcement announcement Feedback tds-alert alert/alert.css announcement banner alert bar notice inline alert"
   },
   {
     "id": "tracker/accordion",
@@ -2409,15 +2409,15 @@
     "keywords": "Dialog dialog dialog Feedback tds-dialog dialog/dialog.css dialog modal popup overlay lightbox"
   },
   {
-    "id": "tracker/progress-indicator",
-    "title": "ProgressIndicator",
+    "id": "tracker/stepper",
+    "title": "Stepper",
     "description": "Horizontal step progress",
     "section": "Getting Started",
     "sectionId": "getting-started",
     "pageId": "tracker",
     "path": "#/getting-started/tracker",
     "category": "Tracker · Progress",
-    "keywords": "ProgressIndicator progress-indicator progress indicator Progress tds-progress-indicator progress-indicator/progress-indicator.css progress indicator stepper steps wizard step indicator"
+    "keywords": "Stepper stepper stepper Progress tds-stepper stepper/stepper.css stepper stepper steps wizard step indicator"
   },
   {
     "id": "tracker/step-progress",

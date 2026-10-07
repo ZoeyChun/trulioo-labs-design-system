@@ -1,6 +1,6 @@
 import { A11yGuide, A11yItem } from "./A11yGuide";
 
-export function ProgressIndicatorA11y() {
+export function StepperA11y() {
   return (
     <A11yGuide>
       <A11yItem title="Navigation landmark">

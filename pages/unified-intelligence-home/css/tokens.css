@@ -1,31 +1,23 @@
+/* Page-only tokens for Unified Intelligence.
+   Color, type, spacing, and radius come from ../../tokens/tokens.css (2026-10-05).
+   The previous page token set is kept in tokens.legacy.css. */
+
 :root {
-  /* Figma — Unified Intelligence Experience / Design_2_VioletLight */
-  --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: "Tobias", Georgia, "Times New Roman", serif;
+  --font-ui: var(--font-family);
+  --font-display: var(--font-family-display);
   --font-founders: "Founders Grotesk", system-ui, sans-serif;
   --font-brand: var(--font-founders);
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-mono: var(--font-family-mono);
 
-  --text-primary: #172d2d;
-  --text-body: #1a1c1e;
-  --text-muted: #72777a;
-  --text-caption: #617269;
-  --text-description: #526660;
-  --text-subtle: rgba(23, 45, 45, 0.7);
-  --text-inverse: #ffffff;
-  --icon-faint: #617269;
+  --text-primary: var(--text-default);
+  --text-body: var(--text-default);
+  --text-muted: var(--text-caption);
+  --text-subtle: color-mix(in srgb, var(--text-default) 70%, transparent);
 
-  --surface-page: #ffffff;
-  --surface-neutral-02: #f4f6f4;
+  --surface-page: var(--surface-neutral-01);
   --surface-card: rgba(255, 255, 255, 0.1);
-  --surface-card-solid: #ffffff;
-  --surface-hover: #f4f6f4;
-  --surface-muted: #fafafa;
-  --surface-disabled: #d6d6d6;
-  --surface-inverse: #172d2d;
-
-  --interactive-default: #004c45;
-  --interactive-border: #004c45;
+  --surface-card-solid: var(--surface-neutral-01);
+  --interactive-border: var(--border-interactive);
 
   /* Glass — hero search card */
   --glass-frosted-bg: rgba(255, 255, 255, 0.1);
@@ -74,19 +66,12 @@
     calc(var(--glass-dispersion-offset) * -1) 0 0 rgba(255, 110, 110, 0.06),
     var(--glass-dispersion-offset) 0 0 rgba(100, 160, 255, 0.06);
 
-  --border-subtle: #dde2de;
-  --border-strong: #c5cec8;
-  --border-chip: #dde2de;
+  --border-chip: var(--border-subtle);
   --border-service: #ececef;
   --border-surface: #dbe2e1;
   --border-brand-pill: #dbe2e1;
 
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 24px;
-  --radius-pill: 100px;
+  --radius-pill: var(--radius-full);
 
   --shadow-card: 0 12px 24px 0 rgba(0, 0, 0, 0.06);
   --shadow-tab-active: 0 0 12px rgba(0, 0, 0, 0.05);
@@ -114,10 +99,7 @@
   --font-40: 40px;
   --font-56: 56px;
 
-  /* Display — design system */
-  --font-size-display-md: 2.625rem;
   --line-height-display-md: 3.125rem;
-  --font-size-display-xl: 3.375rem;
   --line-height-display-xl: 4rem;
 
   --hero-bg-image: url('../assets/hero-bg.png');
@@ -134,11 +116,4 @@
   --terminal-muted: #94a3b8;
   --terminal-accent: #22c55e;
   --terminal-prompt: #f97316;
-}
-
-.text-display-md {
-  font-family: var(--font-display);
-  font-size: var(--font-size-display-md);
-  line-height: var(--line-height-display-md);
-  font-weight: 400;
 }

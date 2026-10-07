@@ -44,7 +44,7 @@ export const COMPONENT_CHAPTER_MAP: Record<string, string> = {
   announcement: "disclosure",
   accordion: "disclosure",
   dialog: "disclosure",
-  "progress-indicator": "data",
+  "stepper": "data",
   "step-progress": "data",
   "listed-progress-item": "data",
   "score-gauge": "data",

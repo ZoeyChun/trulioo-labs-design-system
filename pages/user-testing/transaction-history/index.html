@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="../../../Components/data-table/data-table.css">
   <link rel="stylesheet" href="../../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../../Components/tooltip/tooltip.css">
-  <link rel="stylesheet" href="../../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../../Components/alert/alert.css">
   <link rel="stylesheet" href="../../../Components/dismiss-action/dismiss-action.css">
   <link rel="stylesheet" href="../../../Components/_shared/dropdown-panel/dropdown-panel.css">
   <link rel="stylesheet" href="../../../Components/button-menu/button-menu.css">
@@ -74,14 +74,14 @@
       <div class="ut-tx-page">
         <header class="ut-tx-header">
           <!-- Figma 627:74112 — Alert opens Configurations -->
-          <div class="tds-announcement tds-announcement--info tds-announcement--inline ut-tx-config-alert" role="status">
-            <span class="tds-announcement__icon" aria-hidden="true">
+          <div class="tds-alert tds-alert--info tds-alert--inline ut-tx-config-alert" role="status">
+            <span class="tds-alert__icon" aria-hidden="true">
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v4.5" stroke-linecap="round"/><circle cx="8" cy="5.25" r=".7" fill="currentColor" stroke="none"/></svg>
             </span>
-            <div class="tds-announcement__content">
-              <p class="tds-announcement__title">Test mode</p>
-              <p class="tds-announcement__message">Change the configuration to explore different setups and see how the experience changes.</p>
-              <div class="tds-announcement__actions">
+            <div class="tds-alert__content">
+              <p class="tds-alert__title">Test mode</p>
+              <p class="tds-alert__message">Change the configuration to explore different setups and see how the experience changes.</p>
+              <div class="tds-alert__actions">
                 <button type="button" class="tds-btn tds-btn--sm tds-btn--invisible" id="utTxSettingsBtn" aria-haspopup="dialog" aria-controls="utTxSettings" aria-expanded="false">Change configuration</button>
               </div>
             </div>
@@ -257,14 +257,14 @@
     </aside>
   </div>
 
-  <div class="ut-tx-toast tds-announcement tds-announcement--neutral tds-announcement--inline" id="utTxToast" role="status" aria-live="polite" hidden>
-    <span class="tds-announcement__icon" aria-hidden="true">
+  <div class="ut-tx-toast tds-alert tds-alert--neutral tds-alert--inline" id="utTxToast" role="status" aria-live="polite" hidden>
+    <span class="tds-alert__icon" aria-hidden="true">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.25v3.5M8 5.5h.01" stroke-linecap="round"/></svg>
     </span>
-    <div class="tds-announcement__content">
-      <p class="tds-announcement__title" id="utTxToastTitle">Transaction ID copied</p>
+    <div class="tds-alert__content">
+      <p class="tds-alert__title" id="utTxToastTitle">Transaction ID copied</p>
     </div>
-    <button type="button" class="tds-dismiss tds-dismiss--sm tds-announcement__dismiss" id="utTxToastDismiss" aria-label="Dismiss">
+    <button type="button" class="tds-dismiss tds-dismiss--sm tds-alert__dismiss" id="utTxToastDismiss" aria-label="Dismiss">
       <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
     </button>
   </div>

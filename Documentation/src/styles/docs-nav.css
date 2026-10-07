@@ -153,7 +153,7 @@
   max-height: 80px;
   opacity: 1;
   pointer-events: auto;
-  border-bottom-color: color-mix(in srgb, var(--border-divider) 55%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--border-subtle) 55%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -376,7 +376,7 @@
   left: auto;
   width: 100%;
   max-width: 288px;
-  margin-top: var(--gap-xs);
+  margin-top: var(--spacing-4);
 }
 
 .tds-guideline-destructive-item {

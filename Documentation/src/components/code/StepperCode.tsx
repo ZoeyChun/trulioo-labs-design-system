@@ -21,7 +21,7 @@ function figmaOnlyCode(componentId: ComponentPageId, basePath: string) {
   );
 }
 
-export function ProgressIndicatorCode({ basePath }: CodePageProps) {
+export function StepperCode({ basePath }: CodePageProps) {
   return (
     <ComponentCodeLayout
       basePath={basePath}
@@ -31,17 +31,17 @@ export function ProgressIndicatorCode({ basePath }: CodePageProps) {
       ]}
     >
       <CodeSection title="Install" id="install">
-        <CodeBlock code={`@import 'trulioo-ds/Components/progress-indicator/progress-indicator.css';`} />
+        <CodeBlock code={`@import 'trulioo-ds/Components/stepper/stepper.css';`} />
         <CodeBlock
-          code={`<ol class="tds-progress-indicator tds-progress-indicator--horizontal">\n  <li class="tds-progress-indicator__item tds-progress-indicator__item--current">Step</li>\n</ol>`}
+          code={`<ol class="tds-stepper tds-stepper--horizontal">\n  <li class="tds-stepper__item tds-stepper__item--current">Step</li>\n</ol>`}
         />
       </CodeSection>
       <CodeSection title="Base class" id="base">
         <PropsTable
-          title="ProgressIndicator classes"
+          title="Stepper classes"
           props={[
-            { name: ".tds-progress-indicator", description: "Step list container.", type: "<ol>", required: true },
-            { name: ".tds-progress-indicator__item", description: "Individual step with state modifiers.", type: "<li>" },
+            { name: ".tds-stepper", description: "Step list container.", type: "<ol>", required: true },
+            { name: ".tds-stepper__item", description: "Individual step with state modifiers.", type: "<li>" },
           ]}
         />
       </CodeSection>

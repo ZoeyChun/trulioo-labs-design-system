@@ -115,7 +115,7 @@
   function setOpen(isOpen) {
     var dialog = ensureDialog();
     var input = document.getElementById('truaiInput');
-    var openBtns = document.querySelectorAll('.truai-btn');
+    var openBtns = document.querySelectorAll('.app-truai-btn');
 
     if (isOpen) {
       openDialog(dialog);
@@ -163,7 +163,7 @@
 
     var dialog = ensureDialog();
 
-    document.querySelectorAll('.truai-btn').forEach(function (btn) {
+    document.querySelectorAll('.app-truai-btn').forEach(function (btn) {
       btn.setAttribute('aria-controls', 'truaiPanel');
       if (!btn.getAttribute('aria-expanded')) btn.setAttribute('aria-expanded', 'false');
     });
@@ -177,7 +177,7 @@
     dialog.addEventListener('close', function () {
       dialog.classList.remove('open');
       document.documentElement.classList.remove('truai-open');
-      document.querySelectorAll('.truai-btn').forEach(function (btn) {
+      document.querySelectorAll('.app-truai-btn').forEach(function (btn) {
         btn.classList.remove('is-hidden');
         btn.setAttribute('aria-expanded', 'false');
       });
@@ -189,7 +189,7 @@
     });
 
     document.addEventListener('click', function (e) {
-      if (e.target.closest('.truai-btn')) {
+      if (e.target.closest('.app-truai-btn')) {
         e.preventDefault();
         setOpen(true);
         return;

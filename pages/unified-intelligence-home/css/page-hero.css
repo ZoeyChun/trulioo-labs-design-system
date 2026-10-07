@@ -1,7 +1,7 @@
 /* Shared page header — Labs, History, etc. */
 
-.labs-main .truai-btn,
-.history-main .truai-btn {
+.labs-main > .app-truai-btn,
+.history-main > .app-truai-btn {
   position: absolute;
   top: 25px;
   right: 24px;

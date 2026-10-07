@@ -9,8 +9,8 @@
 .tds-button-group {
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-xs);
-  padding: var(--padding-xs);
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
   background-color: var(--surface-neutral-02);
   border-radius: var(--radius-card);
 }

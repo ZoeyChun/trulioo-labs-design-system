@@ -61,7 +61,7 @@
 .tds-field-validation {
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-xs);
+  gap: var(--spacing-4);
   font-family: var(--font-family);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
@@ -152,7 +152,7 @@
   min-width: 0;
   max-width: calc(100vw - var(--spacing-32));
   max-height: 466px;
-  padding: var(--padding-sm);
+  padding: var(--spacing-8);
   background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
@@ -206,7 +206,7 @@
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   font-weight: var(--font-weight-regular);
-  padding: 6px var(--padding-xs);
+  padding: 6px var(--spacing-4);
   box-sizing: border-box;
 }
 
@@ -235,7 +235,7 @@
   height: 30px;
   min-height: 30px;
   max-height: 30px;
-  padding: 0 var(--padding-xs);
+  padding: 0 var(--spacing-4);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
 }
@@ -264,7 +264,7 @@
 /* --- Header (GroupHeading) --- */
 
 .tds-dropdown-panel__header {
-  padding: var(--padding-xs);
+  padding: var(--spacing-4);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
   font-weight: var(--font-weight-regular);
@@ -277,7 +277,7 @@
 .tds-dropdown-panel__toolbar .tds-btn--link {
   display: block;
   width: 100%;
-  padding: var(--padding-xs);
+  padding: var(--spacing-4);
   border: none;
   background: none;
   font-family: var(--font-family);
@@ -309,15 +309,14 @@
 .tds-dropdown-panel__divider {
   height: 1px;
   margin: var(--spacing-4) 0;
-  background-color: var(--border-divider);
+  background-color: var(--border-subtle);
 }
 
 /* --- tag --- */
 /* ============================================================
    Tag
    Types:  default | positive | intermediate | negative
-   Sizes:  small | medium | large | xlarge
-   States: default
+   Sizes:  small | medium | large
    Options: leadingVisual, removable
    ============================================================ */
 
@@ -342,25 +341,18 @@
 }
 
 .tds-tag--md,
-.tds-tag:not([class*="tds-tag--sm"]):not([class*="tds-tag--lg"]):not([class*="tds-tag--xl"]) {
-  height: 24px;
-  padding: var(--spacing-4) var(--spacing-8);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-}
-
-.tds-tag--lg {
+.tds-tag:not([class*="tds-tag--sm"]):not([class*="tds-tag--lg"]) {
   height: 26px;
   padding: var(--spacing-4) var(--spacing-8);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
 }
 
-.tds-tag--xl {
-  height: 28px;
-  padding: var(--spacing-4) var(--spacing-12);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
+.tds-tag--lg {
+  height: 34px;
+  padding: var(--spacing-8) var(--spacing-12);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
 }
 
 /* Removable: tighter right padding for dismiss button */
@@ -376,12 +368,7 @@
 
 .tds-tag--removable.tds-tag--lg,
 .tds-tag--lg.tds-tag--removable {
-  height: 32px;
-}
-
-.tds-tag--removable.tds-tag--xl,
-.tds-tag--xl.tds-tag--removable {
-  height: 32px;
+  height: 34px;
 }
 
 /* --- Type: Default --- */
@@ -459,7 +446,6 @@
   margin-left: var(--spacing-2);
   border: none;
   background: none;
-  color: inherit;
   cursor: pointer;
   border-radius: var(--radius-full);
   padding: 0;
@@ -468,10 +454,15 @@
   transition: opacity 0.15s ease, background-color 0.15s ease;
 }
 
+/* Dismiss icon tint per type (Figma: icon/faint, icon/positive, icon/intermediate, icon/negative) */
+.tds-tag__remove { color: var(--icon-faint); }
+.tds-tag--positive .tds-tag__remove { color: var(--icon-positive); }
+.tds-tag--intermediate .tds-tag__remove { color: var(--icon-intermediate); }
+.tds-tag--negative .tds-tag__remove { color: var(--icon-negative); }
+
 /* Square frames per size — width always equals height */
 .tds-tag--sm .tds-tag__remove { width: 16px; height: 16px; }
 .tds-tag--lg .tds-tag__remove { width: 20px; height: 20px; }
-.tds-tag--xl .tds-tag__remove { width: 20px; height: 20px; }
 
 .tds-tag__remove:hover {
   opacity: 1;

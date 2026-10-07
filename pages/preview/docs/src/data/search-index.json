@@ -536,7 +536,7 @@
     "pageId": "announcement",
     "path": "#/components/announcement",
     "category": "Components · Feedback",
-    "keywords": "Announcement announcement announcement Feedback tds-announcement announcement/announcement.css announcement banner alert bar notice inline alert"
+    "keywords": "Announcement announcement announcement Feedback tds-alert alert/alert.css announcement banner alert bar notice inline alert"
   },
   {
     "id": "components/accordion",
@@ -561,15 +561,15 @@
     "keywords": "Dialog dialog dialog Feedback tds-dialog dialog/dialog.css dialog modal popup overlay lightbox"
   },
   {
-    "id": "components/progress-indicator",
-    "title": "ProgressIndicator",
+    "id": "components/stepper",
+    "title": "Stepper",
     "description": "Horizontal step progress",
     "section": "Components",
     "sectionId": "components",
-    "pageId": "progress-indicator",
-    "path": "#/components/progress-indicator",
+    "pageId": "stepper",
+    "path": "#/components/stepper",
     "category": "Components · Progress",
-    "keywords": "ProgressIndicator progress-indicator progress indicator Progress tds-progress-indicator progress-indicator/progress-indicator.css progress indicator stepper steps wizard step indicator"
+    "keywords": "Stepper stepper stepper Progress tds-stepper stepper/stepper.css stepper stepper steps wizard step indicator"
   },
   {
     "id": "components/step-progress",
@@ -712,7 +712,7 @@
     "pageId": "button",
     "path": "#/components/button#loading",
     "category": "Button · Design",
-    "keywords": "Button button button Core Controls tds-btn button/button.css button btn cta action button submit button Loading .tds-btn--loading · .tds-spinner--sm Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225)."
+    "keywords": "Button button button Core Controls tds-btn button/button.css button btn cta action button submit button Loading .tds-btn--loading · .tds-spinner--{xs|sm} Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225)."
   },
   {
     "id": "components/spinner/loading",
@@ -723,7 +723,7 @@
     "pageId": "spinner",
     "path": "#/components/spinner#loading",
     "category": "Spinner · Design",
-    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Loading .tds-btn--loading · .tds-spinner--sm Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225)."
+    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Loading .tds-btn--loading · .tds-spinner--{xs|sm} Spinner boolean replaces trailing slots while an action is pending (Figma 96:2225)."
   },
   {
     "id": "components/button/button-group",
@@ -761,13 +761,13 @@
   {
     "id": "components/spinner/spinner",
     "title": "Spinner",
-    "description": "Standalone loading indicator: four sizes with optional label (Figma 2092:18230).",
+    "description": "Standalone loading indicator: five sizes with optional label (Figma 2092:18230).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "spinner",
     "path": "#/components/spinner#spinner",
     "category": "Spinner · Design",
-    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Spinner .tds-spinner--{xs|sm|md|lg|xl} · .tds-spinner--negative · .tds-spinner-block Standalone loading indicator: four sizes with optional label (Figma 2092:18230)."
+    "keywords": "Spinner spinner spinner Core Controls tds-spinner tds-spinner-block spinner/spinner.css spinner loading loader busy indicator progress spinner Spinner .tds-spinner--{xs|sm|md|lg|xl} · .tds-spinner--negative · .tds-spinner-block--on-dark Standalone loading indicator: five sizes with optional label (Figma 2092:18230)."
   },
   {
     "id": "components/button/button-menu",
@@ -1218,7 +1218,7 @@
     "pageId": "switch",
     "path": "#/components/switch#announcement",
     "category": "Switch · Design",
-    "keywords": "Switch switch switch Core Controls tds-switch switch/switch.css switch toggle toggle switch on off boolean flip Announcement .tds-announcement--{variant}--{stacked|inline} Inline messaging with semantic surfaces, optional actions, and dismiss (Figma 866:13118)."
+    "keywords": "Switch switch switch Core Controls tds-switch switch/switch.css switch toggle toggle switch on off boolean flip Announcement .tds-alert--{variant}--{stacked|inline} Inline messaging with semantic surfaces, optional actions, and dismiss (Figma 866:13118)."
   },
   {
     "id": "components/tag/tag-sizes",
@@ -1267,24 +1267,24 @@
   {
     "id": "components/tag/ai-tag",
     "title": "AI tag",
-    "description": "TruAI badge with required sparkles icon: small and medium sizes, rest and hover states (Figma 1821:33907).",
+    "description": "TruAI badge with required sparkles icon: small and medium sizes (Figma 1821:33907).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "tag",
     "path": "#/components/tag#ai-tag",
     "category": "Tag · Design",
-    "keywords": "Tag tag tag Shared Atoms tds-tag _shared/tag/tag.css tag chip pill label tag AI tag .tds-ai-tag · .tds-ai-tag--{sm|md} TruAI badge with required sparkles icon: small and medium sizes, rest and hover states (Figma 1821:33907)."
+    "keywords": "Tag tag tag Shared Atoms tds-tag _shared/tag/tag.css tag chip pill label tag AI tag .tds-ai-tag · .tds-ai-tag--{sm|md} TruAI badge with required sparkles icon: small and medium sizes (Figma 1821:33907)."
   },
   {
     "id": "components/ai-tag/ai-tag",
     "title": "AI tag",
-    "description": "TruAI badge with required sparkles icon: small and medium sizes, rest and hover states (Figma 1821:33907).",
+    "description": "TruAI badge with required sparkles icon: small and medium sizes (Figma 1821:33907).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "ai-tag",
     "path": "#/components/ai-tag#ai-tag",
     "category": "AITag · Design",
-    "keywords": "AITag ai-tag ai tag Data Display tds-ai-tag ai-tag/ai-tag.css ai tag ai chip ai label ai badge AI tag .tds-ai-tag · .tds-ai-tag--{sm|md} TruAI badge with required sparkles icon: small and medium sizes, rest and hover states (Figma 1821:33907)."
+    "keywords": "AITag ai-tag ai tag Data Display tds-ai-tag ai-tag/ai-tag.css ai tag ai chip ai label ai badge AI tag .tds-ai-tag · .tds-ai-tag--{sm|md} TruAI badge with required sparkles icon: small and medium sizes (Figma 1821:33907)."
   },
   {
     "id": "components/tag/counter-label-primary",
@@ -1507,37 +1507,37 @@
     "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Dropdown panel: With colored leading visuals .tds-action-list-item__leading-visual Swatches and flags as leading visuals for color/region pickers."
   },
   {
-    "id": "components/dropdown-panel/progress-indicator-item-states",
-    "title": "Progress indicator: item states",
+    "id": "components/dropdown-panel/stepper-item-states",
+    "title": "Stepper: item states",
     "description": "Individual step anatomy with progress line, numbered badge, heading, and optional caption (Figma 1238:21018).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "dropdown-panel",
-    "path": "#/components/dropdown-panel#progress-indicator-item-states",
+    "path": "#/components/dropdown-panel#stepper-item-states",
     "category": "DropdownPanel · Design",
-    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Progress indicator: item states .tds-progress-indicator__item--{state} Individual step anatomy with progress line, numbered badge, heading, and optional caption (Figma 1238:21018)."
+    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Stepper: item states .tds-stepper__item--{state} Individual step anatomy with progress line, numbered badge, heading, and optional caption (Figma 1238:21018)."
   },
   {
-    "id": "components/dropdown-panel/progress-indicator-horizontal",
-    "title": "Progress indicator: horizontal",
+    "id": "components/dropdown-panel/stepper-horizontal",
+    "title": "Stepper: horizontal",
     "description": "Multi-step KYB flow with 4 steps: completed, current, and upcoming (Figma 1242:22104).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "dropdown-panel",
-    "path": "#/components/dropdown-panel#progress-indicator-horizontal",
+    "path": "#/components/dropdown-panel#stepper-horizontal",
     "category": "DropdownPanel · Design",
-    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Progress indicator: horizontal .tds-progress-indicator--horizontal Multi-step KYB flow with 4 steps: completed, current, and upcoming (Figma 1242:22104)."
+    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Stepper: horizontal .tds-stepper--horizontal Multi-step KYB flow with 4 steps: completed, current, and upcoming (Figma 1242:22104)."
   },
   {
-    "id": "components/dropdown-panel/progress-indicator-vertical",
-    "title": "Progress indicator: vertical",
+    "id": "components/dropdown-panel/stepper-vertical",
+    "title": "Stepper: vertical",
     "description": "Vertical layout for sidebar or narrow panels: same states and anatomy.",
     "section": "Components",
     "sectionId": "components",
     "pageId": "dropdown-panel",
-    "path": "#/components/dropdown-panel#progress-indicator-vertical",
+    "path": "#/components/dropdown-panel#stepper-vertical",
     "category": "DropdownPanel · Design",
-    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Progress indicator: vertical .tds-progress-indicator--vertical Vertical layout for sidebar or narrow panels: same states and anatomy."
+    "keywords": "DropdownPanel dropdown-panel dropdown panel Shared Atoms tds-dropdown-panel _shared/dropdown-panel/dropdown-panel.css dropdown panel menu panel options menu listbox menu Stepper: vertical .tds-stepper--vertical Vertical layout for sidebar or narrow panels: same states and anatomy."
   },
   {
     "id": "components/side-nav/side-nav-nav-item",
@@ -1597,13 +1597,13 @@
   {
     "id": "components/side-nav/side-nav-expanded",
     "title": "Side nav: Expanded",
-    "description": "Full workspace rail with brand header, expandable Labs group, KYB/KYC sections, and profile footer (Figma 1187:10323).",
+    "description": "Full workspace rail with brand header, expandable Labs group, KYB/KYC sections, and profile footer (Figma 5450:198391 · 1187:10323).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "side-nav",
     "path": "#/components/side-nav#side-nav-expanded",
     "category": "SideNav · Design",
-    "keywords": "SideNav side-nav side nav Navigation tds-side-nav tds-side-nav-preview side-nav/side-nav.css side nav sidebar side navigation nav rail left nav Side nav: Expanded .tds-side-nav · .tds-side-nav--expanded Full workspace rail with brand header, expandable Labs group, KYB/KYC sections, and profile footer (Figma 1187:10323)."
+    "keywords": "SideNav side-nav side nav Navigation tds-side-nav tds-side-nav-preview side-nav/side-nav.css side nav sidebar side navigation nav rail left nav Side nav: Expanded .tds-side-nav · .tds-side-nav--expanded Full workspace rail with brand header, expandable Labs group, KYB/KYC sections, and profile footer (Figma 5450:198391 · 1187:10323)."
   },
   {
     "id": "components/side-nav/side-nav-collapsed",
@@ -1630,13 +1630,13 @@
   {
     "id": "components/accordion/anatomy",
     "title": "Anatomy",
-    "description": "Boolean slots from Figma: leadingIcon (left), tags · action · trailingIcon · counter · chevron (right).",
+    "description": "Boolean slots from Figma: leadingIcon (left), title + optional subtext, tags · action · trailingIcon · counter · chevron (right).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "accordion",
     "path": "#/components/accordion#anatomy",
     "category": "Accordion · Design",
-    "keywords": "Accordion accordion accordion Containers tds-accordion accordion/accordion.css accordion collapse expandable disclosure Anatomy .tds-accordion · __header · __content Boolean slots from Figma: leadingIcon (left), tags · action · trailingIcon · counter · chevron (right)."
+    "keywords": "Accordion accordion accordion Containers tds-accordion accordion/accordion.css accordion collapse expandable disclosure Anatomy .tds-accordion · __header · __content Boolean slots from Figma: leadingIcon (left), title + optional subtext, tags · action · trailingIcon · counter · chevron (right)."
   },
   {
     "id": "components/accordion/sizes",
@@ -1648,6 +1648,17 @@
     "path": "#/components/accordion#sizes",
     "category": "Accordion · Design",
     "keywords": "Accordion accordion accordion Containers tds-accordion accordion/accordion.css accordion collapse expandable disclosure Sizes .tds-accordion--{sm|md|lg} Small (12px pad), medium (16px), large (20px): title scales heading/xs → heading/sm → heading/md."
+  },
+  {
+    "id": "components/accordion/subtext",
+    "title": "Subtext",
+    "description": "Optional description below the title: 4px gap inside .tds-accordion__title-group . Subtext scales body/xs (sm, md) or body/sm (lg).",
+    "section": "Components",
+    "sectionId": "components",
+    "pageId": "accordion",
+    "path": "#/components/accordion#subtext",
+    "category": "Accordion · Design",
+    "keywords": "Accordion accordion accordion Containers tds-accordion accordion/accordion.css accordion collapse expandable disclosure Subtext .tds-accordion__title-group · __subtext Optional description below the title: 4px gap inside .tds-accordion__title-group . Subtext scales body/xs (sm, md) or body/sm (lg)."
   },
   {
     "id": "components/accordion/interaction-states",
@@ -1861,13 +1872,13 @@
   {
     "id": "components/data-table/table-footer",
     "title": "Table footer",
-    "description": "Row counter and pagination controls.",
+    "description": "Row counter and pagination controls (Figma 346:12346).",
     "section": "Components",
     "sectionId": "components",
     "pageId": "data-table",
     "path": "#/components/data-table#table-footer",
     "category": "DataTable · Design",
-    "keywords": "DataTable data-table data table Data Display tds-data-table tds-data-table-container data-table/data-table.css data table table grid data grid results table Table footer .tds-data-table__footer Row counter and pagination controls."
+    "keywords": "DataTable data-table data table Data Display tds-data-table tds-data-table-container data-table/data-table.css data table table grid data grid results table Table footer .tds-data-table__footer Row counter and pagination controls (Figma 346:12346)."
   },
   {
     "id": "components/data-table/ownership-table",
@@ -2373,7 +2384,7 @@
     "pageId": "tracker",
     "path": "#/getting-started/tracker",
     "category": "Tracker · Feedback",
-    "keywords": "Announcement announcement announcement Feedback tds-announcement announcement/announcement.css announcement banner alert bar notice inline alert"
+    "keywords": "Announcement announcement announcement Feedback tds-alert alert/alert.css announcement banner alert bar notice inline alert"
   },
   {
     "id": "tracker/accordion",
@@ -2398,15 +2409,15 @@
     "keywords": "Dialog dialog dialog Feedback tds-dialog dialog/dialog.css dialog modal popup overlay lightbox"
   },
   {
-    "id": "tracker/progress-indicator",
-    "title": "ProgressIndicator",
+    "id": "tracker/stepper",
+    "title": "Stepper",
     "description": "Horizontal step progress",
     "section": "Getting Started",
     "sectionId": "getting-started",
     "pageId": "tracker",
     "path": "#/getting-started/tracker",
     "category": "Tracker · Progress",
-    "keywords": "ProgressIndicator progress-indicator progress indicator Progress tds-progress-indicator progress-indicator/progress-indicator.css progress indicator stepper steps wizard step indicator"
+    "keywords": "Stepper stepper stepper Progress tds-stepper stepper/stepper.css stepper stepper steps wizard step indicator"
   },
   {
     "id": "tracker/step-progress",

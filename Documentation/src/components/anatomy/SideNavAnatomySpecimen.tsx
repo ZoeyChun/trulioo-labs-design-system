@@ -42,7 +42,24 @@ function subItemIcon() {
   );
 }
 
-/** Full expanded SideNav markup for the anatomy diagram (Figma 1187:10323). */
+const KYB_SUB_ITEMS = [
+  "Business Reputation",
+  "Policy Review",
+  "KYB Self-Serve",
+  "UBO Agent",
+  "Deep Search",
+  "Orchestration Agent",
+];
+
+const KYC_SUB_ITEMS = [
+  "KYC Documents",
+  "Bank Verification",
+  "Electronic ID",
+  "eIDAS compliant KYC",
+  "Device Intelligence",
+];
+
+/** Full expanded SideNav markup for the anatomy diagram (Figma 5450:198391 · 1187:10323). */
 export function SideNavAnatomySpecimen() {
   return (
     <div className="tds-side-nav-preview">
@@ -87,18 +104,12 @@ export function SideNavAnatomySpecimen() {
                 <div className="tds-side-nav__section">
                   <div className="tds-side-nav__section-title">KYB</div>
                   <div className="tds-side-nav__section-items">
-                    <button type="button" className="tds-side-nav__sub-item">
-                      {subItemIcon()}
-                      <span className="tds-side-nav__sub-item-text">UBO Agent</span>
-                    </button>
-                    <button type="button" className="tds-side-nav__sub-item">
-                      {subItemIcon()}
-                      <span className="tds-side-nav__sub-item-text">Policy Review</span>
-                    </button>
-                    <button type="button" className="tds-side-nav__sub-item">
-                      {subItemIcon()}
-                      <span className="tds-side-nav__sub-item-text">Deep Search</span>
-                    </button>
+                    {KYB_SUB_ITEMS.map((label) => (
+                      <button key={label} type="button" className="tds-side-nav__sub-item">
+                        {subItemIcon()}
+                        <span className="tds-side-nav__sub-item-text">{label}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
 
@@ -107,22 +118,20 @@ export function SideNavAnatomySpecimen() {
                 <div className="tds-side-nav__section">
                   <div className="tds-side-nav__section-title">KYC</div>
                   <div className="tds-side-nav__section-items">
-                    <button
-                      type="button"
-                      className="tds-side-nav__sub-item tds-side-nav__sub-item--selected"
-                      aria-current="page"
-                    >
-                      {subItemIcon()}
-                      <span className="tds-side-nav__sub-item-text">Document Verification</span>
-                    </button>
-                    <button type="button" className="tds-side-nav__sub-item">
-                      {subItemIcon()}
-                      <span className="tds-side-nav__sub-item-text">Bank Verification</span>
-                    </button>
-                    <button type="button" className="tds-side-nav__sub-item">
-                      {subItemIcon()}
-                      <span className="tds-side-nav__sub-item-text">Electronic ID</span>
-                    </button>
+                    {KYC_SUB_ITEMS.map((label) => {
+                      const selected = label === "KYC Documents";
+                      return (
+                        <button
+                          key={label}
+                          type="button"
+                          className={`tds-side-nav__sub-item${selected ? " tds-side-nav__sub-item--selected" : ""}`}
+                          aria-current={selected ? "page" : undefined}
+                        >
+                          {subItemIcon()}
+                          <span className="tds-side-nav__sub-item-text">{label}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
