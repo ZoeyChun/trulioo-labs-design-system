@@ -335,8 +335,15 @@
       if (panelFilters.types.indexOf(item.type) === -1) return false;
     }
     if (panelFilters.user) {
-      if (panelFilters.user === "Jane Doe" && item.name !== "Jane Doe") return false;
-      if (panelFilters.user === "API User" && item.source !== "API") return false;
+      if (panelFilters.user === "ABC-Service-Worker-1675118759" && item.source !== "Workflow") {
+        return false;
+      }
+      if (panelFilters.user === "Test_API_Key" && item.source !== "API") {
+        return false;
+      }
+      if (panelFilters.user === "Pria_K_Prod" && item.source !== "Portal") {
+        return false;
+      }
     }
     if (panelFilters.watchlist.length) {
       var watch = watchlistBucket(item);
