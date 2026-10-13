@@ -1,0 +1,614 @@
+/* ============================================================
+   02 — PAGE  ·  left column
+   ============================================================
+   Owns: side rail, workspace header, Traffic hero, action cards,
+         Recent transactions, and their entrance delays.
+   Prefix: v2-
+   Scope:  everything inside .v2-content (plus .v2-rail).
+
+   Do not style .v2-stage, .v2-panel-slot, .ai-*, or the
+   [data-truai] states — those belong to 01-shell / 03-truai.
+   ============================================================ */
+
+/* ------------------------------------------------------------------
+   Side rail — 72px, right hairline
+   ------------------------------------------------------------------ */
+
+.v2-rail {
+  display: flex;
+  flex: 0 0 72px;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 72px;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.v2-rail__header {
+  display: flex;
+  justify-content: center;
+  padding: 20px var(--padding-lg) var(--padding-lg);
+}
+
+.v2-rail__logo {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--interactive-default);
+}
+
+.v2-rail__main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-xl) var(--padding-lg);
+}
+
+.v2-rail__item {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+
+.v2-rail__item:hover {
+  color: var(--icon-default);
+  background: var(--surface-neutral-02);
+}
+
+.v2-rail__item[aria-current="page"],
+.v2-rail__item[aria-current="page"]:hover {
+  color: var(--icon-inverse);
+  background: var(--surface-inverse);
+}
+
+.v2-rail__item svg { width: 16px; height: 16px; }
+
+.v2-rail__collapse {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md) var(--padding-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.v2-rail__collapse button {
+  display: grid;
+  place-items: center;
+  width: 24px; height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+}
+
+.v2-rail__collapse svg { width: 16px; height: 16px; }
+
+.v2-rail__user {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md);
+}
+
+.v2-rail__avatar {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+  color: var(--text-inverse);
+  background: var(--interactive-default);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------
+   Workspace header
+   ------------------------------------------------------------------ */
+
+.v2-org {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.v2-org__mark {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-inverse);
+  background: var(--color-neutral-100);
+}
+
+.v2-org__mark svg { width: 16px; height: 16px; }
+
+.v2-org__name {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--color-neutral-100);
+}
+
+/* Environment tag. The shipped Tag ships a 16px leading-visual slot; the
+   node uses an 8px dot, so only the slot box is narrowed here. */
+.v2-org__dot {
+  width: 8px;
+  height: 8px;
+  margin-right: var(--spacing-4);
+}
+
+.v2-org__dot img { display: block; }
+
+/* ------------------------------------------------------------------
+   Traffic by Service — dark teal hero
+   ------------------------------------------------------------------ */
+
+.v2-traffic {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-24);
+  flex: 0 0 auto;
+  padding: var(--spacing-24);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+
+  /* Node: bg-gradient-to-t from-[#dbf0df] 76.483% to-[#8ac8a2] 106.77% */
+  background: linear-gradient(to top, #dbf0df 76.483%, #8ac8a2 106.77%);
+}
+
+/* The node layers a 4x4 mesh shader at 10% over that base — warm along the
+   top edge, cool along the bottom. The shader needs WebGPU, so this is the
+   same mesh rebuilt from its own control-point colours as stacked radials.
+   Kept at the node's 10% so it reads as grain, not as a second gradient. */
+.v2-traffic__texture {
+  position: absolute;
+  inset: 0;
+  opacity: 0.10;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 70% at 0% 0%,   rgb(255,107,107) 0%, transparent 70%),
+    radial-gradient(55% 65% at 33% 0%,  rgb(255,163,107) 0%, transparent 70%),
+    radial-gradient(55% 65% at 67% 0%,  rgb(255,209,107) 0%, transparent 70%),
+    radial-gradient(60% 70% at 100% 0%, rgb(255,209,102) 0%, transparent 70%),
+    radial-gradient(60% 70% at 0% 100%,   rgb(5,214,161)  0%, transparent 70%),
+    radial-gradient(55% 65% at 33% 100%,  rgb(26,178,166) 0%, transparent 70%),
+    radial-gradient(55% 65% at 67% 100%,  rgb(26,153,178) 0%, transparent 70%),
+    radial-gradient(60% 70% at 100% 100%, rgb(18,138,178) 0%, transparent 70%),
+    radial-gradient(50% 60% at 0% 50%,   rgb(102,128,178) 0%, transparent 72%),
+    radial-gradient(50% 60% at 100% 50%, rgb(26,140,178)  0%, transparent 72%);
+}
+
+.v2-traffic > *:not(.v2-traffic__texture) { position: relative; }
+
+.v2-traffic__lead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  flex: 0 1 292px;
+  min-width: 0;
+}
+
+.v2-traffic__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+/* Hero is light now, so everything on it flips to dark ink. */
+.v2-traffic__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+  color: #202223;
+}
+
+/* Node uses --tru-text-caption, which lands at 4.26:1 on the pale end of
+   this gradient. One step darker clears 4.5:1. */
+.v2-traffic__sub {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+  color: var(--text-description);
+}
+
+.v2-traffic__figure {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+}
+
+.v2-traffic__value {
+  font-size: 4rem;
+  font-weight: var(--font-weight-regular);
+  line-height: 61px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-default);
+}
+
+.v2-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--spacing-4) var(--padding-sm);
+  border: 1px solid var(--border-negative);
+  border-radius: var(--radius-badge);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-negative);
+  background: var(--surface-negative);
+}
+
+.v2-trend svg { width: 12px; height: 12px; color: var(--icon-negative); }
+
+.v2-stack {
+  display: flex;
+  gap: var(--spacing-4);
+  height: 12px;
+  width: 100%;
+  border-radius: var(--radius-sm);
+}
+
+.v2-stack span {
+  border-radius: var(--radius-sm);
+  transform-origin: left center;
+}
+
+/* --- Breakdown list --- */
+
+.v2-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 0 1 421px;
+  min-width: 0;
+  margin: 0;
+  padding-top: var(--spacing-4);
+}
+
+.v2-breakdown__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+  padding: var(--spacing-4) 6px;
+  border-radius: var(--radius-md);
+}
+
+/* Same step as the subtitle — caption on this ground is 4.26:1. */
+.v2-breakdown dt {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  min-width: 0;
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+  color: var(--text-description);
+}
+
+.v2-breakdown dd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.v2-swatch {
+  flex: 0 0 auto;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  /* The last series is white; without a hairline it disappears on the
+     pale hero. Applies to every swatch so they stay the same size. */
+  box-shadow: inset 0 0 0 1px rgba(23, 45, 45, 0.12);
+}
+
+.v2-breakdown__n {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-default);
+}
+
+.v2-breakdown__p {
+  width: 28px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-description);
+}
+
+/* ------------------------------------------------------------------
+   Action cards — three, header strip over a figure block
+   ------------------------------------------------------------------ */
+
+.v2-cards {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-16);
+  flex: 0 0 auto;
+}
+
+.v2-card {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+  color: var(--text-default);
+  text-decoration: none;
+  overflow: hidden;
+  transition: border-color 160ms ease;
+}
+
+.v2-card:hover { border-color: var(--border-strong); }
+
+.v2-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-8);
+  padding: var(--spacing-12);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.v2-card__id {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  min-width: 0;
+}
+
+.v2-card__icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 16px; height: 16px;
+  color: var(--icon-interactive);
+}
+
+.v2-card__icon svg { width: 16px; height: 16px; }
+
+.v2-card__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+}
+
+.v2-card__go {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 12px; height: 12px;
+  color: var(--icon-faint);
+  transition: transform 160ms ease, color 160ms ease;
+}
+
+.v2-card__go svg { width: 12px; height: 12px; }
+
+.v2-card:hover .v2-card__go {
+  transform: translateX(2px);
+  color: var(--interactive-default);
+}
+
+.v2-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: var(--spacing-24);
+}
+
+.v2-card__figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  align-items: flex-start;
+}
+
+/* 40px type on a 61px line box, straight from the node — the figure sits
+   in a taller band than it needs, which is what gives the card its air. */
+.v2-card__value {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-regular);
+  line-height: 61px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-default);
+}
+
+.v2-card__state {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-caption);
+}
+
+.v2-card__delta {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-caption);
+}
+
+.v2-card__delta--alert { color: var(--text-negative); }
+
+/* ------------------------------------------------------------------
+   Recent transactions
+   ------------------------------------------------------------------ */
+
+.v2-txn {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-01);
+  overflow: hidden;
+}
+
+.v2-txn__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  padding: var(--spacing-12);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.v2-txn__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+}
+
+.v2-txn__all svg { width: 16px; height: 16px; color: var(--icon-faint); }
+
+/* The node wraps the table in a 24px pad. Every row divider therefore
+   stops short of the panel edge instead of bleeding to it. */
+.v2-txn__table-wrap { padding: var(--spacing-24); }
+
+.v2-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.v2-table th {
+  padding: 0 var(--spacing-8) 9px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--text-caption);
+}
+
+.v2-table td {
+  padding: var(--spacing-16) var(--spacing-8) var(--spacing-16) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+  white-space: nowrap;
+  color: var(--text-caption);
+  vertical-align: middle;
+}
+
+.v2-table th:last-child, .v2-table td:last-child { padding-right: 0; }
+.v2-table tbody tr:last-child td { border-bottom: 0; }
+.v2-table__name { color: var(--text-default); }
+
+
+/* ------------------------------------------------------------------
+   Entrance — left column. Delays are part of one page-wide sequence
+   that ends on the TruAI orb; see 03-truai.css for the closing beats.
+   ------------------------------------------------------------------ */
+
+.v2-org,
+.v2-traffic,
+.v2-card,
+.v2-txn {
+  animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+
+.v2-org     { animation-delay: 40ms; }
+
+.v2-traffic { animation-delay: 90ms; }
+
+
+.v2-cards .v2-card:nth-child(1) { animation-delay: 150ms; }
+
+.v2-cards .v2-card:nth-child(2) { animation-delay: 185ms; }
+
+.v2-cards .v2-card:nth-child(3) { animation-delay: 220ms; }
+
+
+.v2-txn { animation-delay: 265ms; }
+
+
+/* The stacked bar wipes in from the left once the hero has landed. */
+.v2-stack span {
+  animation: v2-grow 420ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+
+.v2-stack span:nth-child(1) { animation-delay: 300ms; }
+
+.v2-stack span:nth-child(2) { animation-delay: 345ms; }
+
+.v2-stack span:nth-child(3) { animation-delay: 390ms; }
+
+.v2-stack span:nth-child(4) { animation-delay: 435ms; }
+
+.v2-stack span:nth-child(5) { animation-delay: 480ms; }
+
+
+  .v2-card,
+  .v2-card__go { transition: none; }
+
+
+  .v2-card:hover .v2-card__go { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-rail > *,
+  .v2-org,
+  .v2-traffic,
+  .v2-card,
+  .v2-txn,
+  .v2-stack span { animation: none; }
+
+  .v2-card,
+  .v2-card__go { transition: none; }
+
+  .v2-card:hover .v2-card__go { transform: none; }
+}
+
+/* ------------------------------------------------------------------
+   Focus — page controls only. tds-btn and tds-icon-btn express focus
+   with a 2px --border-focus border of their own, so they are
+   deliberately absent: overriding them would double the indicator.
+   The panel's own controls are handled in 03-truai.css.
+   ------------------------------------------------------------------ */
+
+.v2-rail__item:focus-visible,
+.v2-rail__collapse button:focus-visible,
+.v2-rail__avatar:focus-visible,
+.v2-card:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
