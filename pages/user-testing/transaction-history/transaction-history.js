@@ -1,6 +1,6 @@
 (function () {
   var rows = window.UT_TRANSACTIONS || [];
-  var STORAGE_KEY = "ut-tx-settings";
+  var STORAGE_KEY = window.UT_TX_SETTINGS_KEY || "ut-tx-settings";
   var COPY_ICON =
     '<svg class="icon" width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8.25 7.21875C8.44336 7.21875 8.59375 7.06836 8.59375 6.875V2.64258C8.59375 2.53516 8.55078 2.44922 8.48633 2.38477L7.24023 1.13867C7.17578 1.07422 7.08984 1.03125 7.00391 1.03125H4.125C3.93164 1.03125 3.78125 1.18164 3.78125 1.375V6.875C3.78125 7.06836 3.93164 7.21875 4.125 7.21875H8.25ZM4.125 8.25C3.37305 8.25 2.75 7.62695 2.75 6.875V1.375C2.75 0.623047 3.37305 0 4.125 0H7.00391C7.36914 0 7.71289 0.150391 7.9707 0.408203L9.2168 1.6543C9.47461 1.91211 9.625 2.27734 9.625 2.64258V6.875C9.625 7.62695 9.00195 8.25 8.25 8.25H4.125ZM1.375 2.75H1.71875V3.78125H1.375C1.18164 3.78125 1.03125 3.93164 1.03125 4.125V9.625C1.03125 9.81836 1.18164 9.96875 1.375 9.96875H5.5C5.69336 9.96875 5.84375 9.81836 5.84375 9.625V9.28125H6.875V9.625C6.875 10.377 6.25195 11 5.5 11H1.375C0.623047 11 0 10.377 0 9.625V4.125C0 3.37305 0.623047 2.75 1.375 2.75Z" fill="currentColor"/></svg>';
   var CHECK_ICON =
@@ -163,6 +163,7 @@
   }
 
   function showScoreColumn() {
+    if (window.UT_TX_PLAIN_TABLE) return true;
     return settings.score === "separate-column";
   }
 
@@ -742,7 +743,7 @@
   function applySearch(value) {
     var raw = String(value || "").trim();
     if (raw.toLowerCase() === RESULTS_TRID) {
-      window.location.href = "result.html";
+      window.location.href = window.UT_TX_RESULT_HREF || "result.html";
       return;
     }
     searchQuery = raw.toLowerCase();
@@ -1020,11 +1021,15 @@
 
     var primary = outcomeTagHtml(item);
 
-    if (combinedScoreKind(item) === "score-level" && item.score) {
+    if (
+      !window.UT_TX_PLAIN_TABLE &&
+      combinedScoreKind(item) === "score-level" &&
+      item.score
+    ) {
       return scoreHtml(item.score);
     }
 
-    if (settings.score !== "combined-outcome") return primary;
+    if (settings.score !== "combined-outcome" || window.UT_TX_PLAIN_TABLE) return primary;
 
     var kind = combinedScoreKind(item);
     if (kind === "result-tag") return primary;
@@ -1081,6 +1086,7 @@
   }
 
   function countryHtml(item) {
+    if (window.UT_TX_PLAIN_TABLE) return highlightMatch(item.country);
     if (settings.country === "flag-only") {
       return (
         '<span class="ut-tx-country ut-tx-country--flag-only">' +
@@ -1235,7 +1241,8 @@
 
     cells +=
       '<td class="ut-tx-outcome-cell' +
-      (settings.score === "combined-outcome" &&
+      (!window.UT_TX_PLAIN_TABLE &&
+      settings.score === "combined-outcome" &&
       combinedScoreKind(item) === "stack" &&
       item.score
         ? " ut-tx-outcome-cell--with-sub"
@@ -1246,9 +1253,11 @@
       "<td>" +
       dateHtml(item) +
       "</td>" +
-      '<td><span class="ut-product-tag">' +
-      highlightMatch(item.product) +
-      "</span></td>" +
+      "<td>" +
+      (window.UT_TX_PLAIN_TABLE
+        ? highlightMatch(item.product)
+        : '<span class="ut-product-tag">' + highlightMatch(item.product) + "</span>") +
+      "</td>" +
       '<td class="ut-tx-td-country">' +
       countryHtml(item) +
       "</td>";

@@ -1,0 +1,519 @@
+/* ============================================================
+   TRANSACTIONS — page content (left column)
+   ============================================================
+   Same portal shell as the home page: side rail, workspace
+   header, and the Traffic by Service hero. The transactions
+   table and filters come from the user-testing page; their
+   rules live in transaction-history.css. Overrides below only
+   fit that block into this column.
+   Prefix: v2- (shell) / th- (this page)
+   Scope:  everything inside .v2-content (plus .v2-rail).
+
+   Do not style .v2-stage, .v2-panel-slot, .ai-*, or the
+   [data-truai] states — those belong to shared/portal-2026/.
+   ============================================================ */
+
+/* ------------------------------------------------------------------
+   Side rail — 72px, right hairline
+   ------------------------------------------------------------------ */
+
+.v2-rail {
+  display: flex;
+  flex: 0 0 72px;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 72px;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.v2-rail__header {
+  display: flex;
+  justify-content: center;
+  padding: 20px var(--padding-lg) var(--padding-lg);
+}
+
+.v2-rail__logo {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--interactive-default);
+}
+
+.v2-rail__main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-xl) var(--padding-lg);
+}
+
+.v2-rail__item {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+
+.v2-rail__item:hover {
+  color: var(--icon-default);
+  background: var(--surface-neutral-02);
+}
+
+.v2-rail__item[aria-current="page"],
+.v2-rail__item[aria-current="page"]:hover {
+  color: var(--icon-inverse);
+  background: var(--surface-inverse);
+}
+
+.v2-rail__item svg { width: 16px; height: 16px; }
+
+.v2-rail__collapse {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md) var(--padding-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.v2-rail__collapse button {
+  display: grid;
+  place-items: center;
+  width: 24px; height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+}
+
+.v2-rail__collapse svg { width: 16px; height: 16px; }
+
+.v2-rail__user {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md);
+}
+
+.v2-rail__avatar {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+  color: var(--text-inverse);
+  background: var(--interactive-default);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------
+   Workspace header
+   ------------------------------------------------------------------ */
+
+.v2-org {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.v2-org__mark {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-inverse);
+  background: var(--color-neutral-100);
+}
+
+.v2-org__mark svg { width: 16px; height: 16px; }
+
+.v2-org__name {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--color-neutral-100);
+}
+
+/* Environment tag. The shipped Tag ships a 16px leading-visual slot; the
+   node uses an 8px dot, so only the slot box is narrowed here. */
+.v2-org__dot {
+  width: 8px;
+  height: 8px;
+  margin-right: var(--spacing-4);
+}
+
+.v2-org__dot img { display: block; }
+
+/* ------------------------------------------------------------------
+   Traffic by Service — Figma 1035:105648
+   White surface, hairline border, 16px radius.
+   ------------------------------------------------------------------ */
+
+.v2-traffic {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-24);
+  flex: 0 0 auto;
+  padding: var(--spacing-24);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: var(--surface-neutral-01);
+}
+
+.v2-traffic__lead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  flex: 0 1 292px;
+  min-width: 0;
+}
+
+.v2-traffic__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.v2-traffic__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+  color: #202223;
+}
+
+.v2-traffic__sub {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+  color: var(--text-caption);
+}
+
+.v2-traffic__figure {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+}
+
+.v2-traffic__value {
+  font-size: 4rem;
+  font-weight: var(--font-weight-regular);
+  line-height: 61px;
+  letter-spacing: -3.84px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-default);
+}
+
+.v2-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--spacing-4) var(--padding-sm);
+  border: 1px solid var(--border-negative);
+  border-radius: var(--radius-badge);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-negative);
+  background: var(--surface-negative);
+}
+
+.v2-trend svg { width: 12px; height: 12px; color: var(--icon-negative); }
+
+.v2-stack {
+  display: flex;
+  gap: var(--spacing-4);
+  height: 12px;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  background: #f1f2f4;
+  overflow: hidden;
+}
+
+.v2-stack span {
+  border-radius: var(--radius-sm);
+  transform-origin: left center;
+}
+
+/* --- Breakdown list --- */
+
+.v2-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 0 1 421px;
+  min-width: 0;
+  margin: 0;
+  padding-top: var(--spacing-4);
+}
+
+.v2-breakdown__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+  padding: var(--spacing-4) 6px;
+  border-radius: var(--radius-md);
+}
+
+/* Same step as the subtitle — caption on this ground is 4.26:1. */
+.v2-breakdown dt {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  min-width: 0;
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+  color: #202223;
+}
+
+.v2-breakdown dd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.v2-swatch {
+  flex: 0 0 auto;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+}
+
+.v2-breakdown__n {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-default);
+}
+
+.v2-breakdown__p {
+  width: 28px;
+  font-size: 11px;
+  font-weight: var(--font-weight-regular);
+  line-height: 16.5px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: #8c9196;
+}
+
+/* ------------------------------------------------------------------
+   Transactions block — sits in the portal column, not the old shell
+   ------------------------------------------------------------------ */
+
+/* The column stays the viewport. Rows and the columns past the panel
+   scroll inside the table, so the right edge is not clipped. */
+.v2-shell .v2-content {
+  overflow: hidden;
+}
+
+.th-tx.ut-tx-main {
+  flex: 1 1 auto;
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: transparent;
+  border-radius: 0;
+}
+
+.th-tx .ut-tx-main__scroll,
+.th-tx .ut-tx-page,
+.th-tx .ut-tx-block,
+.th-tx .ut-tx-table-section,
+.th-tx .ut-tx-table-card,
+.th-tx .tds-data-table-container {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-block {
+  gap: 24px;
+}
+
+.th-tx .ut-tx-toolbar,
+.th-tx .ut-tx-table-card .tds-data-table__footer {
+  flex: 0 0 auto;
+}
+
+/* The table is wider than the column. Both scrollbars live on this box,
+   in view, so Score, Source, and Type are not cut off by the panel. */
+.th-tx .tds-data-table__wrapper {
+  flex: 1 1 auto;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: scroll;
+}
+
+.th-tx .tds-data-table__wrapper::-webkit-scrollbar {
+  -webkit-appearance: none;
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+.th-tx .tds-data-table__wrapper::-webkit-scrollbar-track {
+  background: var(--surface-neutral-02);
+}
+
+.th-tx .tds-data-table__wrapper::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--color-neutral-40) 80%, transparent);
+  border: 3px solid var(--surface-neutral-02);
+  border-radius: var(--radius-full);
+}
+
+/* Figma 1049:109748 — one row, 8px gaps, 40px controls.
+   Search stays 480. Date grows into whatever is left. Filter sits at the end. */
+.th-tx .ut-tx-toolbar {
+  width: 100%;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.th-tx .ut-tx-toolbar__left {
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.th-tx .ut-tx-search {
+  width: 480px;
+  max-width: 480px;
+  flex: 0 0 480px;
+}
+
+.th-tx .ut-tx-date {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+}
+
+/* The shared button rule sets display, which keeps a hidden Reset in the row. */
+.th-tx .ut-tx-toolbar-reset[hidden],
+.th-tx .ut-tx-product[hidden] {
+  display: none !important;
+}
+
+.th-tx .tds-filter-button {
+  flex: 0 0 auto;
+}
+
+.th-tx .ut-tx-search .tds-text-input__field,
+.th-tx .ut-tx-date .tds-date-picker__field,
+.th-tx .ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary {
+  height: 40px;
+  min-height: 40px;
+}
+
+.th-tx .ut-tx-table {
+  width: 1314px;
+  min-width: 1314px;
+  max-width: none;
+}
+
+/* Filters drawer overlays the content column, to the left of TruAI. */
+.v2-shell .ut-tx-filters {
+  position: fixed;
+  top: var(--spacing-8);
+  right: calc(var(--v2-panel-total) + var(--spacing-8));
+  bottom: var(--spacing-8);
+  z-index: 40;
+  height: auto;
+  max-height: none;
+  box-shadow: 0 8px 24px rgba(23, 45, 45, 0.16);
+}
+
+.v2-shell[data-truai="closed"] .ut-tx-filters {
+  right: var(--spacing-8);
+}
+
+@media (min-width: 1181px) {
+  .v2-shell.ut-tx-drawer-open .v2-content {
+    padding-right: calc(396px + var(--spacing-16));
+  }
+}
+
+@media (max-width: 1180px) {
+  .v2-shell .ut-tx-filters {
+    right: var(--spacing-8);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Entrance
+   ------------------------------------------------------------------ */
+
+.v2-org,
+.v2-traffic,
+.th-tx {
+  animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+.v2-org     { animation-delay: 40ms; }
+.v2-traffic { animation-delay: 90ms; }
+.th-tx      { animation-delay: 150ms; }
+
+.v2-stack span {
+  animation: v2-grow 420ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+.v2-stack span:nth-child(1) { animation-delay: 300ms; }
+.v2-stack span:nth-child(2) { animation-delay: 345ms; }
+.v2-stack span:nth-child(3) { animation-delay: 390ms; }
+.v2-stack span:nth-child(4) { animation-delay: 435ms; }
+.v2-stack span:nth-child(5) { animation-delay: 480ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-rail > *,
+  .v2-org,
+  .v2-traffic,
+  .th-tx,
+  .v2-stack span { animation: none; }
+}
+
+.v2-rail__item:focus-visible,
+.v2-rail__collapse button:focus-visible,
+.v2-rail__avatar:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}

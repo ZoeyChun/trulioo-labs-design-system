@@ -57,6 +57,7 @@
   background: transparent;
   text-decoration: none;
   cursor: pointer;
+  text-decoration: none;
   transition: color 140ms ease, background-color 140ms ease;
 }
 
