@@ -1,0 +1,469 @@
+/* ============================================================
+   Demo 1 — page shell
+   Figma "Portal-2.0-Design---2026", node 1117:69303
+
+   The base frame for every Demo 1 page. Page content goes in
+   .d1-slot. Do not restyle .d1-shell, .d1-rail, or .d1-main
+   from a page file — those are the contract.
+
+   Figma --tru-* variables map to the local tokens:
+     --tru-surface-neutral-01 → --surface-neutral-01
+     --tru-surface-neutral-03 → --surface-neutral-03
+     --tru-interactive-default → --interactive-default
+     --tru-icon-faint          → --icon-faint
+     --tru-padding-* / spacing / radius / gap → the same names
+     elevation/md              → --elevation-md
+   ============================================================ */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  color: var(--text-default);
+  background: var(--surface-neutral-03);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button {
+  font-family: inherit;
+}
+
+.d1-shell {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-8);
+  height: 100dvh;
+  padding: var(--spacing-8);
+  background: var(--surface-neutral-03);
+}
+
+/* ------------------------------------------------------------------
+   Rail — 72px
+   ------------------------------------------------------------------ */
+
+.d1-rail {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 0 0 72px;
+  width: 72px;
+  min-height: 0;
+  background: var(--surface-neutral-03);
+}
+
+.d1-rail__header {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: var(--spacing-16) var(--padding-lg) var(--padding-lg);
+}
+
+.d1-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--interactive-default);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.d1-logo img {
+  display: block;
+  flex-shrink: 0;
+}
+
+.d1-rail__nav {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-lg);
+  min-height: 0;
+  padding: var(--padding-xl) var(--padding-lg);
+  overflow: visible;
+}
+
+.d1-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--icon-faint);
+  cursor: pointer;
+}
+
+.d1-nav-btn svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.d1-rail__tools {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: var(--padding-md) var(--padding-lg);
+}
+
+.d1-tool-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--icon-faint);
+  cursor: pointer;
+}
+
+.d1-tool-btn svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.d1-rail__account {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: var(--spacing-16) 0;
+}
+
+.d1-account {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-sm);
+  border: 0;
+  border-radius: var(--radius-card);
+  background: transparent;
+  cursor: pointer;
+}
+
+.d1-account__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--interactive-default);
+  /* Node heading/xs resolves to 14 / 20. --text-inverse is white;
+     the node uses neutral-10 (#f4f6f4). */
+  color: var(--color-neutral-10);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-md);
+}
+
+.d1-logo:hover {
+  background: var(--interactive-hover);
+}
+
+.d1-nav-btn:hover,
+.d1-fly:hover .d1-nav-btn,
+.d1-fly:focus-within .d1-nav-btn,
+.d1-tool-btn:hover,
+.d1-account:hover,
+.d1-fly:hover .d1-account,
+.d1-fly:focus-within .d1-account {
+  background: var(--surface-hover);
+}
+
+.d1-fly {
+  position: relative;
+}
+
+.d1-fly::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 40px;
+}
+
+.d1-fly__panel {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: calc(100% + 32px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  background: var(--surface-neutral-01);
+  transition: opacity 0.16s ease, visibility 0.16s ease;
+}
+
+.d1-fly:hover .d1-fly__panel,
+.d1-fly:focus-within .d1-fly__panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.d1-chats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-24);
+  width: 294px;
+  max-height: calc(100dvh - 120px);
+  overflow: auto;
+  padding: var(--spacing-16);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--elevation-2xl);
+}
+
+.d1-chats__group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.d1-fly__label {
+  margin: 0;
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.d1-new-chat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  height: 39px;
+  margin: 0;
+  padding: 10px var(--spacing-12);
+  border: 0;
+  border-radius: 10px;
+  background: var(--interactive-default);
+  color: var(--surface-neutral-01);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.d1-new-chat__plus {
+  font-size: var(--font-size-md);
+  line-height: 1;
+}
+
+.d1-new-chat:hover {
+  background: var(--interactive-hover);
+}
+
+.d1-chat-row,
+.d1-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.d1-chat-row {
+  gap: var(--spacing-8);
+  height: 29px;
+  padding: 7px var(--spacing-12);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.d1-chat-row--current {
+  font-weight: var(--font-weight-medium);
+}
+
+.d1-chat-row img {
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+}
+
+.d1-chat-row:hover,
+.d1-menu-item:hover {
+  background: var(--surface-hover);
+}
+
+.d1-fly--account .d1-fly__panel {
+  top: auto;
+  bottom: -8px;
+  left: calc(100% + 24px);
+}
+
+.d1-account-menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  width: 208px;
+  padding: var(--spacing-8);
+  border-radius: var(--radius-card);
+  box-shadow: var(--elevation-xl);
+}
+
+.d1-org {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.d1-org__mark {
+  display: flex;
+  flex-shrink: 0;
+  padding: 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--color-neutral-100);
+}
+
+.d1-org__mark img {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.d1-org__name {
+  color: var(--color-neutral-100);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-sm);
+  white-space: nowrap;
+}
+
+.d1-fly__rule {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.d1-menu-item {
+  gap: var(--spacing-8);
+  height: 32px;
+  padding: var(--spacing-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+}
+
+.d1-menu-item img {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.d1-who__name,
+.d1-who__mail {
+  margin: 0;
+}
+
+.d1-who__name {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-md);
+}
+
+.d1-who__name img {
+  width: 12px;
+  height: 12px;
+}
+
+.d1-who {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.d1-who__mail {
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-sm);
+}
+
+.d1-new-chat:focus-visible,
+.d1-chat-row:focus-visible,
+.d1-menu-item:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.d1-logo:focus-visible,
+.d1-nav-btn:focus-visible,
+.d1-tool-btn:focus-visible,
+.d1-account:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------
+   Main — white card. Page content lives in .d1-slot.
+   ------------------------------------------------------------------ */
+
+.d1-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  min-width: 0;
+  min-height: 0;
+  padding: var(--spacing-16);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+  box-shadow: var(--elevation-md);
+  overflow: hidden;
+}
+
+.d1-slot {
+  flex: 1 1 auto;
+  min-height: 0;
+  border-radius: var(--radius-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d1-fly__panel {
+    transition: none;
+  }
+}
