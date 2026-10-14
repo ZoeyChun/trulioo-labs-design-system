@@ -1,0 +1,817 @@
+/* ============================================================
+   VERIFY A BUSINESS — page content (left column)
+   ============================================================
+   Figma node 1015:92403.
+   Owns: breadcrumb, search card, result card.
+   Prefix: vb-
+   Scope:  everything inside .v2-content (plus .v2-rail).
+
+   Do not style .v2-stage, .v2-panel-slot, .ai-*, or the
+   [data-truai] states — those belong to shared/portal-2026/.
+   ============================================================ */
+
+/* ------------------------------------------------------------------
+   Side rail — 72px, right hairline
+   ------------------------------------------------------------------ */
+
+.v2-rail {
+  display: flex;
+  flex: 0 0 72px;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 72px;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.v2-rail__header {
+  display: flex;
+  justify-content: center;
+  padding: 20px var(--padding-lg) var(--padding-lg);
+}
+
+.v2-rail__logo {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--interactive-default);
+}
+
+.v2-rail__main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-xl) var(--padding-lg);
+}
+
+.v2-rail__item {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+
+.v2-rail__item:hover {
+  color: var(--icon-default);
+  background: var(--surface-neutral-02);
+}
+
+.v2-rail__item[aria-current="page"],
+.v2-rail__item[aria-current="page"]:hover {
+  color: var(--icon-inverse);
+  background: var(--surface-inverse);
+}
+
+.v2-rail__item svg { width: 16px; height: 16px; }
+
+.v2-rail__collapse {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md) var(--padding-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.v2-rail__collapse button {
+  display: grid;
+  place-items: center;
+  width: 24px; height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+}
+
+.v2-rail__collapse svg { width: 16px; height: 16px; }
+
+.v2-rail__user {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md);
+}
+
+.v2-rail__avatar {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+  color: var(--text-inverse);
+  background: var(--interactive-default);
+  cursor: pointer;
+}
+
+/* This page scrolls — the result card is taller than the viewport. */
+.v2-content { padding-bottom: var(--spacing-40); }
+
+/* ------------------------------------------------------------------
+   Breadcrumb
+   ------------------------------------------------------------------ */
+
+.vb-crumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  flex: 0 0 auto;
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+}
+
+.vb-crumbs a {
+  color: var(--text-caption);
+  text-decoration: none;
+}
+
+.vb-crumbs a:hover { color: var(--text-default); text-decoration: underline; }
+.vb-crumbs span[aria-hidden] { color: var(--icon-faint); }
+.vb-crumbs span[aria-current] { color: var(--text-default); }
+
+/* ------------------------------------------------------------------
+   Search card
+   ------------------------------------------------------------------ */
+
+.vb-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  flex: 0 0 auto;
+  padding: var(--spacing-32);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+}
+
+.vb-search__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 26px;
+  color: var(--text-default);
+}
+
+/* --- Country + query field --- */
+
+.vb-field {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  height: 40px;
+  padding: 0 var(--padding-md);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  background: var(--surface-neutral-01);
+  box-shadow: var(--shadow-inset);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.vb-field:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--interactive-subtle);
+}
+
+.vb-field__country {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0 var(--spacing-8) 0 0;
+  border: 0;
+  border-right: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--icon-faint);
+  cursor: pointer;
+}
+
+.vb-field__country img {
+  display: block;
+  border: 0.5px solid var(--border-subtle);
+  border-radius: 2px;
+}
+
+.vb-field__country svg { width: 16px; height: 16px; }
+
+.vb-field__icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 16px; height: 16px;
+  color: var(--icon-faint);
+}
+
+.vb-field__icon svg { width: 16px; height: 16px; }
+
+.vb-field__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 22px;
+  color: var(--text-default);
+  background: transparent;
+}
+
+.vb-field__input::placeholder { color: var(--color-neutral-50); }
+.vb-field__input:focus { outline: none; }
+
+/* --- "or" rule --- */
+
+.vb-or {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  flex: 0 0 auto;
+}
+
+.vb-or::before,
+.vb-or::after {
+  content: "";
+  flex: 1 1 0;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.vb-or span {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-caption);
+}
+
+/* --- Bulk upload dropzone --- */
+
+.vb-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-sm);
+  flex: 1 1 auto;
+  padding: var(--spacing-24) var(--spacing-40);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-default);
+  background: var(--surface-neutral-02);
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.vb-upload:hover {
+  border-color: var(--interactive-default);
+  background: var(--interactive-subtle);
+}
+
+.vb-upload svg { width: 16px; height: 16px; color: var(--icon-faint); }
+
+/* ------------------------------------------------------------------
+   Result card
+   ------------------------------------------------------------------ */
+
+.vb-result {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+  overflow: hidden;
+}
+
+/* The mint banner is the only tinted surface on the page — it marks this
+   as resumed work rather than a fresh result. */
+.vb-result__banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  padding: var(--spacing-8) var(--padding-lg) var(--spacing-8) var(--padding-xl);
+  background: var(--surface-positive);
+}
+
+.vb-result__banner-title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+  color: var(--text-default);
+}
+
+.vb-result__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  padding: var(--spacing-24);
+}
+
+/* --- Entity header --- */
+
+.vb-entity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  min-height: 42px;
+}
+
+.vb-entity__id {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-lg);
+  min-width: 0;
+}
+
+.vb-entity__name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 32px;
+  color: var(--text-default);
+}
+
+.vb-export {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  flex: 0 0 auto;
+  height: 32px;
+  padding: 0 var(--padding-md);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-default);
+  background: var(--surface-neutral-01);
+  box-shadow: var(--shadow-button-resting);
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.vb-export:hover { background: var(--surface-hover); border-color: var(--border-interactive); }
+.vb-export svg { width: 16px; height: 16px; color: var(--icon-faint); }
+
+/* --- Transaction meta --- */
+
+.vb-meta {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-32);
+  margin: 0;
+}
+
+.vb-meta__cell {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+/* Hairline between cells, not around them. */
+.vb-meta__cell + .vb-meta__cell {
+  padding-left: var(--spacing-32);
+  border-left: 1px solid var(--border-subtle);
+  margin-left: calc(-1 * var(--spacing-32) + var(--spacing-32));
+}
+
+.vb-meta dt,
+.vb-fields dt {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+.vb-meta dd {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.vb-meta dd img { display: block; flex: 0 0 auto; }
+
+/* --- Tabs --- */
+
+.vb-tabs {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-2xl);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.vb-tabs::-webkit-scrollbar { display: none; }
+
+.vb-tab {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 0 0 var(--spacing-8);
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  white-space: nowrap;
+  color: var(--text-description);
+  cursor: pointer;
+  transition: color 140ms ease;
+}
+
+.vb-tab:hover { color: var(--text-default); }
+
+.vb-tab::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  border-radius: 1.5px;
+  background: transparent;
+  transition: background-color 140ms ease;
+}
+
+.vb-tab--active { color: var(--text-default); }
+.vb-tab--active::after { background: var(--border-interactive); }
+
+.vb-tab:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Map --- */
+
+.vb-map {
+  position: relative;
+  height: 182px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.vb-map img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The node washes the map back so it reads as context, not content. */
+.vb-map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(244, 246, 244, 0.6);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* --- Company overview --- */
+
+.vb-overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+.vb-overview__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+  color: var(--text-default);
+}
+
+.vb-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  margin: 0;
+}
+
+.vb-fields__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-24);
+}
+
+.vb-fields__cell {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.vb-fields dd {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 22px;
+  color: var(--text-default);
+}
+
+.vb-fields__note {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+  color: var(--text-description);
+}
+
+/* ------------------------------------------------------------------
+   Entrance
+   ------------------------------------------------------------------ */
+
+.vb-crumbs,
+.vb-search,
+.vb-result {
+  animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+.vb-crumbs { animation-delay: 40ms; }
+.vb-search { animation-delay: 90ms; }
+.vb-result { animation-delay: 150ms; }
+
+.v2-rail > * { animation: v2-fade 360ms ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vb-crumbs,
+  .vb-search,
+  .vb-result,
+  .v2-rail > * { animation: none; }
+
+  .vb-field,
+  .vb-upload,
+  .vb-export,
+  .vb-tab,
+  .vb-tab::after { transition: none; }
+}
+
+/* ------------------------------------------------------------------
+   Narrow viewports
+   ------------------------------------------------------------------ */
+
+@media (max-width: 1180px) {
+  .vb-meta { flex-wrap: wrap; gap: var(--spacing-16); }
+  .vb-meta__cell { flex-basis: calc(50% - var(--spacing-16)); }
+  .vb-meta__cell + .vb-meta__cell { padding-left: 0; border-left: 0; margin-left: 0; }
+}
+
+@media (max-width: 860px) {
+  .vb-fields__row { flex-direction: column; gap: var(--spacing-24); }
+  .vb-search { padding: var(--spacing-24); }
+}
+
+/* ------------------------------------------------------------------
+   Search map
+
+   Sits behind the page content and takes over when a lookup starts.
+   The dot matrix is a generated equirectangular world; pins are placed
+   with the same projection, so a pin's position is its real coordinate.
+   ------------------------------------------------------------------ */
+
+/* Page-owned positioning context. The globe is absolute against this, not
+   against .v2-stage — the stage belongs to the shell and also spans the
+   panel, which would let the map slide underneath it. */
+.vb-canvas {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
+.vb-globe {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms ease;
+}
+
+body.vb-searching .vb-globe {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Narrowing reads as zooming: the frame scales and recentres on whatever
+   matches are left. Long and eased, because it is the whole point. */
+.vb-globe__frame {
+  position: relative;
+  width: min(760px, 94%);
+  aspect-ratio: 1000 / 460;
+  color: var(--color-neutral-40);
+  translate: var(--vb-ox, 0%) var(--vb-oy, 0%);
+  scale: var(--vb-zoom, 1);
+  transition: scale 900ms cubic-bezier(0.32, 0.72, 0, 1),
+              translate 900ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.vb-globe__dots {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.vb-globe__pins { position: absolute; inset: 0; }
+
+.vb-globe__caption {
+  position: absolute;
+  bottom: var(--spacing-32);
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+/* --- Pins --- */
+
+.vb-pin {
+  position: absolute;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 0; height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.vb-pin__halo,
+.vb-pin__dot {
+  position: absolute;
+  border-radius: var(--radius-full);
+  /* Counter the frame's zoom so pins keep a constant screen size. */
+  scale: calc(1 / var(--vb-zoom, 1));
+  transition: scale 900ms cubic-bezier(0.32, 0.72, 0, 1),
+              background-color 160ms ease, opacity 160ms ease;
+}
+
+/* A slow, staggered pulse so the matches read as live without becoming a
+   light show. Opacity only — scale is already owned by the counter-zoom
+   above, and two rules animating the same property would fight. */
+@keyframes vb-beat {
+  0%, 100% { opacity: 0.14; }
+  50%      { opacity: 0.34; }
+}
+
+.vb-pin__halo {
+  width: 34px; height: 34px;
+  background: var(--interactive-default);
+  opacity: 0.18;
+  animation: vb-beat 2.6s ease-in-out infinite;
+  animation-delay: var(--vb-beat, 0s);
+}
+
+.vb-pin__dot {
+  width: 11px; height: 11px;
+  background: var(--interactive-default);
+}
+
+/* Hovering stops the pulse so the highlighted pin holds steady. */
+.vb-pin--on .vb-pin__halo {
+  opacity: 0.38;
+  scale: calc(1.35 / var(--vb-zoom, 1));
+  animation: none;
+}
+.vb-pin--on .vb-pin__dot  { scale: calc(1.3 / var(--vb-zoom, 1)); }
+
+.vb-pin:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 14px;
+  border-radius: var(--radius-full);
+}
+
+/* While searching, the page's own cards step aside for the map.
+
+   The fade sits on .vb-page, not on the sections. Those carry an entrance
+   animation with fill-mode `both`, which keeps applying opacity: 1 forever
+   and outranks any declaration on the same element — fading a parent
+   sidesteps the conflict entirely. */
+.vb-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  transition: opacity 260ms ease 120ms, visibility 0s linear 0s;
+}
+
+body.vb-searching .vb-page {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+/* Opacity alone leaves the box in the layout — the old card kept its
+   ~1200px and pushed the live report off screen. JS sets [hidden] once
+   the fade has finished so the collapse is never visible mid-animation. */
+.vb-page[hidden] { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vb-globe,
+  .vb-globe__frame,
+  .vb-pin__halo,
+  .vb-pin__dot,
+  .vb-page { transition: none; }
+  .vb-pin__halo { animation: none; }
+}
+
+/* ------------------------------------------------------------------
+   Selected entity — skeleton, then report
+   ------------------------------------------------------------------ */
+
+.vb-report {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+  overflow: hidden;
+}
+
+/* While the checks run the map stands down — the answer is arriving in
+   the report, not on the map. */
+body.vb-loading .vb-globe,
+body.vb-report-ready .vb-globe { opacity: 0; pointer-events: none; }
+
+/* Structure and labels are present from the first frame; only the values
+   are pending. A skeleton that redraws the whole card would lose the
+   reading position the user already has. */
+.vb-skel {
+  display: block;
+  height: 14px;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  background: var(--surface-neutral-03);
+  animation: vb-shimmer 1.4s ease-in-out infinite;
+}
+
+.vb-skel--tab { width: 92px; height: 12px; }
+
+@keyframes vb-shimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+.vb-alerts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  padding-top: var(--spacing-24);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.vb-alerts__row { display: flex; flex-wrap: wrap; gap: var(--spacing-8); }
+
+.vb-alert {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-4) var(--padding-md);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-badge);
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+  background: var(--surface-neutral-02);
+}
+
+.vb-alerts__phone {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-caption);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vb-skel { animation: none; }
+}

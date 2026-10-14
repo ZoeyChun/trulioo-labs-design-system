@@ -1,0 +1,372 @@
+<!-- Portal 2.0 home — built from Figma "Portal-2.0-Design---2026", node 1005:36892.
+     https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/?node-id=1005-36892
+
+     Changes from the earlier node (906:72854): the traffic widget is now a
+     dark teal hero with a stacked bar and a breakdown list, the action row
+     is three cards with a header strip instead of four, and TruAI moves out
+     of the content column into a docked right panel.
+
+     Assets are the exact SVGs exported from the node. The TruAI orb is a
+     Figma shader (WebGPU mesh gradient) and cannot run in a static page, so
+     it is the node rendered to PNG at its natural 132px. See README. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home — Trulioo Portal 2.0</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+
+  <!-- Shipped components rather than hand-rolled equivalents -->
+  <link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../../Components/button/button.css">
+  <link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
+
+  <!-- shell + ai-panel are shared across the 2026 portal pages; page.css is
+       this page only. Linked in order — the cascade depends on it, and
+       nested @import can be blocked inside preview iframes. -->
+  <link rel="stylesheet" href="../shared/portal-2026/shell.css">
+  <link rel="stylesheet" href="css/page.css">
+  <link rel="stylesheet" href="../shared/portal-2026/ai-panel.css">
+</head>
+<body>
+
+<div class="v2-shell" data-truai="open">
+
+  <!-- ============================================================
+       Side rail — 72px
+       ============================================================ -->
+  <aside class="v2-rail" aria-label="Primary">
+    <div class="v2-rail__header">
+      <span class="v2-rail__logo">
+        <img src="assets/logo-rail.svg" alt="Trulioo" width="29.9995" height="24.6109">
+      </span>
+    </div>
+
+    <nav class="v2-rail__main">
+      <button type="button" class="v2-rail__item" aria-current="page" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.375 2.234a1 1 0 0 1 1.25 0l9.063 8.125a1 1 0 1 1-1.328 1.5l-.235-.21V19.5A2.5 2.5 0 0 1 17.625 22H6.375A2.5 2.5 0 0 1 3.875 19.5v-7.851l-.234.21a1 1 0 0 1-1.329-1.5L11.375 2.234ZM12 4.188 5.75 9.813V19.5c0 .352.273.625.625.625H8.25V16.06a2.81 2.81 0 0 1 2.813-2.812h1.875a2.81 2.81 0 0 1 2.812 2.813v4.062h1.875a.62.62 0 0 0 .625-.625V9.812L12 4.188Z" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="v2-rail__item" aria-label="History">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a9 9 0 1 1-8.49 11.95.75.75 0 1 1 1.42-.5A7.5 7.5 0 1 0 12 4.5a7.47 7.47 0 0 0-5.37 2.25H8.5a.75.75 0 0 1 0 1.5h-4A.75.75 0 0 1 3.75 7.5v-4a.75.75 0 0 1 1.5 0v2.1A8.97 8.97 0 0 1 12 3Z" fill="currentColor"/><path d="M12 7.25a.75.75 0 0 1 .75.75v3.69l2.53 1.46a.75.75 0 1 1-.75 1.3l-2.91-1.68a.75.75 0 0 1-.37-.65V8a.75.75 0 0 1 .75-.75Z" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="v2-rail__item" aria-label="Businesses">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 2.75h9A1.75 1.75 0 0 1 16.25 4.5v3.25h2.25A1.75 1.75 0 0 1 20.25 9.5v10A1.75 1.75 0 0 1 18.5 21.25h-13A1.75 1.75 0 0 1 3.75 19.5v-15A1.75 1.75 0 0 1 5.5 2.75Zm-.25 1.75V19.5c0 .14.11.25.25.25h9.25V4.5a.25.25 0 0 0-.25-.25h-9a.25.25 0 0 0-.25.25Zm11 4.75v10.5h2.25a.25.25 0 0 0 .25-.25v-10a.25.25 0 0 0-.25-.25h-2.25ZM7 6.5h2v1.75H7V6.5Zm3.75 0h2v1.75h-2V6.5ZM7 10.25h2V12H7v-1.75Zm3.75 0h2V12h-2v-1.75ZM7 14h2v1.75H7V14Zm3.75 0h2v1.75h-2V14Z" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="v2-rail__item" aria-label="Access management">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.25 3a3.75 3.75 0 1 1 0 7.5 3.75 3.75 0 0 1 0-7.5Zm0 1.5a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM8.5 12h1.5a6.25 6.25 0 0 1 6.23 5.77.75.75 0 0 1-1.5.11A4.75 4.75 0 0 0 10 13.5H8.5a4.75 4.75 0 0 0-4.75 4.75.75.75 0 0 1-1.5 0A6.25 6.25 0 0 1 8.5 12Z" fill="currentColor"/><path d="M18.25 12.5a2.75 2.75 0 0 1 .75 5.4v.85l.53.53a.75.75 0 0 1 0 1.06l-.78.78a.75.75 0 0 1-1.06 0l-.72-.72a.75.75 0 0 1-.22-.53v-1.97a2.75 2.75 0 0 1 1.5-5.4Zm0 1.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z" fill="currentColor"/></svg>
+      </button>
+    </nav>
+
+    <div class="v2-rail__collapse">
+      <button type="button" aria-label="Expand navigation">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.47 5.47a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 1 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Zm7 0a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 1 1-1.06-1.06L17.94 12l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+      </button>
+    </div>
+
+    <div class="v2-rail__user">
+      <button type="button" class="v2-rail__avatar" aria-label="Jane Doe — account">JD</button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       STAGE — owned by shared/portal-2026/shell.css. Do not restyle.
+       ============================================================ -->
+  <div class="v2-stage">
+
+    <!-- ▼▼▼ LEFT — page content ▼▼▼  owner: css/page.css, prefix v2-
+         Add page widgets inside <main>. Nothing here may reference
+         .ai-* or the [data-truai] state. -->
+    <main class="v2-content">
+      <h1 class="v2-visually-hidden">Portal home</h1>
+
+      <!-- Workspace header -->
+      <header class="v2-org">
+        <span class="v2-org__mark" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M8.62 2.4a.72.72 0 0 0-1.24 0L.9 13.5a.72.72 0 0 0 .62 1.08h12.96a.72.72 0 0 0 .62-1.08L8.62 2.4ZM8 4.74l2.63 4.52-1.3 1.3a.5.5 0 0 1-.71 0L7.1 9.14a.5.5 0 0 0-.72 0l-1.1 1.12L8 4.74Z" fill="currentColor"/></svg>
+        </span>
+        <p class="v2-org__name">Pacific Ridge Financial</p>
+        <span class="tds-tag tds-tag--sm v2-org__env">
+          <span class="tds-tag__leading-visual v2-org__dot">
+            <img src="../shared/portal-2026/assets/env-dot.svg" alt="" width="8" height="8">
+          </span>
+          Prod
+        </span>
+      </header>
+
+      <!-- Traffic by Service -->
+      <section class="v2-traffic" aria-labelledby="v2-traffic-h">
+        <span class="v2-traffic__texture" aria-hidden="true"></span>
+        <div class="v2-traffic__lead">
+          <div class="v2-traffic__heading">
+            <h2 class="v2-traffic__title" id="v2-traffic-h">Traffic by Service</h2>
+            <p class="v2-traffic__sub">Past 30 days summary</p>
+          </div>
+
+          <div class="v2-traffic__figure">
+            <span class="v2-traffic__value" data-count="278">278</span>
+            <span class="v2-trend">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M1.75 4.5 6.4 9.15a.6.6 0 0 0 .85 0l2.1-2.1a.6.6 0 0 1 .85 0l3.3 3.3M14.25 7.2v3.6h-3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              22%
+            </span>
+          </div>
+
+          <div class="v2-stack" role="img" aria-label="Share of traffic: Business Verification 35%, Person Verification 30%, Document Verification 16%, Watchlist and AML 12%, Ownership Assessment 7%.">
+            <span style="flex: 89; background: #202223"></span>
+            <span style="flex: 77; background: #5c5f62"></span>
+            <span style="flex: 41; background: #8c9196"></span>
+            <span style="flex: 31; background: var(--color-teal-60)"></span>
+            <span style="flex: 18; background: #ffffff"></span>
+          </div>
+        </div>
+
+        <dl class="v2-breakdown">
+          <div class="v2-breakdown__row">
+            <dt><i class="v2-swatch" style="background: #202223"></i>Business Verification</dt>
+            <dd><span class="v2-breakdown__n">52,400</span><span class="v2-breakdown__p">35%</span></dd>
+          </div>
+          <div class="v2-breakdown__row">
+            <dt><i class="v2-swatch" style="background: #5c5f62"></i>Person Verification</dt>
+            <dd><span class="v2-breakdown__n">44,150</span><span class="v2-breakdown__p">30%</span></dd>
+          </div>
+          <div class="v2-breakdown__row">
+            <dt><i class="v2-swatch" style="background: #8c9196"></i>Document Verification</dt>
+            <dd><span class="v2-breakdown__n">24,200</span><span class="v2-breakdown__p">16%</span></dd>
+          </div>
+          <div class="v2-breakdown__row">
+            <dt><i class="v2-swatch" style="background: var(--color-teal-60)"></i>Watchlist / AML</dt>
+            <dd><span class="v2-breakdown__n">18,300</span><span class="v2-breakdown__p">12%</span></dd>
+          </div>
+          <div class="v2-breakdown__row">
+            <dt><i class="v2-swatch" style="background: #ffffff"></i>Ownership Assessment</dt>
+            <dd><span class="v2-breakdown__n">9,200</span><span class="v2-breakdown__p">7%</span></dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Action cards -->
+      <section class="v2-cards" aria-label="Quick actions">
+
+        <a class="v2-card" href="../verify-business/index.html">
+          <span class="v2-card__head">
+            <span class="v2-card__id">
+              <span class="v2-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5.5 2.75h9A1.75 1.75 0 0 1 16.25 4.5v3.25h2.25A1.75 1.75 0 0 1 20.25 9.5v10A1.75 1.75 0 0 1 18.5 21.25h-13A1.75 1.75 0 0 1 3.75 19.5v-15A1.75 1.75 0 0 1 5.5 2.75Zm-.25 1.75V19.5c0 .14.11.25.25.25h9.25V4.5a.25.25 0 0 0-.25-.25h-9a.25.25 0 0 0-.25.25Zm11 4.75v10.5h2.25a.25.25 0 0 0 .25-.25v-10a.25.25 0 0 0-.25-.25h-2.25ZM7 6.5h2v1.75H7V6.5Zm3.75 0h2v1.75h-2V6.5ZM7 10.25h2V12H7v-1.75Zm3.75 0h2V12h-2v-1.75ZM7 14h2v1.75H7V14Zm3.75 0h2v1.75h-2V14Z" fill="currentColor"/></svg>
+              </span>
+              <span class="v2-card__title">Verify a business</span>
+            </span>
+            <span class="v2-card__go" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+            </span>
+          </span>
+
+          <span class="v2-card__body">
+            <span class="v2-card__figure">
+              <span class="v2-card__value">4</span>
+              <span class="v2-card__state">in review</span>
+            </span>
+            <span class="v2-card__delta v2-card__delta--alert">-1.8 pts match rate, 7 days</span>
+          </span>
+        </a>
+
+        <a class="v2-card" href="#">
+          <span class="v2-card__head">
+            <span class="v2-card__id">
+              <span class="v2-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.75a4.25 4.25 0 1 1 0 8.5 4.25 4.25 0 0 1 0-8.5Zm0 1.5a2.75 2.75 0 1 0 0 5.5 2.75 2.75 0 0 0 0-5.5ZM11 13.75h2a6.25 6.25 0 0 1 6.25 6.25.75.75 0 0 1-1.5 0A4.75 4.75 0 0 0 13 15.25h-2A4.75 4.75 0 0 0 6.25 20a.75.75 0 0 1-1.5 0A6.25 6.25 0 0 1 11 13.75Z" fill="currentColor"/></svg>
+              </span>
+              <span class="v2-card__title">Verify a person</span>
+            </span>
+            <span class="v2-card__go" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+            </span>
+          </span>
+
+          <span class="v2-card__body">
+            <span class="v2-card__figure">
+              <span class="v2-card__value">96.8%</span>
+              <span class="v2-card__state">passed</span>
+            </span>
+            <span class="v2-card__delta">+0.4 pts vs last week</span>
+          </span>
+        </a>
+
+        <a class="v2-card" href="#">
+          <span class="v2-card__head">
+            <span class="v2-card__id">
+              <span class="v2-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.75 19.25 5.75v5.6c0 4.2-2.9 8.1-7.25 9.9-4.35-1.8-7.25-5.7-7.25-9.9v-5.6L12 2.75Zm0 1.63L6.25 6.76v4.59c0 3.4 2.26 6.6 5.75 8.23 3.49-1.63 5.75-4.83 5.75-8.23V6.76L12 4.38Zm-.75 3.37h1.5v5h-1.5v-5Zm0 6.75h1.5v1.5h-1.5v-1.5Z" fill="currentColor"/></svg>
+              </span>
+              <span class="v2-card__title">Access risk</span>
+            </span>
+            <span class="v2-card__go" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+            </span>
+          </span>
+
+          <span class="v2-card__body">
+            <span class="v2-card__figure">
+              <span class="v2-card__value">7</span>
+              <span class="v2-card__state">high risk</span>
+            </span>
+            <span class="v2-card__delta">+2 vs last week</span>
+          </span>
+        </a>
+
+      </section>
+
+      <!-- Recent transactions -->
+      <section class="v2-txn" aria-labelledby="v2-txn-h">
+        <header class="v2-txn__head">
+          <h2 class="v2-txn__title" id="v2-txn-h">Recent transactions</h2>
+          <a class="tds-btn tds-btn--sm tds-btn--invisible v2-txn__all" href="#">
+            View all
+            <span class="tds-btn__trailing-visual" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+            </span>
+          </a>
+        </header>
+
+        <!-- The 24px pad on this wrapper is what insets every row divider
+             from the panel edge — the borders sit on the rows inside it. -->
+        <div class="v2-txn__table-wrap">
+        <table class="v2-table">
+          <thead>
+            <tr>
+              <th scope="col">Transaction</th>
+              <th scope="col">Result</th>
+              <th scope="col">Product</th>
+              <th scope="col">Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="v2-table__name">Apex Nordic Logistics AB</td>
+              <td><span class="tds-tag tds-tag--positive tds-tag--sm">Verified</span></td>
+              <td>Business Verification</td>
+              <td>23 Mar 2026</td>
+            </tr>
+            <tr>
+              <td class="v2-table__name">Elena Rostova</td>
+              <td><span class="tds-tag tds-tag--positive tds-tag--sm">Verified</span></td>
+              <td>Person Verification</td>
+              <td>23 Mar 2026</td>
+            </tr>
+            <tr>
+              <td class="v2-table__name">Krona Fintech Solutions Ltd.</td>
+              <td><span class="tds-tag tds-tag--intermediate tds-tag--sm">Pending</span></td>
+              <td>AML Watchlist</td>
+              <td>22 Mar 2026</td>
+            </tr>
+            <tr>
+              <td class="v2-table__name">Marcus Vance</td>
+              <td><span class="tds-tag tds-tag--negative tds-tag--sm">Declined</span></td>
+              <td>Document Verification</td>
+              <td>20 Mar 2026</td>
+            </tr>
+            <tr>
+              <td class="v2-table__name">Vanguard Global Shipping Inc.</td>
+              <td><span class="tds-tag tds-tag--positive tds-tag--sm">Verified</span></td>
+              <td>Business Verification</td>
+              <td>14 Mar 2026</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================================================
+         TruAI panel — 478px
+         ============================================================ -->
+    <div class="v2-panel-slot">
+      <aside class="ai-panel" id="ai-panel" aria-label="TruAI">
+
+        <div class="ai-panel__top">
+          <header class="ai-panel__head">
+            <div class="ai-panel__greeting">
+              <h2 class="ai-panel__welcome">Welcome, Zoey.</h2>
+              <p class="ai-panel__date">September 30, 2026</p>
+            </div>
+            <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--secondary" id="v2-close"
+              aria-label="Close TruAI" aria-expanded="true" aria-controls="ai-panel">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.47 6.47a.75.75 0 0 1 1.06 0L12 10.94l4.47-4.47a.75.75 0 1 1 1.06 1.06L13.06 12l4.47 4.47a.75.75 0 1 1-1.06 1.06L12 13.06l-4.47 4.47a.75.75 0 0 1-1.06-1.06L10.94 12 6.47 7.53a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+            </button>
+          </header>
+
+          <div class="ai-panel__hero">
+            <span class="ai-orb">
+              <img class="ai-orb__fill" src="../shared/portal-2026/assets/truai-orb.png" alt="" width="132" height="132">
+              <img class="ai-orb__mark" src="../shared/portal-2026/assets/logo-orb-mark.svg" alt="" width="69.3009" height="56.8531">
+            </span>
+            <p class="ai-wordmark">Ask TruAI</p>
+          </div>
+        </div>
+
+        <div class="ai-suggestions">
+          <button type="button" class="ai-suggestion">
+            <span>Verify business</span>
+            <span class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+            </span>
+          </button>
+          <button type="button" class="ai-suggestion">
+            <span>Verify person</span>
+            <span class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+            </span>
+          </button>
+          <button type="button" class="ai-suggestion">
+            <span>Where can I start?</span>
+            <span class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+            </span>
+          </button>
+        </div>
+
+        <form class="ai-prompt" action="#" onsubmit="return false;">
+          <label class="v2-visually-hidden" for="v2-ask">Ask questions or tell me what you’d like to do</label>
+          <input id="v2-ask" class="ai-prompt__input" type="text"
+                 placeholder="Ask questions or tell me what you’d like to do" autocomplete="off">
+
+          <div class="ai-prompt__bar">
+            <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Add attachment">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4.75a.75.75 0 0 1 .75.75v5.75h5.75a.75.75 0 0 1 0 1.5h-5.75v5.75a.75.75 0 0 1-1.5 0v-5.75H5.5a.75.75 0 0 1 0-1.5h5.75V5.5a.75.75 0 0 1 .75-.75Z" fill="currentColor"/></svg>
+            </button>
+            <div class="ai-prompt__right">
+              <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Dictate">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.75A3.25 3.25 0 0 1 15.25 6v6a3.25 3.25 0 0 1-6.5 0V6A3.25 3.25 0 0 1 12 2.75Zm0 1.5A1.75 1.75 0 0 0 10.25 6v6a1.75 1.75 0 0 0 3.5 0V6A1.75 1.75 0 0 0 12 4.25ZM6.25 11.25a.75.75 0 0 1 .75.75 5 5 0 0 0 10 0 .75.75 0 0 1 1.5 0 6.5 6.5 0 0 1-5.75 6.46v2.04h2.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1 0-1.5h2.5v-2.04A6.5 6.5 0 0 1 5.5 12a.75.75 0 0 1 .75-.75Z" fill="currentColor"/></svg>
+              </button>
+              <button type="submit" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--circular ai-send" aria-label="Send">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19.25a.75.75 0 0 1-.75-.75V7.31L6.78 11.78a.75.75 0 0 1-1.06-1.06l5.75-5.75a.75.75 0 0 1 1.06 0l5.75 5.75a.75.75 0 1 1-1.06 1.06L12.75 7.31V18.5a.75.75 0 0 1-.75.75Z" fill="currentColor"/></svg>
+              </button>
+            </div>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <!-- Collapsed state — still the RIGHT side's markup. When the panel
+         folds away this is what remains, and it is also the way back in:
+         the thing you want to do is the thing you click, so there is no
+         separate re-open control. -->
+    <button type="button" class="ai-askbar" id="ai-askbar"
+            aria-controls="ai-panel" aria-expanded="true" tabindex="-1">
+      <span class="ai-askbar__text">Ask a question or tell me what you&rsquo;d like to do</span>
+      <span class="ai-askbar__send" aria-hidden="true">
+        <img src="../shared/portal-2026/assets/ask-arrow.svg" alt="" width="12" height="12">
+      </span>
+    </button>
+
+  </div>
+</div>
+
+
+<script src="../shared/portal-2026/ai-toggle.js"></script>
+
+</body>
+</html>

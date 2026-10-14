@@ -1,5 +1,4 @@
 /* Inter — self-hosted latin subset (SIL Open Font License)
-   Tobias — display serif (Regular + Medium)
    Loaded before tokens.css so --font-family resolves consistently on all OSes. */
 
 @font-face {
@@ -13,18 +12,21 @@
     U+FEFF, U+FFFD;
 }
 
+/* Tobias — display serif (Regular + Medium) */
 @font-face {
   font-family: "Tobias";
-  src: url("./fonts/tobias/Tobias-Regular.otf") format("opentype");
-  font-weight: 400;
   font-style: normal;
+  font-weight: 400;
   font-display: swap;
+  src:
+    url("./fonts/tobias/tobias-regular.woff2") format("woff2"),
+    url("./fonts/tobias/Tobias-Regular.otf") format("opentype");
 }
 
 @font-face {
   font-family: "Tobias";
-  src: url("./fonts/tobias/Tobias-Medium.otf") format("opentype");
-  font-weight: 500;
   font-style: normal;
+  font-weight: 500;
   font-display: swap;
+  src: url("./fonts/tobias/Tobias-Medium.otf") format("opentype");
 }
