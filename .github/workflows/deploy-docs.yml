@@ -11,6 +11,7 @@ on:
       - "assets/**"
       - "scripts/**"
       - "data/**"
+      - "portal-2.0/**"
 
 permissions:
   contents: read
