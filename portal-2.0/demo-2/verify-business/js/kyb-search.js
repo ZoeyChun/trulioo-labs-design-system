@@ -46,6 +46,7 @@
         regNumber: 'BRN 11876542',
         taxId: 'GB341209876',
         phone: '+44 20 7946 0000',
+        email: 'info@meridianapexconsulting.co.uk',
         alerts: ['Adverse media', 'Sanctions', 'Litigation', 'Positive press'],
         summary: 'Registered and active, but the filings describe a shell: ' +
                  'a virtual office, a catch-all SIC code, no employees and ' +
@@ -334,14 +335,30 @@
     ['TAX ID',                  'taxId']
   ];
 
+  /* Hand-drawn icons, reused across the status field, Communication
+     records and the News & alerts tags (Figma node 1121:51028). */
+  var ICON_CHECK =
+    '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.75a9.25 9.25 0 1 0 0 18.5 9.25 9.25 0 0 0 0-18.5Zm0 1.5a7.75 7.75 0 1 1 0 15.5 7.75 7.75 0 0 1 0-15.5Zm3.47 4.78a.75.75 0 0 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-2.25-2.25a.75.75 0 1 1 1.06-1.06l1.72 1.72 3.97-3.97Z" fill="currentColor"/></svg>';
+  var ICON_PHONE =
+    '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.47 3.05a1.75 1.75 0 0 1 2.38.46l1.1 1.65a1.75 1.75 0 0 1-.12 2.14l-.98 1.12a.25.25 0 0 0-.03.29c.76 1.4 1.9 2.54 3.3 3.3a.25.25 0 0 0 .29-.03l1.12-.98a1.75 1.75 0 0 1 2.14-.12l1.65 1.1a1.75 1.75 0 0 1 .46 2.38l-.9 1.35a2.25 2.25 0 0 1-2.2.97c-3.5-.55-6.73-2.26-9.2-4.86-1.9-2-3.2-4.5-3.6-7.24a2.25 2.25 0 0 1 .97-2.2l1.35-.9Z" fill="currentColor"/></svg>';
+  var ICON_ENVELOPE =
+    '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.75 5.25h14.5A1.75 1.75 0 0 1 21 7v10a1.75 1.75 0 0 1-1.75 1.75H4.75A1.75 1.75 0 0 1 3 17V7a1.75 1.75 0 0 1 1.75-1.75Zm.2 1.5 6.49 5.4a.85.85 0 0 0 1.08 0l6.49-5.4H4.95ZM4.5 8.1V17c0 .14.11.25.25.25h14.5a.25.25 0 0 0 .25-.25V8.1l-6.63 5.52a2.35 2.35 0 0 1-2.99 0L4.5 8.1Z" fill="currentColor"/></svg>';
+
   function reportShell(c, loading) {
     var rows = FIELDS.map(function (f) {
-      var val = loading
-        ? '<span class="vb-skel"></span>'
-        : esc((c.report && c.report[f[1]]) || '—');
+      var isStatus = f[1] === 'regStatus';
+      var val;
+      if (loading) {
+        val = '<span class="vb-skel"></span>';
+      } else if (isStatus && c.report) {
+        val = '<span class="vb-fields__icon">' + ICON_CHECK + '</span>' + esc(c.report[f[1]]);
+      } else {
+        val = esc((c.report && c.report[f[1]]) || '—');
+      }
       var note = (!loading && f[2] && c.report && c.report[f[2]])
         ? '<p class="vb-fields__note">' + esc(c.report[f[2]]) + '</p>' : '';
-      return '<div class="vb-fields__cell"><dt>' + esc(f[0]) + '</dt>' +
+      return '<div class="vb-fields__cell' + (isStatus ? ' vb-fields__cell--status' : '') + '">' +
+             '<dt>' + esc(f[0]) + '</dt>' +
              '<dd>' + val + '</dd>' + note + '</div>';
     });
     var grid = '';
@@ -357,12 +374,24 @@
              '" role="tab" aria-selected="' + (i === 0) + '">' + esc(t) + '</button>';
     }).join('');
 
-    var alerts = (!loading && c.report)
-      ? '<section class="vb-alerts"><h3 class="vb-overview__title">News &amp; alerts</h3>' +
-        '<div class="vb-alerts__row">' + c.report.alerts.map(function (a) {
-          return '<span class="vb-alert">' + esc(a) + ': none found</span>';
-        }).join('') + '</div>' +
-        '<p class="vb-alerts__phone">Listed telephone ' + esc(c.report.phone) + '</p></section>'
+    var below = (!loading && c.report)
+      ? '<div class="vb-divider" role="presentation"></div>' +
+        '<div class="vb-split">' +
+          '<section class="vb-comms"><h3 class="vb-overview__title">Communication Records:</h3>' +
+            '<dl class="vb-fields">' +
+              '<div class="vb-fields__cell"><dt>Phone</dt>' +
+                '<dd><span class="vb-fields__icon">' + ICON_PHONE + '</span>' + esc(c.report.phone) + '</dd></div>' +
+              '<div class="vb-fields__cell"><dt>Email</dt>' +
+                '<dd><span class="vb-fields__icon">' + ICON_ENVELOPE + '</span>' +
+                '<a href="mailto:' + esc(c.report.email) + '">' + esc(c.report.email) + '</a></dd></div>' +
+            '</dl>' +
+          '</section>' +
+          '<section class="vb-alerts"><h3 class="vb-overview__title">News &amp; Alerts:</h3>' +
+            '<div class="vb-alerts__row">' + c.report.alerts.map(function (a) {
+              return '<span class="vb-alert">' + ICON_CHECK + esc(a) + ': none found</span>';
+            }).join('') + '</div>' +
+          '</section>' +
+        '</div>'
       : '';
 
     return '' +
@@ -372,7 +401,6 @@
             '<p class="vb-entity__name">' + esc(c.name) + '</p>' +
             '<span class="tds-tag tds-tag--positive tds-tag--sm">Verified</span>' +
           '</div>' +
-          '<button type="button" class="vb-export">Export</button>' +
         '</div>' +
         '<dl class="vb-meta">' +
           '<div class="vb-meta__cell"><dt>Country / Jurisdiction</dt><dd>' + esc(c.country) + '</dd></div>' +
@@ -380,12 +408,13 @@
           '<div class="vb-meta__cell"><dt>Date</dt><dd>17 Jun 2026, 2:14 PM</dd></div>' +
         '</dl>' +
         '<div class="vb-tabs" role="tablist" aria-label="Result sections">' + tabRow + '</div>' +
-        '<div class="vb-map"><img src="assets/map.png" alt=""></div>' +
+        '<div class="vb-map"><img src="assets/map.png" alt="">' +
+          '<span class="vb-map__pin" aria-hidden="true"></span></div>' +
         '<section class="vb-overview">' +
-          '<h3 class="vb-overview__title">Company overview</h3>' +
+          '<h3 class="vb-overview__title">Company Overview:</h3>' +
           '<dl class="vb-fields">' + grid + '</dl>' +
         '</section>' +
-        alerts +
+        below +
       '</div>';
   }
 

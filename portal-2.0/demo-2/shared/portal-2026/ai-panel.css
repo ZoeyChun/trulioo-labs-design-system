@@ -77,6 +77,15 @@
   color: var(--text-default);
 }
 
+/* Plain variant — node 1015:91926's panel header is just "TruAI", no
+   greeting/date pair underneath it. Smaller than the scoped welcome text
+   and doesn't need the 300px wrap width a two-line greeting wanted. */
+.ai-panel__welcome--plain {
+  width: auto;
+  font-size: var(--font-size-md);
+  line-height: 24px;
+}
+
 .ai-panel__date {
   margin: 0;
   font-size: var(--font-size-sm);

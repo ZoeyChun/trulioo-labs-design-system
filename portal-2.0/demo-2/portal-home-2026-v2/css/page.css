@@ -55,6 +55,7 @@
   border-radius: var(--radius-full);
   color: var(--icon-faint);
   background: transparent;
+  text-decoration: none;
   cursor: pointer;
   transition: color 140ms ease, background-color 140ms ease;
 }
@@ -116,54 +117,29 @@
 }
 
 /* ------------------------------------------------------------------
-   Workspace header
+   Greeting — node 1015:91926 drops the workspace/org header entirely.
+   What is left is a single plain heading.
    ------------------------------------------------------------------ */
 
-.v2-org {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  flex: 0 0 auto;
-  width: auto;
-}
-
-.v2-org__mark {
-  display: grid;
-  flex: 0 0 auto;
-  place-items: center;
-  padding: 6px;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  color: var(--text-inverse);
-  background: var(--color-neutral-100);
-}
-
-.v2-org__mark svg { width: 16px; height: 16px; }
-
-.v2-org__name {
+.v2-greeting {
   margin: 0;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  line-height: 18px;
-  color: var(--color-neutral-100);
+  width: 300px;
+  max-width: 100%;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 28px;
+  color: var(--text-default);
 }
-
-/* Environment tag. The shipped Tag ships a 16px leading-visual slot; the
-   node uses an 8px dot, so only the slot box is narrowed here. */
-.v2-org__dot {
-  width: 8px;
-  height: 8px;
-  margin-right: var(--spacing-4);
-}
-
-.v2-org__dot img { display: block; }
 
 /* ------------------------------------------------------------------
-   Traffic by Service — dark teal hero
+   Service-call summary strip
+
+   Replaces the gradient hero + stacked bar + breakdown list from the
+   previous node. One flat grey bar: a total with its trend pill, three
+   channel percentages, a period label — no chart, no per-row data.
    ------------------------------------------------------------------ */
 
-.v2-traffic {
-  position: relative;
+.v2-stat-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -171,83 +147,46 @@
   flex: 0 0 auto;
   padding: var(--spacing-24);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-2xl);
-  overflow: hidden;
-
-  /* Node: bg-gradient-to-t from-[#dbf0df] 76.483% to-[#8ac8a2] 106.77% */
-  background: linear-gradient(to top, #dbf0df 76.483%, #8ac8a2 106.77%);
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-03);
 }
 
-/* The node layers a 4x4 mesh shader at 10% over that base — warm along the
-   top edge, cool along the bottom. The shader needs WebGPU, so this is the
-   same mesh rebuilt from its own control-point colours as stacked radials.
-   Kept at the node's 10% so it reads as grain, not as a second gradient. */
-.v2-traffic__texture {
-  position: absolute;
-  inset: 0;
-  opacity: 0.10;
-  pointer-events: none;
-  background:
-    radial-gradient(60% 70% at 0% 0%,   rgb(255,107,107) 0%, transparent 70%),
-    radial-gradient(55% 65% at 33% 0%,  rgb(255,163,107) 0%, transparent 70%),
-    radial-gradient(55% 65% at 67% 0%,  rgb(255,209,107) 0%, transparent 70%),
-    radial-gradient(60% 70% at 100% 0%, rgb(255,209,102) 0%, transparent 70%),
-    radial-gradient(60% 70% at 0% 100%,   rgb(5,214,161)  0%, transparent 70%),
-    radial-gradient(55% 65% at 33% 100%,  rgb(26,178,166) 0%, transparent 70%),
-    radial-gradient(55% 65% at 67% 100%,  rgb(26,153,178) 0%, transparent 70%),
-    radial-gradient(60% 70% at 100% 100%, rgb(18,138,178) 0%, transparent 70%),
-    radial-gradient(50% 60% at 0% 50%,   rgb(102,128,178) 0%, transparent 72%),
-    radial-gradient(50% 60% at 100% 50%, rgb(26,140,178)  0%, transparent 72%);
-}
-
-.v2-traffic > *:not(.v2-traffic__texture) { position: relative; }
-
-.v2-traffic__lead {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-32);
-  flex: 0 1 292px;
-  min-width: 0;
-}
-
-.v2-traffic__heading {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-}
-
-/* Hero is light now, so everything on it flips to dark ink. */
-.v2-traffic__title {
-  margin: 0;
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  line-height: 20px;
-  color: #202223;
-}
-
-/* Node uses --tru-text-caption, which lands at 4.26:1 on the pale end of
-   this gradient. One step darker clears 4.5:1. */
-.v2-traffic__sub {
-  margin: 0;
-  font-size: var(--font-size-xs);
-  line-height: 18px;
-  color: var(--text-description);
-}
-
-.v2-traffic__figure {
+.v2-stat-strip__figures {
   display: flex;
   align-items: center;
-  gap: var(--spacing-12);
+  flex-wrap: wrap;
+  gap: 0;
 }
 
-.v2-traffic__value {
-  font-size: 4rem;
-  font-weight: var(--font-weight-regular);
-  line-height: 61px;
+.v2-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  height: 100%;
+  padding-right: var(--spacing-24);
+  border-right: 1px solid var(--border-strong);
+}
+
+.v2-stat:last-child { border-right: 0; padding-right: 0; }
+.v2-stat + .v2-stat { padding-left: var(--spacing-24); }
+
+.v2-stat__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-caption);
+}
+
+.v2-stat__value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
   font-variant-numeric: tabular-nums;
   color: var(--text-default);
 }
 
+/* The one surviving piece of the old hero: a small red trend pill next
+   to the total. Node keeps this exact treatment. */
 .v2-trend {
   display: inline-flex;
   align-items: center;
@@ -264,84 +203,22 @@
 
 .v2-trend svg { width: 12px; height: 12px; color: var(--icon-negative); }
 
-.v2-stack {
-  display: flex;
-  gap: var(--spacing-4);
-  height: 12px;
-  width: 100%;
-  border-radius: var(--radius-sm);
-}
-
-.v2-stack span {
-  border-radius: var(--radius-sm);
-  transform-origin: left center;
-}
-
-/* --- Breakdown list --- */
-
-.v2-breakdown {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 0 1 421px;
-  min-width: 0;
-  margin: 0;
-  padding-top: var(--spacing-4);
-}
-
-.v2-breakdown__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-12);
-  padding: var(--spacing-4) 6px;
-  border-radius: var(--radius-md);
-}
-
-/* Same step as the subtitle — caption on this ground is 4.26:1. */
-.v2-breakdown dt {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  min-width: 0;
+.v2-stat-strip__period {
   font-size: var(--font-size-xs);
-  line-height: 18px;
-  color: var(--text-description);
+  font-style: italic;
+  color: var(--text-caption);
 }
 
-.v2-breakdown dd {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* ------------------------------------------------------------------
+   Quick access — section label above the action cards
+   ------------------------------------------------------------------ */
+
+.v2-quick-access {
   margin: 0;
-  flex: 0 0 auto;
-}
-
-.v2-swatch {
-  flex: 0 0 auto;
-  width: 10px; height: 10px;
-  border-radius: 2px;
-  /* The last series is white; without a hairline it disappears on the
-     pale hero. Applies to every swatch so they stay the same size. */
-  box-shadow: inset 0 0 0 1px rgba(23, 45, 45, 0.12);
-}
-
-.v2-breakdown__n {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  line-height: 16px;
-  font-variant-numeric: tabular-nums;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
   color: var(--text-default);
-}
-
-.v2-breakdown__p {
-  width: 28px;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  line-height: 16px;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  color: var(--text-description);
 }
 
 /* ------------------------------------------------------------------
@@ -455,15 +332,6 @@
   color: var(--text-caption);
 }
 
-.v2-card__delta {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  line-height: 16px;
-  color: var(--text-caption);
-}
-
-.v2-card__delta--alert { color: var(--text-negative); }
-
 /* ------------------------------------------------------------------
    Recent transactions
    ------------------------------------------------------------------ */
@@ -538,53 +406,31 @@
    that ends on the TruAI orb; see shared/portal-2026/ai-panel.css for the closing beats.
    ------------------------------------------------------------------ */
 
-.v2-org,
-.v2-traffic,
+.v2-greeting,
+.v2-stat-strip,
+.v2-quick-access,
 .v2-card,
 .v2-txn {
   animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
 }
 
+.v2-greeting    { animation-delay: 40ms; }
+.v2-stat-strip  { animation-delay: 90ms; }
+.v2-quick-access { animation-delay: 140ms; }
 
-.v2-org     { animation-delay: 40ms; }
+.v2-cards .v2-card:nth-child(1) { animation-delay: 170ms; }
+.v2-cards .v2-card:nth-child(2) { animation-delay: 205ms; }
+.v2-cards .v2-card:nth-child(3) { animation-delay: 240ms; }
 
-.v2-traffic { animation-delay: 90ms; }
-
-
-.v2-cards .v2-card:nth-child(1) { animation-delay: 150ms; }
-
-.v2-cards .v2-card:nth-child(2) { animation-delay: 185ms; }
-
-.v2-cards .v2-card:nth-child(3) { animation-delay: 220ms; }
-
-
-.v2-txn { animation-delay: 265ms; }
-
-
-/* The stacked bar wipes in from the left once the hero has landed. */
-.v2-stack span {
-  animation: v2-grow 420ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
-}
-
-
-.v2-stack span:nth-child(1) { animation-delay: 300ms; }
-
-.v2-stack span:nth-child(2) { animation-delay: 345ms; }
-
-.v2-stack span:nth-child(3) { animation-delay: 390ms; }
-
-.v2-stack span:nth-child(4) { animation-delay: 435ms; }
-
-.v2-stack span:nth-child(5) { animation-delay: 480ms; }
-
+.v2-txn { animation-delay: 285ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .v2-rail > *,
-  .v2-org,
-  .v2-traffic,
+  .v2-greeting,
+  .v2-stat-strip,
+  .v2-quick-access,
   .v2-card,
-  .v2-txn,
-  .v2-stack span { animation: none; }
+  .v2-txn { animation: none; }
 
   .v2-card,
   .v2-card__go { transition: none; }
