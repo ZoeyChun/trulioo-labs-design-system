@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
   <link rel="stylesheet" href="../../../Components/button/button.css">
   <link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../Components/breadcrumb/breadcrumb.css">
 
   <!-- shell + ai-panel are shared across the 2026 portal pages; page.css is
        this page only. Linked in order — the cascade depends on it. -->
@@ -96,12 +97,10 @@
            themselves: their entrance animation has fill-mode both, which
            pins opacity and would beat any rule set on the same element. -->
       <div class="vb-page">
-      <nav class="vb-crumbs" aria-label="Breadcrumb">
-        <a href="../home/index.html">Home</a>
-        <span aria-hidden="true">/</span>
-        <a href="../agent-hub/index.html">Agent hub</a>
-        <span aria-hidden="true">/</span>
-        <span aria-current="page">Verify a business</span>
+      <nav class="tds-breadcrumbs" aria-label="Breadcrumb">
+        <a href="../agent-hub/index.html" class="tds-breadcrumb-item">Agent hub</a>
+        <span class="tds-breadcrumb-divider" aria-hidden="true">/</span>
+        <span class="tds-breadcrumb-item tds-breadcrumb-item--current" aria-current="page">Verify a business</span>
       </nav>
 
       <!-- Search -->

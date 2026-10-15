@@ -2,7 +2,8 @@
    VERIFY A BUSINESS — page content (left column)
    ============================================================
    Figma node 1015:92403.
-   Owns: breadcrumb, search card, result card.
+   Owns: search card, result card.
+   Breadcrumb: TDS .tds-breadcrumbs (Components/breadcrumb).
    Prefix: vb-
    Scope:  everything inside .v2-content (plus .v2-rail).
 
@@ -125,28 +126,6 @@
 
 /* This page scrolls — the result card is taller than the viewport. */
 .v2-content { padding-bottom: var(--spacing-40); }
-
-/* ------------------------------------------------------------------
-   Breadcrumb
-   ------------------------------------------------------------------ */
-
-.vb-crumbs {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  flex: 0 0 auto;
-  font-size: var(--font-size-xs);
-  line-height: 18px;
-}
-
-.vb-crumbs a {
-  color: var(--text-caption);
-  text-decoration: none;
-}
-
-.vb-crumbs a:hover { color: var(--text-default); text-decoration: underline; }
-.vb-crumbs span[aria-hidden] { color: var(--icon-faint); }
-.vb-crumbs span[aria-current] { color: var(--text-default); }
 
 /* ------------------------------------------------------------------
    Search card
@@ -611,20 +590,20 @@
    Entrance
    ------------------------------------------------------------------ */
 
-.vb-crumbs,
+.tds-breadcrumbs,
 .vb-search,
 .vb-result {
   animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
 }
 
-.vb-crumbs { animation-delay: 40ms; }
-.vb-search { animation-delay: 90ms; }
-.vb-result { animation-delay: 150ms; }
+.tds-breadcrumbs { animation-delay: 40ms; }
+.vb-search       { animation-delay: 90ms; }
+.vb-result       { animation-delay: 150ms; }
 
 .v2-rail > * { animation: v2-fade 360ms ease both; }
 
 @media (prefers-reduced-motion: reduce) {
-  .vb-crumbs,
+  .tds-breadcrumbs,
   .vb-search,
   .vb-result,
   .v2-rail > * { animation: none; }

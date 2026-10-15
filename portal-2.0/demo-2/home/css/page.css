@@ -247,7 +247,10 @@
   transition: border-color 160ms ease;
 }
 
-.v2-card:hover { border-color: var(--border-strong); }
+.v2-card:hover,
+.v2-card:focus-visible {
+  border-color: var(--border-focus);
+}
 
 .v2-card__head {
   display: flex;
@@ -415,8 +418,8 @@
   animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
 }
 
-.v2-greeting    { animation-delay: 40ms; }
-.v2-stat-strip  { animation-delay: 90ms; }
+.v2-greeting     { animation-delay: 40ms; }
+.v2-stat-strip   { animation-delay: 90ms; }
 .v2-quick-access { animation-delay: 140ms; }
 
 .v2-cards .v2-card:nth-child(1) { animation-delay: 170ms; }
@@ -448,8 +451,7 @@
 
 .v2-rail__item:focus-visible,
 .v2-rail__collapse button:focus-visible,
-.v2-rail__avatar:focus-visible,
-.v2-card:focus-visible {
+.v2-rail__avatar:focus-visible {
   outline: 2px solid var(--border-focus);
   outline-offset: 2px;
 }

@@ -2,7 +2,7 @@
    AGENT HUB — page content (left column)
    ============================================================
    Figma node 1118:41218.
-   Owns: breadcrumb, intro, Featured + Demo Capabilities card grids.
+   Owns: intro, Featured + Demo Capabilities card grids.
    Prefix: ah-
    Scope:  everything inside .v2-content (plus .v2-rail).
 
@@ -126,28 +126,6 @@
 .v2-content { padding-bottom: var(--spacing-40); }
 
 /* ------------------------------------------------------------------
-   Breadcrumb
-   ------------------------------------------------------------------ */
-
-.ah-crumbs {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  flex: 0 0 auto;
-  font-size: var(--font-size-xs);
-  line-height: 18px;
-}
-
-.ah-crumbs a {
-  color: var(--text-caption);
-  text-decoration: none;
-}
-
-.ah-crumbs a:hover { color: var(--text-default); text-decoration: underline; }
-.ah-crumbs span[aria-hidden] { color: var(--icon-faint); }
-.ah-crumbs span[aria-current] { color: var(--text-default); }
-
-/* ------------------------------------------------------------------
    Intro
    ------------------------------------------------------------------ */
 
@@ -219,11 +197,9 @@
   transition: border-color 160ms ease;
 }
 
-.ah-card:hover { border-color: var(--border-strong); }
-
+.ah-card:hover,
 .ah-card:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 2px;
+  border-color: var(--border-focus);
 }
 
 .ah-card__head {
@@ -305,22 +281,19 @@
    Entrance
    ------------------------------------------------------------------ */
 
-.ah-crumbs,
 .ah-intro,
 .ah-group {
   animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
 }
 
-.ah-crumbs { animation-delay: 40ms; }
-.ah-intro  { animation-delay: 90ms; }
+.ah-intro { animation-delay: 40ms; }
 
-.ah-group:nth-of-type(1) { animation-delay: 140ms; }
-.ah-group:nth-of-type(2) { animation-delay: 190ms; }
+.ah-group:nth-of-type(1) { animation-delay: 90ms; }
+.ah-group:nth-of-type(2) { animation-delay: 140ms; }
 
 .v2-rail > * { animation: v2-fade 360ms ease both; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ah-crumbs,
   .ah-intro,
   .ah-group,
   .v2-rail > * { animation: none; }

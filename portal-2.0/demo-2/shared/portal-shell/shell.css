@@ -93,7 +93,9 @@ body {
   align-items: flex-start;
   min-width: 0;
   height: 100%;
-  padding: var(--spacing-40);
+  /* Top 24px so breadcrumbs sit consistently under the stage edge;
+     sides/bottom stay 40px on desktop. */
+  padding: var(--spacing-24) var(--spacing-40) var(--spacing-40);
   overflow-y: auto;
 
   /* Scroll still works — wheel, trackpad, keyboard, drag. Only the bar is

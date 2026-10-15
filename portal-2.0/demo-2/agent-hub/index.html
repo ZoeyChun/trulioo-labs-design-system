@@ -4,11 +4,8 @@
      Sits between Home and the individual agent pages. "Verify a business"
      (built at ../verify-business/) is reached two ways: directly from the
      Home quick-access card, and from here as the Featured entry. Only this
-     page's own breadcrumb/rail reflect being inside Agent hub — the
-     Home-first path to Verify a business is intentionally left as-is
-     (its breadcrumb still reads Home / Agent hub / Verify a business per
-     node 1118:41780, matching whichever door the user actually walked
-     through conceptually, not literally).
+     page's own rail reflects being inside Agent hub. Nested agent pages
+     (e.g. Verify a business) carry TDS breadcrumbs; top-level pages do not.
 
      Only "Verify a business" links anywhere real; the other eight cards
      have no built page yet and point at "#", matching the precedent set
@@ -83,12 +80,6 @@
     <!-- ▼▼▼ LEFT — page content ▼▼▼  owner: css/page.css, prefix ah- -->
     <main class="v2-content">
       <h1 class="v2-visually-hidden">Agent hub</h1>
-
-      <nav class="ah-crumbs" aria-label="Breadcrumb">
-        <a href="../home/index.html">Home</a>
-        <span aria-hidden="true">/</span>
-        <span aria-current="page">Agent hub</span>
-      </nav>
 
       <header class="ah-intro">
         <h2 class="ah-intro__title">Agent hub</h2>

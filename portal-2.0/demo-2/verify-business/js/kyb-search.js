@@ -656,7 +656,7 @@
     dom.suggestions = document.getElementById('ai-suggestions');
     dom.report = document.getElementById('vb-report');
     dom.page = document.querySelector('.vb-page');
-    dom.crumbCurrent = document.querySelector('.vb-crumbs [aria-current]');
+    dom.crumbCurrent = document.querySelector('.tds-breadcrumbs [aria-current]');
     if (!dom.globe || !dom.thread) return;
 
     /* Either field can start a lookup — the page's search box or the
