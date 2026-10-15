@@ -180,6 +180,12 @@ body {
   gap: 16px;
 }
 
+.org-admin .tds-side-nav__icon-button .org-labs-flask,
+.org-admin .tds-side-nav__nav-item-icon .org-labs-flask {
+  width: 15.05px;
+  height: 15.6796px;
+}
+
 .org-admin .tds-data-table__actions-cell .tds-icon-btn {
   color: var(--icon-faint);
 }
