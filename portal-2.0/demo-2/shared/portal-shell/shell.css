@@ -14,7 +14,7 @@
      @keyframes v2-rise / v2-fade / v2-slide  shared entrance motion
 
    LEFT  (css/page.css)   owns everything inside .v2-content   prefix: v2-
-   RIGHT (shared/portal-2026/ai-panel.css)  owns .v2-panel-slot + .ai-askbar     prefix: ai-
+   RIGHT (shared/portal-shell/ai-panel.css)  owns .v2-panel-slot + .ai-askbar     prefix: ai-
 
    Neither side may restyle .v2-stage, .v2-panel-slot, or the
    open/closed rules below. If you need a change there, it is a
@@ -157,7 +157,7 @@ body {
 
 /* ------------------------------------------------------------------
    Shared entrance keyframes. Per-element delays live in the file that
-   owns the element — css/page.css and shared/portal-2026/ai-panel.css respectively.
+   owns the element — css/page.css and shared/portal-shell/ai-panel.css respectively.
    ------------------------------------------------------------------ */
 
 @keyframes v2-rise  { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }

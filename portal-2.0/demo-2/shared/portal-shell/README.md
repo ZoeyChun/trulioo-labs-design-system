@@ -6,7 +6,7 @@ Shared shell and TruAI panel for the 2026 portal pages, built from Figma
 Split so two people can work at once: one on page content, one on the AI panel.
 
 ```
-pages/shared/portal-2026/
+pages/shared/portal-shell/
 ├── shell.css        THE CONTRACT — layout, panel slot, open/closed state
 ├── ai-panel.css     RIGHT  — AI chat panel        prefix: ai-
 ├── ai-toggle.js     RIGHT  — open/close behaviour
@@ -24,9 +24,9 @@ pages/verify-business/
 Each page links three stylesheets, **in this order** — the cascade depends on it:
 
 ```html
-<link rel="stylesheet" href="../shared/portal-2026/shell.css">
+<link rel="stylesheet" href="../shared/portal-shell/shell.css">
 <link rel="stylesheet" href="css/page.css">
-<link rel="stylesheet" href="../shared/portal-2026/ai-panel.css">
+<link rel="stylesheet" href="../shared/portal-shell/ai-panel.css">
 ```
 
 Do not merge them behind an `@import`: nested imports can be blocked inside

@@ -10,7 +10,7 @@
    Scope:  everything inside .v2-content (plus .v2-rail).
 
    Do not style .v2-stage, .v2-panel-slot, .ai-*, or the
-   [data-truai] states — those belong to shared/portal-2026/.
+   [data-truai] states — those belong to shared/portal-shell/.
    ============================================================ */
 
 /* ------------------------------------------------------------------

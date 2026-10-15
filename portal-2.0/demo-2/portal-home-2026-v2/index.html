@@ -33,9 +33,9 @@
   <!-- shell + ai-panel are shared across the 2026 portal pages; page.css is
        this page only. Linked in order — the cascade depends on it, and
        nested @import can be blocked inside preview iframes. -->
-  <link rel="stylesheet" href="../shared/portal-2026/shell.css">
+  <link rel="stylesheet" href="../shared/portal-shell/shell.css">
   <link rel="stylesheet" href="css/page.css">
-  <link rel="stylesheet" href="../shared/portal-2026/ai-panel.css">
+  <link rel="stylesheet" href="../shared/portal-shell/ai-panel.css">
 </head>
 <body>
 
@@ -82,7 +82,7 @@
   </aside>
 
   <!-- ============================================================
-       STAGE — owned by shared/portal-2026/shell.css. Do not restyle.
+       STAGE — owned by shared/portal-shell/shell.css. Do not restyle.
        ============================================================ -->
   <div class="v2-stage">
 
@@ -256,11 +256,11 @@
     <!-- ============================================================
          TruAI panel — 478px
          ============================================================ -->
-    <!-- ▼▼▼ RIGHT — AI chat ▼▼▼  owner: shared/portal-2026/ai-panel.js
+    <!-- ▼▼▼ RIGHT — AI chat ▼▼▼  owner: shared/portal-shell/ai-panel.js
          Structure lives in the shared renderer; this page only supplies
          copy. See ai-panel.js for the config shape. -->
     <div id="ai-panel-mount"></div>
-    <script src="../shared/portal-2026/ai-panel.js"></script>
+    <script src="../shared/portal-shell/ai-panel.js"></script>
     <script>
       TruAIPanel.render(document.getElementById('ai-panel-mount'), {
         title: 'TruAI',
@@ -276,7 +276,7 @@
 </div>
 
 
-<script src="../shared/portal-2026/ai-toggle.js"></script>
+<script src="../shared/portal-shell/ai-toggle.js"></script>
 
 </body>
 </html>

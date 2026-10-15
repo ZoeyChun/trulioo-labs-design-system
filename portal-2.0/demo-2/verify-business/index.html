@@ -23,9 +23,9 @@
 
   <!-- shell + ai-panel are shared across the 2026 portal pages; page.css is
        this page only. Linked in order — the cascade depends on it. -->
-  <link rel="stylesheet" href="../shared/portal-2026/shell.css">
+  <link rel="stylesheet" href="../shared/portal-shell/shell.css">
   <link rel="stylesheet" href="css/page.css">
-  <link rel="stylesheet" href="../shared/portal-2026/ai-panel.css">
+  <link rel="stylesheet" href="../shared/portal-shell/ai-panel.css">
 </head>
 <body>
 
@@ -71,7 +71,7 @@
   </aside>
 
   <!-- ============================================================
-       STAGE — owned by shared/portal-2026/shell.css. Do not restyle.
+       STAGE — owned by shared/portal-shell/shell.css. Do not restyle.
        ============================================================ -->
   <div class="v2-stage">
 
@@ -82,10 +82,10 @@
       <div class="vb-canvas">
 
       <!-- Search map. Hidden until a lookup starts; the dot matrix is a
-           generated equirectangular world (see shared/portal-2026/assets). -->
+           generated equirectangular world (see shared/portal-shell/assets). -->
       <div class="vb-globe" id="vb-globe" aria-hidden="true">
         <div class="vb-globe__frame" id="vb-globe-frame">
-          <img class="vb-globe__dots" src="../shared/portal-2026/assets/world-dots.svg" alt="">
+          <img class="vb-globe__dots" src="../shared/portal-shell/assets/world-dots.svg" alt="">
           <div class="vb-globe__pins" id="vb-globe-pins"></div>
         </div>
         <p class="vb-globe__caption" id="vb-globe-caption"></p>
@@ -278,12 +278,12 @@
     <!-- ▲▲▲ LEFT ends ▲▲▲ -->
 
 
-    <!-- ▼▼▼ RIGHT — AI chat ▼▼▼  owner: shared/portal-2026/ai-panel.js
+    <!-- ▼▼▼ RIGHT — AI chat ▼▼▼  owner: shared/portal-shell/ai-panel.js
          Structure lives in the shared renderer; this page only supplies
          copy. hasThread reserves #ai-thread for js/kyb-search.js to
          render the disambiguation/investigation flow into. -->
     <div id="ai-panel-mount"></div>
-    <script src="../shared/portal-2026/ai-panel.js"></script>
+    <script src="../shared/portal-shell/ai-panel.js"></script>
     <script>
       TruAIPanel.render(document.getElementById('ai-panel-mount'), {
         title: 'TruAI',
@@ -303,7 +303,7 @@
   </div>
 </div>
 
-<script src="../shared/portal-2026/ai-toggle.js"></script>
+<script src="../shared/portal-shell/ai-toggle.js"></script>
 <script src="js/kyb-search.js"></script>
 
 </body>

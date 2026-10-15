@@ -31,9 +31,9 @@
 
   <!-- shell + ai-panel are shared across the 2026 portal pages; page.css is
        this page only. Linked in order — the cascade depends on it. -->
-  <link rel="stylesheet" href="../shared/portal-2026/shell.css">
+  <link rel="stylesheet" href="../shared/portal-shell/shell.css">
   <link rel="stylesheet" href="css/page.css">
-  <link rel="stylesheet" href="../shared/portal-2026/ai-panel.css">
+  <link rel="stylesheet" href="../shared/portal-shell/ai-panel.css">
 </head>
 <body>
 
@@ -76,7 +76,7 @@
   </aside>
 
   <!-- ============================================================
-       STAGE — owned by shared/portal-2026/shell.css. Do not restyle.
+       STAGE — owned by shared/portal-shell/shell.css. Do not restyle.
        ============================================================ -->
   <div class="v2-stage">
 
@@ -172,7 +172,7 @@
           <a class="ah-card" href="#">
             <span class="ah-card__head">
               <span class="ah-card__id">
-                <img class="ah-card__icon ah-card__icon--img" src="../shared/portal-2026/assets/icon-device.svg" alt="" width="18" height="18">
+                <img class="ah-card__icon ah-card__icon--img" src="../shared/portal-shell/assets/icon-device.svg" alt="" width="18" height="18">
                 <span class="ah-card__title">Device intelligence</span>
               </span>
               <span class="ah-card__go" aria-hidden="true">
@@ -210,7 +210,7 @@
           <a class="ah-card" href="#">
             <span class="ah-card__head">
               <span class="ah-card__id">
-                <img class="ah-card__icon ah-card__icon--img" src="../shared/portal-2026/assets/icon-document-verification.svg" alt="" width="18" height="18">
+                <img class="ah-card__icon ah-card__icon--img" src="../shared/portal-shell/assets/icon-document-verification.svg" alt="" width="18" height="18">
                 <span class="ah-card__title">Policy review</span>
               </span>
               <span class="ah-card__go" aria-hidden="true">
@@ -232,7 +232,7 @@
           <a class="ah-card" href="#">
             <span class="ah-card__head">
               <span class="ah-card__id">
-                <img class="ah-card__icon ah-card__icon--img" src="../shared/portal-2026/assets/icon-device.svg" alt="" width="18" height="18">
+                <img class="ah-card__icon ah-card__icon--img" src="../shared/portal-shell/assets/icon-device.svg" alt="" width="18" height="18">
                 <span class="ah-card__title">Electronic ID</span>
               </span>
               <span class="ah-card__go" aria-hidden="true">
@@ -271,7 +271,7 @@
           <a class="ah-card" href="#">
             <span class="ah-card__head">
               <span class="ah-card__id">
-                <img class="ah-card__icon ah-card__icon--img" src="../shared/portal-2026/assets/icon-document-verification.svg" alt="" width="18" height="18">
+                <img class="ah-card__icon ah-card__icon--img" src="../shared/portal-shell/assets/icon-document-verification.svg" alt="" width="18" height="18">
                 <span class="ah-card__title">KYC Document</span>
               </span>
               <span class="ah-card__go" aria-hidden="true">
@@ -292,9 +292,9 @@
     <!-- ▲▲▲ LEFT ends ▲▲▲ -->
 
 
-    <!-- ▼▼▼ RIGHT — AI chat ▼▼▼  owner: shared/portal-2026/ai-panel.css -->
+    <!-- ▼▼▼ RIGHT — AI chat ▼▼▼  owner: shared/portal-shell/ai-panel.css -->
     <div id="ai-panel-mount"></div>
-    <script src="../shared/portal-2026/ai-panel.js"></script>
+    <script src="../shared/portal-shell/ai-panel.js"></script>
     <script>
       TruAIPanel.render(document.getElementById('ai-panel-mount'), {
         title: 'TruAI',
@@ -312,7 +312,7 @@
   </div>
 </div>
 
-<script src="../shared/portal-2026/ai-toggle.js"></script>
+<script src="../shared/portal-shell/ai-toggle.js"></script>
 
 </body>
 </html>

@@ -7,7 +7,7 @@
    Scope:  everything inside .v2-content (plus .v2-rail).
 
    Do not style .v2-stage, .v2-panel-slot, .ai-*, or the
-   [data-truai] states — those belong to shared/portal-2026/.
+   [data-truai] states — those belong to shared/portal-shell/.
    ============================================================ */
 
 /* ------------------------------------------------------------------
@@ -404,7 +404,7 @@
 
 /* ------------------------------------------------------------------
    Entrance — left column. Delays are part of one page-wide sequence
-   that ends on the TruAI orb; see shared/portal-2026/ai-panel.css for the closing beats.
+   that ends on the TruAI orb; see shared/portal-shell/ai-panel.css for the closing beats.
    ------------------------------------------------------------------ */
 
 .v2-greeting,
@@ -443,7 +443,7 @@
    Focus — page controls only. tds-btn and tds-icon-btn express focus
    with a 2px --border-focus border of their own, so they are
    deliberately absent: overriding them would double the indicator.
-   The panel's own controls are handled in shared/portal-2026/ai-panel.css.
+   The panel's own controls are handled in shared/portal-shell/ai-panel.css.
    ------------------------------------------------------------------ */
 
 .v2-rail__item:focus-visible,

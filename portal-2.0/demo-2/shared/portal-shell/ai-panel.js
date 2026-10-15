@@ -12,7 +12,7 @@
    panel belongs (inside .v2-stage, after the page's <main>), then calls:
 
      <div id="ai-panel-mount"></div>
-     <script src="../shared/portal-2026/ai-panel.js"></script>
+     <script src="../shared/portal-shell/ai-panel.js"></script>
      <script>
        TruAIPanel.render(document.getElementById('ai-panel-mount'), {
          // Header — pick ONE of:
@@ -32,7 +32,7 @@
          askbarText:  'Ask a question or tell me what you’d like to do'
        });
      </script>
-     <script src="../shared/portal-2026/ai-toggle.js"></script>
+     <script src="../shared/portal-shell/ai-toggle.js"></script>
 
    Must run before ai-toggle.js (which looks up #ai-panel / #ai-askbar by
    id the moment it executes) and before any inline init that reads
@@ -176,7 +176,7 @@
   function render(mountEl, cfg) {
     if (!mountEl) throw new Error('TruAIPanel.render: mount element not found');
     cfg = cfg || {};
-    cfg.assetsPath = cfg.assetsPath || '../shared/portal-2026/assets';
+    cfg.assetsPath = cfg.assetsPath || '../shared/portal-shell/assets';
 
     // Insert the askbar right after the mount point first — outerHTML on
     // the next line detaches `mountEl`, so anything using the reference

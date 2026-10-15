@@ -38,10 +38,10 @@
 
   <!-- shell, transactions table, this page's overrides, then the AI panel.
        Page rules follow transaction-history.css so the column fit wins. -->
-  <link rel="stylesheet" href="../shared/portal-2026/shell.css">
+  <link rel="stylesheet" href="../shared/portal-shell/shell.css">
   <link rel="stylesheet" href="../../../pages/user-testing/transaction-history/transaction-history.css">
   <link rel="stylesheet" href="css/page.css">
-  <link rel="stylesheet" href="../shared/portal-2026/ai-panel.css">
+  <link rel="stylesheet" href="../shared/portal-shell/ai-panel.css">
 </head>
 <body>
 
@@ -87,7 +87,7 @@
   </aside>
 
   <!-- ============================================================
-       STAGE — owned by shared/portal-2026/shell.css. Do not restyle.
+       STAGE — owned by shared/portal-shell/shell.css. Do not restyle.
        ============================================================ -->
   <div class="v2-stage">
 
@@ -105,7 +105,7 @@
         <p class="v2-org__name">Pacific Ridge Financial</p>
         <span class="tds-tag tds-tag--sm v2-org__env">
           <span class="tds-tag__leading-visual v2-org__dot">
-            <img src="../shared/portal-2026/assets/env-dot.svg" alt="" width="8" height="8">
+            <img src="../shared/portal-shell/assets/env-dot.svg" alt="" width="8" height="8">
           </span>
           Prod
         </span>
@@ -249,7 +249,7 @@
          TruAI panel — 478px
          ============================================================ -->
     <div id="ai-panel-mount"></div>
-    <script src="../shared/portal-2026/ai-panel.js"></script>
+    <script src="../shared/portal-shell/ai-panel.js"></script>
     <script>
       TruAIPanel.render(document.getElementById('ai-panel-mount'), {
         greeting: { name: 'Welcome, Zoey.', date: 'September 30, 2026' },
@@ -448,7 +448,7 @@
 <script src="../../../Components/date-picker/date-picker.js"></script>
 <script src="../../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="../../../pages/user-testing/transaction-history/transaction-history.js"></script>
-<script src="../shared/portal-2026/ai-toggle.js"></script>
+<script src="../shared/portal-shell/ai-toggle.js"></script>
 
 </body>
 </html>
