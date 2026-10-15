@@ -12,7 +12,7 @@ pages/shared/portal-shell/
 ├── ai-toggle.js     RIGHT  — open/close behaviour
 └── assets/          orb, logo mark, ask arrow, env dot
 
-pages/portal-home-2026-v2/
+pages/home/
 ├── index.html       section banners mark the left/right boundary
 └── css/page.css     LEFT   — home content         prefix: v2-
 
