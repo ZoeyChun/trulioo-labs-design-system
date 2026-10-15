@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="../../Components/switch/switch.css">
   <link rel="stylesheet" href="../../Components/spinner/spinner.css">
   <link rel="stylesheet" href="css/welcome.css">
+  <link rel="stylesheet" href="css/briefing.css">
   <link rel="stylesheet" href="css/signin.css">
 </head>
 <body>
@@ -155,7 +156,8 @@
         <img class="d1-glow" src="assets/prompt-glow.png" alt="" width="1012" height="136">
         <section class="d1-welcome" aria-label="Welcome">
           <header class="d1-hello">
-            <h1>Welcome to Trulioo, Jane 👋</h1>
+            <h1 class="d1-hello__new">Welcome to Trulioo, Jane 👋</h1>
+            <h1 class="d1-hello__back">Welcome back, Jane 👋</h1>
             <p>Let’s start with a demo</p>
           </header>
           <div class="d1-demos">
@@ -446,8 +448,62 @@
             </div>
             <p class="d1-visually-hidden" data-d1-status aria-live="polite"></p>
           </form>
-
           </div>
+
+        <section class="d1-brief" aria-label="Account briefing">
+          <article class="d1-brief__card d1-brief__card--alert">
+            <div>
+              <h2>Business verification failures spiked 40% yesterday</h2>
+              <p>12 KYB verifications failed vs. a 7-day average of 8. Most failures are from BC-registered entities with document mismatches.</p>
+            </div>
+            <button type="button" class="d1-brief__go" data-d1-demo data-prompt="Investigate why business verification failures increased">
+              <img src="assets/icons/sparkles-ai.svg" alt="" width="16" height="16">Investigate why failures increased
+            </button>
+          </article>
+          <article class="d1-brief__card d1-brief__card--summary">
+            <div class="d1-brief__stack">
+              <h2 class="d1-brief__label"><img src="assets/icons/memo.svg" alt="" width="16" height="16">Verification Summary</h2>
+              <div class="d1-brief__figure">
+                <p class="d1-brief__num">47</p>
+                <div>
+                  <span class="d1-tag d1-tag--negative">↓ 40%</span>
+                  <p>verifications processed</p>
+                </div>
+              </div>
+              <hr class="d1-brief__rule">
+              <dl class="d1-brief__rows">
+                <div><dt>Flagged</dt><dd class="is-bad">12</dd></div>
+                <div><dt>Pending Review</dt><dd class="is-review">6</dd></div>
+                <div><dt>Approved</dt><dd class="is-good">29</dd></div>
+              </dl>
+            </div>
+            <button type="button" class="d1-brief__go" data-d1-demo data-prompt="Investigate why business verification failures increased">
+              <img src="assets/icons/sparkles-ai.svg" alt="" width="16" height="16">Investigate why failures increased
+            </button>
+          </article>
+          <article class="d1-brief__card d1-brief__card--activity">
+            <div class="d1-brief__stack">
+              <h2 class="d1-brief__label"><img src="assets/icons/clock.svg" alt="" width="16" height="16">Recent Activity</h2>
+              <ul class="d1-brief__list">
+                <li>
+                  <div><strong>Verify Cascade Financial Group</strong><span>Verification auto-approved (low risk, clean match)</span></div>
+                  <span class="d1-brief__badge d1-brief__badge--good">Approved</span>
+                </li>
+                <li>
+                  <div><strong>Find additional data on Summit Peak Advisors</strong><span>Pulled additional registry data, waiting for your review</span></div>
+                  <span class="d1-brief__badge d1-brief__badge--review">Review</span>
+                </li>
+                <li>
+                  <div><strong>Find additional data on Summit Peak Advisors</strong><span>Pulled additional registry data, waiting for your review</span></div>
+                  <span class="d1-brief__badge d1-brief__badge--review">Review</span>
+                </li>
+              </ul>
+            </div>
+            <button type="button" class="d1-brief__go" data-d1-demo data-prompt="Identify patterns in recent verification activity">
+              <img src="assets/icons/sparkles-ai.svg" alt="" width="16" height="16">Identify patterns
+            </button>
+          </article>
+        </section>
           </div>
         </div>
       </div>

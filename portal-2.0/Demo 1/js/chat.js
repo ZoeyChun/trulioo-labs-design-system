@@ -29,10 +29,10 @@
     tag: "Needs review",
     tone: "review",
     calls: [
-      { label: "Matched Meridian Apex Consulting on the UK registry", ms: 1150, detail: ["Companies House 11876542 — status active", "Incorporated 1 Feb 2019"] },
-      { label: "Pulled filings, officers, and capital", ms: 1400, detail: ["0 employees declared on the latest return", "£1 issued share capital", "Registered office is a virtual office"], hit: 2 },
-      { label: "Cross-referenced officers against sanctions lists", ms: 1250, detail: ["Checked OFAC, UN, and EU consolidated lists", "No listed officer returned a match"] },
-      { label: "Scanned your transaction history for links", ms: 1600, detail: ["Searched people, devices, and accounts", "Found 3 connections to other transactions"], hit: 1 }
+      { label: "Matching against the UK registry", done: "Matched on Companies House 11876542", ms: 1150, detail: ["Companies House 11876542 — status active", "Incorporated 1 Feb 2019"] },
+      { label: "Pulling filings, officers, and capital", done: "Found a shell-company profile", ms: 1400, detail: ["0 employees declared on the latest return", "£1 issued share capital", "Registered office is a virtual office"], hit: 2 },
+      { label: "Cross-referencing officers against sanctions lists", done: "No sanctions match", ms: 1250, detail: ["Checked OFAC, UN, and EU consolidated lists", "No listed officer returned a match"] },
+      { label: "Scanning your transaction history for links", done: "Found 3 connected transactions", ms: 1600, detail: ["Searched people, devices, and accounts", "Found 3 connections to other transactions"], hit: 1 }
     ],
     facts: {
       director: "The filing lists three officers. One is a corporate shareholder registered in the BVI, which is why no natural person sits behind the ownership chain.",
@@ -57,9 +57,9 @@
     tag: "Verified",
     tone: "positive",
     calls: [
-      { label: "Matched Apex Nordic Logistics on the UK registry", ms: 1100, detail: ["Registered name matches the application", "Jurisdiction is the United Kingdom"] },
-      { label: "Confirmed the registered office", ms: 1050, detail: ["Registry address matches the address on the application"] },
-      { label: "Scanned your transaction history for links", ms: 1550, detail: ["Searched people, devices, and accounts", "Found 3 connections to other transactions"], hit: 1 }
+      { label: "Matching against the UK registry", done: "Matched Apex Nordic Logistics", ms: 1100, detail: ["Registered name matches the application", "Jurisdiction is the United Kingdom"] },
+      { label: "Confirming the registered office", done: "Registered office matches", ms: 1050, detail: ["Registry address matches the address on the application"] },
+      { label: "Scanning your transaction history for links", done: "Found 3 connected transactions", ms: 1550, detail: ["Searched people, devices, and accounts", "Found 3 connections to other transactions"], hit: 1 }
     ],
     facts: {
       director: "The UK filing lists one director for Apex Nordic Logistics. Jane Doe is the person on the connected KYC document, not the named director on that filing.",
@@ -84,9 +84,9 @@
     tag: "Verified",
     tone: "positive",
     calls: [
-      { label: "Matched Meridian Trade Holdings on the UK registry", ms: 1100, detail: ["Companies House 11204887 — status active", "Incorporated 2018"] },
-      { label: "Pulled filings, officers, and capital", ms: 1300, detail: ["Trading address at 25 Bank Street, Canary Wharf", "No shell-company pattern in the filings"] },
-      { label: "Scanned your transaction history for links", ms: 1200, detail: ["No connected transactions found in your history"] }
+      { label: "Matching against the UK registry", done: "Matched on Companies House 11204887", ms: 1100, detail: ["Companies House 11204887 — status active", "Incorporated 2018"] },
+      { label: "Pulling filings, officers, and capital", done: "No shell-company pattern", ms: 1300, detail: ["Trading address at 25 Bank Street, Canary Wharf", "No shell-company pattern in the filings"] },
+      { label: "Scanning your transaction history for links", done: "No connected transactions", ms: 1200, detail: ["No connected transactions found in your history"] }
     ],
     facts: {
       director: "The officers on Meridian Trade Holdings do not overlap with the Meridian Apex filing. Different people, different ownership chain.",
@@ -111,9 +111,9 @@
     tag: "Verified",
     tone: "positive",
     calls: [
-      { label: "Matched Meridian Capital LLC on the NY registry", ms: 1150, detail: ["NY DOS 4417762 — status active", "Incorporated 2013"] },
-      { label: "Confirmed the filed address", ms: 1000, detail: ["200 Vesey Street, New York"] },
-      { label: "Scanned your transaction history for links", ms: 1300, detail: ["No connection to Daniel Reyes, device 235252021, or account ••4417"] }
+      { label: "Matching against the NY registry", done: "Matched on NY DOS 4417762", ms: 1150, detail: ["NY DOS 4417762 — status active", "Incorporated 2013"] },
+      { label: "Confirming the filed address", done: "Filed address matches", ms: 1000, detail: ["200 Vesey Street, New York"] },
+      { label: "Scanning your transaction history for links", done: "No connected transactions", ms: 1300, detail: ["No connection to Daniel Reyes, device 235252021, or account ••4417"] }
     ],
     facts: {
       director: "The NY filing lists its own members. None of them appear on the Meridian Apex UK filing.",
@@ -138,8 +138,8 @@
     tag: "Needs review",
     tone: "review",
     calls: [
-      { label: "Matched Northstar Trading on the US registry", ms: 1100, detail: ["Registered name matches the application", "Status active"] },
-      { label: "Compared the filed address to the application", ms: 1450, detail: ["Registry address and application address do not match", "Flagged for manual review"], hit: 1 }
+      { label: "Matching against the US registry", done: "Matched Northstar Trading Ltd.", ms: 1100, detail: ["Registered name matches the application", "Status active"] },
+      { label: "Comparing the filed address to the application", done: "Address mismatch found", ms: 1450, detail: ["Registry address and application address do not match", "Flagged for manual review"], hit: 1 }
     ],
     facts: {
       director: "The US filing lists its officers, but the address mismatch is the open item on this record.",
@@ -155,8 +155,8 @@
   };
 
   var LINK_CALLS = [
-    { label: "Searched records tied to this business", ms: 1150, detail: ["Matched on name, device, and account number"] },
-    { label: "Comparing KYC, device, and bank results", ms: 1550, detail: ["Jane Doe — driver's license and selfie matched", "Device 3045489E05849546 — score 92, high risk", "Account ••4417 — business name did not match"], hit: 2 }
+    { label: "Searching records tied to this business", done: "Found 3 matching records", ms: 1150, detail: ["Matched on name, device, and account number"] },
+    { label: "Comparing KYC, device, and bank results", done: "1 passed, 2 need attention", ms: 1550, detail: ["Jane Doe — driver's license and selfie matched", "Device 3045489E05849546 — score 92, high risk", "Account ••4417 — business name did not match"], hit: 2 }
   ];
 
   var LINK_SUGGESTIONS = [
@@ -176,9 +176,52 @@
     compare: "The difference is the shell profile. Meridian Apex has 0 employees, £1 in capital, a virtual office, and 3 links into your other transactions. This record has none of those."
   };
 
+  /* ---------------------------------------------- repeat-customer account */
+
+  /* The numbers the home-page briefing shows. The chat reads the same object
+     so a card and an answer can never disagree. */
+  var OPS = { processed: 47, flagged: 12, pending: 6, approved: 29, average: 8 };
+
+  var OPS_SUGGESTIONS = [
+    { q: "Investigate why failures increased", intent: "failures" },
+    { q: "Why are the 6 reviews pending?", intent: "pending" },
+    { q: "Identify patterns in recent verification activity", intent: "patterns" }
+  ];
+
+  var FAILURE_SUGGESTIONS = [
+    { q: "Re-run the 9 BC verifications", intent: "rerun" },
+    { q: "Show me the 3 unrelated failures", intent: "flagged" },
+    { q: "What should I tell the BC team?", intent: "bcteam" }
+  ];
+
+  var FAILURE_CALLS = [
+    { label: "Pulling yesterday's failed verifications", done: "Pulled the 12 failed verifications", ms: 1200, detail: ["Compared against a 7-day average of 8 failures", "Volume was flat, so this is a rate change, not a load change"] },
+    { label: "Grouping failures by jurisdiction and reason", done: "Grouped 12 failures into 2 clusters", ms: 1450, detail: ["9 of 12 are British Columbia registered entities", "All 9 failed the same check: registered address mismatch"], hit: 1 },
+    { label: "Checking the BC registry feed for changes", done: "Found a format change on 13 Oct", ms: 1500, detail: ["BC Registry changed its address format on 13 Oct", "Unit numbers now lead the street line", "Our matcher is still comparing the old format"], hit: 2 }
+  ];
+
+  var PATTERN_CALLS = [
+    { label: "Reviewing the last 7 days of verifications", done: "Reviewed 47 verifications", ms: 1250, detail: ["29 approved, 12 flagged, 6 pending review"] },
+    { label: "Clustering by product, jurisdiction, and outcome", done: "British Columbia stands out", ms: 1400, detail: ["British Columbia is 38% of volume but 75% of failures", "Every other jurisdiction sits inside its normal range"], hit: 0 },
+    { label: "Checking what the 6 pending reviews are waiting on", done: "4 of 6 share one blocker", ms: 1350, detail: ["4 of 6 are blocked on the same registry source", "Average wait is 2.5 days, up from 0.8"], hit: 0 }
+  ];
+
+  /* One-line answers about the account. Everything here is fictional demo
+     data for the repeat-customer story. */
+  var OPS_FACTS = {
+    summary: "In the last 7 days you've processed 47 verifications — 29 approved, 12 flagged, and 6 pending review. The failure rate is up 40% against the 7-day average of 8.",
+    flagged: "12 verifications are flagged. 9 are British Columbia entities that failed on registered address mismatch. The other 3 are unrelated: two expired documents and one genuine name mismatch.",
+    pending: "6 verifications are pending review. Four of them are blocked on the same registry source, which is averaging 2.5 days against a normal 0.8. Two of the four are Summit Peak Advisors.",
+    approved: "29 verifications were approved. Outside British Columbia your approval rate is unchanged at 94%, so the drop is confined to one jurisdiction.",
+    cascade: "The Cascade Financial Group check was auto-approved — low risk, clean registry match, and no adverse media. Nothing there is waiting on you.",
+    summit: "Summit Peak Advisors has additional registry data pulled and is waiting for your review. It's one of the four verifications blocked on the slow registry source.",
+    rerun: "I'd hold off. Re-running the 9 British Columbia verifications now would fail the same way, because the matcher still compares the old address format. Re-run them once it handles unit-number-first addresses.",
+    bcteam: "Tell them BC Registry changed its address format on 13 Oct so unit numbers now lead the street line. Until the matcher is updated, British Columbia address checks will keep failing regardless of the entity."
+  };
+
   /* Keyword sets. Multi-word entries score double so phrases beat stray words. */
   var INTENTS = [
-    { id: "links", keys: ["connected transaction", "transactions connected", "linked transaction", "connection", "connections", "linked", "links", "related transactions", "show me transactions"] },
+    { id: "links", keys: ["connected", "connected transactions", "transactions connected", "linked transaction", "connection", "connections", "linked", "links", "related", "related transactions", "show me transactions", "tied to"] },
     { id: "device", keys: ["device", "high risk device", "why is this device", "fingerprint", "3045489e05849546"] },
     { id: "document", keys: ["document", "selfie", "licence", "license", "liveness", "did jane", "jane doe document", "id check"] },
     { id: "bank", keys: ["bank", "account", "4417", "bank account", "what failed on the bank"] },
@@ -188,7 +231,17 @@
     { id: "onboard", keys: ["onboard", "onboarding", "request", "before onboarding", "next step", "what should i", "recommend", "should i accept"] },
     { id: "address", keys: ["address", "office", "registered office", "premises", "located", "mismatch"] },
     { id: "sanctions", keys: ["sanction", "sanctions", "ofac", "watchlist", "pep", "screening"] },
-    { id: "compare", keys: ["different", "difference", "compare", "versus", "vs", "how is this different"] }
+    { id: "compare", keys: ["different", "difference", "compare", "versus", "vs", "how is this different"] },
+    { id: "failures", keys: ["failure", "failures", "failed", "spike", "spiked", "increase", "increased", "failing", "failure rate", "why did", "jump", "jumped", "worse", "root cause"] },
+    { id: "patterns", keys: ["pattern", "patterns", "trend", "trends", "cluster", "identify patterns", "anything in common"] },
+    { id: "summary", keys: ["summary", "how many", "overview", "last 7 days", "this week", "how are we doing", "verifications processed", "numbers", "volume", "how did we do"] },
+    { id: "flagged", keys: ["flagged", "flags"] },
+    { id: "pending", keys: ["pending", "pending review", "blocked", "waiting on", "review", "reviews", "stuck", "held up", "taking so long"] },
+    { id: "approved", keys: ["approved", "approval", "approval rate", "passed", "went through"] },
+    { id: "cascade", keys: ["cascade", "cascade financial"] },
+    { id: "summit", keys: ["summit", "summit peak", "peak advisors"] },
+    { id: "rerun", keys: ["re run", "rerun", "run again", "retry"] },
+    { id: "bcteam", keys: ["bc team", "tell them", "notify", "what should i tell"] }
   ];
 
   /* ------------------------------------------------------------- run token */
@@ -427,6 +480,10 @@
       if (running) running.hidden = true;
       if (finished) finished.hidden = false;
 
+      /* The label is written in flight ("Pulling\u2026"); once the call lands it
+         is replaced with what the call actually found. */
+      if (call.done) row.querySelector("[data-d1-activity-label]").textContent = call.done;
+
       pct.textContent = Math.round(((i + 1) / calls.length) * 100) + "%";
       fill.style.width = Math.round(((i + 1) / calls.length) * 100) + "%";
     }
@@ -632,6 +689,68 @@
 
   /* Turns one message into a reply plan. A real model would emit the same
      part list; only this function would be replaced. */
+  /* Sign-in decides which story this session tells. The repeat customer has
+     an account history behind them, so the agent answers about the account
+     before it offers to open a new record. */
+  function isRepeat() {
+    var home = document.querySelector(".d1-home");
+    return !!home && home.getAttribute("data-d1-repeat") === "true";
+  }
+
+  function failuresPlan() {
+    var lead = "A jump this size is usually one cause rather than twelve separate ones. I'll start with what the 12 have in common.";
+    var found = "Found it. 9 of the 12 failures are British Columbia entities, and every one of them failed the same check: registered address mismatch. All 9 ran after 13 Oct, the day BC Registry changed its address format so unit numbers lead the street line. I'd confirm that on one of the 9 before acting on all of them.";
+    var next = "The other 3 are unrelated \u2014 two expired documents and one genuine name mismatch. Two things worth doing: hold the BC re-runs until the matcher handles the new format, and get the format change in front of whoever owns the matcher.";
+    return {
+      parts: [
+        { t: "typing", ms: thinkFor(lead) },
+        say(lead, "Pulling the failed verifications now."),
+        { t: "tools", label: "Investigating the failure spike", doneLabel: "Root cause found", calls: FAILURE_CALLS },
+        { t: "typing", ms: 520 },
+        say(found, next)
+      ],
+      suggestions: FAILURE_SUGGESTIONS
+    };
+  }
+
+  function patternsPlan() {
+    var lead = "I'll look across all 47 verifications from the last 7 days, not just yesterday's failures.";
+    var found = "Three patterns stand out. British Columbia is 38% of your volume but 75% of your failures. Four of the six pending reviews are blocked on the same registry source. And outside British Columbia your approval rate is unchanged at 94%.";
+    var next = "The first two share a cause \u2014 the BC address format change. The third says the rest of your pipeline is healthy.";
+    return {
+      parts: [
+        { t: "typing", ms: thinkFor(lead) },
+        say(lead, "Scanning your recent activity now."),
+        { t: "tools", label: "Scanning recent activity", doneLabel: "3 patterns found", calls: PATTERN_CALLS },
+        { t: "typing", ms: 520 },
+        say(found, next)
+      ],
+      suggestions: OPS_SUGGESTIONS
+    };
+  }
+
+  /* Returns a plan when the message is about the account rather than about a
+     single record, otherwise null so the record flow takes over. */
+  function planOps(text, intent) {
+    if (intent === "failures") return failuresPlan();
+    if (intent === "patterns") return patternsPlan();
+    if (intent && OPS_FACTS[intent]) {
+      var fact = OPS_FACTS[intent];
+      var after = (intent === "flagged" || intent === "rerun" || intent === "bcteam") ? FAILURE_SUGGESTIONS : OPS_SUGGESTIONS;
+      return { parts: [{ t: "typing", ms: thinkFor(fact) }, say(fact)], suggestions: after };
+    }
+    return null;
+  }
+
+  /* A repeat customer who asks something off-dataset is pointed at their own
+     briefing, not told to name a record first. */
+  function opsMissPlan(text) {
+    var asked = text.trim();
+    if (asked.length > 64) asked = asked.slice(0, 61).replace(/\s+\S*$/, "") + "\u2026";
+    var miss = "\u201c" + asked + "\u201d isn't in this demo dataset. I can explain the failure spike, the 12 flagged verifications, the 6 pending reviews, or what is in your recent activity \u2014 or name a business and I'll run a fresh check.";
+    return { parts: [{ t: "typing", ms: thinkFor(miss) }, say(miss)], suggestions: OPS_SUGGESTIONS };
+  }
+
   function planReply(text, agent) {
     var company = namedCompany(text);
     var intent = resolveIntent(text);
@@ -643,6 +762,11 @@
     }
 
     if (isPerson(text, agent) && !company) return personPlan(text);
+
+    if (isRepeat() && !convo.entity) {
+      var ops = planOps(text, intent);
+      if (ops) return ops;
+    }
 
     if (intent === "links" && convo.entity) {
       if (convo.linksShown) {
@@ -666,6 +790,8 @@
       var fact = convo.entity.facts[intent];
       return { parts: [{ t: "typing", ms: thinkFor(fact) }, say(fact)], suggestions: convo.entity.suggestions };
     }
+
+    if (!convo.entity && isRepeat()) return opsMissPlan(text);
 
     if (!convo.entity) return askWhichPlan(text);
 
