@@ -30,45 +30,47 @@
      comment in ai-panel.css next to @keyframes ai-dot-pulse for why this
      is 37 individually-delayed circles rather than one spinning image). */
   var THINKING_ORB_SVG =
+    /* Dot radii scaled to 0.7 of the mark's native size (center positions
+       unchanged) — matches the Loader experiment's "Dot size" slider. */
     '<svg class="ai-thinking__svg" viewBox="0 0 48.759 40" fill="currentColor" aria-hidden="true">' +
-      '<circle cx="2.371" cy="16.893" r="2.08" style="animation-delay:-1.180s"/>' +
-      '<circle cx="4.527" cy="11.232" r="1.835" style="animation-delay:-1.312s"/>' +
-      '<circle cx="7.886" cy="6.714" r="1.649" style="animation-delay:-1.437s"/>' +
-      '<circle cx="12.305" cy="3.384" r="1.448" style="animation-delay:-1.564s"/>' +
-      '<circle cx="16.667" cy="1.59" r="1.095" style="animation-delay:-1.675s"/>' +
-      '<circle cx="25.191" cy="1.591" r="1.038" style="animation-delay:-1.886s"/>' +
-      '<circle cx="29.645" cy="1.008" r="0.989" style="animation-delay:-1.995s"/>' +
-      '<circle cx="34.03" cy="1.591" r="1.042" style="animation-delay:-2.097s"/>' +
-      '<circle cx="38.2" cy="3.384" r="1.445" style="animation-delay:-2.198s"/>' +
-      '<circle cx="42.263" cy="6.714" r="1.642" style="animation-delay:-2.312s"/>' +
-      '<circle cx="45.147" cy="11.232" r="1.835" style="animation-delay:-2.427s"/>' +
-      '<circle cx="46.721" cy="16.893" r="2.08" style="animation-delay:-2.552s"/>' +
-      '<circle cx="46.395" cy="23.102" r="2.079" style="animation-delay:-0.067s"/>' +
-      '<circle cx="44.236" cy="28.767" r="1.833" style="animation-delay:-0.199s"/>' +
-      '<circle cx="40.874" cy="33.281" r="1.647" style="animation-delay:-0.325s"/>' +
-      '<circle cx="36.449" cy="36.609" r="1.448" style="animation-delay:-0.452s"/>' +
-      '<circle cx="32.105" cy="38.397" r="1.099" style="animation-delay:-0.562s"/>' +
-      '<circle cx="23.571" cy="38.401" r="1.045" style="animation-delay:-0.774s"/>' +
-      '<circle cx="19.124" cy="38.989" r="0.99" style="animation-delay:-0.882s"/>' +
-      '<circle cx="14.737" cy="38.401" r="1.046" style="animation-delay:-0.984s"/>' +
-      '<circle cx="10.571" cy="36.609" r="1.446" style="animation-delay:-1.085s"/>' +
-      '<circle cx="6.497" cy="33.281" r="1.644" style="animation-delay:-1.199s"/>' +
-      '<circle cx="3.611" cy="28.767" r="1.832" style="animation-delay:-1.314s"/>' +
-      '<circle cx="2.042" cy="23.105" r="2.084" style="animation-delay:-1.439s"/>' +
-      '<circle cx="10.901" cy="16.891" r="2.019" style="animation-delay:-1.221s"/>' +
-      '<circle cx="13.062" cy="11.214" r="1.8" style="animation-delay:-1.429s"/>' +
-      '<circle cx="16.425" cy="6.714" r="1.649" style="animation-delay:-1.607s"/>' +
-      '<circle cx="20.838" cy="3.381" r="1.448" style="animation-delay:-1.765s"/>' +
-      '<circle cx="33.732" cy="6.714" r="1.644" style="animation-delay:-2.159s"/>' +
-      '<circle cx="36.625" cy="11.214" r="1.801" style="animation-delay:-2.320s"/>' +
-      '<circle cx="38.193" cy="16.891" r="2.019" style="animation-delay:-2.512s"/>' +
-      '<circle cx="37.865" cy="23.097" r="2.019" style="animation-delay:-0.108s"/>' +
-      '<circle cx="35.704" cy="28.766" r="1.802" style="animation-delay:-0.316s"/>' +
-      '<circle cx="32.34" cy="33.281" r="1.644" style="animation-delay:-0.494s"/>' +
-      '<circle cx="27.921" cy="36.609" r="1.445" style="animation-delay:-0.652s"/>' +
-      '<circle cx="15.023" cy="33.281" r="1.644" style="animation-delay:-1.047s"/>' +
-      '<circle cx="12.134" cy="28.766" r="1.802" style="animation-delay:-1.208s"/>' +
-      '<circle cx="10.574" cy="23.097" r="2.019" style="animation-delay:-1.399s"/>' +
+      '<circle cx="2.371" cy="16.893" r="1.456" style="animation-delay:-1.180s"/>' +
+      '<circle cx="4.527" cy="11.232" r="1.284" style="animation-delay:-1.312s"/>' +
+      '<circle cx="7.886" cy="6.714" r="1.154" style="animation-delay:-1.437s"/>' +
+      '<circle cx="12.305" cy="3.384" r="1.014" style="animation-delay:-1.564s"/>' +
+      '<circle cx="16.667" cy="1.59" r="0.766" style="animation-delay:-1.675s"/>' +
+      '<circle cx="25.191" cy="1.591" r="0.727" style="animation-delay:-1.886s"/>' +
+      '<circle cx="29.645" cy="1.008" r="0.692" style="animation-delay:-1.995s"/>' +
+      '<circle cx="34.03" cy="1.591" r="0.729" style="animation-delay:-2.097s"/>' +
+      '<circle cx="38.2" cy="3.384" r="1.012" style="animation-delay:-2.198s"/>' +
+      '<circle cx="42.263" cy="6.714" r="1.149" style="animation-delay:-2.312s"/>' +
+      '<circle cx="45.147" cy="11.232" r="1.284" style="animation-delay:-2.427s"/>' +
+      '<circle cx="46.721" cy="16.893" r="1.456" style="animation-delay:-2.552s"/>' +
+      '<circle cx="46.395" cy="23.102" r="1.455" style="animation-delay:-0.067s"/>' +
+      '<circle cx="44.236" cy="28.767" r="1.283" style="animation-delay:-0.199s"/>' +
+      '<circle cx="40.874" cy="33.281" r="1.153" style="animation-delay:-0.325s"/>' +
+      '<circle cx="36.449" cy="36.609" r="1.014" style="animation-delay:-0.452s"/>' +
+      '<circle cx="32.105" cy="38.397" r="0.769" style="animation-delay:-0.562s"/>' +
+      '<circle cx="23.571" cy="38.401" r="0.731" style="animation-delay:-0.774s"/>' +
+      '<circle cx="19.124" cy="38.989" r="0.693" style="animation-delay:-0.882s"/>' +
+      '<circle cx="14.737" cy="38.401" r="0.732" style="animation-delay:-0.984s"/>' +
+      '<circle cx="10.571" cy="36.609" r="1.012" style="animation-delay:-1.085s"/>' +
+      '<circle cx="6.497" cy="33.281" r="1.151" style="animation-delay:-1.199s"/>' +
+      '<circle cx="3.611" cy="28.767" r="1.282" style="animation-delay:-1.314s"/>' +
+      '<circle cx="2.042" cy="23.105" r="1.459" style="animation-delay:-1.439s"/>' +
+      '<circle cx="10.901" cy="16.891" r="1.413" style="animation-delay:-1.221s"/>' +
+      '<circle cx="13.062" cy="11.214" r="1.26" style="animation-delay:-1.429s"/>' +
+      '<circle cx="16.425" cy="6.714" r="1.154" style="animation-delay:-1.607s"/>' +
+      '<circle cx="20.838" cy="3.381" r="1.014" style="animation-delay:-1.765s"/>' +
+      '<circle cx="33.732" cy="6.714" r="1.151" style="animation-delay:-2.159s"/>' +
+      '<circle cx="36.625" cy="11.214" r="1.261" style="animation-delay:-2.320s"/>' +
+      '<circle cx="38.193" cy="16.891" r="1.413" style="animation-delay:-2.512s"/>' +
+      '<circle cx="37.865" cy="23.097" r="1.413" style="animation-delay:-0.108s"/>' +
+      '<circle cx="35.704" cy="28.766" r="1.261" style="animation-delay:-0.316s"/>' +
+      '<circle cx="32.34" cy="33.281" r="1.151" style="animation-delay:-0.494s"/>' +
+      '<circle cx="27.921" cy="36.609" r="1.012" style="animation-delay:-0.652s"/>' +
+      '<circle cx="15.023" cy="33.281" r="1.151" style="animation-delay:-1.047s"/>' +
+      '<circle cx="12.134" cy="28.766" r="1.261" style="animation-delay:-1.208s"/>' +
+      '<circle cx="10.574" cy="23.097" r="1.413" style="animation-delay:-1.399s"/>' +
     '</svg>';
 
   var ICON_BUSINESS =
