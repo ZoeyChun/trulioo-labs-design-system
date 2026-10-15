@@ -1,8 +1,8 @@
 /* Chat stage.
    The thread is rendered from data, never from pre-placed markup: a reply is a
    list of parts (text / tools / report / table), and the player walks that list
-   appending fresh nodes. Text streams word by word and every wait is held on a
-   cancellable Run, so Stop halts a reply mid-flight. */
+   appending fresh nodes. Reply text appears in full; waits are held on a
+   cancellable Run so Stop still halts a reply mid-flight. */
 (function () {
   var stage = document.querySelector("[data-d1-stage]");
   var title = document.querySelector("[data-d1-title]");
@@ -13,9 +13,6 @@
   if (!stage || !composer || !thread) return;
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* Streaming speed. Real models land around 80-110 chars/sec on screen. */
-  var CPS = 92;
 
   /* ---------------------------------------------------------------- data */
 
@@ -349,64 +346,9 @@
     place(node);
   }
 
-  function streamText(el, text, token) {
-    return new Promise(function (resolve) {
-      if (reduced || token.cancelled) {
-        el.textContent = text;
-        stick();
-        resolve();
-        return;
-      }
-      var words = text.match(/\S+\s*/g) || [text];
-      var schedule = [];
-      var at = 0;
-      words.forEach(function (word) {
-        at += (word.length / CPS) * 1000 * (0.82 + Math.random() * 0.36);
-        if (/[.!?]["')\]]?\s*$/.test(word)) at += 150;
-        else if (/[,;:—]\s*$/.test(word)) at += 70;
-        schedule.push(at);
-      });
-
-      var start = window.performance.now();
-      var shown = 0;
-      var ended = false;
-      el.classList.add("is-streaming");
-
-      function finish() {
-        if (ended) return;
-        ended = true;
-        el.classList.remove("is-streaming");
-        resolve();
-      }
-
-      /* Stop snaps the paragraph to its full text rather than leaving a
-         half-written sentence on screen. */
-      token.onCancel(function () {
-        el.textContent = text;
-        stick();
-        finish();
-      });
-
-      function step() {
-        if (token.cancelled) {
-          el.textContent = text;
-          stick();
-          finish();
-          return;
-        }
-        var elapsed = window.performance.now() - start;
-        var before = shown;
-        while (shown < words.length && schedule[shown] <= elapsed) shown += 1;
-        if (shown !== before) {
-          el.textContent = words.slice(0, shown).join("");
-          stick();
-        }
-        if (shown >= words.length) { finish(); return; }
-        token.tick(step);
-      }
-
-      token.tick(step);
-    });
+  function showText(el, text) {
+    el.textContent = text;
+    stick();
   }
 
   async function playText(part, token) {
@@ -419,8 +361,7 @@
       var p = document.createElement("p");
       if (line.ask) p.className = "d1-ai__ask";
       node.appendChild(p);
-      await streamText(p, line.text, token);
-      if (i < part.body.length - 1) await token.sleep(180);
+      showText(p, line.text);
     }
   }
 
@@ -518,16 +459,16 @@
     tag.textContent = company.tag || "Verified";
     tag.className = "d1-tag d1-tag--" + (company.tone === "review" ? "review" : "positive");
     place(node);
-    await streamText(node.querySelector("[data-d1-sum-a]"), company.sumA, token);
+    showText(node.querySelector("[data-d1-sum-a]"), company.sumA);
     if (token.cancelled) return;
-    await streamText(node.querySelector("[data-d1-sum-b]"), company.sumB, token);
+    showText(node.querySelector("[data-d1-sum-b]"), company.sumB);
   }
 
   async function playTable(part, token) {
     var node = clone("table");
     if (!node) return;
     place(node);
-    await streamText(node.querySelector("[data-d1-table-lead]"), part.lead, token);
+    showText(node.querySelector("[data-d1-table-lead]"), part.lead);
   }
 
   async function playTyping(part, token) {
@@ -542,14 +483,24 @@
 
   function showToast(text, warn) {
     var el = document.createElement("div");
-    el.className = "d1-toast" + (warn ? " is-warn" : "");
+    el.className = "tds-announcement tds-announcement--inline d1-toast" + (warn ? " tds-announcement--warning" : " tds-announcement--success");
+    var iconWrap = document.createElement("span");
+    iconWrap.className = "tds-announcement__icon";
+    iconWrap.setAttribute("aria-hidden", "true");
     var icon = document.createElement("img");
     icon.src = warn ? "assets/icons/warning-amber.svg" : "assets/icons/circle-check.svg";
     icon.alt = "";
     icon.width = 16;
     icon.height = 16;
-    el.appendChild(icon);
-    el.appendChild(document.createTextNode(text));
+    iconWrap.appendChild(icon);
+    el.appendChild(iconWrap);
+    var content = document.createElement("div");
+    content.className = "tds-announcement__content";
+    var msg = document.createElement("p");
+    msg.className = "tds-announcement__message";
+    msg.textContent = text;
+    content.appendChild(msg);
+    el.appendChild(content);
     document.body.appendChild(el);
     window.setTimeout(function () { if (el.parentNode) el.remove(); }, 3200);
   }
@@ -561,8 +512,12 @@
     node.querySelector("[data-d1-confirm-detail]").textContent = part.detail;
     var yesBtn = node.querySelector("[data-d1-confirm-yes]");
     var noBtn = node.querySelector("[data-d1-confirm-no]");
+    var card = node.querySelector("[data-d1-confirm-card]");
     if (part.yes) yesBtn.textContent = part.yes;
-    if (part.warn) node.querySelector(".d1-confirm").classList.add("is-warn");
+    if (part.warn) {
+      card.classList.remove("tds-announcement--info");
+      card.classList.add("tds-announcement--warning");
+    }
     place(node);
 
     var confirmed = await new Promise(function (resolve) {
@@ -573,13 +528,15 @@
 
     var buttons = node.querySelector("[data-d1-confirm-buttons]");
     buttons.style.display = "none";
-    var card = node.querySelector(".d1-confirm");
+    var content = card.querySelector(".tds-announcement__content");
     var result = document.createElement("div");
     result.className = "d1-confirm__result";
 
     if (confirmed) {
-      card.classList.add("is-done");
-      if (card.classList.contains("is-warn")) card.classList.remove("is-warn");
+      card.classList.remove("tds-announcement--info", "tds-announcement--warning");
+      card.classList.add("tds-announcement--success");
+      var iconEl = node.querySelector("[data-d1-confirm-icon] img");
+      if (iconEl) iconEl.src = "assets/icons/circle-check.svg";
       result.classList.add("d1-confirm__result--done");
       var img = document.createElement("img");
       img.src = "assets/icons/circle-check.svg";
@@ -590,12 +547,12 @@
       var span = document.createElement("span");
       span.textContent = part.toast || "Done";
       result.appendChild(span);
-      card.appendChild(result);
+      content.appendChild(result);
       showToast(part.toast || "Done", false);
     } else {
       result.classList.add("d1-confirm__result--cancelled");
       result.textContent = "Cancelled";
-      card.appendChild(result);
+      content.appendChild(result);
     }
     stick();
   }
@@ -611,17 +568,45 @@
     for (var i = 0; i < part.rows.length; i += 1) {
       if (token.cancelled) return;
       var r = part.rows[i];
-      var row = document.createElement("div");
-      row.className = "d1-analysis__row";
-      var label = document.createElement("span");
-      label.className = "d1-analysis__label";
-      label.textContent = r.label;
-      var value = document.createElement("span");
-      value.className = "d1-analysis__value" + (r.status ? " d1-analysis__value--" + r.status : "");
-      value.textContent = r.value;
-      row.appendChild(label);
-      row.appendChild(value);
-      container.appendChild(row);
+      var isLast = i === part.rows.length - 1;
+      if (isLast && /overall|risk/i.test(r.label)) {
+        var sentiment = r.status === "positive" ? "positive" : "negative";
+        var sc = document.createElement("div");
+        sc.className = "tds-stat-card tds-stat-card--" + sentiment;
+        var scLabel = document.createElement("p");
+        scLabel.className = "tds-stat-card__label";
+        scLabel.textContent = r.label;
+        sc.appendChild(scLabel);
+        var scGroup = document.createElement("div");
+        scGroup.className = "tds-stat-card__value-group";
+        var scVal = document.createElement("p");
+        scVal.className = "tds-stat-card__value";
+        scVal.textContent = r.value;
+        scGroup.appendChild(scVal);
+        sc.appendChild(scGroup);
+        container.appendChild(sc);
+      } else {
+        var field = document.createElement("div");
+        field.className = "tds-data-field tds-data-field--horizontal" + (r.status ? " d1-val--" + r.status : "");
+        var labelRow = document.createElement("div");
+        labelRow.className = "tds-data-field__label-row";
+        var label = document.createElement("p");
+        label.className = "tds-data-field__label";
+        label.textContent = r.label;
+        labelRow.appendChild(label);
+        field.appendChild(labelRow);
+        var content = document.createElement("div");
+        content.className = "tds-data-field__content";
+        var valueRow = document.createElement("div");
+        valueRow.className = "tds-data-field__value-row";
+        var value = document.createElement("p");
+        value.className = "tds-data-field__value";
+        value.textContent = r.value;
+        valueRow.appendChild(value);
+        content.appendChild(valueRow);
+        field.appendChild(content);
+        container.appendChild(field);
+      }
       stick();
       await token.sleep(160);
     }
@@ -637,21 +622,19 @@
     for (var i = 0; i < part.rows.length; i += 1) {
       if (token.cancelled) return;
       var r = part.rows[i];
-      var row = document.createElement("div");
-      row.className = "d1-compare__row";
-      var lc = document.createElement("span");
-      lc.className = "d1-compare__cell d1-compare__cell--label";
-      lc.textContent = r.label;
-      var lv = document.createElement("span");
-      lv.className = "d1-compare__cell" + (r.hl === "left" ? " d1-compare__cell--negative" : r.hl === "right" ? " d1-compare__cell--positive" : "");
-      lv.textContent = r.l;
-      var rv = document.createElement("span");
-      rv.className = "d1-compare__cell" + (r.hl === "right" ? " d1-compare__cell--negative" : r.hl === "left" ? " d1-compare__cell--positive" : "");
-      rv.textContent = r.r;
-      row.appendChild(lc);
-      row.appendChild(lv);
-      row.appendChild(rv);
-      container.appendChild(row);
+      var tr = document.createElement("tr");
+      var th = document.createElement("td");
+      th.textContent = r.label;
+      var tdL = document.createElement("td");
+      tdL.className = r.hl === "left" ? "d1-cell--negative" : r.hl === "right" ? "d1-cell--positive" : "";
+      tdL.textContent = r.l;
+      var tdR = document.createElement("td");
+      tdR.className = r.hl === "right" ? "d1-cell--negative" : r.hl === "left" ? "d1-cell--positive" : "";
+      tdR.textContent = r.r;
+      tr.appendChild(th);
+      tr.appendChild(tdL);
+      tr.appendChild(tdR);
+      container.appendChild(tr);
       stick();
       await token.sleep(160);
     }
@@ -666,23 +649,24 @@
     for (var i = 0; i < part.steps.length; i += 1) {
       if (token.cancelled) return;
       var s = part.steps[i];
-      var li = document.createElement("li");
-      li.className = "d1-guide__step" + (s.done ? " is-done" : "");
-      var marker = document.createElement("span");
-      marker.className = "d1-guide__marker";
-      marker.textContent = s.done ? "✓" : String(i + 1);
-      var text = document.createElement("span");
-      text.className = "d1-guide__text";
-      text.textContent = s.text;
-      li.appendChild(marker);
-      li.appendChild(text);
-      list.appendChild(li);
-      (function (theLi, theMarker, idx) {
-        theLi.addEventListener("click", function () {
-          var done = theLi.classList.toggle("is-done");
-          theMarker.textContent = done ? "✓" : String(idx + 1);
+      var row = document.createElement("label");
+      row.className = "d1-check-row" + (s.done ? " is-checked" : "");
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.className = "tds-checkbox";
+      cb.checked = !!s.done;
+      var span = document.createElement("span");
+      span.className = "d1-check-row__text";
+      span.textContent = s.text;
+      row.appendChild(cb);
+      row.appendChild(span);
+      list.appendChild(row);
+      (function (theRow, theCb) {
+        theCb.addEventListener("change", function () {
+          if (theCb.checked) theRow.classList.add("is-checked");
+          else theRow.classList.remove("is-checked");
         });
-      })(li, marker, i);
+      })(row, cb);
       stick();
       await token.sleep(180);
     }

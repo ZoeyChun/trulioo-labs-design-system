@@ -25,6 +25,11 @@
   <link rel="stylesheet" href="../../Components/button/button.css">
   <link rel="stylesheet" href="../../Components/switch/switch.css">
   <link rel="stylesheet" href="../../Components/spinner/spinner.css">
+  <link rel="stylesheet" href="../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../Components/stat-card/stat-card.css">
   <link rel="stylesheet" href="css/welcome.css">
   <link rel="stylesheet" href="css/briefing.css">
   <link rel="stylesheet" href="css/signin.css">
@@ -358,41 +363,48 @@
             </template>
             <template data-d1-tpl="confirm">
               <section class="d1-block d1-enter">
-                <div class="d1-confirm">
-                  <p class="d1-confirm__action" data-d1-confirm-action></p>
-                  <p class="d1-confirm__detail" data-d1-confirm-detail></p>
-                  <div class="d1-confirm__buttons" data-d1-confirm-buttons>
-                    <button type="button" class="d1-confirm__btn d1-confirm__btn--yes" data-d1-confirm-yes>Confirm</button>
-                    <button type="button" class="d1-confirm__btn d1-confirm__btn--no" data-d1-confirm-no>Cancel</button>
+                <div class="tds-announcement tds-announcement--info d1-confirm" data-d1-confirm-card>
+                  <span class="tds-announcement__icon" data-d1-confirm-icon aria-hidden="true"><img src="assets/icons/sparkle.svg" alt="" width="16" height="16"></span>
+                  <div class="tds-announcement__content">
+                    <p class="tds-announcement__title" data-d1-confirm-action></p>
+                    <p class="tds-announcement__message" data-d1-confirm-detail></p>
+                    <div class="tds-announcement__actions" data-d1-confirm-buttons>
+                      <button type="button" class="tds-btn tds-btn--sm tds-btn--primary" data-d1-confirm-yes>Confirm</button>
+                      <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" data-d1-confirm-no>Cancel</button>
+                    </div>
                   </div>
                 </div>
               </section>
             </template>
             <template data-d1-tpl="analysis">
               <section class="d1-block d1-enter">
-                <div class="d1-analysis">
-                  <h3 class="d1-analysis__title" data-d1-analysis-title></h3>
-                  <div class="d1-analysis__rows" data-d1-analysis-rows></div>
+                <div class="d1-card" data-d1-analysis-card>
+                  <h3 class="d1-card__title" data-d1-analysis-title></h3>
+                  <div class="d1-card__body" data-d1-analysis-rows></div>
                 </div>
               </section>
             </template>
             <template data-d1-tpl="compare">
               <section class="d1-block d1-enter">
-                <div class="d1-compare">
-                  <div class="d1-compare__header">
-                    <span></span>
-                    <span class="d1-compare__col" data-d1-compare-left></span>
-                    <span class="d1-compare__col" data-d1-compare-right></span>
-                  </div>
-                  <div class="d1-compare__rows" data-d1-compare-rows></div>
+                <div class="tds-data-table-container d1-compare-table">
+                  <table class="tds-data-table tds-data-table--compact">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th data-d1-compare-left></th>
+                        <th data-d1-compare-right></th>
+                      </tr>
+                    </thead>
+                    <tbody data-d1-compare-rows></tbody>
+                  </table>
                 </div>
               </section>
             </template>
             <template data-d1-tpl="guide">
               <section class="d1-block d1-enter">
-                <div class="d1-guide">
-                  <h3 class="d1-guide__title" data-d1-guide-title></h3>
-                  <ol class="d1-guide__steps" data-d1-guide-steps></ol>
+                <div class="d1-card" data-d1-guide-card>
+                  <h3 class="d1-card__title" data-d1-guide-title></h3>
+                  <div class="d1-card__body" data-d1-guide-steps></div>
                 </div>
               </section>
             </template>
