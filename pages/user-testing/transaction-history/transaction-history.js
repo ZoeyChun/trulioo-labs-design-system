@@ -714,7 +714,11 @@
     }
 
     var reset = document.getElementById("utTxToolbarReset");
-    if (reset) reset.hidden = !toolbarFiltersActive();
+    if (reset) {
+      var showReset = toolbarFiltersActive();
+      if (window.UT_TX_PLAIN_TABLE && dateFilter.start) showReset = false;
+      reset.hidden = !showReset;
+    }
   }
 
   function updateSearchStatus() {
