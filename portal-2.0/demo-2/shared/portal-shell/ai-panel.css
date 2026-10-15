@@ -173,11 +173,15 @@
   color: var(--text-default);
   background: transparent;
   cursor: pointer;
-  transition: color 140ms ease;
+  transition: color 140ms ease, background-color 140ms ease;
 }
 
 .ai-suggestion > span:first-child { padding: var(--spacing-12) 0; }
 .ai-suggestion:hover { color: var(--interactive-default); }
+
+/* A full-width row flush against its neighbours — scale would gap it
+   against the border above/below, so press feedback is a tint instead. */
+.ai-suggestion:active { background: var(--surface-neutral-02); }
 .ai-suggestion:hover .tds-icon-btn { color: var(--interactive-default); }
 
 /* --- Icon buttons — shipped tds-icon-btn, sized sm (28px) as the node --- */
@@ -325,6 +329,7 @@
 
   .ai-orb::before { animation: none; opacity: 0.55; }
   .ai-suggestion, .tds-icon-btn { transition: none; }
+  .ai-thread > * { animation: none; }
 }
 
 /* ------------------------------------------------------------------
@@ -453,6 +458,14 @@
 
 .ai-thread::-webkit-scrollbar { display: none; }
 
+/* Every turn (user line, reply, chips, candidate list, progress, report)
+   arrives via a full innerHTML replace — animate each top-level piece in
+   rather than let it cut straight onto the panel. Re-fires automatically
+   on every replacement since the elements are newly created each time. */
+.ai-thread > * {
+  animation: v2-rise 260ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
 /* What the user typed. Right-aligned and boxed per node 1015:94004. */
 .ai-said {
   align-self: flex-end;
@@ -505,7 +518,8 @@
   color: var(--text-default);
   background: var(--surface-neutral-01);
   cursor: pointer;
-  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease,
+              scale 120ms ease-out;
 }
 
 .ai-chip__n {
@@ -515,6 +529,7 @@
 }
 
 .ai-chip:hover { border-color: var(--border-strong); }
+.ai-chip:active { scale: 0.97; }
 
 .ai-chip--on {
   border-color: transparent;
@@ -527,6 +542,64 @@
 .ai-chip:focus-visible {
   outline: 2px solid var(--border-focus);
   outline-offset: 2px;
+}
+
+/* --- Branching choice — a small number of named paths (e.g. Business vs
+   Person) that send the whole conversation one way or the other. This is
+   a heavier decision than a filter chip, so it gets the same card weight
+   as .ai-cand rather than a pill: an icon, a label, a tap target that
+   reads as "this is the decision," not "this is optional." --- */
+
+.ai-choices { display: flex; gap: var(--spacing-8); }
+
+.ai-choice {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-8);
+  padding: var(--spacing-16);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  font-family: inherit;
+  text-align: left;
+  background: var(--surface-neutral-01);
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease, scale 120ms ease-out;
+}
+
+.ai-choice:hover {
+  border-color: var(--interactive-default);
+  box-shadow: 0 0 0 3px var(--interactive-subtle);
+}
+
+.ai-choice:active { scale: 0.98; }
+
+.ai-choice:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.ai-choice__icon {
+  display: grid;
+  place-items: center;
+  width: 32px; height: 32px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-neutral-02);
+  color: var(--icon-interactive);
+}
+
+.ai-choice__icon svg { width: 18px; height: 18px; }
+
+.ai-choice__label {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+  color: var(--text-default);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-choice { transition: none; }
 }
 
 /* --- Candidates --- */
@@ -545,7 +618,7 @@
   text-align: left;
   background: var(--surface-neutral-01);
   cursor: pointer;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color 160ms ease, box-shadow 160ms ease, scale 120ms ease-out;
 }
 
 /* Hovering a card lights its pin on the map and vice versa — without the
@@ -555,6 +628,8 @@
   border-color: var(--interactive-default);
   box-shadow: 0 0 0 3px var(--interactive-subtle);
 }
+
+.ai-cand:active { scale: 0.98; }
 
 .ai-cand__head {
   display: flex;

@@ -772,7 +772,17 @@ body.vb-searching .vb-globe {
   background: var(--interactive-default);
 }
 
-/* Hovering stops the pulse so the highlighted pin holds steady. */
+/* Hovering stops the pulse so the highlighted pin holds steady. Tuned
+   faster than the base 900ms: that duration is right for the map's own
+   ambient re-zoom, but a card click/hover is direct feedback and reads
+   as sluggish at the same speed — this overrides scale on just these two
+   elements while leaving the ambient case alone. */
+.vb-pin--on .vb-pin__halo,
+.vb-pin--on .vb-pin__dot {
+  transition: scale 200ms cubic-bezier(0.32, 0.72, 0, 1),
+              background-color 160ms ease, opacity 160ms ease;
+}
+
 .vb-pin--on .vb-pin__halo {
   opacity: 0.38;
   scale: calc(1.35 / var(--vb-zoom, 1));
@@ -815,6 +825,8 @@ body.vb-searching .vb-page {
   .vb-globe__frame,
   .vb-pin__halo,
   .vb-pin__dot,
+  .vb-pin--on .vb-pin__halo,
+  .vb-pin--on .vb-pin__dot,
   .vb-page { transition: none; }
   .vb-pin__halo { animation: none; }
 }
