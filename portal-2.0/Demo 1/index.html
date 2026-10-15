@@ -120,7 +120,7 @@
                   <span class="d1-pill">KYB - Demo</span>
                 </div>
                 <div class="d1-demo__status">
-                  <span class="d1-demo__signal"><img src="assets/icons/circle-check.svg" alt="" width="16" height="16">Registry matched</span>
+                  <span class="d1-demo__signal"><img src="assets/icons/circle-check-line.svg" alt="" width="16" height="16">Registry matched</span>
                   <span class="d1-pill d1-pill--positive">Verified</span>
                 </div>
               </div>
@@ -158,7 +158,7 @@
                   <span class="d1-pill">KYC - Demo</span>
                 </div>
                 <div class="d1-demo__status">
-                  <span class="d1-demo__signal"><img src="assets/icons/circle-check.svg" alt="" width="16" height="16">Document + selfie matched</span>
+                  <span class="d1-demo__signal"><img src="assets/icons/circle-check-line.svg" alt="" width="16" height="16">Document + selfie matched</span>
                   <span class="d1-pill d1-pill--positive">Matched</span>
                 </div>
               </div>
@@ -167,7 +167,6 @@
               </button>
             </article>
           </div>
-          <p class="d1-demos__note">Fictional demo data. No live checks or credits used.</p>
         </section>
         <header class="d1-chat-head">
           <button type="button" class="d1-chat-back" data-d1-back>
@@ -180,57 +179,56 @@
         </header>
         <div class="d1-chat">
           <div class="d1-chat__col">
-            <div class="d1-thread" data-d1-thread>
+            <div class="d1-thread" data-d1-thread></div>
 
-              <section class="d1-turn">
-                <div class="d1-user d1-beat" data-d1-beat="user">
-                  <p data-d1-user-text>Meridian Apex Consulting Ltd.</p>
-                </div>
-                <div class="d1-ai d1-beat" data-d1-beat="ask">
-                  <p data-d1-ai-lead>“Meridian” matches multiple unrelated businesses, so I need to resolve the legal entity before running the KYB check; otherwise ownership, registration, and sanctions results could be attached to the wrong company.</p>
-                  <p class="d1-ai__ask" data-d1-ai-ask>Which “Meridian” should I investigate?</p>
-                </div>
+            <template data-d1-tpl="user">
+              <section class="d1-turn d1-enter">
+                <div class="d1-user"><p></p></div>
               </section>
-              <div class="d1-typing" data-d1-typing hidden aria-hidden="true"><span></span><span></span><span></span></div>
+            </template>
 
-              <section class="d1-block d1-beat" data-d1-beat="done">
+            <template data-d1-tpl="ai">
+              <div class="d1-ai d1-enter"></div>
+            </template>
+
+            <template data-d1-tpl="typing">
+              <div class="d1-typing d1-enter" aria-hidden="true"><span></span><span></span><span></span></div>
+            </template>
+
+            <template data-d1-tpl="tools">
+              <section class="d1-block d1-enter">
                 <div class="d1-progress">
                   <div class="d1-progress__row">
-                    <span data-d1-done-label>Investigation complete</span>
-                    <span class="d1-progress__pct">100%</span>
-                    <img src="assets/icons/circle-check.svg" alt="" width="16" height="16">
+                    <span data-d1-tools-label>Investigating</span>
+                    <span class="d1-progress__pct">0%</span>
+                    <img data-d1-tools-check src="assets/icons/circle-check.svg" alt="" width="16" height="16" hidden>
                   </div>
-                  <div class="d1-progress__track"><div class="d1-progress__fill d1-progress__fill--done"></div></div>
+                  <div class="d1-progress__track"><div class="d1-progress__fill d1-progress__fill--active"></div></div>
                 </div>
-                <div class="d1-steps">
-                  <div class="d1-activity">
-                    <button type="button" class="d1-activity__toggle" data-d1-activity aria-expanded="false">
-                      <span class="d1-activity__mark"><img src="assets/icons/check.svg" alt="" width="16" height="16"></span>
-                      <span data-d1-step="a">Ran business verification</span>
-                      <img class="d1-chev-down" src="assets/icons/chevron-down.svg" alt="" width="16" height="16">
-                      <img class="d1-chev-up" src="assets/icons/chevron-up.svg" alt="" width="16" height="16">
-                    </button>
-                  </div>
-                  <div class="d1-activity">
-                    <button type="button" class="d1-activity__toggle d1-activity__toggle--current" data-d1-activity aria-expanded="true">
-                      <span class="d1-activity__mark"><img src="assets/icons/check-on.svg" alt="" width="16" height="16"></span>
-                      <span data-d1-step="b">Checked 5 transactions across 4 products</span>
-                      <img class="d1-chev-down" src="assets/icons/chevron-down.svg" alt="" width="16" height="16">
-                      <img class="d1-chev-up" src="assets/icons/chevron-up.svg" alt="" width="16" height="16">
-                    </button>
-                    <div class="d1-activity__body">
-                      <div class="d1-activity__rail"><img src="assets/icons/divider.svg" alt="" width="1" height="98"></div>
-                      <div class="d1-activity__detail">
-                        <p data-d1-line="0">Cross-referenced 3 listed directors against OFAC, UN, and EU sanctions lists</p>
-                        <p data-d1-line="1">Searched your transaction history for linked people, devices, and accounts</p>
-                        <p data-d1-line="2" class="d1-activity__hit">Found 3 connections to other transactions</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div class="d1-steps" data-d1-steps></div>
               </section>
+            </template>
 
-              <section class="d1-block d1-beat" data-d1-beat="report">
+            <template data-d1-tpl="activity">
+              <div class="d1-activity d1-enter">
+                <button type="button" class="d1-activity__toggle d1-activity__toggle--current" data-d1-activity aria-expanded="true">
+                  <span class="d1-activity__mark">
+                    <img class="d1-spin" data-d1-mark="run" src="assets/icons/spinner.svg" alt="" width="16" height="16">
+                    <img data-d1-mark="done" src="assets/icons/check-on.svg" alt="" width="16" height="16" hidden>
+                  </span>
+                  <span data-d1-activity-label></span>
+                  <img class="d1-chev-down" src="assets/icons/chevron-down.svg" alt="" width="16" height="16">
+                  <img class="d1-chev-up" src="assets/icons/chevron-up.svg" alt="" width="16" height="16">
+                </button>
+                <div class="d1-activity__body">
+                  <div class="d1-activity__rail"><img src="assets/icons/divider.svg" alt="" width="1" height="68"></div>
+                  <div class="d1-activity__detail" data-d1-activity-detail></div>
+                </div>
+              </div>
+            </template>
+
+            <template data-d1-tpl="report">
+              <section class="d1-block d1-enter">
                 <div>
                   <h2 class="d1-report__title"><span data-d1-co>Meridian Apex Consulting Ltd.</span> <span class="d1-tag d1-tag--positive" data-d1-report-tag>Verified</span></h2>
                   <div class="d1-report__body">
@@ -241,58 +239,24 @@
                     </div>
                     <div class="d1-summary" data-d1-summary>
                       <h3>Summary</h3>
-                      <p data-d1-sum-a>Meridian Apex Consulting is a real, active UK company, but I wouldn't onboard it yet.</p>
-                      <p data-d1-sum-b>It has 0 employees, £1 in capital, and a virtual office address. I also found 3 connections to your other transactions that change the picture.</p>
+                      <p data-d1-sum-a></p>
+                      <p data-d1-sum-b></p>
                     </div>
                   </div>
                 </div>
                 <div class="d1-actions">
                   <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Share"><span class="tds-icon-btn__icon"><img src="assets/icons/share.svg" alt="" width="16" height="16"></span></button>
                   <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-copy aria-label="Copy"><span class="tds-icon-btn__icon"><img src="assets/icons/copy.svg" alt="" width="16" height="16"></span></button>
-                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Regenerate"><span class="tds-icon-btn__icon"><img src="assets/icons/refresh.svg" alt="" width="16" height="16"></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-regen aria-label="Regenerate"><span class="tds-icon-btn__icon"><img src="assets/icons/refresh.svg" alt="" width="16" height="16"></span></button>
                   <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-vote aria-pressed="false" aria-label="Good response"><span class="tds-icon-btn__icon"><img src="assets/icons/thumbs-up.svg" alt="" width="16" height="16"></span></button>
                   <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-vote aria-pressed="false" aria-label="Poor response"><span class="tds-icon-btn__icon"><img src="assets/icons/thumbs-down.svg" alt="" width="16" height="16"></span></button>
                 </div>
               </section>
+            </template>
 
-              <section class="d1-block d1-beat" data-d1-beat="linking">
-                <div class="d1-progress">
-                  <div class="d1-progress__row">
-                    <span>Looking for connected transactions</span>
-                    <span class="d1-progress__pct">0%</span>
-                  </div>
-                  <div class="d1-progress__track"><div class="d1-progress__fill d1-progress__fill--active"></div></div>
-                </div>
-                <div class="d1-steps">
-                  <div class="d1-activity">
-                    <button type="button" class="d1-activity__toggle" data-d1-activity aria-expanded="false">
-                      <span class="d1-activity__mark"><img src="assets/icons/check.svg" alt="" width="16" height="16"></span>
-                      <span>Searched records tied to Apex Nordic Logistics</span>
-                      <img class="d1-chev-down" src="assets/icons/chevron-down.svg" alt="" width="16" height="16">
-                      <img class="d1-chev-up" src="assets/icons/chevron-up.svg" alt="" width="16" height="16">
-                    </button>
-                  </div>
-                  <div class="d1-activity" data-d1-late hidden>
-                    <button type="button" class="d1-activity__toggle d1-activity__toggle--current" data-d1-activity aria-expanded="true">
-                      <span class="d1-activity__mark"><img class="d1-spin" src="assets/icons/spinner.svg" alt="" width="16" height="16"></span>
-                      <span>Comparing KYC, device, and bank results</span>
-                      <img class="d1-chev-down" src="assets/icons/chevron-down.svg" alt="" width="16" height="16">
-                      <img class="d1-chev-up" src="assets/icons/chevron-up.svg" alt="" width="16" height="16">
-                    </button>
-                    <div class="d1-activity__body">
-                      <div class="d1-activity__rail"><img src="assets/icons/divider.svg" alt="" width="1" height="68"></div>
-                      <div class="d1-activity__detail">
-                        <p>Jane Doe — driver's license and selfie matched</p>
-                        <p>Device 3045489E05849546 — score 92, high risk</p>
-                        <p class="d1-activity__hit">Account ••4417 — business name did not match</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section class="d1-block d1-beat" data-d1-beat="table">
-                <p class="d1-table-lead" data-d1-table-lead>Three transactions are connected to Apex Nordic Logistics. Open a row for the KYC, device, or bank result.</p>
+            <template data-d1-tpl="table">
+              <section class="d1-block d1-enter">
+                <p class="d1-table-lead" data-d1-table-lead></p>
                 <div class="d1-table-wrap">
                   <table class="d1-table">
                     <thead>
@@ -349,50 +313,13 @@
                 <div class="d1-actions">
                   <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Share"><span class="tds-icon-btn__icon"><img src="assets/icons/share.svg" alt="" width="16" height="16"></span></button>
                   <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-copy aria-label="Copy"><span class="tds-icon-btn__icon"><img src="assets/icons/copy.svg" alt="" width="16" height="16"></span></button>
-                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Regenerate"><span class="tds-icon-btn__icon"><img src="assets/icons/refresh.svg" alt="" width="16" height="16"></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-regen aria-label="Regenerate"><span class="tds-icon-btn__icon"><img src="assets/icons/refresh.svg" alt="" width="16" height="16"></span></button>
                   <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-vote aria-pressed="false" aria-label="Good response"><span class="tds-icon-btn__icon"><img src="assets/icons/thumbs-up.svg" alt="" width="16" height="16"></span></button>
                   <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-vote aria-pressed="false" aria-label="Poor response"><span class="tds-icon-btn__icon"><img src="assets/icons/thumbs-down.svg" alt="" width="16" height="16"></span></button>
                 </div>
               </section>
-
-              <section class="d1-block d1-beat" data-d1-beat="working">
-                <div class="d1-progress">
-                  <div class="d1-progress__row">
-                    <span>Investigating</span>
-                    <span class="d1-progress__pct">75%</span>
-                  </div>
-                  <div class="d1-progress__track"><div class="d1-progress__fill d1-progress__fill--active"></div></div>
-                </div>
-                <div class="d1-steps">
-                  <div class="d1-activity">
-                    <button type="button" class="d1-activity__toggle" data-d1-activity aria-expanded="false">
-                      <span class="d1-activity__mark"><img src="assets/icons/check.svg" alt="" width="16" height="16"></span>
-                      <span data-d1-step="a">Ran business verification</span>
-                      <img class="d1-chev-down" src="assets/icons/chevron-down.svg" alt="" width="16" height="16">
-                      <img class="d1-chev-up" src="assets/icons/chevron-up.svg" alt="" width="16" height="16">
-                    </button>
-                  </div>
-                  <div class="d1-activity" data-d1-late hidden>
-                    <button type="button" class="d1-activity__toggle d1-activity__toggle--current" data-d1-activity aria-expanded="true">
-                      <span class="d1-activity__mark"><img class="d1-spin" src="assets/icons/spinner.svg" alt="" width="16" height="16"></span>
-                      <span data-d1-step="b">Checking 5 transactions across 4 products</span>
-                      <img class="d1-chev-down" src="assets/icons/chevron-down.svg" alt="" width="16" height="16">
-                      <img class="d1-chev-up" src="assets/icons/chevron-up.svg" alt="" width="16" height="16">
-                    </button>
-                    <div class="d1-activity__body">
-                      <div class="d1-activity__rail"><img src="assets/icons/divider.svg" alt="" width="1" height="68"></div>
-                      <div class="d1-activity__detail">
-                        <p data-d1-line="0">Cross-referenced 3 listed directors against OFAC, UN, and EU sanctions lists</p>
-                        <p data-d1-line="1">Searching your transaction history for linked people, devices, and accounts</p>
-                        <p data-d1-line="2" class="d1-activity__hit" hidden>Found 3 connections to other transactions</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-            </div>
-            <div class="d1-follow d1-beat" data-d1-follow data-d1-beat="follow">
+            </template>
+            <div class="d1-follow d1-beat" data-d1-follow>
               <h2>Continue your investigation</h2>
               <button type="button" class="d1-suggest-row" data-d1-suggest>
                 <span>Why was Daniel Reyes declined in March?</span>
@@ -461,6 +388,7 @@
                   <button type="submit" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--circular d1-prompt__send" data-d1-send aria-label="Send" disabled>
                     <span class="tds-icon-btn__icon">
                       <img src="assets/icons/arrow-up.svg" alt="" width="16" height="16">
+                      <span class="d1-stop-square" aria-hidden="true"></span>
                     </span>
                   </button>
                 </div>

@@ -358,3 +358,20 @@
   background: var(--surface-neutral-03);
   color: var(--icon-faint);
 }
+
+/* While a reply is streaming the send button stands in as Stop. */
+.d1-stop-square {
+  display: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--icon-inverse);
+}
+
+.d1-prompt__send.is-stop img {
+  display: none;
+}
+
+.d1-prompt__send.is-stop .d1-stop-square {
+  display: block;
+}

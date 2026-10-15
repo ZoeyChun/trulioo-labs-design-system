@@ -38,22 +38,35 @@
     }
 
     var sendIcon = send.querySelector("img");
+    var busy = false;
 
     function syncSend() {
+      if (busy) {
+        send.disabled = false;
+        send.classList.add("tds-icon-btn--primary", "is-stop");
+        send.setAttribute("aria-label", "Stop generating");
+        return;
+      }
+      send.classList.remove("is-stop");
+      send.setAttribute("aria-label", "Send");
       var ready = canSend();
       send.disabled = !ready;
       send.classList.toggle("tds-icon-btn--primary", ready);
       if (sendIcon) sendIcon.src = ready ? "assets/icons/arrow-up-on.svg" : "assets/icons/arrow-up.svg";
     }
 
+    /* The stage owns the reply; it tells the composer when one is in flight so
+       the send button can stand in as Stop. */
+    root.addEventListener("d1-composer:state", function (event) {
+      busy = !!(event.detail && event.detail.busy);
+      syncSend();
+    });
+
     function paintAgent() {
       if (modeLabel) modeLabel.textContent = agent.label;
       if (mode) mode.setAttribute("aria-label", "Agent, " + agent.label);
       root.querySelectorAll("[data-d1-agent-option]").forEach(function (option) {
         option.setAttribute("aria-selected", option.getAttribute("data-agent") === agent.id ? "true" : "false");
-      });
-      root.querySelectorAll("[data-d1-chip]").forEach(function (chip) {
-        chip.setAttribute("aria-pressed", chip.getAttribute("data-agent") === agent.id ? "true" : "false");
       });
     }
 
@@ -223,6 +236,13 @@
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       submit();
+    });
+
+    send.addEventListener("click", function (event) {
+      if (!busy) return;
+      event.preventDefault();
+      root.dispatchEvent(new CustomEvent("d1-composer:stop"));
+      say("Stopped.");
     });
 
     root.querySelectorAll("[data-d1-chip]").forEach(function (chip) {

@@ -42,6 +42,30 @@
   animation: d1-up 0.45s ease both;
 }
 
+/* Blocks are cloned and appended as a reply plays, so each one animates in
+   on its own rather than a whole pre-built thread revealing at once. */
+.d1-enter {
+  animation: d1-up 0.4s ease both;
+}
+
+/* Caret rides the end of the paragraph currently being streamed. */
+.is-streaming::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  border-radius: 1px;
+  background: var(--ai-accent);
+  vertical-align: text-bottom;
+  animation: d1-caret 1s step-end infinite;
+}
+
+@keyframes d1-caret {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
 .d1-typing {
   display: flex;
   gap: 5px;
@@ -75,6 +99,8 @@
   .d1-chip,
   .d1-prompt,
   .d1-beat.is-on,
+  .d1-enter,
+  .is-streaming::after,
   .d1-home[data-d1-stage="chat"] .d1-chat-head,
   .d1-typing span,
   .d1-spin {

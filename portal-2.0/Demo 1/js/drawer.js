@@ -7,12 +7,21 @@
   if (!main || !drawer || !tabs) return;
 
   function tableRows() {
-    return Array.prototype.slice.call(document.querySelectorAll(".d1-table tbody tr[data-d1-tx]"));
+    var tables = document.querySelectorAll(".d1-thread .d1-table");
+    var table = tables[tables.length - 1];
+    if (!table) return [];
+    return Array.prototype.slice.call(table.querySelectorAll("tbody tr[data-d1-tx]"));
   }
 
   function showView(name) {
     document.querySelectorAll("[data-d1-drawer-view]").forEach(function (view) {
-      view.hidden = view.getAttribute("data-d1-drawer-view") !== name;
+      var on = view.getAttribute("data-d1-drawer-view") === name;
+      view.hidden = !on;
+      view.classList.remove("is-in");
+      if (on) {
+        void view.offsetWidth;
+        view.classList.add("is-in");
+      }
     });
     var body = drawer.querySelector(".d1-drawer__body");
     if (body) body.scrollTop = 0;
@@ -72,19 +81,25 @@
     });
   }
 
-  document.querySelectorAll(".d1-table tbody tr").forEach(function (row) {
-    row.tabIndex = 0;
-    row.addEventListener("click", function () { open(row.getAttribute("data-d1-tx"), row); });
-    row.addEventListener("keydown", function (event) {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        open(row.getAttribute("data-d1-tx"), row);
+  /* The report and the table are cloned into the thread when a reply plays,
+     so a listener bound at load never sees the View button or the rows. */
+  var thread = document.querySelector("[data-d1-thread]");
+  if (thread) {
+    thread.addEventListener("click", function (event) {
+      if (event.target.closest(".d1-alert__view")) {
+        open("report");
+        return;
       }
+      var row = event.target.closest("tr[data-d1-tx]");
+      if (row) open(row.getAttribute("data-d1-tx"));
     });
-  });
-
-  var view = document.querySelector(".d1-alert__view");
-  if (view) view.addEventListener("click", function () { open("report"); });
+    thread.addEventListener("keydown", function (event) {
+      var row = event.target.closest("tr[data-d1-tx]");
+      if (!row || (event.key !== "Enter" && event.key !== " ")) return;
+      event.preventDefault();
+      open(row.getAttribute("data-d1-tx"));
+    });
+  }
 
   var overview = document.querySelector("[data-d1-doc-panel='overview']");
   var empty = document.querySelector("[data-d1-doc-panel='empty']");
