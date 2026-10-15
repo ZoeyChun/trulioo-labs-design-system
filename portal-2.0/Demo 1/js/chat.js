@@ -240,8 +240,11 @@
     { id: "approved", keys: ["approved", "approval", "approval rate", "passed", "went through"] },
     { id: "cascade", keys: ["cascade", "cascade financial"] },
     { id: "summit", keys: ["summit", "summit peak", "peak advisors"] },
-    { id: "rerun", keys: ["re run", "rerun", "run again", "retry"] },
-    { id: "bcteam", keys: ["bc team", "tell them", "notify", "what should i tell"] }
+    { id: "rerun", keys: ["re run", "rerun", "run again", "retry", "re-run"] },
+    { id: "bcteam", keys: ["bc team", "tell them", "notify", "notify the team", "what should i tell", "let them know", "inform the team", "send a message"] },
+    { id: "flag", keys: ["flag", "flag for review", "flag this", "mark for review", "send to review", "put in review"] },
+    { id: "approve", keys: ["approve", "approve this", "accept this", "clear this", "mark approved", "mark as approved", "greenlight"] },
+    { id: "escalate", keys: ["escalate", "escalate this", "raise this", "urgent review", "priority review"] }
   ];
 
   /* ------------------------------------------------------------- run token */
@@ -533,6 +536,68 @@
     node.remove();
   }
 
+  /* ---- confirm + toast ---- */
+
+  function showToast(text, warn) {
+    var el = document.createElement("div");
+    el.className = "d1-toast" + (warn ? " is-warn" : "");
+    var icon = document.createElement("img");
+    icon.src = warn ? "assets/icons/warning-amber.svg" : "assets/icons/circle-check.svg";
+    icon.alt = "";
+    icon.width = 16;
+    icon.height = 16;
+    el.appendChild(icon);
+    el.appendChild(document.createTextNode(text));
+    document.body.appendChild(el);
+    window.setTimeout(function () { if (el.parentNode) el.remove(); }, 3200);
+  }
+
+  async function playConfirm(part, token) {
+    var node = clone("confirm");
+    if (!node) return;
+    node.querySelector("[data-d1-confirm-action]").textContent = part.action;
+    node.querySelector("[data-d1-confirm-detail]").textContent = part.detail;
+    var yesBtn = node.querySelector("[data-d1-confirm-yes]");
+    var noBtn = node.querySelector("[data-d1-confirm-no]");
+    if (part.yes) yesBtn.textContent = part.yes;
+    if (part.warn) node.querySelector(".d1-confirm").classList.add("is-warn");
+    place(node);
+
+    var confirmed = await new Promise(function (resolve) {
+      yesBtn.addEventListener("click", function () { resolve(true); });
+      noBtn.addEventListener("click", function () { resolve(false); });
+      token.onCancel(function () { resolve(false); });
+    });
+
+    var buttons = node.querySelector("[data-d1-confirm-buttons]");
+    buttons.style.display = "none";
+    var card = node.querySelector(".d1-confirm");
+    var result = document.createElement("div");
+    result.className = "d1-confirm__result";
+
+    if (confirmed) {
+      card.classList.add("is-done");
+      if (card.classList.contains("is-warn")) card.classList.remove("is-warn");
+      result.classList.add("d1-confirm__result--done");
+      var img = document.createElement("img");
+      img.src = "assets/icons/circle-check.svg";
+      img.alt = "";
+      img.width = 16;
+      img.height = 16;
+      result.appendChild(img);
+      var span = document.createElement("span");
+      span.textContent = part.toast || "Done";
+      result.appendChild(span);
+      card.appendChild(result);
+      showToast(part.toast || "Done", false);
+    } else {
+      result.classList.add("d1-confirm__result--cancelled");
+      result.textContent = "Cancelled";
+      card.appendChild(result);
+    }
+    stick();
+  }
+
   async function play(parts, token) {
     for (var i = 0; i < parts.length; i += 1) {
       if (token.cancelled) return;
@@ -542,6 +607,7 @@
       else if (part.t === "tools") await playTools(part, token);
       else if (part.t === "report") await playReport(part, token);
       else if (part.t === "table") await playTable(part, token);
+      else if (part.t === "confirm") await playConfirm(part, token);
       if (!token.cancelled && i < parts.length - 1) await token.sleep(part.t === "typing" ? 0 : 320);
     }
   }
@@ -835,6 +901,88 @@
     return { parts: [{ t: "typing", ms: thinkFor(miss) }, say(miss)], suggestions: OPS_SUGGESTIONS };
   }
 
+  /* ---- action plans (confirm → toast) ---- */
+
+  function flagPlan() {
+    var name = convo.entity ? convo.entity.name : "this entity";
+    return {
+      parts: [
+        { t: "typing", ms: 600 },
+        say("I'll flag " + name + " for manual review and add it to your compliance team's queue."),
+        { t: "confirm", action: "Flag " + name + " for review", detail: "Adds to the manual review queue and notifies the compliance team.", yes: "Flag for review", toast: name + " flagged for review" }
+      ],
+      suggestions: convo.entity ? convo.entity.suggestions : activeSuggestions
+    };
+  }
+
+  function approvePlan() {
+    var name = convo.entity ? convo.entity.name : "this entity";
+    var clean = convo.entity && convo.entity.tone === "positive";
+    if (!clean && convo.entity) {
+      return {
+        parts: [
+          { t: "typing", ms: 800 },
+          say(name + " still has open items — " + (convo.entity.tag === "Needs review" ? "it’s flagged for review" : "there are unresolved findings") + ". I’d resolve those before approving.", "You can approve anyway, but the open items will carry forward."),
+          { t: "confirm", action: "Approve " + name + " anyway", detail: "Open items remain. Approval will note that findings were acknowledged.", yes: "Approve anyway", toast: name + " approved with open items", warn: true }
+        ],
+        suggestions: convo.entity.suggestions
+      };
+    }
+    return {
+      parts: [
+        { t: "typing", ms: 600 },
+        say("Registry matched and no sanctions flags. " + name + " is ready to approve."),
+        { t: "confirm", action: "Approve " + name, detail: "Marks the verification as approved. No further review required.", yes: "Approve", toast: name + " approved" }
+      ],
+      suggestions: convo.entity ? convo.entity.suggestions : activeSuggestions
+    };
+  }
+
+  function escalatePlan() {
+    var name = convo.entity ? convo.entity.name : "the current case";
+    return {
+      parts: [
+        { t: "typing", ms: 600 },
+        say("I'll escalate " + name + " to your senior compliance officer for priority review."),
+        { t: "confirm", action: "Escalate " + name, detail: "Moves to priority queue. Senior compliance officer is notified immediately.", yes: "Escalate", toast: name + " escalated" }
+      ],
+      suggestions: convo.entity ? convo.entity.suggestions : activeSuggestions
+    };
+  }
+
+  function rerunPlan() {
+    return {
+      parts: [
+        { t: "typing", ms: 800 },
+        say("The matcher still compares the old address format, so all 9 British Columbia verifications would fail the same way.", "Re-run them once the format is updated — or go ahead now if you want a fresh timestamp on the failures."),
+        { t: "confirm", action: "Re-run 9 BC verifications", detail: "These will likely fail again until the address matcher handles unit-number-first addresses.", yes: "Re-run anyway", toast: "9 verifications queued for re-run", warn: true }
+      ],
+      suggestions: FAILURE_SUGGESTIONS
+    };
+  }
+
+  function notifyTeamPlan() {
+    return {
+      parts: [
+        { t: "typing", ms: 700 },
+        say("I'll send the BC team a summary of the address format change and its impact on the 9 failed verifications."),
+        { t: "confirm", action: "Notify BC Registry team", detail: "“BC Registry changed its address format on 13 Oct — unit numbers now lead the street line. 9 verifications failed on this since the change.”", yes: "Send notification", toast: "Notification sent to BC Registry team" }
+      ],
+      suggestions: FAILURE_SUGGESTIONS
+    };
+  }
+
+  function planAction(text, intent) {
+    if (intent === "flag" && convo.entity) return flagPlan();
+    if (intent === "approve" && convo.entity) return approvePlan();
+    if (intent === "escalate") return escalatePlan();
+    if (isRepeat()) {
+      if (intent === "rerun") return rerunPlan();
+      if (intent === "bcteam") return notifyTeamPlan();
+    }
+    return null;
+  }
+
   function planReply(text, agent) {
     var company = namedCompany(text);
     var intent = resolveIntent(text);
@@ -846,6 +994,9 @@
     }
 
     if (isPerson(text, agent) && !company) return personPlan(text);
+
+    var action = planAction(text, intent);
+    if (action) return action;
 
     if (isRepeat() && !convo.entity) {
       var ops = planOps(text, intent);
