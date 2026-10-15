@@ -138,6 +138,11 @@
   flex-direction: column;
   gap: var(--spacing-24);
   flex: 0 0 auto;
+  /* Above .vb-result — entrance animations create stacking contexts, so
+     without this the continue card paints over the typeahead menu. */
+  position: relative;
+  z-index: 5;
+  overflow: visible;
 }
 
 .vb-search__title {
@@ -148,84 +153,273 @@
   color: var(--text-default);
 }
 
-/* Field, "or" divider and upload button sit in one row (Figma node
-   1121:51098) — they used to stack, which is what made this look wrong. */
+/* Field (+ expanding prefill), "or", and upload sit in one row. */
 .vb-search__row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-8);
   width: 100%;
 }
 
-/* --- Country + query field --- */
-
-.vb-field {
+/* Lookup is invisible chrome until a company is selected — then the
+   search field and prefill merge into one continuous panel (no nested
+   field-inside-card). */
+.vb-lookup {
   display: flex;
-  align-items: center;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 560px;
+  overflow: visible;
+}
+
+.vb-lookup--filled {
+  background: var(--surface-neutral-01);
+  border: 1px solid var(--border-selected);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 0 0 1px var(--border-selected);
+}
+
+/* --- Country + typeahead search (BRR behavior) --- */
+
+.vb-search-field {
+  display: flex;
+  align-items: stretch;
+  position: relative;
   flex: 0 0 auto;
-  width: 488px;
-  max-width: 100%;
-  gap: var(--gap-sm);
-  height: 40px;
-  padding: 0 var(--padding-md);
+  width: 100%;
+  min-height: 40px;
+  background-color: var(--surface-neutral-01);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
-  background: var(--surface-neutral-01);
   box-shadow: var(--shadow-inset);
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  z-index: 2;
+  transition: border-color 160ms ease, background-color 160ms ease, border-radius 160ms ease;
 }
 
-.vb-field:focus-within {
+.vb-search-field:focus-within,
+.vb-search-field:has(.vb-search-country.tds-select--open),
+.vb-search-field:has(.vb-combobox.tds-combobox--open) {
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px var(--interactive-subtle);
 }
 
-.vb-field__country {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  flex: 0 0 auto;
-  min-height: 28px;
-  padding: 0 var(--spacing-8) 0 0;
+/* Filled: field becomes the panel header row — no second border. */
+.vb-lookup--filled .vb-search-field {
   border: 0;
-  border-right: 1px solid var(--border-subtle);
-  background: transparent;
-  color: var(--icon-faint);
-  cursor: pointer;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  box-shadow: none;
+  background: var(--interactive-subtle);
 }
 
-.vb-field__country img {
-  display: block;
-  border: 0.5px solid var(--border-subtle);
+.vb-search-country {
+  position: relative;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+}
+
+.vb-search-country.tds-select--interactive .tds-select__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  width: auto;
+  height: 100%;
+  min-height: 40px;
+  padding: 0 var(--spacing-12);
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  border-radius: var(--radius-button) 0 0 var(--radius-button);
+}
+
+.vb-search-country.tds-select--interactive .tds-select__trigger:hover {
+  background-color: var(--surface-hover);
+}
+
+.vb-search-country .tds-select__country-flag {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.vb-search-country .tds-select__country-flag .fi {
+  width: 18px;
+  height: 12px;
   border-radius: 2px;
 }
 
-.vb-field__country svg { width: 16px; height: 16px; }
+.vb-search-country__value {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
-.vb-field__icon {
-  display: grid;
-  flex: 0 0 auto;
-  place-items: center;
-  width: 16px; height: 16px;
+.vb-search-country.tds-select--open { z-index: 21; }
+
+.vb-search-country__menu { min-width: 220px; }
+
+.vb-search-country__menu.tds-dropdown-panel .tds-action-list-item {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  padding: 6px var(--padding-xs);
+  box-sizing: border-box;
+}
+
+.vb-search-country__menu .tds-action-list-item__leading-visual .fi {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.vb-search-field__divider {
+  width: 1px;
+  align-self: stretch;
+  margin: var(--spacing-8) 0;
+  background-color: var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.vb-combobox {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.vb-combobox__field {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 var(--radius-button) var(--radius-button) 0;
+}
+
+.vb-combobox.tds-combobox--open { z-index: 20; }
+
+.vb-combobox__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
   color: var(--icon-faint);
 }
 
-.vb-field__icon svg { width: 16px; height: 16px; }
+.vb-combobox__icon svg { width: 16px; height: 16px; }
 
-.vb-field__input {
-  flex: 1 1 auto;
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  font-family: inherit;
-  font-size: var(--font-size-sm);
-  line-height: 22px;
-  color: var(--text-default);
-  background: transparent;
+.vb-combobox__panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.vb-field__input::placeholder { color: var(--color-neutral-50); }
-.vb-field__input:focus { outline: none; }
+.vb-combobox__options {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.vb-combobox__footer {
+  padding: var(--spacing-8) var(--spacing-12);
+  border-top: 1px solid var(--border-subtle);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+  background-color: var(--surface-neutral-02);
+}
+
+.vb-combobox__options .tds-action-list-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vb-combobox__options .tds-action-list-item__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.vb-combobox__options .tds-action-list-item__description {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.vb-combobox__options .tds-action-list-item--active,
+.vb-combobox__options .tds-action-list-item--active:hover {
+  background-color: var(--surface-selected);
+}
+
+.vb-search-hint {
+  margin: var(--spacing-8) 0 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.vb-lookup--filled .vb-search-hint { display: none; }
+
+.vb-search-hint--active { color: var(--text-default); }
+
+/* Continues the search field — same panel, compact body. */
+.vb-prefill {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  width: 100%;
+  padding: var(--spacing-16);
+  animation: vb-prefill-in 200ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+.vb-prefill[hidden] { display: none !important; }
+
+@keyframes vb-prefill-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.vb-prefill__badge { align-self: flex-start; }
+
+.vb-prefill__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-12) var(--spacing-16);
+}
+
+.vb-prefill__grid .tds-text-input { min-width: 0; }
+
+.vb-prefill__field--full { grid-column: 1 / -1; }
+
+.vb-prefill .tds-text-input__native[readonly] { cursor: default; }
+
+.vb-prefill__actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--spacing-4);
+}
+
+.vb-search,
+.vb-page,
+.vb-search__row,
+.vb-lookup { overflow: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vb-prefill { animation: none; }
+}
+
+@media (max-width: 720px) {
+  .vb-prefill__grid { grid-template-columns: 1fr; }
+}
 
 /* --- "or" rule — a vertical divider between the field and the upload
    button, not a horizontal one (Figma node 1121:51107). --- */
@@ -293,6 +487,8 @@
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
+  position: relative;
+  z-index: 1;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-2xl);
   background: var(--surface-neutral-01);
@@ -445,60 +641,127 @@
   border-radius: var(--radius-sm);
 }
 
-/* --- Map --- */
+/* --- Hero: storefront photo + live map (Ultra-light tiles) --- */
 
-.vb-map {
-  position: relative;
-  width: 769px;
-  max-width: 100%;
-  height: 182px;
+.vb-hero {
+  display: flex;
+  width: 100%;
+  max-width: 769px;
+  height: 200px;
   border-radius: var(--radius-xl);
   overflow: hidden;
+  background: var(--surface-neutral-02);
 }
 
-.vb-map img {
+.vb-hero__photo {
+  flex: 0 0 28%;
+  min-width: 148px;
+  max-width: 220px;
+}
+
+.vb-hero__photo img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* The node washes the map back so it reads as context, not content. */
-.vb-map::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(244, 246, 244, 0.6);
-  mix-blend-mode: multiply;
-  pointer-events: none;
+.vb-hero__map {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  background: #f4f6f4;
+  /* Leaflet panes need a stacking context inside the clipped hero. */
+  z-index: 0;
 }
 
-/* Registered-address marker (Figma node 1121:51247). The group sits at
-   395,56 inside the 769x182 map, so its centre lands at 54.4% / 43.2%.
-   z-index lifts it over .vb-map::after, which would otherwise wash it out. */
-.vb-map__pin {
-  position: absolute;
-  left: 54.41%;
-  top: 43.25%;
-  z-index: 1;
-  width: 37.21px;
-  height: 37.21px;
-  margin: -18.6px 0 0 -18.6px;
-  border-radius: var(--radius-full);
-  background: rgba(0, 76, 69, 0.2);
-  pointer-events: none;
+.vb-hero__map .leaflet-container {
+  width: 100%;
+  height: 100%;
+  font: inherit;
+  background: #f4f6f4;
 }
 
-.vb-map__pin::after {
-  content: "";
+.vb-hero__map .leaflet-control-zoom {
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+  box-shadow: none !important;
+}
+
+.vb-hero__map .leaflet-control-zoom a {
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
+  color: var(--text-default) !important;
+  background: var(--surface-neutral-01) !important;
+  border-bottom-color: var(--border-subtle) !important;
+}
+
+.vb-hero__map .leaflet-control-zoom a:hover {
+  background: var(--surface-neutral-02) !important;
+}
+
+.vb-hero__map .leaflet-control-attribution {
+  font-size: 10px;
+  background: rgb(255 255 255 / 72%) !important;
+  color: var(--text-caption);
+  max-width: 55%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vb-hero__map .leaflet-control-attribution a {
+  color: var(--text-caption);
+}
+
+.vb-map-marker-wrap {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.vb-map-marker {
+  position: relative;
+  display: block;
+  width: 36px;
+  height: 36px;
+}
+
+.vb-map-marker__halo,
+.vb-map-marker__dot {
   position: absolute;
   left: 50%;
   top: 50%;
+  border-radius: var(--radius-full);
+  translate: -50% -50%;
+}
+
+.vb-map-marker__halo {
+  width: 36px;
+  height: 36px;
+  background: rgb(0 76 69 / 20%);
+}
+
+.vb-map-marker__dot {
   width: 12px;
   height: 12px;
-  margin: -6px 0 0 -6px;
-  border-radius: var(--radius-full);
   background: var(--interactive-default);
+}
+
+@media (max-width: 720px) {
+  .vb-hero {
+    flex-direction: column;
+    height: auto;
+  }
+  .vb-hero__photo {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    height: 140px;
+  }
+  .vb-hero__map { height: 200px; }
 }
 
 /* --- Company overview --- */
@@ -608,7 +871,6 @@
   .vb-result,
   .v2-rail > * { animation: none; }
 
-  .vb-field,
   .vb-upload,
   .vb-tab,
   .vb-tab::after { transition: none; }
@@ -630,7 +892,7 @@
   .vb-split { flex-direction: column; gap: var(--spacing-24); }
 
   .vb-search__row { flex-wrap: wrap; }
-  .vb-field { width: 100%; }
+  .vb-search-field { width: 100%; }
   .vb-or { flex-direction: row; width: 100%; height: auto; }
   .vb-or::before, .vb-or::after { width: auto; height: 1px; }
   .vb-upload { width: 100%; margin-left: 0; }
@@ -652,8 +914,37 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+  gap: var(--spacing-16);
   min-height: 0;
   width: 100%;
+}
+
+/* Stays above the absolute map while searching / reporting. */
+.vb-canvas > .tds-breadcrumbs {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+}
+
+/* Report trail: "Verify a business" is a back control, not a page link.
+   Keep the same type scale as .tds-breadcrumb-item — `font: inherit`
+   was pulling body size and making this segment look larger. */
+.vb-canvas .tds-breadcrumbs button.tds-breadcrumb-item {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-link);
+  cursor: pointer;
+}
+
+.vb-canvas .tds-breadcrumbs button.tds-breadcrumb-item:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .vb-globe {
@@ -706,72 +997,89 @@ body.vb-searching .vb-globe {
   color: var(--text-caption);
 }
 
-/* --- Pins --- */
+/* --- Pins (teardrop marker — tip sits on the coordinate) --- */
 
 .vb-pin {
   position: absolute;
-  translate: -50% -50%;
+  /* Tip of the teardrop, not the visual center. */
+  translate: -50% -100%;
   display: grid;
   place-items: center;
   width: 0; height: 0;
   padding: 0;
   border: 0;
+  color: var(--interactive-default);
   background: transparent;
   cursor: pointer;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 18%));
 }
 
 .vb-pin__halo,
-.vb-pin__dot {
+.vb-pin__marker {
   position: absolute;
-  border-radius: var(--radius-full);
   /* Counter the frame's zoom so pins keep a constant screen size. */
   scale: calc(1 / var(--vb-zoom, 1));
   transition: scale 900ms cubic-bezier(0.32, 0.72, 0, 1),
-              background-color 160ms ease, opacity 160ms ease;
+              color 160ms ease, opacity 160ms ease;
 }
 
-/* A slow, staggered pulse so the matches read as live without becoming a
-   light show. Opacity only — scale is already owned by the counter-zoom
-   above, and two rules animating the same property would fight. */
 @keyframes vb-beat {
-  0%, 100% { opacity: 0.14; }
-  50%      { opacity: 0.34; }
+  0%, 100% { opacity: 0.12; }
+  50%      { opacity: 0.28; }
 }
 
 .vb-pin__halo {
-  width: 34px; height: 34px;
+  bottom: 4px;
+  width: 28px; height: 28px;
+  border-radius: var(--radius-full);
   background: var(--interactive-default);
-  opacity: 0.18;
+  opacity: 0.16;
   animation: vb-beat 2.6s ease-in-out infinite;
   animation-delay: var(--vb-beat, 0s);
 }
 
-.vb-pin__dot {
-  width: 11px; height: 11px;
-  background: var(--interactive-default);
+.vb-pin__marker {
+  bottom: 0;
+  width: 22px;
+  height: 29px;
+  color: inherit;
 }
 
-/* Hovering stops the pulse so the highlighted pin holds steady. Tuned
-   faster than the base 900ms: that duration is right for the map's own
-   ambient re-zoom, but a card click/hover is direct feedback and reads
-   as sluggish at the same speed — this overrides scale on just these two
-   elements while leaving the ambient case alone. */
+.vb-pin__marker svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .vb-pin--on .vb-pin__halo,
-.vb-pin--on .vb-pin__dot {
+.vb-pin--on .vb-pin__marker {
   transition: scale 200ms cubic-bezier(0.32, 0.72, 0, 1),
-              background-color 160ms ease, opacity 160ms ease;
+              color 160ms ease, opacity 160ms ease;
+}
+
+.vb-pin--on {
+  color: var(--interactive-hover);
+  z-index: 1;
 }
 
 .vb-pin--on .vb-pin__halo {
-  opacity: 0.38;
-  scale: calc(1.35 / var(--vb-zoom, 1));
+  opacity: 0.32;
+  scale: calc(1.4 / var(--vb-zoom, 1));
   animation: none;
 }
-.vb-pin--on .vb-pin__dot  { scale: calc(1.3 / var(--vb-zoom, 1)); }
+
+.vb-pin--on .vb-pin__marker {
+  scale: calc(1.18 / var(--vb-zoom, 1));
+}
+
+.vb-pin--solo .vb-pin__halo {
+  opacity: 0.28;
+  animation: none;
+}
 
 .vb-pin:focus-visible {
   outline: 2px solid var(--border-focus);
-  outline-offset: 14px;
+  outline-offset: 8px;
   border-radius: var(--radius-full);
 }
 
@@ -803,9 +1111,9 @@ body.vb-searching .vb-page {
   .vb-globe,
   .vb-globe__frame,
   .vb-pin__halo,
-  .vb-pin__dot,
+  .vb-pin__marker,
   .vb-pin--on .vb-pin__halo,
-  .vb-pin--on .vb-pin__dot,
+  .vb-pin--on .vb-pin__marker,
   .vb-page { transition: none; }
   .vb-pin__halo { animation: none; }
 }
