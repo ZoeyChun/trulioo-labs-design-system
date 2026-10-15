@@ -1,5 +1,5 @@
 <!-- Portal 2.0 transactions.
-     Same shell as the home page: side rail, Traffic by Service, TruAI.
+     Same shell as the home page: side rail, workspace header, TruAI.
      The table, search, date control, and Filters drawer are the
      user-testing transaction history, placed in this column. -->
 <!DOCTYPE html>
@@ -35,7 +35,6 @@
   <link rel="stylesheet" href="../../../Components/_shared/dropdown-panel/dropdown-panel.css">
   <link rel="stylesheet" href="../../../Components/button-menu/button-menu.css">
   <link rel="stylesheet" href="../../../Components/action-list-item/action-list-item.css">
-
   <!-- shell, transactions table, this page's overrides, then the AI panel.
        Page rules follow transaction-history.css so the column fit wins. -->
   <link rel="stylesheet" href="../shared/portal-shell/shell.css">
@@ -95,72 +94,8 @@
          Add page widgets inside <main>. Nothing here may reference
          .ai-* or the [data-truai] state. -->
     <main class="v2-content">
-      <h1 class="v2-visually-hidden">Transactions</h1>
-
-      <!-- Workspace header -->
-      <header class="v2-org">
-        <span class="v2-org__mark" aria-hidden="true">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M8.62 2.4a.72.72 0 0 0-1.24 0L.9 13.5a.72.72 0 0 0 .62 1.08h12.96a.72.72 0 0 0 .62-1.08L8.62 2.4ZM8 4.74l2.63 4.52-1.3 1.3a.5.5 0 0 1-.71 0L7.1 9.14a.5.5 0 0 0-.72 0l-1.1 1.12L8 4.74Z" fill="currentColor"/></svg>
-        </span>
-        <p class="v2-org__name">Pacific Ridge Financial</p>
-        <span class="tds-tag tds-tag--sm v2-org__env">
-          <span class="tds-tag__leading-visual v2-org__dot">
-            <img src="../shared/portal-shell/assets/env-dot.svg" alt="" width="8" height="8">
-          </span>
-          Prod
-        </span>
-      </header>
-
-      <!-- Traffic by Service -->
-      <section class="v2-traffic" aria-labelledby="v2-traffic-h">
-        <div class="v2-traffic__lead">
-          <div class="v2-traffic__heading">
-            <h2 class="v2-traffic__title" id="v2-traffic-h">Traffic by Service</h2>
-            <p class="v2-traffic__sub">Past 7 days summary</p>
-          </div>
-
-          <div class="v2-traffic__figure">
-            <span class="v2-traffic__value" data-count="2798">2,798</span>
-            <span class="v2-trend">
-              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M1.75 4.5 6.4 9.15a.6.6 0 0 0 .85 0l2.1-2.1a.6.6 0 0 1 .85 0l3.3 3.3M14.25 7.2v3.6h-3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              22%
-            </span>
-          </div>
-
-          <div class="v2-stack" role="img" aria-label="Share of traffic: Business Verification 35%, Person Verification 30%, Document Verification 16%, Watchlist and AML 12%, Ownership Assessment 7%.">
-            <span style="flex: 89; background: #202223"></span>
-            <span style="flex: 77; background: #5c5f62"></span>
-            <span style="flex: 41; background: #8c9196"></span>
-            <span style="flex: 31; background: var(--color-teal-60)"></span>
-            <span style="flex: 18; background: #d2d5d8"></span>
-          </div>
-        </div>
-
-        <dl class="v2-breakdown">
-          <div class="v2-breakdown__row">
-            <dt><i class="v2-swatch" style="background: #202223"></i>Business Verification</dt>
-            <dd><span class="v2-breakdown__n">52,400</span><span class="v2-breakdown__p">35%</span></dd>
-          </div>
-          <div class="v2-breakdown__row">
-            <dt><i class="v2-swatch" style="background: #5c5f62"></i>Person Verification</dt>
-            <dd><span class="v2-breakdown__n">44,150</span><span class="v2-breakdown__p">30%</span></dd>
-          </div>
-          <div class="v2-breakdown__row">
-            <dt><i class="v2-swatch" style="background: #8c9196"></i>Document Verification</dt>
-            <dd><span class="v2-breakdown__n">24,200</span><span class="v2-breakdown__p">16%</span></dd>
-          </div>
-          <div class="v2-breakdown__row">
-            <dt><i class="v2-swatch" style="background: var(--color-teal-60)"></i>Watchlist / AML</dt>
-            <dd><span class="v2-breakdown__n">18,300</span><span class="v2-breakdown__p">12%</span></dd>
-          </div>
-          <div class="v2-breakdown__row">
-            <dt><i class="v2-swatch" style="background: #d2d5d8"></i>Ownership Assessment</dt>
-            <dd><span class="v2-breakdown__n">9,200</span><span class="v2-breakdown__p">7%</span></dd>
-          </div>
-        </dl>
-      </section>
-
-      <section class="th-tx ut-tx-main" aria-label="Transactions">
+      <section class="th-tx ut-tx-main">
+        <h1 class="th-tx__title">Transactions</h1>
         <div class="ut-tx-main__scroll">
         <div class="ut-tx-page">
         <div class="ut-tx-block">
@@ -252,13 +187,21 @@
     <script src="../shared/portal-shell/ai-panel.js"></script>
     <script>
       TruAIPanel.render(document.getElementById('ai-panel-mount'), {
-        greeting: { name: 'Welcome, Zoey.', date: 'September 30, 2026' },
-        headline: 'Ask TruAI',
-        suggestions: ['Verify business', 'Verify person', 'Where can I start?'],
-        placeholder: 'Ask questions or tell me what you’d like to do',
-        askbarText: 'Ask a question or tell me what you’d like to do'
+        title: 'TruAI',
+        contextPill: 'Transaction Agent',
+        headline: 'What would you like to investigate?',
+        suggestions: [
+          'Show failed verifications from the last 7 days',
+          'Find transactions requiring review',
+          'Explain a verification result'
+        ],
+        placeholder: 'Ask about transactions',
+        askbarText: 'Ask about transactions',
+        hasThread: true
       });
     </script>
+    <script src="../shared/portal-shell/ai-flows.js"></script>
+    <script src="js/chat.js"></script>
 
   </div>
 

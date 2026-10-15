@@ -911,24 +911,9 @@ body {
   display: inline-flex;
 }
 
-/* Row … menu — DropdownPanel + NavItem sm (Figma 318:49180) */
+/* Row … menu — wide enough for “Copy Transaction ID” */
 .ut-tx-row-menu__panel.tds-dropdown-panel {
-  min-width: 172px;
-}
-
-.ut-tx-row-menu__panel .tds-nav-item {
-  width: 100%;
-  min-width: 100%;
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-regular);
-  color: var(--text-default);
-}
-
-.ut-tx-row-menu__panel .tds-nav-item__label {
-  font-size: inherit;
-  line-height: inherit;
-  font-weight: inherit;
+  min-width: 220px;
 }
 
 .ut-tx-table .tds-data-table__actions-col {

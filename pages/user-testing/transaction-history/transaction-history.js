@@ -70,6 +70,8 @@
         "</button>" +
       "</div>" +
     "</div>";
+  var aiRowFilter = null;
+  var applyingAiView = false;
   var panelFilters = {
     outcomes: [],
     products: [],
@@ -387,10 +389,94 @@
         matchesDateFilter(item) &&
         matchesPanelFilters(item) &&
         matchesSearch(item) &&
-        matchesProductFilter(item)
+        matchesProductFilter(item) &&
+        (!aiRowFilter || aiRowFilter(item))
       );
     });
   }
+
+  function isUnsuccessful(item) {
+    var outcome = item.outcome || {};
+    if (outcome.tone === "negative") return true;
+    if (outcomeGroup(item) === "negative") return true;
+    return outcome.label === "Failed" || outcome.label === "Flagged";
+  }
+
+  function latestTransactionDay() {
+    var latest = "";
+    rows.forEach(function (item) {
+      var key = itemDateKey(item);
+      if (key && key > latest) latest = key;
+    });
+    return latest;
+  }
+
+  function shiftIso(iso, days) {
+    var parts = iso.split("-");
+    var date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    date.setDate(date.getDate() + days);
+    return date.getFullYear() + "-" + pad2(date.getMonth() + 1) + "-" + pad2(date.getDate());
+  }
+
+  function writePickerPart(part, iso) {
+    var range = document.getElementById("utTxDateWrap");
+    if (!range) return;
+    var root = range.querySelector('[data-date-picker-part="' + part + '"]');
+    if (!root) return;
+    var text = iso ? formatPickerDisplay(iso) : "mm/dd/yyyy";
+    root.querySelectorAll(".tds-date-picker__value").forEach(function (el) {
+      el.textContent = text;
+      el.classList.toggle("tds-date-picker__placeholder", !iso);
+    });
+  }
+
+  function snapshotRows(list) {
+    return list.map(function (item) {
+      return {
+        name: item.name,
+        outcome: (item.outcome && item.outcome.label) || "",
+        date: item.date,
+        product: item.product,
+        country: item.country
+      };
+    });
+  }
+
+  function showFailedLast7Days() {
+    var end = latestTransactionDay();
+    if (!end) return [];
+    var start = shiftIso(end, -6);
+    applyingAiView = true;
+    dateFilter.start = start;
+    dateFilter.end = end;
+    aiRowFilter = isUnsuccessful;
+    writePickerPart("start", start);
+    writePickerPart("end", end);
+    updateToolbarFilterChrome();
+    currentPage = 1;
+    render();
+    applyingAiView = false;
+    return snapshotRows(filteredRows());
+  }
+
+  function clearAiView() {
+    if (!aiRowFilter && !dateFilter.start) return;
+    applyingAiView = true;
+    aiRowFilter = null;
+    dateFilter.start = null;
+    dateFilter.end = null;
+    writePickerPart("start", null);
+    writePickerPart("end", null);
+    updateToolbarFilterChrome();
+    currentPage = 1;
+    render();
+    applyingAiView = false;
+  }
+
+  window.UTTransactions = {
+    showFailedLast7Days: showFailedLast7Days,
+    clearAiView: clearAiView
+  };
 
   function pageCount(total) {
     if (!total) return 1;
@@ -678,6 +764,7 @@
   }
 
   function resetDateFilter(event) {
+    aiRowFilter = null;
     if (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -798,6 +885,7 @@
   }
 
   function resetToolbarFilters() {
+    aiRowFilter = null;
     var input = document.getElementById("utTxSearch");
     var select = document.getElementById("utTxProduct");
     if (input) input.value = "";
@@ -1184,15 +1272,15 @@
   }
 
   function actionsHtml(item) {
-    /* Figma 318:49180 — DropdownPanel + NavItem sm (body/sm 14/18 regular) */
+    /* Button menu — DropdownPanel + ActionList.Item (Figma 832:13390) */
     var menuItems =
-      '<button type="button" class="tds-nav-item tds-nav-item--sm ut-tx-menu-copy" role="menuitem" data-trid="' +
+      '<button type="button" class="tds-action-list-item ut-tx-menu-copy" role="menuitem" data-trid="' +
       escapeHtml(item.trid || "") +
       '"' +
-      (item.trid ? "" : " disabled") +
-      '><span class="tds-nav-item__label">Copy Transaction ID</span></button>' +
-      '<button type="button" class="tds-nav-item tds-nav-item--sm ut-tx-menu-download" role="menuitem">' +
-      '<span class="tds-nav-item__label">Download Transaction</span></button>';
+      (item.trid ? "" : ' disabled') +
+      '><span class="tds-action-list-item__label">Copy Transaction ID</span></button>' +
+      '<button type="button" class="tds-action-list-item ut-tx-menu-download" role="menuitem">' +
+      '<span class="tds-action-list-item__label">Download Transaction</span></button>';
 
     var copyIconBtn = "";
     if (settings.transactionId === "copy-icon" && item.trid) {
@@ -1250,14 +1338,17 @@
       '">' +
       outcomeHtml(item) +
       "</td>" +
-      "<td>" +
-      dateHtml(item) +
-      "</td>" +
-      "<td>" +
       (window.UT_TX_PLAIN_TABLE
-        ? highlightMatch(item.product)
-        : '<span class="ut-product-tag">' + highlightMatch(item.product) + "</span>") +
-      "</td>" +
+        ? "<td>" +
+          highlightMatch(item.product) +
+          "</td><td>" +
+          dateHtml(item) +
+          "</td>"
+        : "<td>" +
+          dateHtml(item) +
+          '</td><td><span class="ut-product-tag">' +
+          highlightMatch(item.product) +
+          "</span></td>") +
       '<td class="ut-tx-td-country">' +
       countryHtml(item) +
       "</td>";
@@ -1315,8 +1406,9 @@
 
     html +=
       sortTh("Outcome") +
-      sortTh("Date (UTC)") +
-      sortTh("Product") +
+      (window.UT_TX_PLAIN_TABLE
+        ? sortTh("Product") + sortTh("Date (UTC)")
+        : sortTh("Date (UTC)") + sortTh("Product")) +
       sortTh("Country", "ut-tx-th-country");
 
     if (showScoreColumn()) {
@@ -1342,8 +1434,9 @@
     var html =
       '<col class="ut-tx-col-name">' +
       '<col class="ut-tx-col-outcome">' +
-      '<col class="ut-tx-col-date">' +
-      '<col class="ut-tx-col-product">' +
+      (window.UT_TX_PLAIN_TABLE
+        ? '<col class="ut-tx-col-product"><col class="ut-tx-col-date">'
+        : '<col class="ut-tx-col-date"><col class="ut-tx-col-product">') +
       '<col class="ut-tx-col-country">';
     if (showScoreColumn()) html += '<col class="ut-tx-col-score">';
     html +=
@@ -1450,8 +1543,17 @@
     }
   }
 
+  function collapseTruAI() {
+    var shell = document.querySelector(".v2-shell");
+    var closeBtn = document.getElementById("v2-close");
+    if (!shell || !closeBtn) return;
+    if (shell.getAttribute("data-truai") !== "open") return;
+    closeBtn.click();
+  }
+
   function openFilters() {
     closeSettings(true);
+    collapseTruAI();
     var panel = document.getElementById("utTxFilters");
     var btn = document.getElementById("utTxFilterBtn");
     if (!panel) return;
@@ -1496,6 +1598,13 @@
       });
     }
 
+    var askbar = document.getElementById("ai-askbar");
+    if (askbar) {
+      askbar.addEventListener("click", function () {
+        if (panel && !panel.hidden) closeFilters(true);
+      });
+    }
+
     if (panel) {
       panel.querySelectorAll(".ut-tx-filters__close").forEach(function (el) {
         el.addEventListener("click", function () {
@@ -1504,6 +1613,7 @@
       });
 
       panel.addEventListener("change", function () {
+        if (!applyingAiView) aiRowFilter = null;
         syncPanelFiltersFromDom();
         updateFilterChrome();
         render();
@@ -1602,6 +1712,7 @@
       var filtersPanel = document.getElementById("utTxFilters");
       if (filtersPanel && !filtersPanel.hidden) {
         e.preventDefault();
+        e.stopImmediatePropagation();
         closeFilters();
         return;
       }
