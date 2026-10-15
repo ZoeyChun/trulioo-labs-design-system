@@ -120,6 +120,18 @@
 }
 
 /* ------------------------------------------------------------------
+   Page header
+   ------------------------------------------------------------------ */
+
+.v2-page-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-xl);
+  color: var(--text-default);
+}
+
+/* ------------------------------------------------------------------
    Workspace header
    ------------------------------------------------------------------ */
 
@@ -483,15 +495,17 @@
    Entrance
    ------------------------------------------------------------------ */
 
+.v2-page-title,
 .v2-org,
 .v2-traffic,
 .th-tx {
   animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
 }
 
-.v2-org     { animation-delay: 40ms; }
-.v2-traffic { animation-delay: 90ms; }
-.th-tx      { animation-delay: 150ms; }
+.v2-page-title { animation-delay: 40ms; }
+.v2-org        { animation-delay: 90ms; }
+.v2-traffic    { animation-delay: 140ms; }
+.th-tx         { animation-delay: 200ms; }
 
 .v2-stack span {
   animation: v2-grow 420ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
@@ -505,6 +519,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .v2-rail > *,
+  .v2-page-title,
   .v2-org,
   .v2-traffic,
   .th-tx,

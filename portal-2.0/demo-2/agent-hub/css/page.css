@@ -122,8 +122,13 @@
   cursor: pointer;
 }
 
-/* This page scrolls once the viewport is short enough. */
-.v2-content { padding-bottom: var(--spacing-40); }
+/* This page scrolls once the viewport is short enough.
+   Section rhythm (intro → Featured → Demo Capabilities) is 40px —
+   wider than the shell's default 16px content gap. */
+.v2-content {
+  gap: var(--spacing-40);
+  padding-bottom: var(--spacing-40);
+}
 
 /* ------------------------------------------------------------------
    Intro
@@ -138,9 +143,9 @@
 
 .ah-intro__title {
   margin: 0;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
-  line-height: 28px;
+  line-height: var(--line-height-xl);
   color: var(--text-default);
 }
 

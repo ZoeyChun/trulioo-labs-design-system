@@ -10,6 +10,20 @@
    [data-truai] states — those belong to shared/portal-shell/.
    ============================================================ */
 
+/* Home has no breadcrumbs — keep the previous 64px top breathing room
+   while other pages stay at the shell's 24px. */
+.v2-content {
+  padding-top: var(--spacing-64);
+}
+
+@media (max-width: 1400px) {
+  .v2-content { padding-top: var(--spacing-64); }
+}
+
+@media (max-width: 860px) {
+  .v2-content { padding-top: var(--spacing-64); }
+}
+
 /* ------------------------------------------------------------------
    Side rail — 72px, right hairline
    ------------------------------------------------------------------ */
@@ -124,11 +138,10 @@
 
 .v2-greeting {
   margin: 0;
-  width: 300px;
   max-width: 100%;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
-  line-height: 28px;
+  line-height: var(--line-height-2xl);
   color: var(--text-default);
 }
 
@@ -149,7 +162,7 @@
   padding: var(--spacing-24);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
-  background: var(--surface-neutral-03);
+  background: var(--surface-neutral-01);
 }
 
 .v2-stat-strip__figures {

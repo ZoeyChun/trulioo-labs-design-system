@@ -500,9 +500,9 @@
 
 .ai-reply__lead {
   margin: 0;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);        /* text-heading-xs */
   font-weight: var(--font-weight-semibold);
-  line-height: 22px;
+  line-height: var(--line-height-sm);
   color: var(--text-default);
 }
 
@@ -574,6 +574,13 @@
 
 /* --- Narrowing chips (replaces the node's pagination) --- */
 
+.ai-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-8);
+  align-items: center;
+}
+
 .ai-chips { display: flex; flex-wrap: wrap; gap: var(--spacing-8); }
 
 .ai-chip {
@@ -601,6 +608,12 @@
 
 .ai-chip:hover { border-color: var(--border-strong); }
 .ai-chip:active { scale: 0.97; }
+
+.ai-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
 .ai-chip--on {
   border-color: transparent;
