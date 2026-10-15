@@ -293,78 +293,21 @@
 
 
     <!-- ▼▼▼ RIGHT — AI chat ▼▼▼  owner: shared/portal-2026/ai-panel.css -->
-    <div class="v2-panel-slot">
-      <aside class="ai-panel" id="ai-panel" aria-label="TruAI">
-
-        <div class="ai-panel__top">
-          <header class="ai-panel__head">
-            <h2 class="ai-panel__welcome ai-panel__welcome--plain">TruAI</h2>
-            <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--secondary" id="v2-close"
-                    aria-label="Close TruAI" aria-expanded="true" aria-controls="ai-panel">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.47 6.47a.75.75 0 0 1 1.06 0L12 10.94l4.47-4.47a.75.75 0 1 1 1.06 1.06L13.06 12l4.47 4.47a.75.75 0 1 1-1.06 1.06L12 13.06l-4.47 4.47a.75.75 0 0 1-1.06-1.06L10.94 12 6.47 7.53a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
-            </button>
-          </header>
-
-          <div class="ai-panel__hero">
-            <span class="ai-orb">
-              <img class="ai-orb__fill" src="../shared/portal-2026/assets/truai-orb.png" alt="" width="132" height="132">
-              <img class="ai-orb__mark" src="../shared/portal-2026/assets/logo-orb-mark.svg" alt="" width="69.3009" height="56.8531">
-            </span>
-            <p class="ai-wordmark">What would you like to accomplish?</p>
-          </div>
-        </div>
-
-        <div class="ai-suggestions">
-          <button type="button" class="ai-suggestion">
-            <span>Which agent can verify a business?</span>
-            <span class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
-            </span>
-          </button>
-          <button type="button" class="ai-suggestion">
-            <span>Help me investigate ownership</span>
-            <span class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
-            </span>
-          </button>
-          <button type="button" class="ai-suggestion">
-            <span>Explore available demo capabilities</span>
-            <span class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
-            </span>
-          </button>
-        </div>
-
-        <form class="ai-prompt" action="#" onsubmit="return false;">
-          <label class="v2-visually-hidden" for="v2-ask">Describe your task or ask about an agent</label>
-          <input id="v2-ask" class="ai-prompt__input" type="text"
-                 placeholder="Describe your task or ask about an agent" autocomplete="off">
-
-          <div class="ai-prompt__bar">
-            <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Add attachment">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4.75a.75.75 0 0 1 .75.75v5.75h5.75a.75.75 0 0 1 0 1.5h-5.75v5.75a.75.75 0 0 1-1.5 0v-5.75H5.5a.75.75 0 0 1 0-1.5h5.75V5.5a.75.75 0 0 1 .75-.75Z" fill="currentColor"/></svg>
-            </button>
-            <div class="ai-prompt__right">
-              <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Dictate">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.75A3.25 3.25 0 0 1 15.25 6v6a3.25 3.25 0 0 1-6.5 0V6A3.25 3.25 0 0 1 12 2.75Zm0 1.5A1.75 1.75 0 0 0 10.25 6v6a1.75 1.75 0 0 0 3.5 0V6A1.75 1.75 0 0 0 12 4.25ZM6.25 11.25a.75.75 0 0 1 .75.75 5 5 0 0 0 10 0 .75.75 0 0 1 1.5 0 6.5 6.5 0 0 1-5.75 6.46v2.04h2.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1 0-1.5h2.5v-2.04A6.5 6.5 0 0 1 5.5 12a.75.75 0 0 1 .75-.75Z" fill="currentColor"/></svg>
-              </button>
-              <button type="submit" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--circular ai-send" aria-label="Send">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19.25a.75.75 0 0 1-.75-.75V7.31L6.78 11.78a.75.75 0 0 1-1.06-1.06l5.75-5.75a.75.75 0 0 1 1.06 0l5.75 5.75a.75.75 0 1 1-1.06 1.06L12.75 7.31V18.5a.75.75 0 0 1-.75.75Z" fill="currentColor"/></svg>
-              </button>
-            </div>
-          </div>
-        </form>
-      </aside>
-    </div>
-
-    <!-- Collapsed state — still the RIGHT side's markup. -->
-    <button type="button" class="ai-askbar" id="ai-askbar"
-            aria-controls="ai-panel" aria-expanded="true" tabindex="-1">
-      <span class="ai-askbar__text">Describe your task or ask about an agent</span>
-      <span class="ai-askbar__send" aria-hidden="true">
-        <img src="../shared/portal-2026/assets/ask-arrow.svg" alt="" width="12" height="12">
-      </span>
-    </button>
+    <div id="ai-panel-mount"></div>
+    <script src="../shared/portal-2026/ai-panel.js"></script>
+    <script>
+      TruAIPanel.render(document.getElementById('ai-panel-mount'), {
+        title: 'TruAI',
+        headline: 'What would you like to accomplish?',
+        suggestions: [
+          'Which agent can verify a business?',
+          'Help me investigate ownership',
+          'Explore available demo capabilities'
+        ],
+        placeholder: 'Describe your task or ask about an agent',
+        askbarText: 'Describe your task or ask about an agent'
+      });
+    </script>
     <!-- ▲▲▲ RIGHT ends ▲▲▲ -->
   </div>
 </div>
