@@ -128,13 +128,13 @@
   overflow: hidden;
 }
 
-/* Same title as Verify a business — 18/26 semibold, 24px above the controls. */
+/* Match Agent Hub / page headers — xl (20px) semibold. */
 .th-tx__title {
   margin: 0 0 var(--spacing-24);
   flex: 0 0 auto;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
-  line-height: 26px;
+  line-height: var(--line-height-xl);
   color: var(--text-default);
 }
 

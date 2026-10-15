@@ -26,7 +26,11 @@
                                                           // reserves #ai-thread for
                                                           // js/kyb-search.js to render into
 
-         suggestions: ['Where can I start?', 'Verify business', 'Verify person'],
+         suggestions: [
+           { title: 'Where can I start?', description: 'Pick a task and I’ll guide the next step' },
+           { title: 'Verify business', description: 'Run a KYB check on a legal entity' },
+           { title: 'Verify person', description: 'Start a person verification flow' }
+         ],
 
          placeholder: 'Ask questions or tell me what you’d like to do',
          askbarText:  'Ask a question or tell me what you’d like to do'
@@ -115,12 +119,30 @@
     );
   }
 
+  function normalizeSuggestion(item) {
+    if (item && typeof item === 'object') {
+      return {
+        title: item.title || item.label || '',
+        description: item.description || item.desc || ''
+      };
+    }
+    return { title: String(item || ''), description: '' };
+  }
+
+  /* Capability-explorer cards: title + one-line outcome + Try.
+     Accepts strings (title only) or { title, description }. */
   function renderSuggestions(cfg) {
-    var items = (cfg.suggestions || []).map(function (label) {
+    var items = (cfg.suggestions || []).map(function (raw) {
+      var item = normalizeSuggestion(raw);
       return (
         '<button type="button" class="ai-suggestion">' +
-          '<span>' + esc(label) + '</span>' +
-          '<span class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-hidden="true">' +
+          '<span class="ai-suggestion__body">' +
+            '<span class="ai-suggestion__title">' + esc(item.title) + '</span>' +
+            (item.description
+              ? '<span class="ai-suggestion__desc">' + esc(item.description) + '</span>'
+              : '') +
+          '</span>' +
+          '<span class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular ai-suggestion__go" aria-hidden="true">' +
             ICON_ARROW_RIGHT +
           '</span>' +
         '</button>'

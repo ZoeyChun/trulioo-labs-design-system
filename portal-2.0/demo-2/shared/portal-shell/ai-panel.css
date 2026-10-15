@@ -160,16 +160,77 @@
   color: var(--text-default);
 }
 
-/* --- Suggestions --- */
+/* --- Suggestions (capability-explorer cards) --- */
 
 .ai-suggestions {
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-8);
   flex: 0 0 auto;
-  padding: var(--spacing-32) 0;
+  padding: var(--spacing-16) 0;
+  min-height: 0;
+  overflow-y: auto;
 }
 
-.ai-suggestion {
+.ai-suggestions .ai-suggestion {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+  width: 100%;
+  padding: var(--spacing-12) var(--spacing-16);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  font-family: inherit;
+  text-align: left;
+  color: var(--text-default);
+  background: var(--surface-neutral-01);
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, scale 120ms ease-out;
+}
+
+.ai-suggestions .ai-suggestion:hover {
+  border-color: var(--border-focus);
+  background: var(--surface-neutral-02);
+}
+
+.ai-suggestions .ai-suggestion:active { scale: 0.99; }
+
+.ai-suggestion__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.ai-suggestion__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+}
+
+.ai-suggestion__desc {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.ai-suggestion__go {
+  flex: 0 0 auto;
+  margin-top: -2px;
+  color: var(--icon-faint);
+  pointer-events: none;
+}
+
+.ai-suggestions .ai-suggestion:hover .ai-suggestion__go {
+  color: var(--interactive-default);
+}
+
+/* In-thread follow-ups keep the compact row treatment. */
+.ai-followups .ai-suggestion {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -178,6 +239,7 @@
   padding: 0;
   border: 0;
   border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
   font-family: inherit;
   font-size: var(--font-size-sm);
   line-height: 22px;
@@ -188,13 +250,10 @@
   transition: color 140ms ease, background-color 140ms ease;
 }
 
-.ai-suggestion > span:first-child { padding: var(--spacing-12) 0; }
-.ai-suggestion:hover { color: var(--interactive-default); }
-
-/* A full-width row flush against its neighbours — scale would gap it
-   against the border above/below, so press feedback is a tint instead. */
-.ai-suggestion:active { background: var(--surface-neutral-02); }
-.ai-suggestion:hover .tds-icon-btn { color: var(--interactive-default); }
+.ai-followups .ai-suggestion > span:first-child { padding: var(--spacing-12) 0; }
+.ai-followups .ai-suggestion:hover { color: var(--interactive-default); }
+.ai-followups .ai-suggestion:active { background: var(--surface-neutral-02); }
+.ai-followups .ai-suggestion:hover .tds-icon-btn { color: var(--interactive-default); }
 
 /* --- Icon buttons — shipped tds-icon-btn, sized sm (28px) as the node --- */
 
@@ -371,7 +430,8 @@
   max-width: calc(100% - 2 * var(--spacing-40));
   height: 56px;
   padding: 0 var(--spacing-16);
-  border: 1px solid var(--border-subtle);
+  /* Same teal stroke as the expanded composer (.ai-prompt:focus-within). */
+  border: 1px solid var(--border-focus);
   border-radius: var(--radius-xl);
   background: var(--surface-neutral-01);
   font-family: inherit;
@@ -420,10 +480,8 @@
   outline-offset: 2px;
 }
 
-}
-
-
-.ai-suggestion:focus-visible {
+.ai-suggestions .ai-suggestion:focus-visible,
+.ai-followups .ai-suggestion:focus-visible {
   outline: 2px solid var(--border-focus);
   outline-offset: 2px;
 }

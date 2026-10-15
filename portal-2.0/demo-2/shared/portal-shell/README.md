@@ -46,7 +46,10 @@ Put this where the panel belongs — inside `.v2-stage`, after your page's
     // hasThread: true,   // verify-business only — reserves #ai-thread for
                            // your own JS to render a conversation into
 
-    suggestions: ['Where can I start?', 'Verify business', 'Verify person'],
+    suggestions: [
+      { title: 'Where can I start?', description: 'Pick a task and I’ll guide the next step' },
+      { title: 'Verify business', description: 'Run a KYB check on a legal entity' }
+    ],
 
     placeholder: 'Ask questions or tell me what you’d like to do',
     askbarText:  'Ask a question or tell me what you’d like to do'

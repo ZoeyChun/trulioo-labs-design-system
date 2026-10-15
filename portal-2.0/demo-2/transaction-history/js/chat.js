@@ -18,13 +18,13 @@
   var buttons = suggestions.querySelectorAll(".ai-suggestion");
   var originals = [];
   Array.prototype.forEach.call(buttons, function (btn) {
-    var label = btn.querySelector("span");
-    originals.push(label ? label.textContent : "");
+    var label = btn.querySelector(".ai-suggestion__title") || btn.querySelector("span");
+    originals.push(label ? label.textContent.trim() : "");
   });
 
   function setLabels(labels) {
     Array.prototype.forEach.call(buttons, function (btn, i) {
-      var label = btn.querySelector("span");
+      var label = btn.querySelector(".ai-suggestion__title") || btn.querySelector("span");
       if (label && labels[i]) label.textContent = labels[i];
     });
   }
@@ -102,8 +102,8 @@
   if (!buttons[0]) return;
 
   buttons[0].addEventListener("click", function () {
-    var label = buttons[0].querySelector("span");
-    if (!label || label.textContent !== PROMPT) return;
+    var label = buttons[0].querySelector(".ai-suggestion__title") || buttons[0].querySelector("span");
+    if (!label || label.textContent.trim() !== PROMPT) return;
     if (!window.UTTransactions) return;
 
     var matches = window.UTTransactions.showFailedLast7Days();
