@@ -49,6 +49,8 @@
 
   var ICON_CLOSE =
     '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.47 6.47a.75.75 0 0 1 1.06 0L12 10.94l4.47-4.47a.75.75 0 1 1 1.06 1.06L13.06 12l4.47 4.47a.75.75 0 1 1-1.06 1.06L12 13.06l-4.47 4.47a.75.75 0 0 1-1.06-1.06L10.94 12 6.47 7.53a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>';
+  var ICON_BACK =
+    '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.53 4.72a.75.75 0 0 1 0 1.06L6.31 11h14.44a.75.75 0 0 1 0 1.5H6.31l5.22 5.22a.75.75 0 1 1-1.06 1.06l-6.5-6.5a.75.75 0 0 1 0-1.06l6.5-6.5a.75.75 0 0 1 1.06 0Z" fill="currentColor"/></svg>';
   var ICON_ARROW_RIGHT =
     '<svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>';
   var ICON_ATTACH =
@@ -58,7 +60,7 @@
   var ICON_SEND =
     '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19.25a.75.75 0 0 1-.75-.75V7.31L6.78 11.78a.75.75 0 0 1-1.06-1.06l5.75-5.75a.75.75 0 0 1 1.06 0l5.75 5.75a.75.75 0 1 1-1.06 1.06L12.75 7.31V18.5a.75.75 0 0 1-.75.75Z" fill="currentColor"/></svg>';
 
-  function renderHeader(cfg) {
+  function renderHeader(cfg, assets) {
     var titleHtml = cfg.greeting
       ? '<div class="ai-panel__greeting">' +
           '<h2 class="ai-panel__welcome">' + esc(cfg.greeting.name) + '</h2>' +
@@ -66,9 +68,31 @@
         '</div>'
       : '<h2 class="ai-panel__welcome ai-panel__welcome--plain">' + esc(cfg.title || 'TruAI') + '</h2>';
 
+    /* Lives next to the title rather than under the orb (Figma node
+       1121:51294) so the agent context stays visible once a conversation
+       starts and the hero (orb + headline) hides — the pill shouldn't
+       disappear along with it. */
+    var pillHtml = cfg.contextPill
+      ? '<span class="tds-tag tds-tag--sm ai-context">' +
+          '<span class="tds-tag__leading-visual ai-context__dot">' +
+            '<img src="' + assets + '/env-dot.svg" alt="" width="8" height="8">' +
+          '</span>' +
+          esc(cfg.contextPill) +
+        '</span>'
+      : '';
+
     return (
       '<header class="ai-panel__head">' +
-        titleHtml +
+        '<div class="ai-panel__head-left">' +
+          /* Hidden until a flow pushes a step onto its history — see
+             TruAIFlows.pushHistory() / goBack() in ai-flows.js. */
+          '<button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--secondary" id="ai-back" ' +
+                  'aria-label="Back" hidden>' +
+            ICON_BACK +
+          '</button>' +
+          titleHtml +
+          pillHtml +
+        '</div>' +
         '<button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--secondary" id="v2-close" ' +
                 'aria-label="Close TruAI" aria-expanded="true" aria-controls="ai-panel">' +
           ICON_CLOSE +
@@ -78,17 +102,7 @@
   }
 
   function renderHero(cfg, assets) {
-    var intro = cfg.contextPill
-      ? '<div class="ai-panel__intro">' +
-          '<span class="tds-tag tds-tag--sm ai-context">' +
-            '<span class="tds-tag__leading-visual ai-context__dot">' +
-              '<img src="' + assets + '/env-dot.svg" alt="" width="8" height="8">' +
-            '</span>' +
-            esc(cfg.contextPill) +
-          '</span>' +
-          '<p class="ai-wordmark">' + cfg.headline + '</p>' +
-        '</div>'
-      : '<p class="ai-wordmark">' + cfg.headline + '</p>';
+    var intro = '<p class="ai-wordmark">' + cfg.headline + '</p>';
 
     return (
       '<div class="ai-panel__hero">' +
@@ -150,7 +164,7 @@
       '<div class="v2-panel-slot">' +
         '<aside class="ai-panel" id="ai-panel" aria-label="TruAI">' +
           '<div class="ai-panel__top">' +
-            renderHeader(cfg) +
+            renderHeader(cfg, assets) +
             renderHero(cfg, assets) +
           '</div>' +
           thread +

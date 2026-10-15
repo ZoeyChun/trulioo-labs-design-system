@@ -470,8 +470,23 @@
   function confirmInvestigate(c) {
     focus(c.id);
     scrollToCard(c.id);
+    var said = '<p class="ai-said">' + esc(c.name) + '</p>';
+
+    if (window.TruAIFlows) {
+      window.TruAIFlows.pushHistory(function () {
+        focus(null);
+        render();
+      });
+      window.TruAIFlows.respondAfterThinking(dom.thread, said,
+        'Looking up ' + c.name + '…', function () { showConfirmStep(c, said); });
+    } else {
+      showConfirmStep(c, said);
+    }
+  }
+
+  function showConfirmStep(c, said) {
     dom.thread.innerHTML =
-      '<p class="ai-said">' + esc(c.name) + '</p>' +
+      said +
       '<div class="ai-reply">' +
         '<p class="ai-reply__lead">Run a KYB check on ' + esc(c.name) + '?</p>' +
         '<p class="ai-reply__sub">' + esc(c.country) + ' · ' + esc(c.reg) + '</p>' +
@@ -480,17 +495,31 @@
         '<button type="button" class="ai-chip" data-confirm="yes">Confirm</button>' +
         '<button type="button" class="ai-chip" data-confirm="no">Cancel</button>' +
       '</div>';
+    dom.thread.scrollTop = dom.thread.scrollHeight;
 
     dom.thread.querySelector('[data-confirm="yes"]').addEventListener('click', function () {
       investigate(c);
     });
     dom.thread.querySelector('[data-confirm="no"]').addEventListener('click', function () {
-      focus(null);
-      render();
+      /* Cancelling and going back land on the same place (the candidate
+         list), so cancel just replays the back history entry pushed by
+         confirmInvestigate() above rather than duplicating that logic. */
+      if (window.TruAIFlows) window.TruAIFlows.goBack();
+      else { focus(null); render(); }
     });
   }
 
   function investigate(c) {
+    if (window.TruAIFlows) {
+      window.TruAIFlows.pushHistory(function () {
+        if (runTimer) { window.clearTimeout(runTimer); runTimer = null; }
+        document.body.classList.remove('vb-loading', 'vb-report-ready');
+        dom.report.hidden = true;
+        dom.report.innerHTML = '';
+        confirmInvestigate(c);
+      });
+    }
+
     document.body.classList.add('vb-loading');
     document.body.classList.remove('vb-report-ready');
     dom.report.hidden = false;
@@ -519,11 +548,30 @@
     document.body.classList.add('vb-report-ready');
     dom.report.innerHTML = reportShell(c, false);
     dom.thread.innerHTML = panelReport(c);
+    /* No new history push here — investigate() already pushed one "back to
+       confirm" entry for the whole run, and it's still correct once the
+       report is showing: the user picked this entity, confirmed, and now
+       back should undo the confirm, not the cancelled run. */
   }
 
   /* ---------- flow --------------------------------------------------- */
 
   var pageHideTimer = null;
+
+  /* Tracks whether this session arrived via the prompt (home's "Start a
+     new verification" → Business), so start() knows whether "back" from
+     the candidate list should land on that prompt or on a plain reset —
+     otherwise two different steps would both push "reset" and the first
+     one's distinct state would be skipped on the way back. */
+  var arrivedViaPrompt = false;
+
+  function renderPromptState() {
+    if (dom.suggestions) dom.suggestions.hidden = true;
+    dom.thread.hidden = false;
+    dom.thread.innerHTML =
+      '<p class="ai-said">Business</p>' +
+      '<div class="ai-reply"><p class="ai-reply__lead">What’s the business name?</p></div>';
+  }
 
   /* Arriving here from the home page's "Start a new verification" →
      Business choice: the panel already asked the question and got an
@@ -535,35 +583,53 @@
     if (!state || state.flow !== 'new-verification' || state.step !== 'ask-name') return;
     window.TruAIFlows.clearFlow();
 
-    if (dom.suggestions) dom.suggestions.hidden = true;
-    dom.thread.hidden = false;
-    dom.thread.innerHTML =
-      '<p class="ai-said">Business</p>' +
-      '<div class="ai-reply"><p class="ai-reply__lead">What’s the business name?</p></div>';
+    arrivedViaPrompt = true;
+    renderPromptState();
+    window.TruAIFlows.pushHistory(function () { reset(); });
 
     var panelField = document.getElementById('v2-ask');
     if (panelField) panelField.focus();
   }
 
   function start() {
-    document.body.classList.add('vb-searching');
-    if (pageHideTimer) window.clearTimeout(pageHideTimer);
-    pageHideTimer = window.setTimeout(function () {
-      if (dom.page) dom.page.hidden = true;
-    }, 220);
-    dom.globe.setAttribute('aria-hidden', 'false');
+    var panelField = document.getElementById('v2-ask');
+    var pageField = document.getElementById('vb-q');
+    var query = ((panelField && panelField.value) || (pageField && pageField.value) || '').trim();
+
     dom.thread.hidden = false;
     if (dom.suggestions) dom.suggestions.hidden = true;
 
-    render();
-    drawPins(CANDIDATES);
-    /* Open on the whole world, then settle onto the matches a beat later —
-       the zoom is the point, so it needs somewhere to zoom from. */
-    dom.frame.style.setProperty('--vb-zoom', '1');
-    dom.frame.style.setProperty('--vb-ox', '0%');
-    dom.frame.style.setProperty('--vb-oy', '0%');
-    updateCaption();
-    window.setTimeout(function () { frameMap(CANDIDATES); }, 520);
+    function reveal() {
+      document.body.classList.add('vb-searching');
+      if (pageHideTimer) window.clearTimeout(pageHideTimer);
+      pageHideTimer = window.setTimeout(function () {
+        if (dom.page) dom.page.hidden = true;
+      }, 220);
+      dom.globe.setAttribute('aria-hidden', 'false');
+
+      render();
+      drawPins(CANDIDATES);
+      /* Open on the whole world, then settle onto the matches a beat later —
+         the zoom is the point, so it needs somewhere to zoom from. */
+      dom.frame.style.setProperty('--vb-zoom', '1');
+      dom.frame.style.setProperty('--vb-ox', '0%');
+      dom.frame.style.setProperty('--vb-oy', '0%');
+      updateCaption();
+      window.setTimeout(function () { frameMap(CANDIDATES); }, 520);
+    }
+
+    /* The left workspace (search form, no map yet) stays put until a
+       result exists to show — the map appearing is the answer arriving,
+       not a loading indicator for it. */
+    if (window.TruAIFlows) {
+      window.TruAIFlows.pushHistory(
+        arrivedViaPrompt ? renderPromptState : function () { reset(); });
+      window.TruAIFlows.respondAfterThinking(dom.thread,
+        '<p class="ai-said">' + esc(query) + '</p>',
+        'Searching business registries for matches…', reveal);
+    } else {
+      reveal();
+    }
   }
 
   function reset() {
@@ -611,6 +677,7 @@
       if (e.key === 'Escape' && document.body.classList.contains('vb-searching')) reset();
     });
 
+    if (window.TruAIFlows) window.TruAIFlows.initBackButton();
     consumeIncomingFlow();
 
     /* Exposed so a demo script — or a test — can drive the flow without

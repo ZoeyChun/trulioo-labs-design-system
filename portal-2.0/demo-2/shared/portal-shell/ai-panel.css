@@ -62,6 +62,18 @@
   gap: var(--spacing-16);
 }
 
+.ai-panel__head-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+/* The shipped .tds-icon-btn sets its own `display`, which beats the UA
+   [hidden] rule (author styles always win over the user-agent sheet) —
+   without this #ai-back shows up on the very first screen of every
+   page, before any flow has pushed a step worth going back to. */
+#ai-back[hidden] { display: none; }
+
 .ai-panel__greeting {
   display: flex;
   flex-direction: column;
@@ -202,6 +214,11 @@
 .ai-prompt {
   display: flex;
   flex-direction: column;
+  /* The input sizes to its own line-height and the icon row sizes to its
+     own content; space-between holds the input at the top (16px padding,
+     nothing stretching it) and the icons at the bottom, instead of both
+     splitting a flex:1 input and the placeholder centering mid-box. */
+  justify-content: space-between;
   gap: var(--spacing-8);
   flex: 0 0 auto;
   height: 120px;
@@ -215,7 +232,8 @@
 .ai-prompt:focus-within { border-color: var(--border-focus); }
 
 .ai-prompt__input {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  width: 100%;
   min-width: 0;
   padding: 0;
   border: 0;
@@ -224,7 +242,6 @@
   line-height: 18px;
   color: var(--text-default);
   background: transparent;
-  align-self: stretch;
 }
 
 .ai-prompt__input::placeholder { color: var(--color-neutral-50); }
@@ -412,17 +429,12 @@
 }
 
 /* ------------------------------------------------------------------
-   Context variant — used when the panel is scoped to one task rather
-   than the whole portal (node 1015:92403). The pill names the task and
-   the wordmark becomes a sentence about it.
+   Context pill — used when the panel is scoped to one task rather than
+   the whole portal (node 1121:51294). Sits in the header next to the
+   title, not under the orb: the hero (orb + headline) hides once a
+   conversation starts (see the :has() rule below), but the agent
+   context shouldn't disappear along with it.
    ------------------------------------------------------------------ */
-
-.ai-panel__intro {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-12);
-}
 
 .ai-context {
   background-color: var(--surface-neutral-02);
@@ -499,6 +511,65 @@
   font-size: var(--font-size-sm);
   line-height: 22px;
   color: var(--text-description);
+}
+
+/* --- Thinking — a brief beat between a user's choice and TruAI's next
+   reply, so a step change reads as "working on it" rather than a jump
+   cut.
+
+   This is a direct port of the Loader experiment's "Logo / Pulse" combo
+   (portal-2.0/Misc/Loader, LogoMark's motion === 'pulse' branch — see
+   src/app/experiments/orbs/logo-mark.tsx), not an approximation: each of
+   the Trulioo mark's 37 dots keeps its fixed position and independently
+   pulses opacity + size, phase-shifted by its angle around the mark's
+   centre (ang * 1.15 rad) against a shared 2.4 rad/s sweep. The result is
+   a wave that visibly travels around the ring rather than the whole mark
+   breathing in sync — ported here as one shared keyframe with a negative
+   per-dot animation-delay computed from that same angle, since CSS can't
+   run the original's per-frame trig directly. One full lap is ~2.6s, so
+   the 500ms thinking beat only ever shows a slice of it; see THINK_MS in
+   ai-flows.js for the "let it play once" minimum. --- */
+
+.ai-thinking {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  padding: var(--spacing-8) 0;
+  color: var(--text-description);
+}
+
+.ai-thinking__orb {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 28px; height: 28px;
+  color: var(--interactive-default);
+}
+
+.ai-thinking__svg {
+  width: 26px;
+  height: calc(26px * 40 / 48.759);
+  overflow: visible;
+}
+
+.ai-thinking__svg circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ai-dot-pulse 2.618s ease-in-out infinite;
+}
+
+@keyframes ai-dot-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.55); }
+  50%      { opacity: 1;    transform: scale(1.45); }
+}
+
+.ai-thinking__text {
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-thinking__svg circle { animation: none; opacity: 0.8; transform: scale(1); }
 }
 
 /* --- Narrowing chips (replaces the node's pagination) --- */
