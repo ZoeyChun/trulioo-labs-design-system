@@ -1,27 +1,75 @@
-# Portal 2026 — working agreement
+# Portal shell + TruAI panel — working agreement
 
 Shared shell and TruAI panel for the 2026 portal pages, built from Figma
 [`Portal-2.0-Design---2026`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/).
 
-Split so two people can work at once: one on page content, one on the AI panel.
-
 ```
-pages/shared/portal-shell/
-├── shell.css        THE CONTRACT — layout, panel slot, open/closed state
-├── ai-panel.css     RIGHT  — AI chat panel        prefix: ai-
-├── ai-toggle.js     RIGHT  — open/close behaviour
-└── assets/          orb, logo mark, ask arrow, env dot
-
-pages/home/
-├── index.html       section banners mark the left/right boundary
-└── css/page.css     LEFT   — home content         prefix: v2-
-
-pages/verify-business/
-├── index.html
-└── css/page.css     LEFT   — this page's content  prefix: vb-
+portal-2.0/demo-2/
+├── shared/portal-shell/
+│   ├── shell.css        THE CONTRACT — layout, panel slot, open/closed state
+│   ├── ai-panel.css     RIGHT  — AI chat panel look        prefix: ai-
+│   ├── ai-panel.js      RIGHT  — AI chat panel STRUCTURE   TruAIPanel.render()
+│   ├── ai-toggle.js     RIGHT  — open/close behaviour
+│   └── assets/          orb, logo mark, ask arrow, env dot, world map, …
+├── home/                index.html + css/page.css          prefix: v2-
+├── verify-business/     index.html + css/page.css + js/    prefix: vb-
+├── agent-hub/           index.html + css/page.css          prefix: ah-
+└── transaction-history/ index.html + css/page.css
 ```
 
-Each page links three stylesheets, **in this order** — the cascade depends on it:
+## The AI panel is structure-locked, not copy-pasted
+
+Every page used to hand-copy the panel's ~100 lines of HTML (header, orb,
+suggestions, prompt form, collapsed askbar). That copy drifting between pages
+is exactly how two real bugs happened: verify-business and agent-hub shipped
+with mismatched element ids that silently broke open/close, and
+transaction-history kept an older header pattern after the other three pages
+moved on. **You no longer write or edit that markup.** `ai-panel.js` owns it;
+a page supplies a mount point and a config object.
+
+### Adding the panel to a page
+
+Put this where the panel belongs — inside `.v2-stage`, after your page's
+`<main>` — then load `ai-toggle.js` last:
+
+```html
+<div id="ai-panel-mount"></div>
+<script src="../shared/portal-shell/ai-panel.js"></script>
+<script>
+  TruAIPanel.render(document.getElementById('ai-panel-mount'), {
+    title: 'TruAI',                 // plain header (default) — pick ONE
+    // greeting: { name: 'Welcome, Zoey.', date: 'September 30, 2026' },
+
+    headline: 'What would you like to work on?',   // required
+    // contextPill: 'KYB Agent',                    // optional, shows under the orb
+
+    // hasThread: true,   // verify-business only — reserves #ai-thread for
+                           // your own JS to render a conversation into
+
+    suggestions: ['Where can I start?', 'Verify business', 'Verify person'],
+
+    placeholder: 'Ask questions or tell me what you’d like to do',
+    askbarText:  'Ask a question or tell me what you’d like to do'
+  });
+</script>
+<script src="../shared/portal-shell/ai-toggle.js"></script>
+```
+
+That's the whole instruction set for a new page: **don't write
+`<aside class="ai-panel">` by hand, don't invent ids, don't touch
+`ai-panel.css` or `ai-panel.js`.** If the panel needs to look or behave
+differently than the config allows, that's a conversation about extending
+`ai-panel.js`'s config shape — not a reason to copy the markup out and
+customize it locally.
+
+If your page drives its own flow inside the panel (like verify-business's
+search/disambiguation), set `hasThread: true` and look up `#ai-thread` /
+`#ai-suggestions` by id from your own script, same as today — the renderer
+still produces those ids, your script order just needs to come after the
+`TruAIPanel.render()` call (both tags are synchronous `<script>`s, so plain
+page order is enough; no `DOMContentLoaded` race).
+
+Each page links its stylesheets **in this order** — the cascade depends on it:
 
 ```html
 <link rel="stylesheet" href="../shared/portal-shell/shell.css">
@@ -37,41 +85,46 @@ preview iframes (see repo CLAUDE.md).
 | Area | Files | Prefix |
 |---|---|---|
 | **Shared contract** | `shell.css` | `v2-` |
-| **Right — AI panel** | `ai-panel.css`, `ai-toggle.js` | `ai-` |
-| **Left — page** | each page's `css/page.css` | `v2-` (home), `vb-` (verify-business) |
+| **AI panel — look** | `ai-panel.css` | `ai-` |
+| **AI panel — structure** | `ai-panel.js` | n/a (JS, not CSS) |
+| **AI panel — behaviour** | `ai-toggle.js` | n/a |
+| **Page content** | each page's `css/page.css` | `v2-` (home), `vb-` (verify-business), `ah-` (agent-hub) |
 
 A selector's prefix tells you who owns it. Editing an `ai-` rule from a page
-file, or a page rule from `ai-panel.css`, means it is in the wrong place.
+file, or a page rule from `ai-panel.css`, means it is in the wrong place. If
+you need the panel's markup to change, edit `ai-panel.js` — once, for every
+page at the same time — not the page you happen to be working on.
 
 ## The contract
 
-`shell.css` is the only place the two halves meet. It promises:
+`shell.css` is the only place the shell and the panel meet. It promises:
 
 | Promise | Meaning |
 |---|---|
-| `.v2-shell[data-truai="open" \| "closed"]` | State attribute. Both sides read it; only `ai-toggle.js` writes it. |
+| `.v2-shell[data-truai="open" \| "closed"]` | State attribute. Every page reads it; only `ai-toggle.js` writes it. |
 | `.v2-stage` | Positioning context. Reserves room for the panel with padding and recentres the column when closed. |
 | `.v2-content` | The left column's box. Width is decided here, not by its contents. |
 | `.v2-panel-slot` | A fixed `--v2-panel-w` box pinned right, absolutely positioned — it never participates in layout. |
 | `--v2-panel-w` / `--v2-panel-total` | The slot's width. Changing it moves both sides: contract change. |
 | `@keyframes v2-rise / fade / slide / bloom / halo / grow` | Shared entrance motion. Per-element delays live with the element. |
 
-**Neither side may restyle `.v2-stage`, `.v2-panel-slot`, or the `[data-truai]`
+**No page may restyle `.v2-stage`, `.v2-panel-slot`, or the `[data-truai]`
 rules.** Those are a contract change — agree first.
 
 Note the direction of the dependency: `shell.css` never names an `ai-` class.
-It sets state and geometry; `ai-panel.css` decides how the panel reacts. The AI
-side can change its internals without touching shared code.
+It sets state and geometry; `ai-panel.css`/`ai-panel.js` decide how the panel
+looks and is structured. The panel can change its internals without touching
+shared shell code, and vice versa.
 
 ## Rules of thumb
 
-**Left side** — everything inside `<main class="v2-content">`. Never assume a
+**Your page** — everything inside `<main class="v2-content">`. Never assume a
 pixel width; the column is sized by the shell and changes when the panel opens
 or closes. Do not reference `.ai-*` or `[data-truai]`.
 
-**Right side** — everything inside `.v2-panel-slot` or `.ai-askbar`. Fill the
-slot, never exceed it, manage your own internal scroll. Do not reference
-`.v2-content` or page widgets.
+**The panel** — everything inside `.v2-panel-slot` or `.ai-askbar`. If you're
+not editing `ai-panel.js`/`ai-panel.css` directly, you only ever touch this
+through the `TruAIPanel.render()` config.
 
 **Both** — motion lives in the file that owns the element it animates; only
 keyframes are shared. Every animation needs a `prefers-reduced-motion` branch
@@ -103,20 +156,15 @@ trailing-slash link is a broken link half the time.
 
 ## Known gaps
 
-- `Access risk` is spelled that way in Figma node 1015:92403; the earlier node
-  said `Assess risk`. Probably a typo — left as-is pending a decision.
-- "Verify a person" and "Access risk" cards on the home page have no
-  destination yet and point at `#`.
+- "Verify a person" and "Assess risk" cards have no destination yet and point
+  at `#`.
 - The TruAI orb is a Figma WebGPU shader. It cannot run in a static page, so
   `assets/truai-orb.png` is the node rendered at its natural 132px. There is no
   `@2x` — Figma will not upscale past the node's own size.
-- The traffic hero's 10% texture layer is the shader's mesh rebuilt as stacked
-  radial gradients, not the shader itself.
-- Some hero text sits one token darker than the node specifies, to clear WCAG AA
-  on the pale gradient. Marked at each occurrence in the home's `page.css`.
 - `.v2-content` hides its scrollbar. Scrolling works; the visual cue that there
   is more below the fold does not.
 - `verify-business/assets/map.png` is 410 kB straight from Figma — compress it
   before this goes anywhere real.
-- Search, tabs, Export and Bulk Upload on verify-business are presentational
-  only.
+- Search, tabs, and most of verify-business's report tabs (Ownership/UBO,
+  Web & Social Insights, Match Signals, Raw Data, Sources) are presentational
+  only — only Overview is wired to real content.
