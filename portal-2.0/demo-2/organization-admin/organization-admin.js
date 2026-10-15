@@ -207,6 +207,7 @@
     var nav = document.getElementById("sidenav");
     var button = document.getElementById("collapse-nav");
     var profile = document.getElementById("profile-button");
+    if (!nav || !button || !profile) return;
     nav.classList.toggle("tds-side-nav--collapsed", !expanded);
     button.setAttribute("aria-expanded", expanded ? "true" : "false");
     button.setAttribute("aria-label", expanded ? "Collapse sidebar" : "Expand sidebar");
@@ -249,9 +250,12 @@
   document.getElementById("tab-users").addEventListener("click", function () { setTab("users"); });
   document.getElementById("tab-invites").addEventListener("click", function () { setTab("invitations"); });
 
-  document.getElementById("collapse-nav").addEventListener("click", function () {
-    setNav(document.getElementById("sidenav").classList.contains("tds-side-nav--collapsed"));
-  });
+  var collapseNav = document.getElementById("collapse-nav");
+  if (collapseNav) {
+    collapseNav.addEventListener("click", function () {
+      setNav(document.getElementById("sidenav").classList.contains("tds-side-nav--collapsed"));
+    });
+  }
 
   document.getElementById("invite-open").addEventListener("click", function () {
     document.getElementById("invite-form").reset();

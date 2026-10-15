@@ -1,72 +1,190 @@
-/* Organization Admin — Portal 2.0
-   Shell, summary strip, table actions, dialogs, and snackbar.
-   Shared controls come from the design-system components. */
+/* ============================================================
+   ORGANIZATION ADMIN — page content (left column)
+   ============================================================
+   Same portal shell as transaction-history: 72px side rail, the
+   stage's own padding, and the TruAI panel on the right. The rail
+   block below is a verbatim copy of the one in
+   transaction-history/css/page.css — keep them in step.
+   Prefix: v2- (shell) / org- (this page)
+   Scope:  everything inside .v2-content (plus .v2-rail).
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: var(--surface-neutral-03);
-  color: var(--text-body);
-  font-family: var(--font-family);
-}
+   Do not style .v2-stage, .v2-panel-slot, .ai-*, or the
+   [data-truai] states — those belong to shared/portal-shell/.
+   ============================================================ */
 
-.org-shell {
+/* ------------------------------------------------------------------
+   Side rail — 72px, right hairline
+   ------------------------------------------------------------------ */
+
+.v2-rail {
   display: flex;
-  gap: 8px;
-  box-sizing: border-box;
-  min-height: 100vh;
-  padding: 8px;
+  flex: 0 0 72px;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 72px;
+  border-right: 1px solid var(--border-subtle);
 }
 
-.org-shell .tds-side-nav {
-  height: calc(100vh - 16px);
-  position: sticky;
-  top: 8px;
+.v2-rail__header {
+  display: flex;
+  justify-content: center;
+  padding: 20px var(--padding-lg) var(--padding-lg);
 }
 
-.org-main {
+.v2-rail__logo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--interactive-default);
+}
+
+.v2-rail__main {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  min-width: 0;
-  background: var(--surface-neutral-01);
-  border-radius: 16px;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-xl) var(--padding-lg);
 }
 
-.org-content {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 1296px;
-  margin: 0 auto;
-  padding: 56px 92px 48px;
+.v2-rail__item {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 140ms ease, background-color 140ms ease;
 }
+
+.v2-rail__item:hover {
+  color: var(--icon-default);
+  background: var(--surface-neutral-02);
+}
+
+.v2-rail__item[aria-current="page"],
+.v2-rail__item[aria-current="page"]:hover {
+  color: var(--icon-inverse);
+  background: var(--surface-inverse);
+}
+
+.v2-rail__item:focus-visible,
+.v2-rail__collapse button:focus-visible,
+.v2-rail__avatar:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.v2-rail__item svg { width: 16px; height: 16px; }
+
+.v2-rail__collapse {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md) var(--padding-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.v2-rail__collapse button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+}
+
+.v2-rail__collapse svg { width: 16px; height: 16px; }
+
+.v2-rail__user {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md);
+}
+
+.v2-rail__avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+  color: var(--text-inverse);
+  background: var(--interactive-default);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------
+   Page block — sits in the portal column, same as transaction-history
+
+   The column stays the viewport: .v2-content keeps the stage's own
+   24/40/40 padding, and the page scrolls inside .org-page rather than
+   stretching the stage.
+   ------------------------------------------------------------------ */
+
+.v2-shell .v2-content {
+  overflow: hidden;
+}
+
+.org-page {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+
+  /* Same hidden-scrollbar treatment as the shell column. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.org-page::-webkit-scrollbar { display: none; }
 
 .org-header {
   display: flex;
+  flex: 0 0 auto;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-16);
 }
 
 .org-title-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--spacing-16);
 }
 
+/* Match Transactions / Agent Hub page headers — xl (20px) semibold. */
 .org-title {
   margin: 0;
-  font-size: 20px;
-  line-height: 28px;
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
-  color: var(--text-body);
+  line-height: var(--line-height-xl);
+  color: var(--text-default);
 }
 
 .org-subtitle {
   margin: 4px 0 0;
   font-size: var(--font-size-sm);
-  line-height: 22px;
-  color: var(--text-description);
+  line-height: var(--line-height-lg);
+  color: var(--text-caption);
 }
 
 .org-invite .icon {
@@ -77,8 +195,9 @@ body {
 .org-stats {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  border: 1px solid var(--border-divider);
-  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
   overflow: hidden;
 }
 
@@ -86,37 +205,43 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 20px 24px 16px;
-  border-left: 1px solid var(--border-divider);
+  padding: var(--spacing-16);
+  border-left: 1px solid var(--border-subtle);
 }
 
 .org-stat:first-child {
   border-left: none;
 }
 
+/* Same label treatment as a data-table column header: 12px, medium,
+   uppercase, 0.5px tracking. */
 .org-stat__label {
   margin: 0;
   font-size: var(--font-size-xs);
-  line-height: 18px;
+  line-height: var(--line-height-xs);
   font-weight: var(--font-weight-figma);
   font-variation-settings: var(--font-variation-figma-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   color: var(--text-description);
 }
 
+/* One step below the h1 so the page title stays the largest type.
+   margin-top:auto pins every number to the bottom of its cell, so the
+   row of figures stays on one baseline when a label wraps to two lines. */
 .org-stat__value {
   margin: 0;
-  font-size: 24px;
-  line-height: 32px;
+  margin-top: auto;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-2xl);
   font-weight: var(--font-weight-semibold);
-  color: var(--text-body);
+  color: var(--text-default);
 }
 
-.org-tabs {
-  margin-top: 32px;
-}
-
+.org-tabs,
 .org-table {
-  margin-top: 32px;
+  flex: 0 0 auto;
+  margin-top: 0;
 }
 
 /* The data-table container sets display:flex, which overrides the
@@ -125,9 +250,47 @@ body {
   display: none;
 }
 
+/* Card treatment copied from .ut-tx-table-card on Transactions:
+   hairline border, 8px radius, neutral-01 ground. The row menus pop
+   out of the card, so overflow stays visible rather than clipped. */
+.org-table.tds-data-table-container {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--surface-neutral-01);
+}
+
 .org-table.tds-data-table-container,
 .org-table .tds-data-table__wrapper {
   overflow: visible;
+}
+
+/* Round the header tint back into the card corners now that the
+   container has a radius of its own. */
+.org-table .tds-data-table thead th:first-child {
+  border-top-left-radius: var(--radius-card);
+}
+
+.org-table .tds-data-table thead th:last-child {
+  border-top-right-radius: var(--radius-card);
+}
+
+/* Transactions rows are 40px with one line of text; these carry a name
+   over an email, so they stay on the data-table's 50px default density.
+   Padding, type, and the row divider are the same. */
+.org-data-table thead th,
+.org-data-table tbody td {
+  padding: var(--spacing-4) var(--spacing-8);
+}
+
+.org-data-table tbody td {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.org-data-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .org-admin fieldset {
@@ -158,13 +321,15 @@ body {
 
 .org-name__primary {
   font-size: var(--font-size-sm);
-  line-height: 22px;
-  color: var(--text-body);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
 }
 
 .org-name__secondary {
   font-size: var(--font-size-xs);
-  line-height: 18px;
+  line-height: var(--line-height-xs);
   color: var(--text-caption);
 }
 
@@ -478,11 +643,20 @@ body {
   display: none;
 }
 
-@media (max-width: 1100px) {
-  .org-content {
-    padding: 32px 24px 40px;
-  }
+/* ------------------------------------------------------------------
+   Entrance — same rise as the Transactions block
+   ------------------------------------------------------------------ */
 
+.org-page {
+  animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+  animation-delay: 40ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .org-page { animation: none; }
+}
+
+@media (max-width: 1100px) {
   .org-stats {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -493,16 +667,6 @@ body {
 }
 
 @media (max-width: 720px) {
-  .org-shell {
-    flex-direction: column;
-  }
-
-  .org-shell .tds-side-nav {
-    position: static;
-    height: auto;
-    width: 100%;
-  }
-
   .org-title-row,
   .org-field-row,
   .org-roles,

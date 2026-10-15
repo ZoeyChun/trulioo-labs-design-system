@@ -3,10 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Organization Admin — Trulioo</title>
+  <title>Organization admin — Trulioo Portal 2.0</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
   <link rel="stylesheet" href="../../../tokens/fonts.css">
   <link rel="stylesheet" href="../../../tokens/tokens.css">
+
+  <link rel="stylesheet" href="../../../pages/shared/tds-shared-atoms.css">
+
   <link rel="stylesheet" href="../../../Components/side-nav/side-nav.css">
   <link rel="stylesheet" href="../../../Components/button/button.css">
   <link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
@@ -24,112 +30,55 @@
   <link rel="stylesheet" href="../../../Components/checkbox/checkbox.css">
   <link rel="stylesheet" href="../../../Components/switch/switch.css">
   <link rel="stylesheet" href="../../../Components/radio-card/radio-card.css">
+  <link rel="stylesheet" href="../shared/portal-shell/shell.css">
   <link rel="stylesheet" href="organization-admin.css">
+  <link rel="stylesheet" href="../shared/portal-shell/ai-panel.css">
 </head>
 <body class="org-admin">
-<div class="org-shell">
-  <aside class="tds-side-nav tds-side-nav--collapsed" id="sidenav" aria-label="Primary">
-    <div class="tds-side-nav__header">
-      <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
-        <span class="tds-side-nav__logo">
-          <img src="../../../assets/trulioo-logo-mark.svg" alt="" width="40" height="40">
-        </span>
-        <span class="tds-side-nav__brand-expanded">
-          <span class="tds-side-nav__brand-logo">
-            <img src="../../../assets/trulioo-labs-logo.svg" alt="Trulioo Labs" width="152" height="24">
-          </span>
-        </span>
+<div class="v2-shell" data-truai="open">
+  <aside class="v2-rail" aria-label="Primary">
+    <div class="v2-rail__header">
+      <span class="v2-rail__logo">
+        <img src="../home/assets/logo-rail.svg" alt="Trulioo" width="29.9995" height="24.6109">
+      </span>
+    </div>
+
+    <nav class="v2-rail__main">
+      <a class="v2-rail__item" href="../home/index.html" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.375 2.234a1 1 0 0 1 1.25 0l9.063 8.125a1 1 0 1 1-1.328 1.5l-.235-.21V19.5A2.5 2.5 0 0 1 17.625 22H6.375A2.5 2.5 0 0 1 3.875 19.5v-7.851l-.234.21a1 1 0 0 1-1.329-1.5L11.375 2.234ZM12 4.188 5.75 9.813V19.5c0 .352.273.625.625.625H8.25V16.06a2.81 2.81 0 0 1 2.813-2.812h1.875a2.81 2.81 0 0 1 2.812 2.813v4.062h1.875a.62.62 0 0 0 .625-.625V9.812L12 4.188Z" fill="currentColor"/></svg>
+      </a>
+      <a class="v2-rail__item" href="../transaction-history/index.html" aria-label="History">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a9 9 0 1 1-8.49 11.95.75.75 0 1 1 1.42-.5A7.5 7.5 0 1 0 12 4.5a7.47 7.47 0 0 0-5.37 2.25H8.5a.75.75 0 0 1 0 1.5h-4A.75.75 0 0 1 3.75 7.5v-4a.75.75 0 0 1 1.5 0v2.1A8.97 8.97 0 0 1 12 3Z" fill="currentColor"/><path d="M12 7.25a.75.75 0 0 1 .75.75v3.69l2.53 1.46a.75.75 0 1 1-.75 1.3l-2.91-1.68a.75.75 0 0 1-.37-.65V8a.75.75 0 0 1 .75-.75Z" fill="currentColor"/></svg>
+      </a>
+      <a class="v2-rail__item" aria-label="Agent hub" href="../agent-hub/index.html">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.75 3.75h5.5a1 1 0 0 1 1 1v5.5a1 1 0 0 1-1 1h-5.5a1 1 0 0 1-1-1v-5.5a1 1 0 0 1 1-1Zm0 1.5v5.5h5.5v-5.5h-5.5Zm8.5-1.5h5.5a1 1 0 0 1 1 1v5.5a1 1 0 0 1-1 1h-5.5a1 1 0 0 1-1-1v-5.5a1 1 0 0 1 1-1Zm0 1.5v5.5h5.5v-5.5h-5.5Zm-8.5 7.5h5.5a1 1 0 0 1 1 1v5.5a1 1 0 0 1-1 1h-5.5a1 1 0 0 1-1-1v-5.5a1 1 0 0 1 1-1Zm0 1.5v5.5h5.5v-5.5h-5.5Zm8.5-1.5h5.5a1 1 0 0 1 1 1v5.5a1 1 0 0 1-1 1h-5.5a1 1 0 0 1-1-1v-5.5a1 1 0 0 1 1-1Zm0 1.5v5.5h5.5v-5.5h-5.5Z" fill="currentColor"/></svg>
+      </a>
+      <a class="v2-rail__item" href="index.html" aria-current="page" aria-label="Organization admin">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.25 3a3.75 3.75 0 1 1 0 7.5 3.75 3.75 0 0 1 0-7.5Zm0 1.5a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM8.5 12h1.5a6.25 6.25 0 0 1 6.23 5.77.75.75 0 0 1-1.5.11A4.75 4.75 0 0 0 10 13.5H8.5a4.75 4.75 0 0 0-4.75 4.75.75.75 0 0 1-1.5 0A6.25 6.25 0 0 1 8.5 12Z" fill="currentColor"/><path d="M18.25 12.5a2.75 2.75 0 0 1 .75 5.4v.85l.53.53a.75.75 0 0 1 0 1.06l-.78.78a.75.75 0 0 1-1.06 0l-.72-.72a.75.75 0 0 1-.22-.53v-1.97a2.75 2.75 0 0 1 1.5-5.4Zm0 1.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z" fill="currentColor"/></svg>
+      </a>
+    </nav>
+
+    <div class="v2-rail__collapse">
+      <button type="button" aria-label="Expand navigation">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.47 5.47a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 1 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Zm7 0a.75.75 0 0 1 1.06 0l6 6a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 1 1-1.06-1.06L17.94 12l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
       </button>
     </div>
 
-    <div class="tds-side-nav__main">
-      <div class="tds-side-nav__nav-stack">
-        <button type="button" class="tds-side-nav__nav-item">
-          <span class="tds-side-nav__nav-item-label">
-            <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg></span>
-            <span class="tds-side-nav__nav-item-text">Home</span>
-          </span>
-        </button>
-
-        <div class="tds-side-nav__nav-group">
-          <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-expanded="true">
-            <span class="tds-side-nav__nav-item-label">
-              <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><span class="icon org-labs-flask"></span></span>
-              <span class="tds-side-nav__nav-item-text">Labs</span>
-            </span>
-            <span class="tds-side-nav__nav-item-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></span>
-          </button>
-          <div class="tds-side-nav__sub-nav">
-            <div class="tds-side-nav__section">
-              <div class="tds-side-nav__section-title">KYB</div>
-              <div class="tds-side-nav__section-items">
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Business Horizon</span></button>
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Policy Review</span></button>
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">KYB Self-Serve</span></button>
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">UBO Agent</span></button>
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Deep Search</span></button>
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Orchestration Agent</span></button>
-              </div>
-            </div>
-            <hr class="tds-side-nav__divider">
-            <div class="tds-side-nav__section">
-              <div class="tds-side-nav__section-title">KYC</div>
-              <div class="tds-side-nav__section-items">
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">KYC Documents</span></button>
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Bank Verification</span></button>
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Electronic ID</span></button>
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">eIDAS compliant KYC</span></button>
-                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Device Intelligence</span></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tds-side-nav__icon-rail" aria-hidden="true">
-        <button type="button" class="tds-side-nav__icon-button" aria-label="Home" tabindex="-1">
-          <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
-        </button>
-        <button type="button" class="tds-side-nav__icon-button tds-side-nav__icon-button--active" aria-label="Labs" tabindex="-1">
-          <span class="icon org-labs-flask" aria-hidden="true"></span>
-        </button>
-      </div>
-    </div>
-
-    <button type="button" class="tds-side-nav__collapse-bar" id="collapse-nav" aria-expanded="false" aria-controls="sidenav">
-      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M10 4 6 8l4 4M6 4 2 8l4 4"/></svg>
-      <span class="tds-side-nav__collapse-label">Hide Sidebar</span>
-    </button>
-
-    <div class="tds-side-nav__footer">
-      <div class="org-account">
-        <div class="org-account__menu">
-          <button type="button" class="tds-action-list-item"><span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 7.2V11M8 5.2h.01" stroke-linecap="round"/></svg></span><span class="tds-action-list-item__label">Help &amp; Support</span></button>
-          <button type="button" class="tds-action-list-item tds-action-list-item--selected" aria-current="page"><span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v1.6M8 12.6v1.6M1.8 8h1.6M12.6 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M12.6 3.4l-1.1 1.1M4.5 11.5l-1.1 1.1"/></svg></span><span class="tds-action-list-item__label">Admin Settings</span></button>
-          <button type="button" class="tds-action-list-item"><span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1.8 2.8 4.2v3.6c0 3 2.1 4.8 5.2 6.2 3.1-1.4 5.2-3.2 5.2-6.2V4.2L8 1.8z"/></svg></span><span class="tds-action-list-item__label">Privacy Policies</span></button>
-          <button type="button" class="tds-action-list-item"><span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6.5 3.5H3.5v9h3M6.2 8h6.3M10.2 5.6 12.6 8l-2.4 2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tds-action-list-item__label">Sign Out</span></button>
-        </div>
-        <div class="org-account__rule" role="presentation"></div>
-        <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" id="profile-button" aria-label="Jane Doe, janedoe@trulioo.com">
-          <span class="tds-side-nav__avatar">JD</span>
-          <span class="tds-side-nav__profile-info">
-            <span class="tds-side-nav__profile-name-row">
-              <span class="tds-side-nav__profile-name">Jane Doe</span>
-              <span class="tds-side-nav__profile-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></span>
-            </span>
-            <span class="tds-side-nav__profile-email">janedoe@trulioo.com</span>
-          </span>
-        </button>
-      </div>
+    <div class="v2-rail__user">
+      <button type="button" class="v2-rail__avatar" aria-label="Jane Doe — account">JD</button>
     </div>
   </aside>
 
-  <main class="org-main">
-    <div class="org-content">
+  <div class="v2-stage">
+
+    <!-- ▼▼▼ LEFT — page content ▼▼▼  owner: organization-admin.css, prefix org-
+         Nothing here may reference .ai-* or the [data-truai] state. -->
+    <main class="v2-content">
+      <section class="org-page">
       <header class="org-header">
         <div class="org-title-row">
           <div>
-            <h1 class="org-title">Organization Admin</h1>
+            <h1 class="org-title">Organization admin</h1>
             <p class="org-subtitle">Manage your organization members, roles, and access permissions.</p>
           </div>
           <button type="button" class="tds-btn tds-btn--primary tds-btn--lg org-invite" id="invite-open">
@@ -158,7 +107,7 @@
 
       <div class="tds-data-table-container org-table" id="panel-users" role="tabpanel" aria-labelledby="tab-users">
         <div class="tds-data-table__wrapper">
-          <table class="tds-data-table tds-data-table--comfort">
+          <table class="tds-data-table org-data-table">
             <thead>
               <tr>
                 <th scope="col">Name &amp; email</th>
@@ -175,7 +124,7 @@
 
       <div class="tds-data-table-container org-table" id="panel-invites" role="tabpanel" aria-labelledby="tab-invites" hidden>
         <div class="tds-data-table__wrapper">
-          <table class="tds-data-table tds-data-table--comfort">
+          <table class="tds-data-table org-data-table">
             <thead>
               <tr>
                 <th scope="col">Name &amp; email</th>
@@ -190,8 +139,31 @@
           </table>
         </div>
       </div>
-    </div>
-  </main>
+      </section>
+    </main>
+
+    <!-- ============================================================
+         TruAI panel — 478px
+         ============================================================ -->
+    <div id="ai-panel-mount"></div>
+    <script src="../shared/portal-shell/ai-panel.js"></script>
+    <script>
+      TruAIPanel.render(document.getElementById('ai-panel-mount'), {
+        title: 'TruAI',
+        contextPill: 'Organization Agent',
+        headline: 'What would you like to manage?',
+        suggestions: [
+          { title: 'Review who has admin access', description: 'List every member holding the Org Admin role' },
+          { title: 'Chase up pending invitations', description: 'Surface invites that are close to expiring' },
+          { title: 'Explain a permission', description: 'Walk through what each access toggle controls' }
+        ],
+        placeholder: 'Ask about members, roles, or access',
+        askbarText: 'Ask about members, roles, or access'
+      });
+    </script>
+    <script src="../shared/portal-shell/ai-toggle.js"></script>
+
+  </div>
 </div>
 
 <div class="tds-dialog tds-dialog--center tds-dialog--md" id="edit-dialog" hidden>
