@@ -3,7 +3,15 @@ name: React Preview
 on:
   push:
     branches: [main]
+    paths:
+      - "pages/preview/react/**"
+      - "pages/preview/react-dist/**"
+      - ".github/workflows/preview-react.yml"
   pull_request:
+    paths:
+      - "pages/preview/react/**"
+      - "pages/preview/react-dist/**"
+      - ".github/workflows/preview-react.yml"
 
 jobs:
   build:
