@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organization Admin — Trulioo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../Components/side-nav/side-nav.css">
+  <link rel="stylesheet" href="../../../Components/button/button.css">
+  <link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../Components/tabs/tabs.css">
+  <link rel="stylesheet" href="../../../Components/tabs/tab-item/tab-item.css">
+  <link rel="stylesheet" href="../../../Components/counter-label/counter-label.css">
+  <link rel="stylesheet" href="../../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../../Components/tooltip/tooltip.css">
+  <link rel="stylesheet" href="../../../Components/_shared/dropdown-panel/dropdown-panel.css">
+  <link rel="stylesheet" href="../../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../../Components/dialog/dialog.css">
+  <link rel="stylesheet" href="../../../Components/text-input/text-input.css">
+  <link rel="stylesheet" href="../../../Components/_shared/field-label/field-label.css">
+  <link rel="stylesheet" href="../../../Components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../../Components/switch/switch.css">
+  <link rel="stylesheet" href="../../../Components/radio-card/radio-card.css">
+  <link rel="stylesheet" href="organization-admin.css">
+</head>
+<body class="org-admin">
+<div class="org-shell">
+  <aside class="tds-side-nav tds-side-nav--collapsed" id="sidenav" aria-label="Primary">
+    <div class="tds-side-nav__header">
+      <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+        <span class="tds-side-nav__logo">
+          <img src="../../../assets/trulioo-logo-mark.svg" alt="" width="40" height="40">
+        </span>
+        <span class="tds-side-nav__brand-expanded">
+          <span class="tds-side-nav__brand-logo">
+            <img src="../../../assets/trulioo-labs-logo.svg" alt="Trulioo Labs" width="152" height="24">
+          </span>
+        </span>
+      </button>
+    </div>
+
+    <div class="tds-side-nav__main">
+      <div class="tds-side-nav__nav-stack">
+        <button type="button" class="tds-side-nav__nav-item">
+          <span class="tds-side-nav__nav-item-label">
+            <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg></span>
+            <span class="tds-side-nav__nav-item-text">Home</span>
+          </span>
+        </button>
+
+        <div class="tds-side-nav__nav-group">
+          <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-expanded="true">
+            <span class="tds-side-nav__nav-item-label">
+              <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6.2 1.5h3.6M7 1.5v2.2M5 6.2h6M4.2 3.8h7.6l-.7 8.2a1.2 1.2 0 0 1-1.2 1.1H6.1a1.2 1.2 0 0 1-1.2-1.1L4.2 3.8z"/></svg></span>
+              <span class="tds-side-nav__nav-item-text">Labs</span>
+            </span>
+            <span class="tds-side-nav__nav-item-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></span>
+          </button>
+          <div class="tds-side-nav__sub-nav">
+            <div class="tds-side-nav__section">
+              <div class="tds-side-nav__section-title">KYB</div>
+              <div class="tds-side-nav__section-items">
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Business Horizon</span></button>
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Policy Review</span></button>
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">KYB Self-Serve</span></button>
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">UBO Agent</span></button>
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Deep Search</span></button>
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Orchestration Agent</span></button>
+              </div>
+            </div>
+            <hr class="tds-side-nav__divider">
+            <div class="tds-side-nav__section">
+              <div class="tds-side-nav__section-title">KYC</div>
+              <div class="tds-side-nav__section-items">
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">KYC Documents</span></button>
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Bank Verification</span></button>
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Electronic ID</span></button>
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">eIDAS compliant KYC</span></button>
+                <button type="button" class="tds-side-nav__sub-item"><span class="tds-side-nav__sub-item-text">Device Intelligence</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tds-side-nav__icon-rail" aria-hidden="true">
+        <button type="button" class="tds-side-nav__icon-button" aria-label="Home" tabindex="-1">
+          <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+        </button>
+        <button type="button" class="tds-side-nav__icon-button tds-side-nav__icon-button--active" aria-label="Labs" tabindex="-1">
+          <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6.2 1.5h3.6M7 1.5v2.2M5 6.2h6M4.2 3.8h7.6l-.7 8.2a1.2 1.2 0 0 1-1.2 1.1H6.1a1.2 1.2 0 0 1-1.2-1.1L4.2 3.8z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <button type="button" class="tds-side-nav__collapse-bar" id="collapse-nav" aria-expanded="false" aria-controls="sidenav">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M10 4 6 8l4 4M6 4 2 8l4 4"/></svg>
+      <span class="tds-side-nav__collapse-label">Hide Sidebar</span>
+    </button>
+
+    <div class="tds-side-nav__footer">
+      <div class="org-account">
+        <div class="org-account__menu">
+          <button type="button" class="tds-action-list-item"><span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 7.2V11M8 5.2h.01" stroke-linecap="round"/></svg></span><span class="tds-action-list-item__label">Help &amp; Support</span></button>
+          <button type="button" class="tds-action-list-item tds-action-list-item--selected" aria-current="page"><span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v1.6M8 12.6v1.6M1.8 8h1.6M12.6 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M12.6 3.4l-1.1 1.1M4.5 11.5l-1.1 1.1"/></svg></span><span class="tds-action-list-item__label">Admin Settings</span></button>
+          <button type="button" class="tds-action-list-item"><span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 1.8 2.8 4.2v3.6c0 3 2.1 4.8 5.2 6.2 3.1-1.4 5.2-3.2 5.2-6.2V4.2L8 1.8z"/></svg></span><span class="tds-action-list-item__label">Privacy Policies</span></button>
+          <button type="button" class="tds-action-list-item"><span class="tds-action-list-item__leading-visual" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6.5 3.5H3.5v9h3M6.2 8h6.3M10.2 5.6 12.6 8l-2.4 2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tds-action-list-item__label">Sign Out</span></button>
+        </div>
+        <div class="org-account__rule" role="presentation"></div>
+        <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" id="profile-button" aria-label="Jane Doe, janedoe@trulioo.com">
+          <span class="tds-side-nav__avatar">JD</span>
+          <span class="tds-side-nav__profile-info">
+            <span class="tds-side-nav__profile-name-row">
+              <span class="tds-side-nav__profile-name">Jane Doe</span>
+              <span class="tds-side-nav__profile-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></span>
+            </span>
+            <span class="tds-side-nav__profile-email">janedoe@trulioo.com</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="org-main">
+    <div class="org-content">
+      <header class="org-header">
+        <div class="org-title-row">
+          <div>
+            <h1 class="org-title">Organization Admin</h1>
+            <p class="org-subtitle">Manage your organization members, roles, and access permissions.</p>
+          </div>
+          <button type="button" class="tds-btn tds-btn--primary tds-btn--lg org-invite" id="invite-open">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 3.2v9.6M3.2 8h9.6"/></svg>
+            Invite User
+          </button>
+        </div>
+        <div class="org-stats" id="stats"></div>
+      </header>
+
+      <div class="tds-tabs org-tabs">
+        <div class="tds-tabs__row">
+          <div class="tds-tabs__list" role="tablist" aria-label="Organization members">
+            <button type="button" class="tds-tab-item tds-tab-item--active" id="tab-users" role="tab" aria-selected="true" aria-controls="panel-users">
+              <span class="tds-tab-item__content">Org Users <span class="tds-counter tds-counter--secondary tds-counter--sm" id="count-users">24</span></span>
+              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="tds-tab-item" id="tab-invites" role="tab" aria-selected="false" aria-controls="panel-invites">
+              <span class="tds-tab-item__content">Pending Invitations <span class="tds-counter tds-counter--secondary tds-counter--intermediate tds-counter--sm" id="count-invites">3</span></span>
+              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+        <div class="tds-tabs__divider" role="presentation"></div>
+      </div>
+
+      <div class="tds-data-table-container org-table" id="panel-users" role="tabpanel" aria-labelledby="tab-users">
+        <div class="tds-data-table__wrapper">
+          <table class="tds-data-table tds-data-table--comfort">
+            <thead>
+              <tr>
+                <th scope="col">Name &amp; email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col">Last login</th>
+                <th scope="col" class="tds-data-table__actions-col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="users-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tds-data-table-container org-table" id="panel-invites" role="tabpanel" aria-labelledby="tab-invites" hidden>
+        <div class="tds-data-table__wrapper">
+          <table class="tds-data-table tds-data-table--comfort">
+            <thead>
+              <tr>
+                <th scope="col">Name &amp; email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col">Sent</th>
+                <th scope="col">Expires</th>
+                <th scope="col" class="tds-data-table__actions-col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="invites-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="tds-dialog tds-dialog--center tds-dialog--md" id="edit-dialog" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="edit-title">Edit User</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" data-close="edit-dialog" aria-label="Close">
+            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <form class="tds-dialog__body" id="edit-form">
+        <div class="org-form">
+          <p class="org-form__intro">Update personal details and user roles.</p>
+          <div class="org-fields">
+            <p class="org-section-label">Personal Details</p>
+            <div class="org-field-row">
+              <div class="tds-text-input">
+                <label class="tds-field-label" for="edit-first">First Name</label>
+                <div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" id="edit-first" name="first" autocomplete="given-name"></div>
+              </div>
+              <div class="tds-text-input">
+                <label class="tds-field-label" for="edit-last">Last Name</label>
+                <div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" id="edit-last" name="last" autocomplete="family-name"></div>
+              </div>
+            </div>
+            <div class="tds-text-input tds-text-input--full-width">
+              <label class="tds-field-label" for="edit-email">Email</label>
+              <div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" id="edit-email" name="email" type="email" autocomplete="email"></div>
+            </div>
+          </div>
+          <div class="org-status">
+            <p class="org-section-label">Status</p>
+            <div class="tds-switch">
+              <span class="tds-switch__label-group"><span id="edit-status-label">Active</span></span>
+              <button type="button" class="tds-switch__track tds-switch__track--sm tds-switch__track--on" id="edit-status" role="switch" aria-checked="true">
+                <span class="tds-switch__indicator" aria-hidden="true"></span>
+                <span class="tds-switch__handle" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div class="org-field" role="group" aria-labelledby="edit-perms-label">
+            <p class="org-section-label" id="edit-perms-label">Permissions</p>
+            <div class="org-perms" id="edit-perms"></div>
+          </div>
+        </div>
+      </form>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary" data-close="edit-dialog">Cancel</button>
+            <button type="submit" class="tds-btn tds-btn--primary" form="edit-form">Save</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div class="tds-dialog tds-dialog--center tds-dialog--md" id="invite-dialog" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="invite-title">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="invite-title">Invite User</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" data-close="invite-dialog" aria-label="Close">
+            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <form class="tds-dialog__body" id="invite-form">
+        <div class="org-form">
+          <p class="org-form__intro">Send an invitation to add a new member to your organization.</p>
+          <div class="org-field">
+            <label class="org-field__label" for="invite-email">Email address</label>
+            <div class="tds-text-input tds-text-input--full-width">
+              <div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" id="invite-email" name="email" type="email" placeholder="name@company.com" autocomplete="email" required></div>
+            </div>
+          </div>
+          <div class="org-field">
+            <p class="org-field__label" id="role-label">Role</p>
+            <div class="org-roles" role="radiogroup" aria-labelledby="role-label">
+              <label class="tds-radio-card tds-radio-card--selected">
+                <input class="tds-radio" type="radio" name="role" value="Org User" checked>
+                <span class="tds-radio-card__content">
+                  <span class="tds-radio-card__label-row">
+                    <span class="tds-radio-card__icon" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
+                    <span class="tds-radio-card__label">Org User</span>
+                  </span>
+                </span>
+              </label>
+              <label class="tds-radio-card">
+                <input class="tds-radio" type="radio" name="role" value="Org Admin">
+                <span class="tds-radio-card__content">
+                  <span class="tds-radio-card__label-row">
+                    <span class="tds-radio-card__icon" aria-hidden="true"><svg class="fa-glyph fa-glyph--user-key" viewBox="0 0 576 576"><path fill="currentColor" d="M144 128C144 84 180 48 224 48C268 48 304 84 304 128C304 172 268 208 224 208C180 208 144 172 144 128ZM352 128C352 57 295 0 224 0C153 0 96 57 96 128C96 199 153 256 224 256C295 256 352 199 352 128ZM48 480C48 409 105 352 176 352H272C287 352 301 354 314 359C308 343 304 325 304 307C294 305 283 304 272 304H176C79 304 0 383 0 480V488C0 501 11 512 24 512C37 512 48 501 48 488V480ZM576 304C576 242 526 192 464 192C402 192 352 242 352 304C352 349 378 387 416 405V521C416 526 418 530 421 533L453 565C459 571 469 571 475 565L517 523C523 517 523 507 517 501L496 480L518 458C524 452 524 443 519 437L498 411C543 396 576 354 576 304ZM432 288C432 270 446 256 464 256C482 256 496 270 496 288C496 306 482 320 464 320C446 320 432 306 432 288Z"/></svg></span>
+                    <span class="tds-radio-card__label">Org Admin</span>
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="org-field" role="group" aria-labelledby="invite-perms-label">
+            <p class="org-section-label" id="invite-perms-label">Permissions</p>
+            <div class="org-perms" id="invite-perms"></div>
+          </div>
+        </div>
+      </form>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary" data-close="invite-dialog">Cancel</button>
+            <button type="submit" class="tds-btn tds-btn--primary" form="invite-form">Send Invite</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div class="tds-dialog tds-dialog--center tds-dialog--md" id="success-dialog" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="success-title">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="success-title">Invite User</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" data-close="success-dialog" aria-label="Close">
+            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <div class="tds-dialog__body">
+        <div class="org-success">
+          <svg class="org-success__icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><circle cx="32" cy="32" r="22" stroke="currentColor" stroke-width="2.5"/><path d="M22 33.2 28.4 39.5 42 24.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p class="org-success__title">Invitation sent successfully</p>
+          <p class="org-success__text">An invitation email has been sent to <span class="org-success__email" id="success-email">janedoe@trulioo.com</span></p>
+        </div>
+      </div>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary" id="view-invites">View all invitations</button>
+            <button type="button" class="tds-btn tds-btn--primary" data-close="success-dialog">Done</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div class="tds-dialog tds-dialog--center tds-dialog--md" id="confirm-dialog" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="confirm-title">Remove user?</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" data-close="confirm-dialog" aria-label="Close">
+            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <div class="tds-dialog__body">
+        <p class="org-form__intro" id="confirm-message">This member will be removed from your organization.</p>
+      </div>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary" data-close="confirm-dialog">Cancel</button>
+            <button type="button" class="tds-btn tds-btn--danger" id="confirm-action">Remove user</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div class="org-snackbar" id="snackbar" role="status" hidden>
+  <span class="org-snackbar__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.4a6.6 6.6 0 1 0 0 13.2A6.6 6.6 0 0 0 8 1.4Zm3.1 4.7-3.6 4.2a.7.7 0 0 1-1 .1L4.8 8.6a.7.7 0 1 1 1-1l1.1 1.1 3.1-3.6a.7.7 0 1 1 1.1.9Z"/></svg></span>
+  <span id="snackbar-text">User changes saved successfully</span>
+</div>
+
+<script src="organization-admin.js"></script>
+</body>
+</html>
