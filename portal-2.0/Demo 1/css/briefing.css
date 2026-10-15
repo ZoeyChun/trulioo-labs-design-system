@@ -45,8 +45,13 @@
   display: grid;
   grid-template-columns: minmax(0, 1.44fr) minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--spacing-16);
+  /* The composer sits on z-index 1, so its whole layer — the blurred glow
+     included — paints over anything static that follows it. The cards claim
+     their own layer above it so the glow stays behind them. */
+  position: relative;
+  z-index: 2;
   width: min(1214px, calc(100% - 64px));
-  margin-top: var(--spacing-32);
+  margin-top: clamp(56px, 9vh, 120px);
   animation: d1-up 0.55s 0.12s ease both;
 }
 
@@ -319,7 +324,7 @@
   content: "";
   position: absolute;
   left: 50%;
-  bottom: -56px;
+  bottom: -40px;
   z-index: -1;
   width: min(1012px, 132%);
   height: 136px;

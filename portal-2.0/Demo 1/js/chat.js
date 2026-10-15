@@ -618,6 +618,90 @@
 
   var convo = { entity: null, linksShown: false, lastUser: "", started: false };
 
+  /* --------------------------------------------------------- chat history */
+
+  var history = [];
+  var activeId = null;
+  var nextId = 1;
+  var chatList = document.querySelector("[data-d1-chat-list]");
+
+  function freshConvo() {
+    return { entity: null, linksShown: false, lastUser: "", started: false };
+  }
+
+  function saveActive() {
+    if (!activeId) return;
+    var entry = history.find(function (h) { return h.id === activeId; });
+    if (entry) {
+      entry.html = thread.innerHTML;
+      entry.convo = JSON.parse(JSON.stringify(convo));
+      entry.suggestions = activeSuggestions;
+    }
+  }
+
+  function renderChatList() {
+    if (!chatList) return;
+    chatList.innerHTML = "";
+    if (!history.length) return;
+    var label = document.createElement("p");
+    label.className = "d1-fly__label";
+    label.textContent = "Recent";
+    chatList.appendChild(label);
+    history.forEach(function (entry) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "d1-chat-row" + (entry.id === activeId ? " d1-chat-row--current" : "");
+      btn.setAttribute("role", "menuitem");
+      btn.setAttribute("data-d1-chat-id", entry.id);
+      btn.innerHTML = '<img src="assets/icons/chat-dot.svg" alt="" width="5" height="5">';
+      btn.appendChild(document.createTextNode(entry.title));
+      chatList.appendChild(btn);
+    });
+  }
+
+  function loadChat(id) {
+    var entry = history.find(function (h) { return h.id === id; });
+    if (!entry) return;
+    if (run) run.cancel();
+    saveActive();
+    activeId = id;
+    thread.innerHTML = entry.html;
+    convo = JSON.parse(JSON.stringify(entry.convo));
+    scroller = null;
+    stage.setAttribute("data-d1-stage", "chat");
+    if (title) title.textContent = entry.title;
+    setBusy(false);
+    setSuggestions(entry.suggestions || []);
+    hideFollow();
+    showFollow();
+    renderChatList();
+    var main = document.querySelector(".d1-main");
+    if (main) main.setAttribute("data-d1-drawer", "closed");
+  }
+
+  function startNewChat() {
+    if (run) run.cancel();
+    saveActive();
+    activeId = null;
+    convo = freshConvo();
+    thread.replaceChildren();
+    scroller = null;
+    setBusy(false);
+    hideFollow();
+    stage.setAttribute("data-d1-stage", "home");
+    var main = document.querySelector(".d1-main");
+    if (main) main.setAttribute("data-d1-drawer", "closed");
+    if (title) title.textContent = "Chat heading/title";
+    renderChatList();
+  }
+
+  if (chatList) {
+    chatList.addEventListener("click", function (event) {
+      var row = event.target.closest("[data-d1-chat-id]");
+      if (row) loadChat(Number(row.getAttribute("data-d1-chat-id")));
+    });
+  }
+
   /* Thinking time tracks the size of the answer, so a one-line reply never
      takes as long as a full investigation. */
   function thinkFor(text) {
@@ -821,6 +905,7 @@
         setSuggestions(plan.suggestions && plan.suggestions.length ? plan.suggestions : activeSuggestions);
         showFollow();
         stick();
+        saveActive();
       }
     }
   }
@@ -833,9 +918,14 @@
 
     if (run) run.cancel();
     stage.setAttribute("data-d1-stage", "chat");
-    if (!convo.started && title) {
-      title.textContent = text;
+    if (!convo.started) {
+      var chatTitle = text.length > 50 ? text.slice(0, 47) + "..." : text;
+      if (title) title.textContent = chatTitle;
       convo.started = true;
+      var id = nextId++;
+      activeId = id;
+      history.unshift({ id: id, title: chatTitle, html: "", convo: JSON.parse(JSON.stringify(convo)), suggestions: [] });
+      renderChatList();
     }
     convo.lastUser = text;
     scroller = null;
@@ -913,29 +1003,20 @@
 
   document.querySelectorAll("[data-d1-new-chat]").forEach(function (button) {
     button.addEventListener("click", function () {
-      if (back) back.click();
+      startNewChat();
     });
   });
 
   var logo = document.querySelector(".d1-logo");
   if (logo) {
     logo.addEventListener("click", function () {
-      if (back) back.click();
+      startNewChat();
     });
   }
 
   if (back) {
     back.addEventListener("click", function () {
-      if (run) run.cancel();
-      setBusy(false);
-      thread.replaceChildren();
-      convo = { entity: null, linksShown: false, lastUser: "", started: false };
-      scroller = null;
-      hideFollow();
-      stage.setAttribute("data-d1-stage", "home");
-      var main = document.querySelector(".d1-main");
-      if (main) main.setAttribute("data-d1-drawer", "closed");
-      if (title) title.textContent = "Chat heading/title";
+      startNewChat();
     });
   }
 })();

@@ -280,3 +280,7 @@ body.d1-app-ready .d1-shell {
     animation: none;
   }
 }
+
+.d1-signin[hidden] {
+  display: none;
+}

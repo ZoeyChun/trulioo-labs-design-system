@@ -1,5 +1,6 @@
 /* Sign-in gate. Sign in plays a loader, then reveals the homepage.
-   The repeat-customer switch is stored for the home page to read later. */
+   The repeat-customer switch and signed-in state are stored in sessionStorage
+   so a refresh skips the gate until Sign Out clears it. */
 (function () {
   var signin = document.querySelector("[data-d1-signin]");
   var form = document.querySelector("[data-d1-signin-form]");
@@ -13,6 +14,32 @@
   if (!email) return;
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- resume a signed-in session on refresh ---- */
+
+  var stored = false;
+  try { stored = sessionStorage.getItem("d1-signed-in") === "true"; } catch (e) {}
+
+  if (stored) {
+    var repeatFlag = false;
+    try { repeatFlag = sessionStorage.getItem("d1-repeat") === "true"; } catch (e) {}
+    if (home) home.setAttribute("data-d1-repeat", repeatFlag ? "true" : "false");
+    signin.style.display = "none";
+    loader.style.display = "none";
+    document.body.classList.add("d1-app-ready");
+  }
+
+  /* ---- sign-out ---- */
+
+  document.querySelectorAll("[data-d1-signout]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      try { sessionStorage.removeItem("d1-signed-in"); sessionStorage.removeItem("d1-repeat"); } catch (e) {}
+      window.location.reload();
+    });
+  });
+
+  /* ---- loader lines ---- */
+
   var lineMs = reduced ? 0 : 900;
   var LINES = {
     fresh: [
@@ -51,7 +78,10 @@
     password.value = "Trulioo2026";
     var on = repeat && repeat.getAttribute("aria-checked") === "true";
     if (home) home.setAttribute("data-d1-repeat", on ? "true" : "false");
-    try { sessionStorage.setItem("d1-repeat", on ? "true" : "false"); } catch (error) { /* private mode */ }
+    try {
+      sessionStorage.setItem("d1-repeat", on ? "true" : "false");
+      sessionStorage.setItem("d1-signed-in", "true");
+    } catch (error) {}
 
     window.setTimeout(function () {
       signin.classList.add("is-out");
