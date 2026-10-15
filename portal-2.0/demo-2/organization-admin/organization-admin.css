@@ -182,8 +182,12 @@ body {
 
 .org-admin .tds-side-nav__icon-button .org-labs-flask,
 .org-admin .tds-side-nav__nav-item-icon .org-labs-flask {
+  display: block;
   width: 15.05px;
   height: 15.6796px;
+  background-color: var(--icon-faint);
+  -webkit-mask: url("labs-flask.svg") center / 100% 100% no-repeat;
+  mask: url("labs-flask.svg") center / 100% 100% no-repeat;
 }
 
 .org-admin .tds-data-table__actions-cell .tds-icon-btn {
