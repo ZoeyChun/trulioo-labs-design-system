@@ -244,7 +244,9 @@
     { id: "bcteam", keys: ["bc team", "tell them", "notify", "notify the team", "what should i tell", "let them know", "inform the team", "send a message"] },
     { id: "flag", keys: ["flag", "flag for review", "flag this", "mark for review", "send to review", "put in review"] },
     { id: "approve", keys: ["approve", "approve this", "accept this", "clear this", "mark approved", "mark as approved", "greenlight"] },
-    { id: "escalate", keys: ["escalate", "escalate this", "raise this", "urgent review", "priority review"] }
+    { id: "escalate", keys: ["escalate", "escalate this", "raise this", "urgent review", "priority review"] },
+    { id: "analyze", keys: ["analyze", "analysis", "break down", "breakdown", "drill down", "deep dive", "risk profile", "risk breakdown", "risk analysis"] },
+    { id: "guide", keys: ["guide", "guide me", "walk me through", "checklist", "action plan", "action items", "what now", "what do i do next", "how do i proceed", "recommended steps", "what are my options"] }
   ];
 
   /* ------------------------------------------------------------- run token */
@@ -598,6 +600,94 @@
     stick();
   }
 
+  /* ---- analysis / compare / guide ---- */
+
+  async function playAnalysis(part, token) {
+    var node = clone("analysis");
+    if (!node) return;
+    node.querySelector("[data-d1-analysis-title]").textContent = part.title;
+    var container = node.querySelector("[data-d1-analysis-rows]");
+    place(node);
+    for (var i = 0; i < part.rows.length; i += 1) {
+      if (token.cancelled) return;
+      var r = part.rows[i];
+      var row = document.createElement("div");
+      row.className = "d1-analysis__row";
+      var label = document.createElement("span");
+      label.className = "d1-analysis__label";
+      label.textContent = r.label;
+      var value = document.createElement("span");
+      value.className = "d1-analysis__value" + (r.status ? " d1-analysis__value--" + r.status : "");
+      value.textContent = r.value;
+      row.appendChild(label);
+      row.appendChild(value);
+      container.appendChild(row);
+      stick();
+      await token.sleep(160);
+    }
+  }
+
+  async function playCompare(part, token) {
+    var node = clone("compare");
+    if (!node) return;
+    node.querySelector("[data-d1-compare-left]").textContent = part.left;
+    node.querySelector("[data-d1-compare-right]").textContent = part.right;
+    var container = node.querySelector("[data-d1-compare-rows]");
+    place(node);
+    for (var i = 0; i < part.rows.length; i += 1) {
+      if (token.cancelled) return;
+      var r = part.rows[i];
+      var row = document.createElement("div");
+      row.className = "d1-compare__row";
+      var lc = document.createElement("span");
+      lc.className = "d1-compare__cell d1-compare__cell--label";
+      lc.textContent = r.label;
+      var lv = document.createElement("span");
+      lv.className = "d1-compare__cell" + (r.hl === "left" ? " d1-compare__cell--negative" : r.hl === "right" ? " d1-compare__cell--positive" : "");
+      lv.textContent = r.l;
+      var rv = document.createElement("span");
+      rv.className = "d1-compare__cell" + (r.hl === "right" ? " d1-compare__cell--negative" : r.hl === "left" ? " d1-compare__cell--positive" : "");
+      rv.textContent = r.r;
+      row.appendChild(lc);
+      row.appendChild(lv);
+      row.appendChild(rv);
+      container.appendChild(row);
+      stick();
+      await token.sleep(160);
+    }
+  }
+
+  async function playGuide(part, token) {
+    var node = clone("guide");
+    if (!node) return;
+    node.querySelector("[data-d1-guide-title]").textContent = part.title;
+    var list = node.querySelector("[data-d1-guide-steps]");
+    place(node);
+    for (var i = 0; i < part.steps.length; i += 1) {
+      if (token.cancelled) return;
+      var s = part.steps[i];
+      var li = document.createElement("li");
+      li.className = "d1-guide__step" + (s.done ? " is-done" : "");
+      var marker = document.createElement("span");
+      marker.className = "d1-guide__marker";
+      marker.textContent = s.done ? "✓" : String(i + 1);
+      var text = document.createElement("span");
+      text.className = "d1-guide__text";
+      text.textContent = s.text;
+      li.appendChild(marker);
+      li.appendChild(text);
+      list.appendChild(li);
+      (function (theLi, theMarker, idx) {
+        theLi.addEventListener("click", function () {
+          var done = theLi.classList.toggle("is-done");
+          theMarker.textContent = done ? "✓" : String(idx + 1);
+        });
+      })(li, marker, i);
+      stick();
+      await token.sleep(180);
+    }
+  }
+
   async function play(parts, token) {
     for (var i = 0; i < parts.length; i += 1) {
       if (token.cancelled) return;
@@ -608,6 +698,9 @@
       else if (part.t === "report") await playReport(part, token);
       else if (part.t === "table") await playTable(part, token);
       else if (part.t === "confirm") await playConfirm(part, token);
+      else if (part.t === "analysis") await playAnalysis(part, token);
+      else if (part.t === "compare") await playCompare(part, token);
+      else if (part.t === "guide") await playGuide(part, token);
       if (!token.cancelled && i < parts.length - 1) await token.sleep(part.t === "typing" ? 0 : 320);
     }
   }
@@ -983,11 +1076,175 @@
     return null;
   }
 
+  /* ---- strategy plans (analyze / compare / guide) ---- */
+
+  function analyzeEntityPlan() {
+    var e = convo.entity;
+    var rows;
+    if (e === APEX) {
+      rows = [
+        { label: "Registry match", value: "No match found", status: "negative" },
+        { label: "Employees", value: "0 reported", status: "warn" },
+        { label: "Share capital", value: "£1", status: "warn" },
+        { label: "Registered office", value: "Virtual — Regus serviced", status: "warn" },
+        { label: "Beneficial owner", value: "BVI holding company (unnamed)", status: "negative" },
+        { label: "Sanctions / PEP", value: "Clear", status: "positive" },
+        { label: "Connected transactions", value: "3 flagged", status: "negative" },
+        { label: "Overall risk", value: "High — shell indicators", status: "negative" }
+      ];
+    } else if (e === NORDIC) {
+      rows = [
+        { label: "Registry match", value: "Matched", status: "positive" },
+        { label: "Registered office", value: "Verified", status: "positive" },
+        { label: "Director", value: "Listed", status: "positive" },
+        { label: "Sanctions / PEP", value: "Clear", status: "positive" },
+        { label: "Connected transactions", value: "3 (1 passed, 2 need review)", status: "neutral" },
+        { label: "Overall risk", value: "Low", status: "positive" }
+      ];
+    } else if (e === NORTHSTAR) {
+      rows = [
+        { label: "Registry match", value: "Matched", status: "positive" },
+        { label: "Registered address", value: "Mismatch", status: "negative" },
+        { label: "Sanctions / PEP", value: "Clear", status: "positive" },
+        { label: "Overall risk", value: "Medium — address mismatch", status: "warn" }
+      ];
+    } else {
+      rows = [
+        { label: "Registry match", value: e.tone === "positive" ? "Matched" : "Needs review", status: e.tone === "positive" ? "positive" : "warn" },
+        { label: "Sanctions / PEP", value: "Clear", status: "positive" },
+        { label: "Overall risk", value: e.tone === "positive" ? "Low" : "Needs review", status: e.tone === "positive" ? "positive" : "warn" }
+      ];
+    }
+    return {
+      parts: [
+        { t: "typing", ms: 700 },
+        say("Here’s the risk breakdown for " + e.name + "."),
+        { t: "analysis", title: "Risk Analysis — " + e.name, rows: rows }
+      ],
+      suggestions: e.suggestions
+    };
+  }
+
+  function analyzeOpsPlan() {
+    return {
+      parts: [
+        { t: "typing", ms: 700 },
+        say("Here’s the breakdown of your 47 verifications over the last 7 days."),
+        { t: "analysis", title: "Verification Breakdown — Last 7 Days", rows: [
+          { label: "Total processed", value: "47", status: "neutral" },
+          { label: "Approved", value: "29 (62%)", status: "positive" },
+          { label: "Flagged", value: "12 (26%)", status: "negative" },
+          { label: "Pending review", value: "6 (13%)", status: "warn" },
+          { label: "Approval rate (excl. BC)", value: "94%", status: "positive" },
+          { label: "Approval rate (BC only)", value: "0%", status: "negative" },
+          { label: "Avg. review turnaround", value: "2.5 days (was 0.8)", status: "warn" },
+          { label: "Root cause", value: "BC address format change", status: "negative" }
+        ]}
+      ],
+      suggestions: OPS_SUGGESTIONS
+    };
+  }
+
+  function comparePlan() {
+    return {
+      parts: [
+        { t: "typing", ms: 700 },
+        say("Here’s how the two stack up side by side."),
+        { t: "compare", left: "Meridian Apex", right: "Apex Nordic", rows: [
+          { label: "Status", l: "Needs review", r: "Verified", hl: "left" },
+          { label: "Registry", l: "No match found", r: "Matched", hl: "left" },
+          { label: "Employees", l: "0 reported", r: "12", hl: "left" },
+          { label: "Share capital", l: "£1", r: "SEK 500 000", hl: "left" },
+          { label: "Registered office", l: "Virtual (Regus)", r: "Physical address", hl: "left" },
+          { label: "Sanctions", l: "Clear", r: "Clear" },
+          { label: "Connected txns", l: "3 flagged", r: "3 (1 passed)", hl: "left" },
+          { label: "Risk profile", l: "Shell indicators", r: "Clean", hl: "left" }
+        ]}
+      ],
+      suggestions: convo.entity ? convo.entity.suggestions : [
+        { q: "Flag Meridian Apex for review", intent: "flag" },
+        { q: "Approve Apex Nordic", intent: "approve" }
+      ]
+    };
+  }
+
+  function guideEntityPlan() {
+    var e = convo.entity;
+    var steps;
+    if (e.tone === "positive") {
+      steps = [
+        { text: "Registry match confirmed", done: true },
+        { text: "Sanctions screening clear", done: true },
+        { text: "Review connected transactions (3 found)", done: false },
+        { text: "Request proof of address and recent filing", done: false },
+        { text: "Approve the entity", done: false }
+      ];
+    } else if (e === APEX) {
+      steps = [
+        { text: "Investigate the registry mismatch", done: true },
+        { text: "Review the BVI ownership chain", done: false },
+        { text: "Check the 3 connected transactions", done: false },
+        { text: "Request proof of trading and staffed office", done: false },
+        { text: "Identify the person behind the BVI shareholder", done: false },
+        { text: "Flag or escalate based on findings", done: false }
+      ];
+    } else {
+      steps = [
+        { text: "Resolve the address mismatch", done: false },
+        { text: "Request a utility bill or lease at the application address", done: false },
+        { text: "Confirm sanctions screening is clear", done: true },
+        { text: "Review any connected transactions", done: false },
+        { text: "Approve or flag based on findings", done: false }
+      ];
+    }
+    return {
+      parts: [
+        { t: "typing", ms: 600 },
+        say("Here’s what I’d work through for " + e.name + ". Check items off as you go."),
+        { t: "guide", title: "Recommended Steps — " + e.name, steps: steps }
+      ],
+      suggestions: e.suggestions
+    };
+  }
+
+  function guideOpsPlan() {
+    return {
+      parts: [
+        { t: "typing", ms: 600 },
+        say("Based on your current verification activity, here’s the action plan."),
+        { t: "guide", title: "Recommended Actions", steps: [
+          { text: "Confirm BC Registry address format change on one of the 9 failures", done: false },
+          { text: "Notify the BC team about the format change", done: false },
+          { text: "Hold BC re-runs until the matcher is updated", done: false },
+          { text: "Review the 3 unrelated failures (2 expired docs, 1 name mismatch)", done: false },
+          { text: "Clear the 4 pending reviews blocked on the slow registry source", done: false },
+          { text: "Check Summit Peak Advisors — additional data pulled, waiting for review", done: false }
+        ]}
+      ],
+      suggestions: OPS_SUGGESTIONS
+    };
+  }
+
+  function planStrategy(text, intent) {
+    if (intent === "analyze") {
+      if (convo.entity) return analyzeEntityPlan();
+      if (isRepeat()) return analyzeOpsPlan();
+      return null;
+    }
+    if (intent === "compare") return comparePlan();
+    if (intent === "guide") {
+      if (convo.entity) return guideEntityPlan();
+      if (isRepeat()) return guideOpsPlan();
+      return null;
+    }
+    return null;
+  }
+
   function planReply(text, agent) {
     var company = namedCompany(text);
     var intent = resolveIntent(text);
 
-    if (company && (!convo.entity || company.id !== convo.entity.id || intent === null)) {
+    if (company && (!convo.entity || company.id !== convo.entity.id || intent === null) && !(intent === "compare" && convo.entity)) {
       convo.entity = company;
       convo.linksShown = false;
       return { parts: investigationPlan(company), suggestions: company.suggestions };
@@ -997,6 +1254,9 @@
 
     var action = planAction(text, intent);
     if (action) return action;
+
+    var strategy = planStrategy(text, intent);
+    if (strategy) return strategy;
 
     if (isRepeat() && !convo.entity) {
       var ops = planOps(text, intent);
