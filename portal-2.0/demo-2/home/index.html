@@ -265,10 +265,20 @@
       TruAIPanel.render(document.getElementById('ai-panel-mount'), {
         title: 'TruAI',
         headline: 'What would you like to work on?',
-        suggestions: ['Where can I start?', 'Verify business', 'Verify person'],
+        hasThread: true,
+        suggestions: [
+          'Start a new verification',
+          'Search across transaction history',
+          'Investigate an existing verification'
+        ],
         placeholder: 'Ask questions or tell me what you’d like to do',
         askbarText: 'Ask a question or tell me what you’d like to do'
       });
+    </script>
+    <!-- Scripted flows for the suggestions above — see ai-flows.js. -->
+    <script src="../shared/portal-shell/ai-flows.js"></script>
+    <script>
+      TruAIFlows.initHome(document.getElementById('ai-thread'), document.getElementById('ai-suggestions'));
     </script>
     <!-- ▲▲▲ RIGHT ends ▲▲▲ -->
 

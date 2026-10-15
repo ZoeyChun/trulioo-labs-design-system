@@ -300,7 +300,7 @@
       card.addEventListener('focus', function () { focus(card.dataset.id); });
       card.addEventListener('click', function () {
         var c = CANDIDATES.filter(function (x) { return x.id === card.dataset.id; })[0];
-        if (c) investigate(c);
+        if (c) confirmInvestigate(c);
       });
     });
   }
@@ -463,6 +463,33 @@
 
   var runTimer = null;
 
+  /* Selecting a candidate highlights it on the map and asks before running
+     anything — picking the wrong "Meridian" is exactly the mistake this
+     flow exists to prevent, so the check has to happen before the work
+     starts, not after. */
+  function confirmInvestigate(c) {
+    focus(c.id);
+    scrollToCard(c.id);
+    dom.thread.innerHTML =
+      '<p class="ai-said">' + esc(c.name) + '</p>' +
+      '<div class="ai-reply">' +
+        '<p class="ai-reply__lead">Run a KYB check on ' + esc(c.name) + '?</p>' +
+        '<p class="ai-reply__sub">' + esc(c.country) + ' · ' + esc(c.reg) + '</p>' +
+      '</div>' +
+      '<div class="ai-chips">' +
+        '<button type="button" class="ai-chip" data-confirm="yes">Confirm</button>' +
+        '<button type="button" class="ai-chip" data-confirm="no">Cancel</button>' +
+      '</div>';
+
+    dom.thread.querySelector('[data-confirm="yes"]').addEventListener('click', function () {
+      investigate(c);
+    });
+    dom.thread.querySelector('[data-confirm="no"]').addEventListener('click', function () {
+      focus(null);
+      render();
+    });
+  }
+
   function investigate(c) {
     document.body.classList.add('vb-loading');
     document.body.classList.remove('vb-report-ready');
@@ -497,6 +524,26 @@
   /* ---------- flow --------------------------------------------------- */
 
   var pageHideTimer = null;
+
+  /* Arriving here from the home page's "Start a new verification" →
+     Business choice: the panel already asked the question and got an
+     answer, so it shouldn't reset back to the generic suggestions — it
+     should pick up with the next question. */
+  function consumeIncomingFlow() {
+    if (!window.TruAIFlows) return;
+    var state = window.TruAIFlows.getFlow();
+    if (!state || state.flow !== 'new-verification' || state.step !== 'ask-name') return;
+    window.TruAIFlows.clearFlow();
+
+    if (dom.suggestions) dom.suggestions.hidden = true;
+    dom.thread.hidden = false;
+    dom.thread.innerHTML =
+      '<p class="ai-said">Business</p>' +
+      '<div class="ai-reply"><p class="ai-reply__lead">What’s the business name?</p></div>';
+
+    var panelField = document.getElementById('v2-ask');
+    if (panelField) panelField.focus();
+  }
 
   function start() {
     document.body.classList.add('vb-searching');
@@ -563,6 +610,8 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && document.body.classList.contains('vb-searching')) reset();
     });
+
+    consumeIncomingFlow();
 
     /* Exposed so a demo script — or a test — can drive the flow without
        synthesising keystrokes. */
