@@ -1,0 +1,255 @@
+/* Standalone sign-in page — Figma node 1275:53444.
+   Dark dot-pattern backdrop, centred card, shimmering dot grid. */
+
+.d1-signin-page {
+  /* Backdrop glow. */
+  --su-glow-color: #147160;
+  --su-glow-opacity: 0.35;
+  --su-glow-width: 1350px;
+  --su-glow-height: 650px;
+  --su-glow-y: 84%;
+
+  margin: 0;
+  background: #172d2d;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  -webkit-font-smoothing: antialiased;
+}
+
+.d1-su {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+/* --- Backdrop --- */
+
+/* `isolation` keeps the glow's blend inside the backdrop so the card
+   above it stays untouched. */
+.d1-su__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  isolation: isolate;
+  background: #172d2d;
+  pointer-events: none;
+}
+
+/* Dots sit on the left and right edges only and fade out before the card,
+   the way the hero asset frames its centre. The mask wraps both passes so
+   the shimmer fades with them. */
+.d1-su__pattern {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(0);
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0.85) 10%, rgba(0, 0, 0, 0.25) 24%, transparent 34%, transparent 66%, rgba(0, 0, 0, 0.25) 76%, rgba(0, 0, 0, 0.85) 90%, #000 100%);
+  mask-image: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0.85) 10%, rgba(0, 0, 0, 0.25) 24%, transparent 34%, transparent 66%, rgba(0, 0, 0, 0.25) 76%, rgba(0, 0, 0, 0.85) 90%, #000 100%);
+}
+
+/* `<object>` rather than `<img>` so the pattern's own pulse animation runs.
+   The asset carries preserveAspectRatio="slice", so it covers the box. */
+.d1-su__dots {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Soft wash under the card. A plain radial gradient, deliberately not a
+   blurred image and with no blend mode: a large `filter: blur()` layer
+   under the form forced the card to recomposite on hover, which made parts
+   of it drop out. */
+.d1-su__glow {
+  position: absolute;
+  top: var(--su-glow-y);
+  left: 50%;
+  width: var(--su-glow-width);
+  height: var(--su-glow-height);
+  max-width: none;
+  opacity: var(--su-glow-opacity);
+  background: radial-gradient(
+    ellipse at center,
+    var(--su-glow-color) 0%,
+    color-mix(in srgb, var(--su-glow-color) 45%, transparent) 38%,
+    transparent 72%
+  );
+  transform: translate(-50%, -50%);
+}
+
+/* --- Form column --- */
+
+/* Its own layer above the backdrop, so hovering the card never repaints
+   through the blended pattern below. */
+.d1-su__form {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  min-height: 100dvh;
+  padding: var(--spacing-48);
+}
+
+.d1-su__brand {
+  display: flex;
+  width: 100%;
+  flex-shrink: 0;
+  animation: d1-su-up 0.5s ease both;
+}
+
+.d1-su__brand img {
+  display: block;
+}
+
+.d1-su__center {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+}
+
+/* --- Card --- */
+
+.d1-su__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-40);
+  box-sizing: border-box;
+  width: min(500px, 100%);
+  padding: var(--spacing-40);
+  border-radius: var(--radius-3xl, 24px);
+  background-color: var(--surface-neutral-01);
+  background-image:
+    radial-gradient(ellipse 150% 120% at 0% 0%, rgba(189, 238, 226, 0.35) 0%, rgba(189, 238, 226, 0) 60%),
+    radial-gradient(ellipse 120% 110% at 82% 100%, rgba(217, 221, 247, 0.35) 0%, rgba(217, 221, 247, 0) 60%);
+  box-shadow:
+    0 8px 8px rgba(0, 0, 0, 0.08),
+    0 60px 60px rgba(0, 0, 0, 0.25);
+  animation: d1-su-card 0.6s 0.08s ease both;
+}
+
+.d1-su__title {
+  margin: 0;
+  color: var(--text-default);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-display-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: 2.75rem;
+}
+
+.d1-su__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  width: 100%;
+}
+
+.d1-su__fields,
+.d1-su__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  width: 100%;
+}
+
+.d1-su__card .tds-text-input {
+  gap: var(--gap-xs);
+  width: 100%;
+}
+
+.d1-su__eye {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.d1-su__eye img {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.d1-su__forgot {
+  align-self: flex-start;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--interactive-default);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-lg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.d1-su__forgot:hover {
+  text-decoration: underline;
+}
+
+.d1-su__submit {
+  width: 100%;
+}
+
+/* --- Hand-off --- */
+
+.d1-su.is-out {
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+@keyframes d1-su-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes d1-su-card {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 600px) {
+  .d1-su__form {
+    padding: var(--spacing-24);
+  }
+
+  .d1-su__card {
+    padding: var(--spacing-24);
+    gap: var(--spacing-32);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d1-su__dots--sweep {
+    display: none;
+  }
+
+  .d1-su,
+  .d1-su.is-out,
+  .d1-su__brand,
+  .d1-su__card {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}

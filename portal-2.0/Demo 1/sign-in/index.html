@@ -1,0 +1,73 @@
+<!-- Demo 1 standalone sign-in — Figma "Portal-2.0-Design---2026", node 1275:53444.
+     https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/?node-id=1275-53444
+
+     Dark dot-pattern backdrop with a centred card. Signing in stores the
+     Demo 1 session flag and hands off to ../index.html. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in — Trulioo Portal</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../Components/text-input/text-input.css">
+  <link rel="stylesheet" href="../../../Components/button/button.css">
+  <link rel="stylesheet" href="sign-in.css">
+</head>
+<body class="d1-signin-page">
+
+<div class="d1-su" data-node-id="1275:53444">
+
+  <div class="d1-su__bg" aria-hidden="true">
+    <div class="d1-su__glow" data-node-id="1275:53445"></div>
+    <div class="d1-su__pattern">
+      <object class="d1-su__dots" type="image/svg+xml" data="assets/hero-dots.svg" tabindex="-1"></object>
+    </div>
+  </div>
+
+  <div class="d1-su__form" data-node-id="1275:53446">
+    <div class="d1-su__brand">
+      <img src="assets/wordmark-white.svg" alt="Trulioo" width="101" height="24" data-node-id="1275:53449">
+    </div>
+
+    <div class="d1-su__center">
+      <form class="d1-su__card" data-d1-signin-form novalidate data-node-id="1279:53792">
+        <h1 class="d1-su__title">Sign in to your account</h1>
+
+        <div class="d1-su__body">
+          <div class="d1-su__fields">
+            <label class="tds-text-input" data-node-id="1279:53796">
+              <span class="tds-field-label">Work email</span>
+              <span class="tds-text-input__field tds-text-input__field--lg">
+                <input class="tds-text-input__native" type="email" name="email" autocomplete="username" placeholder="name@company.com">
+              </span>
+            </label>
+
+            <label class="tds-text-input" data-node-id="1279:53797">
+              <span class="tds-field-label">Password</span>
+              <span class="tds-text-input__field tds-text-input__field--lg">
+                <input class="tds-text-input__native" data-d1-password type="password" name="password" autocomplete="current-password" placeholder="••••••••">
+                <button type="button" class="d1-su__eye" data-d1-password-toggle aria-label="Show password" aria-pressed="false">
+                  <img src="../assets/icons/eye.svg" alt="" width="16" height="16">
+                </button>
+              </span>
+            </label>
+          </div>
+
+          <div class="d1-su__actions" data-node-id="1279:53798">
+            <button type="button" class="d1-su__forgot">Forgot password?</button>
+            <button type="submit" class="tds-btn tds-btn--primary tds-btn--lg d1-su__submit" data-node-id="1279:53801">Sign in</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="sign-in.js"></script>
+</body>
+</html>
