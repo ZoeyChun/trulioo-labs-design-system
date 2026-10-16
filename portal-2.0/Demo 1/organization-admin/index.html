@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organization admin — Trulioo Portal</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../pages/shared/tds-shared-atoms.css">
+
+  <link rel="stylesheet" href="../../../Components/button/button.css">
+  <link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../Components/tabs/tabs.css">
+  <link rel="stylesheet" href="../../../Components/tabs/tab-item/tab-item.css">
+  <link rel="stylesheet" href="../../../Components/counter-label/counter-label.css">
+  <link rel="stylesheet" href="../../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../../Components/tooltip/tooltip.css">
+  <link rel="stylesheet" href="../../../Components/_shared/dropdown-panel/dropdown-panel.css">
+  <link rel="stylesheet" href="../../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../../Components/dialog/dialog.css">
+  <link rel="stylesheet" href="../../../Components/text-input/text-input.css">
+  <link rel="stylesheet" href="../../../Components/_shared/field-label/field-label.css">
+  <link rel="stylesheet" href="../../../Components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../../Components/switch/switch.css">
+  <link rel="stylesheet" href="../../../Components/radio-card/radio-card.css">
+
+  <link rel="stylesheet" href="../css/shell.css">
+  <link rel="stylesheet" href="organization-admin.css">
+</head>
+<body class="org-admin">
+
+<div class="d1-shell">
+
+  <aside class="d1-rail" aria-label="Primary">
+    <div class="d1-rail__header">
+      <a class="d1-logo" href="../index.html" aria-label="Trulioo home">
+        <img src="../assets/logo-mark.svg" alt="" width="29.9995" height="24.6107">
+      </a>
+    </div>
+
+    <nav class="d1-rail__nav">
+      <a class="d1-nav-btn" href="../index.html" aria-label="Messages">
+        <svg width="20" height="20" viewBox="0 0 512 512" aria-hidden="true">
+          <path fill="currentColor" fill-rule="evenodd" d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124-.2.2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V416H64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0h384c35.3 0 64 28.7 64 64v288c0 35.3-28.7 64-64 64H309.3L208 492z"/>
+        </svg>
+      </a>
+    </nav>
+
+    <div class="d1-rail__tools">
+      <a class="d1-tool-btn" href="index.html" aria-label="Settings" aria-current="page">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="d1-rail__account">
+      <div class="d1-fly d1-fly--account">
+        <button type="button" class="d1-account" aria-label="Jane Doe, janedoe@trulioo.com" aria-haspopup="true" aria-controls="d1-org-account-menu">
+          <span class="d1-account__avatar" aria-hidden="true">JD</span>
+        </button>
+        <div class="d1-fly__panel d1-account-menu" id="d1-org-account-menu" role="menu" aria-label="Account">
+          <div class="d1-org">
+            <span class="d1-org__mark"><img src="../assets/icons/mountain.svg" alt="" width="16" height="16"></span>
+            <span class="d1-org__name">Pacific Ridge Financial</span>
+          </div>
+          <hr class="d1-fly__rule">
+          <button type="button" class="d1-menu-item" role="menuitem"><img src="../assets/icons/nav-help.svg" alt="" width="24" height="24">Help &amp; Support</button>
+          <button type="button" class="d1-menu-item" role="menuitem"><img src="../assets/icons/nav-privacy.svg" alt="" width="24" height="24">Privacy Policies</button>
+          <a class="d1-menu-item" role="menuitem" href="../index.html"><img src="../assets/icons/nav-signout.svg" alt="" width="24" height="24">Sign Out</a>
+          <hr class="d1-fly__rule">
+          <div class="d1-who">
+            <p class="d1-who__name">Jane Doe <img src="../assets/icons/chevron-up.svg" alt="" width="12" height="12"></p>
+            <p class="d1-who__mail">janedoe@trulioo.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="d1-main">
+    <div class="d1-slot">
+<section class="org-page">
+      <header class="org-header">
+        <div class="org-title-row">
+          <div>
+            <h1 class="org-title">Organization admin</h1>
+            <p class="org-subtitle">Manage your organization members, roles, and access permissions.</p>
+          </div>
+          <button type="button" class="tds-btn tds-btn--primary tds-btn--lg org-invite" id="invite-open">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 3.2v9.6M3.2 8h9.6"/></svg>
+            Invite User
+          </button>
+        </div>
+        <div class="org-stats" id="stats"></div>
+      </header>
+
+      <div class="tds-tabs org-tabs">
+        <div class="tds-tabs__row">
+          <div class="tds-tabs__list" role="tablist" aria-label="Organization members">
+            <button type="button" class="tds-tab-item tds-tab-item--active" id="tab-users" role="tab" aria-selected="true" aria-controls="panel-users">
+              <span class="tds-tab-item__content">Org Users <span class="tds-counter tds-counter--secondary tds-counter--sm" id="count-users">24</span></span>
+              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="tds-tab-item" id="tab-invites" role="tab" aria-selected="false" aria-controls="panel-invites">
+              <span class="tds-tab-item__content">Pending Invitations <span class="tds-counter tds-counter--secondary tds-counter--intermediate tds-counter--sm" id="count-invites">3</span></span>
+              <span class="tds-tab-item__indicator" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+        <div class="tds-tabs__divider" role="presentation"></div>
+      </div>
+
+      <div class="tds-data-table-container org-table" id="panel-users" role="tabpanel" aria-labelledby="tab-users">
+        <div class="tds-data-table__wrapper">
+          <table class="tds-data-table org-data-table">
+            <thead>
+              <tr>
+                <th scope="col">Name &amp; email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col">Last login</th>
+                <th scope="col" class="tds-data-table__actions-col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="users-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tds-data-table-container org-table" id="panel-invites" role="tabpanel" aria-labelledby="tab-invites" hidden>
+        <div class="tds-data-table__wrapper">
+          <table class="tds-data-table org-data-table">
+            <thead>
+              <tr>
+                <th scope="col">Name &amp; email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                <th scope="col">Sent</th>
+                <th scope="col">Expires</th>
+                <th scope="col" class="tds-data-table__actions-col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="invites-body"></tbody>
+          </table>
+        </div>
+      </div>
+      </section>
+    </div>
+  </main>
+
+</div>
+
+<div class="tds-dialog tds-dialog--center tds-dialog--md" id="edit-dialog" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="edit-title">Edit User</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" data-close="edit-dialog" aria-label="Close">
+            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <form class="tds-dialog__body" id="edit-form">
+        <div class="org-form">
+          <p class="org-form__intro">Update personal details and user roles.</p>
+          <div class="org-fields">
+            <p class="org-section-label">Personal Details</p>
+            <div class="org-field-row">
+              <div class="tds-text-input">
+                <label class="tds-field-label" for="edit-first">First Name</label>
+                <div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" id="edit-first" name="first" autocomplete="given-name"></div>
+              </div>
+              <div class="tds-text-input">
+                <label class="tds-field-label" for="edit-last">Last Name</label>
+                <div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" id="edit-last" name="last" autocomplete="family-name"></div>
+              </div>
+            </div>
+            <div class="tds-text-input tds-text-input--full-width">
+              <label class="tds-field-label" for="edit-email">Email</label>
+              <div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" id="edit-email" name="email" type="email" autocomplete="email"></div>
+            </div>
+          </div>
+          <div class="org-status">
+            <p class="org-section-label">Status</p>
+            <div class="tds-switch">
+              <span class="tds-switch__label-group"><span id="edit-status-label">Active</span></span>
+              <button type="button" class="tds-switch__track tds-switch__track--sm tds-switch__track--on" id="edit-status" role="switch" aria-checked="true">
+                <span class="tds-switch__indicator" aria-hidden="true"></span>
+                <span class="tds-switch__handle" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+          <div class="org-field" role="group" aria-labelledby="edit-perms-label">
+            <p class="org-section-label" id="edit-perms-label">Permissions</p>
+            <div class="org-perms" id="edit-perms"></div>
+          </div>
+        </div>
+      </form>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary" data-close="edit-dialog">Cancel</button>
+            <button type="submit" class="tds-btn tds-btn--primary" form="edit-form">Save</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div class="tds-dialog tds-dialog--center tds-dialog--md" id="invite-dialog" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="invite-title">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="invite-title">Invite User</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" data-close="invite-dialog" aria-label="Close">
+            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <form class="tds-dialog__body" id="invite-form">
+        <div class="org-form">
+          <p class="org-form__intro">Send an invitation to add a new member to your organization.</p>
+          <div class="org-field">
+            <label class="org-field__label" for="invite-email">Email address</label>
+            <div class="tds-text-input tds-text-input--full-width">
+              <div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" id="invite-email" name="email" type="email" placeholder="name@company.com" autocomplete="email" required></div>
+            </div>
+          </div>
+          <div class="org-field">
+            <p class="org-field__label" id="role-label">Role</p>
+            <div class="org-roles" role="radiogroup" aria-labelledby="role-label">
+              <label class="tds-radio-card tds-radio-card--selected">
+                <input class="tds-radio" type="radio" name="role" value="Org User" checked>
+                <span class="tds-radio-card__content">
+                  <span class="tds-radio-card__label-row">
+                    <span class="tds-radio-card__icon" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
+                    <span class="tds-radio-card__label">Org User</span>
+                  </span>
+                </span>
+              </label>
+              <label class="tds-radio-card">
+                <input class="tds-radio" type="radio" name="role" value="Org Admin">
+                <span class="tds-radio-card__content">
+                  <span class="tds-radio-card__label-row">
+                    <span class="tds-radio-card__icon" aria-hidden="true"><svg class="fa-glyph fa-glyph--user-key" viewBox="0 0 576 576"><path fill="currentColor" d="M144 128C144 84 180 48 224 48C268 48 304 84 304 128C304 172 268 208 224 208C180 208 144 172 144 128ZM352 128C352 57 295 0 224 0C153 0 96 57 96 128C96 199 153 256 224 256C295 256 352 199 352 128ZM48 480C48 409 105 352 176 352H272C287 352 301 354 314 359C308 343 304 325 304 307C294 305 283 304 272 304H176C79 304 0 383 0 480V488C0 501 11 512 24 512C37 512 48 501 48 488V480ZM576 304C576 242 526 192 464 192C402 192 352 242 352 304C352 349 378 387 416 405V521C416 526 418 530 421 533L453 565C459 571 469 571 475 565L517 523C523 517 523 507 517 501L496 480L518 458C524 452 524 443 519 437L498 411C543 396 576 354 576 304ZM432 288C432 270 446 256 464 256C482 256 496 270 496 288C496 306 482 320 464 320C446 320 432 306 432 288Z"/></svg></span>
+                    <span class="tds-radio-card__label">Org Admin</span>
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="org-field" role="group" aria-labelledby="invite-perms-label">
+            <p class="org-section-label" id="invite-perms-label">Permissions</p>
+            <div class="org-perms" id="invite-perms"></div>
+          </div>
+        </div>
+      </form>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary" data-close="invite-dialog">Cancel</button>
+            <button type="submit" class="tds-btn tds-btn--primary" form="invite-form">Send Invite</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div class="tds-dialog tds-dialog--center tds-dialog--md" id="success-dialog" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="success-title">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="success-title">Invite User</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" data-close="success-dialog" aria-label="Close">
+            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <div class="tds-dialog__body">
+        <div class="org-success">
+          <svg class="org-success__icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><circle cx="32" cy="32" r="22" stroke="currentColor" stroke-width="2.5"/><path d="M22 33.2 28.4 39.5 42 24.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p class="org-success__title">Invitation sent successfully</p>
+          <p class="org-success__text">An invitation email has been sent to <span class="org-success__email" id="success-email">janedoe@trulioo.com</span></p>
+        </div>
+      </div>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary" id="view-invites">View all invitations</button>
+            <button type="button" class="tds-btn tds-btn--primary" data-close="success-dialog">Done</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div class="tds-dialog tds-dialog--center tds-dialog--md" id="confirm-dialog" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="confirm-title">Remove user?</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" data-close="confirm-dialog" aria-label="Close">
+            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <div class="tds-dialog__body">
+        <p class="org-form__intro" id="confirm-message">This member will be removed from your organization.</p>
+      </div>
+      <footer class="tds-dialog__footer">
+        <div class="tds-dialog__divider" role="presentation"></div>
+        <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+          <div class="tds-dialog__actions">
+            <button type="button" class="tds-btn tds-btn--secondary" data-close="confirm-dialog">Cancel</button>
+            <button type="button" class="tds-btn tds-btn--danger" id="confirm-action">Remove user</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div class="org-snackbar" id="snackbar" role="status" hidden>
+  <span class="org-snackbar__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.4a6.6 6.6 0 1 0 0 13.2A6.6 6.6 0 0 0 8 1.4Zm3.1 4.7-3.6 4.2a.7.7 0 0 1-1 .1L4.8 8.6a.7.7 0 1 1 1-1l1.1 1.1 3.1-3.6a.7.7 0 1 1 1.1.9Z"/></svg></span>
+  <span id="snackbar-text">User changes saved successfully</span>
+</div>
+
+
+<script src="organization-admin.js"></script>
+</body>
+</html>

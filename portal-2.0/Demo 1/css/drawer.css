@@ -1,43 +1,81 @@
 /* Side drawer — Figma "Full report Drawer" 1117:78458 / 1117:79534.
-   Sits inside the white shell card, beside the chat. Not an overlay. */
+   Sits inside the white shell card, beside the chat. Not an overlay.
+
+   Motion: only pixel widths animate (no flex%/translateX fight). Inner
+   .d1-drawer__surface is locked to the open width so content does not
+   reflow while the shell expands L→R / collapses R→L. */
 
 .d1-main:has(.d1-drawer) {
   flex-direction: row;
   align-items: stretch;
   gap: 0;
   overflow: hidden;
+  --d1-drawer-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Same duration — shell + content run as one motion, not two beats. */
+  --d1-drawer-shell-ms: 420ms;
+  --d1-drawer-content-ms: 420ms;
+  --d1-slot-w: 100%;
+  --d1-drawer-w: 0px;
+  --d1-drawer-surface-w: 0px;
 }
 
 .d1-main:has(.d1-drawer) .d1-slot {
-  transition: flex-basis 0.45s cubic-bezier(0.22, 0.8, 0.24, 1), max-width 0.45s cubic-bezier(0.22, 0.8, 0.24, 1);
+  flex: 0 0 auto;
+  width: var(--d1-slot-w);
+  max-width: none;
+  min-width: 0;
+  overflow: hidden;
+  transition:
+    width var(--d1-drawer-shell-ms) var(--d1-drawer-ease),
+    opacity 0.28s ease;
 }
 
 .d1-drawer {
   display: flex;
   flex-direction: column;
-  flex: 0 0 0%;
-  width: 0;
+  flex: 0 0 auto;
+  width: var(--d1-drawer-w);
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  opacity: 0;
   pointer-events: none;
-  transform: translateX(100%);
   background: var(--surface-neutral-01);
   border: 1px solid transparent;
   border-radius: var(--radius-2xl);
-  transition: flex-basis 0.45s cubic-bezier(0.22, 0.8, 0.24, 1), width 0.45s cubic-bezier(0.22, 0.8, 0.24, 1), transform 0.45s cubic-bezier(0.22, 0.8, 0.24, 1), opacity 0.3s ease;
+  /* Width only — L→R grow / R→L shrink without a competing slide. */
+  transition:
+    width var(--d1-drawer-shell-ms) var(--d1-drawer-ease),
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.d1-main[data-d1-drawer="open"] {
-  flex-direction: row;
-  align-items: stretch;
+/* Locked-width surface: laid out at the final open size, clipped by parent. */
+.d1-drawer__surface {
+  display: flex;
+  flex-direction: column;
+  width: var(--d1-drawer-surface-w);
+  min-width: var(--d1-drawer-surface-w);
+  height: 100%;
+  min-height: 0;
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
+  transition:
+    opacity var(--d1-drawer-content-ms) var(--d1-drawer-ease),
+    transform var(--d1-drawer-content-ms) var(--d1-drawer-ease);
 }
 
-.d1-main[data-d1-drawer="open"] .d1-slot {
-  flex: 0 0 30%;
-  width: 30%;
-  max-width: 30%;
+.d1-drawer.is-content-in .d1-drawer__surface {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Close fades out faster than open so collapse can follow quickly. */
+.d1-drawer.is-closing .d1-drawer__surface {
+  transition-duration: 160ms;
+}
+
+.d1-main[data-d1-drawer="open"] .d1-slot,
+.d1-main[data-d1-drawer="expanded"] .d1-slot {
   min-width: 0;
 }
 
@@ -45,52 +83,33 @@
   padding-inline: clamp(12px, 4%, 32px);
 }
 
-.d1-main[data-d1-drawer="open"] .d1-drawer {
-  flex: 0 0 70%;
-  width: 70%;
-  max-width: none;
-  min-width: 0;
-  opacity: 1;
+.d1-main[data-d1-drawer="open"] .d1-drawer,
+.d1-main[data-d1-drawer="expanded"] .d1-drawer {
   pointer-events: auto;
-  transform: translateX(0);
   border-color: var(--border-subtle);
   box-shadow: var(--elevation-md);
 }
 
-/* Expand: drawer fills the shell; chat/slot is hidden. */
 .d1-main[data-d1-drawer="expanded"] {
-  flex-direction: row;
-  align-items: stretch;
+  padding: 0;
 }
 
 .d1-main[data-d1-drawer="expanded"] .d1-slot {
-  flex: 0 0 0%;
-  width: 0;
-  max-width: 0;
-  min-width: 0;
   opacity: 0;
-  overflow: hidden;
   pointer-events: none;
 }
 
 .d1-main[data-d1-drawer="expanded"] .d1-drawer {
-  flex: 1 1 100%;
-  width: 100%;
-  max-width: none;
-  min-width: 0;
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(0);
-  border-color: var(--border-subtle);
-  box-shadow: var(--elevation-md);
+  border-radius: var(--radius-2xl);
 }
 
-.d1-doc.is-in {
-  animation: d1-drawer-in 0.4s cubic-bezier(0.22, 0.8, 0.24, 1);
+/* Tab switches only — initial open uses .d1-drawer__surface motion. */
+.d1-drawer.is-content-in .d1-doc.is-in {
+  animation: d1-doc-enter 0.28s var(--d1-drawer-ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
-@keyframes d1-drawer-in {
-  from { opacity: 0; transform: translateX(28px); }
+@keyframes d1-doc-enter {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
   to { opacity: 1; transform: none; }
 }
 
@@ -419,17 +438,23 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .d1-main:has(.d1-drawer) {
+    --d1-drawer-shell-ms: 0ms;
+    --d1-drawer-content-ms: 0ms;
+  }
+
   .d1-drawer,
-  .d1-main:has(.d1-drawer) .d1-slot {
+  .d1-main:has(.d1-drawer) .d1-slot,
+  .d1-drawer__surface {
     transition: none;
   }
 
-  .d1-drawer,
-  .d1-main[data-d1-drawer="open"] .d1-drawer {
+  .d1-drawer__surface {
+    opacity: 1;
     transform: none;
   }
 
-  .d1-doc.is-in {
+  .d1-drawer.is-content-in .d1-doc.is-in {
     animation: none;
   }
 }

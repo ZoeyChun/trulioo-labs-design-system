@@ -1,19 +1,117 @@
 /* Opens the shell drawer from a transaction row or View report.
    Transaction tabs behave like a browser: only rows the user has opened
-   appear, and each new row click adds another tab. */
+   appear, and each new row click adds another tab.
+
+   Motion sequence:
+   - Open: shell + content run together (width reveal + fade/slide).
+   - Close: content fades out, then shell collapses R→L.
+   Inner surface width is locked so report content does not reflow mid-tween. */
 (function () {
   var main = document.querySelector(".d1-main");
   var drawer = document.querySelector("[data-d1-drawer-panel]");
+  var surface = drawer && drawer.querySelector(".d1-drawer__surface");
   var tabs = document.querySelector("[data-d1-drawer-tabs]");
   var closeBtn = document.querySelector("[data-d1-drawer-close]");
   var expandBtn = document.querySelector("[data-d1-drawer-expand]");
   var expandIcon = document.querySelector("[data-d1-drawer-expand-icon]");
-  if (!main || !drawer || !tabs) return;
+  if (!main || !drawer || !surface || !tabs) return;
 
-  /* Open transaction tabs for this investigation. Report mode is separate. */
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var SHELL_MS = reduced ? 0 : 420;
+  /* Close: short fade-out before collapse (open content matches shell via CSS). */
+  var CONTENT_OUT_MS = reduced ? 0 : 160;
+
   var openTabs = [];
   var mode = null;
   var expanded = false;
+  var closing = false;
+  var opening = false;
+  var openTimer = 0;
+  var closeTimer = 0;
+  var shellHandler = null;
+
+  function clearTimers() {
+    window.clearTimeout(openTimer);
+    window.clearTimeout(closeTimer);
+    openTimer = 0;
+    closeTimer = 0;
+    if (shellHandler) {
+      drawer.removeEventListener("transitionend", shellHandler);
+      shellHandler = null;
+    }
+  }
+
+  function setContentIn(on) {
+    drawer.classList.toggle("is-content-in", !!on);
+  }
+
+  function setClosing(on) {
+    drawer.classList.toggle("is-closing", !!on);
+  }
+
+  function availableWidth() {
+    var style = window.getComputedStyle(main);
+    var pad =
+      (parseFloat(style.paddingLeft) || 0) +
+      (parseFloat(style.paddingRight) || 0);
+    return Math.max(0, main.clientWidth - pad);
+  }
+
+  function targetWidths(nextExpanded) {
+    var avail = availableWidth();
+    var drawerW = nextExpanded ? avail : Math.round(avail * 0.7);
+    return {
+      avail: avail,
+      drawerW: drawerW,
+      slotW: Math.max(0, avail - drawerW)
+    };
+  }
+
+  /* Apply open/expanded state first so padding is correct, then lock widths. */
+  function applySizes(nextExpanded) {
+    main.setAttribute("data-d1-drawer", nextExpanded ? "expanded" : "open");
+    void main.offsetWidth;
+    var sizes = targetWidths(nextExpanded);
+    main.style.setProperty("--d1-drawer-surface-w", sizes.drawerW + "px");
+    main.style.setProperty("--d1-drawer-w", sizes.drawerW + "px");
+    main.style.setProperty("--d1-slot-w", sizes.slotW + "px");
+  }
+
+  function applyClosedSizes() {
+    var avail = availableWidth();
+    main.style.setProperty("--d1-drawer-w", "0px");
+    main.style.setProperty("--d1-slot-w", avail + "px");
+  }
+
+  function initClosed() {
+    applyClosedSizes();
+    /* Keep last surface width at 0 until first open measures. */
+    main.style.setProperty("--d1-drawer-surface-w", "0px");
+  }
+
+  function afterShell(callback) {
+    if (reduced || SHELL_MS === 0) {
+      callback();
+      return;
+    }
+    var done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      drawer.removeEventListener("transitionend", onEnd);
+      shellHandler = null;
+      window.clearTimeout(openTimer);
+      openTimer = 0;
+      callback();
+    }
+    function onEnd(event) {
+      if (event.target !== drawer || event.propertyName !== "width") return;
+      finish();
+    }
+    shellHandler = onEnd;
+    drawer.addEventListener("transitionend", onEnd);
+    openTimer = window.setTimeout(finish, SHELL_MS + 80);
+  }
 
   function tableRows() {
     var tables = document.querySelectorAll(".d1-thread .d1-table");
@@ -34,13 +132,16 @@
     return { id: id, label: product || name };
   }
 
-  function showView(name) {
+  function showView(name, opts) {
+    var animateDoc = !opts || opts.animateDoc !== false;
     document.querySelectorAll("[data-d1-drawer-view]").forEach(function (view) {
       var on = view.getAttribute("data-d1-drawer-view") === name;
       view.hidden = !on;
       view.classList.remove("is-in");
-      if (on) {
+      if (on && animateDoc && drawer.classList.contains("is-content-in")) {
         void view.offsetWidth;
+        view.classList.add("is-in");
+      } else if (on) {
         view.classList.add("is-in");
       }
     });
@@ -85,16 +186,55 @@
     if (expandIcon) expandIcon.src = expanded ? "assets/icons/compress.svg" : "assets/icons/expand.svg";
   }
 
+  function isShellOpen() {
+    var state = main.getAttribute("data-d1-drawer");
+    return state === "open" || state === "expanded";
+  }
+
   function reveal() {
-    main.setAttribute("data-d1-drawer", expanded ? "expanded" : "open");
+    var wasClosed = !isShellOpen() || closing;
+    clearTimers();
+    closing = false;
+    setClosing(false);
+    opening = true;
+
+    if (wasClosed) {
+      setContentIn(false);
+      /* State first (padding), then sizes, then animate width from 0. */
+      main.setAttribute("data-d1-drawer", expanded ? "expanded" : "open");
+      void main.offsetWidth;
+      var sizes = targetWidths(expanded);
+      main.style.setProperty("--d1-drawer-surface-w", sizes.drawerW + "px");
+      main.style.setProperty("--d1-drawer-w", "0px");
+      main.style.setProperty("--d1-slot-w", sizes.avail + "px");
+      void drawer.offsetWidth;
+      main.style.setProperty("--d1-drawer-w", sizes.drawerW + "px");
+      main.style.setProperty("--d1-slot-w", sizes.slotW + "px");
+      drawer.setAttribute("aria-hidden", "false");
+      /* Next frame: fade content in with the width expand — one continuous motion. */
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          if (closing) return;
+          setContentIn(true);
+          openTimer = window.setTimeout(function () {
+            opening = false;
+          }, SHELL_MS);
+        });
+      });
+      return;
+    }
+
+    applySizes(expanded);
     drawer.setAttribute("aria-hidden", "false");
+    opening = false;
+    setContentIn(true);
   }
 
   function openReport() {
     mode = "report";
     openTabs = [];
     render([{ id: "report", label: "Business Verification Report" }], "report");
-    showView("report");
+    showView("report", { animateDoc: false });
     reveal();
   }
 
@@ -106,7 +246,7 @@
     var exists = openTabs.some(function (item) { return item.id === id; });
     if (!exists) openTabs.push(rowMeta(id));
     render(openTabs, id);
-    showView(id);
+    showView(id, { animateDoc: false });
     reveal();
   }
 
@@ -115,8 +255,10 @@
     else openRow(kind);
   }
 
-  function close() {
+  function finishClose() {
     setExpanded(false);
+    setContentIn(false);
+    setClosing(false);
     main.setAttribute("data-d1-drawer", "closed");
     drawer.setAttribute("aria-hidden", "true");
     openTabs = [];
@@ -125,16 +267,42 @@
     document.querySelectorAll(".d1-table tbody tr").forEach(function (tr) {
       tr.removeAttribute("aria-current");
     });
+    closing = false;
+    opening = false;
+  }
+
+  function close() {
+    if ((!isShellOpen() && !closing) || opening) return;
+    if (closing) return;
+    closing = true;
+    clearTimers();
+    setClosing(true);
+    setContentIn(false);
+
+    function collapseShell() {
+      /* Restore main padding before measuring, then collapse width. */
+      if (main.getAttribute("data-d1-drawer") === "expanded") {
+        setExpanded(false);
+        main.setAttribute("data-d1-drawer", "open");
+        void main.offsetWidth;
+      }
+      applyClosedSizes();
+      afterShell(finishClose);
+    }
+
+    if (reduced || CONTENT_OUT_MS === 0) {
+      collapseShell();
+      return;
+    }
+    closeTimer = window.setTimeout(collapseShell, CONTENT_OUT_MS);
   }
 
   function toggleExpand() {
-    if (main.getAttribute("data-d1-drawer") === "closed") return;
+    if (!isShellOpen() || closing || opening) return;
     setExpanded(!expanded);
     reveal();
   }
 
-  /* The report and the table are cloned into the thread when a reply plays,
-     so a listener bound at load never sees the View button or the rows. */
   var thread = document.querySelector("[data-d1-thread]");
   if (thread) {
     thread.addEventListener("click", function (event) {
@@ -170,14 +338,20 @@
   if (expandBtn) expandBtn.addEventListener("click", toggleExpand);
 
   document.addEventListener("keydown", function (event) {
-    var state = main.getAttribute("data-d1-drawer");
-    if (event.key === "Escape" && (state === "open" || state === "expanded")) close();
+    if (event.key === "Escape" && (isShellOpen() || closing)) close();
   });
 
-  /* Sidebar / other modules open the report without re-binding View clicks. */
   document.addEventListener("d1-drawer:open", function (event) {
     open(event.detail && event.detail.kind ? event.detail.kind : "report");
   });
 
   document.addEventListener("d1-drawer:close", close);
+
+  window.addEventListener("resize", function () {
+    if (closing || opening) return;
+    if (isShellOpen()) applySizes(expanded);
+    else applyClosedSizes();
+  });
+
+  initClosed();
 })();

@@ -80,6 +80,7 @@ button {
   border-radius: var(--radius-lg);
   background: var(--interactive-default);
   overflow: hidden;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -110,6 +111,7 @@ button {
   border-radius: var(--radius-lg);
   background: transparent;
   color: var(--icon-faint);
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -136,6 +138,7 @@ button {
   border-radius: var(--radius-lg);
   background: transparent;
   color: var(--icon-faint);
+  text-decoration: none;
   cursor: pointer;
 }
 
