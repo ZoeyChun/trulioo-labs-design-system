@@ -57,6 +57,34 @@
   box-shadow: var(--elevation-md);
 }
 
+/* Expand: drawer fills the shell; chat/slot is hidden. */
+.d1-main[data-d1-drawer="expanded"] {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.d1-main[data-d1-drawer="expanded"] .d1-slot {
+  flex: 0 0 0%;
+  width: 0;
+  max-width: 0;
+  min-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.d1-main[data-d1-drawer="expanded"] .d1-drawer {
+  flex: 1 1 100%;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+  border-color: var(--border-subtle);
+  box-shadow: var(--elevation-md);
+}
+
 .d1-doc.is-in {
   animation: d1-drawer-in 0.4s cubic-bezier(0.22, 0.8, 0.24, 1);
 }

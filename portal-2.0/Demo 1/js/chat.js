@@ -10,6 +10,9 @@
   var composer = document.querySelector("[data-d1-composer]");
   var thread = document.querySelector("[data-d1-thread]");
   var follow = document.querySelector("[data-d1-follow]");
+  var sidebar = document.querySelector("[data-d1-sidebar]");
+  var sidebarItems = document.querySelector("[data-d1-sidebar-items]");
+  var home = stage;
   if (!stage || !composer || !thread) return;
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -715,6 +718,92 @@
     if (follow) follow.classList.remove("is-on");
   }
 
+  /* -------------------------------------------------------- context sidebar */
+
+  var sidebarOpen = false;
+
+  function toggleSidebar() {
+    sidebarOpen = !sidebarOpen;
+    if (sidebar) sidebar.hidden = !sidebarOpen;
+    if (home) {
+      if (sidebarOpen) home.classList.add("has-sidebar");
+      else home.classList.remove("has-sidebar");
+    }
+    document.querySelectorAll("[data-d1-sidebar-toggle]").forEach(function (btn) {
+      btn.setAttribute("aria-pressed", sidebarOpen ? "true" : "false");
+    });
+  }
+
+  function closeSidebar() {
+    sidebarOpen = false;
+    if (sidebar) sidebar.hidden = true;
+    if (sidebarItems) sidebarItems.innerHTML = "";
+    if (home) home.classList.remove("has-sidebar");
+    document.querySelectorAll("[data-d1-sidebar-toggle]").forEach(function (btn) {
+      btn.setAttribute("aria-pressed", "false");
+    });
+  }
+
+  function selectSidebarItem(kind) {
+    if (!sidebarItems) return;
+    var items = sidebarItems.querySelectorAll(".d1-sidebar__item");
+    for (var i = 0; i < items.length; i += 1) {
+      var on = items[i].getAttribute("data-d1-sidebar-item") === kind;
+      items[i].classList.toggle("is-active", on);
+      items[i].setAttribute("aria-current", on ? "true" : "false");
+    }
+  }
+
+  function updateSidebar(entity, hasLinks) {
+    if (!sidebarItems) return;
+    sidebarItems.innerHTML = "";
+    if (!entity) return;
+
+    var reportItem = document.createElement("button");
+    reportItem.type = "button";
+    reportItem.className = "d1-sidebar__item";
+    reportItem.setAttribute("data-d1-sidebar-item", "report");
+    reportItem.setAttribute("aria-current", "false");
+    reportItem.textContent = "KYB Report for " + entity.name;
+    reportItem.addEventListener("click", function () {
+      selectSidebarItem("report");
+      document.dispatchEvent(new CustomEvent("d1-drawer:open", { detail: { kind: "report" } }));
+    });
+    sidebarItems.appendChild(reportItem);
+
+    if (hasLinks) {
+      var txItem = document.createElement("button");
+      txItem.type = "button";
+      txItem.className = "d1-sidebar__item";
+      txItem.setAttribute("data-d1-sidebar-item", "links");
+      txItem.setAttribute("aria-current", "false");
+      txItem.textContent = "Connected transactions";
+      txItem.addEventListener("click", function () {
+        selectSidebarItem("links");
+        document.dispatchEvent(new CustomEvent("d1-drawer:close"));
+        var table = thread.querySelector(".d1-table:last-of-type");
+        if (table) table.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+      });
+      sidebarItems.appendChild(txItem);
+      selectSidebarItem("links");
+    } else {
+      selectSidebarItem("report");
+    }
+  }
+
+  document.addEventListener("click", function (event) {
+    var btn = event.target.closest("[data-d1-sidebar-toggle]");
+    if (btn) toggleSidebar();
+  });
+
+  /* Keep Summary selection in sync when the thread opens a report or row. */
+  if (thread) {
+    thread.addEventListener("click", function (event) {
+      if (event.target.closest(".d1-alert__view")) selectSidebarItem("report");
+      else if (event.target.closest("tr[data-d1-tx]")) selectSidebarItem("links");
+    });
+  }
+
   /* --------------------------------------------------------------- intent */
 
   function normalize(text) {
@@ -818,8 +907,13 @@
     hideFollow();
     showFollow();
     renderChatList();
-    var main = document.querySelector(".d1-main");
-    if (main) main.setAttribute("data-d1-drawer", "closed");
+    document.dispatchEvent(new CustomEvent("d1-drawer:close"));
+    if (convo.entity) {
+      updateSidebar(convo.entity, convo.linksShown);
+      if (!sidebarOpen) toggleSidebar();
+    } else {
+      closeSidebar();
+    }
   }
 
   function startNewChat() {
@@ -831,9 +925,9 @@
     scroller = null;
     setBusy(false);
     hideFollow();
+    closeSidebar();
     stage.setAttribute("data-d1-stage", "home");
-    var main = document.querySelector(".d1-main");
-    if (main) main.setAttribute("data-d1-drawer", "closed");
+    document.dispatchEvent(new CustomEvent("d1-drawer:close"));
     if (title) title.textContent = "Chat heading/title";
     renderChatList();
   }
@@ -1286,6 +1380,8 @@
 
   async function respond(text, agent) {
     var plan = planReply(text, agent);
+    updateSidebar(convo.entity, convo.linksShown);
+    if (convo.entity && !sidebarOpen) toggleSidebar();
     var token = new Run();
     run = token;
     setBusy(true);

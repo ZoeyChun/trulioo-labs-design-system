@@ -1,16 +1,37 @@
-/* Opens the shell drawer from a transaction row or View report. */
+/* Opens the shell drawer from a transaction row or View report.
+   Transaction tabs behave like a browser: only rows the user has opened
+   appear, and each new row click adds another tab. */
 (function () {
   var main = document.querySelector(".d1-main");
   var drawer = document.querySelector("[data-d1-drawer-panel]");
   var tabs = document.querySelector("[data-d1-drawer-tabs]");
   var closeBtn = document.querySelector("[data-d1-drawer-close]");
+  var expandBtn = document.querySelector("[data-d1-drawer-expand]");
+  var expandIcon = document.querySelector("[data-d1-drawer-expand-icon]");
   if (!main || !drawer || !tabs) return;
+
+  /* Open transaction tabs for this investigation. Report mode is separate. */
+  var openTabs = [];
+  var mode = null;
+  var expanded = false;
 
   function tableRows() {
     var tables = document.querySelectorAll(".d1-thread .d1-table");
     var table = tables[tables.length - 1];
     if (!table) return [];
     return Array.prototype.slice.call(table.querySelectorAll("tbody tr[data-d1-tx]"));
+  }
+
+  function rowMeta(id) {
+    var rows = tableRows();
+    var row = null;
+    for (var i = 0; i < rows.length; i += 1) {
+      if (rows[i].getAttribute("data-d1-tx") === id) { row = rows[i]; break; }
+    }
+    if (!row) return { id: id, label: id };
+    var name = row.cells[0] ? row.cells[0].textContent.trim() : "Record";
+    var product = row.cells[3] ? row.cells[3].textContent.trim() : "";
+    return { id: id, label: product || name };
   }
 
   function showView(name) {
@@ -55,30 +76,61 @@
     });
   }
 
-  function open(kind) {
-    var rows = tableRows();
-    var fromTable = kind && kind !== "report" && rows.length > 1;
-    if (fromTable) {
-      render(rows.map(function (tr) {
-        var name = tr.cells[0] ? tr.cells[0].textContent.trim() : "Record";
-        var product = tr.cells[3] ? tr.cells[3].textContent.trim() : "";
-        return { id: tr.getAttribute("data-d1-tx"), label: product || name };
-      }), kind);
-      showView(kind);
-    } else {
-      render([{ id: "report", label: "Business Verification Report" }], "report");
-      showView("report");
+  function setExpanded(on) {
+    expanded = !!on;
+    if (expandBtn) {
+      expandBtn.setAttribute("aria-pressed", expanded ? "true" : "false");
+      expandBtn.setAttribute("aria-label", expanded ? "Collapse" : "Expand");
     }
-    main.setAttribute("data-d1-drawer", "open");
+    if (expandIcon) expandIcon.src = expanded ? "assets/icons/compress.svg" : "assets/icons/expand.svg";
+  }
+
+  function reveal() {
+    main.setAttribute("data-d1-drawer", expanded ? "expanded" : "open");
     drawer.setAttribute("aria-hidden", "false");
   }
 
+  function openReport() {
+    mode = "report";
+    openTabs = [];
+    render([{ id: "report", label: "Business Verification Report" }], "report");
+    showView("report");
+    reveal();
+  }
+
+  function openRow(id) {
+    if (mode !== "rows") {
+      mode = "rows";
+      openTabs = [];
+    }
+    var exists = openTabs.some(function (item) { return item.id === id; });
+    if (!exists) openTabs.push(rowMeta(id));
+    render(openTabs, id);
+    showView(id);
+    reveal();
+  }
+
+  function open(kind) {
+    if (!kind || kind === "report") openReport();
+    else openRow(kind);
+  }
+
   function close() {
+    setExpanded(false);
     main.setAttribute("data-d1-drawer", "closed");
     drawer.setAttribute("aria-hidden", "true");
+    openTabs = [];
+    mode = null;
+    tabs.replaceChildren();
     document.querySelectorAll(".d1-table tbody tr").forEach(function (tr) {
       tr.removeAttribute("aria-current");
     });
+  }
+
+  function toggleExpand() {
+    if (main.getAttribute("data-d1-drawer") === "closed") return;
+    setExpanded(!expanded);
+    reveal();
   }
 
   /* The report and the table are cloned into the thread when a reply plays,
@@ -115,8 +167,17 @@
   });
 
   if (closeBtn) closeBtn.addEventListener("click", close);
+  if (expandBtn) expandBtn.addEventListener("click", toggleExpand);
 
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && main.getAttribute("data-d1-drawer") === "open") close();
+    var state = main.getAttribute("data-d1-drawer");
+    if (event.key === "Escape" && (state === "open" || state === "expanded")) close();
   });
+
+  /* Sidebar / other modules open the report without re-binding View clicks. */
+  document.addEventListener("d1-drawer:open", function (event) {
+    open(event.detail && event.detail.kind ? event.detail.kind : "report");
+  });
+
+  document.addEventListener("d1-drawer:close", close);
 })();

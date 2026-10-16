@@ -1,0 +1,137 @@
+/* Context sidebar — Figma 1224:50427 / frames 1224:50151 (expanded)
+   and 1228:50614 (collapsed).
+
+   Collapsed: header toggle only.
+   Expanded: 240px Summary card, top-aligned beside the chat column —
+   height hugs content (not a full-height rail). */
+
+.d1-work {
+  display: contents;
+}
+
+.d1-home[data-d1-stage="chat"] {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.d1-home[data-d1-stage="chat"] .d1-work {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  height: 100%;
+}
+
+.d1-sidebar {
+  flex: 0 0 240px;
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
+  height: auto;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* display:flex above beats the UA [hidden] rule. Hide on home, and
+   whenever the report drawer is open (Figma: drawer replaces Summary). */
+.d1-sidebar[hidden],
+.d1-home[data-d1-stage="home"] .d1-sidebar,
+.d1-main[data-d1-drawer="open"] .d1-sidebar,
+.d1-main[data-d1-drawer="expanded"] .d1-sidebar {
+  display: none;
+}
+
+.d1-sidebar__head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+  flex-shrink: 0;
+  height: 40px;
+  padding: var(--spacing-4) var(--spacing-12);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.d1-sidebar__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  line-height: var(--line-height-md);
+  color: var(--text-default);
+}
+
+.d1-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Idle row — Figma 1224:50432: pl 15 / pr 12 / py 12, label color. */
+.d1-sidebar__item {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-12) var(--spacing-12) var(--spacing-12) 15px;
+  border: 0;
+  border-left: 3px solid transparent;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  line-height: var(--line-height-sm);
+  color: var(--color-neutral-50, #8a9a90);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.d1-sidebar__item:hover {
+  background: var(--surface-hover);
+}
+
+/* Selected — Figma 1224:50436: focus left bar + neutral-02 fill + body text.
+   Keep 3px transparent idle border so text does not shift on select. */
+.d1-sidebar__item.is-active {
+  padding: var(--spacing-12);
+  border-left-color: var(--border-focus);
+  background: var(--surface-neutral-02);
+  color: var(--text-default);
+}
+
+.d1-sidebar__item:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+
+/* Header toggle: chat mode only, and only while the panel is collapsed. */
+.d1-sidebar-btn {
+  display: none;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.d1-home[data-d1-stage="chat"] .d1-sidebar-btn {
+  display: inline-flex;
+}
+
+.d1-home[data-d1-stage="chat"].has-sidebar .d1-sidebar-btn {
+  display: none;
+}
+
+.d1-slot {
+  min-width: 0;
+}

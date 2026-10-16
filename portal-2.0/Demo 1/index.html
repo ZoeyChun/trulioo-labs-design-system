@@ -32,6 +32,7 @@
   <link rel="stylesheet" href="../../Components/stat-card/stat-card.css">
   <link rel="stylesheet" href="css/welcome.css">
   <link rel="stylesheet" href="css/briefing.css">
+  <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/signin.css">
 </head>
 <body>
@@ -210,6 +211,7 @@
             </article>
           </div>
         </section>
+        <div class="d1-work">
         <header class="d1-chat-head">
           <button type="button" class="d1-chat-back" data-d1-back>
             <span class="d1-chat-back__icon">
@@ -217,6 +219,9 @@
             </span>
             <span class="d1-visually-hidden">Back</span>
             <span data-d1-title>Chat heading/title</span>
+          </button>
+          <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular d1-sidebar-btn" data-d1-sidebar-toggle aria-label="Toggle sidebar" aria-pressed="false">
+            <span class="tds-icon-btn__icon"><img src="assets/icons/sidebar-right.svg" alt="" width="16" height="16"></span>
           </button>
         </header>
         <div class="d1-chat">
@@ -543,14 +548,24 @@
         </section>
           </div>
         </div>
+        </div>
+        <aside class="d1-sidebar" data-d1-sidebar hidden>
+          <div class="d1-sidebar__head">
+            <span class="d1-sidebar__title">Summary</span>
+            <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-sidebar-toggle aria-label="Toggle sidebar">
+              <span class="tds-icon-btn__icon"><img src="assets/icons/sidebar-right.svg" alt="" width="16" height="16"></span>
+            </button>
+          </div>
+          <nav class="d1-sidebar__nav" data-d1-sidebar-items></nav>
+        </aside>
       </div>
     </div>
     <aside class="d1-drawer" data-d1-drawer-panel aria-label="Report" aria-hidden="true">
       <div class="d1-drawer__bar">
         <div class="d1-drawer__tabs" data-d1-drawer-tabs role="tablist"></div>
         <div class="d1-drawer__tools">
-          <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Expand">
-            <span class="tds-icon-btn__icon"><img src="assets/icons/expand.svg" alt="" width="16" height="16"></span>
+          <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-drawer-expand aria-label="Expand" aria-pressed="false">
+            <span class="tds-icon-btn__icon"><img data-d1-drawer-expand-icon src="assets/icons/expand.svg" alt="" width="16" height="16"></span>
           </button>
           <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-drawer-close aria-label="Close">
             <span class="tds-icon-btn__icon"><img src="assets/icons/xmark.svg" alt="" width="16" height="16"></span>

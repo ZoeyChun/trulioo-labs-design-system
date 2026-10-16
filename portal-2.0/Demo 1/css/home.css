@@ -25,8 +25,8 @@
 }
 
 .d1-home[data-d1-stage="chat"] {
-  flex-direction: column;
-  align-items: stretch;
+  /* Row + top-align come from sidebar.css so the Summary card can sit
+     beside .d1-work without stretching full height. */
   justify-content: flex-start;
   padding-bottom: 0;
 }
