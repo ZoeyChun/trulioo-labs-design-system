@@ -1407,7 +1407,7 @@
       '<p class="ai-said">Business</p>' +
       '<div class="ai-reply">' +
         '<p class="ai-reply__lead">Hi, I’m your KYB agent.</p>' +
-        '<p class="ai-reply__lead">What’s the business name?</p>' +
+        '<p class="ai-reply__sub">What’s the business name?</p>' +
       '</div>';
   }
 

@@ -551,23 +551,24 @@
   box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
 }
 
-/* The question leads; the reasoning sits under it in a quieter voice.
-   The node ordered these the other way round, which put two sentences
-   of justification in front of the decision. */
+/* Reply typography — always DS composites, never flat twins:
+   .ai-reply__lead → text-heading-sm (primary line)
+   .ai-reply__sub  → text-body-sm   (supporting line, description color) */
 .ai-reply { display: flex; flex-direction: column; gap: var(--spacing-8); }
 
 .ai-reply__lead {
   margin: 0;
-  font-size: var(--font-size-sm);        /* text-heading-xs */
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-sm);
+  line-height: var(--line-height-md);
   color: var(--text-default);
 }
 
 .ai-reply__sub {
   margin: 0;
   font-size: var(--font-size-sm);
-  line-height: 22px;
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-sm);
   color: var(--text-description);
 }
 
