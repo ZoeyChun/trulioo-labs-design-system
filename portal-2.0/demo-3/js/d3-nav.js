@@ -37,6 +37,12 @@
       hello: "Hi, I’m your KYC Agent.",
       sub: "Let’s verify a person.",
       placeholder: "Ask about identity verification"
+    },
+    org: {
+      badge: "Org Admin Agent",
+      hello: "Hi, I’m your Org Admin Agent.",
+      sub: "Manage users, roles, and invitations.",
+      placeholder: "Ask about users or invitations"
     }
   };
 
@@ -47,6 +53,10 @@
       if (on) btn.setAttribute("aria-current", "page");
       else btn.removeAttribute("aria-current");
     });
+  }
+
+  function goOrg() {
+    if (window.D3Org && window.D3Org.open) window.D3Org.open();
   }
 
   function relayoutDrawer() {
@@ -117,6 +127,7 @@
   window.D3Nav = {
     goHome: goHome,
     goAgents: goAgents,
+    goOrg: goOrg,
     openKybChat: openKybChat,
     openKycChat: openKycChat,
     setChatOpen: setChatOpen,
@@ -196,6 +207,7 @@
       var prompt = btn.getAttribute("data-d3-prompt") || "";
       var agent = btn.getAttribute("data-agent") || "kyb";
       var onTx = shell.getAttribute("data-d3-view") === "transactions";
+      var onOrg = shell.getAttribute("data-d3-view") === "org";
       var mode = shell.getAttribute("data-d3-chat-mode") || "hub";
       var onKyb = mode === "kyb";
       var onKyc = mode === "kyc";
@@ -207,6 +219,19 @@
             detail: { text: prompt, agent: "tx" },
             cancelable: true
           }));
+        }
+        return;
+      }
+
+      if (onOrg || agent === "org") {
+        if (!onOrg) goOrg();
+        if (prompt) {
+          window.setTimeout(function () {
+            document.dispatchEvent(new CustomEvent("d3-chat:send", {
+              detail: { text: prompt, agent: "org" },
+              cancelable: true
+            }));
+          }, 80);
         }
         return;
       }

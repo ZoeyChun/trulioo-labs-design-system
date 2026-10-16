@@ -466,12 +466,103 @@
     });
   });
 
+  function clearHighlights() {
+    document.querySelectorAll(".org-row-highlight").forEach(function (row) {
+      row.classList.remove("org-row-highlight");
+    });
+  }
+
+  function findUser(name) {
+    var q = String(name || "").trim().toLowerCase();
+    if (!q) return null;
+    setTab("users");
+    clearHighlights();
+    var match = null;
+    users.forEach(function (item) {
+      var full = (item.first + " " + item.last + " " + item.email).toLowerCase();
+      if (!match && full.indexOf(q) !== -1) match = item;
+    });
+    renderUsers();
+    if (!match) return null;
+    window.setTimeout(function () {
+      var row = document.querySelector('tr[data-user="' + match.id + '"]');
+      if (row) {
+        row.classList.add("org-row-highlight");
+        row.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    }, 40);
+    return match;
+  }
+
+  function filterUsers(status) {
+    setTab("users");
+    clearHighlights();
+    var body = document.getElementById("users-body");
+    if (!body) return;
+    renderUsers();
+    if (!status) return;
+    Array.prototype.forEach.call(body.querySelectorAll("tr"), function (row) {
+      var id = row.getAttribute("data-user");
+      var user = users.filter(function (item) { return item.id === id; })[0];
+      if (!user) return;
+      row.hidden = user.status !== status;
+      if (user.status === status) row.classList.add("org-row-highlight");
+    });
+  }
+
+  function openInvite() {
+    var btn = document.getElementById("invite-open");
+    if (btn) btn.click();
+  }
+
+  function snapshot() {
+    return {
+      stats: {
+        users: stats.users,
+        admins: stats.admins,
+        locked: stats.locked,
+        pending: stats.pending,
+        expired: stats.expired
+      },
+      users: users.map(function (u) {
+        return { id: u.id, name: u.first + " " + u.last, email: u.email, role: u.role, status: u.status };
+      }),
+      invites: invites.map(function (i) {
+        return { id: i.id, name: i.first + " " + i.last, email: i.email, role: i.role, status: i.status };
+      })
+    };
+  }
+
+  window.OrgAdmin = {
+    openInvite: openInvite,
+    setTab: setTab,
+    findUser: findUser,
+    filterUsers: filterUsers,
+    snapshot: snapshot,
+    clearHighlights: clearHighlights
+  };
+
+  window.addEventListener("message", function (event) {
+    var data = event.data;
+    if (!data || data.type !== "d3-org-cmd") return;
+    var cmd = data.cmd;
+    var payload = data.payload || {};
+    if (cmd === "invite") openInvite();
+    else if (cmd === "tab") setTab(payload.tab === "invitations" ? "invitations" : "users");
+    else if (cmd === "find") findUser(payload.name);
+    else if (cmd === "filter") filterUsers(payload.status || "");
+    else if (cmd === "snapshot" && event.source) {
+      event.source.postMessage({ type: "d3-org-snapshot", snapshot: snapshot() }, "*");
+    }
+  });
+
   renderPerms(document.getElementById("invite-perms"), { transactions: true, workflows: false, billing: false, users: false, audit: true });
   renderStats();
   renderUsers();
   renderInvites();
 
   var params = new URLSearchParams(window.location.search);
+  if (params.get("embed") === "1") document.body.classList.add("org-admin--embed");
   if (params.get("nav") === "expanded") setNav(true);
   if (params.get("tab") === "invitations") setTab("invitations");
   if (params.get("dialog") === "invite") document.getElementById("invite-open").click();

@@ -12,15 +12,16 @@ From repo root (`trulioo-labs-ds`):
 python3 -m http.server 8765
 ```
 
-Open: http://127.0.0.1:8765/portal-2.0/demo-3/index.html
+Open: http://127.0.0.1:8765/portal-2.0/demo-3/  
+(or `demo-3/sign-in/` — unsigned visits redirect there)
 
 ## Flow
 
-1. **Sign in** — same gate as Demo 1, without the Repeat User toggle
-2. **Loading** — returning-customer lines only
+1. **Sign in** — standalone Figma page (`sign-in/`, same as [Demo 1 sign-in](https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/Demo%201/sign-in/))
+2. **Loading** — returning-customer lines after a fresh sign-in
 3. **Homepage** — Welcome back + composer + briefing cards
 4. **Sidebar** — Home · Agent hub · History · Chats · Settings · Account
-5. **Left chat** — opens for Agent Hub / KYB chat; main workspace stays on the right
+5. **Left chat** — dedicated AI panel per agent (KYB, TX, KYC, Org Admin)
 
 Session key: `d3-signed-in` (does not share Demo 1 session).
 

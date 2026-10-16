@@ -1,9 +1,38 @@
 /* ============================================================
-   Demo 1 — Organization admin
-   Org content ported from demo-2/organization-admin (no AI panel).
-   Shell: Demo 1 .d1-shell / .d1-rail / .d1-main / .d1-slot.
+   Demo 3 — Organization admin
+   Settings opens this inside the Demo 3 shell with a dedicated
+   Org Admin AI panel on the left (?embed=1 hides this page's rail).
    Prefix: org-
    ============================================================ */
+
+/* Embedded in Demo 3 canvas — parent provides rail + AI panel. */
+body.org-admin--embed .d1-rail {
+  display: none !important;
+}
+
+body.org-admin--embed .d1-shell {
+  grid-template-columns: 1fr;
+}
+
+body.org-admin--embed .d1-main {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+body.org-admin--embed .d1-slot {
+  padding: var(--spacing-32) clamp(24px, 4vw, 48px) var(--spacing-48, 48px);
+  max-width: none;
+}
+
+body.org-admin--embed .d1-slot > .org-page {
+  max-width: none;
+}
+
+.org-row-highlight {
+  outline: 2px solid var(--border-interactive, #004c45);
+  outline-offset: -2px;
+  background: var(--surface-positive, #eaf7f0);
+}
 
 body.org-admin .d1-main {
   overflow: hidden;

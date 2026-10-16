@@ -116,9 +116,11 @@
     /* KYB / Transaction agents may cancel/handle first. */
     if (event.defaultPrevented) return;
     if (shell.getAttribute("data-d3-view") === "transactions") return;
+    if (shell.getAttribute("data-d3-view") === "org") return;
     if (window.D3KybAgent && (detail.agent === "kyb" || shell.getAttribute("data-d3-chat-mode") === "kyb")) {
       return;
     }
+    if (detail.agent === "org") return;
     var agent = detail.agent || "kyb";
     var mode = agent === "kyc" ? "kyc" : agent === "tx" ? "tx" : "kyb";
     openLeftChat(mode);
@@ -147,15 +149,18 @@
       if (!text) return;
       input.value = "";
       var onTx = shell.getAttribute("data-d3-view") === "transactions";
+      var onOrg = shell.getAttribute("data-d3-view") === "org";
       var mode = shell.getAttribute("data-d3-chat-mode") || "kyb";
       var agent =
         onTx || mode === "tx"
           ? "tx"
-          : mode === "kyc"
-            ? "kyc"
-            : mode === "hub"
-              ? "kyb"
-              : mode;
+          : onOrg || mode === "org"
+            ? "org"
+            : mode === "kyc"
+              ? "kyc"
+              : mode === "hub"
+                ? "kyb"
+                : mode;
       document.dispatchEvent(new CustomEvent("d3-chat:send", {
         detail: { text: text, agent: agent },
         cancelable: true

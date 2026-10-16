@@ -39,45 +39,13 @@
   <link rel="stylesheet" href="css/d3-home.css?v=9">
   <link rel="stylesheet" href="css/d3-workspace.css?v=30">
   <link rel="stylesheet" href="css/d3-transactions.css?v=2">
+  <link rel="stylesheet" href="css/d3-org.css?v=1">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=1">
   <link rel="stylesheet" href="css/d3-kyb-agent.css?v=3">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <!-- cache bump for PageShell 1280:20394 -->
 </head>
 <body>
-
-<div class="d1-signin" data-d1-signin>
-  <div class="d1-signin__form">
-    <img class="d1-signin__logo" src="assets/wordmark.svg" alt="Trulioo" width="101" height="24">
-    <div class="d1-signin__center">
-      <form class="d1-signin__card" data-d1-signin-form>
-        <h1>Sign in to your account</h1>
-        <div class="d1-signin__fields">
-          <label class="tds-text-input">
-            <span class="tds-field-label">Work email</span>
-            <span class="tds-text-input__field tds-text-input__field--lg">
-              <input class="tds-text-input__native" type="email" name="email" autocomplete="username" placeholder="name@company.com">
-            </span>
-          </label>
-          <label class="tds-text-input">
-            <span class="tds-field-label">Password</span>
-            <span class="tds-text-input__field tds-text-input__field--lg">
-              <input class="tds-text-input__native" data-d1-password type="password" name="password" autocomplete="current-password" placeholder="••••••••">
-              <button type="button" class="d1-signin__eye" data-d1-password-toggle aria-label="Show password" aria-pressed="false">
-                <img src="assets/icons/eye.svg" alt="" width="16" height="16">
-              </button>
-            </span>
-          </label>
-        </div>
-        <div class="d1-signin__actions">
-          <button type="button" class="d1-signin__forgot">Forgot password?</button>
-          <button type="submit" class="tds-btn tds-btn--primary tds-btn--lg d1-signin__submit">Sign in</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  <div class="d1-signin__panel" aria-hidden="true"></div>
-</div>
 
 <div class="d1-loader" data-d1-loader hidden>
   <canvas data-d1-loader-mark width="122" height="122" aria-hidden="true"></canvas>
@@ -147,12 +115,12 @@
     </nav>
 
     <div class="d1-rail__tools">
-      <a class="d1-tool-btn d1-tool-btn--lg" href="organization-admin/" aria-label="Settings">
+      <button type="button" class="d1-tool-btn d1-tool-btn--lg" data-d3-nav="settings" aria-label="Settings">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
           <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
         </svg>
-      </a>
+      </button>
     </div>
 
     <div class="d1-rail__account">
@@ -287,6 +255,29 @@
             <span class="d3-prompt-card__arrow" aria-hidden="true">→</span>
           </button>
         </div>
+        <div class="d3-chat-pane__prompts" data-d3-prompt-set="org" hidden>
+          <button type="button" class="d3-prompt-card" data-d3-prompt="Invite a new user" data-agent="org">
+            <span class="d3-prompt-card__text">
+              <span class="d3-prompt-card__title">Invite a new user</span>
+              <span class="d3-prompt-card__desc">Open the invite dialog on the right</span>
+            </span>
+            <span class="d3-prompt-card__arrow" aria-hidden="true">→</span>
+          </button>
+          <button type="button" class="d3-prompt-card" data-d3-prompt="Show pending invitations" data-agent="org">
+            <span class="d3-prompt-card__text">
+              <span class="d3-prompt-card__title">Show pending invitations</span>
+              <span class="d3-prompt-card__desc">Switch to the invitations tab</span>
+            </span>
+            <span class="d3-prompt-card__arrow" aria-hidden="true">→</span>
+          </button>
+          <button type="button" class="d3-prompt-card" data-d3-prompt="Show locked accounts" data-agent="org">
+            <span class="d3-prompt-card__text">
+              <span class="d3-prompt-card__title">Show locked accounts</span>
+              <span class="d3-prompt-card__desc">Filter org users to locked status</span>
+            </span>
+            <span class="d3-prompt-card__arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
       </div>
       <div class="d3-chat-pane__thread" data-d3-chat-thread></div>
       <div class="d3-chat-pane__composer" data-d3-chat-composer>
@@ -417,6 +408,15 @@
           class="d3-tx__frame"
           data-d3-tx-frame
           title="Transactions"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+        ></iframe>
+      </section>
+      <section class="d3-org" data-d3-org aria-label="Organization admin">
+        <iframe
+          class="d3-org__frame"
+          data-d3-org-frame
+          title="Organization admin"
           loading="lazy"
           referrerpolicy="no-referrer"
         ></iframe>
@@ -1104,7 +1104,7 @@
 </div>
 
 <script src="js/loader-mark.js"></script>
-<script src="js/signin.js"></script>
+<script src="js/signin.js?v=2"></script>
 <script src="composer/prompt.js"></script>
 <script src="js/chat.js"></script>
 <script src="js/drawer.js"></script>
@@ -1114,10 +1114,12 @@
 <script src="js/d3-kyb-map-search.js?v=33"></script>
 <script src="js/d3-kyb-agent.js?v=5"></script>
 <script src="js/d3-motion.js?v=1"></script>
-<script src="js/d3-nav.js?v=21"></script>
+<script src="js/d3-nav.js?v=22"></script>
 <script src="js/d3-transactions.js?v=3"></script>
+<script src="js/d3-org.js?v=1"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/d3-tx-agent.js?v=1"></script>
-<script src="js/d3-chat-bridge.js?v=26"></script>
+<script src="js/d3-org-agent.js?v=1"></script>
+<script src="js/d3-chat-bridge.js?v=27"></script>
 </body>
 </html>
