@@ -1,0 +1,335 @@
+/* ============================================================
+   Repeat-customer briefing — Figma Return-user 1214:47116.
+   Three cards under the composer on the home stage: the spike
+   alert, the verification summary, and recent activity.
+   Shown only when sign-in set data-d1-repeat="true"; the
+   first-time story keeps the demo cards instead.
+   ============================================================ */
+
+/* ---- which home story shows -------------------------------- */
+
+.d1-hello__back,
+.d1-brief {
+  display: none;
+}
+
+.d1-home[data-d1-repeat="true"] .d1-hello__new,
+.d1-home[data-d1-repeat="true"] .d1-hello p,
+.d1-home[data-d1-repeat="true"] .d1-demos {
+  display: none;
+}
+
+.d1-home[data-d1-repeat="true"] .d1-hello__back {
+  display: block;
+}
+
+/* The repeat story is one centered column — greeting, composer, then the
+   briefing pinned under it — rather than the first-time layout that pushes
+   the composer to the bottom of the slot. */
+.d1-home[data-d1-stage="home"][data-d1-repeat="true"] {
+  justify-content: center;
+}
+
+.d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-welcome {
+  flex: 0 0 auto;
+  align-items: center;
+  margin-bottom: var(--spacing-32);
+  text-align: center;
+}
+
+.d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-hello {
+  margin-bottom: 0;
+}
+
+.d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+  display: grid;
+  grid-template-columns: minmax(0, 1.44fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--spacing-16);
+  /* The composer sits on z-index 1, so its whole layer — the blurred glow
+     included — paints over anything static that follows it. The cards claim
+     their own layer above it so the glow stays behind them. */
+  position: relative;
+  z-index: 2;
+  width: min(1214px, calc(100% - 64px));
+  margin-top: clamp(56px, 9vh, 120px);
+  animation: d1-up 0.55s 0.12s ease both;
+}
+
+/* ---- cards -------------------------------------------------- */
+
+.d1-brief__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-24);
+  margin: 0;
+  padding: var(--spacing-24);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-02);
+  text-align: left;
+}
+
+.d1-brief__card--activity {
+  background: var(--surface-neutral-01);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+
+.d1-brief__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+/* ---- spike alert -------------------------------------------- */
+
+.d1-brief__card--alert h2 {
+  margin: 0 0 var(--spacing-24);
+  color: var(--text-default);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 2rem;
+}
+
+.d1-brief__card--alert p {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-xl);
+}
+
+/* ---- card label row ----------------------------------------- */
+
+.d1-brief__label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-sm);
+}
+
+.d1-brief__label img {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ---- verification summary ----------------------------------- */
+
+.d1-brief__figure {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+}
+
+.d1-brief__num {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 3.5rem;
+  font-weight: var(--font-weight-regular);
+  line-height: 2.5rem;
+}
+
+.d1-brief__figure > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  align-items: flex-start;
+}
+
+/* Scoped to the caption column so it cannot outrank .d1-brief__num, which
+   carries only one class. */
+.d1-brief__figure > div p {
+  margin: 0;
+  color: var(--text-caption);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-sm);
+}
+
+.d1-brief__rule {
+  width: 100%;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.d1-brief__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  margin: 0;
+}
+
+.d1-brief__rows > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.d1-brief__rows dt {
+  color: var(--text-caption);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-lg);
+}
+
+.d1-brief__rows dd {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-sm);
+}
+
+.d1-brief__rows .is-bad { color: var(--text-negative); }
+.d1-brief__rows .is-review { color: var(--text-intermediate); }
+.d1-brief__rows .is-good { color: var(--text-positive); }
+
+/* ---- recent activity ---------------------------------------- */
+
+.d1-brief__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.d1-brief__list li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  padding: var(--spacing-16) 0;
+}
+
+.d1-brief__list li + li {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.d1-brief__list li > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.d1-brief__list strong {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-md);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.d1-brief__list span {
+  overflow: hidden;
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.d1-brief__badge {
+  flex-shrink: 0;
+  padding: 3px var(--spacing-8);
+  border-radius: 10px;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-medium);
+  line-height: 0.875rem;
+}
+
+.d1-brief__badge--good {
+  background: rgba(45, 116, 72, 0.1);
+  color: var(--text-positive);
+}
+
+.d1-brief__badge--review {
+  background: rgba(180, 120, 20, 0.1);
+  color: var(--text-intermediate);
+}
+
+/* ---- the AI hand-off on every card -------------------------- */
+
+.d1-brief__go {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ai-accent);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.d1-brief__go img {
+  display: block;
+  flex-shrink: 0;
+}
+
+.d1-brief__go:hover {
+  text-decoration: underline;
+}
+
+.d1-brief__go:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- narrow ------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  .d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .d1-brief__card--alert {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+    animation: none;
+  }
+}
+
+/* ---- glow ---------------------------------------------------- */
+
+/* The shared glow image is anchored to the bottom of the slot, which is
+   where the first-time composer sits. The repeat composer sits mid-column,
+   so the glow is redrawn behind it instead. */
+.d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-glow {
+  display: none;
+}
+
+.d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-composer::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -40px;
+  z-index: -1;
+  width: min(1012px, 132%);
+  height: 136px;
+  transform: translateX(-50%);
+  background: url("../assets/prompt-glow.png") center / cover no-repeat;
+  filter: blur(60px);
+  pointer-events: none;
+}

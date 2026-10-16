@@ -1,0 +1,118 @@
+/* ============================================================
+   Demo 1 — home and chat stages
+   Home: composer centered at the bottom of the slot.
+   Chat (Figma 1117:76891): title row, empty thread, prompt
+   in a 1064px column. Shell geometry stays in css/shell.css.
+   ============================================================ */
+
+.d1-home {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+  padding-bottom: var(--spacing-32);
+}
+
+.d1-home[data-d1-stage="home"] .d1-chat,
+.d1-home[data-d1-stage="home"] .d1-chat__col {
+  display: contents;
+}
+
+.d1-chat-head,
+.d1-home[data-d1-stage="home"] .d1-thread {
+  display: none;
+}
+
+.d1-home[data-d1-stage="chat"] {
+  /* Row + top-align come from sidebar.css so the Summary card can sit
+     beside .d1-work without stretching full height. */
+  justify-content: flex-start;
+  padding-bottom: 0;
+}
+
+.d1-home[data-d1-stage="chat"] .d1-chat-head {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 100%;
+  padding-right: var(--spacing-12);
+}
+
+.d1-chat-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--spacing-8) 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-xl);
+  cursor: pointer;
+}
+
+.d1-chat-back__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.d1-chat-back__icon img {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.d1-chat-back span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.d1-chat-back:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.d1-home[data-d1-stage="chat"] .d1-chat {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+}
+
+.d1-home[data-d1-stage="chat"] .d1-chat__col {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1064px;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--spacing-24) clamp(16px, 6%, 96px);
+}
+
+.d1-thread {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+}
+
+.d1-home[data-d1-stage="chat"] .d1-suggest {
+  display: none;
+}
+
+.d1-home[data-d1-stage="chat"] .d1-composer {
+  width: 100%;
+}

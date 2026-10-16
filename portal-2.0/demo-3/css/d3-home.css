@@ -1,0 +1,61 @@
+/* Demo 3 — returning customer home only (Figma 1274:15403) */
+
+.d1-hello__new,
+.d1-hello p,
+.d1-demos {
+  display: none !important;
+}
+
+.d1-hello__back {
+  display: block !important;
+}
+
+.d1-home[data-d1-repeat="true"] .d1-brief {
+  display: grid;
+}
+
+/* Composer placeholder matches Figma */
+.d1-home[data-d1-stage="home"] .d1-prompt__input::placeholder {
+  color: var(--text-label, #8a9a90);
+}
+
+/* Home prompt must stay visible after park/restore (motion.css
+   re-runs d1-up with fill-mode:both and can leave opacity at 0). */
+.d1-home[data-d1-stage="home"] .d1-composer > .d1-prompt {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+/* Shell: chat pane sits between rail and main */
+.d1-shell {
+  align-items: stretch;
+}
+
+.d1-main {
+  min-width: 0;
+}
+
+.d1-slot {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.d1-slot > .d1-home,
+.d1-slot > .d3-agents,
+.d1-slot > .d3-workspace {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Active rail state must beat shell hover styles */
+.d1-rail .d1-nav-btn.is-active,
+.d1-rail .d1-nav-btn[aria-current="page"],
+.d1-rail .d1-fly:hover .d1-nav-btn.is-active,
+.d1-rail .d1-nav-btn.is-active:hover {
+  color: var(--text-inverse);
+  background: var(--surface-inverse);
+}

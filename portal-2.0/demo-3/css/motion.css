@@ -1,0 +1,323 @@
+/* Demo 3 motion system — tokens, page/chat entrances, microinteractions.
+   Prefer transform + opacity. Respects prefers-reduced-motion. */
+
+:root {
+  /* Durations */
+  --d3-dur-micro: 160ms;
+  --d3-dur-fast: 180ms;
+  --d3-dur-panel: 300ms;
+  --d3-dur-page: 360ms;
+  --d3-dur-reveal: 400ms;
+
+  /* Easing — ease-out entrances, ease-in exits */
+  --d3-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --d3-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --d3-ease-inout: cubic-bezier(0.4, 0, 0.2, 1);
+  --d3-ease-spring: cubic-bezier(0.22, 0.75, 0.3, 1);
+
+  /* Aliases used by older Demo 1 motion */
+  --d1-dur-enter: var(--d3-dur-page);
+  --d1-ease-enter: var(--d3-ease-out);
+}
+
+/* ---- Shared keyframes ---- */
+
+@keyframes d1-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes d1-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes d3-view-enter {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes d3-pane-in {
+  from { opacity: 0; transform: translate3d(-14px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes d3-fade-up {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes d3-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes d3-msg-in {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes d3-nav-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+/* ---- Shell load ---- */
+
+.d1-rail {
+  animation: d1-in var(--d3-dur-page) var(--d3-ease-out) both;
+}
+
+.d1-main {
+  animation: d1-up 0.55s 0.06s var(--d3-ease-out) both;
+}
+
+.d1-chip {
+  animation: d1-up 0.45s var(--d3-ease-out) both;
+}
+
+.d1-chip:nth-child(1) { animation-delay: 0.18s; }
+.d1-chip:nth-child(2) { animation-delay: 0.26s; }
+.d1-chip:nth-child(3) { animation-delay: 0.34s; }
+
+.d1-prompt {
+  animation: d1-up 0.5s 0.4s var(--d3-ease-out) both;
+}
+
+.d1-home[data-d1-stage="chat"] .d1-chat-head {
+  animation: d1-up 0.35s var(--d3-ease-out) both;
+}
+
+.d1-beat:not(.is-on) {
+  display: none;
+}
+
+.d1-beat.is-on {
+  animation: d1-up 0.45s var(--d3-ease-out) both;
+}
+
+/* Blocks cloned into the thread animate in as they appear. */
+.d1-enter {
+  animation: d3-msg-in var(--d3-dur-panel) var(--d3-ease-out) both;
+}
+
+/* Caret rides the end of the paragraph currently being streamed. */
+.is-streaming::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  border-radius: 1px;
+  background: var(--ai-accent);
+  vertical-align: text-bottom;
+  animation: d1-caret 1s step-end infinite;
+}
+
+@keyframes d1-caret {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+.d1-typing {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  height: 22px;
+}
+
+.d1-typing[hidden] {
+  display: none;
+}
+
+.d1-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--icon-faint);
+  animation: d1-dot 1s ease-in-out infinite;
+}
+
+.d1-typing span:nth-child(2) { animation-delay: 0.15s; }
+.d1-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes d1-dot {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* ---- View / surface enter (restarted by d3-motion.js) ---- */
+
+.d3-motion-enter {
+  animation: d3-view-enter var(--d3-dur-page) var(--d3-ease-out) both;
+}
+
+.d3-motion-enter-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.d3-motion-enter-stagger > *:nth-child(2) { animation-delay: 40ms; }
+.d3-motion-enter-stagger > *:nth-child(3) { animation-delay: 80ms; }
+.d3-motion-enter-stagger > *:nth-child(4) { animation-delay: 120ms; }
+.d3-motion-enter-stagger > *:nth-child(5) { animation-delay: 160ms; }
+.d3-motion-enter-stagger > *:nth-child(6) { animation-delay: 200ms; }
+
+.d3-motion-enter-stagger > * {
+  animation: d3-fade-up var(--d3-dur-panel) var(--d3-ease-out) both;
+}
+
+/* Chat pane open */
+.d1-shell[data-d3-chat="open"] .d3-chat-pane.d3-motion-pane-in {
+  animation: d3-pane-in var(--d3-dur-panel) var(--d3-ease-out) both;
+}
+
+/* Canvas bg softens when chat opens */
+.d3-canvas {
+  transition: background-color var(--d3-dur-panel) var(--d3-ease-out);
+}
+
+/* ---- Rail microinteractions ---- */
+
+.d1-nav-btn,
+.d1-tool-btn,
+.d1-logo {
+  transition:
+    color var(--d3-dur-micro) var(--d3-ease-out),
+    background-color var(--d3-dur-micro) var(--d3-ease-out),
+    transform var(--d3-dur-micro) var(--d3-ease-out),
+    box-shadow var(--d3-dur-micro) var(--d3-ease-out);
+}
+
+.d1-nav-btn:active:not(:disabled),
+.d1-tool-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.d1-nav-btn.is-active,
+.d1-nav-btn[aria-current="page"] {
+  transition:
+    color var(--d3-dur-fast) var(--d3-ease-out),
+    background-color var(--d3-dur-fast) var(--d3-ease-out),
+    transform var(--d3-dur-fast) var(--d3-ease-out),
+    box-shadow var(--d3-dur-fast) var(--d3-ease-out);
+}
+
+.d1-nav-btn .d1-nav-btn__icon--line,
+.d1-nav-btn .d1-nav-btn__icon--fill {
+  transition: opacity var(--d3-dur-micro) var(--d3-ease-out);
+}
+
+/* ---- Interactive surfaces ---- */
+
+.d3-prompt-card,
+.d3-agent-card {
+  transition:
+    border-color var(--d3-dur-fast) var(--d3-ease-out),
+    box-shadow var(--d3-dur-fast) var(--d3-ease-out),
+    background-color var(--d3-dur-fast) var(--d3-ease-out),
+    transform var(--d3-dur-fast) var(--d3-ease-out);
+}
+
+.d3-prompt-card:hover,
+.d3-agent-card:hover {
+  transform: translateY(-2px);
+}
+
+.d3-prompt-card:active,
+.d3-agent-card:active {
+  transform: translateY(0);
+}
+
+.d3-prompt-card__arrow,
+.d3-agent-card__go {
+  transition: transform var(--d3-dur-micro) var(--d3-ease-out), color var(--d3-dur-micro) var(--d3-ease-out);
+}
+
+.d3-prompt-card:hover .d3-prompt-card__arrow,
+.d3-agent-card:hover .d3-agent-card__go {
+  transform: translateX(3px);
+  color: var(--icon-default);
+}
+
+/* Buttons / chips */
+.tds-btn,
+.d1-suggest button,
+.d1-chip {
+  transition:
+    background-color var(--d3-dur-micro) var(--d3-ease-out),
+    border-color var(--d3-dur-micro) var(--d3-ease-out),
+    color var(--d3-dur-micro) var(--d3-ease-out),
+    box-shadow var(--d3-dur-micro) var(--d3-ease-out),
+    transform var(--d3-dur-micro) var(--d3-ease-out);
+}
+
+.tds-btn:active:not(:disabled),
+.d1-suggest button:active {
+  transform: scale(0.98);
+}
+
+/* Similar-company cards */
+.d3-kyb-similar__card {
+  transition:
+    border-color var(--d3-dur-fast) var(--d3-ease-out),
+    box-shadow var(--d3-dur-fast) var(--d3-ease-out),
+    transform var(--d3-dur-fast) var(--d3-ease-out);
+}
+
+.d3-kyb-similar__card:hover {
+  transform: translateY(-1px);
+}
+
+/* Transaction embed rows (parent page + iframe share class names) */
+.ut-tx-row,
+.th-tx {
+  transition: background-color var(--d3-dur-micro) var(--d3-ease-out);
+}
+
+/* ---- Reduced motion ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --d3-dur-micro: 1ms;
+    --d3-dur-fast: 1ms;
+    --d3-dur-panel: 1ms;
+    --d3-dur-page: 1ms;
+    --d3-dur-reveal: 1ms;
+  }
+
+  .d1-rail,
+  .d1-main,
+  .d1-chip,
+  .d1-prompt,
+  .d1-beat.is-on,
+  .d1-enter,
+  .is-streaming::after,
+  .d1-home[data-d1-stage="chat"] .d1-chat-head,
+  .d1-typing span,
+  .d1-spin,
+  .d3-motion-enter,
+  .d3-motion-enter-stagger > *,
+  .d1-shell[data-d3-chat="open"] .d3-chat-pane.d3-motion-pane-in {
+    animation: none !important;
+  }
+
+  .d3-prompt-card:hover,
+  .d3-agent-card:hover,
+  .d3-kyb-similar__card:hover,
+  .d3-prompt-card:hover .d3-prompt-card__arrow,
+  .d3-agent-card:hover .d3-agent-card__go,
+  .d1-nav-btn:active:not(:disabled),
+  .d1-tool-btn:active:not(:disabled),
+  .tds-btn:active:not(:disabled) {
+    transform: none;
+  }
+
+  .d1-progress__fill,
+  .d3-canvas,
+  .d1-nav-btn,
+  .d1-tool-btn,
+  .d1-logo,
+  .d3-prompt-card,
+  .d3-agent-card,
+  .tds-btn {
+    transition: none !important;
+  }
+}

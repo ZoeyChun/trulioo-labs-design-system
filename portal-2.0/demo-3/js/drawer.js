@@ -1,0 +1,361 @@
+/* Opens the shell drawer from a transaction row or View report.
+   Transaction tabs behave like a browser: only rows the user has opened
+   appear, and each new row click adds another tab.
+
+   Motion sequence:
+   - Open: shell + content run together (width reveal + fade/slide).
+   - Close: content fades out, then shell collapses R→L.
+   Inner surface width is locked so report content does not reflow mid-tween. */
+(function () {
+  var main = document.querySelector(".d1-main");
+  var drawer = document.querySelector("[data-d1-drawer-panel]");
+  var surface = drawer && drawer.querySelector(".d1-drawer__surface");
+  var tabs = document.querySelector("[data-d1-drawer-tabs]");
+  var closeBtn = document.querySelector("[data-d1-drawer-close]");
+  var expandBtn = document.querySelector("[data-d1-drawer-expand]");
+  var expandIcon = document.querySelector("[data-d1-drawer-expand-icon]");
+  if (!main || !drawer || !surface || !tabs) return;
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var SHELL_MS = reduced ? 0 : 420;
+  /* Close: short fade-out before collapse (open content matches shell via CSS). */
+  var CONTENT_OUT_MS = reduced ? 0 : 160;
+
+  var openTabs = [];
+  var mode = null;
+  var expanded = false;
+  var closing = false;
+  var opening = false;
+  var openTimer = 0;
+  var closeTimer = 0;
+  var shellHandler = null;
+
+  function clearTimers() {
+    window.clearTimeout(openTimer);
+    window.clearTimeout(closeTimer);
+    openTimer = 0;
+    closeTimer = 0;
+    if (shellHandler) {
+      drawer.removeEventListener("transitionend", shellHandler);
+      shellHandler = null;
+    }
+  }
+
+  function setContentIn(on) {
+    drawer.classList.toggle("is-content-in", !!on);
+  }
+
+  function setClosing(on) {
+    drawer.classList.toggle("is-closing", !!on);
+  }
+
+  function availableWidth() {
+    var style = window.getComputedStyle(main);
+    var pad =
+      (parseFloat(style.paddingLeft) || 0) +
+      (parseFloat(style.paddingRight) || 0);
+    return Math.max(0, main.clientWidth - pad);
+  }
+
+  function targetWidths(nextExpanded) {
+    var avail = availableWidth();
+    var drawerW = nextExpanded ? avail : Math.round(avail * 0.7);
+    return {
+      avail: avail,
+      drawerW: drawerW,
+      slotW: Math.max(0, avail - drawerW)
+    };
+  }
+
+  /* Apply open/expanded state first so padding is correct, then lock widths. */
+  function applySizes(nextExpanded) {
+    main.setAttribute("data-d1-drawer", nextExpanded ? "expanded" : "open");
+    void main.offsetWidth;
+    var sizes = targetWidths(nextExpanded);
+    main.style.setProperty("--d1-drawer-surface-w", sizes.drawerW + "px");
+    main.style.setProperty("--d1-drawer-w", sizes.drawerW + "px");
+    main.style.setProperty("--d1-slot-w", sizes.slotW + "px");
+  }
+
+  function applyClosedSizes() {
+    var avail = availableWidth();
+    main.style.setProperty("--d1-drawer-w", "0px");
+    main.style.setProperty("--d1-slot-w", avail + "px");
+  }
+
+  function initClosed() {
+    applyClosedSizes();
+    /* Keep last surface width at 0 until first open measures. */
+    main.style.setProperty("--d1-drawer-surface-w", "0px");
+  }
+
+  function afterShell(callback) {
+    if (reduced || SHELL_MS === 0) {
+      callback();
+      return;
+    }
+    var done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      drawer.removeEventListener("transitionend", onEnd);
+      shellHandler = null;
+      window.clearTimeout(openTimer);
+      openTimer = 0;
+      callback();
+    }
+    function onEnd(event) {
+      if (event.target !== drawer || event.propertyName !== "width") return;
+      finish();
+    }
+    shellHandler = onEnd;
+    drawer.addEventListener("transitionend", onEnd);
+    openTimer = window.setTimeout(finish, SHELL_MS + 80);
+  }
+
+  function tableRows() {
+    var tables = document.querySelectorAll(".d1-thread .d1-table");
+    var table = tables[tables.length - 1];
+    if (!table) return [];
+    return Array.prototype.slice.call(table.querySelectorAll("tbody tr[data-d1-tx]"));
+  }
+
+  function rowMeta(id) {
+    var rows = tableRows();
+    var row = null;
+    for (var i = 0; i < rows.length; i += 1) {
+      if (rows[i].getAttribute("data-d1-tx") === id) { row = rows[i]; break; }
+    }
+    if (!row) return { id: id, label: id };
+    var name = row.cells[0] ? row.cells[0].textContent.trim() : "Record";
+    var product = row.cells[3] ? row.cells[3].textContent.trim() : "";
+    return { id: id, label: product || name };
+  }
+
+  function ensureTxFrame(view) {
+    var frame = view.querySelector(".d1-tx__frame[data-d1-tx-src]");
+    if (!frame || frame.getAttribute("src")) return;
+    frame.setAttribute("src", frame.getAttribute("data-d1-tx-src"));
+  }
+
+  function showView(name, opts) {
+    var animateDoc = !opts || opts.animateDoc !== false;
+    document.querySelectorAll("[data-d1-drawer-view]").forEach(function (view) {
+      var on = view.getAttribute("data-d1-drawer-view") === name;
+      view.hidden = !on;
+      view.classList.remove("is-in");
+      if (on) {
+        ensureTxFrame(view);
+        if (animateDoc && drawer.classList.contains("is-content-in")) {
+          void view.offsetWidth;
+          view.classList.add("is-in");
+        } else {
+          view.classList.add("is-in");
+        }
+      }
+    });
+    var body = drawer.querySelector(".d1-drawer__body");
+    if (body) {
+      body.scrollTop = 0;
+      body.classList.toggle(
+        "d1-drawer__body--tx",
+        name === "report" || name === "kyc" || name === "device" || name === "bank"
+      );
+    }
+    tabs.querySelectorAll("[role='tab']").forEach(function (tab) {
+      tab.setAttribute("aria-selected", tab.getAttribute("data-d1-view") === name ? "true" : "false");
+    });
+    tableRows().forEach(function (tr) {
+      if (tr.getAttribute("data-d1-tx") === name) tr.setAttribute("aria-current", "true");
+      else tr.removeAttribute("aria-current");
+    });
+  }
+
+  function render(items, selected) {
+    tabs.replaceChildren();
+    items.forEach(function (item, index) {
+      if (index > 0) {
+        var rule = document.createElement("span");
+        rule.className = "d1-drawer__rule";
+        rule.setAttribute("aria-hidden", "true");
+        tabs.appendChild(rule);
+      }
+      var tab = document.createElement("button");
+      tab.type = "button";
+      tab.className = "d1-drawer__tab";
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("data-d1-view", item.id);
+      tab.setAttribute("aria-selected", item.id === selected ? "true" : "false");
+      tab.textContent = item.label;
+      tab.addEventListener("click", function () { showView(item.id); });
+      tabs.appendChild(tab);
+    });
+  }
+
+  function setExpanded(on) {
+    expanded = !!on;
+    if (expandBtn) {
+      expandBtn.setAttribute("aria-pressed", expanded ? "true" : "false");
+      expandBtn.setAttribute("aria-label", expanded ? "Collapse" : "Expand");
+    }
+    if (expandIcon) expandIcon.src = expanded ? "assets/icons/compress.svg" : "assets/icons/expand.svg";
+  }
+
+  function isShellOpen() {
+    var state = main.getAttribute("data-d1-drawer");
+    return state === "open" || state === "expanded";
+  }
+
+  function reveal() {
+    var wasClosed = !isShellOpen() || closing;
+    clearTimers();
+    closing = false;
+    setClosing(false);
+    opening = true;
+
+    if (wasClosed) {
+      setContentIn(false);
+      /* State first (padding), then sizes, then animate width from 0. */
+      main.setAttribute("data-d1-drawer", expanded ? "expanded" : "open");
+      void main.offsetWidth;
+      var sizes = targetWidths(expanded);
+      main.style.setProperty("--d1-drawer-surface-w", sizes.drawerW + "px");
+      main.style.setProperty("--d1-drawer-w", "0px");
+      main.style.setProperty("--d1-slot-w", sizes.avail + "px");
+      void drawer.offsetWidth;
+      main.style.setProperty("--d1-drawer-w", sizes.drawerW + "px");
+      main.style.setProperty("--d1-slot-w", sizes.slotW + "px");
+      drawer.setAttribute("aria-hidden", "false");
+      /* Next frame: fade content in with the width expand — one continuous motion. */
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          if (closing) return;
+          setContentIn(true);
+          openTimer = window.setTimeout(function () {
+            opening = false;
+          }, SHELL_MS);
+        });
+      });
+      return;
+    }
+
+    applySizes(expanded);
+    drawer.setAttribute("aria-hidden", "false");
+    opening = false;
+    setContentIn(true);
+  }
+
+  function openReport() {
+    mode = "report";
+    openTabs = [];
+    render([{ id: "report", label: "Business Verification Report" }], "report");
+    showView("report", { animateDoc: false });
+    reveal();
+  }
+
+  function openRow(id) {
+    if (mode !== "rows") {
+      mode = "rows";
+      openTabs = [];
+    }
+    var exists = openTabs.some(function (item) { return item.id === id; });
+    if (!exists) openTabs.push(rowMeta(id));
+    render(openTabs, id);
+    showView(id, { animateDoc: false });
+    reveal();
+  }
+
+  function open(kind) {
+    if (!kind || kind === "report") openReport();
+    else openRow(kind);
+  }
+
+  function finishClose() {
+    setExpanded(false);
+    setContentIn(false);
+    setClosing(false);
+    main.setAttribute("data-d1-drawer", "closed");
+    drawer.setAttribute("aria-hidden", "true");
+    openTabs = [];
+    mode = null;
+    tabs.replaceChildren();
+    var body = drawer.querySelector(".d1-drawer__body");
+    if (body) body.classList.remove("d1-drawer__body--tx");
+    document.querySelectorAll(".d1-table tbody tr").forEach(function (tr) {
+      tr.removeAttribute("aria-current");
+    });
+    closing = false;
+    opening = false;
+  }
+
+  function close() {
+    if ((!isShellOpen() && !closing) || opening) return;
+    if (closing) return;
+    closing = true;
+    clearTimers();
+    setClosing(true);
+    setContentIn(false);
+
+    function collapseShell() {
+      /* Restore main padding before measuring, then collapse width. */
+      if (main.getAttribute("data-d1-drawer") === "expanded") {
+        setExpanded(false);
+        main.setAttribute("data-d1-drawer", "open");
+        void main.offsetWidth;
+      }
+      applyClosedSizes();
+      afterShell(finishClose);
+    }
+
+    if (reduced || CONTENT_OUT_MS === 0) {
+      collapseShell();
+      return;
+    }
+    closeTimer = window.setTimeout(collapseShell, CONTENT_OUT_MS);
+  }
+
+  function toggleExpand() {
+    if (!isShellOpen() || closing || opening) return;
+    setExpanded(!expanded);
+    reveal();
+  }
+
+  var thread = document.querySelector("[data-d1-thread]");
+  if (thread) {
+    thread.addEventListener("click", function (event) {
+      if (event.target.closest(".d1-alert__view")) {
+        open("report");
+        return;
+      }
+      var row = event.target.closest("tr[data-d1-tx]");
+      if (row) open(row.getAttribute("data-d1-tx"));
+    });
+    thread.addEventListener("keydown", function (event) {
+      var row = event.target.closest("tr[data-d1-tx]");
+      if (!row || (event.key !== "Enter" && event.key !== " ")) return;
+      event.preventDefault();
+      open(row.getAttribute("data-d1-tx"));
+    });
+  }
+
+  if (closeBtn) closeBtn.addEventListener("click", close);
+  if (expandBtn) expandBtn.addEventListener("click", toggleExpand);
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && (isShellOpen() || closing)) close();
+  });
+
+  document.addEventListener("d1-drawer:open", function (event) {
+    open(event.detail && event.detail.kind ? event.detail.kind : "report");
+  });
+
+  document.addEventListener("d1-drawer:close", close);
+
+  window.addEventListener("resize", function () {
+    if (closing || opening) return;
+    if (isShellOpen()) applySizes(expanded);
+    else applyClosedSizes();
+  });
+
+  initClosed();
+})();

@@ -1,0 +1,91 @@
+/* Demo 3 — redesigned SideNav (Figma 1274:15593)
+   Icons: home, grid-2, clock-rotate-left, message, gear, avatar. */
+
+.d1-rail__nav {
+  justify-content: space-between;
+  gap: 0;
+}
+
+.d1-rail__nav-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-16);
+}
+
+.d1-rail__nav-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto;
+}
+
+.d1-rail__tools {
+  padding-top: var(--padding-md);
+  padding-bottom: var(--padding-md);
+}
+
+.d1-nav-btn,
+.d1-tool-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  color: var(--icon-faint);
+  background: transparent;
+}
+
+.d1-nav-btn:hover,
+.d1-tool-btn:hover,
+.d1-nav-btn:focus-visible,
+.d1-tool-btn:focus-visible {
+  color: var(--icon-default);
+  background: color-mix(in srgb, var(--surface-neutral-01) 70%, transparent);
+}
+
+.d1-nav-btn.is-active,
+.d1-nav-btn[aria-current="page"] {
+  color: var(--text-inverse);
+  background: var(--surface-inverse);
+}
+
+.d1-nav-btn.is-active:hover,
+.d1-nav-btn[aria-current="page"]:hover {
+  color: var(--text-inverse);
+  background: var(--surface-inverse);
+}
+
+/* Inactive = line icon; active = filled icon.
+   Beat .d1-nav-btn svg { display:block } from shell.css. */
+.d1-nav-btn .d1-nav-btn__icon--fill {
+  display: none;
+}
+
+.d1-nav-btn.is-active .d1-nav-btn__icon--line,
+.d1-nav-btn[aria-current="page"] .d1-nav-btn__icon--line {
+  display: none;
+}
+
+.d1-nav-btn.is-active .d1-nav-btn__icon--fill,
+.d1-nav-btn[aria-current="page"] .d1-nav-btn__icon--fill {
+  display: block;
+}
+
+.d1-nav-btn svg,
+.d1-tool-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.d1-nav-btn--lg svg,
+.d1-tool-btn--lg svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Chat flyout opens beside the bottom message icon */
+.d1-fly--chats .d1-fly__panel {
+  top: auto;
+  bottom: 0;
+  left: calc(100% + 12px);
+}

@@ -1,0 +1,637 @@
+/* ============================================================
+   Bank Verification — page-local styles
+   Static reference implementation. Layout + page-local elements
+   only (side nav, avatar, TruAI button, card container).
+   All values reference /tokens/tokens.css variables.
+
+   Figma: Trulioo-ADS---2026 · BankV (708:10655)
+   ============================================================ */
+
+/* Page-local dimensions with no token equivalent in Figma */
+.bv-form-shell {
+  --bv-form-max-width: 895px;         /* Max width of the form card */
+  --bv-field-col: 410px;              /* Single-column field width (Figma: 410) */
+}
+
+body {
+  margin: 0;
+  background-color: var(--surface-neutral-03);
+}
+
+.bv-form-shell .app-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.bv-form-shell .app-main .bv-view,
+.bv-form-shell .app-main .bv-view * {
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------
+   View switching — only one panel visible at a time
+   -------------------------------------------------------- */
+
+.bv-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.bv-view[hidden] {
+  display: none !important;
+}
+
+/* --------------------------------------------------------
+   Form panel chrome
+   -------------------------------------------------------- */
+
+.bv-main {
+  position: relative;
+  align-items: center;
+  gap: var(--gap-2xl);
+  padding: var(--padding-xl);
+  background-color: var(--surface-neutral-01);
+  border-radius: var(--radius-section);
+  box-shadow: var(--elevation-md);
+}
+
+/* Figma 3273:57823 — dual glow overlay at 50% opacity (behind panel content) */
+.bv-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.5;
+  pointer-events: none;
+  background-image: var(--surface-flow-glow);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.bv-main > * {
+  position: relative;
+  z-index: 1;
+}
+
+.bv-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.bv-header__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-lg);
+  min-width: 0;
+}
+
+.bv-header__title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+/* TruAI button — page-local, no repo component */
+.bv-truai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-md) var(--padding-lg);
+  border: none;
+  border-radius: var(--radius-modal);
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.bv-truai-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-16);
+  height: var(--spacing-16);
+}
+
+.bv-truai-btn__icon svg {
+  width: var(--spacing-16);
+  height: var(--spacing-16);
+}
+
+/* --------------------------------------------------------
+   Content area + card container
+   -------------------------------------------------------- */
+
+.bv-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-32);
+}
+
+.bv-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--bv-form-max-width);
+  background-color: var(--color-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--elevation-lg);
+  overflow: hidden;
+}
+
+/* Dropdown menus are position:absolute; allow them to extend past the card */
+.bv-card:has(.tds-select--open),
+.bv-card:has(.tds-combobox--open) {
+  overflow: visible;
+}
+
+.bv-test-entity.tds-select--open,
+.bv-country.tds-combobox--open {
+  z-index: 20;
+}
+
+.bv-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-lg);
+  padding: var(--padding-xl) var(--padding-2xl);
+}
+
+.bv-card__title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.bv-test-entity-switch {
+  flex-shrink: 0;
+}
+
+.bv-test-entity-info {
+  cursor: help;
+}
+
+.bv-test-entity-info:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+#bv-form-view[hidden],
+#bv-result-view[hidden],
+.bv-view[hidden] {
+  display: none !important;
+}
+
+.bv-card__section-country[hidden],
+#bv-country-wrap[hidden],
+#bv-test-entity-wrap[hidden] {
+  display: none !important;
+}
+
+.bv-card__section-country .bv-country {
+  width: 100%;
+  max-width: var(--bv-field-col);
+}
+
+#bv-test-entity-wrap,
+#bv-test-entity-wrap .bv-test-entity {
+  width: 100%;
+  max-width: var(--bv-field-col);
+}
+
+.bv-country {
+  width: 100%;
+  max-width: var(--bv-field-col);
+}
+
+/* Country / test entity slot */
+.bv-card__section-country {
+  padding: 0 var(--padding-2xl) var(--padding-xl);
+  overflow: visible;
+}
+
+/* Country flag sizing inside the combobox leading-visual slot */
+.bv-country__flag {
+  width: 16px;
+  height: 12px;
+}
+
+/* --------------------------------------------------------
+   Test-entity picker dropdown rows
+   The picker is a tds-select, and the select/dropdown-panel
+   components have no menu-item row style yet, so these rows are
+   page-local. (The combobox option rows live in the component.)
+   -------------------------------------------------------- */
+
+.bv-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: var(--padding-sm);
+  border: none;
+  background: none;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+}
+
+.bv-option:hover {
+  background-color: var(--surface-hover);
+}
+
+.bv-option__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  flex: 1;
+  min-width: 0;
+}
+
+.bv-option__label {
+  min-width: 0;
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+}
+
+.bv-option .tds-tag {
+  flex-shrink: 0;
+}
+
+.bv-test-entity:not(.tds-select--open) .tds-select__trigger .tds-tag {
+  background-color: var(--surface-neutral-02);
+  border-color: var(--border-subtle);
+  color: var(--text-description);
+}
+
+.bv-option__flag,
+.bv-test-entity__flag {
+  flex-shrink: 0;
+}
+
+.bv-test-entity__flag {
+  width: auto;
+  height: auto;
+}
+
+.bv-test-entity__trigger {
+  overflow: hidden;
+}
+
+.bv-test-entity__trigger .tds-select__text-wrapper {
+  flex: 1;
+  min-width: 0;
+  flex-direction: row;
+  align-items: center;
+}
+
+.bv-test-entity__trigger .tds-select__trailing-group {
+  flex-shrink: 0;
+}
+
+.bv-test-entity__trigger .tds-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bv-floating-tooltip {
+  position: fixed;
+  z-index: 9999;
+  max-width: min(20rem, calc(100vw - 16px));
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: normal;
+  word-break: break-word;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
+.bv-option--entity {
+  gap: var(--gap-sm);
+}
+
+.bv-option--entity .tds-tag {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.bv-option--empty {
+  color: var(--text-placeholder);
+  cursor: default;
+}
+
+.bv-option--empty:hover {
+  background: none;
+}
+
+.tds-combobox__option--selected {
+  background-color: var(--surface-hover);
+}
+
+.bv-country__clear-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--spacing-24);
+  height: var(--spacing-24);
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-button);
+  background: none;
+  color: var(--text-placeholder);
+  cursor: pointer;
+}
+
+.bv-country__clear-btn:hover {
+  color: var(--text-default);
+  background-color: var(--surface-neutral-03);
+}
+
+.bv-country__clear-btn svg {
+  width: var(--spacing-16);
+  height: var(--spacing-16);
+}
+
+/* Account type — first section after card header */
+.bv-card__row-label--first {
+  padding-top: 0;
+}
+
+.bv-radio-row--first {
+  padding-top: 0;
+}
+
+/* Account type */
+.bv-card__row-label {
+  display: flex;
+  align-items: center;
+  padding: var(--padding-md) var(--padding-2xl);
+}
+
+.bv-radio-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-md);
+  width: 100%;
+  padding: 0 var(--padding-2xl) var(--padding-xl);
+}
+
+.bv-radio-row .tds-radio-card {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Details */
+.bv-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  width: 100%;
+  padding: var(--padding-2xl);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.bv-details__header {
+  width: 100%;
+}
+
+.bv-details__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.bv-details__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  width: 100%;
+}
+
+.bv-form-errors {
+  margin: 0;
+  padding: var(--padding-sm) var(--padding-md);
+  border: 1px solid var(--border-negative);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-negative);
+  color: var(--text-negative);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.bv-form-errors[hidden] {
+  display: none !important;
+}
+
+.bv-form-errors ul {
+  margin: 0;
+  padding-left: var(--padding-lg);
+}
+
+.bv-form-errors li + li {
+  margin-top: var(--spacing-4);
+}
+
+.bv-details__hint {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-placeholder);
+}
+
+.bv-form-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+  width: 100%;
+}
+
+.bv-form-row > .tds-text-input,
+.bv-form-row > .bv-form-col,
+.bv-form-row > .bv-form-row__spacer {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Test-entity picker (reuses tds-select; full width of its column) */
+.bv-test-entity {
+  width: 100%;
+}
+
+
+/* Footer */
+.bv-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--padding-lg) var(--padding-2xl);
+  background-color: var(--surface-neutral-03);
+}
+
+.bv-card__footer .tds-btn {
+  min-width: 0;
+}
+
+/* --------------------------------------------------------
+   Responsive — form layout
+   -------------------------------------------------------- */
+
+@media (max-width: 960px) {
+  .bv-content {
+    padding: 0 var(--padding-lg);
+  }
+
+  .bv-card__header {
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+  }
+
+  #bv-test-entity-wrap,
+  .bv-country,
+  .bv-card__section-country .bv-country,
+  .bv-test-entity,
+  .bv-card__section-country .bv-test-entity {
+    width: 100%;
+    max-width: none;
+  }
+
+  .bv-form-row {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .bv-form-shell .bv-main {
+    align-items: stretch;
+    gap: var(--gap-lg);
+    padding: var(--padding-md);
+    border-radius: var(--radius-card);
+  }
+
+  .bv-header {
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+  }
+
+  .bv-header__title {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+  }
+
+  .bv-content {
+    padding: 0;
+    justify-content: flex-start;
+  }
+
+  .bv-card {
+    border-radius: var(--radius-card);
+  }
+
+  .bv-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-md);
+    padding: var(--padding-lg);
+  }
+
+  .bv-card__row-label,
+  .bv-radio-row,
+  .bv-card__section-country,
+  .bv-details,
+  .bv-card__footer {
+    padding-left: var(--padding-lg);
+    padding-right: var(--padding-lg);
+  }
+
+  .bv-radio-row {
+    padding-bottom: var(--padding-lg);
+  }
+
+  .bv-card__section-country {
+    padding-bottom: var(--padding-lg);
+  }
+
+  .bv-details {
+    padding-top: var(--padding-lg);
+    padding-bottom: var(--padding-lg);
+    gap: var(--gap-lg);
+  }
+
+  .bv-details__fields {
+    gap: var(--gap-lg);
+  }
+
+  .bv-card__footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: var(--gap-md);
+    padding: var(--padding-lg);
+  }
+
+  .bv-card__footer .tds-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .bv-form-shell .bv-main {
+    padding: var(--padding-sm);
+  }
+
+  .bv-radio-row {
+    flex-direction: column;
+  }
+
+  .bv-card__header {
+    padding: var(--padding-md);
+  }
+
+  .bv-card__row-label,
+  .bv-radio-row,
+  .bv-card__section-country,
+  .bv-details,
+  .bv-card__footer {
+    padding-left: var(--padding-md);
+    padding-right: var(--padding-md);
+  }
+}

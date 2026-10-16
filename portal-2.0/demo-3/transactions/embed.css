@@ -1,0 +1,79 @@
+/* Drawer embed mode — hide app chrome so results fill the Demo 1 drawer. */
+
+html.d1-tx-embed,
+html.d1-tx-embed body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--surface-neutral-01, #fff);
+  border-radius: 0;
+}
+
+html.d1-tx-embed .tds-side-nav,
+html.d1-tx-embed .app-sidenav-overlay,
+html.d1-tx-embed .app-nav-toggle,
+html.d1-tx-embed .app-truai-btn,
+html.d1-tx-embed .dv-flow-truai-btn,
+html.d1-tx-embed .dv-back-btn,
+html.d1-tx-embed .bv-result-back,
+html.d1-tx-embed .truai-chat,
+html.d1-tx-embed [data-truai-panel],
+html.d1-tx-embed .labs-truai,
+html.d1-tx-embed .labs-truai-chat-rail,
+html.d1-tx-embed .labs-truai-panel,
+html.d1-tx-embed #di-analyzing,
+html.d1-tx-embed .dv-ai-card,
+html.d1-tx-embed #dv-truai-card,
+html.d1-tx-embed #bv-truai-card {
+  display: none !important;
+}
+
+html.d1-tx-embed .labs-kyb-layout,
+html.d1-tx-embed .app-shell,
+html.d1-tx-embed .app-main,
+html.d1-tx-embed .bv-form-shell,
+html.d1-tx-embed .bv-result-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0 !important;
+  gap: 0 !important;
+  max-width: none;
+  overflow: hidden;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  /* Kill the grey shell backdrop that showed through rounded panel corners. */
+  background: var(--surface-neutral-01, #fff) !important;
+  background-color: var(--surface-neutral-01, #fff) !important;
+}
+
+html.d1-tx-embed .app-shell {
+  grid-template-columns: none !important;
+}
+
+html.d1-tx-embed .dv-view,
+html.d1-tx-embed .dv-panel,
+html.d1-tx-embed .di-result-view,
+html.d1-tx-embed .kyb-panel,
+html.d1-tx-embed .kyb-panel__content,
+html.d1-tx-embed #dv-result-view,
+html.d1-tx-embed #bv-result-view {
+  display: flex !important;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: var(--surface-neutral-01, #fff) !important;
+  background-color: var(--surface-neutral-01, #fff) !important;
+}
+
+html.d1-tx-embed #bv-form-view,
+html.d1-tx-embed #dv-form-view {
+  display: none !important;
+}

@@ -1,0 +1,308 @@
+/* Demo 3 — left chat pane (Cursor / Claude style)
+   Figma: AgentHub 1274:17557, Recurring User KYB 1274:15652 */
+
+.d3-chat-pane {
+  display: none;
+  /* Figma TruAIPanel 1274:13332 — 478px with mint glow */
+  flex: 0 0 478px;
+  width: 478px;
+  min-width: 360px;
+  max-width: 478px;
+  min-height: 0;
+  flex-direction: column;
+  gap: 48px;
+  margin: 8px 0;
+  /* 16px content + 4px gutter so .d1-prompt ring/outline isn't clipped */
+  padding: 32px 20px;
+  background: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  box-shadow: 0 3px 27.3px 0 #c4f1e2;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.d1-shell[data-d3-chat="open"] .d3-chat-pane {
+  display: flex;
+}
+
+.d3-chat-pane__head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  flex-shrink: 0;
+  min-height: auto;
+  padding: 0;
+  border-bottom: 0;
+}
+
+.d3-chat-pane__brand {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--text-default);
+}
+
+.d3-chat-pane__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  background: var(--surface-neutral-02);
+  border: 1px solid var(--border-subtle);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+.d3-chat-pane__badge::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--interactive-default, #004c45);
+  flex-shrink: 0;
+}
+
+.d3-chat-pane__close {
+  margin-left: auto;
+}
+
+.d3-chat-pane__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  /* Gutter for composer box-shadow (4px) + focus outline; scroll lives on
+     empty/thread so overflow here must not clip the prompt ring. */
+  padding: 4px;
+  margin: 0 -4px;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.d3-chat-pane__empty {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 0;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.d3-chat-pane__hello {
+  margin: 0;
+  font-family: var(--font-family-display, "Tobias", Georgia, serif);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 31px;
+  color: var(--text-default);
+  text-align: center;
+}
+
+.d3-chat-pane__sub {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-description);
+  text-align: center;
+}
+
+.d3-chat-pane__prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 444px;
+  padding: 32px 0;
+  box-sizing: border-box;
+}
+
+.d3-prompt-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+  width: 100%;
+  min-height: 70px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--surface-neutral-01);
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  box-sizing: border-box;
+}
+
+.d3-prompt-card:hover {
+  background: var(--surface-neutral-02);
+}
+
+.d3-prompt-card:focus-visible {
+  outline: 2px solid var(--border-interactive, #004c45);
+  outline-offset: 2px;
+}
+
+/* Empty-state prompts stagger when pane opens */
+.d3-chat-pane.d3-motion-pane-in .d3-prompt-card {
+  animation: d3-fade-up var(--d3-dur-panel, 300ms) var(--d3-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+.d3-chat-pane.d3-motion-pane-in .d3-prompt-card:nth-child(1) { animation-delay: 60ms; }
+.d3-chat-pane.d3-motion-pane-in .d3-prompt-card:nth-child(2) { animation-delay: 100ms; }
+.d3-chat-pane.d3-motion-pane-in .d3-prompt-card:nth-child(3) { animation-delay: 140ms; }
+
+.d3-chat-pane.d3-motion-pane-in .d3-chat-pane__hello {
+  animation: d3-fade-up var(--d3-dur-panel, 300ms) var(--d3-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-chat-pane.d3-motion-pane-in .d3-prompt-card,
+  .d3-chat-pane.d3-motion-pane-in .d3-chat-pane__hello {
+    animation: none;
+  }
+
+  .d3-prompt-card:hover {
+    transform: none;
+  }
+}
+
+.d3-prompt-card__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.d3-prompt-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-default);
+}
+
+.d3-prompt-card__desc {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--text-description);
+}
+
+.d3-prompt-card__arrow {
+  flex-shrink: 0;
+  color: var(--icon-faint);
+}
+
+.d3-chat-pane__thread {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-16);
+  display: none;
+}
+
+.d3-chat-pane__composer {
+  flex-shrink: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.d3-chat-pane .d1-prompt,
+.d3-chat-pane .d1-composer {
+  width: 100%;
+  max-width: none;
+}
+
+.d3-composer--pane {
+  align-items: stretch;
+  gap: var(--spacing-12);
+}
+
+.d3-composer--pane .d1-suggest {
+  display: none !important;
+}
+
+.d3-composer--pane .d1-prompt {
+  width: 100%;
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+/* Idle pane form — Figma PromptInput h=120. Home .d1-prompt__field is
+   locked to 24px / overflow:hidden which clips the placeholder here. */
+.d3-pane-idle-form,
+.d3-chat-pane .d1-prompt {
+  animation: none;
+  opacity: 1;
+  transform: none;
+  box-sizing: border-box;
+  min-height: 120px;
+  height: 120px;
+  gap: 8px;
+  justify-content: space-between;
+  overflow: visible;
+}
+
+.d3-pane-idle-form .d1-prompt__field,
+.d3-chat-pane .d1-prompt__field {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.d3-pane-idle-form .d1-prompt__input,
+.d3-chat-pane .d1-prompt__input {
+  height: auto;
+  min-height: 36px;
+  overflow: auto;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.d3-pane-idle-form .d1-visually-hidden {
+  /* Keep sr-only; prevent absolute label from affecting layout. */
+  position: absolute !important;
+}
+
+.d3-chat-pane__thread .d1-thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+/* [hidden] must beat display:flex on these components. */
+.d3-chat-pane__prompts[hidden],
+.d3-chat-pane__empty[hidden],
+.d3-pane-idle-form[hidden],
+.d3-chat-pane__thread[hidden] {
+  display: none !important;
+}
+
+/* Active conversation: show thread, hide empty + idle form. */
+.d3-chat-pane.is-active .d3-chat-pane__empty {
+  display: none !important;
+}
+
+.d3-chat-pane.is-active .d3-chat-pane__thread {
+  display: block;
+}
+
+.d3-chat-pane.is-active .d3-pane-idle-form {
+  display: none !important;
+}
+
+/* When left chat is open on home stage, hide in-slot home chrome
+   (composer is parked into the pane). */
+.d1-shell[data-d3-chat="open"][data-d3-view="home"] .d1-home .d1-composer,
+.d1-shell[data-d3-chat="open"][data-d3-view="chat"] .d1-home {
+  display: none !important;
+}

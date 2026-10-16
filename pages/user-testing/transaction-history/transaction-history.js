@@ -434,48 +434,177 @@
     return list.map(function (item) {
       return {
         name: item.name,
+        trid: item.trid || "",
+        detail: item.detail || "",
         outcome: (item.outcome && item.outcome.label) || "",
+        tone: (item.outcome && item.outcome.tone) || "",
         date: item.date,
         product: item.product,
-        country: item.country
+        country: item.country,
+        countryCode: item.countryCode || "",
+        source: item.source || "",
+        type: item.type || "",
+        risk: riskBucket(item),
+        scoreLabel: (item.score && item.score.label) || "",
+        scoreValue: (item.score && item.score.value) || "",
+        scoreTone: (item.score && item.score.tone) || ""
       };
     });
   }
 
-  function showFailedLast7Days() {
-    var end = latestTransactionDay();
-    if (!end) return [];
-    var start = shiftIso(end, -6);
+  function setCheckboxGroup(name, values) {
+    var wanted = values || [];
+    document.querySelectorAll('input[name="' + name + '"]').forEach(function (el) {
+      el.checked = wanted.indexOf(el.value) !== -1;
+    });
+  }
+
+  function setSearchInput(value) {
+    searchQuery = (value || "").trim().toLowerCase();
+    searchDisplay = value || "";
+    var input = document.getElementById("utTxSearch");
+    if (input) input.value = searchDisplay;
+    syncSearchClearVisibility();
+  }
+
+  function applyAiSpec(spec) {
+    spec = spec || {};
     applyingAiView = true;
-    dateFilter.start = start;
-    dateFilter.end = end;
-    aiRowFilter = isUnsuccessful;
-    writePickerPart("start", start);
-    writePickerPart("end", end);
+
+    if (spec.clear || spec.reset) {
+      aiRowFilter = null;
+      dateFilter.start = null;
+      dateFilter.end = null;
+      writePickerPart("start", null);
+      writePickerPart("end", null);
+      setSearchInput("");
+      productFilter = "";
+      var productSelect = document.getElementById("utTxProduct");
+      if (productSelect) productSelect.value = "";
+      clearAllFilters();
+    }
+
+    if (spec.search != null) setSearchInput(spec.search);
+
+    if (spec.product != null) {
+      productFilter = spec.product || "";
+      var prodEl = document.getElementById("utTxProduct");
+      if (prodEl) prodEl.value = productFilter;
+    }
+
+    if (spec.outcomes) setCheckboxGroup("ut-filt-outcome", spec.outcomes);
+    if (spec.risks) setCheckboxGroup("ut-filt-risk", spec.risks);
+    if (spec.sources) setCheckboxGroup("ut-filt-source", spec.sources);
+    if (spec.types) setCheckboxGroup("ut-filt-type", spec.types);
+    if (spec.products) setCheckboxGroup("ut-filt-product", spec.products);
+    if (spec.watchlist) setCheckboxGroup("ut-filt-watchlist", spec.watchlist);
+
+    if (spec.country != null) {
+      var countryEl = document.getElementById("utFiltCountrySelect");
+      if (countryEl) countryEl.value = spec.country || "";
+    }
+
+    if (spec.dateDays != null && spec.dateDays > 0) {
+      var end = latestTransactionDay();
+      if (end) {
+        dateFilter.end = end;
+        dateFilter.start = shiftIso(end, -(spec.dateDays - 1));
+        writePickerPart("start", dateFilter.start);
+        writePickerPart("end", dateFilter.end);
+      }
+    } else if (spec.dateStart || spec.dateEnd) {
+      dateFilter.start = spec.dateStart || null;
+      dateFilter.end = spec.dateEnd || null;
+      writePickerPart("start", dateFilter.start);
+      writePickerPart("end", dateFilter.end);
+    }
+
+    if (spec.predicate === "unsuccessful") aiRowFilter = isUnsuccessful;
+    else if (spec.predicate === "review") {
+      aiRowFilter = function (item) {
+        return outcomeGroup(item) === "intermediate";
+      };
+    } else if (spec.predicate === "high-risk") {
+      aiRowFilter = function (item) {
+        return riskBucket(item) === "high" || (item.score && item.score.tone === "negative");
+      };
+    } else if (spec.predicate === null) {
+      aiRowFilter = null;
+    } else if (typeof spec.predicate === "function") {
+      aiRowFilter = spec.predicate;
+    }
+
+    syncPanelFiltersFromDom();
+    updateFilterChrome();
     updateToolbarFilterChrome();
+    updateSearchStatus();
     currentPage = 1;
     render();
     applyingAiView = false;
-    return snapshotRows(filteredRows());
+
+    var visible = filteredRows();
+    return {
+      matches: snapshotRows(visible),
+      total: rows.length,
+      visibleCount: visible.length,
+      filters: {
+        search: searchDisplay,
+        product: productFilter,
+        outcomes: panelFilters.outcomes.slice(),
+        risks: panelFilters.risks.slice(),
+        country: panelFilters.country,
+        dateStart: dateFilter.start,
+        dateEnd: dateFilter.end,
+        predicate: spec.predicate || null
+      }
+    };
+  }
+
+  function getAiState() {
+    var visible = filteredRows();
+    return {
+      all: snapshotRows(rows),
+      visible: snapshotRows(visible),
+      total: rows.length,
+      visibleCount: visible.length,
+      search: searchDisplay,
+      product: productFilter,
+      filters: {
+        outcomes: panelFilters.outcomes.slice(),
+        products: panelFilters.products.slice(),
+        risks: panelFilters.risks.slice(),
+        sources: panelFilters.sources.slice(),
+        types: panelFilters.types.slice(),
+        country: panelFilters.country,
+        watchlist: panelFilters.watchlist.slice()
+      },
+      date: { start: dateFilter.start, end: dateFilter.end }
+    };
+  }
+
+  function showFailedLast7Days() {
+    return applyAiSpec({
+      clear: true,
+      dateDays: 7,
+      predicate: "unsuccessful"
+    }).matches;
   }
 
   function clearAiView() {
-    if (!aiRowFilter && !dateFilter.start) return;
-    applyingAiView = true;
-    aiRowFilter = null;
-    dateFilter.start = null;
-    dateFilter.end = null;
-    writePickerPart("start", null);
-    writePickerPart("end", null);
-    updateToolbarFilterChrome();
-    currentPage = 1;
-    render();
-    applyingAiView = false;
+    if (!aiRowFilter && !dateFilter.start && !searchQuery && !productFilter && activeFilterCount() === 0) {
+      return;
+    }
+    applyAiSpec({ clear: true, predicate: null });
   }
 
   window.UTTransactions = {
     showFailedLast7Days: showFailedLast7Days,
-    clearAiView: clearAiView
+    clearAiView: clearAiView,
+    applySpec: applyAiSpec,
+    getState: getAiState,
+    snapshot: function () {
+      return snapshotRows(rows);
+    }
   };
 
   function pageCount(total) {

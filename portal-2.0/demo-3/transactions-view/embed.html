@@ -1,0 +1,335 @@
+<!-- Portal 2.0 transactions.
+     Same shell as the home page: side rail, workspace header, TruAI.
+     The table, search, date control, and Filters drawer are the
+     user-testing transaction history, placed in this column. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transactions — Demo 3 embed</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+
+  <link rel="stylesheet" href="../../../assets/flag-icons/css/flag-icons.css">
+  <link rel="stylesheet" href="../../../pages/shared/flag-icons.css">
+  <link rel="stylesheet" href="../../../pages/shared/tds-shared-atoms.css">
+
+  <link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../../Components/button/button.css">
+  <link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../Components/text-input/text-input.css">
+  <link rel="stylesheet" href="../../../Components/filter-button/filter-button.css">
+  <link rel="stylesheet" href="../../../Components/counter-label/counter-label.css">
+  <link rel="stylesheet" href="../../../Components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../../Components/_shared/radio/radio.css">
+  <link rel="stylesheet" href="../../../Components/radio-group/radio-group.css">
+  <link rel="stylesheet" href="../../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../../Components/tooltip/tooltip.css">
+  <link rel="stylesheet" href="../../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../../Components/dismiss-action/dismiss-action.css">
+  <link rel="stylesheet" href="../../../Components/date-picker/date-picker.css">
+  <link rel="stylesheet" href="../../../Components/_shared/dropdown-panel/dropdown-panel.css">
+  <link rel="stylesheet" href="../../../Components/button-menu/button-menu.css">
+  <link rel="stylesheet" href="../../../Components/action-list-item/action-list-item.css">
+  <!-- shell, transactions table, this page's overrides, then the AI panel.
+       Page rules follow transaction-history.css so the column fit wins. -->
+  <link rel="stylesheet" href="css/embed.css">
+  <link rel="stylesheet" href="../../../pages/user-testing/transaction-history/transaction-history.css">
+  <link rel="stylesheet" href="css/page.css">
+</head>
+<body>
+
+<div class="d3-tx-embed" id="app-shell">
+
+
+  <!-- ============================================================
+       STAGE — owned by shared/portal-shell/shell.css. Do not restyle.
+       ============================================================ -->
+  <div class="d3-tx-embed__stage">
+
+    <!-- ▼▼▼ LEFT — page content ▼▼▼  owner: css/page.css, prefix v2-
+         Add page widgets inside <main>. Nothing here may reference
+         .ai-* or the [data-truai] state. -->
+    <main class="d3-tx-embed__main">
+      <section class="th-tx ut-tx-main">
+        <h1 class="th-tx__title">Transactions</h1>
+        <div class="ut-tx-main__scroll">
+        <div class="ut-tx-page">
+        <div class="ut-tx-block">
+          <div class="ut-tx-toolbar">
+            <div class="ut-tx-toolbar__left">
+              <div class="tds-text-input ut-tx-search">
+                <div class="tds-text-input__field tds-text-input__field--lg">
+                  <input class="tds-text-input__native" id="utTxSearch" type="search" placeholder="Search by name, country or ID" autocomplete="off" aria-label="Search by name, country or ID">
+                  <button type="button" class="ut-tx-search__clear" id="utTxSearchClear" hidden aria-label="Clear search">
+                    <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                  </button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--primary tds-icon-btn--sm ut-tx-search__submit" aria-label="Search">
+                    <span class="tds-icon-btn__icon" aria-hidden="true">
+                      <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="tds-date-picker-range tds-date-picker-range--interactive ut-tx-date" data-date-picker-range data-size="lg" data-view="03/16/2026" id="utTxDateWrap">
+                <div class="tds-date-picker-range__fields">
+                  <div class="tds-date-picker" data-date-picker-part="start">
+                    <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false" aria-label="Filter by date">
+                      <span class="tds-date-picker__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg></span>
+                      <span class="tds-date-picker__value tds-date-picker__placeholder visually-hidden">mm/dd/yyyy</span>
+                      <span class="ut-tx-date__label tds-date-picker__placeholder">mm/dd/yyyy</span>
+                      <span class="ut-tx-date__clear" hidden role="button" tabindex="0" aria-label="Clear date">
+                        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="tds-date-picker ut-tx-date__end" data-date-picker-part="end">
+                    <button type="button" class="tds-date-picker__field tds-date-picker__field--lg" aria-haspopup="dialog" aria-expanded="false" tabindex="-1" aria-label="End date">
+                      <span class="tds-date-picker__value tds-date-picker__placeholder">mm/dd/yyyy</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tds-text-input ut-tx-product" id="utTxProductWrap" hidden>
+                <div class="tds-text-input__field tds-text-input__field--lg">
+                  <select class="tds-text-input__native ut-tx-product__select" id="utTxProduct" aria-label="Filter by product">
+                    <option value="" selected>Product</option>
+                  </select>
+                  <span class="tds-caret tds-caret--default" aria-hidden="true">
+                    <svg viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.073724 3.46966L3.4702 0.0732225C3.56783 -0.0244075 3.72612 -0.0244075 3.82375 0.0732225L7.22014 3.46966C7.37764 3.62716 7.26614 3.89644 7.04334 3.89644H0.250504C0.0277738 3.89644 -0.083766 3.62715 0.073724 3.46966Z" fill="currentColor"/><path d="M0.073724 7.32322L3.4702 10.7197C3.56783 10.8173 3.72612 10.8173 3.82375 10.7197L7.22014 7.32322C7.37764 7.16572 7.26614 6.89644 7.04334 6.89644H0.250504C0.0277738 6.89644 -0.083766 7.16573 0.073724 7.32322Z" fill="currentColor"/></svg>
+                  </span>
+                </div>
+              </div>
+
+              <button type="button" class="tds-btn tds-btn--sm tds-btn--invisible ut-tx-toolbar-reset" id="utTxToolbarReset" hidden>Reset</button>
+            </div>
+
+            <div class="tds-filter-button" id="utTxFilter">
+              <button type="button" class="tds-btn tds-btn--md tds-btn--secondary" id="utTxFilterBtn" aria-haspopup="dialog" aria-controls="utTxFilters" aria-expanded="false">
+                <span class="tds-btn__leading-icon" aria-hidden="true">
+                  <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M4.5 8h7M6.5 12h3"/></svg>
+                </span>
+                <span class="tds-filter-button__trigger-default">Filter</span>
+                <span class="tds-counter tds-counter--primary tds-counter--sm tds-filter-button__counter" id="utTxFilterCount" hidden>0</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="ut-tx-table-section">
+            <p class="ut-tx-search-status" id="utTxSearchStatus" hidden></p>
+            <div class="tds-data-table-container ut-tx-table-card">
+              <div class="tds-data-table__wrapper">
+                <table class="tds-data-table ut-tx-table">
+                  <colgroup id="utTxCols"></colgroup>
+                  <thead id="utTxHead"></thead>
+                  <tbody id="utTxBody"></tbody>
+                </table>
+              </div>
+
+              <div class="tds-data-table__footer" id="utTxFooter"></div>
+            </div>
+          </div>
+        </div>
+        </div>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+    <aside class="ut-tx-filters" id="utTxFilters" role="dialog" aria-modal="false" aria-labelledby="utTxFiltersTitle" aria-hidden="true" hidden>
+      <header class="ut-tx-filters__header">
+        <h2 class="ut-tx-filters__title" id="utTxFiltersTitle">Filters</h2>
+        <div class="ut-tx-filters__header-actions">
+          <button type="button" class="tds-btn tds-btn--sm tds-btn--invisible ut-tx-filters__clear" id="utTxFiltersClear" disabled>Clear all</button>
+          <button type="button" class="tds-icon-btn tds-icon-btn--secondary tds-icon-btn--sm ut-tx-filters__close" aria-label="Close filters">
+            <span class="tds-icon-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg>
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <div class="ut-tx-filters__body">
+        <div class="ut-tx-filters__body-inner">
+        <section class="ut-tx-filters__section" aria-labelledby="utFiltOutcome">
+          <h3 class="ut-tx-filters__heading" id="utFiltOutcome">Outcome</h3>
+          <div class="ut-tx-filters__options">
+            <label class="ut-tx-filters__option">
+              <input class="tds-checkbox" type="checkbox" name="ut-filt-outcome" value="positive">
+              <span class="ut-tx-filters__option-text">
+                <span class="ut-tx-filters__option-label ut-tx-filters__option-label--positive">Positive</span>
+                <span class="ut-tx-filters__option-desc">Verified, No Hits Found</span>
+              </span>
+            </label>
+            <label class="ut-tx-filters__option">
+              <input class="tds-checkbox" type="checkbox" name="ut-filt-outcome" value="intermediate">
+              <span class="ut-tx-filters__option-text">
+                <span class="ut-tx-filters__option-label ut-tx-filters__option-label--intermediate">Indeterminate</span>
+                <span class="ut-tx-filters__option-desc">Review, Pending Review, In Progress</span>
+              </span>
+            </label>
+            <label class="ut-tx-filters__option">
+              <input class="tds-checkbox" type="checkbox" name="ut-filt-outcome" value="negative">
+              <span class="ut-tx-filters__option-text">
+                <span class="ut-tx-filters__option-label ut-tx-filters__option-label--negative">Negative</span>
+                <span class="ut-tx-filters__option-desc">Not Verified, Hits Found</span>
+              </span>
+            </label>
+            <label class="ut-tx-filters__option">
+              <input class="tds-checkbox" type="checkbox" name="ut-filt-outcome" value="not-completed">
+              <span class="ut-tx-filters__option-text">
+                <span class="ut-tx-filters__option-label">Not Completed</span>
+                <span class="ut-tx-filters__option-desc">Abandoned, Timed Out, Failed, Not Started</span>
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <section class="ut-tx-filters__section" aria-labelledby="utFiltProduct">
+          <h3 class="ut-tx-filters__heading" id="utFiltProduct">Product</h3>
+          <div class="ut-tx-filters__options" id="utFiltProductOptions"></div>
+        </section>
+
+        <section class="ut-tx-filters__section" aria-labelledby="utFiltCountry">
+          <h3 class="ut-tx-filters__heading" id="utFiltCountry">Country</h3>
+          <div class="tds-text-input ut-tx-filters__select">
+            <div class="tds-text-input__field tds-text-input__field--md">
+              <span class="tds-text-input__leading-icon" aria-hidden="true">
+                <svg class="icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+              </span>
+              <select class="ut-tx-filters__select-native" id="utFiltCountrySelect" aria-label="Select Country" required>
+                <option value="" selected disabled>Select Country</option>
+              </select>
+              <span class="tds-caret tds-caret--default" aria-hidden="true">
+                <svg viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.073724 3.46966L3.4702 0.0732225C3.56783 -0.0244075 3.72612 -0.0244075 3.82375 0.0732225L7.22014 3.46966C7.37764 3.62716 7.26614 3.89644 7.04334 3.89644H0.250504C0.0277738 3.89644 -0.083766 3.62715 0.073724 3.46966Z" fill="currentColor"/><path d="M0.073724 7.32322L3.4702 10.7197C3.56783 10.8173 3.72612 10.8173 3.82375 10.7197L7.22014 7.32322C7.37764 7.16572 7.26614 6.89644 7.04334 6.89644H0.250504C0.0277738 6.89644 -0.083766 7.16573 0.073724 7.32322Z" fill="currentColor"/></svg>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section class="ut-tx-filters__section" aria-labelledby="utFiltRisk">
+          <h3 class="ut-tx-filters__heading" id="utFiltRisk">Risk</h3>
+          <div class="ut-tx-filters__options">
+            <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-risk" value="high"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">High Risk</span></span></label>
+            <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-risk" value="medium"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Medium Risk</span></span></label>
+            <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-risk" value="low"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Low Risk</span></span></label>
+          </div>
+        </section>
+
+        <section class="ut-tx-filters__section" aria-labelledby="utFiltSource">
+          <h3 class="ut-tx-filters__heading" id="utFiltSource">Source</h3>
+          <div class="ut-tx-filters__options">
+            <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-source" value="API"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">API</span></span></label>
+            <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-source" value="Portal"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Portal</span></span></label>
+            <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-source" value="Workflow"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Workflow Studio</span></span></label>
+          </div>
+        </section>
+
+        <section class="ut-tx-filters__section" aria-labelledby="utFiltType">
+          <h3 class="ut-tx-filters__heading" id="utFiltType">Type</h3>
+          <div class="ut-tx-filters__options">
+            <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-type" value="Demo"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Demo</span></span></label>
+            <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-type" value="Live"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Live</span></span></label>
+          </div>
+        </section>
+
+        <section class="ut-tx-filters__section" aria-labelledby="utFiltUser">
+          <h3 class="ut-tx-filters__heading" id="utFiltUser">User</h3>
+          <div class="tds-text-input ut-tx-filters__select">
+            <div class="tds-text-input__field tds-text-input__field--md">
+              <span class="tds-text-input__leading-icon" aria-hidden="true">
+                <svg class="icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+              </span>
+              <select class="ut-tx-filters__select-native" id="utFiltUserSelect" aria-label="Select User" required>
+                <option value="" selected disabled>Select User</option>
+                <option value="ABC-Service-Worker-1675118759">ABC-Service-Worker-1675118759</option>
+                <option value="Test_API_Key">Test_API_Key</option>
+                <option value="Pria_K_Prod">Pria_K_Prod</option>
+              </select>
+              <span class="tds-caret tds-caret--default" aria-hidden="true">
+                <svg viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.073724 3.46966L3.4702 0.0732225C3.56783 -0.0244075 3.72612 -0.0244075 3.82375 0.0732225L7.22014 3.46966C7.37764 3.62716 7.26614 3.89644 7.04334 3.89644H0.250504C0.0277738 3.89644 -0.083766 3.62715 0.073724 3.46966Z" fill="currentColor"/><path d="M0.073724 7.32322L3.4702 10.7197C3.56783 10.8173 3.72612 10.8173 3.82375 10.7197L7.22014 7.32322C7.37764 7.16572 7.26614 6.89644 7.04334 6.89644H0.250504C0.0277738 6.89644 -0.083766 7.16573 0.073724 7.32322Z" fill="currentColor"/></svg>
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <div class="ut-tx-filters__divider" role="separator"></div>
+
+        <section class="ut-tx-filters__section">
+          <button type="button" class="ut-tx-filters__advanced-toggle" id="utFiltAdvancedToggle" aria-expanded="false" aria-controls="utFiltAdvancedBody">
+            <span class="ut-tx-filters__advanced-toggle-inner">
+              <svg class="icon ut-tx-filters__advanced-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Advanced filters
+            </span>
+          </button>
+          <div class="ut-tx-filters__advanced-body" id="utFiltAdvancedBody" hidden>
+            <div class="ut-tx-filters__section" aria-labelledby="utFiltDocType">
+              <h3 class="ut-tx-filters__heading" id="utFiltDocType">Document Type (KYC Documents)</h3>
+              <div class="ut-tx-filters__options">
+                <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-doctype" value="drivers-license"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Driver’s License</span></span></label>
+                <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-doctype" value="passport"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Passport</span></span></label>
+                <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-doctype" value="national-id"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">National ID</span></span></label>
+              </div>
+            </div>
+            <div class="ut-tx-filters__section" aria-labelledby="utFiltAlerts">
+              <h3 class="ut-tx-filters__heading" id="utFiltAlerts">Alerts (KYC Documents)</h3>
+              <div class="ut-tx-filters__options">
+                <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-alert" value="none"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">None</span></span></label>
+                <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-alert" value="document-fraud"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Document Fraud</span></span></label>
+                <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-alert" value="document-cycling"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Document Cycling</span></span></label>
+              </div>
+            </div>
+            <div class="ut-tx-filters__section" aria-labelledby="utFiltWatchlist">
+              <h3 class="ut-tx-filters__heading" id="utFiltWatchlist">Watchlist Hit (Person &amp; Business Watchlist Screening)</h3>
+              <div class="ut-tx-filters__options">
+                <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-watchlist" value="hit"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">Watchlist hit</span></span></label>
+                <label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-watchlist" value="no-hit"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">No watchlist hit</span></span></label>
+              </div>
+            </div>
+          </div>
+        </section>
+        </div>
+      </div>
+    </aside>
+</div>
+
+<div class="ut-tx-toast tds-announcement tds-announcement--neutral tds-announcement--inline" id="utTxToast" role="status" aria-live="polite" hidden>
+    <span class="tds-announcement__icon" aria-hidden="true">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.25v3.5M8 5.5h.01" stroke-linecap="round"/></svg>
+    </span>
+    <div class="tds-announcement__content">
+      <p class="tds-announcement__title" id="utTxToastTitle">Transaction ID copied</p>
+    </div>
+    <button type="button" class="tds-dismiss tds-dismiss--sm tds-announcement__dismiss" id="utTxToastDismiss" aria-label="Dismiss">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+    </button>
+  </div>
+
+  <div class="ut-tx-floating-tooltip tds-tooltip tds-tooltip--dark tds-tooltip--bottom tds-tooltip--caret-sm" id="utTxTooltip" role="tooltip" hidden>
+    <div class="tds-tooltip__body">
+      <p class="tds-tooltip__text" id="utTxTooltipText"></p>
+    </div>
+    <span class="tds-tooltip__caret" aria-hidden="true"></span>
+  </div>
+
+  
+<script>
+  window.UT_TX_RESULT_HREF = "../../../pages/user-testing/transaction-history/result.html";
+  window.UT_TX_SETTINGS_KEY = "demo3-tx";
+  window.UT_TX_PLAIN_TABLE = true;
+</script>
+<script src="js/embed-bridge.js?v=2"></script>
+<script src="../../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
+<script src="../../../Components/date-picker/date-picker.js"></script>
+<script src="../../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
+<script src="../../../pages/user-testing/transaction-history/transaction-history.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!-- Static reference implementation — Device Intelligence intermediate landing. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Intelligence — Trulioo Labs</title>
+
+  <link rel="preload" href="../../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../../pages/shared/tds-shared-atoms.css">
+  <link rel="stylesheet" href="../../../../Components/button/button.css">
+  <link rel="stylesheet" href="../../../../Components/select/select.css">
+  <link rel="stylesheet" href="../../../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../../Components/side-nav/side-nav.css?v=2">
+  <link rel="stylesheet" href="../../../../pages/shared/app-shell.css?v=2">
+  <link rel="stylesheet" href="../../../../pages/unified-intelligence-home/css/side-nav-experimental.css?v=5">
+  <link rel="stylesheet" href="../../../../Components/ai-tag/ai-tag.css">
+  <link rel="stylesheet" href="../../../../pages/shared/truai-chat.css?v=2">
+  <link rel="stylesheet" href="../document-verification/document-verification-flow.css">
+  <link rel="stylesheet" href="device-intelligence.css">
+  <style>
+    button.tds-side-nav__nav-item,
+    .tds-side-nav__nav-item {
+      height: 40px;
+      min-height: 40px;
+      padding: var(--padding-xs) var(--padding-sm);
+      border-radius: var(--radius-lg);
+    }
+
+    .tds-side-nav__nav-item-label {
+      justify-content: flex-start;
+    }
+  </style>
+</head>
+<body data-sidenav="experimental">
+
+  <div class="labs-kyb-layout" id="labs-kyb-layout">
+
+  <div class="app-shell" id="app-shell">
+
+    <div class="app-sidenav-overlay" id="app-sidenav-overlay" hidden aria-hidden="true"></div>
+
+    <aside class="tds-side-nav tds-side-nav--collapsed" id="app-sidenav" aria-label="Primary">
+
+      <div class="tds-side-nav__header">
+        <button type="button" class="tds-side-nav__brand" aria-label="Trulioo home">
+          <span class="tds-side-nav__logo">
+            <img src="../../../../assets/trulioo-logo-mark.svg" alt="" width="40" height="40">
+          </span>
+          <span class="tds-side-nav__brand-expanded">
+            <span class="tds-side-nav__brand-logo">
+              <img src="../../../../assets/trulioo-labs-logo.svg" alt="Trulioo Labs" width="152" height="24">
+            </span>
+          </span>
+        </button>
+      </div>
+
+      <div class="tds-side-nav__main">
+        <div class="tds-side-nav__nav-stack">
+          <div class="tds-side-nav__nav-group">
+            <button type="button" class="tds-side-nav__nav-item tds-side-nav__nav-item--active" aria-current="page" aria-expanded="true">
+              <span class="tds-side-nav__nav-item-label">
+                <span class="tds-side-nav__nav-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg></span>
+                <span class="tds-side-nav__nav-item-text">Home</span>
+              </span>
+              <span class="tds-side-nav__nav-item-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></span>
+            </button>
+
+            <div class="tds-side-nav__sub-nav">
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYB</div>
+                <div class="tds-side-nav__section-items">
+                  <a href="../KYB Results/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="1.5" width="9" height="13"/><path d="M6 4.5h1.2M8.8 4.5H10M6 7.5h1.2M8.8 7.5H10M7 14.5v-3h2v3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Business Verification</span>
+                  </a>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5.5" cy="5" r="2.5"/><path d="M1 13c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="11.5" cy="5.5" r="2"/><path d="M15 13c0-2 1.5-3 0-3-1 0-2.5 1-2.5 3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">UBO Agent</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 1.5h8a1 1 0 0 1 1 1v12l-5-2.5-5 2.5v-12a1 1 0 0 1 1-1z"/><path d="M6 6l1.5 1.5L10 5"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Policy Review</span>
+                  </button>
+                  <button type="button" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Deep Search</span>
+                  </button>
+                </div>
+              </div>
+
+              <hr class="tds-side-nav__divider">
+
+              <div class="tds-side-nav__section">
+                <div class="tds-side-nav__section-title">KYC</div>
+                <div class="tds-side-nav__section-items">
+                  <a href="../document-verification/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><circle cx="6" cy="7.5" r="1.5"/><path d="M3.5 11.5c0-1.5 1-2.5 2.5-2.5s2.5 1 2.5 2.5"/><path d="M10 7h2.5M10 9.5h2.5"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">KYC Documents</span>
+                  </a>
+                  <a href="../bank-verification/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12v8H2z"/><path d="M5 7v2M8 6v4M11 7v2M4 4V2h8v2"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Bank Verification</span>
+                  </a>
+                  <a href="../electronic-id/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1C5.5 3 4 5.5 4 8c0 2.5 1.5 4.5 4 4.5S12 10.5 12 8c0-2.5-1.5-5-4-7z"/><path d="M8 12.5V15M6 8c0-1.5 1-3 2-4M10 8c0-1.5-1-3-2-4"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Electronic ID</span>
+                  </a>
+                  <a href="../KYC eIDAS/index.html" class="tds-side-nav__sub-item">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="0.5"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="0.5"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="0.5"/><path d="M9 9h2v2H9zM12 9h1.5v2H12zM9 12h4.5v1.5H9z"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">eIDAS compliant KYC</span>
+                  </a>
+                  <a href="index.html" class="tds-side-nav__sub-item tds-side-nav__sub-item--selected" aria-current="page">
+                    <span class="tds-side-nav__sub-item-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><path d="M7 12.5h2"/></svg></span>
+                    <span class="tds-side-nav__sub-item-text">Device Intelligence</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tds-side-nav__icon-rail" aria-hidden="false">
+          <button type="button" class="tds-side-nav__icon-button" aria-label="Home">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 7.5 8 2.5l5.5 5V13a1 1 0 0 1-1 1H10v-4H6v4H3.5a1 1 0 0 1-1-1V7.5z"/></svg>
+            <span class="tds-side-nav__tooltip" role="tooltip">
+              <span class="tds-side-nav__tooltip-caret"></span>
+              <span class="tds-side-nav__tooltip-body">Home</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="tds-side-nav__collapse-bar" id="sidenav-collapse" aria-label="Expand sidebar" aria-expanded="false">
+        <svg class="icon icon--sm" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4l4 4-4 4M10 4l4 4-4 4"/></svg>
+        <span class="tds-side-nav__collapse-label text-label-sm-uppercase">Hide Sidebar</span>
+      </button>
+
+      <div class="tds-side-nav__footer">
+        <button type="button" class="tds-side-nav__profile tds-side-nav__profile--collapsed" aria-label="Jane Doe, janedoe@trulioo.com">
+          <span class="tds-side-nav__avatar">JD</span>
+          <span class="tds-side-nav__profile-info">
+            <span class="tds-side-nav__profile-name-row">
+              <span class="tds-side-nav__profile-name">Jane Doe</span>
+              <span class="tds-side-nav__profile-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg></span>
+            </span>
+            <span class="tds-side-nav__profile-email">janedoe@trulioo.com</span>
+          </span>
+        </button>
+      </div>
+
+    </aside>
+
+    <main class="app-main kyb-panel">
+
+      <button type="button" class="app-nav-toggle" id="app-nav-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="app-sidenav">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 5h14M3 10h14M3 15h14"/>
+        </svg>
+      </button>
+
+      <div class="di-landing" id="di-landing">
+        <header class="di-landing__header">
+          <div class="di-landing__title-group">
+            <button type="button" class="dv-back-btn" id="di-landing-back" aria-label="Back">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+            </button>
+            <h1 class="di-landing__title">Device Intelligence</h1>
+          </div>
+          <button class="tds-btn tds-btn--primary tds-btn--lg app-truai-btn" type="button" data-truai-toggle aria-expanded="false">
+            <span class="app-truai-btn__icon">
+              <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1l1.5 3.9 3.9 1.5-3.9 1.5L8 11.8 6.5 7.9 2.6 6.4l3.9-1.5L8 1z"/><path d="M12.8 10.2l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7.7-1.7z"/></svg>
+            </span>
+            TruAI
+          </button>
+        </header>
+
+        <div class="di-landing__body">
+          <article class="di-intro-card">
+            <div class="di-intro-card__top">
+              <div class="di-intro-card__hero">
+                <h2 class="di-intro-card__headline">See Device Intelligence in action</h2>
+                <p class="di-intro-card__copy">Discover what Device Intelligence can reveal about a device from basic attributes and environment details to signals that can help identify potentially risky behaviour.</p>
+              </div>
+              <div class="di-intro-card__discover">
+                <h3 class="di-intro-card__discover-title">What you’ll discover</h3>
+                <ul class="di-intro-card__list">
+                  <li class="di-intro-card__item">
+                    <p class="di-intro-card__item-title">Device details</p>
+                    <p class="di-intro-card__item-copy">Browser, operating system, device type, and other attributes.</p>
+                  </li>
+                  <li class="di-intro-card__item">
+                    <p class="di-intro-card__item-title">Environment signals</p>
+                    <p class="di-intro-card__item-copy">Indicators related to the device and its operating environment.</p>
+                  </li>
+                  <li class="di-intro-card__item">
+                    <p class="di-intro-card__item-title">Risk signals</p>
+                    <p class="di-intro-card__item-copy">Potential concerns such as device manipulation or other suspicious characteristics.</p>
+                  </li>
+                  <li class="di-intro-card__item">
+                    <p class="di-intro-card__item-title">Device history</p>
+                    <p class="di-intro-card__item-copy">Understand how the device has been observed across interactions, when available.</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="di-intro-card__footer">
+              <div class="tds-select" id="di-test-entity">
+                <label class="tds-field-label" id="di-test-entity-label">Test Entity</label>
+                <button type="button" class="tds-select__trigger tds-select__trigger--lg" aria-labelledby="di-test-entity-label" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="tds-select__text-wrapper">
+                    <span class="tds-select__value tds-select__placeholder" id="di-test-entity-value">Select</span>
+                  </span>
+                  <span class="tds-select__trailing-group">
+                    <span class="tds-caret tds-caret--default" aria-hidden="true">
+                      <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                    </span>
+                  </span>
+                </button>
+                <div class="tds-select__menu">
+                  <div class="tds-dropdown-panel" role="listbox" aria-labelledby="di-test-entity-label">
+                    <button type="button" class="tds-action-list-item" role="option" data-value="high">
+                      <span class="tds-action-list-item__content">
+                        <span class="tds-action-list-item__label">High-risk Device</span>
+                        <span class="tds-action-list-item__description">Suspicious device signals are detected.</span>
+                      </span>
+                    </button>
+                    <button type="button" class="tds-action-list-item" role="option" data-value="low">
+                      <span class="tds-action-list-item__content">
+                        <span class="tds-action-list-item__label">Low-risk Device</span>
+                        <span class="tds-action-list-item__description">No significant risk signals</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="di-analyze" disabled aria-disabled="true">Analyze now</button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  </div>
+
+  <script src="../../../../pages/shared/labs-history-return.js?v=2"></script>
+  <script src="truai-responses.js"></script>
+  <script src="../../../../pages/shared/truai-chat.js"></script>
+  <script src="../../../../Components/side-nav/side-nav.js"></script>
+  <script src="../../../../pages/unified-intelligence-home/js/labs-icons.js?v=2"></script>
+  <script src="../../../../pages/unified-intelligence-home/js/side-nav-experimental.js?v=14"></script>
+  <script src="../../../../pages/shared/labs-landing-nav.js?v=6"></script>
+  <script src="device-intelligence.js"></script>
+  <script>TdsSideNav.init();</script>
+</body>
+</html>

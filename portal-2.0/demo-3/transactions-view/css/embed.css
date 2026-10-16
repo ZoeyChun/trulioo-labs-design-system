@@ -1,0 +1,72 @@
+/* Demo 3 — Transactions embed (table only, no rail / AI). */
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: transparent;
+  font-family: var(--font-family-sans, Inter, system-ui, sans-serif);
+  color: var(--text-default, #172d2d);
+}
+
+.d3-tx-embed {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  background: transparent;
+}
+
+.d3-tx-embed__stage,
+.d3-tx-embed__main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.d3-tx-embed__main {
+  padding: 24px 24px 16px;
+  box-sizing: border-box;
+  transition: padding-right 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Filters drawer — overlay on the right of the embed. */
+.d3-tx-embed .ut-tx-filters {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  bottom: 8px;
+  width: min(400px, calc(100% - 24px));
+  z-index: 40;
+  height: auto;
+  max-height: none;
+  border-radius: var(--radius-xl, 12px);
+  box-shadow: 0 3px 27.3px 0 #c4f1e2;
+  transition:
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 250ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.d3-tx-embed.ut-tx-drawer-open .d3-tx-embed__main {
+  padding-right: min(416px, calc(100% - 16px));
+}
+
+.ut-tx-row {
+  cursor: pointer;
+  transition: background-color 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ut-tx-row,
+  .d3-tx-embed__main,
+  .d3-tx-embed .ut-tx-filters {
+    transition: none;
+  }
+}

@@ -1,0 +1,726 @@
+/* Demo 3 — Progressive Business Verification Report reveal.
+   Selecting a Meridian match fades the map out and reveals the report
+   with immediate identity + skeleton fields, filled step-by-step as
+   chat investigation progress advances. */
+(function () {
+  var workspace = document.querySelector("[data-d3-workspace]");
+  var detail = document.querySelector("[data-d3-kyb-detail]");
+  var mapEl = document.querySelector("[data-d3-kyb-map]");
+  var resumeCard = document.querySelector("[data-d3-kyb-resume]");
+  if (!workspace || !detail || !resumeCard) return;
+
+  var crumb = detail.querySelector(".d3-workspace__crumb");
+  var pageTitle = detail.querySelector(".d3-workspace__title");
+  var bizName = resumeCard.querySelector(".d3-workspace__biz-name");
+  var bizTag = resumeCard.querySelector(".d1-tag");
+  var metaCountry = resumeCard.querySelector(".d3-workspace__meta dd");
+  var overview = resumeCard.querySelector(".d3-kyb-overview");
+  var lower = resumeCard.querySelector(".d3-kyb-lower");
+  var hero = resumeCard.querySelector(".d3-kyb-hero");
+  var heroMapHost = resumeCard.querySelector("[data-d3-kyb-hero-map]");
+  var heroFallback = resumeCard.querySelector("[data-d3-kyb-hero-fallback]");
+  var heroPin = resumeCard.querySelector("[data-d3-kyb-hero-pin]");
+
+  var revealToken = 0;
+  var heroMap = null;
+  var heroMarker = null;
+  var currentBiz = null;
+  var FIELD_KEYS = [
+    "industry",
+    "regDate",
+    "legalForm",
+    "address",
+    "status",
+    "sizing",
+    "regNumber",
+    "taxId"
+  ];
+
+  /* Step → which overview fields unlock when that verification call lands. */
+  var STEP_FIELDS = [
+    ["industry", "regDate", "legalForm", "status"],
+    ["address", "sizing", "regNumber", "taxId"],
+    [] /* sanctions / alerts */
+  ];
+
+  function sleep(ms, token) {
+    return new Promise(function (resolve) {
+      window.setTimeout(function () {
+        if (token !== revealToken) return resolve(false);
+        resolve(true);
+      }, ms);
+    });
+  }
+
+  function reportData(biz) {
+    var base = biz.report || {};
+    return {
+      industry: base.industry || "Registered under NAICS 541611",
+      industryNote:
+        base.industryNote ||
+        "(management consulting activities), a catch-all code. No evidence of active trading, clients, or revenue.",
+      regDate: base.regDate || "Incorporated Feb 1, 2019 (Delaware)",
+      legalForm: base.legalForm || "Private company limited by shares",
+      address: base.address || biz.addr,
+      status: base.status || biz.status || "Active",
+      sizing: base.sizing || "0 employees; $1 authorized / $1 paid-in capital.",
+      regNumber: base.regNumber || biz.reg,
+      taxId: base.taxId || "EIN 34-1209876",
+      phone: base.phone || "+1 (212) 555-0148",
+      email: base.email || "info@" + (biz.name || "company").toLowerCase().replace(/[^a-z0-9]+/g, "") + ".com",
+      country: base.country || "United States",
+      sumA:
+        base.sumA ||
+        biz.name +
+          " is an active United States company at " +
+          biz.addr +
+          ".",
+      calls: base.calls || [
+        {
+          label: "Pulling business registry records…",
+          done: "Matched registry records",
+          ms: 1100,
+          detail: [
+            biz.name,
+            biz.reg + " — status " + (biz.status || "Active"),
+            biz.city
+          ]
+        },
+        {
+          label: "Parsing incorporation and ownership…",
+          done: "Incorporation and ownership parsed",
+          ms: 1200,
+          detail: [biz.addr, "Legal form confirmed"]
+        },
+        {
+          label: "Screening directors against OFAC, UN, and EU…",
+          done: "No sanctions matches found",
+          ms: 1300,
+          detail: ["OFAC — clear", "UN / EU — clear"]
+        }
+      ]
+    };
+  }
+
+  function setSurface(mode) {
+    if (window.D3KybResume && window.D3KybResume.setSurface) {
+      window.D3KybResume.setSurface(mode);
+    } else {
+      workspace.setAttribute("data-d3-kyb-surface", mode);
+    }
+  }
+
+  function ensureFieldHooks() {
+    if (overview && overview.querySelector("[data-d3-field]")) return;
+    /* Map known values into data-d3-field hooks if markup is static. */
+    var values = overview ? overview.querySelectorAll(".d3-kyb-overview__value, .d3-kyb-overview__note") : [];
+    var map = [
+      "industry",
+      "industryNote",
+      "regDate",
+      "legalForm",
+      "address",
+      "status",
+      "sizing",
+      "regNumber",
+      "taxId"
+    ];
+    var vi = 0;
+    values.forEach(function (el) {
+      if (el.getAttribute("data-d3-field")) return;
+      if (vi < map.length) {
+        el.setAttribute("data-d3-field", map[vi]);
+        vi += 1;
+      }
+    });
+  }
+
+  function setFieldSkeleton(on) {
+    ensureFieldHooks();
+    FIELD_KEYS.concat(["industryNote"]).forEach(function (key) {
+      var el = resumeCard.querySelector('[data-d3-field="' + key + '"]');
+      if (!el) return;
+      if (on) {
+        el.classList.add("is-skeleton");
+        el.classList.remove("is-revealed");
+        if (key === "status") {
+          el.classList.remove("d3-kyb-overview__value--ok");
+          el.textContent = "";
+        } else if (key !== "industryNote") {
+          el.textContent = "";
+        } else {
+          el.textContent = "";
+        }
+      }
+    });
+    if (lower) {
+      lower.classList.toggle("is-skeleton", on);
+      lower.setAttribute("aria-busy", on ? "true" : "false");
+    }
+  }
+
+  function revealField(key, htmlOrText, asHtml) {
+    var el = resumeCard.querySelector('[data-d3-field="' + key + '"]');
+    if (!el) return;
+    el.classList.remove("is-skeleton");
+    el.classList.add("is-revealed");
+    if (key === "status") {
+      el.classList.add("d3-kyb-overview__value--ok");
+      el.innerHTML =
+        '<img src="assets/icons/circle-check.svg" alt="" width="16" height="16"> ' +
+        (htmlOrText || "Active");
+    } else if (asHtml) {
+      el.innerHTML = htmlOrText;
+    } else {
+      el.textContent = htmlOrText;
+    }
+  }
+
+  function showHeroMap(biz) {
+    if (!heroMapHost || typeof L === "undefined" || !biz || biz.lat == null || biz.lon == null) {
+      if (heroFallback) heroFallback.hidden = false;
+      if (heroPin) heroPin.hidden = false;
+      if (heroMapHost) heroMapHost.hidden = true;
+      return;
+    }
+    if (heroFallback) heroFallback.hidden = true;
+    if (heroPin) heroPin.hidden = true;
+    heroMapHost.hidden = false;
+
+    if (!heroMap) {
+      heroMap = L.map(heroMapHost, {
+        zoomControl: false,
+        attributionControl: false,
+        dragging: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        keyboard: false,
+        tap: false
+      });
+      L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        { maxZoom: 16 }
+      ).addTo(heroMap);
+    }
+
+    if (heroMarker) {
+      try {
+        heroMap.removeLayer(heroMarker);
+      } catch (e) {}
+      heroMarker = null;
+    }
+
+    var icon = L.divIcon({
+      className: "d3-kyb-biz-icon",
+      html:
+        '<span class="d3-kyb-biz-marker is-active" aria-hidden="true"></span>',
+      iconSize: [18, 18],
+      iconAnchor: [9, 9]
+    });
+    heroMarker = L.marker([biz.lat, biz.lon], {
+      icon: icon,
+      interactive: false,
+      keyboard: false
+    }).addTo(heroMap);
+
+    heroMap.setView([biz.lat, biz.lon], 12, { animate: false });
+    window.setTimeout(function () {
+      if (heroMap) heroMap.invalidateSize({ animate: false });
+    }, 60);
+    window.setTimeout(function () {
+      if (heroMap) heroMap.invalidateSize({ animate: false });
+    }, 360);
+  }
+
+  function prepareReportChrome(biz) {
+    workspace.classList.add("has-incomplete");
+    resumeCard.hidden = false;
+    resumeCard.classList.add("is-live");
+    var fresh = workspace.querySelector("[data-d3-kyb-fresh]");
+    if (fresh) fresh.hidden = true;
+
+    if (crumb) {
+      crumb.innerHTML =
+        'Home / Verify a business / <span data-d3-kyb-crumb-biz></span>';
+      var crumbBiz = crumb.querySelector("[data-d3-kyb-crumb-biz]");
+      if (crumbBiz) crumbBiz.textContent = biz.name;
+    }
+    /* Company name appears immediately in the report identity block. */
+    if (pageTitle) pageTitle.hidden = true;
+    if (bizName) bizName.textContent = biz.name;
+    if (bizTag) {
+      bizTag.textContent = "Verifying…";
+      bizTag.className = "d1-tag d1-tag--review";
+    }
+    var exportBtn = detail.querySelector("[data-d3-kyb-export]");
+    if (exportBtn) exportBtn.hidden = false;
+    if (metaCountry) {
+      /* First meta dd is country — keep flag img if present. */
+      var flag = metaCountry.querySelector("img");
+      metaCountry.textContent = "United States ";
+      if (flag) metaCountry.appendChild(flag);
+    }
+
+    selectTab("overview", { silent: true });
+    renderOwnershipPanel(biz);
+    renderAlerts(biz);
+    renderSignalsPanel(biz);
+
+    if (hero) {
+      hero.classList.remove("is-revealed");
+      hero.classList.add("is-pending");
+    }
+    setFieldSkeleton(true);
+    ["phone", "email"].forEach(function (key) {
+      var el = resumeCard.querySelector('[data-d3-field="' + key + '"]');
+      if (!el) return;
+      el.classList.add("is-skeleton");
+      el.classList.remove("is-revealed", "d3-kyb-overview__value--ok");
+      el.textContent = "";
+    });
+  }
+
+  function appendTurn(role, text) {
+    var thread = document.querySelector("[data-d1-thread]");
+    if (!thread) return;
+    var section = document.createElement("section");
+    section.className = "d1-turn d1-enter";
+    if (role === "user") {
+      section.innerHTML = '<div class="d1-user"><p></p></div>';
+    } else {
+      section.innerHTML = '<div class="d1-ai d1-block"><p></p></div>';
+    }
+    section.querySelector("p").textContent = text;
+    thread.appendChild(section);
+    thread.scrollTop = thread.scrollHeight;
+  }
+
+  function cloneTpl(name) {
+    var tpl = document.querySelector('[data-d1-tpl="' + name + '"]');
+    if (!tpl) return null;
+    return tpl.content.firstElementChild.cloneNode(true);
+  }
+
+  async function playInvestigation(biz, data, token) {
+    var thread = document.querySelector("[data-d1-thread]");
+    if (!thread) return;
+
+    var tools = cloneTpl("tools");
+    if (!tools) return;
+    var label = tools.querySelector("[data-d1-tools-label]");
+    var pct = tools.querySelector(".d1-progress__pct");
+    var fill = tools.querySelector(".d1-progress__fill");
+    var check = tools.querySelector("[data-d1-tools-check]");
+    var steps = tools.querySelector("[data-d1-steps]");
+    label.textContent = "Investigating";
+    thread.appendChild(tools);
+    thread.scrollTop = thread.scrollHeight;
+
+    var calls = data.calls;
+    var rows = [];
+
+    for (var i = 0; i < calls.length; i += 1) {
+      if (token !== revealToken) return;
+      var call = calls[i];
+
+      rows.forEach(function (prev) {
+        prev.toggle.classList.remove("d1-activity__toggle--current");
+        prev.toggle.setAttribute("aria-expanded", "false");
+        prev.body.hidden = true;
+      });
+
+      var row = cloneTpl("activity");
+      if (!row) continue;
+      var toggle = row.querySelector(".d1-activity__toggle");
+      var body = row.querySelector(".d1-activity__body");
+      var detailEl = row.querySelector("[data-d1-activity-detail]");
+      row.querySelector("[data-d1-activity-label]").textContent = call.label;
+      if (!call.detail || !call.detail.length) {
+        row.classList.add("is-bare");
+        body.hidden = true;
+      }
+      steps.appendChild(row);
+      rows.push({ toggle: toggle, body: body });
+      thread.scrollTop = thread.scrollHeight;
+
+      pct.textContent = Math.round((i / calls.length) * 100) + "%";
+      fill.style.width = Math.round((i / calls.length) * 100) + "%";
+
+      var lines = call.detail || [];
+      var slice = lines.length ? call.ms / (lines.length + 1) : call.ms;
+      for (var j = 0; j < lines.length; j += 1) {
+        if (!(await sleep(slice, token))) return;
+        var p = document.createElement("p");
+        p.textContent = lines[j];
+        detailEl.appendChild(p);
+        thread.scrollTop = thread.scrollHeight;
+      }
+      if (!(await sleep(slice, token))) return;
+
+      var running = row.querySelector('[data-d1-mark="run"]');
+      var finished = row.querySelector('[data-d1-mark="done"]');
+      if (running) running.hidden = true;
+      if (finished) finished.hidden = false;
+      if (call.done) row.querySelector("[data-d1-activity-label]").textContent = call.done;
+
+      pct.textContent = Math.round(((i + 1) / calls.length) * 100) + "%";
+      fill.style.width = Math.round(((i + 1) / calls.length) * 100) + "%";
+
+      /* Unlock matching report fields as each verification call completes. */
+      revealStepFields(i, data);
+      if (i === 0 && hero) {
+        hero.classList.remove("is-pending");
+        hero.classList.add("is-revealed");
+        if (heroMap) {
+          window.setTimeout(function () {
+            heroMap.invalidateSize({ animate: false });
+          }, 40);
+        }
+      }
+    }
+
+    if (token !== revealToken) return;
+    label.textContent = "Investigation complete";
+    fill.classList.remove("d1-progress__fill--active");
+    fill.classList.add("d1-progress__fill--done");
+    if (check) check.hidden = false;
+
+    /* Collapse all steps so the chat stays compact after completion. */
+    rows.forEach(function (prev) {
+      prev.toggle.classList.remove("d1-activity__toggle--current");
+      prev.toggle.setAttribute("aria-expanded", "false");
+      prev.body.hidden = true;
+    });
+
+    if (bizTag) {
+      if (biz.riskLevel === "high" || (biz.risks && biz.risks.some(function (r) { return r.severity === "high"; }))) {
+        bizTag.textContent = "Needs review";
+        bizTag.className = "d1-tag d1-tag--review";
+      } else if (biz.riskLevel === "medium") {
+        bizTag.textContent = "Verified · review notes";
+        bizTag.className = "d1-tag d1-tag--review";
+      } else {
+        bizTag.textContent = "Verified";
+        bizTag.className = "d1-tag d1-tag--positive";
+      }
+    }
+    if (lower) {
+      lower.classList.remove("is-skeleton");
+      lower.classList.add("is-revealed");
+      lower.setAttribute("aria-busy", "false");
+      var phone = lower.querySelector(".d3-kyb-comms [data-d3-field=\"phone\"]");
+      var email = lower.querySelector(".d3-kyb-comms [data-d3-field=\"email\"]");
+      if (phone) {
+        phone.classList.remove("is-skeleton");
+        phone.innerHTML =
+          '<img src="assets/icons/phone.svg" alt="" width="16" height="16"> ' + data.phone;
+        phone.classList.add("d3-kyb-overview__value--ok", "is-revealed");
+      }
+      if (email) {
+        email.classList.remove("is-skeleton");
+        email.innerHTML =
+          '<img src="assets/icons/envelope.svg" alt="" width="16" height="16"> ' +
+          '<a class="d3-kyb-link" href="mailto:' +
+          data.email +
+          '">' +
+          data.email +
+          "</a>";
+        email.classList.add("d3-kyb-overview__value--ok", "is-revealed");
+      }
+    }
+
+    appendReportCard(biz, data);
+  }
+
+  function appendReportCard(biz, data) {
+    var thread = document.querySelector("[data-d1-thread]");
+    if (!thread) return;
+    var node = cloneTpl("report");
+    if (!node) {
+      appendTurn(
+        "assistant",
+        data.sumA ||
+          biz.name +
+            " is an active United States company at " +
+            biz.addr +
+            ". Overview is ready on the right."
+      );
+      return;
+    }
+
+    var title = node.querySelector("[data-d1-co]");
+    if (title) title.textContent = biz.name;
+
+    var tag = node.querySelector("[data-d1-report-tag]");
+    if (tag) {
+      if (biz.riskLevel === "high") {
+        tag.textContent = "Needs review";
+        tag.className = "d1-tag d1-tag--review";
+      } else if (biz.riskLevel === "medium") {
+        tag.textContent = "Verified · review notes";
+        tag.className = "d1-tag d1-tag--review";
+      } else {
+        tag.textContent = "Verified";
+        tag.className = "d1-tag d1-tag--positive";
+      }
+    }
+
+    var sumA = node.querySelector("[data-d1-sum-a]");
+    var sumB = node.querySelector("[data-d1-sum-b]");
+    if (sumA) {
+      sumA.textContent =
+        data.sumA ||
+        biz.name + " is an active United States company at " + biz.addr + ".";
+    }
+    if (sumB) {
+      var risks = biz.risks || [];
+      if (risks.length) {
+        sumB.hidden = false;
+        sumB.textContent =
+          "Key follow-up: " +
+          risks
+            .map(function (r) {
+              return r.label;
+            })
+            .join("; ") +
+          ".";
+      } else {
+        sumB.hidden = true;
+        sumB.textContent = "";
+      }
+    }
+
+    var exportBtn = node.querySelector("[data-d1-report-export], .d1-alert__export");
+    if (exportBtn) {
+      exportBtn.addEventListener("click", function () {
+        var pageExport = document.querySelector("[data-d3-kyb-export]");
+        if (pageExport && !pageExport.hidden) {
+          pageExport.click();
+          return;
+        }
+        document.dispatchEvent(
+          new CustomEvent("d3-kyb:export", { detail: { biz: biz } })
+        );
+      });
+    }
+
+    thread.appendChild(node);
+    thread.scrollTop = thread.scrollHeight;
+  }
+
+  function revealStepFields(stepIndex, data) {
+    var keys = STEP_FIELDS[stepIndex] || [];
+    keys.forEach(function (key) {
+      if (key === "industry") {
+        revealField("industry", data.industry);
+        revealField("industryNote", data.industryNote);
+      } else if (key === "status") {
+        revealField("status", data.status);
+      } else {
+        revealField(key, data[key]);
+      }
+    });
+  }
+
+  async function fadeMapThenShowReport() {
+    if (mapEl) {
+      mapEl.classList.add("is-fading");
+      await new Promise(function (r) {
+        window.setTimeout(r, 320);
+      });
+    }
+    setSurface("report");
+    detail.hidden = false;
+    detail.classList.remove("is-entering");
+    void detail.offsetWidth;
+    detail.classList.add("is-entering");
+    if (mapEl) mapEl.classList.remove("is-fading");
+  }
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function selectTab(id, opts) {
+    opts = opts || {};
+    var tab = resumeCard.querySelector('[data-d3-kyb-tab="' + id + '"]');
+    if (!tab) return false;
+    resumeCard.querySelectorAll("[data-d3-kyb-tab]").forEach(function (t) {
+      var on = t === tab;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    resumeCard.querySelectorAll("[data-d3-kyb-panel]").forEach(function (panel) {
+      panel.hidden = panel.getAttribute("data-d3-kyb-panel") !== id;
+    });
+    if (!opts.silent) {
+      var panel = resumeCard.querySelector('[data-d3-kyb-panel="' + id + '"]');
+      if (panel) {
+        panel.classList.remove("d3-kyb-panel--flash");
+        void panel.offsetWidth;
+        panel.classList.add("d3-kyb-panel--flash");
+      }
+    }
+    return true;
+  }
+
+  function renderOwnershipPanel(biz) {
+    var panel = resumeCard.querySelector('[data-d3-kyb-panel="ownership"]');
+    if (!panel) return;
+    var owners = biz.ownership || [];
+    if (!owners.length) {
+      panel.innerHTML =
+        '<p class="d3-workspace__hint">No ownership / UBO records are available for this entity in the demo dataset.</p>';
+      return;
+    }
+    var html =
+      '<div class="d3-kyb-ubo">' +
+      '<h3 class="d3-kyb-overview__title">Ownership / UBO</h3>' +
+      '<p class="d3-kyb-ubo__lede">Grounded in the filing extract for ' +
+      esc(biz.name) +
+      ".</p>" +
+      '<ul class="d3-kyb-ubo__list">';
+    owners.forEach(function (o) {
+      html +=
+        '<li class="d3-kyb-ubo__card' +
+        (o.flagged ? " is-flagged" : "") +
+        '">' +
+        '<div class="d3-kyb-ubo__top">' +
+        '<span class="d3-kyb-ubo__name">' +
+        esc(o.name) +
+        "</span>" +
+        (o.flagged
+          ? '<span class="d1-tag d1-tag--review">Flagged</span>'
+          : '<span class="d1-tag d1-tag--positive">Clear</span>') +
+        "</div>" +
+        '<p class="d3-kyb-ubo__meta">' +
+        esc(o.role) +
+        " · " +
+        esc(o.pct) +
+        " · " +
+        esc(o.type === "person" ? "Natural person" : "Corporate") +
+        "</p>" +
+        (o.note ? '<p class="d3-kyb-ubo__note">' + esc(o.note) + "</p>" : "") +
+        "</li>";
+    });
+    html += "</ul></div>";
+    panel.innerHTML = html;
+  }
+
+  function renderAlerts(biz) {
+    var chips = resumeCard.querySelector(".d3-kyb-alerts__chips");
+    if (!chips) return;
+    var a = biz.alerts || {};
+    var rows = [
+      ["Adverse Media", a.adverseMedia || "None found"],
+      ["Sanctions", a.sanctions || "None found"],
+      ["Litigation", a.litigation || "None found"],
+      ["Positive Press", a.positivePress || "None found"]
+    ];
+    chips.innerHTML = rows
+      .map(function (row) {
+        var warn = row[1] && !/^none/i.test(row[1]);
+        return (
+          '<span class="d3-kyb-chip' +
+          (warn ? " d3-kyb-chip--warn" : "") +
+          '"><img src="assets/icons/circle-check-faint.svg" alt="" width="16" height="16"> ' +
+          esc(row[0]) +
+          ": " +
+          esc(row[1]) +
+          "</span>"
+        );
+      })
+      .join("");
+  }
+
+  function renderSignalsPanel(biz) {
+    var panel = resumeCard.querySelector('[data-d3-kyb-panel="signals"]');
+    if (!panel) return;
+    var risks = biz.risks || [];
+    if (!risks.length) {
+      panel.innerHTML =
+        '<p class="d3-workspace__hint">No elevated match signals for ' +
+        esc(biz.name) +
+        " in this demo dataset.</p>";
+      return;
+    }
+    var html =
+      '<div class="d3-kyb-signals"><h3 class="d3-kyb-overview__title">Match Signals</h3><ul class="d3-kyb-signals__list">';
+    risks.forEach(function (r) {
+      html +=
+        '<li class="d3-kyb-signals__item d3-kyb-signals__item--' +
+        esc(r.severity || "medium") +
+        '">' +
+        '<span class="d3-kyb-signals__label">' +
+        esc(r.label) +
+        "</span>" +
+        '<span class="d3-kyb-signals__evidence">' +
+        esc(r.evidence) +
+        "</span></li>";
+    });
+    html += "</ul></div>";
+    panel.innerHTML = html;
+  }
+
+  async function reveal(biz) {
+    if (!biz) return;
+    currentBiz = biz;
+    if (window.D3KybMapSearch && window.D3KybMapSearch.setSelected) {
+      window.D3KybMapSearch.setSelected(biz);
+    }
+    revealToken += 1;
+    var token = revealToken;
+    var data = reportData(biz);
+
+    document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
+    if (window.D3Nav) window.D3Nav.markChatActive();
+
+    /* Collapse search cards so investigation progress stays in view. */
+    document.querySelectorAll(".d3-kyb-similar").forEach(function (el) {
+      el.hidden = true;
+    });
+    document.querySelectorAll(".d3-kyb-agent__card, .d3-kyb-agent__list").forEach(function (el) {
+      /* Keep chat compact while the map zooms; cards stay in history above. */
+      var list = el.closest && el.closest(".d3-kyb-agent");
+      if (list) list.setAttribute("data-d3-kyb-selecting", "true");
+    });
+
+    /* 1) Zoom map to the selected business while still on the map surface. */
+    if (window.D3KybMapSearch && window.D3KybMapSearch.focusBusiness) {
+      setSurface("map");
+      if (mapEl) mapEl.classList.remove("is-fading");
+      await window.D3KybMapSearch.focusBusiness(biz, {
+        zoom: 12,
+        duration: 1.05,
+        holdMs: 420
+      });
+      if (token !== revealToken) return;
+    }
+
+    /* 2) Prepare report chrome, fade the map, then reveal. */
+    prepareReportChrome(biz);
+    await fadeMapThenShowReport();
+    if (token !== revealToken) return;
+    /* Init Leaflet after the report surface is visible so tiles size correctly. */
+    showHeroMap(biz);
+
+    await playInvestigation(biz, data, token);
+    document.dispatchEvent(
+      new CustomEvent("d3-kyb:report-ready", { detail: { biz: biz } })
+    );
+  }
+
+  window.D3KybReport = {
+    reveal: reveal,
+    selectTab: selectTab,
+    renderOwnershipPanel: renderOwnershipPanel,
+    getCurrent: function () {
+      return currentBiz;
+    }
+  };
+})();

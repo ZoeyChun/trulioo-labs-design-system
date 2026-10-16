@@ -1,0 +1,90 @@
+/* Demo 3 — AI-chat PageShell
+   Figma: Portal 2.0 1280:20394
+   Rail (72) + #f4f6f4 canvas [ TruAI 478 | main content ] */
+
+.d3-canvas {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+  transition: background-color var(--d3-dur-panel, 300ms) var(--d3-ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* Chat closed (home): canvas is transparent; main keeps white card. */
+.d1-shell[data-d3-chat="closed"] .d3-canvas {
+  background: transparent;
+}
+
+/* Chat open: do NOT override shell padding/gap — SideNav must match
+   homepage (shell.css: padding + gap = 8px, rail = 72px). */
+.d1-shell[data-d3-chat="open"] .d3-canvas {
+  background: var(--surface-neutral-02, #f4f6f4);
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+  min-height: 0;
+}
+
+/* TruAI panel: fill canvas height (shell already insets 8px). */
+.d1-shell[data-d3-chat="open"] .d3-chat-pane {
+  align-self: stretch;
+  margin: 0;
+  height: auto;
+  max-height: none;
+}
+
+/* Main is flat on the canvas — not a second white card. */
+.d1-shell[data-d3-chat="open"] .d1-main {
+  flex: 1 1 0;
+  min-width: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 40px 24px 24px;
+  gap: 40px;
+  overflow: hidden;
+  transition:
+    padding 480ms var(--d3-ease-inout, cubic-bezier(0.4, 0, 0.2, 1)),
+    gap 480ms var(--d3-ease-inout, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* KYB map + report: outer main has no inset — content fills the column. */
+.d1-shell[data-d3-chat="open"][data-d3-chat-mode="kyb"] .d1-main:has([data-d3-kyb-surface="map"]),
+.d1-shell[data-d3-chat="open"][data-d3-chat-mode="kyb"] .d1-main:has([data-d3-kyb-surface="report"]) {
+  padding: 0;
+  gap: 0;
+}
+
+.d1-shell[data-d3-chat="open"][data-d3-chat-mode="kyb"] .d1-main:has([data-d3-kyb-surface="map"]) .d1-slot,
+.d1-shell[data-d3-chat="open"][data-d3-chat-mode="kyb"] .d1-main:has([data-d3-kyb-surface="report"]) .d1-slot {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 100%;
+  align-self: stretch;
+}
+
+/* Closed drawer still reserves 2px via transparent borders — hide in map/report. */
+.d1-shell[data-d3-chat="open"][data-d3-chat-mode="kyb"] .d1-main:has([data-d3-kyb-surface="map"]) .d1-drawer,
+.d1-shell[data-d3-chat="open"][data-d3-chat-mode="kyb"] .d1-main:has([data-d3-kyb-surface="report"]) .d1-drawer {
+  display: none;
+}
+
+.d1-shell[data-d3-chat="open"] .d1-main:has(.d1-drawer) .d1-slot {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-canvas,
+  .d1-shell[data-d3-chat="open"] .d1-main {
+    transition: none;
+  }
+}
