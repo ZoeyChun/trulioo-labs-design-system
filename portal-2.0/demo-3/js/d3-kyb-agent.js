@@ -34,9 +34,11 @@
     '<svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>';
 
   function onKyb() {
+    /* Only while KYB workspace is the active view — never hijack Home
+       just because chat-mode is still "kyb" from a prior visit. */
     return (
-      shell.getAttribute("data-d3-chat-mode") === "kyb" ||
-      shell.getAttribute("data-d3-view") === "chat"
+      shell.getAttribute("data-d3-view") === "chat" &&
+      shell.getAttribute("data-d3-chat-mode") === "kyb"
     );
   }
 

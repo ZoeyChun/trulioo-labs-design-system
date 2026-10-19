@@ -4,7 +4,7 @@
   var frame = document.querySelector("[data-d3-labs-frame]");
   if (!shell) return;
 
-  var LABS_SRC = "../../pages/unified-intelligence-home/labs.html?embed=1&v=10";
+  var LABS_SRC = "../../pages/unified-intelligence-home/labs.html?embed=1&v=11";
 
   function ensureFrame() {
     if (!frame) return;
@@ -14,13 +14,14 @@
   }
 
   function openPortalAction(action) {
+    /* Deep-link / legacy Labs card → top-level KYB Verification nav. */
     if (action === "kyb") {
-      if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
-        window.D3KybResume.openResumeExperience();
+      if (window.D3Nav && window.D3Nav.goKyb) {
+        window.D3Nav.goKyb();
         return;
       }
-      if (window.D3Nav && window.D3Nav.openKybChat) {
-        window.D3Nav.openKybChat({ resume: true });
+      if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
+        window.D3KybResume.openResumeExperience();
       }
     }
   }
@@ -33,12 +34,12 @@
 
   function goLabs() {
     shell.setAttribute("data-d3-view", "agents");
-    /* Labs opens with TruAI panel by default (hub idle prompts). */
+    /* Labs is catalog-only — no TruAI panel / ask bar. */
     if (window.D3Nav) {
-      window.D3Nav.setChatOpen(true, "hub");
+      window.D3Nav.setChatOpen(false, "hub");
       window.D3Nav.markChatIdle();
     } else {
-      shell.setAttribute("data-d3-chat", "open");
+      shell.setAttribute("data-d3-chat", "closed");
       shell.setAttribute("data-d3-chat-mode", "hub");
     }
 

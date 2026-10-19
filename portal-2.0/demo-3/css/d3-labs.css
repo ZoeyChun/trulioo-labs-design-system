@@ -40,6 +40,18 @@
   background: transparent;
 }
 
+/* Match Transactions page enter (v2-rise on the embed frame). */
+.d1-shell[data-d3-view="agents"] .d3-labs.d3-motion-enter .d3-labs__frame {
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
+  animation-delay: 40ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d1-shell[data-d3-view="agents"] .d3-labs.d3-motion-enter .d3-labs__frame {
+    animation: none;
+  }
+}
+
 /* Right Labs column only — flat (leave TruAI pane chrome alone). */
 .d1-shell[data-d3-view="agents"] .d1-main {
   padding: 0;
@@ -66,4 +78,10 @@
 
 .d1-shell[data-d3-view="agents"] .d1-drawer {
   display: none;
+}
+
+/* No TruAI on Labs — hide panel + ask bar (same as Org Admin). */
+.d1-shell[data-d3-view="agents"] .d3-chat-pane,
+.d1-shell[data-d3-view="agents"] .d3-askbar {
+  display: none !important;
 }

@@ -197,6 +197,13 @@
   min-width: 0;
 }
 
+.d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-panel[data-d3-kyb-panel="ownership"] {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
 .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-hero {
   width: 100%;
   max-width: none;

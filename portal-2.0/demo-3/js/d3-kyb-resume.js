@@ -1,5 +1,5 @@
 /* Demo 3 — KYB surfaces: centered search landing + full report.
-   Labs → KYB Verification: search hero + recent transaction cards.
+   Side nav → KYB Verification: search hero + recent transaction cards.
    Report surface reuses the resume card chrome (.is-live). */
 (function () {
   var STORAGE_KEY = "d3-kyb-incomplete";
@@ -247,11 +247,9 @@
   function renderCrumbs(mode, bizName) {
     var el = crumbEl();
     if (!el) return;
-    /* One scheme end-to-end: Labs / KYB Verification [/ entity]. */
+    /* Top-level KYB Verification [/ entity] — no Labs parent. */
     if (mode === "report") {
       el.innerHTML =
-        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>' +
-        '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
         '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">KYB Verification</button>' +
         '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
         '<span class="d3-workspace__crumb-current" data-d3-kyb-crumb-biz></span>';
@@ -260,8 +258,6 @@
       return;
     }
     el.innerHTML =
-      '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>' +
-      '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
       '<span class="d3-workspace__crumb-current">KYB Verification</span>';
   }
 
@@ -492,6 +488,11 @@
   workspace.querySelectorAll("[data-d3-kyb-tab]").forEach(function (tab) {
     tab.addEventListener("click", function () {
       var id = tab.getAttribute("data-d3-kyb-tab");
+      /* Prefer report selectTab so Ownership / UBO remounts the React graph. */
+      if (window.D3KybReport && window.D3KybReport.selectTab) {
+        window.D3KybReport.selectTab(id);
+        return;
+      }
       workspace.querySelectorAll("[data-d3-kyb-tab]").forEach(function (t) {
         var on = t === tab;
         t.classList.toggle("is-active", on);
@@ -508,10 +509,8 @@
       var btn = event.target.closest("[data-d3-crumb]");
       if (!btn || !detail.contains(btn)) return;
       var go = btn.getAttribute("data-d3-crumb");
-      if (go === "home" || go === "labs") {
-        if (window.D3Labs && window.D3Labs.open) window.D3Labs.open();
-        else if (window.D3Nav && window.D3Nav.goLabs) window.D3Nav.goLabs();
-        else if (window.D3Nav && window.D3Nav.goAgents) window.D3Nav.goAgents();
+      if (go === "home") {
+        if (window.D3Nav && window.D3Nav.goHome) window.D3Nav.goHome();
         return;
       }
       if (go === "kyb") {

@@ -29,6 +29,7 @@ Then open:
 ## Share
 
 - Labs: https://zoeychun.github.io/trulioo-labs-design-system/pages/unified-intelligence-home/labs.html
+- Portal Demo 3 sign-in: https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/sign-in/
 - Portal Demo 3: https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/
 
 ## Notes

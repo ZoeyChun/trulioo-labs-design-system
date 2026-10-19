@@ -1,11 +1,12 @@
-/* Demo 3 navigation — home / Labs / Transactions + left chat pane.
-   Close collapses to a floating ask bar (demo-2 ai-askbar), not Home. */
+/* Demo 3 navigation — Home / KYB Verification / Transactions / Labs /
+   Dev Dashboard (+ left chat pane). Close → floating ask bar (demo-2). */
 (function () {
   var shell = document.querySelector(".d1-shell");
   var chatPane = document.querySelector("[data-d3-chat-pane]");
   if (!shell) return;
 
   var homeBtn = document.querySelector("[data-d3-nav='home']");
+  var kybBtn = document.querySelector("[data-d3-nav='kyb']");
   var labsBtn = document.querySelector("[data-d3-nav='labs']");
   var transactionsBtn = document.querySelector("[data-d3-nav='transactions']");
   var closeChat = document.querySelector("[data-d3-chat-close]");
@@ -129,21 +130,31 @@
 
   function goHome() {
     shell.setAttribute("data-d3-view", "home");
-    setChatOpen(false);
+    setChatOpen(false, "hub");
     setActiveNav("home");
     var stage = document.querySelector("[data-d1-stage]");
     if (stage) stage.setAttribute("data-d1-stage", "home");
+    if (chatPane) chatPane.classList.remove("is-active");
     document.dispatchEvent(new CustomEvent("d3-view:home"));
   }
 
+  function goKyb() {
+    /* Top-level KYB Verification — search landing + TruAI. */
+    if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
+      window.D3KybResume.openResumeExperience();
+      return;
+    }
+    openKybChat({ resume: true });
+  }
+
   function goLabs() {
-    /* Labs nav → catalog + TruAI open by default. */
+    /* Labs nav → catalog only (no TruAI panel). */
     if (window.D3Labs && window.D3Labs.open) {
       window.D3Labs.open();
       return;
     }
     shell.setAttribute("data-d3-view", "agents");
-    setChatOpen(true, "hub");
+    setChatOpen(false, "hub");
     setActiveNav("labs");
     if (chatPane) chatPane.classList.remove("is-active");
     document.dispatchEvent(new CustomEvent("d3-view:agents"));
@@ -162,7 +173,7 @@
     opts = opts || {};
     shell.setAttribute("data-d3-view", "chat");
     setChatOpen(true, "kyb");
-    setActiveNav("labs");
+    setActiveNav("kyb");
     if (chatPane && opts.resume && !opts.forceActive) {
       chatPane.classList.remove("is-active");
     }
@@ -182,6 +193,7 @@
 
   window.D3Nav = {
     goHome: goHome,
+    goKyb: goKyb,
     goLabs: goLabs,
     goAgents: goLabs,
     goOrg: goOrg,
@@ -191,6 +203,7 @@
     setChatOpen: setChatOpen,
     closeChatPanel: closeChatPanel,
     openChatPanel: openChatPanel,
+    setActiveNav: setActiveNav,
     markChatActive: function () {
       if (chatPane) chatPane.classList.add("is-active");
     },
@@ -200,8 +213,16 @@
   };
 
   if (homeBtn) homeBtn.addEventListener("click", goHome);
+  if (kybBtn) kybBtn.addEventListener("click", goKyb);
   if (labsBtn) labsBtn.addEventListener("click", goLabs);
   if (transactionsBtn) transactionsBtn.addEventListener("click", goTransactions);
+
+  /* Placeholder rail items — visible only, no view switch. */
+  document.querySelectorAll("[data-d3-nav-placeholder]").forEach(function (btn) {
+    btn.addEventListener("click", function (event) {
+      event.preventDefault();
+    });
+  });
 
   if (closeChat) {
     closeChat.addEventListener("click", function () {

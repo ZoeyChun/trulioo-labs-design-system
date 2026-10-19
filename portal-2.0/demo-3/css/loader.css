@@ -1,0 +1,89 @@
+/* Post–sign-in loader + shell reveal (portal stays hidden until ready). */
+
+.d1-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-48);
+  background: var(--surface-neutral-01);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.d1-loader[hidden] {
+  display: none;
+}
+
+.d1-loader.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.d1-loader.is-leaving {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+.d1-shell {
+  opacity: 0;
+}
+
+body.d1-app-ready .d1-shell {
+  animation: d1-arrive 0.65s ease forwards;
+}
+
+@keyframes d1-arrive {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+.d1-loader canvas {
+  display: block;
+  width: 122px;
+  height: 122px;
+}
+
+.d1-loader__text {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.5rem;
+}
+
+.d1-loader__text.is-swap {
+  animation: d1-loader-line 0.4s ease;
+}
+
+@keyframes d1-loader-line {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d1-loader,
+  body.d1-app-ready .d1-shell {
+    transition: none;
+    animation: none;
+  }
+
+  .d1-shell,
+  body.d1-app-ready .d1-shell,
+  .d1-loader,
+  .d1-loader.is-on,
+  .d1-loader.is-leaving {
+    opacity: 1;
+    transform: none;
+  }
+
+  .d1-loader__text.is-swap {
+    animation: none;
+  }
+}

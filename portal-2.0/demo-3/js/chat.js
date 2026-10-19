@@ -1419,6 +1419,12 @@
   }
 
   composer.addEventListener("d1-composer:submit", function (event) {
+    /* Demo 3 owns Home → KYB / TX / KYC routing. Never enter the Demo 1
+       full-page chat stage from the composer. */
+    if (window.D3Nav || document.querySelector(".d1-shell[data-d3-view]")) {
+      return;
+    }
+
     var detail = event.detail || {};
     var file = detail.attachments && detail.attachments[0];
     var text = detail.text || (file && file.name) || "";

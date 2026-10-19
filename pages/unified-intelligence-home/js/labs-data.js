@@ -84,19 +84,7 @@ var labsExperiences = [
     url: '../business-reputation-review/index.html',
     preview: 'assets/labs-preview-kyb-results.png',
   },
-  {
-    id: 'kyb-verification',
-    title: 'KYB Verification',
-    description: 'Verify businesses quickly with a simple, self-serve KYB workflow.',
-    experienceType: 'live',
-    useCase: 'KYB',
-    industry: 'Marketplace',
-    icon: 'kyb-self-serve',
-    tags: ['KYB'],
-    featured: false,
-    order: 0,
-    portalAction: 'kyb',
-  },
+  /* KYB Verification lives in the Demo 3 side nav (not the Labs catalog). */
   {
     id: 'trulioo-mcp-agent',
     title: 'Orchestration Agent',

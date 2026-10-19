@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="composer/prompt.css?v=5">
   <link rel="stylesheet" href="css/messages.css?v=3">
-  <link rel="stylesheet" href="css/motion.css?v=6">
+  <link rel="stylesheet" href="css/motion.css?v=7">
   <link rel="stylesheet" href="css/d3-thinking.css?v=1">
   <link rel="stylesheet" href="css/drawer.css?v=3">
   <link rel="stylesheet" href="../../Components/text-input/text-input.css">
@@ -37,24 +37,31 @@
   <link rel="stylesheet" href="../../Components/select/combobox.css">
   <link rel="stylesheet" href="../../Components/_shared/dropdown-panel/dropdown-panel.css">
   <link rel="stylesheet" href="../../Components/_shared/caret/caret.css">
+  <link rel="stylesheet" href="../../Components/filter-button/filter-button.css">
+  <link rel="stylesheet" href="../../Components/accordion/accordion.css">
+  <link rel="stylesheet" href="../../Components/ai-tag/ai-tag.css">
+  <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../../pages/shared/flag-icons.css">
   <link rel="stylesheet" href="css/d3-kyb-search.css?v=2">
   <link rel="stylesheet" href="css/welcome.css">
   <link rel="stylesheet" href="css/briefing.css">
   <link rel="stylesheet" href="css/sidebar.css">
-  <link rel="stylesheet" href="css/signin.css">
+  <link rel="stylesheet" href="css/loader.css?v=1">
   <link rel="stylesheet" href="css/d3-fa.css?v=3">
   <link rel="stylesheet" href="css/d3-shell.css?v=35">
-  <link rel="stylesheet" href="css/d3-rail.css?v=14">
-  <link rel="stylesheet" href="css/d3-chat-pane.css?v=13">
-  <link rel="stylesheet" href="css/d3-labs.css?v=3">
+  <link rel="stylesheet" href="css/d3-rail.css?v=16">
+  <link rel="stylesheet" href="css/d3-chat-pane.css?v=14">
+  <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=15">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=19">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=20">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=2">
-  <link rel="stylesheet" href="css/d3-kyb-agent.css?v=4">
+  <link rel="stylesheet" href="css/d3-kyb-agent.css?v=5">
+  <link rel="stylesheet" href="css/d3-kyb-result-tabs.css?v=1">
+  <link rel="stylesheet" href="transactions/kyb-results/ubo-graph-dist/kyb-ubo-graph-react.css?v=4">
+  <link rel="stylesheet" href="css/d3-kyb-ubo-graph.css?v=2">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <!-- cache bump for PageShell 1280:20394 -->
 </head>
@@ -85,14 +92,9 @@
             <path fill="currentColor" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-5.5h-5V21H4a1 1 0 0 1-1-1v-9.5Z"/>
           </svg>
         </button>
-        <button type="button" class="d1-nav-btn" data-d3-nav="labs" aria-label="Labs">
-          <!-- Labs flask — same mark as unified-intelligence-home Labs brand -->
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
-          </svg>
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
-          </svg>
+        <button type="button" class="d1-nav-btn" data-d3-nav="kyb" aria-label="KYB Verification">
+          <i class="fa-regular fa-building d1-nav-btn__icon d1-nav-btn__icon--line" aria-hidden="true"></i>
+          <i class="fa-solid fa-building d1-nav-btn__icon d1-nav-btn__icon--fill" aria-hidden="true"></i>
         </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="transactions" aria-label="Transactions">
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -102,6 +104,20 @@
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 512 512" aria-hidden="true">
             <path fill="currentColor" d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/>
           </svg>
+        </button>
+        <button type="button" class="d1-nav-btn" data-d3-nav="labs" aria-label="Labs">
+          <!-- Labs flask — same mark as unified-intelligence-home Labs brand -->
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
+          </svg>
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
+          </svg>
+        </button>
+        <!-- Placeholder only — no view / route yet. -->
+        <button type="button" class="d1-nav-btn d1-nav-btn--placeholder" data-d3-nav-placeholder="dev-dashboard" aria-label="Dev Dashboard" title="Dev Dashboard">
+          <i class="fa-solid fa-laptop-code d1-nav-btn__icon d1-nav-btn__icon--line" aria-hidden="true"></i>
+          <i class="fa-solid fa-laptop-code d1-nav-btn__icon d1-nav-btn__icon--fill" aria-hidden="true"></i>
         </button>
       </div>
       <div class="d1-rail__nav-bottom">
@@ -418,8 +434,6 @@
             <span>Back</span>
           </button>
           <nav class="d3-workspace__crumb" data-d3-kyb-crumb aria-label="Breadcrumb">
-            <button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>
-            <span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>
             <span class="d3-workspace__crumb-current">KYB Verification</span>
           </nav>
         </div>
@@ -750,19 +764,38 @@
             </div>
 
             <div class="d3-kyb-panel" data-d3-kyb-panel="ownership" hidden>
-              <p class="d3-workspace__hint">Ownership / UBO details are ready from your last session. Resume the conversation to explore beneficial owners.</p>
+              <div class="d3-kyb-ubo-graph">
+                <h3 class="d3-kyb-ubo-graph__title d3-kyb-overview__title">Ownership / UBO</h3>
+                <div class="kyb-ubo-graph-layout" id="kyb-ubo-graph-fullscreen-root">
+                  <div class="kyb-ownership-graph kyb-ubo-graph-layout__canvas" data-kyb-ownership-graph aria-label="Ownership structure graph"></div>
+                </div>
+              </div>
             </div>
             <div class="d3-kyb-panel" data-d3-kyb-panel="web" hidden>
-              <p class="d3-workspace__hint">Web &amp; social signals from the prior check are preserved. Resume to review them with TruAI.</p>
+              <p class="d3-workspace__hint">Web &amp; Social Insights load after verification.</p>
             </div>
             <div class="d3-kyb-panel" data-d3-kyb-panel="signals" hidden>
-              <p class="d3-workspace__hint">Match signals from the incomplete verification remain available.</p>
+              <p class="d3-workspace__hint">Match Signals load after verification.</p>
             </div>
             <div class="d3-kyb-panel" data-d3-kyb-panel="raw" hidden>
-              <p class="d3-workspace__hint">Raw registry payloads from the last run are retained for this session.</p>
+              <div class="d3-kyb-raw">
+                <h3 class="d3-kyb-overview__title">Raw Data</h3>
+                <div class="kyb-json-panel">
+                  <div class="kyb-json-panel__header">
+                    <span class="kyb-json-panel__lang">json</span>
+                    <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" data-d3-kyb-json-copy aria-label="Copy raw JSON">
+                      <span class="tds-btn__leading-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 5.5V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg></span>
+                      Copy
+                    </button>
+                  </div>
+                  <div class="kyb-json-panel__body">
+                    <pre class="kyb-json-panel__pre" data-d3-kyb-raw-pre></pre>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="d3-kyb-panel" data-d3-kyb-panel="sources" hidden>
-              <p class="d3-workspace__hint">Source list from the prior Acme Inc. check is preserved.</p>
+              <p class="d3-workspace__hint">Sources load after verification.</p>
             </div>
           </div>
         </article>
@@ -1328,28 +1361,31 @@
 </div>
 
 <script src="js/loader-mark.js"></script>
-<script src="js/signin.js?v=2"></script>
+<script src="js/auth-gate.js?v=1"></script>
 <script src="composer/prompt.js?v=3"></script>
-<script src="js/chat.js"></script>
+<script src="js/chat.js?v=2"></script>
 <script src="js/drawer.js?v=4"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
 <script src="../../Components/dialog/dialog.js"></script>
 <script src="../../pages/shared/tds-interactive-select.js"></script>
-<script src="js/d3-kyb-resume.js?v=30"></script>
-<script src="js/d3-kyb-report-reveal.js?v=14"></script>
+<script src="transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js?v=38"></script>
+<script src="js/d3-kyb-ubo-graph.js?v=1"></script>
+<script src="js/d3-kyb-result-tabs.js?v=1"></script>
+<script src="js/d3-kyb-resume.js?v=32"></script>
+<script src="js/d3-kyb-report-reveal.js?v=19"></script>
 <script src="js/d3-kyb-map-search.js?v=39"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
-<script src="js/d3-kyb-agent.js?v=9"></script>
+<script src="js/d3-kyb-agent.js?v=10"></script>
 <script src="js/d3-motion.js?v=2"></script>
-<script src="js/d3-labs.js?v=8"></script>
-<script src="js/d3-nav.js?v=30"></script>
+<script src="js/d3-labs.js?v=10"></script>
+<script src="js/d3-nav.js?v=34"></script>
 <script src="js/d3-transactions.js?v=8"></script>
 <script src="js/d3-org.js?v=5"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/d3-tx-agent.js?v=3"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
-<script src="js/d3-chat-bridge.js?v=6"></script>
+<script src="js/d3-chat-bridge.js?v=7"></script>
 <script src="js/d3-home-placeholder.js?v=2"></script>
 </body>
 </html>

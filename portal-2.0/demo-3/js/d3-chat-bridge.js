@@ -99,11 +99,13 @@
     text = String(text || "").trim();
     if (!text) return;
     agent = agent || "auto";
+    if (stage) stage.setAttribute("data-d1-stage", "home");
 
     if (agent === "kyc") {
       if (window.D3Nav && window.D3Nav.openKycChat) {
         window.D3Nav.openKycChat({ forceActive: true });
       }
+      parkIntoPane();
       sendAfter("kyc", text, 80);
       return;
     }
@@ -125,16 +127,19 @@
       return;
     }
 
+    /* Verify / Find Meridian → KYB Verification workspace + agent (never Demo 1 chat). */
     var wantsMap = /\b(find|search|verify|look\s*up|locate|meridian)\b/i.test(text);
     if (wantsMap && window.D3KybResume && window.D3KybResume.openMapExperience) {
       window.D3KybResume.openMapExperience();
     } else if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
       window.D3KybResume.openResumeExperience();
     } else if (window.D3Nav && window.D3Nav.openKybChat) {
-      window.D3Nav.openKybChat({ map: wantsMap });
+      window.D3Nav.openKybChat({ map: wantsMap, resume: !wantsMap });
     }
 
-    sendAfter("kyb", text, 100);
+    parkIntoPane();
+    if (window.D3Nav) window.D3Nav.markChatActive();
+    sendAfter("kyb", text, 120);
   }
 
   function routeHomeSubmit(event) {
@@ -149,7 +154,9 @@
     routeHomeText(text, detail.agent || "auto");
   }
 
+  /* Capture on composer + document so Home routing always wins. */
   sourceComposer.addEventListener("d1-composer:submit", routeHomeSubmit, true);
+  document.addEventListener("d1-composer:submit", routeHomeSubmit, true);
 
   /* Home chips: open the experience immediately (no paste into the composer). */
   sourceComposer.addEventListener("d1-composer:chip", function (event) {
@@ -237,12 +244,20 @@
   });
   if (stage) observer.observe(stage, { attributes: true, attributeFilter: ["data-d1-stage"] });
 
-  document.addEventListener("d3-view:home", restoreFromPane);
+  document.addEventListener("d3-view:home", function () {
+    restoreFromPane();
+    if (stage) stage.setAttribute("data-d1-stage", "home");
+  });
   document.addEventListener("d3-chat:close", function (event) {
     var detail = (event && event.detail) || {};
-    /* Minimized to ask bar (demo-2): keep thread/composer parked in the
-       pane so reopening restores the conversation. Only unwind to home
-       when close really means leave chat. */
+    var view = shell.getAttribute("data-d3-view") || "home";
+    /* On Home, always put the composer back — never leave Home without it. */
+    if (view === "home") {
+      restoreFromPane();
+      if (stage) stage.setAttribute("data-d1-stage", "home");
+      return;
+    }
+    /* Minimized to ask bar: keep thread/composer parked in the pane. */
     if (detail.minimized) return;
     restoreFromPane();
     if (stage) stage.setAttribute("data-d1-stage", "home");

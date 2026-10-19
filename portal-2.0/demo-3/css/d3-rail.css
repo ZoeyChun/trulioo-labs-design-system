@@ -70,6 +70,26 @@
   display: block !important;
 }
 
+.d1-rail .d1-nav-btn .fa-regular,
+.d1-rail .d1-nav-btn .fa-solid {
+  font-size: 16px;
+  line-height: 1;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+}
+
+/* Placeholder nav items stay in the rail but never navigate. */
+.d1-rail .d1-nav-btn--placeholder {
+  cursor: default;
+}
+
+.d1-rail .d1-nav-btn--placeholder:hover,
+.d1-rail .d1-nav-btn--placeholder:focus-visible {
+  color: var(--icon-faint);
+  background: transparent;
+}
+
 .d1-nav-btn svg,
 .d1-tool-btn svg {
   width: 16px;

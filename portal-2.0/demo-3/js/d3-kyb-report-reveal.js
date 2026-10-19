@@ -248,8 +248,6 @@
       window.D3KybResume.renderCrumbs("report", biz.name);
     } else if (crumb) {
       crumb.innerHTML =
-        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>' +
-        '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
         '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">KYB Verification</button>' +
         '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
         '<span class="d3-workspace__crumb-current" data-d3-kyb-crumb-biz></span>';
@@ -299,8 +297,13 @@
 
     selectTab("overview", { silent: true });
     renderOwnershipPanel(biz);
+    renderRawPanel(biz);
+    if (window.D3KybResultTabs && window.D3KybResultTabs.renderAll) {
+      window.D3KybResultTabs.renderAll(resumeCard, biz);
+    } else {
+      renderSignalsPanel(biz);
+    }
     renderAlerts(biz);
-    renderSignalsPanel(biz);
 
     if (hero) {
       hero.classList.remove("is-revealed");
@@ -601,50 +604,154 @@
         panel.classList.add("d3-kyb-panel--flash");
       }
     }
+    /* Remount when the panel becomes visible so the React graph gets real size. */
+    if (id === "ownership" && currentBiz) {
+      window.requestAnimationFrame(function () {
+        mountOwnershipGraph(currentBiz);
+      });
+    }
     return true;
+  }
+
+  function mountOwnershipGraph(biz) {
+    var panel = resumeCard.querySelector('[data-d3-kyb-panel="ownership"]');
+    if (!panel || !biz || !window.D3KybUboGraph) return false;
+    if (!window.KybUboGraph || !window.KybUboGraph.mount) {
+      console.warn("[D3KybReport] KybUboGraph bundle not loaded");
+      return false;
+    }
+    return window.D3KybUboGraph.mountInto(panel, biz);
   }
 
   function renderOwnershipPanel(biz) {
     var panel = resumeCard.querySelector('[data-d3-kyb-panel="ownership"]');
     if (!panel) return;
-    var owners = biz.ownership || [];
-    if (!owners.length) {
+
+    if (window.D3KybUboGraph && window.D3KybUboGraph.unmountFrom) {
+      window.D3KybUboGraph.unmountFrom(panel);
+    }
+
+    var graph =
+      window.D3KybUboGraph && window.D3KybUboGraph.graphFromBiz
+        ? window.D3KybUboGraph.graphFromBiz(biz)
+        : null;
+
+    if (!graph || !graph.tree) {
       panel.innerHTML =
         '<p class="d3-workspace__hint">No ownership / UBO records are available for this entity in the demo dataset.</p>';
       return;
     }
-    var html =
-      '<div class="d3-kyb-ubo">' +
-      '<h3 class="d3-kyb-overview__title">Ownership / UBO</h3>' +
-      '<p class="d3-kyb-ubo__lede">Grounded in the filing extract for ' +
-      esc(biz.name) +
-      ".</p>" +
-      '<ul class="d3-kyb-ubo__list">';
-    owners.forEach(function (o) {
-      html +=
-        '<li class="d3-kyb-ubo__card' +
-        (o.flagged ? " is-flagged" : "") +
-        '">' +
-        '<div class="d3-kyb-ubo__top">' +
-        '<span class="d3-kyb-ubo__name">' +
-        esc(o.name) +
-        "</span>" +
-        (o.flagged
-          ? '<span class="d1-tag d1-tag--review">Flagged</span>'
-          : '<span class="d1-tag d1-tag--positive">Clear</span>') +
-        "</div>" +
-        '<p class="d3-kyb-ubo__meta">' +
-        esc(o.role) +
-        " · " +
-        esc(o.pct) +
-        " · " +
-        esc(o.type === "person" ? "Natural person" : "Corporate") +
-        "</p>" +
-        (o.note ? '<p class="d3-kyb-ubo__note">' + esc(o.note) + "</p>" : "") +
-        "</li>";
+
+    panel.innerHTML =
+      window.D3KybUboGraph && window.D3KybUboGraph.panelMarkup
+        ? window.D3KybUboGraph.panelMarkup("Ownership / UBO")
+        : "";
+
+    /*
+     * Always mount after markup is in place. Hidden panels get a second
+     * remount from selectTab once Ownership / UBO is shown (for real size).
+     */
+    window.requestAnimationFrame(function () {
+      mountOwnershipGraph(biz);
     });
-    html += "</ul></div>";
-    panel.innerHTML = html;
+  }
+
+  function formalBusinessName(name) {
+    var formal = String(name || "").replace(/\.\s*$/, "");
+    return formal.replace(/\binc$/i, "Incorporated").replace(/\bcorp$/i, "Corporation");
+  }
+
+  function emailDomainFromBiz(biz) {
+    var email = (biz.report && biz.report.email) || biz.email || "";
+    var at = email.indexOf("@");
+    if (at > 0) return email.slice(at + 1);
+    var slug = String(biz.name || "business")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "")
+      .slice(0, 28);
+    return (slug || "business") + ".com";
+  }
+
+  function buildRawJsonText(biz) {
+    var name = biz.name || "Business";
+    var registered = formalBusinessName(name);
+    var phone =
+      (biz.report && biz.report.phone) || biz.phone || "+1 302 555 0000";
+    var email =
+      (biz.report && biz.report.email) ||
+      biz.email ||
+      "info@" + emailDomainFromBiz(biz);
+    var block =
+      "{\n" +
+      '  "StandardizedBusinessNames": { "StandardizedBusinessName": [\n' +
+      '    { "Name": ' +
+      JSON.stringify(name) +
+      ', "Type": "Input Business Name", "UsedForMatching": true },\n' +
+      '    { "Name": ' +
+      JSON.stringify(registered) +
+      ', "Type": "Returned Registered Name", "UsedForMatching": true }\n' +
+      "  ]},\n" +
+      '  "StandardizedCommunication": { "StandardizedCommunication": [\n' +
+      '    { "Value": ' +
+      JSON.stringify(phone) +
+      ', "Type": "Telephone" },\n' +
+      '    { "Value": ' +
+      JSON.stringify(email) +
+      ', "Type": "Primary business email" }\n' +
+      "  ]}\n" +
+      "}";
+    /* Match KYB Results demo: repeated payload blocks in the raw view. */
+    return [block, block, block, block, block].join("\n\n");
+  }
+
+  function bindRawCopy(panel) {
+    var btn = panel.querySelector("[data-d3-kyb-json-copy]");
+    if (!btn || btn.dataset.d3Bound) return;
+    btn.dataset.d3Bound = "1";
+    btn.addEventListener("click", function () {
+      var pre = panel.querySelector("[data-d3-kyb-raw-pre]");
+      if (!pre) return;
+      var text = pre.textContent || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(function () {});
+        return;
+      }
+      var field = document.createElement("textarea");
+      field.value = text;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.left = "-9999px";
+      document.body.appendChild(field);
+      field.select();
+      try {
+        document.execCommand("copy");
+      } catch (e) {
+        /* ignore */
+      }
+      document.body.removeChild(field);
+    });
+  }
+
+  function renderRawPanel(biz) {
+    var panel = resumeCard.querySelector('[data-d3-kyb-panel="raw"]');
+    if (!panel || !biz) return;
+    var pre = panel.querySelector("[data-d3-kyb-raw-pre]");
+    if (!pre) {
+      panel.innerHTML =
+        '<div class="d3-kyb-raw">' +
+        '<h3 class="d3-kyb-overview__title">Raw Data</h3>' +
+        '<div class="kyb-json-panel">' +
+        '<div class="kyb-json-panel__header">' +
+        '<span class="kyb-json-panel__lang">json</span>' +
+        '<button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" data-d3-kyb-json-copy aria-label="Copy raw JSON">' +
+        '<span class="tds-btn__leading-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 5.5V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg></span>' +
+        "Copy</button></div>" +
+        '<div class="kyb-json-panel__body"><pre class="kyb-json-panel__pre" data-d3-kyb-raw-pre></pre></div>' +
+        "</div></div>";
+      pre = panel.querySelector("[data-d3-kyb-raw-pre]");
+    }
+    if (pre) pre.textContent = buildRawJsonText(biz);
+    bindRawCopy(panel);
   }
 
   function renderAlerts(biz) {
@@ -749,10 +856,15 @@
     );
   }
 
+  /* Bind Copy on the static Raw Data shell before a verify runs. */
+  var rawShell = resumeCard.querySelector('[data-d3-kyb-panel="raw"]');
+  if (rawShell) bindRawCopy(rawShell);
+
   window.D3KybReport = {
     reveal: reveal,
     selectTab: selectTab,
     renderOwnershipPanel: renderOwnershipPanel,
+    renderRawPanel: renderRawPanel,
     getCurrent: function () {
       return currentBiz;
     }
