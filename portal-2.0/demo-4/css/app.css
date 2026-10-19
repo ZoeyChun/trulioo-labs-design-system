@@ -1,0 +1,798 @@
+/* Demo 4 — recurring user home
+   Figma node 1314:69249. Tokens stand in for the --tru-* variables. */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  color: var(--text-default);
+  background: var(--surface-neutral-02);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.d4-app {
+  display: flex;
+  height: 100dvh;
+  padding-right: var(--spacing-8);
+  background: var(--surface-neutral-02);
+}
+
+/* ------------------------------------------------------------------ rail */
+
+.d4-rail {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 72px;
+  width: 72px;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.d4-rail__header {
+  display: flex;
+  justify-content: center;
+  padding: 20px var(--padding-lg) var(--padding-lg);
+}
+
+.d4-logo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--interactive-default);
+}
+
+.d4-logo img {
+  width: 30px;
+  height: auto;
+}
+
+.d4-rail__nav {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-16);
+  min-height: 0;
+  padding: var(--spacing-24) var(--padding-lg);
+}
+
+.d4-nav {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--icon-faint);
+}
+
+.d4-nav.is-current {
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+}
+
+.d4-nav:hover:not(.is-current) {
+  background: var(--surface-neutral-03);
+}
+
+.d4-rail__foot {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md) var(--padding-lg);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.d4-expand {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--icon-faint);
+}
+
+.d4-rail__account {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md);
+}
+
+.d4-avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--interactive-default);
+  color: var(--text-inverse);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+}
+
+.d4-account {
+  position: absolute;
+  z-index: 3;
+  left: calc(100% - 4px);
+  bottom: 12px;
+  width: 220px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-01);
+  box-shadow: var(--elevation-md);
+}
+
+.d4-account p {
+  margin: 0;
+}
+
+.d4-account__org {
+  margin-bottom: 8px;
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+}
+
+.d4-account__name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+}
+
+.d4-account__mail {
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+}
+
+/* ----------------------------------------------------------------- stage */
+
+.d4-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.d4-center {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 100%;
+  padding: var(--spacing-64) var(--spacing-40);
+}
+
+.d4-center[data-d4-stage="chat"] {
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+}
+
+.d4-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.d4-hello {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-size: 36px;
+  font-weight: var(--font-weight-regular);
+  line-height: 44px;
+  text-align: center;
+}
+
+.d4-home .d4-prompt {
+  width: 640px;
+  max-width: 100%;
+}
+
+.d4-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 368px;
+  max-width: 100%;
+  margin-top: 40px;
+}
+
+.d4-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  height: 70px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--surface-neutral-01);
+  color: inherit;
+  text-align: left;
+}
+
+.d4-card:hover {
+  border-color: var(--interactive-default);
+}
+
+.d4-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-default);
+}
+
+.d4-card__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+}
+
+.d4-card__sub {
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: 18px;
+}
+
+/* -------------------------------------------------------------- composer */
+
+.d4-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 120px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--interactive-default);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+  box-shadow: 0 3px 13.65px #c4f1e2;
+}
+
+.d4-prompt__field {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.d4-prompt textarea {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  resize: none;
+  background: transparent;
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  outline: none;
+}
+
+.d4-prompt textarea::placeholder {
+  color: var(--text-placeholder);
+}
+
+.d4-prompt__bar,
+.d4-prompt__sendwrap {
+  display: flex;
+  align-items: center;
+}
+
+.d4-prompt__bar {
+  justify-content: space-between;
+}
+
+.d4-prompt__sendwrap {
+  gap: var(--spacing-8);
+}
+
+.d4-iconbtn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--icon-faint);
+}
+
+.d4-iconbtn:hover {
+  background: var(--surface-neutral-02);
+}
+
+.d4-panel__close,
+.d4-panel__close:hover {
+  background: transparent;
+  pointer-events: none;
+  cursor: default;
+}
+
+.d4-send {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--surface-neutral-03);
+  color: var(--icon-faint);
+}
+
+.d4-send:not(:disabled) {
+  background: var(--interactive-default);
+  color: var(--text-inverse);
+}
+
+.d4-send:disabled {
+  cursor: default;
+}
+
+/* ------------------------------------------------------------------ chat */
+
+.d4-chat {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.d4-chat[hidden],
+.d4-home[hidden] {
+  display: none;
+}
+
+.d4-chat__col {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.d4-chat .d1-alert svg {
+  display: block;
+  flex-shrink: 0;
+  width: 12px;
+  height: 16px;
+}
+
+/* Report drawer sits in the center, beside the chat. The activity panel stays. */
+.d4-center.is-report {
+  flex-direction: row;
+  align-items: stretch;
+  gap: var(--spacing-12);
+  padding: var(--spacing-12);
+}
+
+.d4-center.is-report .d4-chat {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 280px;
+}
+
+.d4-center.is-report .d4-chat-head,
+.d4-center.is-report .d4-chat .d1-thread,
+.d4-center.is-report .d4-chat .d1-follow,
+.d4-center.is-report .d4-chat [data-d4-composer-chat] {
+  padding-inline: clamp(12px, 2vw, 24px);
+}
+
+.d4-drawer {
+  flex: 0 0 62%;
+  width: 62%;
+  max-width: 920px;
+  min-width: 420px;
+  height: 100%;
+  pointer-events: auto;
+  border-color: var(--border-subtle);
+  box-shadow: var(--elevation-md);
+  background: var(--surface-neutral-01);
+}
+
+.d4-drawer[hidden] {
+  display: none;
+}
+
+.d4-center.is-report-full .d4-chat {
+  display: none;
+}
+
+.d4-center.is-report-full .d4-drawer {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: none;
+}
+
+.d4-chat-head {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 100%;
+  padding: var(--spacing-16) clamp(16px, 4vw, 64px);
+}
+
+.d4-chat-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--spacing-8) 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-xl);
+}
+
+.d4-chat-back__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.d4-chat-back__icon img {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.d4-chat .d1-user p {
+  background: var(--surface-neutral-01);
+}
+
+.d4-chat .d1-thread {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-16);
+  width: 100%;
+  min-height: 0;
+  margin-bottom: var(--spacing-16);
+  padding: var(--spacing-32) clamp(16px, 4vw, 64px) 0;
+  overflow: auto;
+}
+
+.d4-chat .d1-follow {
+  display: none;
+  flex-shrink: 0;
+  margin-bottom: var(--spacing-16);
+  padding-inline: clamp(16px, 4vw, 64px);
+}
+
+.d4-chat .d1-follow.is-on {
+  display: flex;
+}
+
+.d4-chat .d4-prompt {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.d4-chat [data-d4-composer-chat] {
+  flex-shrink: 0;
+  padding: 0 clamp(16px, 4vw, 64px) var(--spacing-24);
+}
+
+/* ----------------------------------------------------------------- panel */
+
+.d4-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 280px;
+  width: 280px;
+  height: calc(100% - 16px);
+  margin: 8px 0;
+  padding: 12px 0 12px 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-01);
+}
+
+.d4-panel[hidden] {
+  display: none;
+}
+
+.d4-panel__top {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  padding-right: 16px;
+}
+
+.d4-panel__id {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 32px;
+  padding-right: 16px;
+}
+
+.d4-orb {
+  position: relative;
+  width: 84px;
+  height: 84px;
+}
+
+.d4-orb canvas,
+.d4-orb img {
+  position: absolute;
+  inset: 0;
+  width: 84px;
+  height: 84px;
+  border-radius: 100px;
+}
+
+.d4-orb img {
+  width: 44px;
+  height: 36px;
+  margin: auto;
+  border-radius: 0;
+}
+
+.d4-panel__name {
+  margin: 12px 0 0;
+  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  line-height: 22px;
+}
+
+.d4-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 2px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--surface-neutral-02);
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+}
+
+.d4-status__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--icon-faint);
+}
+
+.d4-status.is-idle .d4-status__dot {
+  background: var(--icon-positive);
+}
+
+.d4-feed {
+  flex: 0 0 auto;
+  padding-right: 16px;
+}
+
+/* Figma scroll bar: 16px track, 4px inset, thumb on the region's right edge. */
+.d4-chat .d1-thread,
+.d4-panel {
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-neutral-04) transparent;
+}
+
+.d4-chat .d1-thread::-webkit-scrollbar,
+.d4-panel::-webkit-scrollbar {
+  width: 16px;
+}
+
+.d4-chat .d1-thread::-webkit-scrollbar-track,
+.d4-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.d4-chat .d1-thread::-webkit-scrollbar-thumb,
+.d4-panel::-webkit-scrollbar-thumb {
+  border: 4px solid transparent;
+  border-radius: 8px;
+  background-color: var(--surface-neutral-04);
+  background-clip: padding-box;
+}
+
+.d4-group + .d4-group {
+  margin-top: 24px;
+}
+
+.d4-group h2 {
+  margin: 0 0 16px;
+  color: var(--text-caption);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+}
+
+.d4-act {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.d4-act__rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 24px;
+  width: 24px;
+}
+
+.d4-act__icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  color: var(--icon-muted);
+}
+
+.d4-act__icon--badge {
+  border-radius: 6px;
+  background: var(--surface-neutral-02);
+}
+
+.d4-act__icon img {
+  width: 16px;
+  height: 16px;
+}
+
+.d4-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--icon-muted);
+}
+
+.d4-act__line {
+  flex: 1 1 auto;
+  width: 1px;
+  min-height: 12px;
+  margin: 8px 0;
+  background: var(--border-subtle);
+}
+
+.d4-act__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-bottom: 16px;
+}
+
+.d4-act:last-child .d4-act__body {
+  padding-bottom: 0;
+}
+
+.d4-act__title,
+.d4-act__detail,
+.d4-act__time {
+  margin: 0;
+  line-height: 18px;
+}
+
+.d4-act__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.d4-act__detail {
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+}
+
+.d4-act__time {
+  color: var(--text-placeholder);
+  font-size: var(--font-size-xs);
+}
+
+.d4-spin {
+  animation: d4-spin 0.9s linear infinite;
+}
+
+@keyframes d4-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d4-spin { animation: none; }
+}
+
+@media (max-width: 1100px) {
+  .d4-panel {
+    flex-basis: 260px;
+    width: 260px;
+  }
+}
+
+@media (max-width: 860px) {
+  .d4-app {
+    padding-right: 0;
+  }
+
+  .d4-body {
+    flex-direction: column;
+  }
+
+  .d4-panel {
+    flex: 0 0 auto;
+    width: auto;
+    height: 42vh;
+    margin: 0 8px 8px;
+  }
+
+  .d4-center {
+    padding: 32px 20px;
+  }
+
+  .d4-hello {
+    font-size: 28px;
+    line-height: 36px;
+  }
+}
