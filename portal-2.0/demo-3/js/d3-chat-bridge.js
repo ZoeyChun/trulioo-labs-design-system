@@ -29,6 +29,12 @@
     paneComposer.appendChild(sourceComposer);
     sourceComposer.classList.add("d3-composer--pane");
     parked = true;
+    var parkedInput = sourceComposer.querySelector("[data-d1-input]");
+    if (parkedInput) {
+      window.requestAnimationFrame(function () {
+        parkedInput.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+    }
   }
 
   function restoreComposer() {
@@ -289,6 +295,7 @@
       var text = input && input.value ? input.value.trim() : "";
       if (!text) return;
       input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
       var onTx = shell.getAttribute("data-d3-view") === "transactions";
       var onOrg = shell.getAttribute("data-d3-view") === "org";
       var mode = shell.getAttribute("data-d3-chat-mode") || "kyb";
@@ -316,12 +323,21 @@
     /* Enter starts the chat (Shift+Enter keeps a newline). */
     var idleInput = idleForm.querySelector("[data-d3-pane-input]");
     if (idleInput) {
+      var IDLE_LINE = 22;
+      var IDLE_MAX = 132;
+      function autosizeIdleInput() {
+        idleInput.style.height = IDLE_LINE + "px";
+        idleInput.style.height =
+          Math.min(IDLE_MAX, Math.max(IDLE_LINE, idleInput.scrollHeight)) + "px";
+      }
+      idleInput.addEventListener("input", autosizeIdleInput);
       idleInput.addEventListener("keydown", function (event) {
         if (event.key !== "Enter" || event.shiftKey) return;
         event.preventDefault();
         if (typeof idleForm.requestSubmit === "function") idleForm.requestSubmit();
         else submitIdleForm();
       });
+      window.requestAnimationFrame(autosizeIdleInput);
     }
   }
 

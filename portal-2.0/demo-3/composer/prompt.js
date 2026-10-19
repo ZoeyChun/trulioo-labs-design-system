@@ -38,6 +38,19 @@
     }
 
     var busy = false;
+    var PANE_LINE = 22;
+    var PANE_MAX = 132;
+
+    /* Left TruAI pane: start at one line, grow as the draft wraps. */
+    function autosizePaneInput() {
+      if (!input.closest(".d3-chat-pane")) {
+        input.style.height = "";
+        return;
+      }
+      input.style.height = PANE_LINE + "px";
+      var next = Math.min(PANE_MAX, Math.max(PANE_LINE, input.scrollHeight));
+      input.style.height = next + "px";
+    }
 
     function syncSend() {
       if (busy) {
@@ -220,16 +233,21 @@
       renderFiles();
       closeMenu();
       say("Sent to " + agent.label + ".");
+      autosizePaneInput();
       input.focus();
     }
 
-    input.addEventListener("input", syncSend);
+    input.addEventListener("input", function () {
+      syncSend();
+      autosizePaneInput();
+    });
     input.addEventListener("keydown", function (event) {
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
         submit();
       }
     });
+    window.requestAnimationFrame(autosizePaneInput);
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();

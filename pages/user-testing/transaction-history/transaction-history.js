@@ -1675,11 +1675,51 @@
     table.classList.toggle("ut-tx-table--flag-only", settings.country === "flag-only");
   }
 
+  function renderStats() {
+    var el = document.getElementById("utTxStats");
+    if (!el) return;
+    var total = 0;
+    var verified = 0;
+    var review = 0;
+    var notVerified = 0;
+    var highRisk = 0;
+    rows.forEach(function (item) {
+      total += 1;
+      var group = outcomeGroup(item);
+      if (group === "positive") verified += 1;
+      else if (group === "intermediate") review += 1;
+      else if (group === "negative") notVerified += 1;
+      if (riskBucket(item) === "high") highRisk += 1;
+    });
+    var items = [
+      ["Total", total],
+      ["Verified", verified],
+      ["Needs review", review],
+      ["Not verified", notVerified],
+      ["High risk", highRisk]
+    ];
+    el.innerHTML = items
+      .map(function (item) {
+        return (
+          '<div class="ut-tx-stat">' +
+          '<p class="ut-tx-stat__label">' +
+          item[0] +
+          "</p>" +
+          '<p class="ut-tx-stat__value">' +
+          item[1] +
+          "</p>" +
+          "</div>"
+        );
+      })
+      .join("");
+  }
+
   function render() {
     renderCols();
     renderHead();
     applyToolbar();
     applyTableMods();
+    renderStats();
     var tbody = document.getElementById("utTxBody");
     if (!tbody) return;
     var paged = pagedRows();

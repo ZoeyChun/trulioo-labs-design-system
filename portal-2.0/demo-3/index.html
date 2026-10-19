@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="css/shell.css">
   <link rel="stylesheet" href="css/home.css">
-  <link rel="stylesheet" href="composer/prompt.css?v=3">
+  <link rel="stylesheet" href="composer/prompt.css?v=5">
   <link rel="stylesheet" href="css/messages.css?v=3">
   <link rel="stylesheet" href="css/motion.css?v=6">
   <link rel="stylesheet" href="css/d3-thinking.css?v=1">
@@ -47,7 +47,7 @@
   <link rel="stylesheet" href="css/d3-fa.css?v=3">
   <link rel="stylesheet" href="css/d3-shell.css?v=35">
   <link rel="stylesheet" href="css/d3-rail.css?v=14">
-  <link rel="stylesheet" href="css/d3-chat-pane.css?v=11">
+  <link rel="stylesheet" href="css/d3-chat-pane.css?v=13">
   <link rel="stylesheet" href="css/d3-labs.css?v=3">
   <link rel="stylesheet" href="css/d3-home.css?v=15">
   <link rel="stylesheet" href="css/d3-workspace.css?v=19">
@@ -295,10 +295,10 @@
         <!-- Idle composer shown until Demo 1 composer is parked here -->
         <form class="d1-prompt d3-pane-idle-form" data-d3-pane-form action="#" method="post">
           <div class="d1-prompt__field">
-            <textarea id="d3-pane-prompt" class="d1-prompt__input" data-d3-pane-input rows="2" placeholder="Describe your task or ask about an agent" aria-label="Describe your task or ask about an agent"></textarea>
+            <textarea id="d3-pane-prompt" class="d1-prompt__input" data-d3-pane-input rows="1" placeholder="Describe your task or ask about an agent" aria-label="Describe your task or ask about an agent"></textarea>
           </div>
           <div class="d1-prompt__bar">
-            <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Add attachment">
+            <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Add attachment" hidden>
               <span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 3v10M3 8h10"/></svg></span>
             </button>
             <div class="d1-prompt__actions">
@@ -1125,12 +1125,12 @@
             </div>
 
             <div class="d1-prompt__bar">
-              <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-add aria-label="Add attachment">
+              <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-add aria-label="Add attachment" hidden>
                 <span class="tds-icon-btn__icon">
                   <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 3v10M3 8h10"/></svg>
                 </span>
               </button>
-              <input class="d1-visually-hidden" data-d1-file type="file" multiple tabindex="-1">
+              <input class="d1-visually-hidden" data-d1-file type="file" multiple tabindex="-1" hidden>
 
               <div class="d1-prompt__actions">
                 <div class="d1-prompt__agent" hidden>
@@ -1329,7 +1329,7 @@
 
 <script src="js/loader-mark.js"></script>
 <script src="js/signin.js?v=2"></script>
-<script src="composer/prompt.js?v=2"></script>
+<script src="composer/prompt.js?v=3"></script>
 <script src="js/chat.js"></script>
 <script src="js/drawer.js?v=4"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -1344,12 +1344,12 @@
 <script src="js/d3-motion.js?v=2"></script>
 <script src="js/d3-labs.js?v=8"></script>
 <script src="js/d3-nav.js?v=30"></script>
-<script src="js/d3-transactions.js?v=6"></script>
+<script src="js/d3-transactions.js?v=8"></script>
 <script src="js/d3-org.js?v=5"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/d3-tx-agent.js?v=3"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
-<script src="js/d3-chat-bridge.js?v=5"></script>
+<script src="js/d3-chat-bridge.js?v=6"></script>
 <script src="js/d3-home-placeholder.js?v=2"></script>
 </body>
 </html>

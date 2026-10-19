@@ -139,6 +139,72 @@
   color: var(--text-default, #172d2d);
 }
 
+/* High-level KPIs — same pattern as Org Admin .org-stats.
+   box-sizing keeps the 1px border inside 100% width so parents with
+   overflow:hidden don’t clip the right edge. */
+.th-tx .ut-tx-stats {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  background: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-card, 12px);
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 4px);
+  padding: var(--spacing-20, 20px) var(--spacing-16, 16px);
+  border-left: 1px solid var(--border-subtle, #dde2de);
+  min-width: 0;
+}
+
+.th-tx .ut-tx-stat:first-child {
+  border-left: none;
+}
+
+.th-tx .ut-tx-stat__label {
+  margin: 0;
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+  font-weight: var(--font-weight-medium, 500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-description, #526660);
+}
+
+.th-tx .ut-tx-stat__value {
+  margin: 0;
+  margin-top: auto;
+  font-size: var(--font-size-lg, 18px);
+  line-height: var(--line-height-2xl, 28px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-default, #172d2d);
+}
+
+@media (max-width: 900px) {
+  .th-tx .ut-tx-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .th-tx .ut-tx-stat:nth-child(4) {
+    border-left: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .th-tx .ut-tx-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* Failed-verification reply inside the shared TruAI thread. */
 .th-chat {
   font-size: var(--font-size-sm);
@@ -299,6 +365,7 @@
 }
 
 .th-tx .ut-tx-toolbar,
+.th-tx .ut-tx-stats,
 .th-tx .ut-tx-table-card .tds-data-table__footer {
   flex: 0 0 auto;
 }

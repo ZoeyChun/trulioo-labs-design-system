@@ -118,10 +118,11 @@ export function TruAiDrawer({
                   placeholder="Ask questions or tell me what you’d like to do"
                   className="min-h-0 w-full flex-1 resize-none bg-transparent text-sm leading-[18px] text-[#172d2d] placeholder:text-[#8a9a90] focus:outline-none"
                 />
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-end">
                   <button
                     type="button"
                     aria-label="Add attachment"
+                    hidden
                     onClick={() => fileRef.current?.click()}
                     className="grid size-7 cursor-pointer place-items-center rounded-full text-[#617269]"
                   >

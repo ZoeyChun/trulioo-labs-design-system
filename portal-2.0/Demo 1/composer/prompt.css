@@ -209,10 +209,17 @@
 .d1-prompt__bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex: 0 0 28px;
   width: 100%;
   height: 28px;
+}
+
+/* Attachment (+) retired — hide on every surface. */
+.d1-prompt [data-d1-add],
+.d1-prompt button[aria-label="Add attachment"],
+.d1-prompt [data-d1-file] {
+  display: none !important;
 }
 
 .d1-prompt__actions {

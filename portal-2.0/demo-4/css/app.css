@@ -326,7 +326,12 @@ button {
 }
 
 .d4-prompt__bar {
-  justify-content: space-between;
+  justify-content: flex-end;
+}
+
+/* Attachment (+) retired — hide on every surface. */
+.d4-prompt button[aria-label="Add"] {
+  display: none !important;
 }
 
 .d4-prompt__sendwrap {

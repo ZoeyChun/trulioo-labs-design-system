@@ -158,7 +158,7 @@
         '<input id="v2-ask" class="ai-prompt__input" type="text" ' +
                'placeholder="' + esc(cfg.placeholder) + '" autocomplete="off">' +
         '<div class="ai-prompt__bar">' +
-          '<button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Add attachment">' +
+          '<button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Add attachment" hidden>' +
             ICON_ATTACH +
           '</button>' +
           '<div class="ai-prompt__right">' +

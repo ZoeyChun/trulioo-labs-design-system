@@ -309,8 +309,13 @@
 .ai-prompt__bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex: 0 0 auto;
+}
+
+/* Attachment (+) retired — hide on every Demo 2 surface. */
+.ai-prompt button[aria-label="Add attachment"] {
+  display: none !important;
 }
 
 .ai-prompt__right { display: flex; align-items: center; gap: var(--spacing-4); }
