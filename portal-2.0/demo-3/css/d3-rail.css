@@ -1,9 +1,14 @@
 /* Demo 3 — redesigned SideNav (Figma 1274:15593)
-   Icons: home, grid-2, clock-rotate-left, message, gear, avatar. */
+   Icons: home, building, clock, flask, laptop-code, message, gear. */
+
+.d1-rail {
+  overflow: visible;
+}
 
 .d1-rail__nav {
   justify-content: space-between;
   gap: 0;
+  overflow: visible;
 }
 
 .d1-rail__nav-top {
@@ -28,11 +33,91 @@
 /* Pill buttons + line/fill swap must win over shell.css on every view. */
 .d1-rail .d1-nav-btn,
 .d1-rail .d1-tool-btn {
+  position: relative;
   width: 40px;
   height: 40px;
   border-radius: 9999px;
   color: var(--icon-faint);
   background: transparent;
+}
+
+/* Stack line/fill on the same center so FA/SVG glyphs don’t optically drift. */
+.d1-rail .d1-nav-btn .d1-nav-btn__icon--line,
+.d1-rail .d1-nav-btn .d1-nav-btn__icon--fill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
+
+.d1-rail .d1-nav-btn--lg .d1-nav-btn__icon--line,
+.d1-rail .d1-nav-btn--lg .d1-nav-btn__icon--fill {
+  width: 20px;
+  height: 20px;
+}
+
+.d1-rail .d1-nav-btn svg.d1-nav-btn__icon--line,
+.d1-rail .d1-nav-btn svg.d1-nav-btn__icon--fill {
+  display: block;
+  overflow: visible;
+}
+
+/* FA building (KYB) — keep glyph optically centered in the 16px slot. */
+.d1-rail .d1-nav-btn .fa-building.d1-nav-btn__icon--line,
+.d1-rail .d1-nav-btn .fa-building.d1-nav-btn__icon--fill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+}
+
+/* Hover / focus name labels beside the rail. */
+.d1-rail .d1-nav-tip {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  z-index: 40;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--surface-inverse, #161616);
+  color: var(--text-inverse, #fff);
+  font-family: var(--font-family, Inter, system-ui, sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(4px, -50%);
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.d1-rail .d1-nav-btn:hover .d1-nav-tip,
+.d1-rail .d1-nav-btn:focus-visible .d1-nav-tip,
+.d1-rail .d1-tool-btn:hover .d1-nav-tip,
+.d1-rail .d1-tool-btn:focus-visible .d1-nav-tip {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.d1-rail .d1-nav-btn--placeholder:hover .d1-nav-tip,
+.d1-rail .d1-nav-btn--placeholder:focus-visible .d1-nav-tip {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d1-rail .d1-nav-tip {
+    transition: none;
+  }
 }
 
 .d1-rail .d1-nav-btn:hover,
@@ -70,13 +155,12 @@
   display: block !important;
 }
 
-.d1-rail .d1-nav-btn .fa-regular,
-.d1-rail .d1-nav-btn .fa-solid {
-  font-size: 16px;
-  line-height: 1;
-  width: 16px;
-  height: 16px;
-  text-align: center;
+.d1-rail .d1-nav-btn.is-active i.d1-nav-btn__icon--fill,
+.d1-rail .d1-nav-btn[aria-current="page"] i.d1-nav-btn__icon--fill,
+.d1-rail .d1-nav-btn:not(.is-active):not([aria-current="page"]) i.d1-nav-btn__icon--line {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Placeholder nav items stay in the rail but never navigate. */
@@ -86,8 +170,8 @@
 
 .d1-rail .d1-nav-btn--placeholder:hover,
 .d1-rail .d1-nav-btn--placeholder:focus-visible {
-  color: var(--icon-faint);
-  background: transparent;
+  color: var(--icon-default);
+  background: color-mix(in srgb, var(--surface-neutral-01) 70%, transparent);
 }
 
 .d1-nav-btn svg,

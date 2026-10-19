@@ -50,7 +50,7 @@
   <link rel="stylesheet" href="css/loader.css?v=1">
   <link rel="stylesheet" href="css/d3-fa.css?v=3">
   <link rel="stylesheet" href="css/d3-shell.css?v=35">
-  <link rel="stylesheet" href="css/d3-rail.css?v=16">
+  <link rel="stylesheet" href="css/d3-rail.css?v=18">
   <link rel="stylesheet" href="css/d3-chat-pane.css?v=14">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=15">
@@ -91,19 +91,22 @@
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="currentColor" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-5.5h-5V21H4a1 1 0 0 1-1-1v-9.5Z"/>
           </svg>
+          <span class="d1-nav-tip" aria-hidden="true">Home</span>
         </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="kyb" aria-label="KYB Verification">
           <i class="fa-regular fa-building d1-nav-btn__icon d1-nav-btn__icon--line" aria-hidden="true"></i>
           <i class="fa-solid fa-building d1-nav-btn__icon d1-nav-btn__icon--fill" aria-hidden="true"></i>
+          <span class="d1-nav-tip" aria-hidden="true">KYB Verification</span>
         </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="transactions" aria-label="Transactions">
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.5"/>
             <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 7.5V12l3.25 2"/>
           </svg>
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 512 512" aria-hidden="true">
-            <path fill="currentColor" d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/>
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 2.25a9.75 9.75 0 1 1 0 19.5 9.75 9.75 0 0 1 0-19.5Zm-.75 5.25a.75.75 0 0 0-1.5 0v5c0 .3.18.57.46.69l4.25 1.75a.75.75 0 1 0 .56-1.4L11.25 11.7V7.5Z"/>
           </svg>
+          <span class="d1-nav-tip" aria-hidden="true">Transactions</span>
         </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="labs" aria-label="Labs">
           <!-- Labs flask — same mark as unified-intelligence-home Labs brand -->
@@ -113,11 +116,19 @@
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
           </svg>
+          <span class="d1-nav-tip" aria-hidden="true">Labs</span>
         </button>
         <!-- Placeholder only — no view / route yet. -->
-        <button type="button" class="d1-nav-btn d1-nav-btn--placeholder" data-d3-nav-placeholder="dev-dashboard" aria-label="Dev Dashboard" title="Dev Dashboard">
-          <i class="fa-solid fa-laptop-code d1-nav-btn__icon d1-nav-btn__icon--line" aria-hidden="true"></i>
-          <i class="fa-solid fa-laptop-code d1-nav-btn__icon d1-nav-btn__icon--fill" aria-hidden="true"></i>
+        <button type="button" class="d1-nav-btn d1-nav-btn--placeholder" data-d3-nav-placeholder="dev-dashboard" aria-label="Dev Dashboard">
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3.75" y="5.25" width="16.5" height="11.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 20.25h8M12 16.75v3.5"/>
+            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m9.25 9.5 1.75 1.75L9.25 13M14.75 9.5 13 11.25l1.75 1.75"/>
+          </svg>
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M5.25 4.5A1.5 1.5 0 0 0 3.75 6v9.5c0 .83.67 1.5 1.5 1.5h6v1.75H8a.75.75 0 0 0 0 1.5h8a.75.75 0 0 0 0-1.5h-3.25V17H18.75c.83 0 1.5-.67 1.5-1.5V6A1.5 1.5 0 0 0 18.75 4.5H5.25Zm4.35 4.65a.75.75 0 0 1 0 1.06L8.31 11.5l1.29 1.29a.75.75 0 1 1-1.06 1.06l-1.82-1.82a.75.75 0 0 1 0-1.06l1.82-1.82a.75.75 0 0 1 1.06 0Zm5.06 0a.75.75 0 0 1 1.06 0l1.82 1.82a.75.75 0 0 1 0 1.06l-1.82 1.82a.75.75 0 1 1-1.06-1.06l1.29-1.29-1.29-1.29a.75.75 0 0 1 0-1.06Z"/>
+          </svg>
+          <span class="d1-nav-tip" aria-hidden="true">Dev Dashboard</span>
         </button>
       </div>
       <div class="d1-rail__nav-bottom">
@@ -126,9 +137,10 @@
             <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h10.5A2.25 2.25 0 0 1 19.5 6.75v7.5a2.25 2.25 0 0 1-2.25 2.25H9.3L5.4 19.6a.75.75 0 0 1-1.2-.6v-2.5A2.25 2.25 0 0 1 4.5 14.25v-7.5Z"/>
             </svg>
-            <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 512 512" aria-hidden="true">
-              <path fill="currentColor" d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124-.2.2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V416H64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0h384c35.3 0 64 28.7 64 64v288c0 35.3-28.7 64-64 64H309.3L208 492z"/>
+            <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M6.75 3.75A2.25 2.25 0 0 0 4.5 6v8.25c0 .6.24 1.17.66 1.59L4.5 18.9a.75.75 0 0 0 1.2.6l3.3-2.48h7.95A2.25 2.25 0 0 0 19.2 14.77V6A2.25 2.25 0 0 0 16.95 3.75H6.75Z"/>
             </svg>
+            <span class="d1-nav-tip" aria-hidden="true">Chats</span>
           </button>
           <div class="d1-fly__panel d1-chats" id="d1-chat-menu" role="menu" aria-label="Chats">
             <button type="button" class="d1-new-chat" data-d1-new-chat>
@@ -147,6 +159,7 @@
           <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
           <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
         </svg>
+        <span class="d1-nav-tip" aria-hidden="true">Settings</span>
       </button>
     </div>
 
