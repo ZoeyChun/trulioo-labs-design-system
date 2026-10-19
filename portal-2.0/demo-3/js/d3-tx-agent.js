@@ -917,15 +917,24 @@
     );
   }
 
-  document.addEventListener("d3-chat:send", function (event) {
-    if (!onTransactions()) return;
-    event.preventDefault();
-    var detail = event.detail || {};
-    var text = detail.text || "";
-    if (!text) return;
-    parkActive();
-    respond(text);
-  });
+  document.addEventListener(
+    "d3-chat:send",
+    function (event) {
+      var detail = event.detail || {};
+      var text = detail.text || "";
+      if (!text) return;
+      /* Home briefing cards set agent=tx before the view flips; accept either. */
+      if (!onTransactions() && detail.agent !== "tx") return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (!onTransactions() && window.D3Transactions && window.D3Transactions.open) {
+        window.D3Transactions.open();
+      }
+      parkActive();
+      respond(text);
+    },
+    true
+  );
 
   document.addEventListener("d3-view:transactions", function () {
     setSuggestions(SUGGEST_FILTER);

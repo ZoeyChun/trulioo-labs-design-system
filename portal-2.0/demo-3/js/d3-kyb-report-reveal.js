@@ -13,7 +13,9 @@
   var pageTitle = detail.querySelector(".d3-workspace__title");
   var bizName = resumeCard.querySelector(".d3-workspace__biz-name");
   var bizTag = resumeCard.querySelector(".d1-tag");
-  var metaCountry = resumeCard.querySelector(".d3-workspace__meta dd");
+  var detailCountry = document.querySelector("[data-d3-kyb-detail-country]");
+  var detailTxId = document.querySelector("[data-d3-kyb-detail-txid]");
+  var detailDate = document.querySelector("[data-d3-kyb-detail-date]");
   var overview = resumeCard.querySelector(".d3-kyb-overview");
   var lower = resumeCard.querySelector(".d3-kyb-lower");
   var hero = resumeCard.querySelector(".d3-kyb-hero");
@@ -255,17 +257,39 @@
       bizTag.textContent = "Verifying…";
       bizTag.className = "d1-tag d1-tag--review";
     }
+    var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
+    if (detailsBtn) detailsBtn.hidden = false;
     var exportBtn = detail.querySelector("[data-d3-kyb-export]");
     if (exportBtn) exportBtn.hidden = false;
-    if (metaCountry) {
-      var countryName = biz.country || "United States";
-      var cc = String(biz.cc || "US").toLowerCase();
-      metaCountry.textContent = countryName + " ";
+
+    var countryName = biz.country || "United States";
+    var cc = String(biz.cc || biz.countryCode || "US").toLowerCase();
+    var txId =
+      biz.transactionId ||
+      biz.txId ||
+      "8c2f4e7a-19bd-4f02-a6c1-77de42915b3a";
+    var dateLabel =
+      biz.date ||
+      new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(new Date());
+
+    if (detailCountry) {
+      detailCountry.textContent = countryName + " ";
       var flag = document.createElement("span");
       flag.className = "fi fi-" + cc + " d3-workspace__flag";
       flag.setAttribute("aria-hidden", "true");
-      metaCountry.appendChild(flag);
+      detailCountry.appendChild(flag);
     }
+    if (detailTxId) {
+      detailTxId.textContent = txId;
+      detailTxId.setAttribute("title", txId);
+    }
+    if (detailDate) detailDate.textContent = dateLabel;
 
     selectTab("overview", { silent: true });
     renderOwnershipPanel(biz);

@@ -15,12 +15,13 @@
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="css/shell.css">
   <link rel="stylesheet" href="css/home.css">
-  <link rel="stylesheet" href="composer/prompt.css">
+  <link rel="stylesheet" href="composer/prompt.css?v=2">
   <link rel="stylesheet" href="css/messages.css?v=3">
   <link rel="stylesheet" href="css/motion.css?v=6">
   <link rel="stylesheet" href="css/drawer.css">
   <link rel="stylesheet" href="../../Components/text-input/text-input.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/dialog/dialog.css">
   <link rel="stylesheet" href="../../Components/switch/switch.css">
   <link rel="stylesheet" href="../../Components/spinner/spinner.css">
   <link rel="stylesheet" href="../../Components/announcement/announcement.css">
@@ -41,12 +42,12 @@
   <link rel="stylesheet" href="css/briefing.css">
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/signin.css">
-  <link rel="stylesheet" href="css/d3-shell.css?v=23">
-  <link rel="stylesheet" href="css/d3-rail.css?v=11">
+  <link rel="stylesheet" href="css/d3-shell.css?v=25">
+  <link rel="stylesheet" href="css/d3-rail.css?v=13">
   <link rel="stylesheet" href="css/d3-chat-pane.css?v=14">
-  <link rel="stylesheet" href="css/d3-agents.css?v=13">
+  <link rel="stylesheet" href="css/d3-agents.css?v=21">
   <link rel="stylesheet" href="css/d3-home.css?v=10">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=34">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=36">
   <link rel="stylesheet" href="css/d3-transactions.css?v=5">
   <link rel="stylesheet" href="css/d3-org.css?v=4">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=1">
@@ -73,12 +74,12 @@
     <nav class="d1-rail__nav" aria-label="Primary">
       <div class="d1-rail__nav-top">
         <button type="button" class="d1-nav-btn is-active" data-d3-nav="home" aria-label="Home" aria-current="page">
-          <!-- inactive: line / active: filled -->
+          <!-- Same house silhouette for line + solid (no FA chimney roof). -->
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-5.5h-5V21H4a1 1 0 0 1-1-1v-9.5Z"/>
           </svg>
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 576 512" aria-hidden="true">
-            <path fill="currentColor" d="M543.8 287.6c17 0 32-14 32-32.1c1-9-3-17-11-24L309.5 7c-6-5-14-7-21-7s-15 1-22 8L10 231.5c-7 7-12 15-11 24c0 18 14 32 31 32h32v69c-.1.9-.1 1.1-.1 1.2V472c0 22.1 17.9 40 40 40h16c1.2 0 2.4-.1 3.6-.2H160c22.1 0 40-17.9 40-40V368c0-17.7 14.3-32 32-32h64c17.7 0 32 14.3 32 32v104c0 22.1 17.9 40 40 40h16.5c1.4.1 2.8.2 4.2.2h16c22.1 0 40-17.9 40-40V287.6h32z"/>
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-5.5h-5V21H4a1 1 0 0 1-1-1v-9.5Z"/>
           </svg>
         </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="agents" aria-label="Agent hub">
@@ -301,7 +302,7 @@
               <span class="tds-icon-btn__icon"><img src="assets/icons/plus.svg" alt="" width="16" height="16"></span>
             </button>
             <div class="d1-prompt__actions">
-              <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Voice input">
+              <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Voice input" hidden>
                 <span class="tds-icon-btn__icon"><img src="assets/icons/microphone.svg" alt="" width="16" height="16"></span>
               </button>
               <button type="submit" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--secondary tds-icon-btn--circular" aria-label="Send">
@@ -328,96 +329,144 @@
       <section class="d3-agents" data-d3-agents aria-label="Agent hub">
         <header class="d3-agents__intro">
           <h1 class="d3-agents__title">Agent hub</h1>
-          <p class="d3-agents__lede">Explore available agents and discover what they can help you accomplish.</p>
+          <p class="d3-agents__lede">Conversational agents and product features, with stage showing how ready each one is.</p>
         </header>
         <div class="d3-agents__section">
-          <h2 class="d3-agents__label">Featured</h2>
+          <h2 class="d3-agents__label">Agents</h2>
+          <p class="d3-agents__section-lede">TruAI-guided flows you can talk through.</p>
           <div class="d3-agents__grid">
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Verify a business">
+            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Verify a business" data-d3-stage="beta">
               <div class="d3-agent-card__top">
                 <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/building-teal.svg" alt="" width="16" height="16"></span>
                 <h3 class="d3-agent-card__name">Verify a business</h3>
                 <span class="d3-agent-card__go" aria-hidden="true">→</span>
               </div>
               <p class="d3-agent-card__desc">Check company identity and registration.</p>
-              <div class="d3-agent-card__tags"><span class="d3-agent-card__tag">KYB</span></div>
+              <div class="d3-agent-card__meta">
+              <div class="d3-agent-card__tags">
+                <span class="d3-agent-card__tag">KYB</span>
+              </div>
+              <span class="d3-agent-card__stage d3-agent-card__stage--beta d3-agent-card__tip" data-tip="Beta — early access"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Beta</span>
+            </div>
             </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="Verify a person">
+            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="Verify a person" data-d3-stage="alpha">
               <div class="d3-agent-card__top">
                 <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/user-teal.svg" alt="" width="14" height="16"></span>
                 <h3 class="d3-agent-card__name">Verify a person</h3>
                 <span class="d3-agent-card__go" aria-hidden="true">→</span>
               </div>
               <p class="d3-agent-card__desc">Check person identity through physical and electronic documents</p>
-              <div class="d3-agent-card__tags"><span class="d3-agent-card__tag">KYC</span></div>
+              <div class="d3-agent-card__meta">
+              <div class="d3-agent-card__tags">
+                <span class="d3-agent-card__tag">KYC</span>
+              </div>
+              <span class="d3-agent-card__stage d3-agent-card__stage--alpha d3-agent-card__tip" data-tip="Alpha — early experimental"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Alpha</span>
+            </div>
             </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Assess risk">
+            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Assess risk" data-d3-stage="alpha">
               <div class="d3-agent-card__top">
                 <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/shield.svg" alt="" width="16" height="16"></span>
                 <h3 class="d3-agent-card__name">Assess risk</h3>
                 <span class="d3-agent-card__go" aria-hidden="true">→</span>
               </div>
               <p class="d3-agent-card__desc">Check company identity and registration.</p>
-              <div class="d3-agent-card__tags"><span class="d3-agent-card__tag">KYB</span></div>
-            </button>
-          </div>
-        </div>
-        <div class="d3-agents__section">
-          <h2 class="d3-agents__label">Demo Capabilities</h2>
-          <div class="d3-agents__grid d3-agents__grid--dense">
-            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="Device intelligence">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/shield.svg" alt="" width="16" height="16"></span>
-                <h3 class="d3-agent-card__name">Device intelligence</h3>
-                <span class="d3-agent-card__go" aria-hidden="true">→</span>
+              <div class="d3-agent-card__meta">
+              <div class="d3-agent-card__tags">
+                <span class="d3-agent-card__tag">KYB</span>
               </div>
-              <p class="d3-agent-card__desc">Evaluate device risk and identity linkage.</p>
-              <div class="d3-agent-card__tags"><span class="d3-agent-card__tag">KYC</span></div>
+              <span class="d3-agent-card__stage d3-agent-card__stage--alpha d3-agent-card__tip" data-tip="Alpha — early experimental"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Alpha</span>
+            </div>
             </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="UBO agent">
+            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="UBO agent" data-d3-stage="beta">
               <div class="d3-agent-card__top">
                 <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/building-teal.svg" alt="" width="16" height="16"></span>
                 <h3 class="d3-agent-card__name">UBO agent</h3>
                 <span class="d3-agent-card__go" aria-hidden="true">→</span>
               </div>
               <p class="d3-agent-card__desc">Map ownership trees and beneficial owners.</p>
-              <div class="d3-agent-card__tags"><span class="d3-agent-card__tag">KYB</span></div>
+              <div class="d3-agent-card__meta">
+              <div class="d3-agent-card__tags">
+                <span class="d3-agent-card__tag">KYB</span>
+              </div>
+              <span class="d3-agent-card__stage d3-agent-card__stage--beta d3-agent-card__tip" data-tip="Beta — early access"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Beta</span>
+            </div>
             </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Policy review">
+            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Policy review" data-d3-stage="alpha">
               <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/memo.svg" alt="" width="16" height="16"></span>
+                <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/clipboard-check.svg" alt="" width="16" height="16"></span>
                 <h3 class="d3-agent-card__name">Policy review</h3>
                 <span class="d3-agent-card__go" aria-hidden="true">→</span>
               </div>
               <p class="d3-agent-card__desc">Review policy outcomes across verifications.</p>
-              <div class="d3-agent-card__tags"><span class="d3-agent-card__tag">KYB</span></div>
+              <div class="d3-agent-card__meta">
+              <div class="d3-agent-card__tags">
+                <span class="d3-agent-card__tag">KYB</span>
+              </div>
+              <span class="d3-agent-card__stage d3-agent-card__stage--alpha d3-agent-card__tip" data-tip="Alpha — early experimental"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Alpha</span>
+            </div>
             </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="Electronic ID">
+          </div>
+        </div>
+        <div class="d3-agents__section">
+          <h2 class="d3-agents__label">Features</h2>
+          <p class="d3-agents__section-lede">Standard product capabilities you open and run directly.</p>
+          <div class="d3-agents__grid d3-agents__grid--dense">
+            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="Device intelligence" data-d3-stage="ga">
+              <div class="d3-agent-card__top">
+                <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/shield.svg" alt="" width="16" height="16"></span>
+                <h3 class="d3-agent-card__name">Device intelligence</h3>
+                <span class="d3-agent-card__go" aria-hidden="true">→</span>
+              </div>
+              <p class="d3-agent-card__desc">Evaluate device risk and identity linkage.</p>
+              <div class="d3-agent-card__meta">
+              <div class="d3-agent-card__tags">
+                <span class="d3-agent-card__tag">KYC</span>
+              </div>
+              <span class="d3-agent-card__stage d3-agent-card__stage--ga d3-agent-card__tip" data-tip="GA — generally available"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>GA</span>
+            </div>
+            </button>
+            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="Electronic ID" data-d3-stage="beta">
               <div class="d3-agent-card__top">
                 <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/user-teal.svg" alt="" width="14" height="16"></span>
                 <h3 class="d3-agent-card__name">Electronic ID</h3>
                 <span class="d3-agent-card__go" aria-hidden="true">→</span>
               </div>
               <p class="d3-agent-card__desc">Verify identity with electronic credentials.</p>
-              <div class="d3-agent-card__tags"><span class="d3-agent-card__tag">KYC</span></div>
+              <div class="d3-agent-card__meta">
+              <div class="d3-agent-card__tags">
+                <span class="d3-agent-card__tag">KYC</span>
+              </div>
+              <span class="d3-agent-card__stage d3-agent-card__stage--beta d3-agent-card__tip" data-tip="Beta — early access"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Beta</span>
+            </div>
             </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Bank Verification">
+            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Bank Verification" data-d3-stage="ga">
               <div class="d3-agent-card__top">
                 <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/building-teal.svg" alt="" width="16" height="16"></span>
                 <h3 class="d3-agent-card__name">Bank Verification</h3>
                 <span class="d3-agent-card__go" aria-hidden="true">→</span>
               </div>
               <p class="d3-agent-card__desc">Confirm account ownership and match.</p>
-              <div class="d3-agent-card__tags"><span class="d3-agent-card__tag">KYB</span><span class="d3-agent-card__tag">KYC</span></div>
+              <div class="d3-agent-card__meta">
+              <div class="d3-agent-card__tags">
+                <span class="d3-agent-card__tag">KYB</span>
+                <span class="d3-agent-card__tag">KYC</span>
+              </div>
+              <span class="d3-agent-card__stage d3-agent-card__stage--ga d3-agent-card__tip" data-tip="GA — generally available"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>GA</span>
+            </div>
             </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="KYC Document">
+            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="KYC Document" data-d3-stage="ga">
               <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/memo.svg" alt="" width="16" height="16"></span>
+                <span class="d3-agent-card__icon" aria-hidden="true"><img src="assets/icons/id-document.svg" alt="" width="16" height="16"></span>
                 <h3 class="d3-agent-card__name">KYC Document</h3>
                 <span class="d3-agent-card__go" aria-hidden="true">→</span>
               </div>
               <p class="d3-agent-card__desc">Document capture and biometric match.</p>
-              <div class="d3-agent-card__tags"><span class="d3-agent-card__tag">KYC</span></div>
+              <div class="d3-agent-card__meta">
+              <div class="d3-agent-card__tags">
+                <span class="d3-agent-card__tag">KYC</span>
+              </div>
+              <span class="d3-agent-card__stage d3-agent-card__stage--ga d3-agent-card__tip" data-tip="GA — generally available"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>GA</span>
+            </div>
             </button>
           </div>
         </div>
@@ -457,10 +506,6 @@
         <div class="d3-workspace__detail" data-d3-kyb-detail hidden>
         <div class="d3-workspace__detail-top">
           <p class="d3-workspace__crumb">Agent hub / Verify a business</p>
-          <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm d3-kyb-export" data-d3-kyb-export hidden>
-            <span class="tds-btn__leading-icon" aria-hidden="true"><img src="assets/icons/arrow-up-from-bracket.svg" alt="" width="16" height="16"></span>
-            Export
-          </button>
         </div>
         <h1 class="d3-workspace__title">Verify a business</h1>
         <!-- Manual search — synced from demo-2/verify-business -->
@@ -630,11 +675,23 @@
           </div>
           <div class="d3-kyb-resume__body">
             <div class="d3-kyb-resume__identity">
-              <div class="d3-workspace__biz">
-                <h2 class="d3-workspace__biz-name">Acme Inc.</h2>
-                <span class="d1-tag d1-tag--positive">Verified</span>
+              <div class="d3-workspace__biz-row">
+                <div class="d3-workspace__biz">
+                  <h2 class="d3-workspace__biz-name">Acme Inc.</h2>
+                  <span class="d1-tag d1-tag--positive">Verified</span>
+                </div>
+                <div class="d3-workspace__biz-actions">
+                  <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm d3-kyb-details" data-d3-kyb-details data-dialog-open="d3-kyb-details-dialog" hidden>
+                    <span class="tds-btn__leading-icon" aria-hidden="true"><img src="assets/icons/memo.svg" alt="" width="16" height="16"></span>
+                    Details
+                  </button>
+                  <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm d3-kyb-export" data-d3-kyb-export hidden>
+                    <span class="tds-btn__leading-icon" aria-hidden="true"><img src="assets/icons/arrow-up-from-bracket.svg" alt="" width="16" height="16"></span>
+                    Export
+                  </button>
+                </div>
               </div>
-              <dl class="d3-workspace__meta">
+              <dl class="d3-workspace__meta" data-d3-kyb-meta-inline>
                 <div>
                   <dt>Country / Jurisdiction</dt>
                   <dd>
@@ -1101,7 +1158,7 @@
               <input class="d1-visually-hidden" data-d1-file type="file" multiple tabindex="-1">
 
               <div class="d1-prompt__actions">
-                <div class="d1-prompt__agent">
+                <div class="d1-prompt__agent" hidden>
                   <button type="button" class="d1-prompt__mode" data-d1-agent aria-haspopup="listbox" aria-expanded="false" aria-controls="d1-agent-menu" aria-label="Agent, Auto">
                     <span data-d1-agent-label>Auto</span>
                     <img src="assets/icons/chevron-down.svg" alt="" width="12" height="12">
@@ -1113,7 +1170,7 @@
                   </ul>
                 </div>
                 <div class="d1-prompt__send-wrap">
-                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular d1-prompt__mic" data-d1-mic aria-pressed="false" aria-label="Voice input">
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular d1-prompt__mic" data-d1-mic aria-pressed="false" aria-label="Voice input" hidden>
                     <span class="tds-icon-btn__icon">
                       <img src="assets/icons/microphone.svg" alt="" width="16" height="16">
                     </span>
@@ -1137,13 +1194,13 @@
               <h2>Business verification failures spiked 40% yesterday</h2>
               <p>12 KYB verifications failed vs. a 7-day average of 8. Most failures are from BC-registered entities with document mismatches.</p>
             </div>
-            <button type="button" class="d1-brief__go" data-d1-demo data-prompt="Investigate why business verification failures increased">
+            <button type="button" class="d1-brief__go" data-d1-demo data-agent="tx" data-prompt="Investigate why business verification failures increased">
               <img src="assets/icons/sparkles-ai.svg" alt="" width="16" height="16">Investigate why failures increased
             </button>
           </article>
           <article class="d1-brief__card d1-brief__card--summary">
             <div class="d1-brief__stack">
-              <h2 class="d1-brief__label"><img src="assets/icons/memo.svg" alt="" width="16" height="16">Verification Summary</h2>
+              <h2 class="d1-brief__label"><img src="assets/icons/chart-bars.svg" alt="" width="16" height="16">Verification Summary</h2>
               <div class="d1-brief__figure">
                 <p class="d1-brief__num">47</p>
                 <div>
@@ -1158,7 +1215,7 @@
                 <div><dt>Approved</dt><dd class="is-good">29</dd></div>
               </dl>
             </div>
-            <button type="button" class="d1-brief__go" data-d1-demo data-prompt="Investigate why business verification failures increased">
+            <button type="button" class="d1-brief__go" data-d1-demo data-agent="tx" data-prompt="Investigate why business verification failures increased">
               <img src="assets/icons/sparkles-ai.svg" alt="" width="16" height="16">Investigate why failures increased
             </button>
           </article>
@@ -1180,7 +1237,7 @@
                 </li>
               </ul>
             </div>
-            <button type="button" class="d1-brief__go" data-d1-demo data-prompt="Identify patterns in recent verification activity">
+            <button type="button" class="d1-brief__go" data-d1-demo data-agent="tx" data-prompt="Identify patterns in recent verification activity">
               <img src="assets/icons/sparkles-ai.svg" alt="" width="16" height="16">Identify patterns
             </button>
           </article>
@@ -1260,6 +1317,41 @@
 
 </div>
 
+<div class="tds-dialog tds-dialog--center tds-dialog--md" id="d3-kyb-details-dialog" hidden>
+  <div class="tds-dialog__backdrop">
+    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="d3-kyb-details-title" tabindex="-1">
+      <header class="tds-dialog__header">
+        <div class="tds-dialog__header-row">
+          <h2 class="tds-dialog__title" id="d3-kyb-details-title">Details</h2>
+          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">
+            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+          </button>
+        </div>
+        <div class="tds-dialog__divider" role="presentation"></div>
+      </header>
+      <div class="tds-dialog__body">
+        <dl class="d3-kyb-details-meta" data-d3-kyb-details-meta>
+          <div>
+            <dt>Country / Jurisdiction</dt>
+            <dd data-d3-kyb-detail-country>
+              United States
+              <span class="fi fi-us d3-workspace__flag" aria-hidden="true"></span>
+            </dd>
+          </div>
+          <div>
+            <dt>Transaction ID</dt>
+            <dd data-d3-kyb-detail-txid title="8c2f4e7a-19bd-4f02-a6c1-77de42915b3a">8c2f4e7a-19bd-4f02-a6c1-77de42915b3a</dd>
+          </div>
+          <div>
+            <dt>Date</dt>
+            <dd data-d3-kyb-detail-date>17 Jun 2026, 2:14 PM</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="js/loader-mark.js"></script>
 <script src="js/signin.js?v=2"></script>
 <script src="composer/prompt.js"></script>
@@ -1267,19 +1359,20 @@
 <script src="js/drawer.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
+<script src="../../Components/dialog/dialog.js"></script>
 <script src="../../pages/shared/tds-interactive-select.js"></script>
-<script src="js/d3-kyb-resume.js?v=18"></script>
-<script src="js/d3-kyb-report-reveal.js?v=9"></script>
-<script src="js/d3-kyb-map-search.js?v=36"></script>
+<script src="js/d3-kyb-resume.js?v=19"></script>
+<script src="js/d3-kyb-report-reveal.js?v=10"></script>
+<script src="js/d3-kyb-map-search.js?v=37"></script>
 <script src="js/d3-kyb-manual-search.js?v=1"></script>
-<script src="js/d3-kyb-agent.js?v=7"></script>
+<script src="js/d3-kyb-agent.js?v=8"></script>
 <script src="js/d3-motion.js?v=2"></script>
 <script src="js/d3-nav.js?v=23"></script>
 <script src="js/d3-transactions.js?v=3"></script>
 <script src="js/d3-org.js?v=1"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
-<script src="js/d3-tx-agent.js?v=1"></script>
+<script src="js/d3-tx-agent.js?v=2"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
-<script src="js/d3-chat-bridge.js?v=29"></script>
+<script src="js/d3-chat-bridge.js?v=30"></script>
 </body>
 </html>

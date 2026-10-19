@@ -776,19 +776,26 @@
     var q = String(name || "").trim().toLowerCase();
     if (!q) return null;
     var exact = null;
-    var partial = null;
-    MERIDIAN_US.forEach(function (biz) {
+    var partials = [];
+    MERIDIANS.forEach(function (biz) {
       var n = biz.name.toLowerCase();
-      if (n === q) exact = biz;
-      else if (n.indexOf(q) !== -1 || q.indexOf(n) !== -1) partial = partial || biz;
-      else {
-        var tokens = q.replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
-        if (tokens.length && tokens.every(function (t) { return n.indexOf(t) !== -1; })) {
-          partial = partial || biz;
-        }
+      if (n === q) {
+        exact = biz;
+        return;
+      }
+      if (n.indexOf(q) !== -1 || q.indexOf(n) !== -1) {
+        partials.push(biz);
+        return;
+      }
+      var tokens = q.replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+      if (tokens.length && tokens.every(function (t) { return n.indexOf(t) !== -1; })) {
+        partials.push(biz);
       }
     });
-    return exact || partial;
+    if (exact) return exact;
+    /* Ambiguous brand tokens (e.g. “Meridian”) must not pick the first US hit. */
+    if (partials.length === 1) return partials[0];
+    return null;
   }
 
   function appendTurn(role, text) {

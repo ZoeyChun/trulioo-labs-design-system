@@ -152,6 +152,22 @@
 
     if (/^verify\b|run (a )?kyb|start verification|check (this |the )?business/.test(lower)) {
       var name = q.replace(/^verify\s+/i, "").replace(/\b(please|now)\b/gi, "").trim();
+      /* “Verify Meridian” is a search, not a single-entity pick — same-name
+         brands must disambiguate across jurisdictions first (demo-2). */
+      if (
+        !name ||
+        /^meridian$/i.test(name) ||
+        !/\b(llc|inc\.?|ltd\.?|lp|gmbh|pte\.?|ab|pty|partners|holdings|capital|analytics|industrial|energy|consulting|resources|handels|nordic|pacific|trade|logistics|apex|global)\b/i.test(
+          name
+        )
+      ) {
+        var brandHits =
+          window.D3KybMapSearch &&
+          window.D3KybMapSearch.findBusinesses(name || "Meridian");
+        if (brandHits && brandHits.length > 1) {
+          return { intent: "find", query: name || "Meridian" };
+        }
+      }
       return { intent: "verify", name: name || null };
     }
 
@@ -859,19 +875,35 @@
     parkActive();
     var map = window.D3KybMapSearch;
     var biz = parsed.biz || null;
-    if (!biz && parsed.name) biz = map && map.findByName(parsed.name);
-    if (!biz && selected()) biz = selected();
-    if (!biz && parsed.name) {
-      var loose = map && map.findBusinesses(parsed.name);
-      if (loose && loose.length === 1) biz = loose[0];
-      else if (loose && loose.length > 1) {
-        map.ensureMapSurface();
-        map.plotResults(loose, "Matches · " + loose.length);
+    /* Prefer multi-match disambiguation before any single findByName hit —
+       “Meridian” must never auto-lock one US entity. */
+    if (!biz && parsed.name && map) {
+      var loose = map.findBusinesses(parsed.name);
+      if (loose && loose.length > 1) {
+        if (typeof map.revealMatches === "function") {
+          map.revealMatches(
+            loose,
+            typeof map.matchCaption === "function"
+              ? map.matchCaption(loose)
+              : "Matches · " + loose.length
+          );
+        } else {
+          map.ensureMapSurface();
+          map.plotResults(
+            loose,
+            typeof map.matchCaption === "function"
+              ? map.matchCaption(loose)
+              : "Matches · " + loose.length
+          );
+        }
         playCandidateResults(loose, parsed.name || "Meridian");
         hideFollow();
         return;
       }
+      if (loose && loose.length === 1) biz = loose[0];
+      else biz = map.findByName(parsed.name);
     }
+    if (!biz && selected()) biz = selected();
     if (!biz) {
       playHtml(
         "<p>I couldn’t match that to a business in the demo KYB dataset. Try “Find Meridian” first, then verify a specific legal name.</p>"
@@ -879,7 +911,7 @@
       setSuggestions(SUGGEST_SEARCH);
       return;
     }
-    /* Named verify still asks for confirm — same as demo-2 card → Confirm. */
+    /* Exact unique legal name → confirm step (demo-2). */
     confirmSelect(biz);
   }
 

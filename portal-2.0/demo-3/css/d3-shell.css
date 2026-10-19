@@ -17,11 +17,21 @@
   background: transparent;
 }
 
-/* Agent / KYB / TX / Org views: workspace chrome stays whether chat is open or minimized. */
+/* Agent / KYB / TX / Org: shell + canvas + rail share surface-neutral-03.
+   Drop the right shell gutter that read as a thin white vertical bar. */
+.d1-shell:not([data-d3-view="home"]) {
+  background: var(--surface-neutral-03, #e8ede8);
+  padding-right: 0;
+}
+
+.d1-shell:not([data-d3-view="home"]) .d1-rail {
+  background: var(--surface-neutral-03, #e8ede8);
+}
+
 .d1-shell:not([data-d3-view="home"]) .d3-canvas {
-  background: var(--surface-neutral-02, #f4f6f4);
+  background: var(--surface-neutral-03, #e8ede8);
   align-items: stretch;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0;
   margin: 0;
   gap: 0;
@@ -41,6 +51,7 @@
    they shrink/expand on navigation. */
 .d1-shell:not([data-d3-view="home"]) .d1-main {
   flex: 1 1 0;
+  width: 100%;
   min-width: 0;
   background: transparent;
   box-shadow: none;
@@ -48,6 +59,14 @@
   padding: 40px 24px 24px;
   gap: 40px;
   overflow: hidden;
+}
+
+/* Closed report drawer still painted 1px transparent borders → hairline seam. */
+.d1-shell:not([data-d3-view="home"]) .d1-main[data-d1-drawer="closed"] .d1-drawer {
+  display: none;
+  width: 0;
+  min-width: 0;
+  border: 0;
 }
 
 /* KYB map + report: outer main has no inset — content fills the column. */

@@ -104,6 +104,8 @@
   function prepareDetailChrome() {
     if (resumeCard) resumeCard.classList.remove("is-live");
     if (!detail) return;
+    var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
+    if (detailsBtn) detailsBtn.hidden = true;
     var exportBtn = detail.querySelector("[data-d3-kyb-export]");
     if (exportBtn) exportBtn.hidden = true;
     var title = detail.querySelector(".d3-workspace__title");
@@ -173,6 +175,8 @@
     updateMapNudge();
     if (resumeCard) resumeCard.classList.remove("is-live");
     if (detail) {
+      var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
+      if (detailsBtn) detailsBtn.hidden = true;
       var exportBtn = detail.querySelector("[data-d3-kyb-export]");
       if (exportBtn) exportBtn.hidden = true;
       var title = detail.querySelector(".d3-workspace__title");

@@ -67,29 +67,50 @@
   }
 
   /* Home hero search → KYB/KYC workspace. Must beat chat.js (Demo 1). */
-  function routeHomeSubmit(event) {
-    var view = shell.getAttribute("data-d3-view") || "home";
-    if (view !== "home") return;
-    var detail = event.detail || {};
-    var text = String(detail.text || "").trim();
+  function isTxHomePrompt(text) {
+    return /failure|failures|failed|spike|spiked|pattern|patterns|recent (verification )?activity|investigate why|flagged|pending review/i.test(
+      text || ""
+    );
+  }
+
+  function sendAfter(agent, text, delay) {
+    window.setTimeout(function () {
+      document.dispatchEvent(
+        new CustomEvent("d3-chat:send", {
+          detail: { text: text, agent: agent },
+          cancelable: true
+        })
+      );
+    }, delay != null ? delay : 100);
+  }
+
+  function routeHomeText(text, agent) {
+    text = String(text || "").trim();
     if (!text) return;
+    agent = agent || "auto";
 
-    event.stopImmediatePropagation();
-    if (typeof event.preventDefault === "function") event.preventDefault();
-
-    var agent = detail.agent || "auto";
     if (agent === "kyc") {
       if (window.D3Nav && window.D3Nav.openKycChat) {
         window.D3Nav.openKycChat({ forceActive: true });
       }
-      window.setTimeout(function () {
-        document.dispatchEvent(
-          new CustomEvent("d3-chat:send", {
-            detail: { text: text, agent: "kyc" },
-            cancelable: true
-          })
-        );
-      }, 80);
+      sendAfter("kyc", text, 80);
+      return;
+    }
+
+    /* Briefing cards + failure/pattern asks → Transaction Agent, not Demo 1 chat. */
+    if (agent === "tx" || isTxHomePrompt(text)) {
+      if (window.D3Transactions && window.D3Transactions.open) {
+        window.D3Transactions.open();
+      } else if (window.D3Nav && window.D3Nav.goTransactions) {
+        window.D3Nav.goTransactions();
+      }
+      if (window.D3Nav) {
+        window.D3Nav.setChatOpen(true, "tx");
+        window.D3Nav.markChatActive();
+      }
+      parkIntoPane();
+      if (stage) stage.setAttribute("data-d1-stage", "home");
+      sendAfter("tx", text, 120);
       return;
     }
 
@@ -102,17 +123,39 @@
       window.D3Nav.openKybChat({ map: wantsMap });
     }
 
-    window.setTimeout(function () {
-      document.dispatchEvent(
-        new CustomEvent("d3-chat:send", {
-          detail: { text: text, agent: "kyb" },
-          cancelable: true
-        })
-      );
-    }, 100);
+    sendAfter("kyb", text, 100);
+  }
+
+  function routeHomeSubmit(event) {
+    var view = shell.getAttribute("data-d3-view") || "home";
+    if (view !== "home") return;
+    var detail = event.detail || {};
+    var text = String(detail.text || "").trim();
+    if (!text) return;
+
+    event.stopImmediatePropagation();
+    if (typeof event.preventDefault === "function") event.preventDefault();
+    routeHomeText(text, detail.agent || "auto");
   }
 
   sourceComposer.addEventListener("d1-composer:submit", routeHomeSubmit, true);
+
+  /* Beat chat.js [data-d1-demo] → Demo 1 full-page chat (old homepage stage). */
+  document.querySelectorAll("[data-d1-demo]").forEach(function (button) {
+    button.addEventListener(
+      "click",
+      function (event) {
+        var view = shell.getAttribute("data-d3-view") || "home";
+        if (view !== "home") return;
+        var text = button.getAttribute("data-prompt") || "";
+        if (!text) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        routeHomeText(text, button.getAttribute("data-agent") || "auto");
+      },
+      true
+    );
+  });
 
   function submitThroughComposer(text, agent) {
     if (!text) return;

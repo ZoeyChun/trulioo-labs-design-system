@@ -205,20 +205,30 @@
   white-space: nowrap;
 }
 
-.d3-workspace__detail-top .d3-kyb-export {
-  flex: 0 0 auto;
-}
-
-/* Export only on the live verification result — never on resume/search landing.
+/* Details + Export only on the live verification result — never on resume/search landing.
    Button styles use display:inline-flex and can beat the HTML [hidden] attribute. */
+.d3-kyb-details,
+.d3-kyb-details[hidden],
 .d3-kyb-export,
 .d3-kyb-export[hidden],
+.d3-workspace:not([data-d3-kyb-surface="report"]) .d3-kyb-details,
 .d3-workspace:not([data-d3-kyb-surface="report"]) .d3-kyb-export {
   display: none !important;
 }
 
+.d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-details:not([hidden]),
 .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-export:not([hidden]) {
   display: inline-flex !important;
+}
+
+/* Country / Transaction ID / Date live in the Details modal on report;
+   hide the inline strip on resume + report landing. */
+.d3-workspace__meta[data-d3-kyb-meta-inline] {
+  display: none !important;
+}
+
+.d3-kyb-resume:not(.is-live) .d3-workspace__biz-actions {
+  display: none;
 }
 
 .d3-workspace[data-d3-kyb-surface="report"] .d3-workspace__search,
@@ -738,11 +748,22 @@
   overflow: visible;
 }
 
+.d3-workspace__biz-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16, 16px);
+  width: 100%;
+  min-width: 0;
+}
+
 .d3-workspace__biz {
   display: flex;
   align-items: center;
   gap: var(--spacing-16, 16px);
   min-height: 42px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .d3-workspace__biz-name {
@@ -751,6 +772,50 @@
   font-weight: 600;
   line-height: 32px;
   color: var(--text-default, #172d2d);
+}
+
+.d3-workspace__biz-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.d3-kyb-details-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+  margin: 0;
+}
+
+.d3-kyb-details-meta > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.d3-kyb-details-meta dt {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption, #617269);
+}
+
+.d3-kyb-details-meta dd {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--text-default, #172d2d);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .d3-workspace__meta {
@@ -1200,6 +1265,10 @@
 
   .d3-kyb-tabs {
     gap: 16px;
+  }
+
+  .d3-workspace__biz-row {
+    flex-wrap: wrap;
   }
 
   .d3-workspace__meta {

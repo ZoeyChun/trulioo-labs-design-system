@@ -233,6 +233,11 @@
   position: relative;
 }
 
+/* Agent picker parked for a later pass — keep markup, hide the control. */
+.d1-prompt__agent[hidden] {
+  display: none !important;
+}
+
 .d1-prompt__mode {
   display: inline-flex;
   align-items: center;
@@ -328,6 +333,12 @@
 
 .d1-prompt .tds-icon-btn--invisible {
   color: var(--icon-faint);
+}
+
+/* Voice input parked for a later pass — keep markup, hide the control. */
+.d1-prompt__mic[hidden],
+.d1-prompt__actions > .tds-icon-btn[aria-label="Voice input"][hidden] {
+  display: none !important;
 }
 
 .d1-prompt__mic[aria-pressed="true"] {

@@ -59,10 +59,17 @@
 
 .d3-agents__label {
   margin: 0;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
   color: var(--text-default);
+}
+
+.d3-agents__section-lede {
+  margin: -2px 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-description);
 }
 
 .d3-agents__grid {
@@ -94,12 +101,15 @@
   cursor: pointer;
   color: inherit;
   box-sizing: border-box;
-  overflow: hidden;
+  /* Keep visible so kind/stage hover tips are not clipped. */
+  overflow: visible;
 }
 
-.d3-agent-card:hover {
+.d3-agent-card:hover,
+.d3-agent-card:has(.d3-agent-card__tip:hover) {
   border-color: color-mix(in srgb, var(--interactive-default) 35%, var(--border-subtle));
   box-shadow: var(--elevation-md);
+  z-index: 3;
 }
 
 .d3-agent-card:focus-visible {
@@ -152,6 +162,47 @@
   color: var(--text-default);
 }
 
+/* Stage tip: plain bubble (no caret), open above and align to the right edge. */
+.d3-agent-card__tip {
+  position: relative;
+  z-index: 1;
+}
+
+.d3-agent-card__tip:hover {
+  z-index: 8;
+}
+
+.d3-agent-card__tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  right: 0;
+  left: auto;
+  bottom: calc(100% + 8px);
+  z-index: 8;
+  width: max-content;
+  max-width: 220px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--surface-inverse, #172d2d);
+  color: var(--text-inverse, #fff);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-align: left;
+  white-space: nowrap;
+  box-shadow: var(--elevation-md);
+  transform: translateY(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.d3-agent-card__tip:hover::after,
+.d3-agent-card__tip:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .d3-agent-card__go {
   flex-shrink: 0;
   font-size: 11px;
@@ -167,16 +218,33 @@
   color: var(--text-description);
 }
 
+.d3-agent-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding: 12px;
+  min-width: 0;
+}
+
 .d3-agent-card__tags {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: auto;
-  padding: 12px;
+  min-width: 0;
+}
+
+.d3-agent-card__meta .d3-agent-card__stage {
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .d3-agent-card__tag {
   display: inline-flex;
+  align-items: center;
   padding: 4px 8px;
   border-radius: 9999px;
   background: var(--surface-neutral-02);
@@ -185,6 +253,52 @@
   font-weight: 500;
   line-height: 16px;
   color: var(--text-description);
+}
+
+/* Stage: always-visible colored dot + plain label. */
+.d3-agent-card__stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--text-default, #172d2d);
+}
+
+.d3-agent-card__stage-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: currentColor;
+}
+
+.d3-agent-card__stage--alpha {
+  color: #c2410c;
+}
+
+.d3-agent-card__stage--alpha .d3-agent-card__stage-dot {
+  background: #ea580c;
+}
+
+.d3-agent-card__stage--beta {
+  color: var(--interactive-default, #004c45);
+}
+
+.d3-agent-card__stage--beta .d3-agent-card__stage-dot {
+  background: var(--interactive-default, #004c45);
+}
+
+.d3-agent-card__stage--ga {
+  color: var(--text-description, #526660);
+}
+
+.d3-agent-card__stage--ga .d3-agent-card__stage-dot {
+  background: #16a34a;
 }
 
 @media (max-width: 1200px) {

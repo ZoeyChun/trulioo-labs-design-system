@@ -91,7 +91,10 @@
 }
 
 .kyb-panel .dv-header__actions {
+  display: flex;
   flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
 }
 
 .kyb-panel .dv-content {
@@ -703,12 +706,35 @@
   display: none !important;
 }
 
-/* --- Header metadata strip (T1 Business Identity) --- */
+/* --- Identity metadata (Details dialog) --- */
 
 .kyb-identity {
   display: flex;
   align-items: flex-start;
   gap: var(--gap-lg);
+  width: 100%;
+}
+
+.kyb-identity--dialog .kyb-identity__fields {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-24);
+  flex: 1;
+  min-width: 0;
+}
+
+.kyb-identity--dialog .kyb-identity__field-wrap {
+  display: flex;
+  align-items: stretch;
+}
+
+.kyb-identity--dialog .kyb-identity__field-wrap::after {
+  display: none;
+}
+
+.kyb-identity--dialog .kyb-identity__field-wrap .tds-data-field {
+  min-width: 0;
   width: 100%;
 }
 
@@ -775,7 +801,8 @@
 
 .kyb-transaction-id__row:hover .kyb-transaction-id__copy,
 .kyb-transaction-id__row:focus-within .kyb-transaction-id__copy,
-.kyb-transaction-id__copy:focus-visible {
+.kyb-transaction-id__copy:focus-visible,
+.kyb-identity--dialog .kyb-transaction-id__copy {
   opacity: 1;
   pointer-events: auto;
 }

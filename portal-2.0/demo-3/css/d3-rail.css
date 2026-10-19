@@ -25,8 +25,9 @@
   padding-bottom: var(--padding-md);
 }
 
-.d1-nav-btn,
-.d1-tool-btn {
+/* Pill buttons + line/fill swap must win over shell.css on every view. */
+.d1-rail .d1-nav-btn,
+.d1-rail .d1-tool-btn {
   width: 40px;
   height: 40px;
   border-radius: 9999px;
@@ -34,40 +35,39 @@
   background: transparent;
 }
 
-.d1-nav-btn:hover,
-.d1-tool-btn:hover,
-.d1-nav-btn:focus-visible,
-.d1-tool-btn:focus-visible {
+.d1-rail .d1-nav-btn:hover,
+.d1-rail .d1-tool-btn:hover,
+.d1-rail .d1-nav-btn:focus-visible,
+.d1-rail .d1-tool-btn:focus-visible {
   color: var(--icon-default);
   background: color-mix(in srgb, var(--surface-neutral-01) 70%, transparent);
 }
 
-.d1-nav-btn.is-active,
-.d1-nav-btn[aria-current="page"] {
+.d1-rail .d1-nav-btn.is-active,
+.d1-rail .d1-nav-btn[aria-current="page"] {
   color: var(--text-inverse);
   background: var(--surface-inverse);
 }
 
-.d1-nav-btn.is-active:hover,
-.d1-nav-btn[aria-current="page"]:hover {
+.d1-rail .d1-nav-btn.is-active:hover,
+.d1-rail .d1-nav-btn[aria-current="page"]:hover {
   color: var(--text-inverse);
   background: var(--surface-inverse);
 }
 
-/* Inactive = line icon; active = filled icon.
-   Beat .d1-nav-btn svg { display:block } from shell.css. */
-.d1-nav-btn .d1-nav-btn__icon--fill {
-  display: none;
+/* Inactive = line; active = fill. !important beats shell `.d1-nav-btn svg`. */
+.d1-rail .d1-nav-btn .d1-nav-btn__icon--fill {
+  display: none !important;
 }
 
-.d1-nav-btn.is-active .d1-nav-btn__icon--line,
-.d1-nav-btn[aria-current="page"] .d1-nav-btn__icon--line {
-  display: none;
+.d1-rail .d1-nav-btn.is-active .d1-nav-btn__icon--line,
+.d1-rail .d1-nav-btn[aria-current="page"] .d1-nav-btn__icon--line {
+  display: none !important;
 }
 
-.d1-nav-btn.is-active .d1-nav-btn__icon--fill,
-.d1-nav-btn[aria-current="page"] .d1-nav-btn__icon--fill {
-  display: block;
+.d1-rail .d1-nav-btn.is-active .d1-nav-btn__icon--fill,
+.d1-rail .d1-nav-btn[aria-current="page"] .d1-nav-btn__icon--fill {
+  display: block !important;
 }
 
 .d1-nav-btn svg,
