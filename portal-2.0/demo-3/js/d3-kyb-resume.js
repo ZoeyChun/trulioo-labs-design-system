@@ -1,5 +1,5 @@
 /* Demo 3 — KYB surfaces: centered search landing + full report.
-   Agent hub → Verify a business: search hero + recent transaction cards.
+   Labs → KYB Verification: search hero + recent transaction cards.
    Report surface reuses the resume card chrome (.is-live). */
 (function () {
   var STORAGE_KEY = "d3-kyb-incomplete";
@@ -66,11 +66,33 @@
     if (detail) detail.hidden = mode !== "resume" && mode !== "report";
     setLandingVisible(mode === "resume");
     if (mode !== "report" && resumeCard) resumeCard.classList.remove("is-live");
+    var backBtn = workspace.querySelector("[data-d3-kyb-back]");
+    if (backBtn) backBtn.hidden = mode !== "report";
+    updateMapNudge();
+    if (mode === "map") syncEntryActive("map");
+    else if (mode === "resume") syncEntryActive("search");
+    else if (mode === "report") syncEntryActive("continue");
+    bindResumeButtons(workspace);
   }
 
   function updateMapNudge() {
-    /* Resume / continue nudge removed — search landing is the entry. */
-    if (mapNudge) mapNudge.hidden = true;
+    /* Map surface: offer Continue session when an incomplete verify exists. */
+    if (!mapNudge) return;
+    var onMap = workspace.getAttribute("data-d3-kyb-surface") === "map";
+    if (!onMap || !hasIncomplete()) {
+      mapNudge.hidden = true;
+      mapNudge.innerHTML = "";
+      return;
+    }
+    mapNudge.hidden = false;
+    mapNudge.innerHTML =
+      '<button type="button" class="d3-kyb-map__nudge-btn" data-d3-kyb-resume-btn>' +
+      "Continue session" +
+      "</button>" +
+      '<button type="button" class="d3-kyb-map__nudge-link" data-d3-kyb-entry="search">' +
+      "Back to search" +
+      "</button>";
+    bindResumeButtons(mapNudge);
   }
 
   function setResumeVisible(show) {
@@ -105,6 +127,138 @@
       }
       thread.appendChild(section);
     });
+    var pane = document.querySelector("[data-d3-chat-thread]");
+    var scroller = pane || thread.parentElement;
+    if (scroller) scroller.scrollTop = scroller.scrollHeight;
+  }
+
+  /* Seed chat when opening a past transaction — opening is starting a review. */
+  function openingMessages(session) {
+    var name = (session && session.businessName) || "this business";
+    var status = (session && session.status) || "Verified";
+    var country = (session && session.country) || "United States";
+    return [
+      {
+        role: "user",
+        text: "Open " + name + " verification"
+      },
+      {
+        role: "assistant",
+        text:
+          "Opened " +
+          name +
+          " (" +
+          country +
+          "). Status is " +
+          status +
+          " — the full report is on the right. Ask about ownership, match signals, web & social insights, or anything else in this transaction."
+      }
+    ];
+  }
+
+  function seedReportChat(session) {
+    var messages =
+      session && session.messages && session.messages.length
+        ? session.messages
+        : openingMessages(session);
+    renderMessages(messages);
+    setReportFollowUps(session);
+    /* So follow-ups can ground on the open transaction. */
+    if (window.D3KybMapSearch && window.D3KybMapSearch.setSelected) {
+      window.D3KybMapSearch.setSelected({
+        name: (session && session.businessName) || "Business",
+        country: (session && session.country) || "United States",
+        status: (session && session.status) || "Verified",
+        transactionId: (session && session.transactionId) || "",
+        date: (session && session.date) || ""
+      });
+    }
+  }
+
+  function reportNextActions(session) {
+    var name = (session && session.businessName) || "this business";
+    return [
+      { q: "Who are the beneficial owners?", tab: "ownership" },
+      { q: "Show web & social insights for " + name, tab: "web" },
+      { q: "Any match signals I should review?", tab: "signals" },
+      { q: "Summarize the " + name + " verification", tab: "overview" }
+    ];
+  }
+
+  function setReportFollowUps(session) {
+    var actions = reportNextActions(session);
+    /* Prefer inline cards under the seed reply — avoid a second follow list. */
+    var follow = document.querySelector("[data-d1-follow]");
+    if (follow) {
+      follow.classList.remove("is-on");
+      follow.hidden = true;
+    }
+    renderInlineNextActions(actions);
+  }
+
+  function renderInlineNextActions(actions) {
+    var thread = document.querySelector("[data-d1-thread]");
+    if (!thread || !actions || !actions.length) return;
+    var prev = thread.querySelector("[data-d3-kyb-next]");
+    if (prev) prev.remove();
+
+    var wrap = document.createElement("div");
+    wrap.className = "d3-kyb-next";
+    wrap.setAttribute("data-d3-kyb-next", "");
+    wrap.setAttribute("role", "group");
+    wrap.setAttribute("aria-label", "Suggested next actions");
+
+    var label = document.createElement("p");
+    label.className = "d3-kyb-next__label";
+    label.textContent = "Suggested next actions";
+    wrap.appendChild(label);
+
+    var list = document.createElement("div");
+    list.className = "d3-kyb-next__list";
+    actions.forEach(function (action) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "d3-kyb-next__btn";
+      btn.setAttribute("data-d3-kyb-suggest", action.q);
+      if (action.tab) btn.setAttribute("data-d3-kyb-tab-hint", action.tab);
+      btn.innerHTML =
+        '<span class="d3-kyb-next__text">' +
+        escapeHtml(action.q) +
+        '</span><span class="d3-kyb-next__arrow" aria-hidden="true"><svg class="d3-fa-line" width="16" height="16" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>';
+      list.appendChild(btn);
+    });
+    wrap.appendChild(list);
+    thread.appendChild(wrap);
+
+    var pane = document.querySelector("[data-d3-chat-thread]");
+    var scroller = pane || thread.parentElement;
+    if (scroller) scroller.scrollTop = scroller.scrollHeight;
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function runSuggestedAction(text, tabHint) {
+    if (!text) return;
+    var thread = document.querySelector("[data-d1-thread]");
+    var next = thread && thread.querySelector("[data-d3-kyb-next]");
+    if (next) next.remove();
+    if (tabHint && window.D3KybReport && window.D3KybReport.selectTab) {
+      window.D3KybReport.selectTab(tabHint);
+    }
+    if (window.D3Nav) window.D3Nav.markChatActive();
+    document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
+    document.dispatchEvent(
+      new CustomEvent("d3-chat:send", {
+        detail: { text: text, agent: "kyb" },
+        cancelable: true
+      })
+    );
   }
 
   function crumbEl() {
@@ -114,11 +268,12 @@
   function renderCrumbs(mode, bizName) {
     var el = crumbEl();
     if (!el) return;
+    /* One scheme end-to-end: Labs / KYB Verification [/ entity]. */
     if (mode === "report") {
       el.innerHTML =
-        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="home">Home</button>' +
+        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>' +
         '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
-        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">Verify a business</button>' +
+        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">KYB Verification</button>' +
         '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
         '<span class="d3-workspace__crumb-current" data-d3-kyb-crumb-biz></span>';
       var biz = el.querySelector("[data-d3-kyb-crumb-biz]");
@@ -128,7 +283,7 @@
     el.innerHTML =
       '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>' +
       '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
-      '<span class="d3-workspace__crumb-current">Verify a business</span>';
+      '<span class="d3-workspace__crumb-current">KYB Verification</span>';
   }
 
   function prepareDetailChrome() {
@@ -141,12 +296,12 @@
     var title = detail.querySelector(".d3-workspace__title");
     if (title) {
       title.hidden = false;
-      title.textContent = "Verify a business";
+      title.textContent = "KYB Verification";
     }
     renderCrumbs("landing");
   }
 
-  /* Agent hub → KYB: left chat + world map (Find Meridian / Start New). */
+  /* Labs → KYB: left chat + world map (Find Meridian / Start New). */
   function openMapExperience() {
     ensureDemoSession();
     if (window.D3Nav) {
@@ -160,12 +315,12 @@
     clearThread();
     document.dispatchEvent(new CustomEvent("d3-kyb:restore-idle"));
     if (paneInput) {
-      paneInput.placeholder = "Ask about business verification";
+      paneInput.placeholder = "Business name and country";
     }
     document.dispatchEvent(new CustomEvent("d3-kyb:map-ready"));
   }
 
-  /* Agent hub → Verify a business: centered search + recent cards. */
+  /* Labs → KYB Verification: centered search + recent cards. */
   function openResumeExperience() {
     ensureDemoSession();
     if (window.D3Nav) {
@@ -177,7 +332,7 @@
     setResumeVisible(false);
     clearThread();
     if (paneInput) {
-      paneInput.placeholder = "Ask about business verification";
+      paneInput.placeholder = "Business name and country";
     }
     document.dispatchEvent(new CustomEvent("d3-kyb:restore-idle"));
     document.dispatchEvent(new CustomEvent("d3-kyb:resume-ready"));
@@ -217,7 +372,7 @@
         "d1-tag " +
         (status === "Review"
           ? "d1-tag--review"
-          : status === "Flagged"
+          : status === "Flagged" || status === "Not Verified"
             ? "d1-tag--negative"
             : "d1-tag--positive");
     }
@@ -249,7 +404,7 @@
   function resumeConversation() {
     var session = readSession() || DEFAULT_SESSION;
     expandToFullReport(session);
-    renderMessages(session.messages);
+    seedReportChat(session);
     document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
     if (window.D3Nav) window.D3Nav.markChatActive();
     window.setTimeout(function () {
@@ -280,7 +435,7 @@
     setSurface("map");
     document.dispatchEvent(new CustomEvent("d3-kyb:restore-idle"));
     if (paneInput) {
-      paneInput.placeholder = "Ask about business verification";
+      paneInput.placeholder = "Business name and country";
       paneInput.focus();
     }
   }
@@ -297,25 +452,77 @@
     readyWatch.observe(document.body, { attributes: true, attributeFilter: ["class"] });
   }
 
-  workspace.querySelectorAll("[data-d3-kyb-resume-btn]").forEach(function (btn) {
-    btn.addEventListener("click", resumeConversation);
+  document.addEventListener("click", function (event) {
+    var btn = event.target.closest("[data-d3-kyb-next] [data-d3-kyb-suggest], .d1-follow [data-d3-kyb-suggest]");
+    if (!btn) return;
+    /* Let KYB agent own follow-row clicks when it handles them; still
+       fire for inline next-action cards in the thread. */
+    if (btn.closest(".d1-follow") && window.D3KybAgent) return;
+    var text = btn.getAttribute("data-d3-kyb-suggest") || "";
+    var tab = btn.getAttribute("data-d3-kyb-tab-hint") || "";
+    if (!text) return;
+    event.preventDefault();
+    runSuggestedAction(text, tab);
   });
+
+  function bindResumeButtons(root) {
+    (root || workspace).querySelectorAll("[data-d3-kyb-resume-btn]").forEach(function (btn) {
+      if (btn._d3ResumeBound) return;
+      btn._d3ResumeBound = true;
+      btn.addEventListener("click", resumeConversation);
+    });
+  }
+  bindResumeButtons(workspace);
+
   workspace.querySelectorAll("[data-d3-kyb-start-new]").forEach(function (btn) {
     btn.addEventListener("click", startNew);
   });
+  workspace.querySelectorAll("[data-d3-kyb-back]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      openResumeExperience();
+    });
+  });
+
+  /* Search (landing) · Map · Continue session — one entry chooser. */
+  workspace.addEventListener("click", function (event) {
+    var entry = event.target.closest("[data-d3-kyb-entry]");
+    if (!entry || !workspace.contains(entry)) return;
+    var mode = entry.getAttribute("data-d3-kyb-entry");
+    if (mode === "map") {
+      openMapExperience();
+      syncEntryActive("map");
+      return;
+    }
+    if (mode === "search") {
+      openResumeExperience();
+      syncEntryActive("search");
+      return;
+    }
+    if (mode === "continue") {
+      resumeConversation();
+      syncEntryActive("continue");
+    }
+  });
+
+  function syncEntryActive(mode) {
+    workspace.querySelectorAll("[data-d3-kyb-entry]").forEach(function (btn) {
+      btn.classList.toggle("is-active", btn.getAttribute("data-d3-kyb-entry") === mode);
+    });
+  }
 
   workspace.querySelectorAll("[data-d3-kyb-recent-card]").forEach(function (card) {
     card.addEventListener("click", function () {
       var status = card.getAttribute("data-status") || "Verified";
-      expandToFullReport({
+      var session = {
         incomplete: false,
         businessName: card.getAttribute("data-biz") || "Business",
         status: status,
         country: card.getAttribute("data-country") || "United States",
         transactionId: card.getAttribute("data-txid") || "",
-        date: card.getAttribute("data-date") || "",
-        messages: []
-      });
+        date: card.getAttribute("data-date") || ""
+      };
+      expandToFullReport(session);
+      seedReportChat(session);
       var tag = resumeCard && resumeCard.querySelector(".d1-tag");
       if (tag) {
         tag.textContent = status;
@@ -323,12 +530,16 @@
           "d1-tag " +
           (status === "Review"
             ? "d1-tag--review"
-            : status === "Flagged"
+            : status === "Flagged" || status === "Not Verified"
               ? "d1-tag--negative"
               : "d1-tag--positive");
       }
       document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
       if (window.D3Nav) window.D3Nav.markChatActive();
+      window.setTimeout(function () {
+        var input = document.querySelector("[data-d1-input]");
+        if (input) input.focus();
+      }, 50);
     });
   });
 
@@ -351,12 +562,9 @@
       var btn = event.target.closest("[data-d3-crumb]");
       if (!btn || !detail.contains(btn)) return;
       var go = btn.getAttribute("data-d3-crumb");
-      if (go === "home") {
-        if (window.D3Nav && window.D3Nav.goHome) window.D3Nav.goHome();
-        return;
-      }
-      if (go === "labs") {
+      if (go === "home" || go === "labs") {
         if (window.D3Labs && window.D3Labs.open) window.D3Labs.open();
+        else if (window.D3Nav && window.D3Nav.goLabs) window.D3Nav.goLabs();
         else if (window.D3Nav && window.D3Nav.goAgents) window.D3Nav.goAgents();
         return;
       }

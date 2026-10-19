@@ -46,6 +46,9 @@
 .d1-alert .d3-fa-line,
 .d1-table .fa-regular,
 .d1-table .d3-fa-line,
+.d1-suggest-row .fa-regular,
+.d1-suggest-row .d3-fa-line,
+.d3-kyb-next__arrow .d3-fa-line,
 .vb-upload .fa-regular,
 .vb-upload .d3-fa-line {
   display: inline-block;
@@ -72,7 +75,9 @@
 .d1-org__mark .d3-fa-line,
 .d3-kyb-overview__value .d3-fa-line,
 .d3-askbar .d3-fa-line,
-.d1-table .d3-fa-line {
+.d1-table .d3-fa-line,
+.d1-suggest-row .d3-fa-line,
+.d3-kyb-next__arrow .d3-fa-line {
   width: 16px;
   height: 16px;
   flex-shrink: 0;

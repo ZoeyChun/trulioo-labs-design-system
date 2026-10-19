@@ -2,7 +2,7 @@
    Figma: Portal 2.0 1280:20394
    Rail (72) + neutral-01 canvas [ TruAI 478 | main content ] */
 
-/* Shell + canvas share surface-neutral-01; rail uses neutral-02.
+/* Shell + canvas + rail share surface-neutral-01; rail has a subtle right edge.
    Zero shell inset/gap on every view so the rail stays edge-flush
    and does not jump when leaving home. */
 .d1-shell {
@@ -15,7 +15,8 @@
   /* Above .d3-canvas so flyouts clear home briefing cards
      (.d1-brief z-index:2 would otherwise paint over the rail). */
   z-index: 20;
-  background: var(--surface-neutral-02, #f4f6f4);
+  background: var(--surface-neutral-01, #fff);
+  border-right: 1px solid var(--border-subtle, #dde2de);
 }
 
 /* Main is never a floating card — flush to the canvas. */
@@ -49,10 +50,10 @@ body {
   min-height: 0;
 }
 
-/* TruAI panel: stretch height but float with 8px top/bottom inset. */
+/* TruAI panel: 8px inset on all sides so it doesn’t hug canvas edges. */
 .d1-shell[data-d3-chat="open"] .d3-chat-pane {
   align-self: stretch;
-  margin: 8px 0;
+  margin: 8px;
   height: auto;
   max-height: none;
 }

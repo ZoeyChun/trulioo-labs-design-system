@@ -11,7 +11,7 @@
   min-height: 0;
   flex-direction: column;
   gap: 48px;
-  margin: 8px 0;
+  margin: 8px;
   /* 16px content + 4px gutter so .d1-prompt ring/outline isn't clipped */
   padding: 32px 20px;
   background: var(--surface-neutral-01);
@@ -260,6 +260,100 @@
   gap: var(--spacing-16);
 }
 
+/* Follow-ups + report next actions inside the left chat pane. */
+.d3-chat-pane .d1-follow.is-on {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: var(--spacing-4);
+  width: 100%;
+  margin: var(--spacing-8) 0 var(--spacing-16);
+}
+
+.d3-kyb-next {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.d3-kyb-next__label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--text-caption, #617269);
+}
+
+.d3-kyb-next__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.d3-kyb-next__btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 12px;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.d3-kyb-next__btn:hover {
+  border-color: color-mix(in srgb, var(--interactive-default, #0e8a78) 35%, var(--border-subtle, #dde2de));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.d3-kyb-next__btn:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
+
+.d3-kyb-next__text {
+  flex: 1 1 auto;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--text-default);
+}
+
+.d3-kyb-next__arrow {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint, #8a9690);
+}
+
+.d3-kyb-next__arrow svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-kyb-next__btn {
+    transition: none;
+  }
+
+  .d3-kyb-next__btn:hover {
+    transform: none;
+  }
+}
+
 /* [hidden] must beat display:flex on these components. */
 .d3-chat-pane__prompts[hidden],
 .d3-chat-pane__empty[hidden],
@@ -356,9 +450,9 @@
   outline-offset: 2px;
 }
 
-/* Visible only when chat is closed away from home (home has its own composer).
-   Org admin has no TruAI — keep the ask bar hidden there. */
-.d1-shell[data-d3-chat="closed"]:not([data-d3-view="home"]):not([data-d3-view="org"]) .d3-askbar {
+/* Visible when chat is closed away from home (home has its own composer).
+   Org keeps TruAI — ask bar shows when the panel is minimized. */
+.d1-shell[data-d3-chat="closed"]:not([data-d3-view="home"]) .d3-askbar {
   opacity: 1;
   translate: -50% 0;
   pointer-events: auto;
@@ -368,5 +462,33 @@
 @media (prefers-reduced-motion: reduce) {
   .d3-askbar {
     transition: none;
+  }
+}
+
+/* Mobile: TruAI collapses to ask bar only; workspace + drawer go full width. */
+@media (max-width: 720px) {
+  .d1-shell[data-d3-chat="open"] .d3-chat-pane {
+    display: none !important;
+  }
+
+  .d1-shell[data-d3-chat="open"]:not([data-d3-view="home"]) .d3-askbar,
+  .d1-shell[data-d3-chat="closed"]:not([data-d3-view="home"]) .d3-askbar {
+    opacity: 1;
+    translate: -50% 0;
+    pointer-events: auto;
+    width: calc(100% - 32px);
+    max-width: none;
+    transition-delay: 0ms;
+  }
+
+  .d1-shell:not([data-d3-view="home"]) .d1-main {
+    padding: 16px 12px 72px;
+  }
+
+  .d1-shell[data-d3-view="agents"] .d1-main,
+  .d1-shell[data-d3-view="transactions"] .d1-main,
+  .d1-shell[data-d3-view="org"] .d1-main,
+  .d1-shell[data-d3-chat-mode="kyb"]:not([data-d3-view="home"]) .d1-main {
+    padding: 0 0 72px !important;
   }
 }

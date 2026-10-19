@@ -19,9 +19,28 @@ Open: http://127.0.0.1:8765/portal-2.0/demo-3/
 
 1. **Sign in** — standalone Figma page (`sign-in/`, same as [Demo 1 sign-in](https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/Demo%201/sign-in/))
 2. **Loading** — returning-customer lines after a fresh sign-in
-3. **Homepage** — Welcome back + composer + briefing cards
-4. **Sidebar** — Home · Agent hub · History · Chats · Settings · Account
-5. **Left chat** — dedicated AI panel per agent (KYB, TX, KYC, Org Admin)
+3. **Portal Home** — Welcome back + composer + briefing cards (`data-d3-view="home"`)
+4. **Sidebar** — Home · Labs · Transactions · Chats · Settings · Account  
+   (`data-d3-nav`: `home` | `labs` | `transactions` | `messages` | `settings`)
+5. **Left chat** — TruAI panel per agent (KYB, TX, KYC, Org Admin); close collapses to the floating ask bar
+
+### Home story (one canonical map)
+
+| Label | Where | Notes |
+|-------|--------|--------|
+| Portal Home | This shell, Home rail | Returning-customer composer |
+| Labs | Labs rail → `labs.html?embed=1` | Catalog; not “Agent hub” |
+| Labs catalog Home | `pages/…/labs.html` sidenav | Experimental nav only |
+
+Agent hub is retired. KYB crumbs are always **Labs / KYB Verification [/ entity]**.
+
+### KYB entry
+
+On the KYB landing: **Search** (default) · **Map** · **Continue session**.
+
+### Drawer motion
+
+Transactions entity drawer **snaps** open/close (0ms). Other views keep the 420ms shell tween.
 
 Session key: `d3-signed-in` (does not share Demo 1 session).
 

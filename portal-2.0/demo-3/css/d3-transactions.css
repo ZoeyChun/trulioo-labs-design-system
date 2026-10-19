@@ -17,7 +17,6 @@
 }
 
 .d1-shell[data-d3-view="transactions"] .d1-home,
-.d1-shell[data-d3-view="transactions"] .d3-agents,
 .d1-shell[data-d3-view="transactions"] .d3-labs,
 .d1-shell[data-d3-view="transactions"] .d3-workspace {
   display: none !important;
@@ -43,6 +42,9 @@
 .d1-shell[data-d3-view="transactions"] .d1-main {
   padding: 0;
   gap: 0;
+  /* Entity open/close: snap widths — no slide/fade. */
+  --d1-drawer-shell-ms: 0ms;
+  --d1-drawer-content-ms: 0ms;
 }
 
 .d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="closed"] .d1-slot {
@@ -63,9 +65,22 @@
   max-width: var(--d1-slot-w) !important;
   min-width: 0 !important;
   overflow: hidden;
-  transition:
-    width var(--d1-drawer-shell-ms, 420ms) var(--d1-drawer-ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    opacity 0.28s ease;
+  transition: none;
+}
+
+.d1-shell[data-d3-view="transactions"] .d1-drawer,
+.d1-shell[data-d3-view="transactions"] .d1-drawer__surface {
+  transition: none;
+}
+
+.d1-shell[data-d3-view="transactions"] .d1-drawer__surface {
+  opacity: 1;
+  transform: none;
+}
+
+.d1-shell[data-d3-view="transactions"] .d1-drawer.is-content-in .d1-doc.is-in,
+.d1-shell[data-d3-view="transactions"] .d1-drawer.is-content-in .d1-tx.is-in {
+  animation: none;
 }
 
 /* Minimized: slim table strip stays interactive for switching rows. */

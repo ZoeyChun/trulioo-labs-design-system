@@ -17,9 +17,15 @@
   if (!main || !drawer || !surface || !tabs) return;
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var SHELL_MS = reduced ? 0 : 420;
-  /* Close: short fade-out before collapse (open content matches shell via CSS). */
-  var CONTENT_OUT_MS = reduced ? 0 : 160;
+  /* Transactions: snap open/close (no shell tween). Others keep 420/160. */
+  function shellMs() {
+    if (reduced || onTransactionsView()) return 0;
+    return 420;
+  }
+  function contentOutMs() {
+    if (reduced || onTransactionsView()) return 0;
+    return 160;
+  }
 
   var openTabs = [];
   var mode = null;
@@ -124,7 +130,8 @@
   }
 
   function afterShell(callback) {
-    if (reduced || SHELL_MS === 0) {
+    var ms = shellMs();
+    if (ms === 0) {
       callback();
       return;
     }
@@ -144,7 +151,7 @@
     }
     shellHandler = onEnd;
     drawer.addEventListener("transitionend", onEnd);
-    openTimer = window.setTimeout(finish, SHELL_MS + 80);
+    openTimer = window.setTimeout(finish, ms + 80);
   }
 
   function tableRows() {
@@ -255,12 +262,20 @@
     if (wasClosed) {
       /* Transactions: open into entity-focused (expanded) layout by default. */
       if (onTransactionsView()) setExpanded(true);
-      setContentIn(false);
+      var snap = shellMs() === 0;
+      setContentIn(snap);
       /* State first (padding), then sizes, then animate width from 0. */
       main.setAttribute("data-d1-drawer", expanded ? "expanded" : "open");
       void main.offsetWidth;
       var sizes = targetWidths(expanded);
       main.style.setProperty("--d1-drawer-surface-w", sizes.drawerW + "px");
+      if (snap) {
+        main.style.setProperty("--d1-drawer-w", sizes.drawerW + "px");
+        main.style.setProperty("--d1-slot-w", sizes.slotW + "px");
+        drawer.setAttribute("aria-hidden", "false");
+        opening = false;
+        return;
+      }
       main.style.setProperty("--d1-drawer-w", "0px");
       main.style.setProperty("--d1-slot-w", sizes.avail + "px");
       void drawer.offsetWidth;
@@ -274,7 +289,7 @@
           setContentIn(true);
           openTimer = window.setTimeout(function () {
             opening = false;
-          }, SHELL_MS);
+          }, shellMs());
         });
       });
       return;
@@ -358,11 +373,12 @@
       afterShell(finishClose);
     }
 
-    if (reduced || CONTENT_OUT_MS === 0) {
+    var outMs = contentOutMs();
+    if (outMs === 0) {
       collapseShell();
       return;
     }
-    closeTimer = window.setTimeout(collapseShell, CONTENT_OUT_MS);
+    closeTimer = window.setTimeout(collapseShell, outMs);
   }
 
   function toggleExpand() {

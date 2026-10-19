@@ -121,6 +121,10 @@
     return !!(item.url && item.url !== '#');
   }
 
+  function hasPortalAction(item) {
+    return !!(item.portalAction && String(item.portalAction).trim());
+  }
+
   /* When Labs is embedded in the portal, keep embed=1 on card destinations
      so those pages hide their own side nav (portal rail already exists). */
   function withEmbed(url) {
@@ -141,10 +145,28 @@
   }
 
   function wrapCard(item, className, inner) {
+    if (hasPortalAction(item)) {
+      return (
+        '<button type="button" class="' +
+        className +
+        '" data-labs-portal="' +
+        escapeHtml(item.portalAction) +
+        '">' +
+        inner +
+        '</button>'
+      );
+    }
     if (hasLink(item)) {
       return '<a class="' + className + '" href="' + escapeHtml(withEmbed(item.url)) + '">' + inner + '</a>';
     }
-    return '<div class="' + className + ' labs-card--static" role="group">' + inner + '</div>';
+    return (
+      '<div class="' +
+      className +
+      ' labs-card--static" role="group" aria-disabled="true">' +
+      inner +
+      '<span class="labs-card-soon">Coming soon</span>' +
+      '</div>'
+    );
   }
 
   function cardIcon(item) {
@@ -410,6 +432,26 @@
       }, true);
     });
   }
+  /* Portal embed: open a demo-3 surface (e.g. KYB Verification) from Labs.
+     Standalone: deep-link into Portal Demo 3. */
+  document.addEventListener('click', function (event) {
+    var btn = event.target.closest('[data-labs-portal]');
+    if (!btn) return;
+    var action = btn.getAttribute('data-labs-portal');
+    if (!action) return;
+    event.preventDefault();
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'd3-labs-open', action: action }, '*');
+        return;
+      }
+    } catch (e) {}
+    var portal =
+      '../../portal-2.0/demo-3/index.html' +
+      (action === 'kyb' ? '#kyb' : '');
+    window.location.href = portal;
+  });
+
   syncFilterButton();
   renderActiveChips();
   syncSearchClear();

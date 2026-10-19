@@ -1,4 +1,6 @@
 /* Side drawer — Figma "Full report Drawer" 1117:78458 / 1117:79534.
+   Motion policy: Transactions snap open/close (0ms via d3-transactions.css).
+   Other views keep the 420ms shell / content tween below.
    Sits inside the white shell card, beside the chat. Not an overlay.
 
    Motion: only pixel widths animate (no flex%/translateX fight). Inner
@@ -168,6 +170,11 @@
   display: flex;
   flex-shrink: 0;
   gap: var(--spacing-4);
+}
+
+/* Close only — no expand / minimize control. */
+.d1-drawer__tools [data-d1-drawer-expand] {
+  display: none !important;
 }
 
 .d1-drawer__tools .tds-icon-btn__icon img {
@@ -498,5 +505,43 @@
   .d1-drawer.is-content-in .d1-doc.is-in,
   .d1-drawer.is-content-in .d1-tx.is-in {
     animation: none;
+  }
+}
+
+/* Mobile: entity drawer fills the viewport (Transactions + any open drawer). */
+@media (max-width: 720px) {
+  .d1-main[data-d1-drawer="open"],
+  .d1-main[data-d1-drawer="expanded"] {
+    --d1-drawer-shell-ms: 0ms;
+    --d1-drawer-content-ms: 0ms;
+  }
+
+  .d1-main[data-d1-drawer="open"] .d1-slot,
+  .d1-main[data-d1-drawer="expanded"] .d1-slot {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .d1-main[data-d1-drawer="open"] .d1-drawer,
+  .d1-main[data-d1-drawer="expanded"] .d1-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .d1-main[data-d1-drawer="open"] .d1-drawer__surface,
+  .d1-main[data-d1-drawer="expanded"] .d1-drawer__surface {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 100%;
+    border-radius: 0;
+    opacity: 1;
+    transform: none;
   }
 }

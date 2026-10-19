@@ -1,8 +1,16 @@
 # Unified Intelligence Home (Experimental)
 
-Experimental Trulioo Home prototype for the Unified Intelligence experience and the **Start assessment → KYB Results** flow.
+Labs catalog and related product previews for the Unified Intelligence experience.
 
-This page lives alongside the existing [`KYB Results`](../KYB%20Results/) page in the design system repo. It is not wired into production navigation yet.
+## One Home story
+
+| Surface | URL | Role |
+|--------|-----|------|
+| **Portal Home** | `portal-2.0/demo-3/index.html` (`data-d3-view="home"`) | Canonical returning-customer home (composer + briefing). Rail **Home** goes here. |
+| **Labs catalog** | `labs.html` | Product catalog (filters + cards). Experimental sidenav treats this as **Home**. Portal **Labs** embeds `labs.html?embed=1`. |
+| **Marketing index** | `index.html` | Standalone marketing / assessment entry. Also counts as Home in experimental sidenav. |
+
+Do not call the old Agent hub “Home”. Agent hub is retired; Labs + TruAI prompts are the product entry from the Portal rail.
 
 ## Run locally
 
@@ -14,18 +22,17 @@ python3 -m http.server 8765
 
 Then open:
 
-- Home: [http://localhost:8765/pages/unified-intelligence-home/](http://localhost:8765/pages/unified-intelligence-home/)
-- KYB Results: [http://localhost:8765/pages/KYB%20Results/index.html](http://localhost:8765/pages/KYB%20Results/index.html)
+- Labs catalog: [http://localhost:8765/pages/unified-intelligence-home/labs.html](http://localhost:8765/pages/unified-intelligence-home/labs.html)
+- Marketing index: [http://localhost:8765/pages/unified-intelligence-home/](http://localhost:8765/pages/unified-intelligence-home/)
+- Portal Demo 3: [http://localhost:8765/portal-2.0/demo-3/](http://localhost:8765/portal-2.0/demo-3/)
 
 ## Share
 
-- Home: https://zoeychun.github.io/trulioo-labs-design-system/pages/unified-intelligence-home/
-- Device Intelligence: https://zoeychun.github.io/trulioo-labs-design-system/pages/device-intelligence/index.html
-- KYB Results: https://zoeychun.github.io/trulioo-labs-design-system/pages/KYB%20Results/index.html
-
-Use **Start assessment** on the home plan screen to navigate to KYB Results with the selected entity. The Home nav on KYB Results returns here.
+- Labs: https://zoeychun.github.io/trulioo-labs-design-system/pages/unified-intelligence-home/labs.html
+- Portal Demo 3: https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/
 
 ## Notes
 
 - Self-contained assets (`css/`, `js/`, `fonts/`, `assets/`) — no bundled design-system copy required.
-- KYB Results entity hydration and Home navigation live in `../KYB Results/kyb-results.js`.
+- Static Labs cards without a URL or `portalAction` render as **Coming soon**.
+- KYB Verification from Labs posts `d3-labs-open` into Portal Demo 3 when embedded.

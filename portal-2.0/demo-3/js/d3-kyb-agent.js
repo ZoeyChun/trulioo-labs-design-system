@@ -130,9 +130,25 @@
 
   /* ---- NL parsing ---- */
 
+  function placeFromText(text) {
+    if (window.D3KybMapSearch && typeof window.D3KybMapSearch.parsePlaceQuery === "function") {
+      return window.D3KybMapSearch.parsePlaceQuery(text);
+    }
+    return { raw: String(text || "").trim(), nameQuery: String(text || "").trim(), country: null, cc: null };
+  }
+
+  function withPlace(result, place) {
+    if (!result || !place) return result;
+    if (place.country) result.country = place.country;
+    if (place.cc) result.cc = place.cc;
+    return result;
+  }
+
   function parseQuery(text) {
     var q = String(text || "").trim();
     var lower = q.toLowerCase();
+    var place = placeFromText(q);
+    var scopedName = place.nameQuery || q;
 
     /* Idle prompt cards — synced from demo-2/verify-business TruAI suggestions */
     if (/what information do i need|fields and documents|required to start/.test(lower)) {
@@ -145,13 +161,17 @@
       return { intent: "faq", topic: "how" };
     }
 
-    if (/^(find|search|look up|locate)\b/.test(lower) || /^meridian$/i.test(q)) {
-      var needle = q.replace(/^(find|search|look up|locate)\s+/i, "").trim() || "Meridian";
-      return { intent: "find", query: needle };
+    if (/^(find|search|look up|locate)\b/.test(lower) || /^meridian$/i.test(scopedName)) {
+      var needle =
+        scopedName.replace(/^(find|search|look up|locate)\s+/i, "").trim() || "Meridian";
+      return withPlace({ intent: "find", query: needle }, place);
     }
 
     if (/^verify\b|run (a )?kyb|start verification|check (this |the )?business/.test(lower)) {
-      var name = q.replace(/^verify\s+/i, "").replace(/\b(please|now)\b/gi, "").trim();
+      var name = scopedName
+        .replace(/^verify\s+/i, "")
+        .replace(/\b(please|now)\b/gi, "")
+        .trim();
       /* “Verify Meridian” is a search, not a single-entity pick — same-name
          brands must disambiguate across jurisdictions first (demo-2). */
       if (
@@ -163,12 +183,15 @@
       ) {
         var brandHits =
           window.D3KybMapSearch &&
-          window.D3KybMapSearch.findBusinesses(name || "Meridian");
+          window.D3KybMapSearch.findBusinesses(name || "Meridian", {
+            country: place.country,
+            cc: place.cc
+          });
         if (brandHits && brandHits.length > 1) {
-          return { intent: "find", query: name || "Meridian" };
+          return withPlace({ intent: "find", query: name || "Meridian" }, place);
         }
       }
-      return { intent: "verify", name: name || null };
+      return withPlace({ intent: "verify", name: name || null }, place);
     }
 
     if (/who (owns|are the (owners|ubos?))|ownership|beneficial owner|ubo|ultimate owner|who ultimately owns/.test(lower)) {
@@ -204,20 +227,43 @@
       return { intent: "tab", tab: /source/.test(lower) ? "sources" : "raw" };
     }
 
-    /* Bare company name from dataset */
-    var hit = window.D3KybMapSearch && window.D3KybMapSearch.findByName(q);
-    if (hit && q.length > 8) {
-      return { intent: "verify", name: hit.name, biz: hit };
+    /* “Meridian Capital LLC, United States” / “Acme Inc United Kingdom” */
+    if (place.country && scopedName) {
+      var placed =
+        window.D3KybMapSearch &&
+        window.D3KybMapSearch.findBusinesses(place, {
+          country: place.country,
+          cc: place.cc
+        });
+      if (placed && placed.length === 1) {
+        return withPlace(
+          { intent: "verify", name: placed[0].name, biz: placed[0] },
+          place
+        );
+      }
+      if (placed && placed.length > 1) {
+        return withPlace({ intent: "find", query: scopedName }, place);
+      }
+      if (/meridian/i.test(scopedName)) {
+        return withPlace({ intent: "find", query: "Meridian" }, place);
+      }
+      return withPlace({ intent: "find", query: scopedName }, place);
     }
 
-    if (/meridian/i.test(q)) {
-      return { intent: "find", query: "Meridian" };
+    /* Bare company name from dataset */
+    var hit = window.D3KybMapSearch && window.D3KybMapSearch.findByName(scopedName);
+    if (hit && scopedName.length > 8) {
+      return withPlace({ intent: "verify", name: hit.name, biz: hit }, place);
+    }
+
+    if (/meridian/i.test(scopedName || q)) {
+      return withPlace({ intent: "find", query: "Meridian" }, place);
     }
 
     return {
       intent: "help",
       message:
-        "I can search the demo KYB dataset, verify a matched business, explain ownership / UBOs, surface risk signals, or compare two Meridian entities. Try “Find Meridian” or “Verify Meridian Capital LLC”. I won’t invent businesses that aren’t in this dataset."
+        "I can search the demo KYB dataset, verify a matched business, explain ownership / UBOs, surface risk signals, or compare two Meridian entities. Try “Find Meridian” or “Meridian Capital LLC, United States”. I won’t invent businesses that aren’t in this dataset."
     };
   }
 
@@ -592,10 +638,29 @@
     stick();
   }
 
-  function playCandidateResults(matches, queryLabel) {
+  function playCandidateResults(matches, queryLabel, opts) {
+    opts = opts || {};
     hideFollow();
     candState.list = matches.slice();
     candState.filterIds = [];
+    /* Pre-select the named country chip so the list + map stay scoped. */
+    if (opts.cc || opts.country) {
+      var defs = buildCandFilters(candState.list);
+      var wantCc = String(opts.cc || "").toLowerCase();
+      var chip = null;
+      for (var i = 0; i < defs.length; i += 1) {
+        if (!isCountryFilter(defs[i])) continue;
+        if (wantCc && defs[i].id === wantCc) {
+          chip = defs[i];
+          break;
+        }
+        if (opts.country && defs[i].label === opts.country) {
+          chip = defs[i];
+          break;
+        }
+      }
+      if (chip) candState.filterIds = [chip.id];
+    }
     candState.queryLabel = queryLabel || "Meridian";
     candState.pending = null;
     candState.mode = "list";
@@ -606,6 +671,7 @@
     wrap.classList.add("d3-kyb-cand-panel");
     candState.root = wrap;
     paintCandidateList();
+    syncMapToVisible();
     return wrap;
   }
 
@@ -837,9 +903,14 @@
       playHtml("<p>Map search isn’t available yet. Refresh and try again.</p>");
       return;
     }
+    var scope = { country: parsed.country || null, cc: parsed.cc || null };
+    var needle = /meridian/i.test(parsed.query || "") ? "meridian" : parsed.query;
     /* Agent already rendered the user turn — show location, then zoom to matches. */
-    var matches = map.findBusinesses(/meridian/i.test(parsed.query) ? "meridian" : parsed.query);
-    if (!matches.length && /meridian/i.test(parsed.query)) matches = businesses().slice();
+    var matches = map.findBusinesses(needle, scope);
+    if (!matches.length && /meridian/i.test(parsed.query || "")) {
+      matches = map.findBusinesses("meridian", scope);
+      if (!matches.length && !scope.country) matches = businesses().slice();
+    }
     if (matches.length) {
       if (typeof map.revealMatches === "function") {
         map.revealMatches(
@@ -864,13 +935,14 @@
       playHtml(
         "<p>No businesses in this demo dataset matched “" +
           esc(parsed.query) +
-          "”. Try “Meridian” to see same-name entities across the US, UK, Singapore, Sweden, Germany, and Australia.</p>"
+          (scope.country ? "” in " + esc(scope.country) : "”") +
+          ". Try “Meridian, United States” or “Find Meridian”.</p>"
       );
       setSuggestions(SUGGEST_SEARCH);
       return;
     }
     /* Demo-2 flow: country chips + candidate cards → confirm → report. Map stays as plotted. */
-    playCandidateResults(matches, parsed.query || "Meridian");
+    playCandidateResults(matches, parsed.query || "Meridian", scope);
     hideFollow();
   }
 
@@ -879,10 +951,11 @@
     parkActive();
     var map = window.D3KybMapSearch;
     var biz = parsed.biz || null;
+    var scope = { country: parsed.country || null, cc: parsed.cc || null };
     /* Prefer multi-match disambiguation before any single findByName hit —
        “Meridian” must never auto-lock one US entity. */
     if (!biz && parsed.name && map) {
-      var loose = map.findBusinesses(parsed.name);
+      var loose = map.findBusinesses(parsed.name, scope);
       if (loose && loose.length > 1) {
         if (typeof map.revealMatches === "function") {
           map.revealMatches(
@@ -900,7 +973,7 @@
               : "Matches · " + loose.length
           );
         }
-        playCandidateResults(loose, parsed.name || "Meridian");
+        playCandidateResults(loose, parsed.name || "Meridian", scope);
         hideFollow();
         return;
       }

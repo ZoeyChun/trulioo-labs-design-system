@@ -248,9 +248,9 @@
       window.D3KybResume.renderCrumbs("report", biz.name);
     } else if (crumb) {
       crumb.innerHTML =
-        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="home">Home</button>' +
+        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>' +
         '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
-        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">Verify a business</button>' +
+        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">KYB Verification</button>' +
         '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
         '<span class="d3-workspace__crumb-current" data-d3-kyb-crumb-biz></span>';
       var crumbBiz = crumb.querySelector("[data-d3-kyb-crumb-biz]");
@@ -736,6 +736,10 @@
     prepareReportChrome(biz);
     await fadeMapThenShowReport();
     if (token !== revealToken) return;
+    /* Drop the submit handoff loader once the report chrome is on screen. */
+    document.dispatchEvent(
+      new CustomEvent("d3-kyb:verify-ui-ready", { detail: { biz: biz } })
+    );
     /* Init Leaflet after the report surface is visible so tiles size correctly. */
     showHeroMap(biz);
 

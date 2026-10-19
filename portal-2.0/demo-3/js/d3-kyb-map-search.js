@@ -676,17 +676,24 @@
     m.invalidateSize({ animate: false });
     var flyDur = opts.flyDuration != null ? opts.flyDuration : 1.85;
     var ease = opts.easeLinearity != null ? opts.easeLinearity : 0.18;
+    /* Single-country result sets frame tighter so the map reads as that market. */
+    var maxZoom =
+      opts.maxZoom != null
+        ? opts.maxZoom
+        : countryCount(list) === 1
+          ? 7
+          : 5;
     if (!opts.skipFit) {
       if (bounds.length === 1) {
         if (reducedMotion) m.setView(bounds[0], 12);
         else m.flyTo(bounds[0], 12, { duration: flyDur * 0.7, easeLinearity: ease });
       } else if (bounds.length) {
         if (reducedMotion) {
-          m.fitBounds(bounds, { padding: [64, 64], maxZoom: 5 });
+          m.fitBounds(bounds, { padding: [64, 64], maxZoom: maxZoom });
         } else {
           m.flyToBounds(bounds, {
             padding: [64, 64],
-            maxZoom: 5,
+            maxZoom: maxZoom,
             duration: flyDur,
             easeLinearity: ease
           });
@@ -739,15 +746,73 @@
     return list;
   }
 
-  function findBusinesses(query) {
-    var q = String(query || "").trim().toLowerCase();
-    if (!q) return MERIDIANS.slice();
-    return MERIDIANS.filter(function (biz) {
+  /* Pull a country out of free text so “Meridian, United States” scopes the map. */
+  var COUNTRY_PATTERNS = [
+    { re: /\b(united states of america|united states|u\.?\s*s\.?\s*a\.?|u\.?\s*s\.?|america)\b/i, country: "United States", cc: "US" },
+    { re: /\b(united kingdom|great britain|u\.?\s*k\.?|britain|england)\b/i, country: "United Kingdom", cc: "GB" },
+    { re: /\b(canada)\b/i, country: "Canada", cc: "CA" },
+    { re: /\b(netherlands|holland)\b/i, country: "Netherlands", cc: "NL" },
+    { re: /\b(singapore|s\.?\s*g\.?)\b/i, country: "Singapore", cc: "SG" },
+    { re: /\b(sweden|sverige)\b/i, country: "Sweden", cc: "SE" },
+    { re: /\b(germany|deutschland|deutchland)\b/i, country: "Germany", cc: "DE" },
+    { re: /\b(australia|a\.?\s*u\.?)\b/i, country: "Australia", cc: "AU" }
+  ];
+
+  function parsePlaceQuery(text) {
+    var raw = String(text || "").trim();
+    var country = null;
+    var cc = null;
+    var nameQuery = raw;
+    for (var i = 0; i < COUNTRY_PATTERNS.length; i += 1) {
+      var p = COUNTRY_PATTERNS[i];
+      if (!p.re.test(raw)) continue;
+      country = p.country;
+      cc = p.cc;
+      nameQuery = raw
+        .replace(p.re, " ")
+        .replace(/[,\u2013\u2014|/]+/g, " ")
+        .replace(/\bin\b/gi, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      break;
+    }
+    return { raw: raw, nameQuery: nameQuery, country: country, cc: cc };
+  }
+
+  function matchesCountry(biz, country, cc) {
+    if (!country && !cc) return true;
+    var bizCc = String(biz.cc || "").toUpperCase();
+    var wantCc = String(cc || "").toUpperCase();
+    if (wantCc && bizCc === wantCc) return true;
+    if (country && (biz.country || "") === country) return true;
+    return false;
+  }
+
+  function findBusinesses(query, opts) {
+    opts = opts || {};
+    var place =
+      query && typeof query === "object"
+        ? query
+        : parsePlaceQuery(query);
+    var country = opts.country || place.country || null;
+    var cc = opts.cc || place.cc || null;
+    var q = String(place.nameQuery != null ? place.nameQuery : place.raw || "")
+      .trim()
+      .toLowerCase();
+
+    var pool = MERIDIANS.filter(function (biz) {
+      return matchesCountry(biz, country, cc);
+    });
+    if (!q) return pool.slice();
+
+    return pool.filter(function (biz) {
       var hay = [
         biz.name,
         biz.city,
-        biz.country,
-        biz.cc,
+        /* Keep country tokens out of the haystack when already scoped —
+           otherwise “United States” would re-match every US row by itself. */
+        country || cc ? "" : biz.country,
+        country || cc ? "" : biz.cc,
         addrOf(biz),
         biz.reg,
         biz.brief,
@@ -755,7 +820,8 @@
       ]
         .join(" ")
         .toLowerCase();
-      return hay.indexOf(q) !== -1 || q.split(/\s+/).every(function (tok) {
+      if (hay.indexOf(q) !== -1) return true;
+      return q.split(/\s+/).every(function (tok) {
         return tok.length < 2 || hay.indexOf(tok) !== -1;
       });
     });
@@ -897,29 +963,72 @@
     if (window.D3Nav) window.D3Nav.openKybChat({ map: true });
     parkChat();
     var q = queryText || "Meridian";
-    var matches = findBusinesses(q.indexOf("meridian") !== -1 ? "meridian" : q);
-    if (!matches.length && /meridian/i.test(q)) matches = MERIDIAN_US.slice();
+    var place = parsePlaceQuery(q);
+    var needle = place.nameQuery || q;
+    var matches = findBusinesses(place, { country: place.country, cc: place.cc });
+    /* Brand-only fallback stays country-scoped when a country was named. */
+    if (!matches.length && /meridian/i.test(needle || q)) {
+      matches = findBusinesses(
+        { nameQuery: "meridian", country: place.country, cc: place.cc, raw: q },
+        { country: place.country, cc: place.cc }
+      );
+      if (!matches.length && !place.country) matches = MERIDIAN_US.slice();
+    }
     lastResults = matches.slice();
 
     if (!opts.silent) {
       appendTurn("user", q);
+      var scopeLabel = place.country ? " in " + place.country : "";
       var reply =
         matches.length === 0
           ? "I didn’t find any businesses matching “" +
-            q +
-            "” in this demo dataset. Try “Meridian” or a full legal name from the map results."
-          : "I found " +
-            matches.length +
-            " business" +
-            (matches.length === 1 ? "" : "es") +
-            " matching “" +
-            q +
-            "”. Select a location on the map or a company below to verify.";
+            (needle || q) +
+            "”" +
+            scopeLabel +
+            " in this demo dataset. Try “Meridian”" +
+            (place.country ? " in " + place.country : "") +
+            " or pick a country from the search landing."
+          : !needle && place.country
+            ? "Showing " +
+              matches.length +
+              " business" +
+              (matches.length === 1 ? "" : "es") +
+              " in " +
+              place.country +
+              ". Select a pin or refine by company name."
+            : "I found " +
+              matches.length +
+              " business" +
+              (matches.length === 1 ? "" : "es") +
+              " matching “" +
+              q +
+              "”. Select a location on the map or a company below to verify.";
       /* Location first, then zoom out as matches land. */
       if (matches.length) {
         revealMatches(matches, matchCaption(matches));
       } else {
         ensureMapSurface();
+        /* Empty scoped search: keep the map on the named country if we can. */
+        if (place.country || place.cc) {
+          var countryPool = findBusinesses({ nameQuery: "", country: place.country, cc: place.cc, raw: q });
+          if (countryPool.length) {
+            plotResults([], place.country + " · no matches", { skipFit: false });
+            var mEmpty = ensureMap();
+            if (mEmpty && countryPool[0]) {
+              var lat = 0;
+              var lon = 0;
+              countryPool.forEach(function (b) {
+                lat += b.lat;
+                lon += b.lon;
+              });
+              mEmpty.setView(
+                [lat / countryPool.length, lon / countryPool.length],
+                5,
+                { animate: !reducedMotion }
+              );
+            }
+          }
+        }
       }
       window.setTimeout(function () {
         appendTurn("assistant", reply);
@@ -1148,6 +1257,7 @@
     findBusinesses: findBusinesses,
     findByName: findByName,
     findById: findById,
+    parsePlaceQuery: parsePlaceQuery,
     plotResults: plotResults,
     revealMatches: revealMatches,
     ensureMapSurface: ensureMapSurface,

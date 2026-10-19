@@ -32,7 +32,8 @@ body {
 }
 
 .d3-tx-embed__main {
-  padding: 24px 24px 16px;
+  /* Match Labs embed page inset (labs.css .labs-page). */
+  padding: 40px 24px 48px;
   box-sizing: border-box;
   transition: padding-right 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }

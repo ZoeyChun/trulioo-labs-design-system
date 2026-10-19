@@ -3,13 +3,20 @@ html {
   scrollbar-gutter: stable;
 }
 
-/* Portal embed (?embed=1): Agent-hub style header + filter, no marketing hero. */
+/* Portal embed (?embed=1): page header + filter, no marketing hero.
+   Match Portal Demo 3 chrome — Inter UI + same title/filter rhythm. */
+html.labs--embed {
+  --font-ui: var(--font-family, "Inter", system-ui, -apple-system, sans-serif);
+  --font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
 html.labs--embed,
 html.labs--embed body {
   overflow: hidden;
   height: 100%;
   margin: 0;
   background: transparent;
+  font-family: var(--font-ui);
 }
 
 body.labs--embed .app-sidenav-overlay,
@@ -50,6 +57,7 @@ body.labs--embed .labs-page {
   max-width: none;
 }
 
+/* Shared Portal page header: title (+ lede) | filters; crumb sits above via labs-breadcrumb. */
 .labs-page-header {
   display: none;
   align-items: flex-start;
@@ -298,6 +306,18 @@ body.labs--embed .labs-page-header[hidden] {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
 }
 
+button.labs-featured-card,
+button.labs-card {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
 .labs-featured-card:not(.labs-card--static):hover,
 .labs-card:not(.labs-card--static):hover {
   box-shadow:
@@ -306,7 +326,27 @@ body.labs--embed .labs-page-header[hidden] {
 }
 
 .labs-card--static {
+  position: relative;
   cursor: default;
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.labs-card-soon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  background: var(--surface-neutral-01, #fff);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-description, #526660);
 }
 
 .labs-featured-card:focus-visible,

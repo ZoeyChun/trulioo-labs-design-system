@@ -103,7 +103,7 @@
 }
 
 .d1-slot > .d1-home,
-.d1-slot > .d3-agents,
+.d1-slot > .d3-labs,
 .d1-slot > .d3-workspace {
   flex: 1 1 auto;
   min-width: 0;

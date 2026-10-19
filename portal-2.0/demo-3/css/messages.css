@@ -488,6 +488,16 @@
 
 .d1-suggest-row span {
   flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* viewBox-only SVGs otherwise inflate to ~300×150 and blow up the chat pane. */
+.d1-suggest-row > svg,
+.d1-suggest-row .d3-fa-line {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: block;
 }
 
 .d1-suggest-row:hover span {

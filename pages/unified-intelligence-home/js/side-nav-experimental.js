@@ -21,12 +21,12 @@
   var CHEVRON_UP = '<path d="M4 10l4-4 4 4"/>';
 
   var KYB_ITEMS = [
+    { id: "kyb-verification", title: "KYB Verification", portalAction: "kyb", match: ["kyb-verification"] },
     { id: "business-reputation-review", title: "Business Horizon", path: "business-reputation-review/index.html", match: ["/business-reputation-review/", "/kyb results/", "/kyb-results"] },
-    { id: "policy-review", title: "Policy Review" },
-    { id: "kyb-self-serve", title: "KYB Self-Serve" },
-    { id: "ubo-agent", title: "UBO Agent" },
-    { id: "deep-search", title: "Deep Search" },
-    { id: "trulioo-mcp-agent", title: "Orchestration Agent" }
+    { id: "policy-review", title: "Policy Review", soon: true },
+    { id: "ubo-agent", title: "UBO Agent", soon: true },
+    { id: "deep-search", title: "Deep Search", soon: true },
+    { id: "trulioo-mcp-agent", title: "Orchestration Agent", soon: true }
   ];
 
   var KYC_ITEMS = [
@@ -82,7 +82,13 @@
   }
 
   function isHomePage() {
-    return /\/unified-intelligence-home\/labs\.html$/i.test(currentPath());
+    /* Canonical Labs Home = catalog; also treat marketing index as home. */
+    var path = currentPath();
+    return (
+      /\/unified-intelligence-home\/labs\.html$/i.test(path) ||
+      /\/unified-intelligence-home\/?$/i.test(path) ||
+      /\/unified-intelligence-home\/index\.html$/i.test(path)
+    );
   }
 
   function anySubitemActive() {
@@ -115,9 +121,20 @@
       );
     }
 
+    if (item.portalAction) {
+      return (
+        '<button type="button" class="tds-side-nav__sub-item' + selectedClass + '"' + current +
+        ' data-nav-id="' + item.id + '" data-labs-portal="' + item.portalAction + '">' +
+          inner +
+        "</button>"
+      );
+    }
+
     return (
-      '<button type="button" class="tds-side-nav__sub-item' + selectedClass + '"' + current + ' data-nav-id="' + item.id + '">' +
+      '<button type="button" class="tds-side-nav__sub-item tds-side-nav__sub-item--soon' + selectedClass + '"' +
+      current + ' data-nav-id="' + item.id + '" disabled aria-disabled="true" title="Coming soon">' +
         inner +
+        '<span class="tds-side-nav__soon">Soon</span>' +
       "</button>"
     );
   }

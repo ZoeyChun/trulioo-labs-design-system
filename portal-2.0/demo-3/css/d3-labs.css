@@ -1,4 +1,4 @@
-/* Demo 3 — Labs catalog (replaces Agent hub page). */
+/* Demo 3 — Labs catalog (data-d3-view="agents" kept for CSS compatibility). */
 
 .d3-labs {
   display: none;
@@ -14,11 +14,6 @@
 
 .d1-shell[data-d3-view="agents"] .d3-labs {
   display: flex;
-}
-
-/* Legacy Agent hub stays in DOM for KYB card handlers but is never shown. */
-.d1-shell[data-d3-view="agents"] .d3-agents {
-  display: none !important;
 }
 
 .d1-shell[data-d3-view="agents"] .d1-home,

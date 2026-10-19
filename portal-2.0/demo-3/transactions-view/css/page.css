@@ -128,13 +128,13 @@
   overflow: hidden;
 }
 
-/* Match Agent Hub / page headers — xl (20px) semibold. */
+/* Match Labs embed page header title (24 / 32). */
 .th-tx__title {
-  margin: 0 0 var(--spacing-24);
+  margin: 0 0 24px;
   flex: 0 0 auto;
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-xl);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
   color: var(--text-default);
 }
 
@@ -195,8 +195,7 @@
 
 .th-tx .ut-tx-main__scroll,
 .th-tx .ut-tx-page,
-.th-tx .ut-tx-block,
-.th-tx .ut-tx-table-section {
+.th-tx .ut-tx-block {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
@@ -208,6 +207,26 @@
   padding: 0;
   gap: 0;
   overflow: hidden;
+}
+
+/* Status line → table: keep a clear 16px gap (was collapsed by gap: 0). */
+.th-tx .ut-tx-table-section {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-search-status {
+  flex: 0 0 auto;
+  margin: 0;
 }
 
 /* Hug the rows when the result list is short. Grow only up to the
@@ -225,6 +244,53 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
+  box-sizing: border-box;
+  /* Keep the right edge visible even while the table scrolls horizontally. */
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-card, 12px);
+  background: var(--surface-neutral-01, #fff);
+}
+
+/* Scroll host — fade on the right hints that more columns are off-screen. */
+.th-tx .ut-tx-table-scroll {
+  position: relative;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-table-scroll::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 56px;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 42%,
+    rgba(255, 255, 255, 0.94) 100%
+  );
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  /* Soften the blur so it only reads on the far edge. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 55%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 55%);
+  border-right: 1px solid var(--border-subtle, #dde2de);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .th-tx .ut-tx-table-scroll::after {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 .th-tx .ut-tx-block {
@@ -245,6 +311,11 @@
   min-width: 0;
   min-height: 0;
   overflow: auto;
+}
+
+/* Reset removed from Demo 3 toolbar — never reserve space for it. */
+.th-tx .ut-tx-toolbar-reset {
+  display: none !important;
 }
 
 .th-tx .tds-data-table__wrapper::-webkit-scrollbar {
@@ -296,8 +367,6 @@
   max-width: none;
 }
 
-/* The shared button rule sets display, which keeps a hidden Reset in the row. */
-.th-tx .ut-tx-toolbar-reset[hidden],
 .th-tx .ut-tx-product[hidden] {
   display: none !important;
 }

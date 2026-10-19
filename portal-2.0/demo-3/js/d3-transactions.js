@@ -15,14 +15,15 @@
     }
 
     document.querySelectorAll("[data-d3-nav]").forEach(function (btn) {
-      var on = btn.getAttribute("data-d3-nav") === "history" || btn.getAttribute("data-d3-nav") === "transactions";
+      var on = btn.getAttribute("data-d3-nav") === "transactions";
       btn.classList.toggle("is-active", on);
       if (on) btn.setAttribute("aria-current", "page");
       else btn.removeAttribute("aria-current");
     });
 
-    if (frame && !frame.getAttribute("src")) {
-      frame.setAttribute("src", "transactions-view/embed.html");
+    if (frame) {
+      var src = "transactions-view/embed.html?v=4";
+      if (frame.getAttribute("src") !== src) frame.setAttribute("src", src);
     }
 
     document.dispatchEvent(new CustomEvent("d3-view:transactions"));

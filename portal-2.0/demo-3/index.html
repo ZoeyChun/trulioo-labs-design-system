@@ -17,10 +17,10 @@
   <link rel="stylesheet" href="css/shell.css">
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="composer/prompt.css?v=3">
-  <link rel="stylesheet" href="css/messages.css?v=4">
+  <link rel="stylesheet" href="css/messages.css?v=3">
   <link rel="stylesheet" href="css/motion.css?v=6">
   <link rel="stylesheet" href="css/d3-thinking.css?v=1">
-  <link rel="stylesheet" href="css/drawer.css">
+  <link rel="stylesheet" href="css/drawer.css?v=3">
   <link rel="stylesheet" href="../../Components/text-input/text-input.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
   <link rel="stylesheet" href="../../Components/dialog/dialog.css">
@@ -44,16 +44,15 @@
   <link rel="stylesheet" href="css/briefing.css">
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/signin.css">
-  <link rel="stylesheet" href="css/d3-fa.css?v=2">
-  <link rel="stylesheet" href="css/d3-shell.css?v=32">
+  <link rel="stylesheet" href="css/d3-fa.css?v=3">
+  <link rel="stylesheet" href="css/d3-shell.css?v=35">
   <link rel="stylesheet" href="css/d3-rail.css?v=14">
-  <link rel="stylesheet" href="css/d3-chat-pane.css?v=18">
-  <link rel="stylesheet" href="css/d3-agents.css?v=22">
-  <link rel="stylesheet" href="css/d3-labs.css?v=2">
-  <link rel="stylesheet" href="css/d3-home.css?v=14">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=43">
-  <link rel="stylesheet" href="css/d3-transactions.css?v=8">
-  <link rel="stylesheet" href="css/d3-org.css?v=6">
+  <link rel="stylesheet" href="css/d3-chat-pane.css?v=10">
+  <link rel="stylesheet" href="css/d3-labs.css?v=3">
+  <link rel="stylesheet" href="css/d3-home.css?v=15">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=18">
+  <link rel="stylesheet" href="css/d3-transactions.css?v=10">
+  <link rel="stylesheet" href="css/d3-org.css?v=7">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=2">
   <link rel="stylesheet" href="css/d3-kyb-agent.css?v=4">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
@@ -86,7 +85,7 @@
             <path fill="currentColor" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-5.5h-5V21H4a1 1 0 0 1-1-1v-9.5Z"/>
           </svg>
         </button>
-        <button type="button" class="d1-nav-btn" data-d3-nav="agents" aria-label="Labs">
+        <button type="button" class="d1-nav-btn" data-d3-nav="labs" aria-label="Labs">
           <!-- Labs flask — same mark as unified-intelligence-home Labs brand -->
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
@@ -95,7 +94,7 @@
             <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
           </svg>
         </button>
-        <button type="button" class="d1-nav-btn" data-d3-nav="history" aria-label="Transactions">
+        <button type="button" class="d1-nav-btn" data-d3-nav="transactions" aria-label="Transactions">
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.5"/>
             <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 7.5V12l3.25 2"/>
@@ -336,151 +335,7 @@
           referrerpolicy="no-referrer"
         ></iframe>
       </section>
-      <section class="d3-agents" data-d3-agents aria-label="Agent hub" hidden>
-        <header class="d3-agents__intro">
-          <h1 class="d3-agents__title">Agent hub</h1>
-          <p class="d3-agents__lede">Conversational agents and product features, with stage showing how ready each one is.</p>
-        </header>
-        <div class="d3-agents__section">
-          <h2 class="d3-agents__label">Agents</h2>
-          <p class="d3-agents__section-lede">TruAI-guided flows you can talk through.</p>
-          <div class="d3-agents__grid">
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Verify a business" data-d3-stage="beta">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><i class="fa-regular fa-building" aria-hidden="true"></i></span>
-                <h3 class="d3-agent-card__name">Verify a business</h3>
-                <span class="d3-agent-card__go" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-              </div>
-              <p class="d3-agent-card__desc">Check company identity and registration.</p>
-              <div class="d3-agent-card__meta">
-              <div class="d3-agent-card__tags">
-                <span class="d3-agent-card__tag">KYB</span>
-              </div>
-              <span class="d3-agent-card__stage d3-agent-card__stage--beta d3-agent-card__tip" data-tip="Beta — early access"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Beta</span>
-            </div>
-            </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="Verify a person" data-d3-stage="alpha">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><i class="fa-regular fa-user" aria-hidden="true"></i></span>
-                <h3 class="d3-agent-card__name">Verify a person</h3>
-                <span class="d3-agent-card__go" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-              </div>
-              <p class="d3-agent-card__desc">Check person identity through physical and electronic documents</p>
-              <div class="d3-agent-card__meta">
-              <div class="d3-agent-card__tags">
-                <span class="d3-agent-card__tag">KYC</span>
-              </div>
-              <span class="d3-agent-card__stage d3-agent-card__stage--alpha d3-agent-card__tip" data-tip="Alpha — early experimental"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Alpha</span>
-            </div>
-            </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Assess risk" data-d3-stage="alpha">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M8 1.75 13 4v4.2c0 3.1-2.1 5.5-5 6.55C5.1 13.7 3 11.3 3 8.2V4l5-2.25Z"/><path stroke="currentColor" stroke-width="1.5" d="M8 1.75V14.75"/></svg></span>
-                <h3 class="d3-agent-card__name">Assess risk</h3>
-                <span class="d3-agent-card__go" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-              </div>
-              <p class="d3-agent-card__desc">Check company identity and registration.</p>
-              <div class="d3-agent-card__meta">
-              <div class="d3-agent-card__tags">
-                <span class="d3-agent-card__tag">KYB</span>
-              </div>
-              <span class="d3-agent-card__stage d3-agent-card__stage--alpha d3-agent-card__tip" data-tip="Alpha — early experimental"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Alpha</span>
-            </div>
-            </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="UBO agent" data-d3-stage="beta">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><i class="fa-regular fa-building" aria-hidden="true"></i></span>
-                <h3 class="d3-agent-card__name">UBO agent</h3>
-                <span class="d3-agent-card__go" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-              </div>
-              <p class="d3-agent-card__desc">Map ownership trees and beneficial owners.</p>
-              <div class="d3-agent-card__meta">
-              <div class="d3-agent-card__tags">
-                <span class="d3-agent-card__tag">KYB</span>
-              </div>
-              <span class="d3-agent-card__stage d3-agent-card__stage--beta d3-agent-card__tip" data-tip="Beta — early access"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Beta</span>
-            </div>
-            </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Policy review" data-d3-stage="alpha">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><i class="fa-regular fa-clipboard" aria-hidden="true"></i></span>
-                <h3 class="d3-agent-card__name">Policy review</h3>
-                <span class="d3-agent-card__go" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-              </div>
-              <p class="d3-agent-card__desc">Review policy outcomes across verifications.</p>
-              <div class="d3-agent-card__meta">
-              <div class="d3-agent-card__tags">
-                <span class="d3-agent-card__tag">KYB</span>
-              </div>
-              <span class="d3-agent-card__stage d3-agent-card__stage--alpha d3-agent-card__tip" data-tip="Alpha — early experimental"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Alpha</span>
-            </div>
-            </button>
-          </div>
-        </div>
-        <div class="d3-agents__section">
-          <h2 class="d3-agents__label">Features</h2>
-          <p class="d3-agents__section-lede">Standard product capabilities you open and run directly.</p>
-          <div class="d3-agents__grid d3-agents__grid--dense">
-            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="Device intelligence" data-d3-stage="ga">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M8 1.75 13 4v4.2c0 3.1-2.1 5.5-5 6.55C5.1 13.7 3 11.3 3 8.2V4l5-2.25Z"/><path stroke="currentColor" stroke-width="1.5" d="M8 1.75V14.75"/></svg></span>
-                <h3 class="d3-agent-card__name">Device intelligence</h3>
-                <span class="d3-agent-card__go" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-              </div>
-              <p class="d3-agent-card__desc">Evaluate device risk and identity linkage.</p>
-              <div class="d3-agent-card__meta">
-              <div class="d3-agent-card__tags">
-                <span class="d3-agent-card__tag">KYC</span>
-              </div>
-              <span class="d3-agent-card__stage d3-agent-card__stage--ga d3-agent-card__tip" data-tip="GA — generally available"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>GA</span>
-            </div>
-            </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="Electronic ID" data-d3-stage="beta">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><i class="fa-regular fa-user" aria-hidden="true"></i></span>
-                <h3 class="d3-agent-card__name">Electronic ID</h3>
-                <span class="d3-agent-card__go" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-              </div>
-              <p class="d3-agent-card__desc">Verify identity with electronic credentials.</p>
-              <div class="d3-agent-card__meta">
-              <div class="d3-agent-card__tags">
-                <span class="d3-agent-card__tag">KYC</span>
-              </div>
-              <span class="d3-agent-card__stage d3-agent-card__stage--beta d3-agent-card__tip" data-tip="Beta — early access"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>Beta</span>
-            </div>
-            </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyb" data-prompt="Bank Verification" data-d3-stage="ga">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><i class="fa-regular fa-building" aria-hidden="true"></i></span>
-                <h3 class="d3-agent-card__name">Bank Verification</h3>
-                <span class="d3-agent-card__go" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-              </div>
-              <p class="d3-agent-card__desc">Confirm account ownership and match.</p>
-              <div class="d3-agent-card__meta">
-              <div class="d3-agent-card__tags">
-                <span class="d3-agent-card__tag">KYB</span>
-                <span class="d3-agent-card__tag">KYC</span>
-              </div>
-              <span class="d3-agent-card__stage d3-agent-card__stage--ga d3-agent-card__tip" data-tip="GA — generally available"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>GA</span>
-            </div>
-            </button>
-            <button type="button" class="d3-agent-card" data-d3-agent="kyc" data-prompt="KYC Document" data-d3-stage="ga">
-              <div class="d3-agent-card__top">
-                <span class="d3-agent-card__icon" aria-hidden="true"><i class="fa-regular fa-id-card" aria-hidden="true"></i></span>
-                <h3 class="d3-agent-card__name">KYC Document</h3>
-                <span class="d3-agent-card__go" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-              </div>
-              <p class="d3-agent-card__desc">Document capture and biometric match.</p>
-              <div class="d3-agent-card__meta">
-              <div class="d3-agent-card__tags">
-                <span class="d3-agent-card__tag">KYC</span>
-              </div>
-              <span class="d3-agent-card__stage d3-agent-card__stage--ga d3-agent-card__tip" data-tip="GA — generally available"><span class="d3-agent-card__stage-dot" aria-hidden="true"></span>GA</span>
-            </div>
-            </button>
-          </div>
-        </div>
-      </section>
+      <!-- Agent hub retired — Labs catalog + TruAI prompts are the entry. -->
       <section class="d3-tx" data-d3-tx aria-label="Transactions">
         <iframe
           class="d3-tx__frame"
@@ -499,7 +354,54 @@
           referrerpolicy="no-referrer"
         ></iframe>
       </section>
-      <section class="d3-workspace" data-d3-workspace data-d3-kyb-surface="map" aria-label="Verify a business">
+      <section class="d3-workspace" data-d3-workspace data-d3-kyb-surface="map" aria-label="KYB Verification">
+        <div class="d3-kyb-submit-loader" data-d3-kyb-submit-loader hidden role="status" aria-live="polite" aria-busy="false">
+          <div class="d1-thinking d3-kyb-submit-loader__thinking">
+            <span class="d1-thinking__orb" aria-hidden="true">
+              <svg class="d1-thinking__svg" viewBox="0 0 48.759 40" fill="currentColor">
+                <circle cx="2.371" cy="16.893" r="1.456" style="animation-delay:-1.180s"/>
+                <circle cx="4.527" cy="11.232" r="1.284" style="animation-delay:-1.312s"/>
+                <circle cx="7.886" cy="6.714" r="1.154" style="animation-delay:-1.437s"/>
+                <circle cx="12.305" cy="3.384" r="1.014" style="animation-delay:-1.564s"/>
+                <circle cx="16.667" cy="1.59" r="0.766" style="animation-delay:-1.675s"/>
+                <circle cx="25.191" cy="1.591" r="0.727" style="animation-delay:-1.886s"/>
+                <circle cx="29.645" cy="1.008" r="0.692" style="animation-delay:-1.995s"/>
+                <circle cx="34.03" cy="1.591" r="0.729" style="animation-delay:-2.097s"/>
+                <circle cx="38.2" cy="3.384" r="1.012" style="animation-delay:-2.198s"/>
+                <circle cx="42.263" cy="6.714" r="1.149" style="animation-delay:-2.312s"/>
+                <circle cx="45.147" cy="11.232" r="1.284" style="animation-delay:-2.427s"/>
+                <circle cx="46.721" cy="16.893" r="1.456" style="animation-delay:-2.552s"/>
+                <circle cx="46.395" cy="23.102" r="1.455" style="animation-delay:-0.067s"/>
+                <circle cx="44.236" cy="28.767" r="1.283" style="animation-delay:-0.199s"/>
+                <circle cx="40.874" cy="33.281" r="1.153" style="animation-delay:-0.325s"/>
+                <circle cx="36.449" cy="36.609" r="1.014" style="animation-delay:-0.452s"/>
+                <circle cx="32.105" cy="38.397" r="0.769" style="animation-delay:-0.562s"/>
+                <circle cx="23.571" cy="38.401" r="0.731" style="animation-delay:-0.774s"/>
+                <circle cx="19.124" cy="38.989" r="0.693" style="animation-delay:-0.882s"/>
+                <circle cx="14.737" cy="38.401" r="0.732" style="animation-delay:-0.984s"/>
+                <circle cx="10.571" cy="36.609" r="1.012" style="animation-delay:-1.085s"/>
+                <circle cx="6.497" cy="33.281" r="1.151" style="animation-delay:-1.199s"/>
+                <circle cx="3.611" cy="28.767" r="1.282" style="animation-delay:-1.314s"/>
+                <circle cx="2.042" cy="23.105" r="1.459" style="animation-delay:-1.439s"/>
+                <circle cx="10.901" cy="16.891" r="1.413" style="animation-delay:-1.221s"/>
+                <circle cx="13.062" cy="11.214" r="1.26" style="animation-delay:-1.429s"/>
+                <circle cx="16.425" cy="6.714" r="1.154" style="animation-delay:-1.607s"/>
+                <circle cx="20.838" cy="3.381" r="1.014" style="animation-delay:-1.765s"/>
+                <circle cx="33.732" cy="6.714" r="1.151" style="animation-delay:-2.159s"/>
+                <circle cx="36.625" cy="11.214" r="1.261" style="animation-delay:-2.320s"/>
+                <circle cx="38.193" cy="16.891" r="1.413" style="animation-delay:-2.512s"/>
+                <circle cx="37.865" cy="23.097" r="1.413" style="animation-delay:-0.108s"/>
+                <circle cx="35.704" cy="28.766" r="1.261" style="animation-delay:-0.316s"/>
+                <circle cx="32.34" cy="33.281" r="1.151" style="animation-delay:-0.494s"/>
+                <circle cx="27.921" cy="36.609" r="1.012" style="animation-delay:-0.652s"/>
+                <circle cx="15.023" cy="33.281" r="1.151" style="animation-delay:-1.047s"/>
+                <circle cx="12.134" cy="28.766" r="1.261" style="animation-delay:-1.208s"/>
+                <circle cx="10.574" cy="23.097" r="1.413" style="animation-delay:-1.399s"/>
+              </svg>
+            </span>
+            <span class="d1-thinking__text" data-d3-kyb-submit-loader-label>Starting verification…</span>
+          </div>
+        </div>
         <!-- Default KYB landing: left chat + interactive map (Leaflet / Carto, free) -->
         <div class="d3-kyb-map" data-d3-kyb-map aria-hidden="false">
           <div class="d3-kyb-map__leaflet" data-d3-kyb-leaflet role="application" aria-label="Business search map"></div>
@@ -511,17 +413,25 @@
 
         <div class="d3-workspace__detail" data-d3-kyb-detail hidden>
         <div class="d3-workspace__detail-top">
+          <button type="button" class="d3-workspace__back" data-d3-kyb-back aria-label="Back to KYB Verification" hidden>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+            <span>Back</span>
+          </button>
           <nav class="d3-workspace__crumb" data-d3-kyb-crumb aria-label="Breadcrumb">
             <button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>
             <span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>
-            <span class="d3-workspace__crumb-current">Verify a business</span>
+            <span class="d3-workspace__crumb-current">KYB Verification</span>
           </nav>
         </div>
 
         <div class="d3-workspace__landing" data-d3-kyb-landing>
         <div class="d3-workspace__hero">
-        <h1 class="d3-workspace__title">Verify a business</h1>
-        <p class="d3-workspace__hero-sub">Search by business name or registration number to start a KYB check.</p>
+        <h1 class="d3-workspace__title">KYB Verification</h1>
+        <div class="d3-kyb-entry" data-d3-kyb-entry-bar role="group" aria-label="How to start">
+          <button type="button" class="d3-kyb-entry__btn is-active" data-d3-kyb-entry="search">Search</button>
+          <button type="button" class="d3-kyb-entry__btn" data-d3-kyb-entry="map">Map</button>
+          <button type="button" class="d3-kyb-entry__btn" data-d3-kyb-entry="continue">Continue session</button>
+        </div>
         <!-- Manual search — synced from demo-2/verify-business -->
         <div class="d3-workspace__search" aria-labelledby="d3-kyb-search-h">
           <span class="d1-visually-hidden" id="d3-kyb-search-h">Search for a business</span>
@@ -671,49 +581,29 @@
 
         <section class="d3-kyb-recent" data-d3-kyb-recent aria-labelledby="d3-kyb-recent-h">
           <div class="d3-kyb-recent__head">
-            <h2 class="d3-kyb-recent__title" id="d3-kyb-recent-h">Recent verifications</h2>
-            <p class="d3-kyb-recent__sub">Your last five business verification transactions</p>
+            <h2 class="d3-kyb-recent__title" id="d3-kyb-recent-h">Recent transactions</h2>
           </div>
           <div class="d3-kyb-recent__grid">
-            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Acme Inc." data-status="Verified" data-country="United States" data-txid="8c2f4e7a-19bd-4f02-a6c1-77de42915b3a" data-date="17 Oct 2026, 2:14 PM">
-              <div class="d3-kyb-recent__card-top">
-                <span class="d3-kyb-recent__name">Acme Inc.</span>
-                <span class="d1-tag d1-tag--positive">Verified</span>
-              </div>
-              <p class="d3-kyb-recent__meta">United States · 17 Oct 2026</p>
-              <p class="d3-kyb-recent__id" title="8c2f4e7a-19bd-4f02-a6c1-77de42915b3a">8c2f4e7a-19bd-4f0…</p>
+            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Apex Nordic Logistics AB" data-status="Verified" data-country="Sweden" data-txid="a7bc12e4-91f0-4c2d-8e55-3b1d9a0f6c28" data-date="12 Mar 2026, 09:00">
+              <span class="d3-kyb-recent__product">Business Insights</span>
+              <span class="d3-kyb-recent__name">Apex Nordic Logistics AB</span>
+              <span class="d3-kyb-recent__role">Subsidiary Company</span>
+              <span class="d1-tag d1-tag--positive">Verified</span>
+              <span class="d3-kyb-recent__date">12 Mar 2026, 09:00</span>
             </button>
-            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Meridian Apex Consulting" data-status="Verified" data-country="United Kingdom" data-txid="b1a9c3e2-44f1-4d88-9c20-1e7a6b5d0c31" data-date="16 Oct 2026, 11:02 AM">
-              <div class="d3-kyb-recent__card-top">
-                <span class="d3-kyb-recent__name">Meridian Apex Consulting</span>
-                <span class="d1-tag d1-tag--positive">Verified</span>
-              </div>
-              <p class="d3-kyb-recent__meta">United Kingdom · 16 Oct 2026</p>
-              <p class="d3-kyb-recent__id" title="b1a9c3e2-44f1-4d88-9c20-1e7a6b5d0c31">b1a9c3e2-44f1-4d8…</p>
+            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Apex Dynamics LLC" data-status="Not Verified" data-country="United States" data-txid="c4e81a92-3b70-4f1e-9d26-8a5c0e1b47d3" data-date="12 Mar 2026, 09:00">
+              <span class="d3-kyb-recent__product">Business Essentials</span>
+              <span class="d3-kyb-recent__name">Apex Dynamics LLC</span>
+              <span class="d3-kyb-recent__role">Subsidiary Company</span>
+              <span class="d1-tag d1-tag--negative">Not Verified</span>
+              <span class="d3-kyb-recent__date">12 Mar 2026, 09:00</span>
             </button>
-            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Nordic Freight Partners" data-status="Review" data-country="Germany" data-txid="f6d2a810-7c33-4e19-a5b4-92d0e1c8a774" data-date="15 Oct 2026, 4:38 PM">
-              <div class="d3-kyb-recent__card-top">
-                <span class="d3-kyb-recent__name">Nordic Freight Partners</span>
-                <span class="d1-tag d1-tag--review">Review</span>
-              </div>
-              <p class="d3-kyb-recent__meta">Germany · 15 Oct 2026</p>
-              <p class="d3-kyb-recent__id" title="f6d2a810-7c33-4e19-a5b4-92d0e1c8a774">f6d2a810-7c33-4e1…</p>
-            </button>
-            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Harborview Holdings" data-status="Verified" data-country="Canada" data-txid="3e91b6c4-0a52-49d7-8f11-6c4d2e9a1b08" data-date="14 Oct 2026, 9:21 AM">
-              <div class="d3-kyb-recent__card-top">
-                <span class="d3-kyb-recent__name">Harborview Holdings</span>
-                <span class="d1-tag d1-tag--positive">Verified</span>
-              </div>
-              <p class="d3-kyb-recent__meta">Canada · 14 Oct 2026</p>
-              <p class="d3-kyb-recent__id" title="3e91b6c4-0a52-49d7-8f11-6c4d2e9a1b08">3e91b6c4-0a52-49d…</p>
-            </button>
-            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Lotus Digital Pte Ltd" data-status="Flagged" data-country="Singapore" data-txid="9a04d7e1-2b68-4c15-af33-5e8b1c0d9247" data-date="13 Oct 2026, 6:55 PM">
-              <div class="d3-kyb-recent__card-top">
-                <span class="d3-kyb-recent__name">Lotus Digital Pte Ltd</span>
-                <span class="d1-tag d1-tag--negative">Flagged</span>
-              </div>
-              <p class="d3-kyb-recent__meta">Singapore · 13 Oct 2026</p>
-              <p class="d3-kyb-recent__id" title="9a04d7e1-2b68-4c15-af33-5e8b1c0d9247">9a04d7e1-2b68-4c1…</p>
+            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Jane Doe" data-status="Not Verified" data-country="United States" data-txid="e2f90b17-6d4a-48c3-b1e8-5f7a2c9d0136" data-date="12 Mar 2026, 09:00">
+              <span class="d3-kyb-recent__product">Business Essentials</span>
+              <span class="d3-kyb-recent__name">Jane Doe</span>
+              <span class="d3-kyb-recent__role">Owns 35%</span>
+              <span class="d1-tag d1-tag--negative">Not Verified</span>
+              <span class="d3-kyb-recent__date">12 Mar 2026, 09:00</span>
             </button>
           </div>
         </section>
@@ -893,7 +783,7 @@
           </header>
           <div class="d1-demos">
             <article class="d1-demo">
-              <h2 class="d1-demo__head"><i class="fa-regular fa-building" aria-hidden="true"></i>Verify a business</h2>
+              <h2 class="d1-demo__head"><i class="fa-regular fa-building" aria-hidden="true"></i>KYB Verification</h2>
               <div class="d1-demo__card">
                 <div class="d1-demo__top">
                   <div>
@@ -1202,15 +1092,15 @@
               <h2>Continue your investigation</h2>
               <button type="button" class="d1-suggest-row" data-d1-suggest>
                 <span>Why was Daniel Reyes declined in March?</span>
-                <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg>
+                <svg class="d3-fa-line" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg>
               </button>
               <button type="button" class="d1-suggest-row" data-d1-suggest>
                 <span>Who is behind the BVI holding company?</span>
-                <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg>
+                <svg class="d3-fa-line" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg>
               </button>
               <button type="button" class="d1-suggest-row" data-d1-suggest>
                 <span>What should I request before onboarding?</span>
-                <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg>
+                <svg class="d3-fa-line" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg>
               </button>
             </div>
         <div class="d1-composer" data-d1-composer>
@@ -1446,25 +1336,25 @@
 <script src="js/signin.js?v=2"></script>
 <script src="composer/prompt.js?v=2"></script>
 <script src="js/chat.js"></script>
-<script src="js/drawer.js?v=3"></script>
+<script src="js/drawer.js?v=4"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
 <script src="../../Components/dialog/dialog.js"></script>
 <script src="../../pages/shared/tds-interactive-select.js"></script>
-<script src="js/d3-kyb-resume.js?v=22"></script>
-<script src="js/d3-kyb-report-reveal.js?v=11"></script>
-<script src="js/d3-kyb-map-search.js?v=37"></script>
-<script src="js/d3-kyb-manual-search.js?v=2"></script>
-<script src="js/d3-kyb-agent.js?v=8"></script>
+<script src="js/d3-kyb-resume.js?v=29"></script>
+<script src="js/d3-kyb-report-reveal.js?v=14"></script>
+<script src="js/d3-kyb-map-search.js?v=39"></script>
+<script src="js/d3-kyb-manual-search.js?v=4"></script>
+<script src="js/d3-kyb-agent.js?v=9"></script>
 <script src="js/d3-motion.js?v=2"></script>
-<script src="js/d3-labs.js?v=5"></script>
-<script src="js/d3-nav.js?v=27"></script>
-<script src="js/d3-transactions.js?v=3"></script>
-<script src="js/d3-org.js?v=2"></script>
+<script src="js/d3-labs.js?v=7"></script>
+<script src="js/d3-nav.js?v=29"></script>
+<script src="js/d3-transactions.js?v=5"></script>
+<script src="js/d3-org.js?v=3"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/d3-tx-agent.js?v=3"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
-<script src="js/d3-chat-bridge.js?v=31"></script>
+<script src="js/d3-chat-bridge.js?v=5"></script>
 <script src="js/d3-home-placeholder.js?v=2"></script>
 </body>
 </html>

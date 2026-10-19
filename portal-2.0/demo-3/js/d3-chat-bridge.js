@@ -8,11 +8,13 @@
   var stage = document.querySelector("[data-d1-stage]");
   var sourceThread = document.querySelector("[data-d1-thread]");
   var sourceComposer = document.querySelector("[data-d1-composer]");
+  var sourceFollow = document.querySelector("[data-d1-follow]");
   if (!shell || !pane || !paneThread || !paneComposer || !sourceThread || !sourceComposer) return;
 
   var parked = false;
   var homeMount = sourceComposer.parentNode;
   var threadMount = sourceThread.parentNode;
+  var followMount = sourceFollow ? sourceFollow.parentNode : null;
   /* Brief lives in the same chat__col; remember sibling so restore
      keeps greeting → composer → cards order (appendChild would put
      the composer after the brief). */
@@ -23,6 +25,7 @@
     if (parked) return;
     if (idleForm) idleForm.hidden = true;
     paneThread.appendChild(sourceThread);
+    if (sourceFollow) paneThread.appendChild(sourceFollow);
     paneComposer.appendChild(sourceComposer);
     sourceComposer.classList.add("d3-composer--pane");
     parked = true;
@@ -42,6 +45,7 @@
   function restoreFromPane() {
     if (!parked) return;
     if (threadMount) threadMount.appendChild(sourceThread);
+    if (sourceFollow && followMount) followMount.appendChild(sourceFollow);
     restoreComposer();
     sourceComposer.classList.remove("d3-composer--pane");
     if (idleForm) idleForm.hidden = false;
@@ -55,7 +59,8 @@
       else if (mode === "kyc" && window.D3Nav.openKycChat) window.D3Nav.openKycChat({ forceActive: true });
       else if (mode === "tx" && window.D3Nav.setChatOpen) {
         window.D3Nav.setChatOpen(true, "tx");
-      } else window.D3Nav.goAgents();
+      } else if (window.D3Nav.goLabs) window.D3Nav.goLabs();
+      else window.D3Nav.goAgents();
     } else {
       shell.setAttribute("data-d3-chat", "open");
     }

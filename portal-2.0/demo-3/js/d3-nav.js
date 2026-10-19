@@ -1,4 +1,4 @@
-/* Demo 3 navigation — home / agents / chat history + left chat pane.
+/* Demo 3 navigation — home / Labs / Transactions + left chat pane.
    Close collapses to a floating ask bar (demo-2 ai-askbar), not Home. */
 (function () {
   var shell = document.querySelector(".d1-shell");
@@ -6,9 +6,8 @@
   if (!shell) return;
 
   var homeBtn = document.querySelector("[data-d3-nav='home']");
-  var agentsBtn = document.querySelector("[data-d3-nav='agents']");
-  var historyBtn = document.querySelector("[data-d3-nav='history']");
-  var messagesBtn = document.querySelector("[data-d3-nav='messages']");
+  var labsBtn = document.querySelector("[data-d3-nav='labs']");
+  var transactionsBtn = document.querySelector("[data-d3-nav='transactions']");
   var closeChat = document.querySelector("[data-d3-chat-close]");
   var askbar = document.querySelector("[data-d3-askbar]");
   var askbarText = document.querySelector("[data-d3-askbar-text]");
@@ -23,8 +22,8 @@
     },
     kyb: {
       hello: "Hi, I’m your KYB Agent.",
-      sub: "Let’s find your business.",
-      placeholder: "Ask about business verification"
+      sub: "Type a business name and country to get started — for example, “Acme Inc, United States”.",
+      placeholder: "Business name and country"
     },
     tx: {
       hello: "What would you like to investigate?",
@@ -137,7 +136,7 @@
     document.dispatchEvent(new CustomEvent("d3-view:home"));
   }
 
-  function goAgents() {
+  function goLabs() {
     /* Labs nav → catalog + TruAI open by default. */
     if (window.D3Labs && window.D3Labs.open) {
       window.D3Labs.open();
@@ -145,16 +144,25 @@
     }
     shell.setAttribute("data-d3-view", "agents");
     setChatOpen(true, "hub");
-    setActiveNav("agents");
+    setActiveNav("labs");
     if (chatPane) chatPane.classList.remove("is-active");
     document.dispatchEvent(new CustomEvent("d3-view:agents"));
+  }
+
+  function goTransactions() {
+    if (window.D3Transactions && window.D3Transactions.open) {
+      window.D3Transactions.open();
+      return;
+    }
+    /* Fallback: stay on Labs rather than opening Chats by accident. */
+    goLabs();
   }
 
   function openKybChat(opts) {
     opts = opts || {};
     shell.setAttribute("data-d3-view", "chat");
     setChatOpen(true, "kyb");
-    setActiveNav("agents");
+    setActiveNav("labs");
     if (chatPane && opts.resume && !opts.forceActive) {
       chatPane.classList.remove("is-active");
     }
@@ -165,7 +173,7 @@
     opts = opts || {};
     shell.setAttribute("data-d3-view", "chat");
     setChatOpen(true, "kyc");
-    setActiveNav("agents");
+    setActiveNav("labs");
     if (chatPane && !opts.forceActive) {
       chatPane.classList.remove("is-active");
     }
@@ -174,8 +182,10 @@
 
   window.D3Nav = {
     goHome: goHome,
-    goAgents: goAgents,
+    goLabs: goLabs,
+    goAgents: goLabs,
     goOrg: goOrg,
+    goTransactions: goTransactions,
     openKybChat: openKybChat,
     openKycChat: openKycChat,
     setChatOpen: setChatOpen,
@@ -190,26 +200,8 @@
   };
 
   if (homeBtn) homeBtn.addEventListener("click", goHome);
-  if (agentsBtn) agentsBtn.addEventListener("click", goAgents);
-
-  if (historyBtn) {
-    historyBtn.addEventListener("click", function () {
-      if (window.D3Transactions && window.D3Transactions.open) {
-        window.D3Transactions.open();
-        return;
-      }
-      /* Fallback: messages flyout. */
-      if (messagesBtn) messagesBtn.click();
-    });
-  }
-
-  function goTransactions() {
-    if (window.D3Transactions && window.D3Transactions.open) {
-      window.D3Transactions.open();
-    }
-  }
-
-  window.D3Nav.goTransactions = goTransactions;
+  if (labsBtn) labsBtn.addEventListener("click", goLabs);
+  if (transactionsBtn) transactionsBtn.addEventListener("click", goTransactions);
 
   if (closeChat) {
     closeChat.addEventListener("click", function () {
@@ -231,26 +223,6 @@
       return;
     }
     closeChatPanel();
-  });
-
-  document.querySelectorAll("[data-d3-agent]").forEach(function (card) {
-    card.addEventListener("click", function () {
-      var agent = card.getAttribute("data-d3-agent") || "kyb";
-      /* Open the experience immediately — do not echo the card label into chat. */
-      if (agent === "kyb") {
-        if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
-          window.D3KybResume.openResumeExperience();
-        } else {
-          openKybChat({ resume: true });
-        }
-        return;
-      }
-      if (agent === "kyc") {
-        openKycChat({ forceActive: false });
-        return;
-      }
-      openKybChat();
-    });
   });
 
   document.querySelectorAll("[data-d3-prompt]").forEach(function (btn) {
@@ -276,7 +248,8 @@
 
       if (onOrg || agent === "org") {
         if (!onOrg) goOrg();
-        if (onOrg && prompt) {
+        if (prompt) {
+          setChatOpen(true, "org");
           document.dispatchEvent(new CustomEvent("d3-chat:send", {
             detail: { text: prompt, agent: "org" },
             cancelable: true
@@ -286,14 +259,14 @@
       }
 
       if (agent === "kyb" && !onKyb) {
-        /* Enter KYB immediately; never paste the button title into chat. */
+        /* Search landing is the default KYB entry; map only for find/search/verify cues. */
         var wantsMap = /^(find|search|verify)\b/i.test(prompt);
         if (wantsMap && window.D3KybResume && window.D3KybResume.openMapExperience) {
           window.D3KybResume.openMapExperience();
         } else if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
           window.D3KybResume.openResumeExperience();
         } else {
-          openKybChat({ map: wantsMap });
+          openKybChat({ map: wantsMap, resume: !wantsMap });
         }
         return;
       }

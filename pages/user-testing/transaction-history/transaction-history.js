@@ -51,7 +51,12 @@
   var productFilter = "";
   var currentPage = 1;
   var lastFilterTotal = -1;
-  var PAGE_SIZE = 15;
+  var DEFAULT_PAGE_SIZE = 15;
+  var MIN_PAGE_SIZE = 3;
+  var MAX_PAGE_SIZE = 50;
+  var PAGE_SIZE = DEFAULT_PAGE_SIZE;
+  var fitPageTimer = null;
+  var fittingPageSize = false;
   var DATE_RANGE_FIELDS_HTML =
     '<div class="tds-date-picker-range__fields">' +
       '<div class="tds-date-picker" data-date-picker-part="start">' +
@@ -610,6 +615,59 @@
   function pageCount(total) {
     if (!total) return 1;
     return Math.max(1, Math.ceil(total / PAGE_SIZE));
+  }
+
+  /* Fit rows to the visible table section so the body doesn't need a
+     vertical scrollbar. Recomputed on resize / layout changes. */
+  function measurePageSize() {
+    var section =
+      document.querySelector(".th-tx .ut-tx-table-section") ||
+      document.querySelector(".ut-tx-table-section");
+    if (!section) return DEFAULT_PAGE_SIZE;
+    var sectionH = section.clientHeight;
+    if (sectionH < 96) return DEFAULT_PAGE_SIZE;
+
+    var footer = document.getElementById("utTxFooter");
+    var footerH =
+      footer && footer.offsetHeight ? footer.offsetHeight : 48;
+    var thead = document.querySelector(".ut-tx-table thead");
+    var theadH =
+      thead && thead.offsetHeight ? thead.offsetHeight : 27;
+    var rowH = 40;
+    var sample = document.querySelector(
+      ".ut-tx-table tbody tr.ut-tx-row:not(.ut-tx-row--child)"
+    );
+    if (sample) {
+      var measured = sample.getBoundingClientRect().height;
+      if (measured > 0) rowH = measured;
+    }
+
+    var bodySpace = sectionH - footerH - theadH - 2;
+    var next = Math.floor(bodySpace / rowH);
+    if (next < MIN_PAGE_SIZE) next = MIN_PAGE_SIZE;
+    if (next > MAX_PAGE_SIZE) next = MAX_PAGE_SIZE;
+    return next;
+  }
+
+  function syncPageSize() {
+    var next = measurePageSize();
+    if (next === PAGE_SIZE) return false;
+    PAGE_SIZE = next;
+    return true;
+  }
+
+  function scheduleFitPageSize() {
+    if (fitPageTimer) window.clearTimeout(fitPageTimer);
+    fitPageTimer = window.setTimeout(function () {
+      fitPageTimer = null;
+      if (fittingPageSize) return;
+      fittingPageSize = true;
+      try {
+        if (syncPageSize()) render();
+      } finally {
+        fittingPageSize = false;
+      }
+    }, 80);
   }
 
   function pagedRows() {
@@ -1895,6 +1953,21 @@
     if (reset) reset.addEventListener("click", resetToolbarFilters);
     bindPagination();
     render();
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        if (syncPageSize()) render();
+      });
+    });
+    window.addEventListener("resize", scheduleFitPageSize);
+    if (typeof ResizeObserver !== "undefined") {
+      var section =
+        document.querySelector(".th-tx .ut-tx-table-section") ||
+        document.querySelector(".ut-tx-table-section");
+      if (section) {
+        var ro = new ResizeObserver(scheduleFitPageSize);
+        ro.observe(section);
+      }
+    }
     var dismiss = document.getElementById("utTxToastDismiss");
     if (dismiss) dismiss.addEventListener("click", hideToast);
     if (window.TdsDropdownPanel && typeof window.TdsDropdownPanel.initMenus === "function") {

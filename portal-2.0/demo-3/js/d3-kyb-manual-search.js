@@ -502,6 +502,38 @@
     };
   }
 
+  var submitLoaderHideTimer = 0;
+
+  function submitLoaderEl() {
+    return document.querySelector("[data-d3-kyb-submit-loader]");
+  }
+
+  function showSubmitLoader(bizName) {
+    var el = submitLoaderEl();
+    if (!el) return;
+    var label = el.querySelector("[data-d3-kyb-submit-loader-label]");
+    if (label) {
+      label.textContent = bizName
+        ? "Starting verification for " + bizName + "…"
+        : "Starting verification…";
+    }
+    window.clearTimeout(submitLoaderHideTimer);
+    el.hidden = false;
+    el.setAttribute("aria-busy", "true");
+    /* Safety — never leave the overlay stuck if reveal aborts. */
+    submitLoaderHideTimer = window.setTimeout(hideSubmitLoader, 8000);
+  }
+
+  function hideSubmitLoader() {
+    var el = submitLoaderEl();
+    window.clearTimeout(submitLoaderHideTimer);
+    submitLoaderHideTimer = 0;
+    if (!el) return;
+    el.hidden = true;
+    el.setAttribute("aria-busy", "false");
+    updateSubmitButton();
+  }
+
   function submitSelected() {
     var submit = byId("vb-submit-btn");
     if (!submit || submit.getAttribute("aria-disabled") === "true" || !typeahead.selected) return;
@@ -509,6 +541,10 @@
     var biz = entityToBiz(typeahead.selected);
     closeMenu();
     if (!biz) return;
+
+    /* Cover the handoff freeze (landing → map zoom → report). */
+    showSubmitLoader(biz.name);
+    submit.setAttribute("aria-disabled", "true");
 
     /* Manual form Submit → run verification immediately (demo-2 fromForm).
        Skip the chat Confirm / Cancel CTA used for map/card picks. */
@@ -528,8 +564,18 @@
 
     if (window.D3KybReport && window.D3KybReport.reveal) {
       window.D3KybReport.reveal(biz);
+    } else {
+      hideSubmitLoader();
+      updateSubmitButton();
     }
   }
+
+  document.addEventListener("d3-kyb:verify-ui-ready", hideSubmitLoader);
+  document.addEventListener("d3-kyb:report-ready", hideSubmitLoader);
+  /* Abort paths — never leave the overlay up after a failed handoff. */
+  document.addEventListener("d3-kyb:restore-idle", hideSubmitLoader);
+  document.addEventListener("d3-view:agents", hideSubmitLoader);
+  document.addEventListener("d3-view:home", hideSubmitLoader);
 
   function initTypeahead() {
     var input = byId("vb-q");
