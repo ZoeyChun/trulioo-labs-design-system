@@ -1,0 +1,116 @@
+/* Demo 4 — iframe pages (Labs / Transactions / Settings).
+   Match the homepage canvas: flat surface-neutral-02, Inter UI,
+   soft borders, no Demo 3 elevated “main card”. Content unchanged. */
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: var(--font-family) !important;
+  color: var(--text-default);
+  background: transparent !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------------ titles */
+
+.labs-page-header__title,
+.th-tx__title,
+.org-title {
+  margin: 0;
+  font-family: var(--font-family) !important;
+  font-size: 24px !important;
+  font-weight: var(--font-weight-semibold, 600) !important;
+  line-height: 32px !important;
+  color: var(--text-default) !important;
+}
+
+.th-tx__title {
+  margin-bottom: 24px !important;
+}
+
+.labs-page-header__lede,
+.org-subtitle {
+  margin: 8px 0 0;
+  font-size: 14px !important;
+  font-weight: var(--font-weight-regular, 400) !important;
+  line-height: 22px !important;
+  color: var(--text-description, var(--text-caption, #526660)) !important;
+}
+
+/* ------------------------------------------------------------------ inset */
+
+body.labs--embed .labs-page,
+.d3-tx-embed__main,
+body.org-admin--embed .d1-slot {
+  padding: 32px 40px 40px !important;
+  box-sizing: border-box;
+}
+
+body.labs--embed .labs-page {
+  gap: 32px !important;
+  max-width: none !important;
+}
+
+/* ------------------------------------------------------------------ flatten shell */
+
+body.org-admin,
+body.org-admin .d1-shell {
+  background: transparent !important;
+}
+
+body.org-admin--embed .d1-main {
+  padding: 0 !important;
+  gap: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  overflow: hidden;
+}
+
+body.org-admin--embed .d1-slot {
+  max-width: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+body.org-admin--embed .d1-slot > .org-page {
+  max-width: none !important;
+  margin-inline: 0 !important;
+}
+
+/* ------------------------------------------------------------------ surfaces */
+
+body.org-admin--embed .org-stats,
+.th-tx .ut-tx-table-card,
+.th-tx .tds-data-table-container {
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 12px !important;
+  background: var(--surface-neutral-01) !important;
+  box-shadow: none !important;
+}
+
+/* Filters drawer — same quiet chrome as the TruAI panel */
+.d3-tx-embed .ut-tx-filters {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl, 12px);
+  box-shadow: var(--elevation-md);
+  background: var(--surface-neutral-01);
+}
+
+/* Labs catalog cards: soft border like homepage action cards */
+html.labs--d4 .labs-card,
+html.labs--d4 .labs-featured-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--surface-neutral-01);
+  box-shadow: none;
+}
+
+html.labs--d4 .labs-card:not(.labs-card--static):hover,
+html.labs--d4 .labs-featured-card:not(.labs-card--static):hover {
+  border-color: var(--interactive-default);
+  box-shadow: none;
+}

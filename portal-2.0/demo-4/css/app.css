@@ -106,7 +106,7 @@ button {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  background: transparent;
+  background: var(--surface-neutral-02);
 }
 
 .d4-page[hidden] {
@@ -343,6 +343,10 @@ button {
   background: transparent;
   pointer-events: auto;
   cursor: pointer;
+  /* Soft lift so the collapsed bubble reads above the page. */
+  filter:
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.10))
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.06));
 }
 
 .d4-mini__orb {
@@ -449,6 +453,15 @@ button {
 
 .d4-center.is-report-full .d4-chat {
   display: none;
+}
+
+.d4-center.is-report-full .d4-mini {
+  display: none !important;
+}
+
+/* Full-screen report: hide TruAI panel (sibling of the center stage). */
+.d4-body:has(.d4-center.is-report-full) .d4-panel {
+  display: none !important;
 }
 
 .d4-center.is-report-full .d4-drawer {

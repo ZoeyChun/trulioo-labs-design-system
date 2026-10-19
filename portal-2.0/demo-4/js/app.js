@@ -438,7 +438,7 @@
 
   var app = document.querySelector(".d4-app");
   var PAGE_SRC = {
-    labs: "../../pages/unified-intelligence-home/labs.html?embed=1&v=6",
+    labs: "../../pages/unified-intelligence-home/labs.html?embed=1&shell=d4&v=7",
     transactions: "transactions-view/embed.html",
     settings: "organization-admin/index.html?embed=1"
   };

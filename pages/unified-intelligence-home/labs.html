@@ -44,6 +44,15 @@
       document.documentElement.classList.add("app-embed");
       document.body.classList.add("app-embed");
     }
+    /* Demo 4 portal chrome — flat canvas, shared page title rhythm. */
+    if (params.get("shell") === "d4") {
+      document.documentElement.classList.add("labs--d4");
+      document.body.classList.add("labs--d4");
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "../../portal-2.0/demo-4/css/pages-embed.css?v=1";
+      document.head.appendChild(link);
+    }
   })();
 </script>
 <div class="app-shell" id="app-shell">
