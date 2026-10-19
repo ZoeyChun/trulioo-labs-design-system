@@ -256,6 +256,13 @@
 
   function init(options) {
     options = options || {};
+    /* Portal Labs iframe / ?embed=1 — parent rail owns nav; do not build a second one. */
+    if (document.documentElement.classList.contains("app-embed") || (window.AppEmbed && window.AppEmbed.active)) {
+      var embedNav = document.getElementById(options.rootId || "app-sidenav");
+      if (embedNav) embedNav.hidden = true;
+      return;
+    }
+
     var sideNav = document.getElementById(options.rootId || "app-sidenav");
     if (!sideNav) return;
 

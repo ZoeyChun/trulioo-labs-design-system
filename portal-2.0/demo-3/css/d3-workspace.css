@@ -39,7 +39,7 @@
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-  background: var(--surface-neutral-02, #f4f6f4);
+  background: var(--surface-neutral-01, #fff);
   border-radius: 0;
   opacity: 1;
 }
@@ -241,7 +241,8 @@
   display: none;
 }
 
-.d3-kyb-resume.is-live {
+.d3-kyb-resume.is-live:not([hidden]) {
+  display: flex;
   border: 1px solid var(--border-strong, #c5cec8);
   border-radius: 16px;
   background: var(--surface-neutral-01, #fff);
@@ -341,7 +342,7 @@
   width: 100%;
   height: 100%;
   z-index: 0;
-  background: var(--surface-neutral-02, #f4f6f4);
+  background: var(--surface-neutral-01, #fff);
 }
 
 .d3-kyb-map__leaflet .leaflet-tile-pane {
@@ -720,15 +721,52 @@
 }
 
 .d1-shell[data-d3-view="chat"] .d1-home,
-.d1-shell[data-d3-view="chat"] .d3-agents {
+.d1-shell[data-d3-view="chat"] .d3-agents,
+.d1-shell[data-d3-view="chat"] .d3-labs {
   display: none !important;
 }
 
 .d3-workspace__crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
   margin: 0;
   font-size: 12px;
   line-height: 18px;
   color: var(--text-description);
+}
+
+.d3-workspace__crumb-link {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: var(--text-description);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.d3-workspace__crumb-link:hover {
+  color: var(--text-default);
+  text-decoration: underline;
+}
+
+.d3-workspace__crumb-link:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.d3-workspace__crumb-sep {
+  white-space: pre;
+  color: var(--text-caption, #617269);
+}
+
+.d3-workspace__crumb-current {
+  color: var(--text-default);
+  font-weight: 500;
 }
 
 .d3-workspace__title {
@@ -737,6 +775,178 @@
   font-weight: 600;
   line-height: 36px;
   color: var(--text-default);
+}
+
+/* ---- Resume landing: centered search hero + recent cards ---- */
+
+.d3-workspace__landing {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  align-items: stretch;
+  gap: 48px;
+  width: 100%;
+  min-height: 0;
+}
+
+.d3-workspace__landing[hidden] {
+  display: none !important;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .d3-workspace__detail {
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+.d3-workspace__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 720px;
+  margin: clamp(48px, 12vh, 120px) auto 0;
+  text-align: center;
+}
+
+.d3-workspace__hero .d3-workspace__title {
+  font-size: 36px;
+  line-height: 44px;
+}
+
+.d3-workspace__hero-sub {
+  margin: 0;
+  max-width: 36em;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--text-description, #526660);
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .d3-workspace__search {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .d3-workspace__search .vb-lookup {
+  width: 100%;
+  max-width: 640px;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .vb-search-hint {
+  text-align: center;
+}
+
+.d3-kyb-recent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 8px;
+}
+
+.d3-kyb-recent__head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.d3-kyb-recent__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--text-default);
+}
+
+.d3-kyb-recent__sub {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-description, #526660);
+}
+
+.d3-kyb-recent__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.d3-kyb-recent__card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 12px;
+  background: var(--surface-neutral-01, #fff);
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  box-sizing: border-box;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.d3-kyb-recent__card:hover {
+  border-color: color-mix(in srgb, var(--interactive-default, #004c45) 35%, var(--border-subtle, #dde2de));
+  box-shadow: var(--elevation-md, 0 4px 12px rgba(23, 45, 45, 0.08));
+}
+
+.d3-kyb-recent__card:focus-visible {
+  outline: 2px solid var(--border-interactive, #004c45);
+  outline-offset: 2px;
+}
+
+.d3-kyb-recent__card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.d3-kyb-recent__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.d3-kyb-recent__meta,
+.d3-kyb-recent__id {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-description, #526660);
+}
+
+.d3-kyb-recent__id {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-caption, #617269);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 720px) {
+  .d3-kyb-recent__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Manual search row styles live in d3-kyb-search.css (demo-2 sync). */
@@ -893,7 +1103,15 @@
   color: var(--text-description);
 }
 
-/* ---- Resume incomplete KYB (Figma 1274:15813) ---- */
+/* ---- Report chrome (only on surface=report + .is-live).
+   .d3-workspace__card { display:flex } would otherwise beat [hidden]
+   and leak the Acme preview under the search landing. ---- */
+
+.d3-kyb-resume[hidden],
+.d3-workspace[data-d3-kyb-surface="resume"] .d3-kyb-resume,
+.d3-workspace[data-d3-kyb-surface="map"] .d3-kyb-resume {
+  display: none !important;
+}
 
 .d3-kyb-resume {
   gap: 0;
@@ -1020,7 +1238,7 @@
   height: 200px;
   border-radius: var(--radius-xl, 12px);
   overflow: hidden;
-  background: var(--surface-neutral-02, #f4f6f4);
+  background: var(--surface-neutral-01, #fff);
 }
 
 .d3-kyb-hero__leaflet {
@@ -1030,7 +1248,7 @@
   height: 100%;
   z-index: 0;
   border-radius: inherit;
-  background: var(--surface-neutral-02, #f4f6f4);
+  background: var(--surface-neutral-01, #fff);
 }
 
 .d3-kyb-hero__leaflet .leaflet-tile-pane {

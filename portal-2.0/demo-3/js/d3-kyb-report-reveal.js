@@ -244,9 +244,15 @@
     var fresh = workspace.querySelector("[data-d3-kyb-fresh]");
     if (fresh) fresh.hidden = true;
 
-    if (crumb) {
+    if (window.D3KybResume && window.D3KybResume.renderCrumbs) {
+      window.D3KybResume.renderCrumbs("report", biz.name);
+    } else if (crumb) {
       crumb.innerHTML =
-        'Home / Verify a business / <span data-d3-kyb-crumb-biz></span>';
+        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="home">Home</button>' +
+        '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
+        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">Verify a business</button>' +
+        '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
+        '<span class="d3-workspace__crumb-current" data-d3-kyb-crumb-biz></span>';
       var crumbBiz = crumb.querySelector("[data-d3-kyb-crumb-biz]");
       if (crumbBiz) crumbBiz.textContent = biz.name;
     }

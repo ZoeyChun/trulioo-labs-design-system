@@ -1,4 +1,4 @@
-/* Demo 3 — Organization admin (left AI panel + right org page). */
+/* Demo 3 — Organization admin (full-width org page; no TruAI panel). */
 
 .d3-org {
   display: none;
@@ -18,6 +18,7 @@
 
 .d1-shell[data-d3-view="org"] .d1-home,
 .d1-shell[data-d3-view="org"] .d3-agents,
+.d1-shell[data-d3-view="org"] .d3-labs,
 .d1-shell[data-d3-view="org"] .d3-workspace,
 .d1-shell[data-d3-view="org"] .d3-tx {
   display: none !important;
@@ -62,6 +63,12 @@
 
 .d1-shell[data-d3-view="org"] .d1-drawer {
   display: none;
+}
+
+/* No TruAI panel or floating ask bar on Organization admin. */
+.d1-shell[data-d3-view="org"] .d3-chat-pane,
+.d1-shell[data-d3-view="org"] .d3-askbar {
+  display: none !important;
 }
 
 .d1-shell[data-d3-view="org"] .d1-tool-btn[data-d3-nav="settings"],

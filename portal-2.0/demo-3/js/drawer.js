@@ -57,24 +57,58 @@
     return Math.max(0, main.clientWidth - pad);
   }
 
+  function onTransactionsView() {
+    var shell = document.querySelector(".d1-shell");
+    return !!(shell && shell.getAttribute("data-d3-view") === "transactions");
+  }
+
   function targetWidths(nextExpanded) {
     var avail = availableWidth();
-    var drawerW = nextExpanded ? avail : Math.round(avail * 0.7);
+    var drawerW;
+    var slotW;
+    if (onTransactionsView()) {
+      /* Expanded = entity focus (table gone). Minimized = slim table strip. */
+      if (nextExpanded) {
+        drawerW = avail;
+        slotW = 0;
+      } else {
+        slotW = Math.min(300, Math.max(220, Math.round(avail * 0.26)));
+        drawerW = Math.max(0, avail - slotW);
+      }
+    } else {
+      drawerW = nextExpanded ? avail : Math.round(avail * 0.7);
+      slotW = Math.max(0, avail - drawerW);
+    }
     return {
       avail: avail,
       drawerW: drawerW,
-      slotW: Math.max(0, avail - drawerW)
+      slotW: slotW
     };
   }
 
+  function currentDrawerPx() {
+    var raw = main.style.getPropertyValue("--d1-drawer-w") || "";
+    var n = parseFloat(raw);
+    if (!isNaN(n)) return n;
+    return drawer.getBoundingClientRect().width || 0;
+  }
+
   /* Apply open/expanded state first so padding is correct, then lock widths. */
-  function applySizes(nextExpanded) {
+  function applySizes(nextExpanded, opts) {
+    opts = opts || {};
     main.setAttribute("data-d1-drawer", nextExpanded ? "expanded" : "open");
     void main.offsetWidth;
     var sizes = targetWidths(nextExpanded);
-    main.style.setProperty("--d1-drawer-surface-w", sizes.drawerW + "px");
+    var surfaceW = sizes.drawerW;
+    /* While resizing, keep surface at the larger width so iframe content
+       does not reflow / jump mid-tween; snap after transition. */
+    if (opts.lockSurfaceDuring) {
+      surfaceW = Math.max(currentDrawerPx(), sizes.drawerW);
+    }
+    main.style.setProperty("--d1-drawer-surface-w", surfaceW + "px");
     main.style.setProperty("--d1-drawer-w", sizes.drawerW + "px");
     main.style.setProperty("--d1-slot-w", sizes.slotW + "px");
+    return sizes;
   }
 
   function applyClosedSizes() {
@@ -219,6 +253,8 @@
     opening = true;
 
     if (wasClosed) {
+      /* Transactions: open into entity-focused (expanded) layout by default. */
+      if (onTransactionsView()) setExpanded(true);
       setContentIn(false);
       /* State first (padding), then sizes, then animate width from 0. */
       main.setAttribute("data-d1-drawer", expanded ? "expanded" : "open");
@@ -244,10 +280,20 @@
       return;
     }
 
-    applySizes(expanded);
+    /* Already open — resize only (expand/minimize). Do not re-fade content. */
+    resizeOpen(expanded);
+  }
+
+  function resizeOpen(nextExpanded) {
+    opening = true;
+    var sizes = applySizes(nextExpanded, { lockSurfaceDuring: true });
     drawer.setAttribute("aria-hidden", "false");
-    opening = false;
     setContentIn(true);
+    afterShell(function () {
+      if (closing) return;
+      main.style.setProperty("--d1-drawer-surface-w", sizes.drawerW + "px");
+      opening = false;
+    });
   }
 
   function openReport() {
@@ -322,7 +368,7 @@
   function toggleExpand() {
     if (!isShellOpen() || closing || opening) return;
     setExpanded(!expanded);
-    reveal();
+    resizeOpen(expanded);
   }
 
   var thread = document.querySelector("[data-d1-thread]");

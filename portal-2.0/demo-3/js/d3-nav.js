@@ -12,37 +12,31 @@
   var closeChat = document.querySelector("[data-d3-chat-close]");
   var askbar = document.querySelector("[data-d3-askbar]");
   var askbarText = document.querySelector("[data-d3-askbar-text]");
-  var badge = document.querySelector("[data-d3-chat-badge]");
   var emptyHello = document.querySelector("[data-d3-chat-hello]");
   var emptySub = document.querySelector("[data-d3-chat-sub]");
 
   var CHAT_META = {
     hub: {
-      badge: "Agent Hub",
       hello: "What would you like to accomplish?",
       sub: "",
       placeholder: "Describe your task or ask about an agent"
     },
     kyb: {
-      badge: "KYB Agent",
       hello: "Hi, I’m your KYB Agent.",
       sub: "Let’s find your business.",
       placeholder: "Ask about business verification"
     },
     tx: {
-      badge: "Transaction Agent",
       hello: "What would you like to investigate?",
       sub: "Ask about failed checks, reviews, or a specific transaction.",
       placeholder: "Ask about transactions"
     },
     kyc: {
-      badge: "KYC Agent",
       hello: "Hi, I’m your KYC Agent.",
       sub: "Let’s verify a person.",
       placeholder: "Ask about identity verification"
     },
     org: {
-      badge: "Org Admin Agent",
       hello: "Hi, I’m your Org Admin Agent.",
       sub: "Manage users, roles, and invitations.",
       placeholder: "Ask about users or invitations"
@@ -83,7 +77,6 @@
     mode = mode || shell.getAttribute("data-d3-chat-mode") || "hub";
     shell.setAttribute("data-d3-chat", open ? "open" : "closed");
     var meta = CHAT_META[mode] || CHAT_META.hub;
-    if (badge) badge.textContent = meta.badge;
     if (emptyHello) emptyHello.textContent = meta.hello;
     if (emptySub) {
       emptySub.textContent = meta.sub || "";
@@ -145,6 +138,11 @@
   }
 
   function goAgents() {
+    /* Labs nav → catalog + TruAI open by default. */
+    if (window.D3Labs && window.D3Labs.open) {
+      window.D3Labs.open();
+      return;
+    }
     shell.setAttribute("data-d3-view", "agents");
     setChatOpen(true, "hub");
     setActiveNav("agents");
@@ -238,8 +236,7 @@
   document.querySelectorAll("[data-d3-agent]").forEach(function (card) {
     card.addEventListener("click", function () {
       var agent = card.getAttribute("data-d3-agent") || "kyb";
-      var prompt = card.getAttribute("data-prompt") || "";
-      /* KYB from Agent hub → left chat + Figma resume/search landing first. */
+      /* Open the experience immediately — do not echo the card label into chat. */
       if (agent === "kyb") {
         if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
           window.D3KybResume.openResumeExperience();
@@ -250,22 +247,9 @@
       }
       if (agent === "kyc") {
         openKycChat({ forceActive: false });
-        if (prompt) {
-          window.setTimeout(function () {
-            document.dispatchEvent(new CustomEvent("d3-chat:send", {
-              detail: { text: prompt, agent: "kyc" },
-              cancelable: true
-            }));
-          }, 80);
-        }
         return;
       }
       openKybChat();
-      if (prompt) {
-        document.dispatchEvent(new CustomEvent("d3-chat:send", {
-          detail: { text: prompt, agent: agent }
-        }));
-      }
     });
   });
 
@@ -292,19 +276,17 @@
 
       if (onOrg || agent === "org") {
         if (!onOrg) goOrg();
-        if (prompt) {
-          window.setTimeout(function () {
-            document.dispatchEvent(new CustomEvent("d3-chat:send", {
-              detail: { text: prompt, agent: "org" },
-              cancelable: true
-            }));
-          }, 80);
+        if (onOrg && prompt) {
+          document.dispatchEvent(new CustomEvent("d3-chat:send", {
+            detail: { text: prompt, agent: "org" },
+            cancelable: true
+          }));
         }
         return;
       }
 
       if (agent === "kyb" && !onKyb) {
-        /* Find/search prompts go straight to map; otherwise open resume landing. */
+        /* Enter KYB immediately; never paste the button title into chat. */
         var wantsMap = /^(find|search|verify)\b/i.test(prompt);
         if (wantsMap && window.D3KybResume && window.D3KybResume.openMapExperience) {
           window.D3KybResume.openMapExperience();
@@ -313,30 +295,15 @@
         } else {
           openKybChat({ map: wantsMap });
         }
-        if (prompt) {
-          window.setTimeout(function () {
-            document.dispatchEvent(new CustomEvent("d3-chat:send", {
-              detail: { text: prompt, agent: "kyb" },
-              cancelable: true
-            }));
-          }, 80);
-        }
         return;
       }
 
       if (agent === "kyc" && !onKyc) {
         openKycChat();
-        if (prompt) {
-          window.setTimeout(function () {
-            document.dispatchEvent(new CustomEvent("d3-chat:send", {
-              detail: { text: prompt, agent: "kyc" },
-              cancelable: true
-            }));
-          }, 80);
-        }
         return;
       }
 
+      /* Already in the agent — real follow-up prompts still go to chat. */
       if (prompt) {
         document.dispatchEvent(new CustomEvent("d3-chat:send", {
           detail: { text: prompt, agent: agent },

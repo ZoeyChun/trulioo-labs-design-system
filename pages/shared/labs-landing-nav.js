@@ -14,7 +14,16 @@
   }
 
   function labsUrl() {
-    return resolve("../unified-intelligence-home/labs.html");
+    var href = resolve("../unified-intelligence-home/labs.html");
+    if (window.AppEmbed && window.AppEmbed.withEmbed) return window.AppEmbed.withEmbed(href);
+    try {
+      if (document.documentElement.classList.contains("app-embed")) {
+        var abs = new URL(href);
+        abs.searchParams.set("embed", "1");
+        return abs.href;
+      }
+    } catch (e) {}
+    return href;
   }
 
   var PAGE_BACK_IDS = [

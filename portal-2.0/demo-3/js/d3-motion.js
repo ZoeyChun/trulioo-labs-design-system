@@ -17,7 +17,7 @@
   var PANE_HOLD_MS = 780;
 
   function surfaceForView(view) {
-    if (view === "agents") return document.querySelector(".d3-agents");
+    if (view === "agents") return document.querySelector(".d3-labs") || document.querySelector(".d3-agents");
     if (view === "chat") return document.querySelector(".d3-workspace");
     if (view === "transactions") return document.querySelector(".d3-tx");
     if (view === "org") return document.querySelector(".d3-org");

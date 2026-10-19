@@ -113,11 +113,15 @@
     backBtn.addEventListener('click', function (event) {
       event.preventDefault();
       event.stopPropagation();
+      var labsBack =
+        new URLSearchParams(window.location.search).get('embed') === '1'
+          ? 'labs.html?embed=1'
+          : 'labs.html';
       if (window.LabsHistoryReturn && window.LabsHistoryReturn.pageBack) {
-        window.LabsHistoryReturn.pageBack('labs.html');
+        window.LabsHistoryReturn.pageBack(labsBack);
         return;
       }
-      window.location.href = 'labs.html';
+      window.location.href = labsBack;
     });
   })();
 

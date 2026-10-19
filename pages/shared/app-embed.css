@@ -1,0 +1,102 @@
+/* Portal / Labs iframe embed — hide every in-page side nav variant. */
+
+html.app-embed .tds-side-nav,
+html.app-embed #app-sidenav,
+html.app-embed .app-sidenav,
+html.app-embed .app-sidenav-overlay,
+html.app-embed .app-nav-toggle,
+html.app-embed .truai-btn,
+html.app-embed .app-truai-btn {
+  display: none !important;
+}
+
+html.app-embed,
+html.app-embed body.app-embed {
+  background: transparent !important;
+}
+
+html.app-embed .app-shell,
+html.app-embed .labs-kyb-layout > .app-shell {
+  padding: 0 !important;
+  gap: 0 !important;
+  background: transparent !important;
+  min-height: 100% !important;
+  max-height: none !important;
+}
+
+html.app-embed .app-main,
+html.app-embed .app-main.labs-main,
+html.app-embed .app-main.history-main,
+html.app-embed .bv-form-shell,
+html.app-embed .bv-result-shell {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  min-height: 100% !important;
+}
+
+/* Labs → product breadcrumbs (injected by labs-breadcrumb.js).
+   Sit with the page header — no extra inset; page/hero already pads. */
+html.app-embed .labs-page-crumbs {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 0;
+}
+
+/* History / DV transactions: crumb + title as one header stack. */
+html.app-embed .history-hero > .labs-page-crumbs {
+  margin: 0 0 8px;
+  padding: 0;
+}
+
+html.app-embed .history-hero:has(> .labs-page-crumbs) {
+  gap: 8px;
+}
+
+html.app-embed body[data-history-product="dv"] .history-hero:has(> .labs-page-crumbs) {
+  gap: 8px;
+}
+
+/* Row headers: crumb on its own full-width line above title + actions. */
+html.app-embed .bv-header:has(> .labs-page-crumbs),
+html.app-embed .di-landing__header:has(> .labs-page-crumbs),
+html.app-embed .eidas-landing__header:has(> .labs-page-crumbs),
+html.app-embed .dv-flow-header:has(> .labs-page-crumbs) {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+html.app-embed .bv-header:has(> .labs-page-crumbs) > .labs-page-crumbs,
+html.app-embed .di-landing__header:has(> .labs-page-crumbs) > .labs-page-crumbs,
+html.app-embed .eidas-landing__header:has(> .labs-page-crumbs) > .labs-page-crumbs,
+html.app-embed .dv-flow-header:has(> .labs-page-crumbs) > .labs-page-crumbs {
+  flex: 1 0 100%;
+  order: -1;
+  width: 100%;
+  margin: 0;
+}
+
+/* Fallback when crumb is a direct child of history-page (no hero mount). */
+html.app-embed .history-page > .labs-page-crumbs {
+  margin: 0 0 8px;
+  padding: 0;
+}
+
+/* Back chevron is redundant once Labs crumb is available. */
+html.app-embed body.labs-has-crumbs #bv-form-back-btn,
+html.app-embed body.labs-has-crumbs #dv-flow-home-back,
+html.app-embed body.labs-has-crumbs #eid-home-back,
+html.app-embed body.labs-has-crumbs #eidas-landing-back,
+html.app-embed body.labs-has-crumbs #di-landing-back,
+html.app-embed body.labs-has-crumbs #di-analyzing-back,
+html.app-embed body.labs-has-crumbs #dv-transactions-back,
+html.app-embed body.labs-has-crumbs #brr-home-back,
+html.app-embed body.labs-has-crumbs #kyc-home-back,
+html.app-embed body.labs-has-crumbs #kyb-result-back {
+  display: none !important;
+}

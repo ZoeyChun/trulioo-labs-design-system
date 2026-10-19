@@ -1,6 +1,6 @@
-/* Demo 3 — KYB surfaces: world map landing + resume incomplete card
-   Agent hub → Verify a business: left chat + right world map.
-   Incomplete session: nudge on map; Resume opens detail card (Figma 1274:15813). */
+/* Demo 3 — KYB surfaces: centered search landing + full report.
+   Agent hub → Verify a business: search hero + recent transaction cards.
+   Report surface reuses the resume card chrome (.is-live). */
 (function () {
   var STORAGE_KEY = "d3-kyb-incomplete";
   var shell = document.querySelector(".d1-shell");
@@ -64,18 +64,24 @@
     workspace.setAttribute("data-d3-kyb-surface", mode);
     if (mapEl) mapEl.setAttribute("aria-hidden", mode === "map" ? "false" : "true");
     if (detail) detail.hidden = mode !== "resume" && mode !== "report";
+    setLandingVisible(mode === "resume");
     if (mode !== "report" && resumeCard) resumeCard.classList.remove("is-live");
   }
 
   function updateMapNudge() {
-    var show = hasIncomplete();
-    if (mapNudge) mapNudge.hidden = !show;
+    /* Resume / continue nudge removed — search landing is the entry. */
+    if (mapNudge) mapNudge.hidden = true;
   }
 
   function setResumeVisible(show) {
     workspace.classList.toggle("has-incomplete", !!show);
     if (resumeCard) resumeCard.hidden = !show;
-    if (freshHint) freshHint.hidden = !!show;
+    if (freshHint) freshHint.hidden = true;
+  }
+
+  function setLandingVisible(show) {
+    var landing = workspace.querySelector("[data-d3-kyb-landing]");
+    if (landing) landing.hidden = !show;
   }
 
   function clearThread() {
@@ -101,6 +107,30 @@
     });
   }
 
+  function crumbEl() {
+    return detail && (detail.querySelector("[data-d3-kyb-crumb]") || detail.querySelector(".d3-workspace__crumb"));
+  }
+
+  function renderCrumbs(mode, bizName) {
+    var el = crumbEl();
+    if (!el) return;
+    if (mode === "report") {
+      el.innerHTML =
+        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="home">Home</button>' +
+        '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
+        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">Verify a business</button>' +
+        '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
+        '<span class="d3-workspace__crumb-current" data-d3-kyb-crumb-biz></span>';
+      var biz = el.querySelector("[data-d3-kyb-crumb-biz]");
+      if (biz) biz.textContent = bizName || "Business";
+      return;
+    }
+    el.innerHTML =
+      '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>' +
+      '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
+      '<span class="d3-workspace__crumb-current">Verify a business</span>';
+  }
+
   function prepareDetailChrome() {
     if (resumeCard) resumeCard.classList.remove("is-live");
     if (!detail) return;
@@ -113,8 +143,7 @@
       title.hidden = false;
       title.textContent = "Verify a business";
     }
-    var crumbEl = detail.querySelector(".d3-workspace__crumb");
-    if (crumbEl) crumbEl.textContent = "Agent hub / Verify a business";
+    renderCrumbs("landing");
   }
 
   /* Agent hub → KYB: left chat + world map (Find Meridian / Start New). */
@@ -136,7 +165,7 @@
     document.dispatchEvent(new CustomEvent("d3-kyb:map-ready"));
   }
 
-  /* Agent hub → Verify a business: Figma resume/search landing (1312:50403). */
+  /* Agent hub → Verify a business: centered search + recent cards. */
   function openResumeExperience() {
     ensureDemoSession();
     if (window.D3Nav) {
@@ -145,7 +174,7 @@
     }
     prepareDetailChrome();
     setSurface("resume");
-    setResumeVisible(true);
+    setResumeVisible(false);
     clearThread();
     if (paneInput) {
       paneInput.placeholder = "Ask about business verification";
@@ -172,13 +201,7 @@
       if (exportBtn) exportBtn.hidden = false;
       var title = detail.querySelector(".d3-workspace__title");
       if (title) title.hidden = true;
-      var crumbEl = detail.querySelector(".d3-workspace__crumb");
-      if (crumbEl) {
-        crumbEl.innerHTML =
-          'Home / Verify a business / <span data-d3-kyb-crumb-biz></span>';
-        var crumbBiz = crumbEl.querySelector("[data-d3-kyb-crumb-biz]");
-        if (crumbBiz) crumbBiz.textContent = name;
-      }
+      renderCrumbs("report", name);
       detail.classList.remove("is-entering");
       void detail.offsetWidth;
       detail.classList.add("is-entering");
@@ -188,8 +211,38 @@
     if (bizName) bizName.textContent = name;
     var bizTag = resumeCard && resumeCard.querySelector(".d1-tag");
     if (bizTag) {
-      bizTag.textContent = session.status || "Verified";
-      bizTag.className = "d1-tag d1-tag--positive";
+      var status = session.status || "Verified";
+      bizTag.textContent = status;
+      bizTag.className =
+        "d1-tag " +
+        (status === "Review"
+          ? "d1-tag--review"
+          : status === "Flagged"
+            ? "d1-tag--negative"
+            : "d1-tag--positive");
+    }
+    if (resumeCard && detail) {
+      var metaBlocks = resumeCard.querySelectorAll(".d3-workspace__meta > div:not(.d3-workspace__meta-divider)");
+      if (metaBlocks[0]) {
+        var countryDd = metaBlocks[0].querySelector("dd");
+        if (countryDd) {
+          var flag = countryDd.querySelector("img");
+          countryDd.textContent = (session.country || "United States") + " ";
+          if (flag) countryDd.appendChild(flag);
+        }
+      }
+      if (metaBlocks[1]) {
+        var txDd = metaBlocks[1].querySelector("dd");
+        if (txDd && session.transactionId) {
+          var tx = session.transactionId;
+          txDd.title = tx;
+          txDd.textContent = tx.length > 18 ? tx.slice(0, 18) + "..." : tx;
+        }
+      }
+      if (metaBlocks[2]) {
+        var dateDd = metaBlocks[2].querySelector("dd");
+        if (dateDd && session.date) dateDd.textContent = session.date;
+      }
     }
   }
 
@@ -218,8 +271,7 @@
       if (exportBtn) exportBtn.hidden = true;
       var title = detail.querySelector(".d3-workspace__title");
       if (title) title.hidden = false;
-      var crumbEl = detail.querySelector(".d3-workspace__crumb");
-      if (crumbEl) crumbEl.textContent = "Agent hub / Verify a business";
+      renderCrumbs("landing");
     }
     if (window.D3Nav) {
       window.D3Nav.openKybChat({ map: true, fresh: true });
@@ -252,8 +304,32 @@
     btn.addEventListener("click", startNew);
   });
 
-  workspace.querySelectorAll("[data-d3-kyb-expand]").forEach(function (btn) {
-    btn.addEventListener("click", resumeConversation);
+  workspace.querySelectorAll("[data-d3-kyb-recent-card]").forEach(function (card) {
+    card.addEventListener("click", function () {
+      var status = card.getAttribute("data-status") || "Verified";
+      expandToFullReport({
+        incomplete: false,
+        businessName: card.getAttribute("data-biz") || "Business",
+        status: status,
+        country: card.getAttribute("data-country") || "United States",
+        transactionId: card.getAttribute("data-txid") || "",
+        date: card.getAttribute("data-date") || "",
+        messages: []
+      });
+      var tag = resumeCard && resumeCard.querySelector(".d1-tag");
+      if (tag) {
+        tag.textContent = status;
+        tag.className =
+          "d1-tag " +
+          (status === "Review"
+            ? "d1-tag--review"
+            : status === "Flagged"
+              ? "d1-tag--negative"
+              : "d1-tag--positive");
+      }
+      document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
+      if (window.D3Nav) window.D3Nav.markChatActive();
+    });
   });
 
   workspace.querySelectorAll("[data-d3-kyb-tab]").forEach(function (tab) {
@@ -270,10 +346,31 @@
     });
   });
 
+  if (detail) {
+    detail.addEventListener("click", function (event) {
+      var btn = event.target.closest("[data-d3-crumb]");
+      if (!btn || !detail.contains(btn)) return;
+      var go = btn.getAttribute("data-d3-crumb");
+      if (go === "home") {
+        if (window.D3Nav && window.D3Nav.goHome) window.D3Nav.goHome();
+        return;
+      }
+      if (go === "labs") {
+        if (window.D3Labs && window.D3Labs.open) window.D3Labs.open();
+        else if (window.D3Nav && window.D3Nav.goAgents) window.D3Nav.goAgents();
+        return;
+      }
+      if (go === "kyb") {
+        openResumeExperience();
+      }
+    });
+  }
+
   window.D3KybResume = {
     hasIncomplete: hasIncomplete,
     openMapExperience: openMapExperience,
     openResumeExperience: openResumeExperience,
+    renderCrumbs: renderCrumbs,
     ensureDemoSession: ensureDemoSession,
     startNew: startNew,
     resumeConversation: resumeConversation,

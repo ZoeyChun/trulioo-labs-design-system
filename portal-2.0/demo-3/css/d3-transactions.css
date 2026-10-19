@@ -18,6 +18,7 @@
 
 .d1-shell[data-d3-view="transactions"] .d1-home,
 .d1-shell[data-d3-view="transactions"] .d3-agents,
+.d1-shell[data-d3-view="transactions"] .d3-labs,
 .d1-shell[data-d3-view="transactions"] .d3-workspace {
   display: none !important;
 }
@@ -44,7 +45,7 @@
   gap: 0;
 }
 
-.d1-shell[data-d3-view="transactions"] .d1-slot {
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="closed"] .d1-slot {
   flex: 1 1 auto !important;
   width: auto !important;
   max-width: none !important;
@@ -52,6 +53,49 @@
   min-height: 0 !important;
   height: 100%;
   align-self: stretch;
+}
+
+/* Entity open: honor drawer.js widths. */
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="open"] .d1-slot,
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="expanded"] .d1-slot {
+  flex: 0 0 auto !important;
+  width: var(--d1-slot-w) !important;
+  max-width: var(--d1-slot-w) !important;
+  min-width: 0 !important;
+  overflow: hidden;
+  transition:
+    width var(--d1-drawer-shell-ms, 420ms) var(--d1-drawer-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    opacity 0.28s ease;
+}
+
+/* Minimized: slim table strip stays interactive for switching rows. */
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="open"] .d1-slot {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Expanded: table fully collapsed — chat + entity only. */
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="expanded"] .d1-slot {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="open"] .d1-drawer,
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="expanded"] .d1-drawer {
+  flex: 0 0 auto !important;
+  width: var(--d1-drawer-w) !important;
+  max-width: none !important;
+}
+
+/* Avoid padding/radius jumps fighting the width tween on expand toggle. */
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="open"],
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="expanded"] {
+  padding: 0;
+}
+
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="open"] .d1-drawer,
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="expanded"] .d1-drawer {
+  border-radius: var(--radius-2xl);
 }
 
 @media (prefers-reduced-motion: reduce) {

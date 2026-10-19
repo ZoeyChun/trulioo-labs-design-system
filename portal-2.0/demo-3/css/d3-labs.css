@@ -1,0 +1,74 @@
+/* Demo 3 — Labs catalog (replaces Agent hub page). */
+
+.d3-labs {
+  display: none;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+.d1-shell[data-d3-view="agents"] .d3-labs {
+  display: flex;
+}
+
+/* Legacy Agent hub stays in DOM for KYB card handlers but is never shown. */
+.d1-shell[data-d3-view="agents"] .d3-agents {
+  display: none !important;
+}
+
+.d1-shell[data-d3-view="agents"] .d1-home,
+.d1-shell[data-d3-view="agents"] .d3-workspace,
+.d1-shell[data-d3-view="agents"] .d3-tx,
+.d1-shell[data-d3-view="agents"] .d3-org {
+  display: none !important;
+}
+
+.d1-shell[data-d3-view="home"] .d3-labs,
+.d1-shell[data-d3-view="chat"] .d3-labs,
+.d1-shell[data-d3-view="org"] .d3-labs,
+.d1-shell[data-d3-view="transactions"] .d3-labs {
+  display: none !important;
+}
+
+.d3-labs__frame {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* Right Labs column only — flat (leave TruAI pane chrome alone). */
+.d1-shell[data-d3-view="agents"] .d1-main {
+  padding: 0;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.d1-shell[data-d3-view="agents"] .d1-slot {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 100%;
+  align-self: stretch;
+  border-radius: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+.d1-shell[data-d3-view="agents"] .d1-drawer {
+  display: none;
+}

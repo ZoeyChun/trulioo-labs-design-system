@@ -39,21 +39,22 @@
   <link rel="stylesheet" href="../../Components/_shared/caret/caret.css">
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../../pages/shared/flag-icons.css">
-  <link rel="stylesheet" href="css/d3-kyb-search.css?v=1">
+  <link rel="stylesheet" href="css/d3-kyb-search.css?v=2">
   <link rel="stylesheet" href="css/welcome.css">
   <link rel="stylesheet" href="css/briefing.css">
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/signin.css">
   <link rel="stylesheet" href="css/d3-fa.css?v=2">
-  <link rel="stylesheet" href="css/d3-shell.css?v=27">
+  <link rel="stylesheet" href="css/d3-shell.css?v=32">
   <link rel="stylesheet" href="css/d3-rail.css?v=14">
-  <link rel="stylesheet" href="css/d3-chat-pane.css?v=14">
+  <link rel="stylesheet" href="css/d3-chat-pane.css?v=18">
   <link rel="stylesheet" href="css/d3-agents.css?v=22">
-  <link rel="stylesheet" href="css/d3-home.css?v=10">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=37">
-  <link rel="stylesheet" href="css/d3-transactions.css?v=5">
-  <link rel="stylesheet" href="css/d3-org.css?v=4">
-  <link rel="stylesheet" href="css/d3-tx-agent.css?v=1">
+  <link rel="stylesheet" href="css/d3-labs.css?v=2">
+  <link rel="stylesheet" href="css/d3-home.css?v=14">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=43">
+  <link rel="stylesheet" href="css/d3-transactions.css?v=8">
+  <link rel="stylesheet" href="css/d3-org.css?v=6">
+  <link rel="stylesheet" href="css/d3-tx-agent.css?v=2">
   <link rel="stylesheet" href="css/d3-kyb-agent.css?v=4">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <!-- cache bump for PageShell 1280:20394 -->
@@ -85,15 +86,13 @@
             <path fill="currentColor" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-5.5h-5V21H4a1 1 0 0 1-1-1v-9.5Z"/>
           </svg>
         </button>
-        <button type="button" class="d1-nav-btn" data-d3-nav="agents" aria-label="Agent hub">
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="3.75" y="3.75" width="6.5" height="6.5" rx="1.25" stroke="currentColor" stroke-width="1.5"/>
-            <rect x="13.75" y="3.75" width="6.5" height="6.5" rx="1.25" stroke="currentColor" stroke-width="1.5"/>
-            <rect x="3.75" y="13.75" width="6.5" height="6.5" rx="1.25" stroke="currentColor" stroke-width="1.5"/>
-            <rect x="13.75" y="13.75" width="6.5" height="6.5" rx="1.25" stroke="currentColor" stroke-width="1.5"/>
+        <button type="button" class="d1-nav-btn" data-d3-nav="agents" aria-label="Labs">
+          <!-- Labs flask — same mark as unified-intelligence-home Labs brand -->
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
           </svg>
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 512 512" aria-hidden="true">
-            <path fill="currentColor" d="M224 80c0-26.5-21.5-48-48-48H80C53.5 32 32 53.5 32 80v96c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48V80zm0 256c0-26.5-21.5-48-48-48H80c-26.5 0-48 21.5-48 48v96c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48V336zM288 80v96c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48H336c-26.5 0-48 21.5-48 48zM480 336c0-26.5-21.5-48-48-48H336c-26.5 0-48 21.5-48 48v96c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48V336z"/>
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
           </svg>
         </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="history" aria-label="Transactions">
@@ -165,7 +164,6 @@
   <aside class="d3-chat-pane" id="d3-chat-pane" data-d3-chat-pane aria-label="TruAI chat">
     <div class="d3-chat-pane__head">
       <p class="d3-chat-pane__brand">TruAI</p>
-      <span class="d3-chat-pane__badge" data-d3-chat-badge>Agent Hub</span>
       <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible d3-chat-pane__close" data-d3-chat-close aria-label="Close chat">
         <span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m4 4 8 8M12 4l-8 8"/></svg></span>
       </button>
@@ -329,7 +327,16 @@
 
   <main class="d1-main" data-d1-drawer="closed">
     <div class="d1-slot">
-      <section class="d3-agents" data-d3-agents aria-label="Agent hub">
+      <section class="d3-labs" data-d3-labs aria-label="Trulioo Labs">
+        <iframe
+          class="d3-labs__frame"
+          data-d3-labs-frame
+          title="Trulioo Labs"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+        ></iframe>
+      </section>
+      <section class="d3-agents" data-d3-agents aria-label="Agent hub" hidden>
         <header class="d3-agents__intro">
           <h1 class="d3-agents__title">Agent hub</h1>
           <p class="d3-agents__lede">Conversational agents and product features, with stage showing how ready each one is.</p>
@@ -498,19 +505,23 @@
           <div class="d3-kyb-map__leaflet" data-d3-kyb-leaflet role="application" aria-label="Business search map"></div>
           <div class="d3-kyb-map__overlay">
             <p class="d3-kyb-map__caption" data-d3-kyb-map-caption>San Francisco · Ask TruAI to find a business</p>
-            <div class="d3-kyb-map__resume-nudge" data-d3-kyb-map-nudge hidden>
-              <p>You have an incomplete KYB for <strong>Acme Inc.</strong></p>
-              <button type="button" class="tds-btn tds-btn--primary tds-btn--sm" data-d3-kyb-resume-btn>Resume Conversation</button>
-              <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-kyb-start-new>Start New</button>
-            </div>
+            <div class="d3-kyb-map__resume-nudge" data-d3-kyb-map-nudge hidden></div>
           </div>
         </div>
 
         <div class="d3-workspace__detail" data-d3-kyb-detail hidden>
         <div class="d3-workspace__detail-top">
-          <p class="d3-workspace__crumb">Agent hub / Verify a business</p>
+          <nav class="d3-workspace__crumb" data-d3-kyb-crumb aria-label="Breadcrumb">
+            <button type="button" class="d3-workspace__crumb-link" data-d3-crumb="labs">Labs</button>
+            <span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>
+            <span class="d3-workspace__crumb-current">Verify a business</span>
+          </nav>
         </div>
+
+        <div class="d3-workspace__landing" data-d3-kyb-landing>
+        <div class="d3-workspace__hero">
         <h1 class="d3-workspace__title">Verify a business</h1>
+        <p class="d3-workspace__hero-sub">Search by business name or registration number to start a KYB check.</p>
         <!-- Manual search — synced from demo-2/verify-business -->
         <div class="d3-workspace__search" aria-labelledby="d3-kyb-search-h">
           <span class="d1-visually-hidden" id="d3-kyb-search-h">Search for a business</span>
@@ -655,27 +666,63 @@
               </div>
             </div>
           </div>
-
-          <div class="vb-or"><span>or</span></div>
-
-          <button type="button" class="vb-upload">
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.75a.75.75 0 0 1 .53.22l3 3a.75.75 0 1 1-1.06 1.06L8.75 4.81V10.5a.75.75 0 0 1-1.5 0V4.81L5.53 6.03a.75.75 0 0 1-1.06-1.06l3-3A.75.75 0 0 1 8 1.75ZM2.75 10a.75.75 0 0 1 .75.75v2a.75.75 0 0 0 .75.75h7.5a.75.75 0 0 0 .75-.75v-2a.75.75 0 0 1 1.5 0v2A2.25 2.25 0 0 1 11.75 15h-7.5A2.25 2.25 0 0 1 2 12.75v-2a.75.75 0 0 1 .75-.75Z" fill="currentColor"/></svg>
-            Bulk Upload
-          </button>
+        </div>
         </div>
 
-        <p class="d3-workspace__fresh" data-d3-kyb-fresh hidden>
-          Search for a business to start a new KYB check, or ask TruAI on the left.
-        </p>
-
-        <!-- Resume incomplete KYB — Figma 1274:15813 -->
-        <article class="d3-workspace__card d3-kyb-resume" data-d3-kyb-resume hidden>
-          <div class="d3-kyb-resume__head">
-            <span class="d3-kyb-resume__head-title">Continue where you left off</span>
-            <button type="button" class="d3-kyb-resume__expand" data-d3-kyb-expand aria-label="Expand resume">
-              <img src="assets/kyb-resume/expand-frame.svg" alt="" width="28" height="28">
+        <section class="d3-kyb-recent" data-d3-kyb-recent aria-labelledby="d3-kyb-recent-h">
+          <div class="d3-kyb-recent__head">
+            <h2 class="d3-kyb-recent__title" id="d3-kyb-recent-h">Recent verifications</h2>
+            <p class="d3-kyb-recent__sub">Your last five business verification transactions</p>
+          </div>
+          <div class="d3-kyb-recent__grid">
+            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Acme Inc." data-status="Verified" data-country="United States" data-txid="8c2f4e7a-19bd-4f02-a6c1-77de42915b3a" data-date="17 Oct 2026, 2:14 PM">
+              <div class="d3-kyb-recent__card-top">
+                <span class="d3-kyb-recent__name">Acme Inc.</span>
+                <span class="d1-tag d1-tag--positive">Verified</span>
+              </div>
+              <p class="d3-kyb-recent__meta">United States · 17 Oct 2026</p>
+              <p class="d3-kyb-recent__id" title="8c2f4e7a-19bd-4f02-a6c1-77de42915b3a">8c2f4e7a-19bd-4f0…</p>
+            </button>
+            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Meridian Apex Consulting" data-status="Verified" data-country="United Kingdom" data-txid="b1a9c3e2-44f1-4d88-9c20-1e7a6b5d0c31" data-date="16 Oct 2026, 11:02 AM">
+              <div class="d3-kyb-recent__card-top">
+                <span class="d3-kyb-recent__name">Meridian Apex Consulting</span>
+                <span class="d1-tag d1-tag--positive">Verified</span>
+              </div>
+              <p class="d3-kyb-recent__meta">United Kingdom · 16 Oct 2026</p>
+              <p class="d3-kyb-recent__id" title="b1a9c3e2-44f1-4d88-9c20-1e7a6b5d0c31">b1a9c3e2-44f1-4d8…</p>
+            </button>
+            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Nordic Freight Partners" data-status="Review" data-country="Germany" data-txid="f6d2a810-7c33-4e19-a5b4-92d0e1c8a774" data-date="15 Oct 2026, 4:38 PM">
+              <div class="d3-kyb-recent__card-top">
+                <span class="d3-kyb-recent__name">Nordic Freight Partners</span>
+                <span class="d1-tag d1-tag--review">Review</span>
+              </div>
+              <p class="d3-kyb-recent__meta">Germany · 15 Oct 2026</p>
+              <p class="d3-kyb-recent__id" title="f6d2a810-7c33-4e19-a5b4-92d0e1c8a774">f6d2a810-7c33-4e1…</p>
+            </button>
+            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Harborview Holdings" data-status="Verified" data-country="Canada" data-txid="3e91b6c4-0a52-49d7-8f11-6c4d2e9a1b08" data-date="14 Oct 2026, 9:21 AM">
+              <div class="d3-kyb-recent__card-top">
+                <span class="d3-kyb-recent__name">Harborview Holdings</span>
+                <span class="d1-tag d1-tag--positive">Verified</span>
+              </div>
+              <p class="d3-kyb-recent__meta">Canada · 14 Oct 2026</p>
+              <p class="d3-kyb-recent__id" title="3e91b6c4-0a52-49d7-8f11-6c4d2e9a1b08">3e91b6c4-0a52-49d…</p>
+            </button>
+            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Lotus Digital Pte Ltd" data-status="Flagged" data-country="Singapore" data-txid="9a04d7e1-2b68-4c15-af33-5e8b1c0d9247" data-date="13 Oct 2026, 6:55 PM">
+              <div class="d3-kyb-recent__card-top">
+                <span class="d3-kyb-recent__name">Lotus Digital Pte Ltd</span>
+                <span class="d1-tag d1-tag--negative">Flagged</span>
+              </div>
+              <p class="d3-kyb-recent__meta">Singapore · 13 Oct 2026</p>
+              <p class="d3-kyb-recent__id" title="9a04d7e1-2b68-4c15-af33-5e8b1c0d9247">9a04d7e1-2b68-4c1…</p>
             </button>
           </div>
+        </section>
+        </div>
+
+        <p class="d3-workspace__fresh" data-d3-kyb-fresh hidden></p>
+
+        <!-- Full report chrome (shown after verify / opening a recent card) -->
+        <article class="d3-workspace__card d3-kyb-resume" data-d3-kyb-resume hidden>
           <div class="d3-kyb-resume__body">
             <div class="d3-kyb-resume__identity">
               <div class="d3-workspace__biz-row">
@@ -713,11 +760,6 @@
                   <dd>17 Jun 2026, 2:14 PM</dd>
                 </div>
               </dl>
-            </div>
-
-            <div class="d3-kyb-resume__actions">
-              <button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d3-kyb-resume-btn>Resume Conversation</button>
-              <button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-d3-kyb-start-new>Start New</button>
             </div>
 
             <div class="d3-kyb-tabs" role="tablist" aria-label="Verification sections">
@@ -1182,7 +1224,7 @@
               <i class="fa-regular fa-user" aria-hidden="true"></i>
               Verify Person
             </button>
-            <button type="button" class="d1-chip" data-d1-chip data-prompt="Check risk signals.">
+            <button type="button" class="d1-chip" data-d1-chip data-agent="kyb" data-prompt="Check risk signals.">
               <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M8 2.5 14 13.5H2L8 2.5Z"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 6.5v3M8 11.5h.01"/></svg>
               Check Risk Signals
             </button>
@@ -1402,26 +1444,27 @@
 
 <script src="js/loader-mark.js"></script>
 <script src="js/signin.js?v=2"></script>
-<script src="composer/prompt.js"></script>
+<script src="composer/prompt.js?v=2"></script>
 <script src="js/chat.js"></script>
-<script src="js/drawer.js"></script>
+<script src="js/drawer.js?v=3"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
 <script src="../../Components/dialog/dialog.js"></script>
 <script src="../../pages/shared/tds-interactive-select.js"></script>
-<script src="js/d3-kyb-resume.js?v=20"></script>
-<script src="js/d3-kyb-report-reveal.js?v=10"></script>
+<script src="js/d3-kyb-resume.js?v=22"></script>
+<script src="js/d3-kyb-report-reveal.js?v=11"></script>
 <script src="js/d3-kyb-map-search.js?v=37"></script>
-<script src="js/d3-kyb-manual-search.js?v=1"></script>
+<script src="js/d3-kyb-manual-search.js?v=2"></script>
 <script src="js/d3-kyb-agent.js?v=8"></script>
 <script src="js/d3-motion.js?v=2"></script>
-<script src="js/d3-nav.js?v=23"></script>
+<script src="js/d3-labs.js?v=5"></script>
+<script src="js/d3-nav.js?v=27"></script>
 <script src="js/d3-transactions.js?v=3"></script>
-<script src="js/d3-org.js?v=1"></script>
+<script src="js/d3-org.js?v=2"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
-<script src="js/d3-tx-agent.js?v=2"></script>
+<script src="js/d3-tx-agent.js?v=3"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
-<script src="js/d3-chat-bridge.js?v=30"></script>
+<script src="js/d3-chat-bridge.js?v=31"></script>
 <script src="js/d3-home-placeholder.js?v=2"></script>
 </body>
 </html>

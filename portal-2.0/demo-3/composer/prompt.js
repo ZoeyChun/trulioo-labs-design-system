@@ -245,13 +245,19 @@
 
     root.querySelectorAll("[data-d1-chip]").forEach(function (chip) {
       chip.addEventListener("click", function () {
-        var id = chip.getAttribute("data-agent");
+        var id = chip.getAttribute("data-agent") || "kyb";
         var next = AGENTS.filter(function (item) { return item.id === id; })[0];
         if (next) setAgent(next, true);
-        input.value = chip.getAttribute("data-prompt") || "";
-        input.dispatchEvent(new Event("input"));
         closeMenu();
-        input.focus();
+        /* Start the flow immediately — do not paste the chip label into the field. */
+        root.dispatchEvent(new CustomEvent("d1-composer:chip", {
+          bubbles: true,
+          detail: {
+            agent: id,
+            prompt: chip.getAttribute("data-prompt") || "",
+            label: (chip.textContent || "").replace(/\s+/g, " ").trim()
+          }
+        }));
       });
     });
 

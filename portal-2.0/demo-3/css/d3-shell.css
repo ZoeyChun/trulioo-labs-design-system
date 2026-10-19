@@ -1,18 +1,27 @@
 /* Demo 3 — AI-chat PageShell
    Figma: Portal 2.0 1280:20394
-   Rail (72) + #f4f6f4 canvas [ TruAI 478 | main content ] */
+   Rail (72) + neutral-01 canvas [ TruAI 478 | main content ] */
 
-/* Shell + canvas share surface-neutral-02; rail is transparent so the
-   page reads as one continuous surface. Home keeps the white main card. */
+/* Shell + canvas share surface-neutral-01; rail uses neutral-02.
+   Zero shell inset/gap on every view so the rail stays edge-flush
+   and does not jump when leaving home. */
 .d1-shell {
-  background: var(--surface-neutral-02, #f4f6f4);
+  padding: 0;
+  gap: 0;
+  background: var(--surface-neutral-01, #fff);
 }
 
 .d1-rail {
   /* Above .d3-canvas so flyouts clear home briefing cards
      (.d1-brief z-index:2 would otherwise paint over the rail). */
   z-index: 20;
-  background: transparent;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+/* Main is never a floating card — flush to the canvas. */
+.d1-main {
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .d3-canvas {
@@ -23,13 +32,12 @@
   align-items: stretch;
   min-width: 0;
   min-height: 0;
-  background: var(--surface-neutral-02, #f4f6f4);
+  background: var(--surface-neutral-01, #fff);
   transition: background-color var(--d3-dur-panel, 300ms) var(--d3-ease-out, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
-/* Agent / KYB / TX / Org: drop the right shell gutter that read as a thin white bar. */
-.d1-shell:not([data-d3-view="home"]) {
-  padding-right: 0;
+body {
+  background: var(--surface-neutral-01, #fff);
 }
 
 .d1-shell:not([data-d3-view="home"]) .d3-canvas {
@@ -41,10 +49,10 @@
   min-height: 0;
 }
 
-/* TruAI panel: fill canvas height (shell already insets 8px). */
+/* TruAI panel: stretch height but float with 8px top/bottom inset. */
 .d1-shell[data-d3-chat="open"] .d3-chat-pane {
   align-self: stretch;
-  margin: 0;
+  margin: 8px 0;
   height: auto;
   max-height: none;
 }
@@ -99,10 +107,21 @@
   display: none;
 }
 
-.d1-shell:not([data-d3-view="home"]) .d1-main:has(.d1-drawer) .d1-slot {
+/* Default: slot fills main when drawer is closed. Open/expanded widths
+   come from drawer.js (--d1-slot-w); transactions overrides when entity is open. */
+.d1-shell:not([data-d3-view="home"]) .d1-main[data-d1-drawer="closed"] .d1-slot,
+.d1-shell:not([data-d3-view="home"]) .d1-main:not([data-d1-drawer]) .d1-slot {
   flex: 1 1 auto !important;
   width: 100% !important;
   max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+.d1-shell:not([data-d3-view="home"]) .d1-main[data-d1-drawer="open"] .d1-slot,
+.d1-shell:not([data-d3-view="home"]) .d1-main[data-d1-drawer="expanded"] .d1-slot {
+  flex: 0 0 auto !important;
+  width: var(--d1-slot-w) !important;
+  max-width: var(--d1-slot-w) !important;
   min-width: 0 !important;
 }
 

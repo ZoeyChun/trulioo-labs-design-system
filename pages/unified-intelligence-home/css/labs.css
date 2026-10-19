@@ -3,6 +3,107 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Portal embed (?embed=1): Agent-hub style header + filter, no marketing hero. */
+html.labs--embed,
+html.labs--embed body {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  background: transparent;
+}
+
+body.labs--embed .app-sidenav-overlay,
+body.labs--embed #app-sidenav,
+body.labs--embed .truai-btn,
+body.labs--embed .truai-dialog,
+body.labs--embed .labs-hero-zone {
+  display: none !important;
+}
+
+body.labs--embed .app-shell {
+  display: block;
+  min-height: 100%;
+  height: 100%;
+  padding: 0;
+  gap: 0;
+  background: transparent;
+}
+
+/* Flatten the page box — no card chrome inside the portal iframe. */
+body.labs--embed .app-main.labs-main {
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  max-height: none;
+  overflow: auto;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  background-image: none;
+}
+
+body.labs--embed .labs-page {
+  padding: 40px 24px 48px;
+  gap: 40px;
+  max-width: none;
+}
+
+.labs-page-header {
+  display: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.labs-page-header[hidden] {
+  display: none !important;
+}
+
+body.labs--embed .labs-page-header {
+  display: flex;
+}
+
+body.labs--embed .labs-page-header[hidden] {
+  display: flex !important;
+}
+
+.labs-page-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  max-width: 640px;
+}
+
+.labs-page-header__title {
+  margin: 0;
+  font-family: var(--font-ui, inherit);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--text-default, #172d2d);
+}
+
+.labs-page-header__lede {
+  margin: 0;
+  font-family: var(--font-ui, inherit);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--text-description, #526660);
+}
+
+.labs-page-header__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
 #labsFilterBar .tds-filter-button:not(.tds-filter-button--selected) .tds-filter-button__clear {
   display: none !important;
 }

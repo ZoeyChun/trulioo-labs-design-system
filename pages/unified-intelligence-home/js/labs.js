@@ -121,9 +121,28 @@
     return !!(item.url && item.url !== '#');
   }
 
+  /* When Labs is embedded in the portal, keep embed=1 on card destinations
+     so those pages hide their own side nav (portal rail already exists). */
+  function withEmbed(url) {
+    var embed =
+      document.body.classList.contains('labs--embed') ||
+      document.documentElement.classList.contains('app-embed') ||
+      (window.AppEmbed && window.AppEmbed.active);
+    if (!embed) return url;
+    if (!url || url === '#') return url;
+    var hash = '';
+    var hashIdx = url.indexOf('#');
+    if (hashIdx >= 0) {
+      hash = url.slice(hashIdx);
+      url = url.slice(0, hashIdx);
+    }
+    if (/[?&]embed=/.test(url)) return url + hash;
+    return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'embed=1' + hash;
+  }
+
   function wrapCard(item, className, inner) {
     if (hasLink(item)) {
-      return '<a class="' + className + '" href="' + escapeHtml(item.url) + '">' + inner + '</a>';
+      return '<a class="' + className + '" href="' + escapeHtml(withEmbed(item.url)) + '">' + inner + '</a>';
     }
     return '<div class="' + className + ' labs-card--static" role="group">' + inner + '</div>';
   }
@@ -361,10 +380,24 @@
     }
   }
 
+  /* Portal embed: Agent-hub header + relocate Filter out of the hidden hero. */
+  (function setupEmbedChrome() {
+    if (!document.body.classList.contains('labs--embed')) return;
+    var header = document.querySelector('[data-labs-page-header]');
+    var host = document.querySelector('[data-labs-filter-host]');
+    var filter = document.getElementById('labsFilterBar');
+    if (header) header.hidden = false;
+    if (host && filter) host.appendChild(filter);
+  })();
+
   buildFilterMenu();
   bindEvents();
   if (window.TdsDropdownPanel) {
-    window.TdsDropdownPanel.initMenus(document.querySelector('.labs-search-card') || document);
+    window.TdsDropdownPanel.initMenus(
+      document.querySelector('[data-labs-filter-host]') ||
+      document.querySelector('.labs-search-card') ||
+      document
+    );
   }
   if (els.filterMenu) {
     els.filterMenu.querySelectorAll('[data-filter-value]').forEach(function (node) {

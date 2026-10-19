@@ -1,4 +1,4 @@
-/* Demo 3 — Organization admin view: Settings → left Org AI + right org page. */
+/* Demo 3 — Organization admin view: Settings → full-width org page (no TruAI). */
 (function () {
   var shell = document.querySelector(".d1-shell");
   var frame = document.querySelector("[data-d3-org-frame]");
@@ -6,11 +6,12 @@
 
   function goOrg() {
     shell.setAttribute("data-d3-view", "org");
+    /* Org admin is page-only — keep TruAI closed (no left panel / ask bar). */
     if (window.D3Nav) {
-      window.D3Nav.setChatOpen(true, "org");
+      window.D3Nav.setChatOpen(false, "org");
       window.D3Nav.markChatIdle();
     } else {
-      shell.setAttribute("data-d3-chat", "open");
+      shell.setAttribute("data-d3-chat", "closed");
       shell.setAttribute("data-d3-chat-mode", "org");
     }
 

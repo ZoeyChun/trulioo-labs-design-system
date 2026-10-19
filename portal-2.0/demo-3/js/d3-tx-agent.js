@@ -458,14 +458,7 @@
 
   /* ---- response builders (grounded) ---- */
 
-  function toneTag(tone, label) {
-    var cls = "d1-tag";
-    if (tone === "positive") cls += " d1-tag--positive";
-    else if (tone === "negative") cls += " d1-tag--negative";
-    else cls += " d1-tag--review";
-    return '<span class="' + cls + '">' + esc(label) + "</span>";
-  }
-
+  /* Text-only reply — no clickable cards in chat. Open details from the table. */
   function buildListHtml(matches, label, intro) {
     var n = matches.length;
     var noun = n === 1 ? "transaction" : "transactions";
@@ -490,42 +483,21 @@
       return html + "</div>";
     }
 
-    html += '<ul class="d3-tx-agent__list">';
-    matches.slice(0, 8).forEach(function (item) {
+    var names = matches
+      .slice(0, 5)
+      .map(function (item) {
+        return item.name;
+      })
+      .filter(Boolean);
+    if (names.length) {
       html +=
-        '<li class="d3-tx-agent__item">' +
-        '<button type="button" class="d3-tx-agent__open" data-d3-tx-open="' +
-        esc(item.trid) +
-        '">' +
-        '<span class="d3-tx-agent__name">' +
-        esc(item.name) +
-        "</span>" +
-        toneTag(item.tone, item.outcome) +
-        '<span class="d3-tx-agent__meta">' +
-        esc(item.product) +
-        " · " +
-        esc(item.country) +
-        " · " +
-        esc(item.date) +
-        "</span>" +
-        (item.detail
-          ? '<span class="d3-tx-agent__detail">' + esc(item.detail) + "</span>"
-          : "") +
-        (item.scoreLabel
-          ? '<span class="d3-tx-agent__score">' +
-            esc(item.scoreValue || "") +
-            (item.scoreValue ? " · " : "") +
-            esc(item.scoreLabel) +
-            "</span>"
-          : "") +
-        "</button></li>";
-    });
-    html += "</ul>";
-    if (n > 8) {
-      html += "<p>Showing 8 of " + n + " matches. The table on the right is filtered to the full set.</p>";
-    } else {
-      html += "<p>The table on the right is filtered to these results. Click a row here or in the table to open details.</p>";
+        "<p class=\"d3-tx-agent__names\">" +
+        esc(names.join(", ")) +
+        (n > names.length ? "…" : "") +
+        "</p>";
     }
+    html +=
+      "<p>The table is filtered to these results. Select a row there to open the full report on the right.</p>";
     return html + "</div>";
   }
 
@@ -616,7 +588,7 @@
       });
     }
     steps.push({
-      text: "Open the full report from the button below or the matching table row.",
+      text: "Open the full report from the matching row in the transactions table.",
       done: false
     });
     return {
@@ -769,7 +741,7 @@
       " " +
       noun +
       (parsed.label ? " matching “" + parsed.label + "”" : "") +
-      ". Results below are taken directly from the table, which I’ve filtered to match."
+      ". I’ve filtered the table to match — open a row there to view the full report."
     );
   }
 
@@ -832,9 +804,9 @@
         await playGuideBlock(explained.title, explained.steps);
         if (explained.trid) {
           playHtml(
-            '<p><button type="button" class="tds-btn tds-btn--sm tds-btn--primary" data-d3-tx-open="' +
-              esc(explained.trid) +
-              '">Open transaction details</button></p>'
+            "<p>Select <strong>" +
+              esc(parsed.focusName || (result.matches[0] && result.matches[0].name) || "the matching row") +
+              "</strong> in the table to open the full report on the right.</p>"
           );
         }
         lastMatches = result.matches || [];
@@ -881,13 +853,6 @@
   }
 
   /* ---- event wiring ---- */
-
-  thread.addEventListener("click", function (event) {
-    var btn = event.target.closest("[data-d3-tx-open]");
-    if (!btn || !onTransactions()) return;
-    event.preventDefault();
-    openTrid(btn.getAttribute("data-d3-tx-open"));
-  });
 
   composer.addEventListener(
     "d1-composer:submit",

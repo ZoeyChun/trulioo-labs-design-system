@@ -510,9 +510,18 @@
     closeMenu();
     if (!biz) return;
 
+    /* Manual form Submit → run verification immediately (demo-2 fromForm).
+       Skip the chat Confirm / Cancel CTA used for map/card picks. */
+    var homeInput = document.querySelector("[data-d1-input]");
+    if (homeInput) {
+      homeInput.value = "";
+      homeInput.dispatchEvent(new Event("input", { bubbles: true }));
+    }
     if (window.D3KybMapSearch && window.D3KybMapSearch.selectBusiness) {
       window.D3KybMapSearch.selectBusiness(biz, {
-        userText: "Verify " + biz.name
+        confirmed: true,
+        skipUserTurn: true,
+        fromForm: true
       });
       return;
     }

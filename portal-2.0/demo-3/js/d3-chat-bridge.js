@@ -140,6 +140,37 @@
 
   sourceComposer.addEventListener("d1-composer:submit", routeHomeSubmit, true);
 
+  /* Home chips: open the experience immediately (no paste into the composer). */
+  sourceComposer.addEventListener("d1-composer:chip", function (event) {
+    var detail = event.detail || {};
+    var agent = detail.agent || "kyb";
+    var view = shell.getAttribute("data-d3-view") || "home";
+    if (view !== "home" && view !== "agents") return;
+
+    if (agent === "kyc") {
+      if (window.D3Nav && window.D3Nav.openKycChat) {
+        window.D3Nav.openKycChat({ forceActive: false });
+      }
+      return;
+    }
+
+    if (agent === "tx") {
+      if (window.D3Transactions && window.D3Transactions.open) {
+        window.D3Transactions.open();
+      } else if (window.D3Nav && window.D3Nav.goTransactions) {
+        window.D3Nav.goTransactions();
+      }
+      if (window.D3Nav) window.D3Nav.setChatOpen(true, "tx");
+      return;
+    }
+
+    if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
+      window.D3KybResume.openResumeExperience();
+    } else if (window.D3Nav && window.D3Nav.openKybChat) {
+      window.D3Nav.openKybChat({ resume: true });
+    }
+  });
+
   /* Beat chat.js [data-d1-demo] → Demo 1 full-page chat (old homepage stage). */
   document.querySelectorAll("[data-d1-demo]").forEach(function (button) {
     button.addEventListener(

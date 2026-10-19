@@ -44,29 +44,6 @@
   color: var(--text-default);
 }
 
-.d3-chat-pane__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 9999px;
-  background: var(--surface-neutral-02);
-  border: 1px solid var(--border-subtle);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  color: var(--text-description);
-}
-
-.d3-chat-pane__badge::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  background: var(--interactive-default, #004c45);
-  flex-shrink: 0;
-}
-
 .d3-chat-pane__close {
   margin-left: auto;
 }
@@ -379,8 +356,9 @@
   outline-offset: 2px;
 }
 
-/* Visible only when chat is closed away from home (home has its own composer). */
-.d1-shell[data-d3-chat="closed"]:not([data-d3-view="home"]) .d3-askbar {
+/* Visible only when chat is closed away from home (home has its own composer).
+   Org admin has no TruAI — keep the ask bar hidden there. */
+.d1-shell[data-d3-chat="closed"]:not([data-d3-view="home"]):not([data-d3-view="org"]) .d3-askbar {
   opacity: 1;
   translate: -50% 0;
   pointer-events: auto;

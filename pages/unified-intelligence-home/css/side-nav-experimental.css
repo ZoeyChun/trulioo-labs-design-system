@@ -1,5 +1,40 @@
 /* Labs SideNav — Figma 1187:10323 / 1188:10370. Scoped to experimental pages. */
 
+/* Portal iframe embed: drop the duplicate Labs side nav + card chrome. */
+html.app-embed .tds-side-nav,
+html.app-embed #app-sidenav,
+html.app-embed .app-sidenav,
+html.app-embed .app-sidenav-overlay,
+html.app-embed .app-nav-toggle,
+html.app-embed .truai-btn,
+html.app-embed .app-truai-btn {
+  display: none !important;
+}
+
+html.app-embed,
+html.app-embed body.app-embed {
+  background: transparent !important;
+}
+
+html.app-embed .app-shell {
+  padding: 0 !important;
+  gap: 0 !important;
+  background: transparent !important;
+  min-height: 100% !important;
+}
+
+html.app-embed .app-main,
+html.app-embed .app-main.labs-main,
+html.app-embed .app-main.history-main {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  min-height: 100% !important;
+}
+
 body[data-sidenav="experimental"] .tds-side-nav.tds-side-nav--collapsed {
   width: 72px;
 }
