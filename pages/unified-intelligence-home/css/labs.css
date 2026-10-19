@@ -87,9 +87,10 @@ body.labs--embed .labs-page-header[hidden] {
   max-width: 640px;
 }
 
+/* Keep in sync with Demo 3 .th-tx__title (Transactions embed). */
 .labs-page-header__title {
   margin: 0;
-  font-family: var(--font-ui, inherit);
+  font-family: var(--font-family, var(--font-ui, "Inter", system-ui, sans-serif));
   font-size: 24px;
   font-weight: 600;
   line-height: 32px;

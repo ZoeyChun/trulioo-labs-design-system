@@ -128,14 +128,15 @@
   overflow: hidden;
 }
 
-/* Match Labs embed page header title (24 / 32). */
+/* Keep in sync with Labs .labs-page-header__title. */
 .th-tx__title {
   margin: 0 0 24px;
   flex: 0 0 auto;
+  font-family: var(--font-family, "Inter", system-ui, sans-serif);
   font-size: 24px;
   font-weight: 600;
   line-height: 32px;
-  color: var(--text-default);
+  color: var(--text-default, #172d2d);
 }
 
 /* Failed-verification reply inside the shared TruAI thread. */

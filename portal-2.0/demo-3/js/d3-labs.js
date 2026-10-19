@@ -4,7 +4,7 @@
   var frame = document.querySelector("[data-d3-labs-frame]");
   if (!shell) return;
 
-  var LABS_SRC = "../../pages/unified-intelligence-home/labs.html?embed=1&v=9";
+  var LABS_SRC = "../../pages/unified-intelligence-home/labs.html?embed=1&v=10";
 
   function ensureFrame() {
     if (!frame) return;

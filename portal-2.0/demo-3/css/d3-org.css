@@ -45,9 +45,19 @@
   background: transparent;
 }
 
-.d1-shell[data-d3-view="org"] .d1-main {
+/* Flush to the rail — no gray canvas inset around the iframe. */
+.d1-shell[data-d3-view="org"] .d3-canvas {
   padding: 0;
   gap: 0;
+  background: var(--surface-neutral-01, #fff);
+}
+
+.d1-shell[data-d3-view="org"] .d1-main {
+  padding: 0 !important;
+  gap: 0 !important;
+  background: var(--surface-neutral-01, #fff);
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .d1-shell[data-d3-view="org"] .d1-slot {
@@ -58,13 +68,19 @@
   min-height: 0 !important;
   height: 100%;
   align-self: stretch;
+  padding: 0;
+  background: transparent;
 }
 
 .d1-shell[data-d3-view="org"] .d1-drawer {
   display: none;
 }
 
-/* Org keeps TruAI (idle) so admin prompts remain reachable. */
+/* No TruAI on Org Admin — hide panel + ask bar. */
+.d1-shell[data-d3-view="org"] .d3-chat-pane,
+.d1-shell[data-d3-view="org"] .d3-askbar {
+  display: none !important;
+}
 
 .d1-shell[data-d3-view="org"] .d1-tool-btn[data-d3-nav="settings"],
 .d1-shell[data-d3-view="org"] .d1-tool-btn[aria-label="Settings"] {

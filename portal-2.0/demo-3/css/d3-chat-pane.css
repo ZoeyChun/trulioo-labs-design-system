@@ -451,8 +451,8 @@
 }
 
 /* Visible when chat is closed away from home (home has its own composer).
-   Org keeps TruAI — ask bar shows when the panel is minimized. */
-.d1-shell[data-d3-chat="closed"]:not([data-d3-view="home"]) .d3-askbar {
+   Org Admin has no TruAI — keep the ask bar hidden there. */
+.d1-shell[data-d3-chat="closed"]:not([data-d3-view="home"]):not([data-d3-view="org"]) .d3-askbar {
   opacity: 1;
   translate: -50% 0;
   pointer-events: auto;
@@ -471,8 +471,8 @@
     display: none !important;
   }
 
-  .d1-shell[data-d3-chat="open"]:not([data-d3-view="home"]) .d3-askbar,
-  .d1-shell[data-d3-chat="closed"]:not([data-d3-view="home"]) .d3-askbar {
+  .d1-shell[data-d3-chat="open"]:not([data-d3-view="home"]):not([data-d3-view="org"]) .d3-askbar,
+  .d1-shell[data-d3-chat="closed"]:not([data-d3-view="home"]):not([data-d3-view="org"]) .d3-askbar {
     opacity: 1;
     translate: -50% 0;
     pointer-events: auto;
@@ -481,14 +481,17 @@
     transition-delay: 0ms;
   }
 
-  .d1-shell:not([data-d3-view="home"]) .d1-main {
+  .d1-shell:not([data-d3-view="home"]):not([data-d3-view="org"]) .d1-main {
     padding: 16px 12px 72px;
   }
 
   .d1-shell[data-d3-view="agents"] .d1-main,
   .d1-shell[data-d3-view="transactions"] .d1-main,
-  .d1-shell[data-d3-view="org"] .d1-main,
   .d1-shell[data-d3-chat-mode="kyb"]:not([data-d3-view="home"]) .d1-main {
     padding: 0 0 72px !important;
+  }
+
+  .d1-shell[data-d3-view="org"] .d1-main {
+    padding: 0 !important;
   }
 }

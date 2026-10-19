@@ -68,31 +68,10 @@
     if (mode !== "report" && resumeCard) resumeCard.classList.remove("is-live");
     var backBtn = workspace.querySelector("[data-d3-kyb-back]");
     if (backBtn) backBtn.hidden = mode !== "report";
-    updateMapNudge();
-    if (mode === "map") syncEntryActive("map");
-    else if (mode === "resume") syncEntryActive("search");
-    else if (mode === "report") syncEntryActive("continue");
-    bindResumeButtons(workspace);
   }
 
   function updateMapNudge() {
-    /* Map surface: offer Continue session when an incomplete verify exists. */
-    if (!mapNudge) return;
-    var onMap = workspace.getAttribute("data-d3-kyb-surface") === "map";
-    if (!onMap || !hasIncomplete()) {
-      mapNudge.hidden = true;
-      mapNudge.innerHTML = "";
-      return;
-    }
-    mapNudge.hidden = false;
-    mapNudge.innerHTML =
-      '<button type="button" class="d3-kyb-map__nudge-btn" data-d3-kyb-resume-btn>' +
-      "Continue session" +
-      "</button>" +
-      '<button type="button" class="d3-kyb-map__nudge-link" data-d3-kyb-entry="search">' +
-      "Back to search" +
-      "</button>";
-    bindResumeButtons(mapNudge);
+    if (mapNudge) mapNudge.hidden = true;
   }
 
   function setResumeVisible(show) {
@@ -465,15 +444,9 @@
     runSuggestedAction(text, tab);
   });
 
-  function bindResumeButtons(root) {
-    (root || workspace).querySelectorAll("[data-d3-kyb-resume-btn]").forEach(function (btn) {
-      if (btn._d3ResumeBound) return;
-      btn._d3ResumeBound = true;
-      btn.addEventListener("click", resumeConversation);
-    });
-  }
-  bindResumeButtons(workspace);
-
+  workspace.querySelectorAll("[data-d3-kyb-resume-btn]").forEach(function (btn) {
+    btn.addEventListener("click", resumeConversation);
+  });
   workspace.querySelectorAll("[data-d3-kyb-start-new]").forEach(function (btn) {
     btn.addEventListener("click", startNew);
   });
@@ -482,33 +455,6 @@
       openResumeExperience();
     });
   });
-
-  /* Search (landing) · Map · Continue session — one entry chooser. */
-  workspace.addEventListener("click", function (event) {
-    var entry = event.target.closest("[data-d3-kyb-entry]");
-    if (!entry || !workspace.contains(entry)) return;
-    var mode = entry.getAttribute("data-d3-kyb-entry");
-    if (mode === "map") {
-      openMapExperience();
-      syncEntryActive("map");
-      return;
-    }
-    if (mode === "search") {
-      openResumeExperience();
-      syncEntryActive("search");
-      return;
-    }
-    if (mode === "continue") {
-      resumeConversation();
-      syncEntryActive("continue");
-    }
-  });
-
-  function syncEntryActive(mode) {
-    workspace.querySelectorAll("[data-d3-kyb-entry]").forEach(function (btn) {
-      btn.classList.toggle("is-active", btn.getAttribute("data-d3-kyb-entry") === mode);
-    });
-  }
 
   workspace.querySelectorAll("[data-d3-kyb-recent-card]").forEach(function (card) {
     card.addEventListener("click", function () {

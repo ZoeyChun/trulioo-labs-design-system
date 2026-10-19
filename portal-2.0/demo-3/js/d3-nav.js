@@ -247,14 +247,8 @@
       }
 
       if (onOrg || agent === "org") {
+        /* Org Admin is workspace-only — no TruAI panel. */
         if (!onOrg) goOrg();
-        if (prompt) {
-          setChatOpen(true, "org");
-          document.dispatchEvent(new CustomEvent("d3-chat:send", {
-            detail: { text: prompt, agent: "org" },
-            cancelable: true
-          }));
-        }
         return;
       }
 

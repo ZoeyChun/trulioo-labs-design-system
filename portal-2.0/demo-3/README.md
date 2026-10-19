@@ -22,7 +22,7 @@ Open: http://127.0.0.1:8765/portal-2.0/demo-3/
 3. **Portal Home** — Welcome back + composer + briefing cards (`data-d3-view="home"`)
 4. **Sidebar** — Home · Labs · Transactions · Chats · Settings · Account  
    (`data-d3-nav`: `home` | `labs` | `transactions` | `messages` | `settings`)
-5. **Left chat** — TruAI panel per agent (KYB, TX, KYC, Org Admin); close collapses to the floating ask bar
+5. **Left chat** — TruAI panel for KYB / TX / KYC (Org Admin is workspace-only, no agent panel); close collapses to the floating ask bar
 
 ### Home story (one canonical map)
 
@@ -33,10 +33,6 @@ Open: http://127.0.0.1:8765/portal-2.0/demo-3/
 | Labs catalog Home | `pages/…/labs.html` sidenav | Experimental nav only |
 
 Agent hub is retired. KYB crumbs are always **Labs / KYB Verification [/ entity]**.
-
-### KYB entry
-
-On the KYB landing: **Search** (default) · **Map** · **Continue session**.
 
 ### Drawer motion
 

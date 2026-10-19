@@ -1,18 +1,25 @@
-/* Demo 3 — Organization admin: Settings → org page + TruAI idle (org prompts). */
+/* Demo 3 — Organization admin: Settings → full-width org page (no TruAI). */
 (function () {
   var shell = document.querySelector(".d1-shell");
   var frame = document.querySelector("[data-d3-org-frame]");
   if (!shell) return;
 
+  var ORG_SRC = "organization-admin/index.html?embed=1&v=2";
+
+  function ensureFrame() {
+    if (!frame) return;
+    if (frame.getAttribute("src") !== ORG_SRC) {
+      frame.setAttribute("src", ORG_SRC);
+    }
+  }
+
   function goOrg() {
     shell.setAttribute("data-d3-view", "org");
-    /* Keep TruAI available so Org Admin prompts stay reachable. */
-    if (window.D3Nav) {
-      window.D3Nav.setChatOpen(true, "org");
-      window.D3Nav.markChatIdle();
+    /* No Org Admin agent panel — workspace only. */
+    if (window.D3Nav && window.D3Nav.setChatOpen) {
+      window.D3Nav.setChatOpen(false);
     } else {
-      shell.setAttribute("data-d3-chat", "open");
-      shell.setAttribute("data-d3-chat-mode", "org");
+      shell.setAttribute("data-d3-chat", "closed");
     }
 
     document.querySelectorAll("[data-d3-nav]").forEach(function (btn) {
@@ -25,9 +32,7 @@
       settings.setAttribute("aria-current", "page");
     }
 
-    if (frame && !frame.getAttribute("src")) {
-      frame.setAttribute("src", "organization-admin/index.html?embed=1");
-    }
+    ensureFrame();
 
     document.dispatchEvent(new CustomEvent("d3-view:org"));
     window.requestAnimationFrame(function () {
