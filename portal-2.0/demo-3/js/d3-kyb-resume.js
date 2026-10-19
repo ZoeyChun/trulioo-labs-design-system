@@ -154,11 +154,48 @@
     document.dispatchEvent(new CustomEvent("d3-kyb:resume-ready"));
   }
 
+  /* Expand the incomplete Acme card into the same full-page report chrome
+     used after a live verification (surface=report + .is-live). */
+  function expandToFullReport(session) {
+    session = session || readSession() || DEFAULT_SESSION;
+    var name = session.businessName || "Acme Inc.";
+
+    if (window.D3Nav) window.D3Nav.openKybChat({ resume: true });
+    setSurface("report");
+    setResumeVisible(true);
+    if (resumeCard) resumeCard.classList.add("is-live");
+
+    if (detail) {
+      var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
+      if (detailsBtn) detailsBtn.hidden = false;
+      var exportBtn = detail.querySelector("[data-d3-kyb-export]");
+      if (exportBtn) exportBtn.hidden = false;
+      var title = detail.querySelector(".d3-workspace__title");
+      if (title) title.hidden = true;
+      var crumbEl = detail.querySelector(".d3-workspace__crumb");
+      if (crumbEl) {
+        crumbEl.innerHTML =
+          'Home / Verify a business / <span data-d3-kyb-crumb-biz></span>';
+        var crumbBiz = crumbEl.querySelector("[data-d3-kyb-crumb-biz]");
+        if (crumbBiz) crumbBiz.textContent = name;
+      }
+      detail.classList.remove("is-entering");
+      void detail.offsetWidth;
+      detail.classList.add("is-entering");
+    }
+
+    var bizName = resumeCard && resumeCard.querySelector(".d3-workspace__biz-name");
+    if (bizName) bizName.textContent = name;
+    var bizTag = resumeCard && resumeCard.querySelector(".d1-tag");
+    if (bizTag) {
+      bizTag.textContent = session.status || "Verified";
+      bizTag.className = "d1-tag d1-tag--positive";
+    }
+  }
+
   function resumeConversation() {
     var session = readSession() || DEFAULT_SESSION;
-    if (window.D3Nav) window.D3Nav.openKybChat({ resume: true });
-    setSurface("resume");
-    setResumeVisible(true);
+    expandToFullReport(session);
     renderMessages(session.messages);
     document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
     if (window.D3Nav) window.D3Nav.markChatActive();
@@ -240,6 +277,7 @@
     ensureDemoSession: ensureDemoSession,
     startNew: startNew,
     resumeConversation: resumeConversation,
+    expandToFullReport: expandToFullReport,
     setSurface: setSurface
   };
 })();
