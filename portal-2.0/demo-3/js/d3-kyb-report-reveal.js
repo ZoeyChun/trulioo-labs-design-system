@@ -247,6 +247,7 @@
     if (window.D3KybResume && window.D3KybResume.renderCrumbs) {
       window.D3KybResume.renderCrumbs("report", biz.name);
     } else if (crumb) {
+      crumb.hidden = false;
       crumb.innerHTML =
         '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">KYB Verification</button>' +
         '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +

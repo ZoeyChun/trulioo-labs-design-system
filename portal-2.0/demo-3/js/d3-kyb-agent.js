@@ -687,14 +687,27 @@
     showConfirmStep(biz);
   }
 
+  function playStartingVerification(biz) {
+    var name = (biz && biz.name) || "this business";
+    var copy =
+      "Starting verification for <strong>" +
+      esc(name) +
+      "</strong>. I’ll progressively fill the report on the right as registry, ownership, and sanctions checks complete.";
+    var node = clone("typing");
+    if (!node) {
+      playHtml("<p>" + copy + "</p>");
+      return;
+    }
+    var label = node.querySelector("[data-d1-thinking-label]");
+    if (label) label.innerHTML = copy;
+    node.setAttribute("data-d3-kyb-starting", "");
+    place(node);
+  }
+
   function runConfirmedVerify(biz) {
     var map = window.D3KybMapSearch;
     if (!biz || !map) return;
-    playHtml(
-      "<p>Starting verification for <strong>" +
-        esc(biz.name) +
-        "</strong>. I’ll progressively fill the report on the right as registry, ownership, and sanctions checks complete.</p>"
-    );
+    playStartingVerification(biz);
     map.selectBusiness(biz, { skipUserTurn: true, confirmed: true });
   }
 

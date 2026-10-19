@@ -247,18 +247,19 @@
   function renderCrumbs(mode, bizName) {
     var el = crumbEl();
     if (!el) return;
-    /* Top-level KYB Verification [/ entity] — no Labs parent. */
-    if (mode === "report") {
-      el.innerHTML =
-        '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">KYB Verification</button>' +
-        '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
-        '<span class="d3-workspace__crumb-current" data-d3-kyb-crumb-biz></span>';
-      var biz = el.querySelector("[data-d3-kyb-crumb-biz]");
-      if (biz) biz.textContent = bizName || "Business";
+    /* Landing is page level 1 — title already says KYB Verification; no crumb. */
+    if (mode !== "report") {
+      el.innerHTML = "";
+      el.hidden = true;
       return;
     }
+    el.hidden = false;
     el.innerHTML =
-      '<span class="d3-workspace__crumb-current">KYB Verification</span>';
+      '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">KYB Verification</button>' +
+      '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
+      '<span class="d3-workspace__crumb-current" data-d3-kyb-crumb-biz></span>';
+    var biz = el.querySelector("[data-d3-kyb-crumb-biz]");
+    if (biz) biz.textContent = bizName || "Business";
   }
 
   function prepareDetailChrome() {

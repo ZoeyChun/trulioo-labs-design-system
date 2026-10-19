@@ -10,10 +10,10 @@
   max-width: 478px;
   min-height: 0;
   flex-direction: column;
-  gap: 48px;
+  gap: 0;
   margin: 8px;
   /* 16px content + 4px gutter so .d1-prompt ring/outline isn't clipped */
-  padding: 32px 20px;
+  padding: 24px 20px 20px;
   background: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
@@ -27,13 +27,45 @@
 }
 
 .d3-chat-pane__head {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: var(--spacing-8);
   flex-shrink: 0;
   min-height: auto;
-  padding: 0;
+  /* Extra bottom pad = feather zone that overlaps the scrolling thread. */
+  padding: 0 0 28px;
+  margin-bottom: -20px;
   border-bottom: 0;
+  background: linear-gradient(
+    180deg,
+    var(--surface-neutral-01, #fff) 0%,
+    var(--surface-neutral-01, #fff) 42%,
+    color-mix(in srgb, var(--surface-neutral-01, #fff) 55%, transparent) 72%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.d3-chat-pane__head > * {
+  pointer-events: auto;
+}
+
+/* Soft veil just under the brand row so scroll doesn’t hit a hard edge. */
+.d3-chat-pane__head::after {
+  content: "";
+  position: absolute;
+  left: -20px;
+  right: -20px;
+  top: 100%;
+  height: 36px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-neutral-01, #fff) 45%, transparent) 0%,
+    transparent 100%
+  );
 }
 
 .d3-chat-pane__brand {
@@ -49,6 +81,8 @@
 }
 
 .d3-chat-pane__body {
+  position: relative;
+  z-index: 1;
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
@@ -187,6 +221,21 @@
   overflow-y: auto;
   padding: var(--spacing-16);
   display: none;
+  /* Feather the top of the scrollport so messages ease under the header. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 36px,
+    #000 calc(100% - 12px),
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 36px,
+    #000 calc(100% - 12px),
+    #000 100%
+  );
 }
 
 .d3-chat-pane__composer {

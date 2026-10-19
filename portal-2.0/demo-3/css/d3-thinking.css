@@ -3,8 +3,11 @@
 
 .d1-thinking {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-12, 12px);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: var(--spacing-8, 8px) 0;
   color: var(--text-description, #617269);
 }
@@ -15,6 +18,7 @@
   place-items: center;
   width: 28px;
   height: 28px;
+  margin-top: 1px;
   color: var(--interactive-default, #004c45);
 }
 
@@ -36,8 +40,18 @@
 }
 
 .d1-thinking__text {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: var(--font-size-sm, 14px);
-  line-height: 18px;
+  line-height: 20px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.d1-thinking__text strong {
+  font-weight: 600;
+  color: var(--text-default, #161616);
 }
 
 @media (prefers-reduced-motion: reduce) {
