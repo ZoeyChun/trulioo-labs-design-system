@@ -34,16 +34,17 @@
 }
 
 .d1-shell[data-d3-view="transactions"] .d3-tx.d3-motion-enter .d3-tx__frame {
-  animation: d3-fade-up var(--d3-dur-page, 360ms) var(--d3-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
+  animation-delay: 40ms;
 }
 
-/* Fill the main column like map/report. */
-.d1-shell[data-d3-chat="open"][data-d3-view="transactions"] .d1-main {
+/* Fill the main column like map/report (open or minimized chat). */
+.d1-shell[data-d3-view="transactions"] .d1-main {
   padding: 0;
   gap: 0;
 }
 
-.d1-shell[data-d3-chat="open"][data-d3-view="transactions"] .d1-slot {
+.d1-shell[data-d3-view="transactions"] .d1-slot {
   flex: 1 1 auto !important;
   width: auto !important;
   max-width: none !important;
@@ -51,10 +52,6 @@
   min-height: 0 !important;
   height: 100%;
   align-self: stretch;
-}
-
-.d1-shell[data-d3-chat="open"][data-d3-view="transactions"] .d1-drawer {
-  /* Keep drawer available for transaction details. */
 }
 
 @media (prefers-reduced-motion: reduce) {

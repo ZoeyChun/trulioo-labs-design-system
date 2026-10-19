@@ -74,25 +74,13 @@
 }
 
 @keyframes d3-kyb-map-in {
-  from {
-    opacity: 0;
-    transform: scale(1.018);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes d3-kyb-detail-out {
-  from {
-    opacity: 1;
-    transform: none;
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0) scale(0.988);
-  }
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 .d3-kyb-map.is-fading {
@@ -168,18 +156,36 @@
 }
 
 .d3-workspace__detail.is-entering {
-  animation: d3-kyb-report-enter var(--d3-dur-reveal, 400ms) var(--d3-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
+}
+
+/* Landing — demo-2/verify-business (crumbs 40, search 90, result 150). */
+.d3-workspace.d3-motion-enter .d3-workspace__crumb,
+.d3-workspace.d3-motion-enter .d3-workspace__detail-top {
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
+  animation-delay: 40ms;
+}
+
+.d3-workspace.d3-motion-enter .d3-workspace__title,
+.d3-workspace.d3-motion-enter .d3-workspace__search {
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
+  animation-delay: 90ms;
+}
+
+.d3-workspace.d3-motion-enter .d3-kyb-resume,
+.d3-workspace.d3-motion-enter .d3-workspace__fresh {
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
+  animation-delay: 150ms;
+}
+
+.d3-workspace.d3-motion-enter .d3-kyb-map {
+  animation: v2-fade 360ms ease both;
+  animation-delay: 90ms;
 }
 
 @keyframes d3-kyb-report-enter {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 12px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 .d3-workspace__detail-top {
@@ -203,13 +209,21 @@
   flex: 0 0 auto;
 }
 
+/* Export only on the live verification result — never on resume/search landing.
+   Button styles use display:inline-flex and can beat the HTML [hidden] attribute. */
+.d3-kyb-export,
+.d3-kyb-export[hidden],
+.d3-workspace:not([data-d3-kyb-surface="report"]) .d3-kyb-export {
+  display: none !important;
+}
+
+.d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-export:not([hidden]) {
+  display: inline-flex !important;
+}
+
 .d3-workspace[data-d3-kyb-surface="report"] .d3-workspace__search,
 .d3-workspace[data-d3-kyb-surface="report"] .d3-workspace__fresh {
   display: none;
-}
-
-.d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-export {
-  display: inline-flex;
 }
 
 .d3-kyb-resume.is-live .d3-kyb-resume__head,
@@ -389,7 +403,14 @@
   .d3-kyb-biz-marker.is-appearing,
   .d3-kyb-hero.is-revealed,
   [data-d3-field].is-revealed,
-  .d3-kyb-lower.is-revealed {
+  .d3-kyb-lower.is-revealed,
+  .d3-workspace.d3-motion-enter .d3-workspace__crumb,
+  .d3-workspace.d3-motion-enter .d3-workspace__detail-top,
+  .d3-workspace.d3-motion-enter .d3-workspace__title,
+  .d3-workspace.d3-motion-enter .d3-workspace__search,
+  .d3-workspace.d3-motion-enter .d3-kyb-resume,
+  .d3-workspace.d3-motion-enter .d3-workspace__fresh,
+  .d3-workspace.d3-motion-enter .d3-kyb-map {
     animation: none;
   }
 
@@ -701,82 +722,7 @@
   color: var(--text-default);
 }
 
-.d3-workspace__search {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-12);
-  flex-wrap: wrap;
-}
-
-.d3-workspace__field {
-  flex: 0 1 488px;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  min-height: 40px;
-  height: 40px;
-  padding: 0 var(--spacing-12);
-  border: 1px solid var(--border-strong, #c5cec8);
-  border-radius: var(--radius-button, 6px);
-  background: var(--surface-neutral-01);
-  box-sizing: border-box;
-}
-
-.d3-workspace__field-country {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  min-height: 28px;
-  padding-right: 12px;
-  border-right: 1px solid var(--border-subtle, #dde2de);
-}
-
-.d3-workspace__field-country .d3-workspace__flag {
-  display: block;
-  width: 18px;
-  height: 12px;
-  border: 0.5px solid var(--border-subtle, #dde2de);
-  border-radius: 2px;
-}
-
-.d3-workspace__field input {
-  flex: 1 1 auto;
-  min-width: 0;
-  border: 0;
-  outline: none;
-  background: transparent;
-  font: inherit;
-  font-size: 14px;
-  line-height: 22px;
-  color: var(--text-default);
-}
-
-.d3-workspace__field input::placeholder {
-  color: var(--text-label, #8a9a90);
-}
-
-.d3-workspace__or {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  align-self: stretch;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 18px;
-  color: var(--text-caption, #617269);
-}
-
-.d3-workspace__or::before,
-.d3-workspace__or::after {
-  content: "";
-  flex: 1 1 auto;
-  width: 1px;
-  min-height: 8px;
-  background: var(--border-strong, #c5cec8);
-}
+/* Manual search row styles live in d3-kyb-search.css (demo-2 sync). */
 
 .d3-workspace__card {
   display: flex;

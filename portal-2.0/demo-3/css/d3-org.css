@@ -30,6 +30,11 @@
   display: none !important;
 }
 
+.d3-org.d3-motion-enter .d3-org__frame {
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
+  animation-delay: 40ms;
+}
+
 .d3-org__frame {
   flex: 1 1 auto;
   width: 100%;
@@ -40,12 +45,12 @@
   background: transparent;
 }
 
-.d1-shell[data-d3-chat="open"][data-d3-view="org"] .d1-main {
+.d1-shell[data-d3-view="org"] .d1-main {
   padding: 0;
   gap: 0;
 }
 
-.d1-shell[data-d3-chat="open"][data-d3-view="org"] .d1-slot {
+.d1-shell[data-d3-view="org"] .d1-slot {
   flex: 1 1 auto !important;
   width: auto !important;
   max-width: none !important;
@@ -55,7 +60,7 @@
   align-self: stretch;
 }
 
-.d1-shell[data-d3-chat="open"][data-d3-view="org"] .d1-drawer {
+.d1-shell[data-d3-view="org"] .d1-drawer {
   display: none;
 }
 

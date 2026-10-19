@@ -10,7 +10,8 @@
   display: block !important;
 }
 
-.d1-home[data-d1-repeat="true"] .d1-brief {
+/* Only on the home stage — never while stage=chat (composer may be parked). */
+.d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
   display: grid;
 }
 

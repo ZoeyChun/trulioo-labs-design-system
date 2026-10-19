@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="composer/prompt.css">
   <link rel="stylesheet" href="css/messages.css?v=3">
-  <link rel="stylesheet" href="css/motion.css?v=2">
+  <link rel="stylesheet" href="css/motion.css?v=6">
   <link rel="stylesheet" href="css/drawer.css">
   <link rel="stylesheet" href="../../Components/text-input/text-input.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
@@ -28,20 +28,29 @@
   <link rel="stylesheet" href="../../Components/data-table/data-table.css">
   <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
   <link rel="stylesheet" href="../../Components/stat-card/stat-card.css">
+  <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../Components/select/select.css">
+  <link rel="stylesheet" href="../../Components/select/combobox.css">
+  <link rel="stylesheet" href="../../Components/_shared/dropdown-panel/dropdown-panel.css">
+  <link rel="stylesheet" href="../../Components/_shared/caret/caret.css">
+  <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="../../pages/shared/flag-icons.css">
+  <link rel="stylesheet" href="css/d3-kyb-search.css?v=1">
   <link rel="stylesheet" href="css/welcome.css">
   <link rel="stylesheet" href="css/briefing.css">
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/signin.css">
-  <link rel="stylesheet" href="css/d3-shell.css?v=21">
+  <link rel="stylesheet" href="css/d3-shell.css?v=23">
   <link rel="stylesheet" href="css/d3-rail.css?v=11">
-  <link rel="stylesheet" href="css/d3-chat-pane.css?v=10">
-  <link rel="stylesheet" href="css/d3-agents.css?v=10">
-  <link rel="stylesheet" href="css/d3-home.css?v=9">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=30">
-  <link rel="stylesheet" href="css/d3-transactions.css?v=2">
-  <link rel="stylesheet" href="css/d3-org.css?v=1">
+  <link rel="stylesheet" href="css/d3-chat-pane.css?v=14">
+  <link rel="stylesheet" href="css/d3-agents.css?v=13">
+  <link rel="stylesheet" href="css/d3-home.css?v=10">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=34">
+  <link rel="stylesheet" href="css/d3-transactions.css?v=5">
+  <link rel="stylesheet" href="css/d3-org.css?v=4">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=1">
-  <link rel="stylesheet" href="css/d3-kyb-agent.css?v=3">
+  <link rel="stylesheet" href="css/d3-kyb-agent.css?v=4">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <!-- cache bump for PageShell 1280:20394 -->
 </head>
@@ -149,7 +158,7 @@
 
   <!-- Figma PageShell 1280:20394 — canvas holds TruAI panel + main -->
   <div class="d3-canvas">
-  <aside class="d3-chat-pane" data-d3-chat-pane aria-label="TruAI chat">
+  <aside class="d3-chat-pane" id="d3-chat-pane" data-d3-chat-pane aria-label="TruAI chat">
     <div class="d3-chat-pane__head">
       <p class="d3-chat-pane__brand">TruAI</p>
       <span class="d3-chat-pane__badge" data-d3-chat-badge>Agent Hub</span>
@@ -187,24 +196,25 @@
           </button>
         </div>
         <div class="d3-chat-pane__prompts" data-d3-prompt-set="kyb" hidden>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Find Meridian" data-agent="kyb">
+          <!-- Synced from demo-2/verify-business TruAI suggestions -->
+          <button type="button" class="d3-prompt-card" data-d3-prompt="What information do I need?" data-agent="kyb">
             <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Find Meridian</span>
-              <span class="d3-prompt-card__desc">Plot matching businesses on the map</span>
+              <span class="d3-prompt-card__title">What information do I need?</span>
+              <span class="d3-prompt-card__desc">Fields and documents required to start a check</span>
             </span>
             <span class="d3-prompt-card__arrow" aria-hidden="true">→</span>
           </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Verify Meridian Capital LLC" data-agent="kyb">
+          <button type="button" class="d3-prompt-card" data-d3-prompt="Which countries are supported?" data-agent="kyb">
             <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Verify Meridian Capital LLC</span>
-              <span class="d3-prompt-card__desc">Run KYB and reveal the report</span>
+              <span class="d3-prompt-card__title">Which countries are supported?</span>
+              <span class="d3-prompt-card__desc">Jurisdictions available for business verification</span>
             </span>
             <span class="d3-prompt-card__arrow" aria-hidden="true">→</span>
           </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Who are the UBOs?" data-agent="kyb">
+          <button type="button" class="d3-prompt-card" data-d3-prompt="How does verification work?" data-agent="kyb">
             <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Who are the UBOs?</span>
-              <span class="d3-prompt-card__desc">Open ownership for the selected business</span>
+              <span class="d3-prompt-card__title">How does verification work?</span>
+              <span class="d3-prompt-card__desc">Steps from search to a verified report</span>
             </span>
             <span class="d3-prompt-card__arrow" aria-hidden="true">→</span>
           </button>
@@ -303,6 +313,15 @@
       </div>
     </div>
   </aside>
+
+  <!-- Collapsed TruAI ask bar — synced from demo-2 (shows when chat panel closes). -->
+  <button type="button" class="d3-askbar" data-d3-askbar
+          aria-controls="d3-chat-pane" aria-expanded="false" tabindex="-1">
+    <span class="d3-askbar__text" data-d3-askbar-text>Ask about business verification</span>
+    <span class="d3-askbar__send" aria-hidden="true">
+      <img src="assets/ask-arrow.svg" alt="" width="12" height="12">
+    </span>
+  </button>
 
   <main class="d1-main" data-d1-drawer="closed">
     <div class="d1-slot">
@@ -444,17 +463,155 @@
           </button>
         </div>
         <h1 class="d3-workspace__title">Verify a business</h1>
-        <div class="d3-workspace__search">
-          <label class="d3-workspace__field">
-            <span class="d3-workspace__field-country" aria-hidden="true">
-              <img class="d3-workspace__flag" src="assets/kyb-resume/flag-us.svg" alt="" width="18" height="12">
-              <img src="assets/icons/caret.svg" alt="" width="16" height="16">
-            </span>
-            <input type="search" data-d3-kyb-search placeholder="Search for United States business" aria-label="Search for United States business">
-          </label>
-          <span class="d3-workspace__or">or</span>
-          <button type="button" class="tds-btn tds-btn--secondary tds-btn--md">
-            <span class="tds-btn__leading-icon" aria-hidden="true"><img src="assets/icons/arrow-up-from-bracket.svg" alt="" width="16" height="16"></span>
+        <!-- Manual search — synced from demo-2/verify-business -->
+        <div class="d3-workspace__search" aria-labelledby="d3-kyb-search-h">
+          <span class="d1-visually-hidden" id="d3-kyb-search-h">Search for a business</span>
+          <div class="vb-lookup" id="vb-lookup">
+            <div class="vb-search-field" id="vb-search-field">
+              <div class="tds-select tds-select--interactive vb-search-country" id="vb-country-select" data-menu-type="flag">
+                <button type="button" class="tds-select__trigger tds-select__trigger--lg" id="vb-country-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Country, United States">
+                  <span class="tds-select__country-flag" aria-hidden="true"><span class="fi fi-us"></span></span>
+                  <span class="tds-select__value vb-search-country__value">United States</span>
+                  <span class="tds-select__trailing-group">
+                    <span class="tds-caret tds-caret--default" aria-hidden="true">
+                      <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                    </span>
+                  </span>
+                </button>
+                <div class="tds-select__menu" role="listbox" aria-label="Country" hidden>
+                  <div class="tds-dropdown-panel vb-search-country__menu">
+                    <div class="tds-action-list-item tds-action-list-item--selected" role="option" data-value="United States" data-country-code="us">
+                      <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-us"></span></span>
+                      <span class="tds-action-list-item__label">United States</span>
+                    </div>
+                    <div class="tds-action-list-item" role="option" data-value="United Kingdom" data-country-code="gb">
+                      <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-gb"></span></span>
+                      <span class="tds-action-list-item__label">United Kingdom</span>
+                    </div>
+                    <div class="tds-action-list-item" role="option" data-value="Canada" data-country-code="ca">
+                      <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-ca"></span></span>
+                      <span class="tds-action-list-item__label">Canada</span>
+                    </div>
+                    <div class="tds-action-list-item" role="option" data-value="Australia" data-country-code="au">
+                      <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-au"></span></span>
+                      <span class="tds-action-list-item__label">Australia</span>
+                    </div>
+                    <div class="tds-action-list-item" role="option" data-value="Germany" data-country-code="de">
+                      <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-de"></span></span>
+                      <span class="tds-action-list-item__label">Germany</span>
+                    </div>
+                    <div class="tds-action-list-item" role="option" data-value="Netherlands" data-country-code="nl">
+                      <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-nl"></span></span>
+                      <span class="tds-action-list-item__label">Netherlands</span>
+                    </div>
+                    <div class="tds-action-list-item" role="option" data-value="Singapore" data-country-code="sg">
+                      <span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-sg"></span></span>
+                      <span class="tds-action-list-item__label">Singapore</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="vb-search-field__divider" aria-hidden="true"></div>
+
+              <div class="tds-combobox tds-combobox--full-width vb-combobox" id="vb-combobox">
+                <div class="tds-combobox__field tds-combobox__field--lg vb-combobox__field">
+                  <span class="tds-combobox__leading-visual vb-combobox__icon" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+                  </span>
+                  <label class="d1-visually-hidden" for="vb-q">Search for United States business</label>
+                  <input class="tds-combobox__input" id="vb-q" type="text"
+                         placeholder="Search for United States business" autocomplete="off"
+                         role="combobox" aria-expanded="false" aria-controls="vb-search-list"
+                         aria-autocomplete="list" aria-describedby="vb-search-hint"
+                         data-d3-kyb-search>
+                </div>
+                <div class="tds-combobox__menu">
+                  <div class="tds-dropdown-panel vb-combobox__panel" id="vb-search-list" role="listbox" hidden>
+                    <div class="vb-combobox__options" id="vb-search-options"></div>
+                    <div class="vb-combobox__footer" id="vb-search-footer" hidden></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="vb-search-hint" id="vb-search-hint">Enter at least 3 characters to search for a business.</p>
+
+            <div class="vb-prefill" id="vb-prefill" hidden>
+              <span class="tds-tag tds-tag--xl tds-tag--positive vb-prefill__badge" aria-hidden="true">
+                <span class="tds-tag__leading-visual" aria-hidden="true">
+                  <svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg>
+                </span>
+                Pre-filled
+              </span>
+
+              <div class="vb-prefill__grid">
+                <div class="tds-text-input tds-text-input--success">
+                  <label class="tds-field-label">BRN</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="vb-prefill-brn" type="text" readonly tabindex="-1" value="">
+                  </div>
+                  <span class="tds-field-validation tds-field-validation--success">
+                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
+                    <span>Pre-filled</span>
+                  </span>
+                </div>
+
+                <div class="tds-text-input tds-text-input--success">
+                  <label class="tds-field-label">State / Province</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="vb-prefill-state" type="text" readonly tabindex="-1" value="">
+                  </div>
+                  <span class="tds-field-validation tds-field-validation--success">
+                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
+                    <span>Pre-filled</span>
+                  </span>
+                </div>
+
+                <div class="tds-text-input tds-text-input--success vb-prefill__field--full">
+                  <label class="tds-field-label">Address</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="vb-prefill-address" type="text" readonly tabindex="-1" value="">
+                  </div>
+                  <span class="tds-field-validation tds-field-validation--success">
+                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
+                    <span>Pre-filled</span>
+                  </span>
+                </div>
+
+                <div class="tds-text-input tds-text-input--success">
+                  <label class="tds-field-label">City</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="vb-prefill-city" type="text" readonly tabindex="-1" value="">
+                  </div>
+                  <span class="tds-field-validation tds-field-validation--success">
+                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
+                    <span>Pre-filled</span>
+                  </span>
+                </div>
+
+                <div class="tds-text-input tds-text-input--success">
+                  <label class="tds-field-label">Postal code</label>
+                  <div class="tds-text-input__field tds-text-input__field--lg">
+                    <input class="tds-text-input__native" id="vb-prefill-postal" type="text" readonly tabindex="-1" value="">
+                  </div>
+                  <span class="tds-field-validation tds-field-validation--success">
+                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
+                    <span>Pre-filled</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="vb-prefill__actions">
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="vb-submit-btn" aria-disabled="true">Submit</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="vb-or"><span>or</span></div>
+
+          <button type="button" class="vb-upload">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.75a.75.75 0 0 1 .53.22l3 3a.75.75 0 1 1-1.06 1.06L8.75 4.81V10.5a.75.75 0 0 1-1.5 0V4.81L5.53 6.03a.75.75 0 0 1-1.06-1.06l3-3A.75.75 0 0 1 8 1.75ZM2.75 10a.75.75 0 0 1 .75.75v2a.75.75 0 0 0 .75.75h7.5a.75.75 0 0 0 .75-.75v-2a.75.75 0 0 1 1.5 0v2A2.25 2.25 0 0 1 11.75 15h-7.5A2.25 2.25 0 0 1 2 12.75v-2a.75.75 0 0 1 .75-.75Z" fill="currentColor"/></svg>
             Bulk Upload
           </button>
         </div>
@@ -1109,17 +1266,20 @@
 <script src="js/chat.js"></script>
 <script src="js/drawer.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
+<script src="../../pages/shared/tds-interactive-select.js"></script>
 <script src="js/d3-kyb-resume.js?v=18"></script>
-<script src="js/d3-kyb-report-reveal.js?v=7"></script>
-<script src="js/d3-kyb-map-search.js?v=33"></script>
-<script src="js/d3-kyb-agent.js?v=5"></script>
-<script src="js/d3-motion.js?v=1"></script>
-<script src="js/d3-nav.js?v=22"></script>
+<script src="js/d3-kyb-report-reveal.js?v=9"></script>
+<script src="js/d3-kyb-map-search.js?v=36"></script>
+<script src="js/d3-kyb-manual-search.js?v=1"></script>
+<script src="js/d3-kyb-agent.js?v=7"></script>
+<script src="js/d3-motion.js?v=2"></script>
+<script src="js/d3-nav.js?v=23"></script>
 <script src="js/d3-transactions.js?v=3"></script>
 <script src="js/d3-org.js?v=1"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/d3-tx-agent.js?v=1"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
-<script src="js/d3-chat-bridge.js?v=27"></script>
+<script src="js/d3-chat-bridge.js?v=29"></script>
 </body>
 </html>

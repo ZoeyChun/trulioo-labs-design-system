@@ -1,4 +1,5 @@
-/* Demo 3 — KYB Agent reply chrome + ownership / signals panels. */
+/* Demo 3 — KYB Agent reply chrome + ownership / signals panels.
+   Candidate search UI synced from demo-2 shared/portal-shell/ai-panel.css */
 
 .d3-kyb-agent {
   font-size: var(--font-size-sm, 14px);
@@ -10,66 +11,251 @@
   margin: 0 0 12px;
 }
 
-.d3-kyb-agent__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.d3-kyb-agent__item {
-  margin: 0;
-}
-
-.d3-kyb-agent__card {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  background: var(--surface-neutral-01);
-  text-align: left;
-  color: inherit;
-  box-sizing: border-box;
-  transition:
-    border-color var(--d3-dur-fast, 180ms) var(--d3-ease-out, ease),
-    box-shadow var(--d3-dur-fast, 180ms) var(--d3-ease-out, ease);
-}
-
-.d3-kyb-agent__card:hover,
-.d3-kyb-agent__card:focus-within {
-  border-color: color-mix(in srgb, var(--interactive-default) 35%, var(--border-subtle));
-  box-shadow: var(--elevation-md);
-}
-
-.d3-kyb-agent__name {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 20px;
-}
-
-.d3-kyb-agent__meta,
-.d3-kyb-agent__detail {
-  font-size: 12px;
-  line-height: 18px;
-  color: var(--text-description);
-}
-
-.d3-kyb-agent__cta {
-  margin-top: 8px;
-  align-self: flex-start;
-}
-
 .d3-kyb-agent-wrap .d1-alert,
 .d3-kyb-agent__action {
   margin-top: 4px;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* --- Demo-2 candidate panel (chips → cards → confirm) --- */
+
+.d3-kyb-cand-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.d3-kyb-cand-panel .ai-said {
+  align-self: flex-end;
+  max-width: 85%;
+  margin: 0;
+  padding: var(--spacing-16, 16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl, 16px);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 18px;
+  color: var(--text-default);
+  background: var(--surface-neutral-02);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.d3-kyb-cand-panel .ai-reply {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-cand-panel .ai-reply__lead {
+  margin: 0;
+  font-size: var(--font-size-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-md, 24px);
+  color: var(--text-default);
+}
+
+.d3-kyb-cand-panel .ai-reply__sub {
+  margin: 0;
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-sm, 20px);
+  color: var(--text-description);
+}
+
+.d3-kyb-cand-panel .ai-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-8, 8px);
+  align-items: center;
+}
+
+.d3-kyb-cand-panel .ai-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-cand-panel .ai-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8, 8px);
+  padding: 6px var(--padding-md, 12px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-badge, 999px);
+  font-family: inherit;
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-default);
+  background: var(--surface-neutral-01);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    scale 120ms ease-out;
+}
+
+.d3-kyb-cand-panel .ai-chip__n {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-caption);
+  transition: color 160ms ease;
+}
+
+.d3-kyb-cand-panel .ai-chip:hover {
+  border-color: var(--border-strong);
+}
+
+.d3-kyb-cand-panel .ai-chip:active {
+  scale: 0.97;
+}
+
+.d3-kyb-cand-panel .ai-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.d3-kyb-cand-panel .ai-chip--on {
+  border-color: transparent;
+  color: var(--text-inverse);
+  background: var(--interactive-default);
+}
+
+.d3-kyb-cand-panel .ai-chip--on .ai-chip__n {
+  color: var(--color-teal-30, #9ed9d0);
+}
+
+.d3-kyb-cand-panel .ai-chip:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.d3-kyb-cand-panel .ai-cands {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+}
+
+.d3-kyb-cand-panel .ai-cand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+  width: 100%;
+  padding: var(--spacing-16, 16px);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl, 16px);
+  font-family: inherit;
+  text-align: left;
+  background: var(--surface-neutral-01);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    scale 120ms ease-out;
+}
+
+.d3-kyb-cand-panel .ai-cand:hover,
+.d3-kyb-cand-panel .ai-cand--on {
+  border-color: var(--interactive-default);
+  box-shadow: 0 0 0 3px var(--interactive-subtle);
+}
+
+.d3-kyb-cand-panel .ai-cand:active {
+  scale: 0.98;
+}
+
+.d3-kyb-cand-panel .ai-cand__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-cand-panel .ai-cand__name {
+  font-size: var(--font-size-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 20px;
+  color: var(--text-default);
+}
+
+.d3-kyb-cand-panel .ai-cand__go {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-default);
+  transition: transform 160ms ease;
+}
+
+.d3-kyb-cand-panel .ai-cand__go svg {
+  width: 16px;
+  height: 16px;
+}
+
+.d3-kyb-cand-panel .ai-cand:hover .ai-cand__go {
+  transform: translateX(2px);
+}
+
+.d3-kyb-cand-panel .ai-cand__facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-8, 8px) var(--spacing-12, 12px);
+}
+
+.d3-kyb-cand-panel .ai-cand__fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: var(--font-size-xs, 12px);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.d3-kyb-cand-panel .ai-cand__fact--wide {
+  grid-column: 1 / -1;
+}
+
+.d3-kyb-cand-panel .ai-cand__fact b {
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+.d3-kyb-cand-panel .ai-cand__status {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.d3-kyb-cand-panel .ai-cand__status--ok {
+  color: var(--text-positive);
+}
+
+.d3-kyb-cand-panel .ai-cand__status--off {
+  color: var(--text-negative);
+}
+
+.d3-kyb-cand-panel .ai-cand__note {
+  font-size: var(--font-size-xs, 12px);
+  line-height: 18px;
+  color: var(--color-neutral-50, #6b7280);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-kyb-cand-panel .ai-chip,
+  .d3-kyb-cand-panel .ai-cand,
+  .d3-kyb-cand-panel .ai-cand__go {
+    transition: none;
+  }
+
+  .d3-kyb-cand-panel .ai-cand:hover .ai-cand__go {
+    transform: none;
+  }
 }
 
 /* Ownership panel */
@@ -171,9 +357,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .d3-kyb-agent__card {
-    transition: none;
-  }
   .d3-kyb-panel--flash {
     animation: none;
   }

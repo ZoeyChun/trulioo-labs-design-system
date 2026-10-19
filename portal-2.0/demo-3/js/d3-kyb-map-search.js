@@ -1,6 +1,6 @@
 /* Demo 3 — AI-powered Meridian search + interactive map (Leaflet).
-   Typing "Meridian" in KYB chat zooms to a US-wide view and plots 5
-   real business locations. Marker click → details; Select → KYB flow. */
+   Typing "Meridian" plots same-name legal entities across jurisdictions
+   (demo-2 world disambiguation) on a Leaflet world map. */
 (function () {
   var shell = document.querySelector(".d1-shell");
   var workspace = document.querySelector("[data-d3-workspace]");
@@ -12,11 +12,31 @@
 
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Demo KYB dataset — grounded answers must only use these records. */
-  var MERIDIAN_US = [
+  function countryCount(list) {
+    var map = {};
+    (list || []).forEach(function (c) {
+      map[c.country || "United States"] = 1;
+    });
+    return Object.keys(map).length;
+  }
+
+  function matchCaption(list) {
+    if (!list || !list.length) return "No matches";
+    var nCountries = countryCount(list);
+    if (nCountries === 1) {
+      return (list[0].country || "United States") + " · " + list.length + " Meridian matches";
+    }
+    return list.length + " Meridian matches · " + nCountries + " countries";
+  }
+
+  /* Demo KYB dataset — US entities keep full ownership/report; other
+     jurisdictions mirror demo-2 so country chips match the world map. */
+  var MERIDIANS = [
     {
       id: "us-cap",
       name: "Meridian Capital LLC",
+      country: "United States",
+      cc: "US",
       city: "New York, NY",
       addr: "200 Vesey Street, New York, NY 10281",
       reg: "NY DOS 4417762",
@@ -49,6 +69,8 @@
     {
       id: "us-global",
       name: "Meridian Global Partners Inc.",
+      country: "United States",
+      cc: "US",
       city: "Wilmington, DE",
       addr: "1209 Orange Street, Wilmington, DE 19801",
       reg: "DE File 5582014",
@@ -84,6 +106,8 @@
     {
       id: "us-sf",
       name: "Meridian Analytics Inc.",
+      country: "United States",
+      cc: "US",
       city: "San Francisco, CA",
       addr: "525 Market Street, San Francisco, CA 94105",
       reg: "CA SOS C4129087",
@@ -116,6 +140,8 @@
     {
       id: "us-chi",
       name: "Meridian Industrial Holdings LLC",
+      country: "United States",
+      cc: "US",
       city: "Chicago, IL",
       addr: "233 S Wacker Drive, Chicago, IL 60606",
       reg: "IL SOS 04581276",
@@ -149,6 +175,8 @@
     {
       id: "us-dal",
       name: "Meridian Energy Partners LP",
+      country: "United States",
+      cc: "US",
       city: "Dallas, TX",
       addr: "2200 Ross Avenue, Dallas, TX 75201",
       reg: "TX SOS 0804123456",
@@ -179,8 +207,257 @@
         email: "partners@meridianenergy.example",
         sumA: "Meridian Energy Partners LP matched an active Texas SOS filing. Related-party LP structure is the main follow-up item."
       }
+    },
+    /* --- International same-name entities (demo-2 world set) --- */
+    {
+      id: "uk-apex",
+      name: "Meridian Apex Consulting Ltd.",
+      country: "United Kingdom",
+      cc: "GB",
+      city: "London, UK",
+      addr: "Suite 400, 1 King Street, London EC2V 8AU",
+      reg: "Companies House 08842190",
+      status: "Active",
+      brief: "Management consultancy · England & Wales · Virtual office.",
+      lat: 51.513,
+      lon: -0.093,
+      riskLevel: "high",
+      ownership: [
+        { name: "Nominee Director Services Ltd.", type: "corp", role: "Director", pct: "—", flagged: true, note: "Corporate nominee director — no natural person on the filing." },
+        { name: "Apex Holdings Nominee", type: "corp", role: "Shareholder", pct: "100%", flagged: true, note: "Ownership stops at a nominee vehicle." }
+      ],
+      risks: [
+        { id: "shell", label: "Shell / no trading evidence", severity: "high", evidence: "0 employees; £1 capital; catch-all SIC; virtual office." }
+      ],
+      alerts: { adverseMedia: "None found", sanctions: "None found", litigation: "None found", positivePress: "None found" },
+      report: {
+        industry: "Management consultancy (SIC 70229)",
+        industryNote: "Catch-all SIC code with no evidence of active trading, clients, or revenue.",
+        regDate: "Incorporated 1 Feb 2019 (England & Wales)",
+        legalForm: "Private company limited by shares",
+        address: "Suite 400, 1 King Street, London EC2V 8AU — virtual office",
+        sizing: "0 employees; £1 authorised / £1 paid-up capital.",
+        regNumber: "Companies House 08842190",
+        taxId: "GB341209876",
+        phone: "+44 20 7946 0000",
+        email: "info@meridianapexconsulting.example",
+        country: "United Kingdom",
+        sumA: "Meridian Apex Consulting Ltd. is active at Companies House, but filings describe a shell profile with a virtual office and £1 of capital."
+      }
+    },
+    {
+      id: "uk-trade",
+      name: "Meridian Trade Holdings Ltd.",
+      country: "United Kingdom",
+      cc: "GB",
+      city: "London, UK",
+      addr: "25 Bank Street, Canary Wharf, London E14 5JP",
+      reg: "Companies House 11204887",
+      status: "Active",
+      brief: "Trade holding company · Incorporated 2018 · Canary Wharf.",
+      lat: 51.505,
+      lon: -0.019,
+      riskLevel: "medium",
+      ownership: [
+        { name: "Claire Houghton", type: "person", role: "Director", pct: "60%", flagged: false, note: "Natural person director on Companies House." },
+        { name: "Tradeco Nominees Ltd.", type: "corp", role: "Shareholder", pct: "40%", flagged: true, note: "Corporate shareholder layer." }
+      ],
+      risks: [
+        { id: "nominee", label: "Nominee shareholder layer", severity: "medium", evidence: "40% held via a nominee company." }
+      ],
+      alerts: { adverseMedia: "None found", sanctions: "None found", litigation: "None found", positivePress: "None found" },
+      report: {
+        industry: "Activities of holding companies (SIC 64209)",
+        industryNote: "UK holding company with a Canary Wharf registered office.",
+        regDate: "Incorporated 2018 (England & Wales)",
+        legalForm: "Private company limited by shares",
+        address: "25 Bank Street, Canary Wharf, London E14 5JP",
+        sizing: "8 employees; authorised capital filed.",
+        regNumber: "Companies House 11204887",
+        taxId: "GB112048875",
+        phone: "+44 20 7946 1120",
+        email: "filings@meridiantrade.example",
+        country: "United Kingdom",
+        sumA: "Meridian Trade Holdings Ltd. is an active UK company; one nominee shareholder layer needs follow-up."
+      }
+    },
+    {
+      id: "uk-log",
+      name: "Meridian Logistics (UK) Ltd.",
+      country: "United Kingdom",
+      cc: "GB",
+      city: "Manchester, UK",
+      addr: "14 Deansgate, Manchester M3 2BW",
+      reg: "Companies House 06655321",
+      status: "Dissolved",
+      brief: "Former logistics company · Dissolved Mar 2023 · Manchester.",
+      lat: 53.48,
+      lon: -2.244,
+      riskLevel: "medium",
+      ownership: [
+        { name: "Former directors struck off", type: "corp", role: "—", pct: "—", flagged: true, note: "Entity dissolved; prior officers no longer active on the register." }
+      ],
+      risks: [
+        { id: "dissolved", label: "Dissolved entity", severity: "medium", evidence: "Companies House status Dissolved Mar 2023." }
+      ],
+      alerts: { adverseMedia: "None found", sanctions: "None found", litigation: "None found", positivePress: "None found" },
+      report: {
+        industry: "Freight transport by road (SIC 49410)",
+        industryNote: "Dissolved UK logistics company; not available for new verification.",
+        regDate: "Dissolved Mar 2023 (England & Wales)",
+        legalForm: "Private company limited by shares",
+        address: "14 Deansgate, Manchester M3 2BW",
+        sizing: "Dissolved — no active employees.",
+        regNumber: "Companies House 06655321",
+        taxId: "—",
+        phone: "—",
+        email: "—",
+        country: "United Kingdom",
+        sumA: "Meridian Logistics (UK) Ltd. was dissolved in March 2023 and should not be used for a live KYB check."
+      }
+    },
+    {
+      id: "sg-pac",
+      name: "Meridian Pacific Pte. Ltd.",
+      country: "Singapore",
+      cc: "SG",
+      city: "Singapore",
+      addr: "10 Marina Boulevard, Singapore 018983",
+      reg: "ACRA 201633214K",
+      status: "Active",
+      brief: "Pacific trading company · ACRA · Marina Bay.",
+      lat: 1.29,
+      lon: 103.851,
+      riskLevel: "low",
+      ownership: [
+        { name: "Wei Lin Tan", type: "person", role: "Director", pct: "70%", flagged: false, note: "Local resident director on ACRA extract." },
+        { name: "Pacific Gate Holdings", type: "corp", role: "Shareholder", pct: "30%", flagged: false, note: "Regional holding company." }
+      ],
+      risks: [],
+      alerts: { adverseMedia: "None found", sanctions: "None found", litigation: "None found", positivePress: "None found" },
+      report: {
+        industry: "Wholesale trade (SSIC 46900)",
+        industryNote: "Singapore private limited company at Marina Boulevard.",
+        regDate: "Incorporated 2016 (Singapore)",
+        legalForm: "Private company limited by shares",
+        address: "10 Marina Boulevard, Singapore 018983",
+        sizing: "22 employees; paid-up capital filed.",
+        regNumber: "ACRA 201633214K",
+        taxId: "201633214K",
+        phone: "+65 6123 4500",
+        email: "ops@meridianpacific.example",
+        country: "Singapore",
+        sumA: "Meridian Pacific Pte. Ltd. matched an active ACRA filing with identifiable local directors."
+      }
+    },
+    {
+      id: "se-nordic",
+      name: "Meridian Nordic AB",
+      country: "Sweden",
+      cc: "SE",
+      city: "Stockholm, SE",
+      addr: "Birger Jarlsgatan 57, 113 56 Stockholm",
+      reg: "Bolagsverket 556912-4471",
+      status: "Active",
+      brief: "Nordic AB · Bolagsverket · Stockholm.",
+      lat: 59.329,
+      lon: 18.068,
+      riskLevel: "low",
+      ownership: [
+        { name: "Erik Lindström", type: "person", role: "Board member", pct: "55%", flagged: false, note: "Natural person on Bolagsverket extract." },
+        { name: "Nordic Growth Invest AB", type: "corp", role: "Shareholder", pct: "45%", flagged: false, note: "Swedish institutional shareholder." }
+      ],
+      risks: [],
+      alerts: { adverseMedia: "None found", sanctions: "None found", litigation: "None found", positivePress: "None found" },
+      report: {
+        industry: "Business consulting (SNI 70.220)",
+        industryNote: "Swedish aktiebolag with Stockholm registered office.",
+        regDate: "Incorporated 2011 (Sweden)",
+        legalForm: "Aktiebolag (AB)",
+        address: "Birger Jarlsgatan 57, 113 56 Stockholm",
+        sizing: "15 employees; share capital filed.",
+        regNumber: "Bolagsverket 556912-4471",
+        taxId: "556912-4471",
+        phone: "+46 8 555 010 20",
+        email: "hello@meridiannordic.example",
+        country: "Sweden",
+        sumA: "Meridian Nordic AB is an active Swedish company with clear registry coverage."
+      }
+    },
+    {
+      id: "de-handel",
+      name: "Meridian Handels GmbH",
+      country: "Germany",
+      cc: "DE",
+      city: "Frankfurt, DE",
+      addr: "Taunusanlage 12, 60325 Frankfurt am Main",
+      reg: "HRB 102447 Frankfurt",
+      status: "Active",
+      brief: "Handels GmbH · Frankfurt commercial register.",
+      lat: 50.11,
+      lon: 8.682,
+      riskLevel: "low",
+      ownership: [
+        { name: "Anna Keller", type: "person", role: "Geschäftsführerin", pct: "50%", flagged: false, note: "Managing director on Handelsregister." },
+        { name: "Rhein Main Beteiligungs GmbH", type: "corp", role: "Gesellschafter", pct: "50%", flagged: false, note: "German corporate shareholder." }
+      ],
+      risks: [],
+      alerts: { adverseMedia: "None found", sanctions: "None found", litigation: "None found", positivePress: "None found" },
+      report: {
+        industry: "Wholesale trade (WZ 46.90)",
+        industryNote: "German GmbH registered in Frankfurt am Main.",
+        regDate: "Incorporated 2009 (Germany)",
+        legalForm: "Gesellschaft mit beschränkter Haftung (GmbH)",
+        address: "Taunusanlage 12, 60325 Frankfurt am Main",
+        sizing: "31 employees; Stammkapital filed.",
+        regNumber: "HRB 102447 Frankfurt",
+        taxId: "DE812345678",
+        phone: "+49 69 1234 5600",
+        email: "kontakt@meridianhandel.example",
+        country: "Germany",
+        sumA: "Meridian Handels GmbH matched an active Frankfurt commercial-register filing."
+      }
+    },
+    {
+      id: "au-res",
+      name: "Meridian Resources Pty Ltd",
+      country: "Australia",
+      cc: "AU",
+      city: "Sydney, AU",
+      addr: "1 Macquarie Place, Sydney NSW 2000",
+      reg: "ACN 128 441 902",
+      status: "Active",
+      brief: "Resources Pty Ltd · ASIC · Sydney CBD.",
+      lat: -33.868,
+      lon: 151.209,
+      riskLevel: "medium",
+      ownership: [
+        { name: "James O’Rourke", type: "person", role: "Director", pct: "40%", flagged: false, note: "Australian resident director." },
+        { name: "Outback Resource Trust", type: "corp", role: "Shareholder", pct: "60%", flagged: true, note: "Trust shareholder — beneficiaries not listed on ASIC extract." }
+      ],
+      risks: [
+        { id: "trust", label: "Trust ownership layer", severity: "medium", evidence: "60% held via a trust without named beneficiaries on the extract." }
+      ],
+      alerts: { adverseMedia: "None found", sanctions: "None found", litigation: "None found", positivePress: "None found" },
+      report: {
+        industry: "Mining support services (ANZSIC 1090)",
+        industryNote: "Australian proprietary limited company in Sydney.",
+        regDate: "Incorporated 2007 (Australia)",
+        legalForm: "Proprietary limited company (Pty Ltd)",
+        address: "1 Macquarie Place, Sydney NSW 2000",
+        sizing: "48 employees; issued capital filed.",
+        regNumber: "ACN 128 441 902",
+        taxId: "ABN 12 128 441 902",
+        phone: "+61 2 9250 1000",
+        email: "contact@meridianresources.example",
+        country: "Australia",
+        sumA: "Meridian Resources Pty Ltd is active on ASIC. A trust ownership layer needs follow-up for full UBO clarity."
+      }
     }
   ];
+
+  /* Back-compat alias used by older call sites / mental model. */
+  var MERIDIAN_US = MERIDIANS;
 
   var selectedBiz = null;
   var lastResults = [];
@@ -331,7 +608,8 @@
 
   function plotResults(items, captionText, opts) {
     opts = opts || {};
-    var list = items && items.length ? items : MERIDIAN_US;
+    /* null/undefined → full demo set; explicit [] keeps the map empty (filter wipe). */
+    var list = items == null ? MERIDIAN_US.slice() : items.slice();
     lastResults = list.slice();
     var m = ensureMap();
     if (!m) {
@@ -342,6 +620,7 @@
     }
     if (mapNudge) mapNudge.hidden = true;
     clearBizMarkers();
+    setCaption(captionText || (list.length ? "Matches · " + list.length : "No matches"));
 
     var bounds = [];
     list.forEach(function (biz) {
@@ -414,38 +693,38 @@
         }
       }
     }
-    setCaption(captionText || ("United States · " + list.length + " matches"));
+    setCaption(captionText || matchCaption(list));
   }
 
   function plotMeridianResults() {
-    revealMatches(MERIDIAN_US, "United States · 5 Meridian matches");
+    revealMatches(MERIDIANS, matchCaption(MERIDIANS));
   }
 
   /* Crossfade to map → zoom out to matches (skip current-location pin). */
   function revealMatches(items, captionText, opts) {
     opts = opts || {};
-    var list = items && items.length ? items.slice() : MERIDIAN_US.slice();
+    var list = items && items.length ? items.slice() : MERIDIANS.slice();
     lastResults = list.slice();
-    var label =
-      captionText ||
-      (list.length === MERIDIAN_US.length
-        ? "United States · 5 Meridian matches"
-        : "Matches · " + list.length);
+    var label = captionText || matchCaption(list);
     setCaption(label);
     transitionToMap(function () {
       var m = ensureMap();
       if (m) {
-        /* Drop location pin; start closer so flyToBounds reads as a zoom-out. */
+        /* Drop location pin; start world/region so flyToBounds reads as framing matches. */
         if (locMarker && m.hasLayer(locMarker)) m.removeLayer(locMarker);
         if (!reducedMotion && list.length) {
-          var lat = 0;
-          var lon = 0;
-          list.forEach(function (b) {
-            lat += b.lat;
-            lon += b.lon;
-          });
           try {
-            m.setView([lat / list.length, lon / list.length], 7, { animate: false });
+            if (countryCount(list) > 1) {
+              m.setView([22, 12], 2, { animate: false });
+            } else {
+              var lat = 0;
+              var lon = 0;
+              list.forEach(function (b) {
+                lat += b.lat;
+                lon += b.lon;
+              });
+              m.setView([lat / list.length, lon / list.length], 4, { animate: false });
+            }
           } catch (e) {}
         }
       }
@@ -462,9 +741,18 @@
 
   function findBusinesses(query) {
     var q = String(query || "").trim().toLowerCase();
-    if (!q) return MERIDIAN_US.slice();
-    return MERIDIAN_US.filter(function (biz) {
-      var hay = [biz.name, biz.city, addrOf(biz), biz.reg, biz.brief, biz.status]
+    if (!q) return MERIDIANS.slice();
+    return MERIDIANS.filter(function (biz) {
+      var hay = [
+        biz.name,
+        biz.city,
+        biz.country,
+        biz.cc,
+        addrOf(biz),
+        biz.reg,
+        biz.brief,
+        biz.status
+      ]
         .join(" ")
         .toLowerCase();
       return hay.indexOf(q) !== -1 || q.split(/\s+/).every(function (tok) {
@@ -478,8 +766,8 @@
   }
 
   function findById(id) {
-    for (var i = 0; i < MERIDIAN_US.length; i += 1) {
-      if (MERIDIAN_US[i].id === id) return MERIDIAN_US[i];
+    for (var i = 0; i < MERIDIANS.length; i += 1) {
+      if (MERIDIANS[i].id === id) return MERIDIANS[i];
     }
     return null;
   }
@@ -526,10 +814,15 @@
       .replace(/"/g, "&quot;");
   }
 
-  /* Figma 1296:20860 — Similar companies cards in chat. */
+  /* Prefer demo-2 candidate panel (chips + cards + confirm) when agent is loaded. */
   function appendSuggestions(items) {
+    if (!items || !items.length) return;
+    if (window.D3KybAgent && typeof window.D3KybAgent.showMatches === "function") {
+      window.D3KybAgent.showMatches(items, "Meridian");
+      return;
+    }
     var thread = document.querySelector("[data-d1-thread]");
-    if (!thread || !items || !items.length) return;
+    if (!thread) return;
     var wrap = document.createElement("div");
     wrap.className = "d3-kyb-similar";
     wrap.setAttribute("role", "list");
@@ -617,12 +910,7 @@
             "”. Select a location on the map or a company below to verify.";
       /* Location first, then zoom out as matches land. */
       if (matches.length) {
-        revealMatches(
-          matches,
-          matches.length === MERIDIAN_US.length
-            ? "United States · 5 Meridian matches"
-            : "Matches · " + matches.length
-        );
+        revealMatches(matches, matchCaption(matches));
       } else {
         ensureMapSurface();
       }
@@ -650,7 +938,7 @@
     if (!markersLayer) return;
     markersLayer.eachLayer(function (layer) {
       var btn = layer.getElement() && layer.getElement().querySelector(".d3-kyb-biz-marker");
-      if (btn) btn.classList.toggle("is-active", btn.getAttribute("data-biz-id") === bizId);
+      if (btn) btn.classList.toggle("is-active", !!bizId && btn.getAttribute("data-biz-id") === bizId);
     });
   }
 
@@ -730,6 +1018,12 @@
   function selectBusiness(biz, opts) {
     opts = opts || {};
     if (!biz) return;
+    /* Demo-2: map/card pick asks for Confirm before opening the report. */
+    if (!opts.confirmed && window.D3KybAgent && window.D3KybAgent.confirmSelect) {
+      parkChat();
+      window.D3KybAgent.confirmSelect(biz);
+      return;
+    }
     selectedBiz = biz;
     activeId = biz.id;
     if (map) {
@@ -835,21 +1129,7 @@
     }, 100);
   }
 
-  /* Workspace search field on the resume landing. */
-  var searchInput = workspace.querySelector("[data-d3-kyb-search]");
-  if (searchInput) {
-    searchInput.addEventListener("keydown", function (event) {
-      if (event.key !== "Enter") return;
-      var text = searchInput.value ? searchInput.value.trim() : "";
-      if (!text) return;
-      event.preventDefault();
-      searchInput.value = "";
-      document.dispatchEvent(new CustomEvent("d3-chat:send", {
-        detail: { text: text, agent: "kyb" },
-        cancelable: true
-      }));
-    });
-  }
+  /* Manual workspace search is owned by d3-kyb-manual-search.js (demo-2 sync). */
 
   window.D3KybMapSearch = {
     runMeridianSearch: runMeridianSearch,
@@ -857,6 +1137,7 @@
     showHomeLocation: showHomeLocation,
     selectBusiness: selectBusiness,
     focusBusiness: focusBusiness,
+    highlightMarker: highlightMarker,
     findBusinesses: findBusinesses,
     findByName: findByName,
     findById: findById,
@@ -872,6 +1153,8 @@
     getLastResults: function () {
       return lastResults.slice();
     },
-    businesses: MERIDIAN_US
+    businesses: MERIDIANS,
+    matchCaption: matchCaption,
+    countryCount: countryCount
   };
 })();

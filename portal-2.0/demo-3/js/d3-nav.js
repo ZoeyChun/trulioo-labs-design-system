@@ -1,4 +1,5 @@
-/* Demo 3 navigation — home / agents / chat history + left chat pane. */
+/* Demo 3 navigation — home / agents / chat history + left chat pane.
+   Close collapses to a floating ask bar (demo-2 ai-askbar), not Home. */
 (function () {
   var shell = document.querySelector(".d1-shell");
   var chatPane = document.querySelector("[data-d3-chat-pane]");
@@ -9,6 +10,8 @@
   var historyBtn = document.querySelector("[data-d3-nav='history']");
   var messagesBtn = document.querySelector("[data-d3-nav='messages']");
   var closeChat = document.querySelector("[data-d3-chat-close]");
+  var askbar = document.querySelector("[data-d3-askbar]");
+  var askbarText = document.querySelector("[data-d3-askbar-text]");
   var badge = document.querySelector("[data-d3-chat-badge]");
   var emptyHello = document.querySelector("[data-d3-chat-hello]");
   var emptySub = document.querySelector("[data-d3-chat-sub]");
@@ -66,9 +69,19 @@
     });
   }
 
+  function updateAskbar(mode) {
+    var meta = CHAT_META[mode] || CHAT_META.hub;
+    if (askbarText) askbarText.textContent = meta.placeholder;
+    if (!askbar) return;
+    var open = shell.getAttribute("data-d3-chat") === "open";
+    askbar.setAttribute("aria-expanded", String(open));
+    askbar.setAttribute("tabindex", open ? "-1" : "0");
+    askbar.setAttribute("aria-label", meta.placeholder);
+  }
+
   function setChatOpen(open, mode) {
+    mode = mode || shell.getAttribute("data-d3-chat-mode") || "hub";
     shell.setAttribute("data-d3-chat", open ? "open" : "closed");
-    mode = mode || "hub";
     var meta = CHAT_META[mode] || CHAT_META.hub;
     if (badge) badge.textContent = meta.badge;
     if (emptyHello) emptyHello.textContent = meta.hello;
@@ -82,7 +95,44 @@
     });
     var paneInput = document.querySelector("[data-d3-pane-input]");
     if (paneInput) paneInput.placeholder = meta.placeholder;
+    if (closeChat) closeChat.setAttribute("aria-expanded", String(!!open));
+    if (chatPane) chatPane.setAttribute("aria-hidden", open ? "false" : "true");
+    updateAskbar(mode);
     relayoutDrawer();
+  }
+
+  function closeChatPanel() {
+    var view = shell.getAttribute("data-d3-view") || "home";
+    var mode = shell.getAttribute("data-d3-chat-mode") || "hub";
+    /* Home already owns the full composer — just close. */
+    if (view === "home") {
+      setChatOpen(false, mode);
+      document.dispatchEvent(new CustomEvent("d3-chat:close", { detail: { toHome: true } }));
+      return;
+    }
+    /* Stay on the current workspace; show the floating ask bar (demo-2). */
+    setChatOpen(false, mode);
+    document.dispatchEvent(new CustomEvent("d3-chat:close", { detail: { minimized: true } }));
+    if (askbar) {
+      window.setTimeout(function () {
+        try {
+          askbar.focus();
+        } catch (e) {}
+      }, 280);
+    }
+  }
+
+  function openChatPanel() {
+    var mode = shell.getAttribute("data-d3-chat-mode") || "hub";
+    setChatOpen(true, mode);
+    document.dispatchEvent(new CustomEvent("d3-chat:open", { detail: { mode: mode } }));
+    if (closeChat) {
+      window.setTimeout(function () {
+        try {
+          closeChat.focus();
+        } catch (e) {}
+      }, 320);
+    }
   }
 
   function goHome() {
@@ -131,6 +181,8 @@
     openKybChat: openKybChat,
     openKycChat: openKycChat,
     setChatOpen: setChatOpen,
+    closeChatPanel: closeChatPanel,
+    openChatPanel: openChatPanel,
     markChatActive: function () {
       if (chatPane) chatPane.classList.add("is-active");
     },
@@ -163,10 +215,25 @@
 
   if (closeChat) {
     closeChat.addEventListener("click", function () {
-      goHome();
-      document.dispatchEvent(new CustomEvent("d3-chat:close"));
+      closeChatPanel();
     });
   }
+
+  if (askbar) {
+    askbar.addEventListener("click", function () {
+      openChatPanel();
+    });
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Escape") return;
+    if (shell.getAttribute("data-d3-chat") !== "open") return;
+    /* Don't steal Escape from open menus / dialogs. */
+    if (document.querySelector(".tds-select--open, .tds-combobox--open, [role='dialog']:not([hidden])")) {
+      return;
+    }
+    closeChatPanel();
+  });
 
   document.querySelectorAll("[data-d3-agent]").forEach(function (card) {
     card.addEventListener("click", function () {

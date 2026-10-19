@@ -68,11 +68,13 @@
       taxId: base.taxId || "EIN 34-1209876",
       phone: base.phone || "+1 (212) 555-0148",
       email: base.email || "info@" + (biz.name || "company").toLowerCase().replace(/[^a-z0-9]+/g, "") + ".com",
-      country: base.country || "United States",
+      country: base.country || biz.country || "United States",
       sumA:
         base.sumA ||
         biz.name +
-          " is an active United States company at " +
+          " is an active " +
+          (biz.country || "United States") +
+          " company at " +
           biz.addr +
           ".",
       calls: base.calls || [
@@ -256,10 +258,13 @@
     var exportBtn = detail.querySelector("[data-d3-kyb-export]");
     if (exportBtn) exportBtn.hidden = false;
     if (metaCountry) {
-      /* First meta dd is country — keep flag img if present. */
-      var flag = metaCountry.querySelector("img");
-      metaCountry.textContent = "United States ";
-      if (flag) metaCountry.appendChild(flag);
+      var countryName = biz.country || "United States";
+      var cc = String(biz.cc || "US").toLowerCase();
+      metaCountry.textContent = countryName + " ";
+      var flag = document.createElement("span");
+      flag.className = "fi fi-" + cc + " d3-workspace__flag";
+      flag.setAttribute("aria-hidden", "true");
+      metaCountry.appendChild(flag);
     }
 
     selectTab("overview", { silent: true });
@@ -681,13 +686,8 @@
     if (window.D3Nav) window.D3Nav.markChatActive();
 
     /* Collapse search cards so investigation progress stays in view. */
-    document.querySelectorAll(".d3-kyb-similar").forEach(function (el) {
+    document.querySelectorAll(".d3-kyb-similar, .d3-kyb-cand-panel").forEach(function (el) {
       el.hidden = true;
-    });
-    document.querySelectorAll(".d3-kyb-agent__card, .d3-kyb-agent__list").forEach(function (el) {
-      /* Keep chat compact while the map zooms; cards stay in history above. */
-      var list = el.closest && el.closest(".d3-kyb-agent");
-      if (list) list.setAttribute("data-d3-kyb-selecting", "true");
     });
 
     /* 1) Zoom map to the selected business while still on the map surface. */

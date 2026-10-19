@@ -107,9 +107,15 @@
   outline-offset: 2px;
 }
 
-.d3-agents.d3-motion-enter .d3-agents__intro {
-  animation: d3-fade-up var(--d3-dur-panel, 300ms) var(--d3-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+/* Entrance — demo-2/agent-hub (intro 40ms, groups 90/140ms). */
+.d3-agents.d3-motion-enter .d3-agents__intro,
+.d3-agents.d3-motion-enter .d3-agents__section {
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
 }
+
+.d3-agents.d3-motion-enter .d3-agents__intro { animation-delay: 40ms; }
+.d3-agents.d3-motion-enter .d3-agents__section:nth-of-type(1) { animation-delay: 90ms; }
+.d3-agents.d3-motion-enter .d3-agents__section:nth-of-type(2) { animation-delay: 140ms; }
 
 .d3-agent-card__top {
   display: flex;
@@ -202,7 +208,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .d3-agents.d3-motion-enter .d3-agents__intro,
-  .d3-agents__grid.d3-motion-enter-stagger > * {
+  .d3-agents.d3-motion-enter .d3-agents__section {
     animation: none;
   }
 

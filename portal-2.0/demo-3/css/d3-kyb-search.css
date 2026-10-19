@@ -1,0 +1,373 @@
+/* Demo 3 — manual KYB search (synced from demo-2 verify-business). */
+
+.vb-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  flex: 0 0 auto;
+  /* Above .vb-result — entrance animations create stacking contexts, so
+     without this the continue card paints over the typeahead menu. */
+  position: relative;
+  z-index: 5;
+  overflow: visible;
+}
+
+.vb-search__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 26px;
+  color: var(--text-default);
+}
+
+/* Field (+ expanding prefill), "or", and upload sit in one row. */
+.vb-search__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-8);
+  width: 100%;
+}
+
+/* Lookup is invisible chrome until a company is selected — then the
+   search field and prefill merge into one continuous panel (no nested
+   field-inside-card). */
+.vb-lookup {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 560px;
+  overflow: visible;
+}
+
+.vb-lookup--filled {
+  background: var(--surface-neutral-01);
+  border: 1px solid var(--border-selected);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 0 0 1px var(--border-selected);
+}
+
+/* --- Country + typeahead search (BRR behavior) --- */
+
+.vb-search-field {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: 40px;
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-inset);
+  z-index: 2;
+  transition: border-color 160ms ease, background-color 160ms ease, border-radius 160ms ease;
+}
+
+.vb-search-field:focus-within,
+.vb-search-field:has(.vb-search-country.tds-select--open),
+.vb-search-field:has(.vb-combobox.tds-combobox--open) {
+  border-color: var(--border-focus);
+}
+
+/* Filled: field becomes the panel header row — no second border. */
+.vb-lookup--filled .vb-search-field {
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  box-shadow: none;
+  background: var(--interactive-subtle);
+}
+
+.vb-search-country {
+  position: relative;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+}
+
+.vb-search-country.tds-select--interactive .tds-select__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  width: auto;
+  height: 100%;
+  min-height: 40px;
+  padding: 0 var(--spacing-12);
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  border-radius: var(--radius-button) 0 0 var(--radius-button);
+}
+
+.vb-search-country.tds-select--interactive .tds-select__trigger:hover {
+  background-color: var(--surface-hover);
+}
+
+.vb-search-country .tds-select__country-flag {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.vb-search-country .tds-select__country-flag .fi {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.vb-search-country__value {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.vb-search-country.tds-select--open { z-index: 21; }
+
+.vb-search-country__menu { min-width: 220px; }
+
+.vb-search-country__menu.tds-dropdown-panel .tds-action-list-item {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  padding: 6px var(--padding-xs);
+  box-sizing: border-box;
+}
+
+.vb-search-country__menu .tds-action-list-item__leading-visual .fi {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.vb-search-field__divider {
+  width: 1px;
+  align-self: stretch;
+  margin: var(--spacing-8) 0;
+  background-color: var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.vb-combobox {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.vb-combobox__field {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 var(--radius-button) var(--radius-button) 0;
+}
+
+.vb-combobox.tds-combobox--open { z-index: 20; }
+
+.vb-combobox__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.vb-combobox__icon svg { width: 16px; height: 16px; }
+
+.vb-combobox__panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vb-combobox__options {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.vb-combobox__footer {
+  padding: var(--spacing-8) var(--spacing-12);
+  border-top: 1px solid var(--border-subtle);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+  background-color: var(--surface-neutral-02);
+}
+
+.vb-combobox__options .tds-action-list-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vb-combobox__options .tds-action-list-item__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.vb-combobox__options .tds-action-list-item__description {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.vb-combobox__options .tds-action-list-item--active,
+.vb-combobox__options .tds-action-list-item--active:hover {
+  background-color: var(--surface-selected);
+}
+
+.vb-search-hint {
+  margin: var(--spacing-8) 0 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.vb-lookup--filled .vb-search-hint { display: none; }
+
+.vb-search-hint--active { color: var(--text-default); }
+
+/* Continues the search field — same panel, compact body. */
+.vb-prefill {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  width: 100%;
+  padding: var(--spacing-16);
+  animation: vb-prefill-in 200ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+.vb-prefill[hidden] { display: none !important; }
+
+@keyframes vb-prefill-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.vb-prefill__badge { align-self: flex-start; }
+
+.vb-prefill__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-12) var(--spacing-16);
+}
+
+.vb-prefill__grid .tds-text-input { min-width: 0; }
+
+.vb-prefill__field--full { grid-column: 1 / -1; }
+
+.vb-prefill .tds-text-input__native[readonly] { cursor: default; }
+
+.vb-prefill__actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--spacing-4);
+}
+
+.vb-search,
+.vb-page,
+.vb-search__row,
+.vb-lookup { overflow: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vb-prefill { animation: none; }
+}
+
+@media (max-width: 720px) {
+  .vb-prefill__grid { grid-template-columns: 1fr; }
+}
+
+/* --- "or" rule — a vertical divider between the field and the upload
+   button, not a horizontal one (Figma node 1121:51107). --- */
+
+.vb-or {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4);
+  flex: 0 0 auto;
+  height: 40px;
+}
+
+.vb-or::before,
+.vb-or::after {
+  content: "";
+  flex: 1 1 0;
+  width: 1px;
+  background: var(--border-subtle);
+}
+
+.vb-or span {
+  flex: 0 0 auto;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-caption);
+}
+
+/* --- Bulk upload — a compact button next to the field, not a dropzone
+   (Figma node 1121:51112). --- */
+
+.vb-upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-sm);
+  flex: 0 0 auto;
+  height: 40px;
+  padding: var(--padding-md) var(--padding-lg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-default);
+  background: var(--surface-neutral-01);
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.vb-upload:hover {
+  border-color: var(--interactive-default);
+  background: var(--interactive-subtle);
+}
+
+.vb-upload svg { width: 16px; height: 16px; color: var(--icon-faint); }
+
+/* Demo 3 workspace search row — host for vb-lookup */
+.d3-workspace__search {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-8);
+  width: 100%;
+  position: relative;
+  z-index: 5;
+  overflow: visible;
+}
+
+.d3-workspace__search .vb-lookup {
+  max-width: 560px;
+}
+
+/* Keep typeahead / country menus from clipping inside the scrolling detail pane. */
+.d3-workspace[data-d3-kyb-surface="resume"] .d3-workspace__detail:has(.tds-combobox--open),
+.d3-workspace[data-d3-kyb-surface="resume"] .d3-workspace__detail:has(.tds-select--open) {
+  overflow: visible;
+}
+
+.d3-workspace__search .tds-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  pointer-events: none;
+}

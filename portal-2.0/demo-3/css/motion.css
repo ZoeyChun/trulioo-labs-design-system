@@ -1,30 +1,62 @@
-/* Demo 3 motion system — tokens, page/chat entrances, microinteractions.
-   Prefer transform + opacity. Respects prefers-reduced-motion. */
+/* Demo 3 motion system — demo-2 landing standard:
+   v2-rise 10px / 380ms / spring; section stagger 40→90→140ms.
+   Chat pane: 460ms slide-in + inner rise. Parent shell is NOT animated
+   (avoids double motion). Layout padding/scale morph stays off.
+   Respects prefers-reduced-motion. */
 
 :root {
-  /* Durations */
+  /* Durations — match demo-2 page / panel timing */
   --d3-dur-micro: 160ms;
   --d3-dur-fast: 180ms;
-  --d3-dur-panel: 300ms;
-  --d3-dur-page: 360ms;
+  --d3-dur-panel: 380ms;
+  --d3-dur-page: 380ms;
+  --d3-dur-pane: 460ms;
   --d3-dur-reveal: 400ms;
 
-  /* Easing — ease-out entrances, ease-in exits */
-  --d3-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Easing — demo-2 spring for entrances */
+  --d3-ease-spring: cubic-bezier(0.22, 0.75, 0.3, 1);
+  --d3-ease-out: var(--d3-ease-spring);
   --d3-ease-in: cubic-bezier(0.4, 0, 1, 1);
   --d3-ease-inout: cubic-bezier(0.4, 0, 0.2, 1);
-  --d3-ease-spring: cubic-bezier(0.22, 0.75, 0.3, 1);
+  --d3-ease-bloom: cubic-bezier(0.22, 1.1, 0.36, 1);
 
   /* Aliases used by older Demo 1 motion */
   --d1-dur-enter: var(--d3-dur-page);
-  --d1-ease-enter: var(--d3-ease-out);
+  --d1-ease-enter: var(--d3-ease-spring);
 }
 
-/* ---- Shared keyframes ---- */
+/* ---- Shared keyframes (demo-2 shell.css equivalents) ---- */
 
+@keyframes v2-rise {
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes v2-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes v2-slide {
+  from { opacity: 0; translate: 24px 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+/* Left chat pane — mirror of v2-slide from the opposite side. */
+@keyframes v2-slide-left {
+  from { opacity: 0; translate: -24px 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes v2-bloom {
+  from { opacity: 0; scale: 0.72; }
+  to { opacity: 1; scale: 1; }
+}
+
+/* Back-compat aliases used across demo-3 CSS */
 @keyframes d1-up {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 @keyframes d1-in {
@@ -33,28 +65,33 @@
 }
 
 @keyframes d3-view-enter {
-  from { opacity: 0; transform: translate3d(0, 12px, 0); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 @keyframes d3-pane-in {
-  from { opacity: 0; transform: translate3d(-14px, 0, 0); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; translate: -24px 0; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 @keyframes d3-fade-up {
-  from { opacity: 0; transform: translate3d(0, 8px, 0); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes d3-rise {
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 @keyframes d3-scale-in {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; scale: 0.96; }
+  to { opacity: 1; scale: 1; }
 }
 
 @keyframes d3-msg-in {
-  from { opacity: 0; transform: translate3d(0, 10px, 0); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 @keyframes d3-nav-pop {
@@ -63,30 +100,45 @@
   100% { transform: scale(1); }
 }
 
-/* ---- Shell load ---- */
+/* ---- Shell load (demo-2: rail fade only — page sections own their rise) ---- */
 
-.d1-rail {
-  animation: d1-in var(--d3-dur-page) var(--d3-ease-out) both;
+.d1-rail > * {
+  animation: v2-fade 360ms ease both;
 }
 
-.d1-main {
-  animation: d1-up 0.55s 0.06s var(--d3-ease-out) both;
+/* Home landing — demo-2 delays (40 / 90 / 140). */
+.d1-home .d1-hello {
+  animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
+  animation-delay: 40ms;
+}
+
+.d1-home .d1-composer {
+  animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
+  animation-delay: 90ms;
+}
+
+.d1-home.d3-motion-enter .d1-hello { animation-delay: 40ms; }
+.d1-home.d3-motion-enter .d1-composer { animation-delay: 90ms; }
+.d1-home.d3-motion-enter .d1-brief {
+  animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
+  animation-delay: 140ms;
 }
 
 .d1-chip {
-  animation: d1-up 0.45s var(--d3-ease-out) both;
+  animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
 }
 
-.d1-chip:nth-child(1) { animation-delay: 0.18s; }
-.d1-chip:nth-child(2) { animation-delay: 0.26s; }
-.d1-chip:nth-child(3) { animation-delay: 0.34s; }
+.d1-chip:nth-child(1) { animation-delay: 90ms; }
+.d1-chip:nth-child(2) { animation-delay: 140ms; }
+.d1-chip:nth-child(3) { animation-delay: 170ms; }
 
 .d1-prompt {
-  animation: d1-up 0.5s 0.4s var(--d3-ease-out) both;
+  /* Composer owns the rise; avoid a nested second animation. */
+  animation: none;
 }
 
 .d1-home[data-d1-stage="chat"] .d1-chat-head {
-  animation: d1-up 0.35s var(--d3-ease-out) both;
+  animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
 }
 
 .d1-beat:not(.is-on) {
@@ -94,12 +146,12 @@
 }
 
 .d1-beat.is-on {
-  animation: d1-up 0.45s var(--d3-ease-out) both;
+  animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
 }
 
 /* Blocks cloned into the thread animate in as they appear. */
 .d1-enter {
-  animation: d3-msg-in var(--d3-dur-panel) var(--d3-ease-out) both;
+  animation: v2-rise var(--d3-dur-panel) var(--d3-ease-spring) both;
 }
 
 /* Caret rides the end of the paragraph currently being streamed. */
@@ -147,26 +199,17 @@
   40% { opacity: 1; transform: translateY(-3px); }
 }
 
-/* ---- View / surface enter (restarted by d3-motion.js) ---- */
+/* ---- View / surface enter (restarted by d3-motion.js) ----
+   Parent gets .d3-motion-enter; CHILDREN rise with demo-2 delays.
+   Do not animate the parent shell itself — that felt like a double slide. */
 
 .d3-motion-enter {
-  animation: d3-view-enter var(--d3-dur-page) var(--d3-ease-out) both;
+  /* marker class only */
 }
 
-.d3-motion-enter-stagger > *:nth-child(1) { animation-delay: 0ms; }
-.d3-motion-enter-stagger > *:nth-child(2) { animation-delay: 40ms; }
-.d3-motion-enter-stagger > *:nth-child(3) { animation-delay: 80ms; }
-.d3-motion-enter-stagger > *:nth-child(4) { animation-delay: 120ms; }
-.d3-motion-enter-stagger > *:nth-child(5) { animation-delay: 160ms; }
-.d3-motion-enter-stagger > *:nth-child(6) { animation-delay: 200ms; }
-
-.d3-motion-enter-stagger > * {
-  animation: d3-fade-up var(--d3-dur-panel) var(--d3-ease-out) both;
-}
-
-/* Chat pane open */
+/* Chat pane open — demo-2 panel-slot timing (460ms spring slide). */
 .d1-shell[data-d3-chat="open"] .d3-chat-pane.d3-motion-pane-in {
-  animation: d3-pane-in var(--d3-dur-panel) var(--d3-ease-out) both;
+  animation: v2-slide-left var(--d3-dur-pane) var(--d3-ease-spring) both;
 }
 
 /* Canvas bg softens when chat opens */
@@ -212,18 +255,7 @@
   transition:
     border-color var(--d3-dur-fast) var(--d3-ease-out),
     box-shadow var(--d3-dur-fast) var(--d3-ease-out),
-    background-color var(--d3-dur-fast) var(--d3-ease-out),
-    transform var(--d3-dur-fast) var(--d3-ease-out);
-}
-
-.d3-prompt-card:hover,
-.d3-agent-card:hover {
-  transform: translateY(-2px);
-}
-
-.d3-prompt-card:active,
-.d3-agent-card:active {
-  transform: translateY(0);
+    background-color var(--d3-dur-fast) var(--d3-ease-out);
 }
 
 .d3-prompt-card__arrow,
@@ -283,7 +315,7 @@
     --d3-dur-reveal: 1ms;
   }
 
-  .d1-rail,
+  .d1-rail > *,
   .d1-main,
   .d1-chip,
   .d1-prompt,
@@ -293,9 +325,25 @@
   .d1-home[data-d1-stage="chat"] .d1-chat-head,
   .d1-typing span,
   .d1-spin,
-  .d3-motion-enter,
-  .d3-motion-enter-stagger > *,
-  .d1-shell[data-d3-chat="open"] .d3-chat-pane.d3-motion-pane-in {
+  .d3-motion-enter .d3-agents__intro,
+  .d3-motion-enter .d3-agents__section,
+  .d3-motion-enter .d3-workspace__crumb,
+  .d3-motion-enter .d3-workspace__title,
+  .d3-motion-enter .d3-workspace__search,
+  .d3-motion-enter .d3-kyb-resume,
+  .d3-motion-enter .d3-tx__frame,
+  .d1-home .d1-hello,
+  .d1-home .d1-composer,
+  .d1-home .d1-brief,
+  .d3-motion-enter .d1-hello,
+  .d3-motion-enter .d1-composer,
+  .d3-motion-enter .d1-brief,
+  .d3-motion-enter .d3-org__frame,
+  .d1-shell[data-d3-chat="open"] .d3-chat-pane.d3-motion-pane-in,
+  .d3-chat-pane.d3-motion-pane-in .d3-chat-pane__head,
+  .d3-chat-pane.d3-motion-pane-in .d3-chat-pane__hello,
+  .d3-chat-pane.d3-motion-pane-in .d3-chat-pane__sub,
+  .d3-chat-pane.d3-motion-pane-in .d3-prompt-card {
     animation: none !important;
   }
 

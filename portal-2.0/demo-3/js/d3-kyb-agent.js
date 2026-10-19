@@ -1,4 +1,4 @@
-/* Demo 3 — KYB Agent: grounded NL over the Meridian US demo dataset. */
+/* Demo 3 — KYB Agent: grounded NL over the multi-jurisdiction Meridian demo dataset. */
 (function () {
   var shell = document.querySelector(".d1-shell");
   var composer = document.querySelector("[data-d1-composer]");
@@ -9,6 +9,15 @@
   var busy = false;
   var historyTurns = [];
   var compareIds = [];
+  /* Demo-2-style candidate panel state (chips → cards → confirm). */
+  var candState = {
+    list: [],
+    filterIds: [],
+    queryLabel: "Meridian",
+    root: null,
+    mode: "list" /* list | confirm */,
+    pending: null
+  };
 
   var SUGGEST_SEARCH = [
     { q: "Find Meridian" },
@@ -20,6 +29,9 @@
     { q: "Who ultimately owns this business?" },
     { q: "Has this entity ever traded?" }
   ];
+
+  var CAND_GO_SVG =
+    '<svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>';
 
   function onKyb() {
     return (
@@ -121,6 +133,17 @@
   function parseQuery(text) {
     var q = String(text || "").trim();
     var lower = q.toLowerCase();
+
+    /* Idle prompt cards — synced from demo-2/verify-business TruAI suggestions */
+    if (/what information do i need|fields and documents|required to start/.test(lower)) {
+      return { intent: "faq", topic: "info" };
+    }
+    if (/which countries are supported|jurisdictions available|countries supported/.test(lower)) {
+      return { intent: "faq", topic: "countries" };
+    }
+    if (/how does verification work|steps from search|verified report/.test(lower)) {
+      return { intent: "faq", topic: "how" };
+    }
 
     if (/^(find|search|look up|locate)\b/.test(lower) || /^meridian$/i.test(q)) {
       var needle = q.replace(/^(find|search|look up|locate)\s+/i, "").trim() || "Meridian";
@@ -245,41 +268,346 @@
     return wrap;
   }
 
-  function toneTag(level) {
-    if (level === "high") return '<span class="d1-tag d1-tag--negative">High risk</span>';
-    if (level === "medium") return '<span class="d1-tag d1-tag--review">Medium risk</span>';
-    return '<span class="d1-tag d1-tag--positive">Low risk</span>';
+  function bizCountry(biz) {
+    return biz.country || "United States";
   }
 
-  function bizCardsHtml(list, lead) {
-    var html =
-      '<div class="d3-kyb-agent">' +
-      (lead ? "<p>" + esc(lead) + "</p>" : "") +
-      '<ul class="d3-kyb-agent__list">';
-    list.forEach(function (biz) {
-      html +=
-        '<li class="d3-kyb-agent__item">' +
-        '<article class="d3-kyb-agent__card">' +
-        '<span class="d3-kyb-agent__name">' +
-        esc(biz.name) +
-        "</span>" +
-        toneTag(biz.riskLevel || "low") +
-        '<span class="d3-kyb-agent__meta">' +
-        esc(biz.city) +
-        " · " +
-        esc(biz.reg) +
-        " · " +
-        esc(biz.status) +
-        "</span>" +
-        '<span class="d3-kyb-agent__detail">' +
-        esc(biz.brief) +
-        "</span>" +
-        '<button type="button" class="tds-btn tds-btn--primary tds-btn--md d3-kyb-agent__cta" data-d3-kyb-select="' +
-        esc(biz.id) +
-        '">Verify business</button>' +
-        "</article></li>";
+  function bizCc(biz) {
+    return (biz.cc || "US").toUpperCase();
+  }
+
+  function buildCandFilters(list) {
+    var byCc = {};
+    list.forEach(function (c) {
+      var cc = bizCc(c);
+      if (!byCc[cc]) {
+        byCc[cc] = {
+          id: cc.toLowerCase(),
+          label: bizCountry(c),
+          group: "country",
+          cc: cc,
+          n: 0,
+          test: (function (code) {
+            return function (x) {
+              return bizCc(x) === code;
+            };
+          })(cc)
+        };
+      }
+      byCc[cc].n += 1;
     });
-    return html + "</ul></div>";
+    var countries = Object.keys(byCc)
+      .map(function (k) {
+        return byCc[k];
+      })
+      .sort(function (a, b) {
+        return b.n - a.n || a.label.localeCompare(b.label);
+      });
+    return countries.concat([
+      {
+        id: "active",
+        label: "Active only",
+        group: "status",
+        test: function (c) {
+          return c.status === "Active";
+        }
+      }
+    ]);
+  }
+
+  function isCountryFilter(f) {
+    return f.group === "country";
+  }
+
+  function activeFilters(defs) {
+    var ids = candState.filterIds || [];
+    return (defs || buildCandFilters(candState.list)).filter(function (f) {
+      return ids.indexOf(f.id) !== -1;
+    });
+  }
+
+  function applyCandFilters(list, filters) {
+    var countryFs = filters.filter(isCountryFilter);
+    var otherFs = filters.filter(function (f) {
+      return !isCountryFilter(f);
+    });
+    return list.filter(function (c) {
+      var countryOk = !countryFs.length || countryFs.some(function (f) {
+        return f.test(c);
+      });
+      var otherOk = otherFs.every(function (f) {
+        return f.test(c);
+      });
+      return countryOk && otherOk;
+    });
+  }
+
+  function facetCount(f, list, defs) {
+    var others = activeFilters(defs).filter(function (g) {
+      return g.id !== f.id;
+    });
+    if (isCountryFilter(f)) {
+      var nonCountry = others.filter(function (g) {
+        return !isCountryFilter(g);
+      });
+      return list.filter(function (c) {
+        return f.test(c) && nonCountry.every(function (g) {
+          return g.test(c);
+        });
+      }).length;
+    }
+    var countryFs = others.filter(isCountryFilter);
+    return list.filter(function (c) {
+      var countryOk = !countryFs.length || countryFs.some(function (g) {
+        return g.test(c);
+      });
+      return countryOk && f.test(c);
+    }).length;
+  }
+
+  function candidateCardHtml(c) {
+    var statusOk = c.status === "Active";
+    return (
+      '<button type="button" class="ai-cand" data-id="' +
+      esc(c.id) +
+      '" data-d3-kyb-cand="' +
+      esc(c.id) +
+      '">' +
+      '<span class="ai-cand__head">' +
+      '<span class="ai-cand__name">' +
+      esc(c.name) +
+      "</span>" +
+      '<span class="ai-cand__go" aria-hidden="true">' +
+      CAND_GO_SVG +
+      "</span>" +
+      "</span>" +
+      '<span class="ai-cand__facts">' +
+      '<span class="ai-cand__fact"><b>Jurisdiction</b>' +
+      esc(bizCountry(c)) +
+      "</span>" +
+      '<span class="ai-cand__fact"><b>Status</b>' +
+      '<span class="ai-cand__status ai-cand__status--' +
+      (statusOk ? "ok" : "off") +
+      '">' +
+      esc(c.status || "—") +
+      "</span></span>" +
+      '<span class="ai-cand__fact ai-cand__fact--wide"><b>Registration</b>' +
+      esc(c.reg) +
+      "</span>" +
+      '<span class="ai-cand__fact ai-cand__fact--wide"><b>Address</b>' +
+      esc(c.addr || c.city || "—") +
+      "</span>" +
+      "</span>" +
+      (c.brief ? '<span class="ai-cand__note">' + esc(c.brief) + "</span>" : "") +
+      "</button>"
+    );
+  }
+
+  function visibleCandidates() {
+    return applyCandFilters(candState.list, activeFilters());
+  }
+
+  function syncMapToVisible() {
+    var map = window.D3KybMapSearch;
+    if (!map || typeof map.plotResults !== "function") return;
+    var list = visibleCandidates();
+    if (!list.length) {
+      map.plotResults([], "No matches");
+      return;
+    }
+    var countries = {};
+    list.forEach(function (c) {
+      countries[bizCountry(c)] = 1;
+    });
+    var n = Object.keys(countries).length;
+    var caption =
+      list.length +
+      " match" +
+      (list.length === 1 ? "" : "es") +
+      " in " +
+      n +
+      (n === 1 ? " country" : " countries");
+    if (window.D3KybMapSearch && typeof window.D3KybMapSearch.matchCaption === "function") {
+      caption = window.D3KybMapSearch.matchCaption(list);
+    } else if (n === 1) {
+      caption = Object.keys(countries)[0] + " · " + list.length + " Meridian matches";
+    } else {
+      caption = list.length + " Meridian matches · " + n + " countries";
+    }
+    map.plotResults(list, caption);
+  }
+
+  function restoreMapList() {
+    syncMapToVisible();
+    if (window.D3KybMapSearch && window.D3KybMapSearch.highlightMarker) {
+      window.D3KybMapSearch.highlightMarker(null);
+    }
+  }
+
+  function focusCandOnMap(biz) {
+    var map = window.D3KybMapSearch;
+    if (!map || !biz) return;
+    if (typeof map.plotResults === "function") {
+      map.plotResults([biz], (biz.country || biz.city || "Selected") + " · 1 selected", {
+        skipFit: true
+      });
+    }
+    if (typeof map.focusBusiness === "function") {
+      map.focusBusiness(biz, { zoom: 11, holdMs: 200, duration: 0.85 });
+    } else if (typeof map.highlightMarker === "function") {
+      map.highlightMarker(biz.id);
+    }
+  }
+
+  function paintCandidateList() {
+    if (!candState.root) return;
+    candState.mode = "list";
+    candState.pending = null;
+    var filters = buildCandFilters(candState.list);
+    var list = visibleCandidates();
+    var countries = {};
+    list.forEach(function (c) {
+      countries[bizCountry(c)] = 1;
+    });
+    var nCountries = Object.keys(countries).length;
+    var filtered = candState.filterIds.length > 0;
+
+    var chips = filters
+      .map(function (f) {
+        var on = candState.filterIds.indexOf(f.id) !== -1;
+        var n = facetCount(f, candState.list, filters);
+        return (
+          '<button type="button" class="ai-chip' +
+          (on ? " ai-chip--on" : "") +
+          '" data-d3-kyb-filter="' +
+          esc(f.id) +
+          '"' +
+          (n === 0 && !on ? " disabled" : "") +
+          ">" +
+          esc(f.label) +
+          '<span class="ai-chip__n">' +
+          n +
+          "</span></button>"
+        );
+      })
+      .join("");
+
+    var lead =
+      list.length === 0
+        ? "No matches for these filters."
+        : list.length === 1
+          ? "One match left."
+          : filtered
+            ? list.length +
+              " matches across " +
+              nCountries +
+              (nCountries === 1 ? " country" : " countries") +
+              "."
+            : "Which “Meridian” should I check?";
+
+    var sub =
+      list.length === 0
+        ? "Clear a filter to see candidates again."
+        : list.length === 1
+          ? "Open it to run the KYB check."
+          : filtered
+            ? "Narrow further, or open a card to run the KYB check."
+            : list.length +
+              " legal entities share this name across " +
+              nCountries +
+              (nCountries === 1 ? " country" : " countries") +
+              ". They are unrelated companies, so picking the wrong one would attach " +
+              "ownership, registration and sanctions results to the wrong business.";
+
+    candState.root.innerHTML =
+      '<div class="ai-reply">' +
+      '<p class="ai-reply__lead">' +
+      lead +
+      "</p>" +
+      '<p class="ai-reply__sub">' +
+      sub +
+      "</p>" +
+      "</div>" +
+      '<div class="ai-chips">' +
+      chips +
+      "</div>" +
+      '<div class="ai-cands">' +
+      list.map(candidateCardHtml).join("") +
+      "</div>";
+
+    syncMapToVisible();
+    stick();
+  }
+
+  function showConfirmStep(biz) {
+    if (!biz) return;
+    ensureKybOpen();
+    parkActive();
+    hideFollow();
+    if (!candState.root || !candState.root.isConnected) {
+      candState.root = playHtml("");
+      candState.root.classList.add("d3-kyb-cand-panel", "d3-kyb-agent-wrap");
+    }
+    candState.mode = "confirm";
+    candState.pending = biz;
+    focusCandOnMap(biz);
+    candState.root.innerHTML =
+      '<p class="ai-said">' +
+      esc(biz.name) +
+      "</p>" +
+      '<div class="ai-reply">' +
+      '<p class="ai-reply__lead">Run a KYB check on ' +
+      esc(biz.name) +
+      "?</p>" +
+      '<p class="ai-reply__sub">' +
+      esc(bizCountry(biz)) +
+      " · " +
+      esc(biz.reg) +
+      "</p>" +
+      "</div>" +
+      '<div class="ai-confirm">' +
+      '<button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d3-kyb-confirm="yes">Confirm</button>' +
+      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-d3-kyb-confirm="no">Cancel</button>' +
+      "</div>";
+    stick();
+  }
+
+  function playCandidateResults(matches, queryLabel) {
+    hideFollow();
+    candState.list = matches.slice();
+    candState.filterIds = [];
+    candState.queryLabel = queryLabel || "Meridian";
+    candState.pending = null;
+    candState.mode = "list";
+    compareIds = matches.map(function (b) {
+      return b.id;
+    });
+    var wrap = playHtml("");
+    wrap.classList.add("d3-kyb-cand-panel");
+    candState.root = wrap;
+    paintCandidateList();
+    return wrap;
+  }
+
+  function confirmSelect(biz) {
+    if (!biz) return;
+    if (!candState.list.length) {
+      candState.list = [biz];
+      candState.filterIds = [];
+      candState.queryLabel = biz.name;
+    }
+    showConfirmStep(biz);
+  }
+
+  function runConfirmedVerify(biz) {
+    var map = window.D3KybMapSearch;
+    if (!biz || !map) return;
+    playHtml(
+      "<p>Starting verification for <strong>" +
+        esc(biz.name) +
+        "</strong>. I’ll progressively fill the report on the right as registry, ownership, and sanctions checks complete.</p>"
+    );
+    map.selectBusiness(biz, { skipUserTurn: true, confirmed: true });
   }
 
   async function playAnalysis(title, rows) {
@@ -452,6 +780,35 @@
 
   /* ---- intent handlers ---- */
 
+  async function handleFaq(parsed) {
+    var html;
+    if (parsed.topic === "info") {
+      html =
+        "<p><strong>What you’ll need to start a check</strong></p>" +
+        "<ul>" +
+        "<li>Legal business name (as registered)</li>" +
+        "<li>Country / jurisdiction</li>" +
+        "<li>Optional: registration number, address, or website to narrow matches</li>" +
+        "</ul>" +
+        "<p>No documents are required for this demo — search by name, then confirm the entity to run verification.</p>";
+    } else if (parsed.topic === "countries") {
+      html =
+        "<p><strong>Supported jurisdictions (demo)</strong></p>" +
+        "<p>This Meridian search spans <strong>United States, United Kingdom, Singapore, Sweden, Germany, and Australia</strong>. Use the country chips after search to narrow — the live product covers many more markets.</p>";
+    } else {
+      html =
+        "<p><strong>How verification works</strong></p>" +
+        "<ol>" +
+        "<li>Search for the business by name</li>" +
+        "<li>Confirm the correct legal entity from the matches</li>" +
+        "<li>Run KYB — the report fills in overview, ownership / UBOs, and risk signals</li>" +
+        "<li>Export when you need a shareable copy of the verified report</li>" +
+        "</ol>";
+    }
+    playHtml(html);
+    setSuggestions(SUGGEST_SEARCH);
+  }
+
   async function handleFind(parsed, userText) {
     ensureKybOpen();
     parkActive();
@@ -467,16 +824,16 @@
       if (typeof map.revealMatches === "function") {
         map.revealMatches(
           matches,
-          matches.length === businesses().length
-            ? "United States · 5 Meridian matches"
+          typeof map.matchCaption === "function"
+            ? map.matchCaption(matches)
             : "Matches · " + matches.length
         );
       } else {
         map.ensureMapSurface();
         map.plotResults(
           matches,
-          matches.length === businesses().length
-            ? "United States · 5 Meridian matches"
+          typeof map.matchCaption === "function"
+            ? map.matchCaption(matches)
             : "Matches · " + matches.length
         );
       }
@@ -487,29 +844,14 @@
       playHtml(
         "<p>No businesses in this demo dataset matched “" +
           esc(parsed.query) +
-          "”. Available names include Meridian Capital LLC, Meridian Global Partners Inc., Meridian Analytics Inc., Meridian Industrial Holdings LLC, and Meridian Energy Partners LP.</p>"
+          "”. Try “Meridian” to see same-name entities across the US, UK, Singapore, Sweden, Germany, and Australia.</p>"
       );
       setSuggestions(SUGGEST_SEARCH);
       return;
     }
-    playHtml(
-      bizCardsHtml(
-        matches,
-        "I found " +
-          matches.length +
-          " match" +
-          (matches.length === 1 ? "" : "es") +
-          " in the demo dataset. They’re plotted on the map — tap a card to start verification."
-      )
-    );
-    compareIds = matches.map(function (b) {
-      return b.id;
-    });
-    /* Also mirror similar cards for visual continuity */
-    if (matches.length > 1 && typeof map.runSearch === "function") {
-      /* suggestions already on map via plot; skip duplicate appendTurn from runSearch */
-    }
-    setSuggestions(SUGGEST_AFTER);
+    /* Demo-2 flow: country chips + candidate cards → confirm → report. Map stays as plotted. */
+    playCandidateResults(matches, parsed.query || "Meridian");
+    hideFollow();
   }
 
   async function handleVerify(parsed) {
@@ -525,15 +867,8 @@
       else if (loose && loose.length > 1) {
         map.ensureMapSurface();
         map.plotResults(loose, "Matches · " + loose.length);
-        playHtml(
-          bizCardsHtml(
-            loose,
-            "“" +
-              esc(parsed.name) +
-              "” matches more than one entity. Pick the legal name to verify — I won’t guess."
-          )
-        );
-        setSuggestions(SUGGEST_AFTER);
+        playCandidateResults(loose, parsed.name || "Meridian");
+        hideFollow();
         return;
       }
     }
@@ -544,13 +879,8 @@
       setSuggestions(SUGGEST_SEARCH);
       return;
     }
-    playHtml(
-      "<p>Starting verification for <strong>" +
-        esc(biz.name) +
-        "</strong>. I’ll progressively fill the report on the right as registry, ownership, and sanctions checks complete.</p>"
-    );
-    map.selectBusiness(biz, { skipUserTurn: true });
-    /* Suggestions + Export action appear when d3-kyb:report-ready fires. */
+    /* Named verify still asks for confirm — same as demo-2 card → Confirm. */
+    confirmSelect(biz);
   }
 
   async function handleOwnership(parsed) {
@@ -694,8 +1024,8 @@
           all.length +
           " Meridian entities).</p>"
       );
-      playHtml(bizCardsHtml(all, null));
-      setSuggestions(SUGGEST_SEARCH);
+      playCandidateResults(all, "Meridian");
+      hideFollow();
       return;
     }
     if (window.D3KybReport && window.D3KybReport.selectTab) {
@@ -815,7 +1145,8 @@
     var parsed = parseQuery(text);
     try {
       await playTyping(420);
-      if (parsed.intent === "find") await handleFind(parsed, text);
+      if (parsed.intent === "faq") await handleFaq(parsed);
+      else if (parsed.intent === "find") await handleFind(parsed, text);
       else if (parsed.intent === "verify") await handleVerify(parsed);
       else if (parsed.intent === "ownership") await handleOwnership(parsed);
       else if (parsed.intent === "risk") await handleRisk();
@@ -840,8 +1171,10 @@
   /* ---- wiring ---- */
 
   thread.addEventListener("click", function (event) {
+    if (!onKyb()) return;
+
     var exportBtn = event.target.closest("[data-d1-report-export], [data-d3-kyb-action='export'], .d1-alert__export");
-    if (exportBtn && onKyb()) {
+    if (exportBtn) {
       event.preventDefault();
       var pageExport = document.querySelector("[data-d3-kyb-export]");
       if (pageExport && !pageExport.hidden) pageExport.click();
@@ -850,13 +1183,74 @@
       }
       return;
     }
+
+    var confirmBtn = event.target.closest("[data-d3-kyb-confirm]");
+    if (confirmBtn) {
+      event.preventDefault();
+      var answer = confirmBtn.getAttribute("data-d3-kyb-confirm");
+      if (answer === "yes" && candState.pending) {
+        var chosen = candState.pending;
+        candState.pending = null;
+        runConfirmedVerify(chosen);
+      } else {
+        paintCandidateList();
+        restoreMapList();
+      }
+      return;
+    }
+
+    var filterBtn = event.target.closest("[data-d3-kyb-filter]");
+    if (filterBtn && !filterBtn.disabled) {
+      event.preventDefault();
+      var fid = filterBtn.getAttribute("data-d3-kyb-filter");
+      var idx = candState.filterIds.indexOf(fid);
+      if (idx === -1) candState.filterIds.push(fid);
+      else candState.filterIds.splice(idx, 1);
+      paintCandidateList();
+      return;
+    }
+
+    var cand = event.target.closest("[data-d3-kyb-cand], .ai-cand");
+    if (cand) {
+      event.preventDefault();
+      var candId = cand.getAttribute("data-d3-kyb-cand") || cand.getAttribute("data-id");
+      var candBiz = window.D3KybMapSearch && window.D3KybMapSearch.findById(candId);
+      if (candBiz) showConfirmStep(candBiz);
+      return;
+    }
+
     var btn = event.target.closest("[data-d3-kyb-select]");
-    if (!btn || !onKyb()) return;
+    if (!btn) return;
     event.preventDefault();
     var id = btn.getAttribute("data-d3-kyb-select");
     var biz = window.D3KybMapSearch && window.D3KybMapSearch.findById(id);
     if (!biz) return;
-    respond("Verify " + biz.name);
+    confirmSelect(biz);
+  });
+
+  thread.addEventListener("mouseover", function (event) {
+    if (!onKyb() || candState.mode !== "list") return;
+    var card = event.target.closest(".ai-cand");
+    if (!card || !thread.contains(card)) return;
+    var id = card.getAttribute("data-id");
+    thread.querySelectorAll(".ai-cand").forEach(function (el) {
+      el.classList.toggle("ai-cand--on", el === card);
+    });
+    if (window.D3KybMapSearch && window.D3KybMapSearch.highlightMarker) {
+      window.D3KybMapSearch.highlightMarker(id);
+    }
+  });
+
+  thread.addEventListener("mouseout", function (event) {
+    if (!onKyb() || candState.mode !== "list") return;
+    var card = event.target.closest(".ai-cand");
+    if (!card || !thread.contains(card)) return;
+    var related = event.relatedTarget;
+    if (related && card.contains(related)) return;
+    card.classList.remove("ai-cand--on");
+    if (window.D3KybMapSearch && window.D3KybMapSearch.highlightMarker) {
+      window.D3KybMapSearch.highlightMarker(null);
+    }
   });
 
   document.addEventListener("d3-kyb:report-ready", function () {
@@ -936,6 +1330,8 @@
   window.D3KybAgent = {
     respond: respond,
     parseQuery: parseQuery,
-    selected: selected
+    selected: selected,
+    confirmSelect: confirmSelect,
+    showMatches: playCandidateResults
   };
 })();

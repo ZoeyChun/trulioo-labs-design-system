@@ -60,7 +60,59 @@
       shell.setAttribute("data-d3-chat", "open");
     }
     parkIntoPane();
+    /* Demo 3 never uses the full-page Demo 1 chat stage. Leaving
+       data-d1-stage="chat" while the composer is parked in the left pane
+       strips the home search and leaves greeting + briefing cards alone. */
+    if (stage) stage.setAttribute("data-d1-stage", "home");
   }
+
+  /* Home hero search → KYB/KYC workspace. Must beat chat.js (Demo 1). */
+  function routeHomeSubmit(event) {
+    var view = shell.getAttribute("data-d3-view") || "home";
+    if (view !== "home") return;
+    var detail = event.detail || {};
+    var text = String(detail.text || "").trim();
+    if (!text) return;
+
+    event.stopImmediatePropagation();
+    if (typeof event.preventDefault === "function") event.preventDefault();
+
+    var agent = detail.agent || "auto";
+    if (agent === "kyc") {
+      if (window.D3Nav && window.D3Nav.openKycChat) {
+        window.D3Nav.openKycChat({ forceActive: true });
+      }
+      window.setTimeout(function () {
+        document.dispatchEvent(
+          new CustomEvent("d3-chat:send", {
+            detail: { text: text, agent: "kyc" },
+            cancelable: true
+          })
+        );
+      }, 80);
+      return;
+    }
+
+    var wantsMap = /\b(find|search|verify|look\s*up|locate|meridian)\b/i.test(text);
+    if (wantsMap && window.D3KybResume && window.D3KybResume.openMapExperience) {
+      window.D3KybResume.openMapExperience();
+    } else if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
+      window.D3KybResume.openResumeExperience();
+    } else if (window.D3Nav && window.D3Nav.openKybChat) {
+      window.D3Nav.openKybChat({ map: wantsMap });
+    }
+
+    window.setTimeout(function () {
+      document.dispatchEvent(
+        new CustomEvent("d3-chat:send", {
+          detail: { text: text, agent: "kyb" },
+          cancelable: true
+        })
+      );
+    }, 100);
+  }
+
+  sourceComposer.addEventListener("d1-composer:submit", routeHomeSubmit, true);
 
   function submitThroughComposer(text, agent) {
     if (!text) return;
@@ -101,9 +153,19 @@
   if (stage) observer.observe(stage, { attributes: true, attributeFilter: ["data-d1-stage"] });
 
   document.addEventListener("d3-view:home", restoreFromPane);
-  document.addEventListener("d3-chat:close", function () {
+  document.addEventListener("d3-chat:close", function (event) {
+    var detail = (event && event.detail) || {};
+    /* Minimized to ask bar (demo-2): keep thread/composer parked in the
+       pane so reopening restores the conversation. Only unwind to home
+       when close really means leave chat. */
+    if (detail.minimized) return;
     restoreFromPane();
     if (stage) stage.setAttribute("data-d1-stage", "home");
+  });
+
+  document.addEventListener("d3-chat:open", function () {
+    /* Reopening from ask bar — if a conversation was parked, show it. */
+    if (parked && window.D3Nav) window.D3Nav.markChatActive();
   });
 
   document.addEventListener("d3-view:agents", function () {

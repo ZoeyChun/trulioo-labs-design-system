@@ -52,7 +52,8 @@
   z-index: 2;
   width: min(1214px, calc(100% - 64px));
   margin-top: clamp(56px, 9vh, 120px);
-  animation: d1-up 0.55s 0.12s ease both;
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
+  animation-delay: 140ms;
 }
 
 /* ---- cards -------------------------------------------------- */
