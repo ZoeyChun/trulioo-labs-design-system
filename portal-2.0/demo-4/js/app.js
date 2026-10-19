@@ -14,8 +14,6 @@
   var status = document.querySelector("[data-d4-status]");
   var statusLabel = document.querySelector("[data-d4-status-label]");
   var chatSlot = document.querySelector("[data-d4-composer-chat]");
-  var account = document.querySelector("#d4-account");
-  var accountToggle = document.querySelector("[data-d4-account-toggle]");
   if (!stage || !composer || !thread || !feed) return;
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -252,16 +250,9 @@
 
     if (!convo.entity) {
       return {
-        log: { title: "Resolve “Meridian”", detail: "Waiting for you to confirm the entity", hold: true },
-        parts: [say(
-          "I can run the Meridian Apex check, but I need the legal entity first. Nothing here calls a live registry.",
-          "Which should I investigate — Meridian Apex Consulting Ltd., Meridian Trade Holdings Ltd., or Meridian Capital LLC?"
-        )],
-        suggestions: [
-          { q: "Meridian Apex Consulting Ltd." },
-          { q: "Meridian Trade Holdings Ltd." },
-          { q: "Meridian Capital LLC" }
-        ]
+        log: { title: "Start a new verification", detail: "Waiting for a business or person", hold: true, drop: true },
+        parts: [say("Which business or person should I verify?")],
+        suggestions: []
       };
     }
 
@@ -299,13 +290,7 @@
 
   var working = null;
 
-  var today = [
-    { title: "Investigate Northern Shield", detail: "Found 3 connections", time: "10:42 am" },
-    { title: "Check linked devices", detail: "Same device as Daniel Reyes", time: "10:41 am" },
-    { title: "Generate verification report", detail: "Created for Northern Shield", time: "10:38 am", icon: "memo" },
-    { title: "Resolve “Northern Shield”", detail: "Confirmed with you", time: "10:36 am" },
-    { title: "Answer question about OFAC lists", detail: "Explained how SDN matching works", time: "9:02 am" }
-  ];
+  var today = [];
 
   var yesterday = [
     { title: "Process daily verifications", detail: "29 approved, 12 flagged", time: "6:00 pm" },
@@ -335,14 +320,21 @@
   }
 
   function beginWork(entry) {
-    if (working && !working.live) working = null;
+    if (working && (!working.live || working.drop)) working = null;
     if (working && working.title === entry.title) {
       working.detail = entry.detail;
       working.live = true;
       working.icon = entry.icon || "";
+      working.drop = !!entry.drop;
     } else {
       archiveWorking();
-      working = { title: entry.title, detail: entry.detail, live: true, icon: entry.icon || "" };
+      working = {
+        title: entry.title,
+        detail: entry.detail,
+        live: true,
+        icon: entry.icon || "",
+        drop: !!entry.drop
+      };
     }
     renderFeed();
   }
@@ -370,7 +362,7 @@
       return '<span class="d4-act__icon"><img class="d4-spin" src="assets/icons/spinner.svg" alt="" width="16" height="16"></span>';
     }
     if (kind === "memo") {
-      return '<span class="d4-act__icon d4-act__icon--badge"><img src="assets/icons/memo.svg" alt="" width="16" height="16"></span>';
+      return '<span class="d4-act__icon d4-act__icon--badge"><svg class="d4-act__report" width="12" height="16" viewBox="0 0 12 16" fill="none" aria-hidden="true"><path d="M2 1.5C1.71875 1.5 1.5 1.71875 1.5 2V14C1.5 14.2812 1.71875 14.5 2 14.5H10C10.2812 14.5 10.5 14.2812 10.5 14V2C10.5 1.71875 10.2812 1.5 10 1.5H2ZM0 2C0 0.90625 0.90625 0 2 0H10C11.0938 0 12 0.90625 12 2V14C12 15.0938 11.0938 16 10 16H2C0.90625 16 0 15.0938 0 14V2ZM3.75 4H8.25C8.65625 4 9 4.34375 9 4.75C9 5.15625 8.65625 5.5 8.25 5.5H3.75C3.34375 5.5 3 5.15625 3 4.75C3 4.34375 3.34375 4 3.75 4ZM3.75 7H8.25C8.65625 7 9 7.34375 9 7.75C9 8.15625 8.65625 8.5 8.25 8.5H3.75C3.34375 8.5 3 8.15625 3 7.75C3 7.34375 3.34375 7 3.75 7ZM3.75 10H5.25C5.65625 10 6 10.3438 6 10.75C6 11.1562 5.65625 11.5 5.25 11.5H3.75C3.34375 11.5 3 11.1562 3 10.75C3 10.3438 3.34375 10 3.75 10Z" fill="#526660"/></svg></span>';
     }
     if (kind === "check") {
       return '<span class="d4-act__icon d4-act__icon--badge"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM2.5 8a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Zm7.9-1.4a.75.75 0 0 1 0 1.06l-2.7 2.7a.75.75 0 0 1-1.06 0l-1.3-1.3a.75.75 0 1 1 1.06-1.06l.77.77 2.17-2.17a.75.75 0 0 1 1.06 0Z"/></svg></span>';
@@ -393,19 +385,37 @@
     }).join("");
   }
 
+  function miniLabel() {
+    if (!working) return "Idle";
+    var text = ((working.detail || "") + " " + (working.title || "")).toLowerCase();
+    if (/waiting|confirm|resolve|start a new/.test(text)) return "Awaiting input";
+    if (/companies house|registry|dos|matching/.test(text)) return "Browsing sources";
+    if (/capital|filing|filings|virtual office|address|vesey|canary/.test(text)) return "Reviewing filings";
+    if (/ofac|sanction|screening/.test(text)) return "Screening lists";
+    if (/transaction|device|account|people|connections|links|history|kyc|bank/.test(text)) return "Scanning history";
+    if (/ownership|bvi|holding/.test(text)) return "Reviewing ownership";
+    if (/report/.test(text)) return "Writing report";
+    if (/investigate/.test(text)) return "Investigating";
+    if (/answer|follow-up|checking/.test(text)) return "Answering";
+    return "Working";
+  }
+
   function renderFeed() {
     var top = feed.scrollTop;
     var html = "";
     if (working) {
       html += '<section class="d4-group"><h2>Working now</h2>' + renderItems([working], true) + "</section>";
     }
-    html += '<section class="d4-group"><h2>Today</h2>' + renderItems(today, false) + "</section>";
+    if (today.length) {
+      html += '<section class="d4-group"><h2>Today</h2>' + renderItems(today, false) + "</section>";
+    }
     html += '<section class="d4-group"><h2>Yesterday</h2>' + renderItems(yesterday, false) + "</section>";
     feed.innerHTML = html;
     feed.scrollTop = top;
     var count = working ? 1 : 0;
     status.classList.toggle("is-idle", !working);
     statusLabel.textContent = count ? "Working on " + count + " task" : "Idle";
+    if (miniStatus) miniStatus.textContent = miniLabel();
   }
 
   /* ---------------------------------------------------------------- thread */
@@ -426,14 +436,65 @@
     send.setAttribute("aria-label", on ? "Stop" : "Send");
   }
 
+  var app = document.querySelector(".d4-app");
+  var PAGE_SRC = {
+    labs: "../../pages/unified-intelligence-home/labs.html?embed=1&v=6",
+    transactions: "transactions-view/embed.html",
+    settings: "organization-admin/index.html?embed=1"
+  };
+
+  function setNav(view) {
+    document.querySelectorAll("[data-d4-nav]").forEach(function (btn) {
+      var on = btn.getAttribute("data-d4-nav") === view;
+      btn.classList.toggle("is-active", on);
+      if (on) btn.setAttribute("aria-current", "page");
+      else btn.removeAttribute("aria-current");
+    });
+  }
+
+  function hidePages() {
+    document.querySelectorAll("[data-d4-page]").forEach(function (el) {
+      el.hidden = true;
+    });
+  }
+
+  function ensurePageFrame(view) {
+    var frame = document.querySelector('[data-d4-frame="' + view + '"]');
+    var src = PAGE_SRC[view];
+    if (!frame || !src) return;
+    if (frame.getAttribute("src") !== src) frame.setAttribute("src", src);
+  }
+
+  function showPage(view) {
+    if (!PAGE_SRC[view]) return;
+    runId += 1;
+    setBusy(false);
+    closeDrawer();
+    homeView.hidden = true;
+    chatView.hidden = true;
+    stage.setAttribute("data-d4-stage", view);
+    if (app) app.setAttribute("data-d4-view", view);
+    document.querySelectorAll("[data-d4-page]").forEach(function (el) {
+      el.hidden = el.getAttribute("data-d4-page") !== view;
+    });
+    ensurePageFrame(view);
+    setNav(view);
+    /* Labs + Transactions keep Demo 4 TruAI (replaces Demo 3 chat pane).
+       Settings stays page-only. */
+    if (view === "settings") setPanel(false);
+    else setPanel(true);
+    syncPanelToggle();
+    positionMini();
+  }
+
   function showChat() {
+    hidePages();
     stage.setAttribute("data-d4-stage", "chat");
-    var currentNav = document.querySelector(".d4-nav.is-current");
-    if (currentNav) currentNav.classList.remove("is-current");
+    if (app) app.setAttribute("data-d4-view", "chat");
+    setNav("");
     homeView.hidden = true;
     chatView.hidden = false;
     if (chatSlot && composer.parentElement !== chatSlot) chatSlot.appendChild(composer);
-    panel.hidden = false;
     syncPanelToggle();
   }
 
@@ -441,8 +502,10 @@
     runId += 1;
     setBusy(false);
     closeDrawer();
+    hidePages();
     stage.setAttribute("data-d4-stage", "home");
-    document.querySelector("[data-d4-home].d4-nav").classList.add("is-current");
+    if (app) app.setAttribute("data-d4-view", "home");
+    setNav("home");
     chatView.hidden = true;
     homeView.hidden = false;
     if (composer.parentElement !== homeView) {
@@ -674,8 +737,8 @@
   /* ------------------------------------------------------------------ orb */
 
   function paintOrb() {
-    var canvas = document.querySelector("[data-d4-orb]");
-    if (!canvas || !canvas.getContext) return;
+    document.querySelectorAll("[data-d4-orb]").forEach(function (canvas) {
+    if (!canvas.getContext) return;
     var ctx = canvas.getContext("2d");
     var grid = [
       [[1, 0.82, 0.4], [0.62, 0.88, 0.72], [0.35, 0.78, 0.79], [1, 0.82, 0.4]],
@@ -714,14 +777,20 @@
       }
     }
     ctx.putImageData(image, 0, 0);
+    });
   }
 
   /* ----------------------------------------------------------------- chrome */
 
+  var mini = document.querySelector("[data-d4-mini]");
+  var miniStatus = document.querySelector("[data-d4-mini-status]");
+
   function syncPanelToggle() {
+    var open = !panel.hidden;
+    if (mini) mini.hidden = open;
+    positionMini();
     document.querySelectorAll("[data-d4-panel-toggle]").forEach(function (btn) {
-      var open = !panel.hidden;
-      if (btn.classList.contains("d4-nav")) btn.setAttribute("aria-pressed", open ? "true" : "false");
+      btn.setAttribute("aria-pressed", open ? "true" : "false");
     });
   }
 
@@ -729,6 +798,28 @@
     panel.hidden = !open;
     syncPanelToggle();
   }
+
+  /* Collapsed TruAI bubble centers on the chat container, not the page. */
+  function positionMini() {
+    if (!mini || mini.hidden) return;
+    var left = "50%";
+    var onChat = !chatView.hidden && stage.classList.contains("is-report") && !stage.classList.contains("is-report-full");
+    if (onChat) {
+      var chatRect = chatView.getBoundingClientRect();
+      var stageRect = stage.getBoundingClientRect();
+      if (chatRect.width > 0) {
+        left = Math.round(chatRect.left - stageRect.left + chatRect.width / 2) + "px";
+      }
+    }
+    mini.style.left = left;
+  }
+
+  if (window.ResizeObserver) {
+    var miniObserver = new ResizeObserver(positionMini);
+    miniObserver.observe(stage);
+    miniObserver.observe(chatView);
+  }
+  window.addEventListener("resize", positionMini);
 
   input.addEventListener("input", function () {
     if (!busy) send.disabled = !input.value.trim();
@@ -756,10 +847,28 @@
     submitText(input.value);
   });
 
+  function startNewVerification() {
+    if (busy) return;
+    showChat();
+    if (titleEl && titleEl.textContent === "Chat") titleEl.textContent = "Start a new verification";
+    addText(say("Which business or person should I verify?"));
+    beginWork({
+      title: "Start a new verification",
+      detail: "Waiting for a business or person",
+      drop: true
+    });
+    setSuggestions([]);
+    input.focus();
+  }
+
   document.querySelectorAll("[data-d4-prompt]").forEach(function (card) {
     card.addEventListener("click", function () {
       submitText(card.getAttribute("data-d4-prompt"));
     });
+  });
+
+  document.querySelectorAll("[data-d4-start='new']").forEach(function (card) {
+    card.addEventListener("click", startNewVerification);
   });
 
   suggest.addEventListener("click", function (event) {
@@ -811,24 +920,26 @@
     btn.addEventListener("click", showHome);
   });
 
+  document.querySelectorAll("[data-d4-nav='labs']").forEach(function (btn) {
+    btn.addEventListener("click", function () { showPage("labs"); });
+  });
+  document.querySelectorAll("[data-d4-nav='transactions']").forEach(function (btn) {
+    btn.addEventListener("click", function () { showPage("transactions"); });
+  });
+  document.querySelectorAll("[data-d4-nav='settings']").forEach(function (btn) {
+    btn.addEventListener("click", function () { showPage("settings"); });
+  });
+
   document.querySelectorAll("[data-d4-panel-toggle]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       setPanel(panel.hidden);
     });
   });
 
-  accountToggle.addEventListener("click", function () {
-    var open = account.hidden;
-    account.hidden = !open;
-    accountToggle.setAttribute("aria-expanded", open ? "true" : "false");
-  });
-
-  document.addEventListener("click", function (event) {
-    if (!account.hidden && !event.target.closest(".d4-rail__account")) {
-      account.hidden = true;
-      accountToggle.setAttribute("aria-expanded", "false");
-    }
-  });
+  var panelClose = document.querySelector("[data-d4-panel-close]");
+  if (panelClose) panelClose.addEventListener("click", function () { setPanel(false); });
+  var miniOpen = document.querySelector("[data-d4-mini-open]");
+  if (miniOpen) miniOpen.addEventListener("click", function () { setPanel(true); });
 
   /* ------------------------------------------------------------- report drawer */
 
@@ -919,6 +1030,7 @@
     drawer.hidden = false;
     drawer.setAttribute("aria-hidden", "false");
     stage.classList.add("is-report");
+    positionMini();
   }
 
   function closeDrawer() {
@@ -926,6 +1038,7 @@
     drawer.hidden = true;
     drawer.setAttribute("aria-hidden", "true");
     stage.classList.remove("is-report", "is-report-full");
+    positionMini();
     drawerExpanded = false;
     drawerMode = null;
     drawerTabsOpen = [];
@@ -941,6 +1054,7 @@
     if (!drawer || drawer.hidden) return;
     drawerExpanded = !drawerExpanded;
     stage.classList.toggle("is-report-full", drawerExpanded);
+    positionMini();
     if (expandBtn) {
       expandBtn.setAttribute("aria-pressed", drawerExpanded ? "true" : "false");
       expandBtn.setAttribute("aria-label", drawerExpanded ? "Collapse" : "Expand");
@@ -971,4 +1085,5 @@
 
   paintOrb();
   renderFeed();
+  syncPanelToggle();
 })();

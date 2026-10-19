@@ -8,6 +8,7 @@
 html,
 body {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -42,149 +43,24 @@ button {
 .d4-app {
   display: flex;
   height: 100dvh;
+  max-height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
   padding-right: var(--spacing-8);
   background: var(--surface-neutral-02);
 }
 
-/* ------------------------------------------------------------------ rail */
-
-.d4-rail {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 72px;
-  width: 72px;
+/* Rail markup/styles come from Demo 1 shell + Demo 3 d3-rail. */
+.d4-app .d1-rail {
+  flex-shrink: 0;
+  height: 100%;
+  min-height: 0;
+  overflow: visible;
   border-right: 1px solid var(--border-subtle);
 }
 
-.d4-rail__header {
-  display: flex;
-  justify-content: center;
-  padding: 20px var(--padding-lg) var(--padding-lg);
-}
-
-.d4-logo {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-lg);
-  background: var(--interactive-default);
-}
-
-.d4-logo img {
-  width: 30px;
-  height: auto;
-}
-
-.d4-rail__nav {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-16);
-  min-height: 0;
-  padding: var(--spacing-24) var(--padding-lg);
-}
-
-.d4-nav {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: var(--icon-faint);
-}
-
-.d4-nav.is-current {
-  background: var(--surface-inverse);
-  color: var(--text-inverse);
-}
-
-.d4-nav:hover:not(.is-current) {
-  background: var(--surface-neutral-03);
-}
-
-.d4-rail__foot {
-  display: flex;
-  justify-content: center;
-  padding: var(--padding-md) var(--padding-lg);
-  border-top: 1px solid var(--border-subtle);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.d4-expand {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: var(--icon-faint);
-}
-
-.d4-rail__account {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  padding: var(--padding-md);
-}
-
-.d4-avatar {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-full);
-  background: var(--interactive-default);
-  color: var(--text-inverse);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  line-height: 18px;
-}
-
-.d4-account {
-  position: absolute;
-  z-index: 3;
-  left: calc(100% - 4px);
-  bottom: 12px;
-  width: 220px;
-  padding: 12px 14px;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
-  background: var(--surface-neutral-01);
-  box-shadow: var(--elevation-md);
-}
-
-.d4-account p {
-  margin: 0;
-}
-
-.d4-account__org {
-  margin-bottom: 8px;
-  color: var(--text-description);
-  font-size: var(--font-size-xs);
-  line-height: 18px;
-}
-
-.d4-account__name {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  line-height: 18px;
-}
-
-.d4-account__mail {
-  color: var(--text-description);
-  font-size: var(--font-size-xs);
-  line-height: 18px;
+.d4-app .d1-menu-item {
+  text-decoration: none;
 }
 
 /* ----------------------------------------------------------------- stage */
@@ -193,23 +69,67 @@ button {
   display: flex;
   flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .d4-center {
+  position: relative;
   display: flex;
   flex: 1 1 auto;
   align-items: center;
   justify-content: center;
   min-width: 0;
+  min-height: 0;
   height: 100%;
   padding: var(--spacing-64) var(--spacing-40);
+  overflow: auto;
 }
 
-.d4-center[data-d4-stage="chat"] {
+.d4-center[data-d4-stage="chat"],
+.d4-center[data-d4-stage="labs"],
+.d4-center[data-d4-stage="transactions"],
+.d4-center[data-d4-stage="settings"] {
   align-items: stretch;
   justify-content: stretch;
   padding: 0;
+  overflow: hidden;
+}
+
+.d4-page {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+.d4-page[hidden] {
+  display: none !important;
+}
+
+.d4-page__frame {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* Settings is page-only — hide TruAI panel (same as Demo 3 org). */
+.d4-app[data-d4-view="settings"] .d4-panel {
+  display: none !important;
+}
+
+.d4-app[data-d4-view="settings"] .d4-mini {
+  display: none !important;
 }
 
 .d4-home {
@@ -354,13 +274,6 @@ button {
   background: var(--surface-neutral-02);
 }
 
-.d4-panel__close,
-.d4-panel__close:hover {
-  background: transparent;
-  pointer-events: none;
-  cursor: default;
-}
-
 .d4-send {
   display: grid;
   place-items: center;
@@ -392,11 +305,91 @@ button {
   height: 100%;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .d4-chat[hidden],
 .d4-home[hidden] {
   display: none;
+}
+
+.d4-mini {
+  position: absolute;
+  z-index: 5;
+  top: 12px;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  transform: translateX(-50%);
+  transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d4-mini { transition: none; }
+}
+
+.d4-mini[hidden] {
+  display: none;
+}
+
+.d4-mini__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.d4-mini__orb {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.d4-mini__orb canvas {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: 100px;
+}
+
+.d4-mini__orb img {
+  position: absolute;
+  inset: 0;
+  width: 34px;
+  height: 28px;
+  margin: auto;
+}
+
+.d4-mini__pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -6px;
+  padding: 4px 24px;
+  border-radius: 100px;
+  background: var(--surface-neutral-01);
+}
+
+.d4-mini__name {
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: var(--font-weight-medium);
+  line-height: 22px;
+}
+
+.d4-mini__status {
+  max-width: 240px;
+  color: var(--text-default);
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  line-height: 18px;
+  text-align: center;
 }
 
 .d4-chat__col {
@@ -407,6 +400,7 @@ button {
   height: 100%;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .d4-chat .d1-alert svg {
@@ -464,11 +458,31 @@ button {
 }
 
 .d4-chat-head {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   flex-shrink: 0;
   width: 100%;
   padding: var(--spacing-16) clamp(16px, 4vw, 64px);
+  background: var(--surface-neutral-02);
+}
+
+/* Soft fade so thread content eases out under the header while scrolling. */
+.d4-chat-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 28px;
+  background: linear-gradient(
+    to bottom,
+    var(--surface-neutral-02) 0%,
+    rgba(244, 246, 244, 0.65) 45%,
+    rgba(244, 246, 244, 0) 100%
+  );
+  pointer-events: none;
 }
 
 .d4-chat-back {
@@ -485,6 +499,18 @@ button {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-xl);
+}
+
+/* With the report open the bubble sits mid-column; keep the title left of it. */
+.d4-center.is-report .d4-chat-back {
+  max-width: calc(50% - 56px);
+}
+
+.d4-center.is-report .d4-chat-back [data-d4-title] {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .d4-chat-back__icon {
@@ -515,7 +541,7 @@ button {
   width: 100%;
   min-height: 0;
   margin-bottom: var(--spacing-16);
-  padding: var(--spacing-32) clamp(16px, 4vw, 64px) 0;
+  padding: var(--spacing-24) clamp(16px, 4vw, 64px) 0;
   overflow: auto;
 }
 
@@ -546,7 +572,9 @@ button {
   display: flex;
   flex-direction: column;
   flex: 0 0 280px;
+  align-self: stretch;
   width: 280px;
+  max-height: calc(100% - 16px);
   height: calc(100% - 16px);
   margin: 8px 0;
   padding: 12px 0 12px 16px;
@@ -704,6 +732,12 @@ button {
 
 .d4-act__icon img {
   width: 16px;
+  height: 16px;
+}
+
+.d4-act__report {
+  display: block;
+  width: 12px;
   height: 16px;
 }
 

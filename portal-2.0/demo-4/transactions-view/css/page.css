@@ -1,0 +1,380 @@
+/* ============================================================
+   TRANSACTIONS — page content (left column)
+   ============================================================
+   Same portal shell as the home page: side rail and workspace
+   header. The transactions table and filters come from the user-testing page; their
+   rules live in transaction-history.css. Overrides below only
+   fit that block into this column.
+   Prefix: v2- (shell) / th- (this page)
+   Scope:  everything inside .v2-content (plus .v2-rail).
+
+   Do not style .v2-stage, .v2-panel-slot, .ai-*, or the
+   [data-truai] states — those belong to shared/portal-shell/.
+   ============================================================ */
+
+/* ------------------------------------------------------------------
+   Side rail — 72px, right hairline
+   ------------------------------------------------------------------ */
+
+.v2-rail {
+  display: flex;
+  flex: 0 0 72px;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 72px;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.v2-rail__header {
+  display: flex;
+  justify-content: center;
+  padding: 20px var(--padding-lg) var(--padding-lg);
+}
+
+.v2-rail__logo {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--interactive-default);
+}
+
+.v2-rail__main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-xl) var(--padding-lg);
+}
+
+.v2-rail__item {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+
+.v2-rail__item:hover {
+  color: var(--icon-default);
+  background: var(--surface-neutral-02);
+}
+
+.v2-rail__item[aria-current="page"],
+.v2-rail__item[aria-current="page"]:hover {
+  color: var(--icon-inverse);
+  background: var(--surface-inverse);
+}
+
+.v2-rail__item svg { width: 16px; height: 16px; }
+
+.v2-rail__collapse {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md) var(--padding-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.v2-rail__collapse button {
+  display: grid;
+  place-items: center;
+  width: 24px; height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+}
+
+.v2-rail__collapse svg { width: 16px; height: 16px; }
+
+.v2-rail__user {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md);
+}
+
+.v2-rail__avatar {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+  color: var(--text-inverse);
+  background: var(--interactive-default);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------
+   Transactions block — sits in the portal column, not the old shell
+   ------------------------------------------------------------------ */
+
+/* The column stays the viewport. Rows and the columns past the panel
+   scroll inside the table, so the right edge is not clipped. */
+.d3-tx-embed__main {
+  overflow: hidden;
+}
+
+/* Match Agent Hub / page headers — xl (20px) semibold. */
+.th-tx__title {
+  margin: 0 0 var(--spacing-24);
+  flex: 0 0 auto;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-xl);
+  color: var(--text-default);
+}
+
+/* Failed-verification reply inside the shared TruAI thread. */
+.th-chat {
+  font-size: var(--font-size-sm);
+  line-height: 22px;
+  color: var(--text-default);
+}
+
+.th-chat p,
+.th-chat ul {
+  margin: 0 0 22px;
+}
+
+.th-chat__found {
+  margin: 0 0 12px;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+}
+
+.th-chat__name {
+  margin-bottom: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+.th-chat__next {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.th-chat__next-label {
+  margin: 0 0 12px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+  color: var(--text-caption);
+}
+
+.th-chat ul {
+  padding-left: 1.5em;
+}
+
+.th-chat li { margin: 0; }
+
+.th-tx.ut-tx-main {
+  flex: 1 1 auto;
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: transparent;
+  border-radius: 0;
+}
+
+.th-tx .ut-tx-main__scroll,
+.th-tx .ut-tx-page,
+.th-tx .ut-tx-block,
+.th-tx .ut-tx-table-section {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* Hug the rows when the result list is short. Grow only up to the
+   space under the title, then scroll inside the card. */
+.th-tx .ut-tx-table-card,
+.th-tx .tds-data-table-container {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-block {
+  gap: 24px;
+}
+
+.th-tx .ut-tx-toolbar,
+.th-tx .ut-tx-table-card .tds-data-table__footer {
+  flex: 0 0 auto;
+}
+
+/* The table is wider than the column. Both scrollbars live on this box,
+   in view, so Score, Source, and Type are not cut off by the panel. */
+.th-tx .tds-data-table__wrapper {
+  flex: 0 1 auto;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.th-tx .tds-data-table__wrapper::-webkit-scrollbar {
+  -webkit-appearance: none;
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+.th-tx .tds-data-table__wrapper::-webkit-scrollbar-track {
+  background: var(--surface-neutral-02);
+}
+
+.th-tx .tds-data-table__wrapper::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--color-neutral-40) 80%, transparent);
+  border: 3px solid var(--surface-neutral-02);
+  border-radius: var(--radius-full);
+}
+
+/* Figma 1049:109748 — one row, 8px gaps, 40px controls.
+   Search stays 480. Date grows into whatever is left. Filter sits at the end. */
+.th-tx .ut-tx-toolbar {
+  width: 100%;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.th-tx .ut-tx-toolbar__left {
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.th-tx .ut-tx-search {
+  width: 480px;
+  max-width: 480px;
+  flex: 0 0 480px;
+}
+
+.th-tx .ut-tx-date {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+}
+
+/* The shared button rule sets display, which keeps a hidden Reset in the row. */
+.th-tx .ut-tx-toolbar-reset[hidden],
+.th-tx .ut-tx-product[hidden] {
+  display: none !important;
+}
+
+.th-tx .tds-filter-button {
+  flex: 0 0 auto;
+}
+
+.th-tx .ut-tx-search .tds-text-input__field,
+.th-tx .ut-tx-date .tds-date-picker__field,
+.th-tx .ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary {
+  height: 40px;
+  min-height: 40px;
+}
+
+.th-tx .ut-tx-table {
+  width: 1314px;
+  min-width: 1314px;
+  max-width: none;
+}
+
+/* Text fills the cell. Anything longer than the column ends in an ellipsis
+   instead of painting into the next column. */
+.th-tx .ut-tx-table tbody td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.th-tx .ut-tx-table .tds-tag,
+.th-tx .ut-tx-score,
+.th-tx .ut-tx-name,
+.th-tx .ut-tx-name-cell,
+.th-tx .ut-tx-name-stack,
+.th-tx .ut-tx-name-row {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.th-tx .ut-tx-score {
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-score__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.th-tx .ut-tx-table td.tds-data-table__actions-col {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* Filters take the TruAI slot. The chat collapses to the ask bar, and
+   the column stays on the left so the bar sits in the center of the table
+   instead of sliding under the filters. */
+/* Filters overlay handled in embed.css for Demo 3. */
+
+/* ------------------------------------------------------------------
+   Entrance
+   ------------------------------------------------------------------ */
+
+.th-tx {
+  animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+.th-tx { animation-delay: 40ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-rail > *,
+  .th-tx { animation: none; }
+}
+
+.v2-rail__item:focus-visible,
+.v2-rail__collapse button:focus-visible,
+.v2-rail__avatar:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}

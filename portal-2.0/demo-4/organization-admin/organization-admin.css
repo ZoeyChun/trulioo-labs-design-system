@@ -1,0 +1,641 @@
+/* ============================================================
+   Demo 3 — Organization admin
+   Settings opens this inside the Demo 3 shell with a dedicated
+   Org Admin AI panel on the left (?embed=1 hides this page's rail).
+   Prefix: org-
+   ============================================================ */
+
+/* Embedded in Demo 3 canvas — parent provides rail + AI panel. */
+body.org-admin--embed .d1-rail {
+  display: none !important;
+}
+
+body.org-admin--embed .d1-shell {
+  grid-template-columns: 1fr;
+}
+
+body.org-admin--embed .d1-main {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+body.org-admin--embed .d1-slot {
+  padding: var(--spacing-32) clamp(24px, 4vw, 48px) var(--spacing-48, 48px);
+  max-width: none;
+}
+
+body.org-admin--embed .d1-slot > .org-page {
+  max-width: none;
+}
+
+.org-row-highlight {
+  outline: 2px solid var(--border-interactive, #004c45);
+  outline-offset: -2px;
+  background: var(--surface-positive, #eaf7f0);
+}
+
+body.org-admin .d1-main {
+  overflow: hidden;
+}
+
+body.org-admin .d1-slot {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  padding: var(--spacing-32) clamp(32px, 5vw, 56px) var(--spacing-48, 48px);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+body.org-admin .d1-slot > .org-page {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+}
+
+/* Settings gear is the active page. */
+body.org-admin .d1-tool-btn[aria-current="page"] {
+  color: var(--icon-inverse);
+  background: var(--surface-inverse);
+}
+
+body.org-admin .d1-tool-btn[aria-current="page"]:hover {
+  color: var(--icon-inverse);
+  background: var(--surface-inverse);
+}
+
+body.org-admin a.d1-logo,
+body.org-admin a.d1-nav-btn,
+body.org-admin a.d1-menu-item {
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+}
+
+@keyframes d1-org-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.org-page {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+
+  /* Same hidden-scrollbar treatment as the shell column. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.org-page::-webkit-scrollbar { display: none; }
+
+.org-header {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+.org-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-24);
+}
+
+/* Match Transactions / Agent Hub page headers — xl (20px) semibold. */
+.org-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-xl);
+  color: var(--text-default);
+}
+
+.org-subtitle {
+  margin: var(--spacing-8) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-lg);
+  color: var(--text-caption);
+}
+
+.org-invite .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.org-stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  background: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.org-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-20, 20px) var(--spacing-16);
+  border-left: 1px solid var(--border-subtle);
+}
+
+.org-stat:first-child {
+  border-left: none;
+}
+
+/* Same label treatment as a data-table column header: 12px, medium,
+   uppercase, 0.5px tracking. */
+.org-stat__label {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-description);
+}
+
+/* One step below the h1 so the page title stays the largest type.
+   margin-top:auto pins every number to the bottom of its cell, so the
+   row of figures stays on one baseline when a label wraps to two lines. */
+.org-stat__value {
+  margin: 0;
+  margin-top: auto;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.org-tabs,
+.org-table {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+
+/* Same air under the tabs for Users and Pending Invitations.
+   (A tabs + first-table rule broke when the first panel was hidden.) */
+.org-page > .org-tabs {
+  margin-bottom: calc(var(--spacing-16) * -1);
+}
+
+/* The data-table container sets display:flex, which overrides the
+   hidden attribute. Keep the inactive tab's table out of the layout. */
+.org-admin .org-table[hidden] {
+  display: none;
+}
+
+/* Card treatment copied from .ut-tx-table-card on Transactions:
+   hairline border, 8px radius, neutral-01 ground. The row menus pop
+   out of the card, so overflow stays visible rather than clipped. */
+.org-table.tds-data-table-container {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--surface-neutral-01);
+}
+
+.org-table.tds-data-table-container,
+.org-table .tds-data-table__wrapper {
+  overflow: visible;
+}
+
+/* Round the header tint back into the card corners now that the
+   container has a radius of its own. */
+.org-table .tds-data-table thead th:first-child {
+  border-top-left-radius: var(--radius-card);
+}
+
+.org-table .tds-data-table thead th:last-child {
+  border-top-right-radius: var(--radius-card);
+}
+
+/* Transactions rows are 40px with one line of text; these carry a name
+   over an email, so they stay on the data-table's 50px default density.
+   Padding, type, and the row divider are the same. */
+.org-data-table thead th,
+.org-data-table tbody td {
+  padding: var(--spacing-12) var(--spacing-12);
+}
+
+.org-data-table tbody td {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.org-data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.org-admin fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.org-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.org-name__primary {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+
+.org-name__secondary {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-caption);
+}
+
+.org-admin .tds-data-table__actions-col,
+.org-admin .tds-data-table td:has(.tds-data-table__actions-cell) {
+  width: auto;
+  min-width: 72px;
+  max-width: none;
+}
+
+.org-admin .tds-data-table__actions-cell {
+  position: relative;
+  gap: 16px;
+}
+
+.org-admin .tds-side-nav__icon-button .org-labs-flask,
+.org-admin .tds-side-nav__nav-item-icon .org-labs-flask {
+  display: block;
+  width: 15.05px;
+  height: 15.6796px;
+  background-color: var(--icon-faint);
+  -webkit-mask: url("labs-flask.svg") center / 100% 100% no-repeat;
+  mask: url("labs-flask.svg") center / 100% 100% no-repeat;
+}
+
+.org-admin .tds-data-table__actions-cell .tds-icon-btn {
+  color: var(--icon-faint);
+}
+
+.org-admin .tds-data-table__actions-cell .org-resend--sent .tds-icon-btn,
+.org-admin .tds-data-table__actions-cell .org-resend--sent .tds-icon-btn:hover,
+.org-admin .tds-data-table__actions-cell .org-resend--sent .tds-icon-btn:active {
+  color: var(--icon-positive);
+}
+
+.org-admin .tds-data-table__actions-cell .org-remove:hover .tds-icon-btn,
+.org-admin .tds-data-table__actions-cell .org-remove:focus-within .tds-icon-btn,
+.org-admin .tds-data-table__actions-cell .org-remove .tds-icon-btn:hover,
+.org-admin .tds-data-table__actions-cell .org-remove .tds-icon-btn:focus-visible,
+.org-admin .tds-data-table__actions-cell .org-remove .tds-icon-btn:active {
+  color: var(--icon-negative);
+}
+
+.org-admin .org-menu-remove:hover .tds-action-list-item__leading-visual,
+.org-admin .org-menu-remove:focus-visible .tds-action-list-item__leading-visual {
+  color: var(--icon-negative);
+}
+
+.org-tip-host {
+  position: relative;
+  display: inline-flex;
+}
+
+.org-tip-host .tds-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 4px);
+  z-index: 5;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.org-tip-host:hover .tds-tooltip,
+.org-tip-host:focus-within .tds-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.org-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 6;
+  min-width: 172px;
+}
+
+.org-section-label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 20px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.org-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.org-form > * {
+  margin: 0;
+}
+
+.org-admin .fa-solid,
+.org-admin .fa-regular {
+  font-family: "Font Awesome 7 Free";
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.org-admin .fa-solid {
+  font-weight: 900;
+}
+
+.org-admin .fa-regular {
+  font-weight: 400;
+}
+
+.org-admin .d3-fa-line {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.org-admin .tds-icon-btn__icon {
+  width: auto;
+  min-width: 16px;
+  height: auto;
+  min-height: 16px;
+  overflow: visible;
+}
+
+.org-admin .tds-icon-btn__icon .fa-solid,
+.org-admin .tds-icon-btn__icon .fa-regular,
+.org-admin .tds-icon-btn__icon .d3-fa-line,
+.org-admin .tds-action-list-item__leading-visual .fa-solid,
+.org-admin .tds-action-list-item__leading-visual .fa-regular,
+.org-admin .tds-action-list-item__leading-visual .d3-fa-line,
+.org-admin .tds-radio-card__icon .fa-solid,
+.org-admin .tds-radio-card__icon .fa-regular,
+.org-admin .tds-radio-card__icon .d3-fa-line {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.org-admin .fa-glyph {
+  display: block;
+  height: 16px;
+  width: auto;
+  overflow: visible;
+}
+
+.org-admin .fa-glyph--user-key {
+  height: 18px;
+}
+
+.org-admin .tds-radio-card__icon {
+  width: auto;
+  min-width: 16px;
+  height: auto;
+  min-height: 16px;
+  overflow: visible;
+}
+
+.org-form__intro {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-description);
+}
+
+.org-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.org-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.org-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-neutral-02);
+}
+
+.org-roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.org-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.org-field__label {
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+
+.org-perms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 8px;
+}
+
+.org-perms__col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.org-perm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-sm);
+  line-height: 22px;
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.org-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 32px 8px;
+  text-align: center;
+}
+
+.org-success__icon {
+  width: 64px;
+  height: 64px;
+  color: var(--icon-positive);
+}
+
+.org-success__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.org-success__text {
+  margin: 0;
+  max-width: 398px;
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+  color: var(--text-description);
+}
+
+.org-success__email {
+  color: var(--interactive-default);
+}
+
+.org-snackbar {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.06), 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+  transform: translateX(-50%);
+  font-size: var(--font-size-sm);
+  line-height: 22px;
+}
+
+.org-snackbar[hidden] {
+  display: none;
+}
+
+.org-snackbar__icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.org-account {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background: var(--surface-neutral-01);
+  border-radius: var(--radius-card);
+}
+
+.org-account .tds-side-nav__profile {
+  height: auto;
+  padding: 4px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.org-account__rule {
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.tds-side-nav--collapsed .org-account {
+  width: auto;
+  padding: 0;
+  background: transparent;
+}
+
+.tds-side-nav--collapsed .org-account__menu,
+.tds-side-nav--collapsed .org-account__rule {
+  display: none;
+}
+
+/* ------------------------------------------------------------------
+   Entrance — same rise as the Transactions block
+   ------------------------------------------------------------------ */
+
+.org-page {
+  animation: d1-org-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+  animation-delay: 40ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .org-page { animation: none; }
+}
+
+@media (max-width: 1100px) {
+  .org-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .org-stat:nth-child(4) {
+    border-left: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .org-title-row,
+  .org-field-row,
+  .org-roles,
+  .org-perms {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .org-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
