@@ -10,8 +10,14 @@
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var portalHref = new URL("../index.html", window.location.href).href;
 
+  var params = new URLSearchParams(window.location.search);
+  var forceSignIn = params.has("fresh") || params.has("signin");
   try {
-    if (sessionStorage.getItem("d3-signed-in") === "true") {
+    if (forceSignIn) {
+      sessionStorage.removeItem("d3-signed-in");
+      sessionStorage.removeItem("d3-from-signin");
+    } else if (sessionStorage.getItem("d3-signed-in") === "true") {
+      /* Already signed in — skip the form unless ?fresh=1 */
       window.location.replace(portalHref);
       return;
     }

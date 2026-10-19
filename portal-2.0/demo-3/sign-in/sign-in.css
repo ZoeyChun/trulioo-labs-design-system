@@ -99,13 +99,38 @@
 
 .d1-su__brand {
   display: flex;
+  align-items: center;
+  gap: 14px;
   width: 100%;
   flex-shrink: 0;
   animation: d1-su-up 0.5s ease both;
 }
 
-.d1-su__brand img {
+.d1-su__wordmark {
   display: block;
+  flex-shrink: 0;
+  height: 24px;
+  width: auto;
+}
+
+.d1-su__brand-rule {
+  display: block;
+  flex-shrink: 0;
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 1px;
+}
+
+.d1-su__product {
+  margin: 0;
+  color: #fff;
+  font-family: "Founders Grotesk", "Inter", system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 .d1-su__center {

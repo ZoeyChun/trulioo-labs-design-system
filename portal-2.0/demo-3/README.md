@@ -12,9 +12,10 @@ From repo root (`trulioo-labs-ds`):
 python3 -m http.server 8765
 ```
 
-**Start here:** [demo-3/sign-in/index.html](https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/sign-in/index.html)  
-Local: http://127.0.0.1:8765/portal-2.0/demo-3/sign-in/index.html  
+**Start here (always show sign-in):** [demo-3/sign-in/?fresh=1](https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/sign-in/index.html?fresh=1)  
+Local: http://127.0.0.1:8765/portal-2.0/demo-3/sign-in/index.html?fresh=1  
 
+Without `?fresh=1`, an existing `d3-signed-in` session skips straight to the portal.  
 Unsigned visits to `demo-3/` or `demo-3/index.html` redirect to `sign-in/index.html`.
 
 ## Auth file map
