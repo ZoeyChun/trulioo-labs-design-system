@@ -13,6 +13,8 @@
   var mapEl = workspace.querySelector("[data-d3-kyb-map]");
   var mapNudge = workspace.querySelector("[data-d3-kyb-map-nudge]");
   var paneInput = document.querySelector("[data-d3-pane-input]");
+  /* Screen under the live report — Back returns here (map chat or search landing). */
+  var priorSurface = "resume";
 
   var DEFAULT_SESSION = {
     incomplete: true,
@@ -60,14 +62,32 @@
     return !!readSession();
   }
 
+  function syncChatBack(show) {
+    var chatBack = document.querySelector("[data-d3-chat-back]");
+    if (chatBack) chatBack.hidden = !show;
+  }
+
   function setSurface(mode) {
     workspace.setAttribute("data-d3-kyb-surface", mode);
     if (mapEl) mapEl.setAttribute("aria-hidden", mode === "map" ? "false" : "true");
     if (detail) detail.hidden = mode !== "resume" && mode !== "report";
     setLandingVisible(mode === "resume");
     if (mode !== "report" && resumeCard) resumeCard.classList.remove("is-live");
-    var backBtn = workspace.querySelector("[data-d3-kyb-back]");
-    if (backBtn) backBtn.hidden = mode !== "report";
+    /* Chat-pane chevron covers search + verify; report crumb ("KYB Verification") is the page back. */
+    if (mode === "report") syncChatBack(true);
+  }
+
+  /* Exit report OR search-results chat back to the prior KYB screen. */
+  function leaveReport() {
+    if (window.D3KybReport && typeof window.D3KybReport.abort === "function") {
+      window.D3KybReport.abort();
+    }
+    syncChatBack(false);
+    if (priorSurface === "map") {
+      openMapExperience();
+      return;
+    }
+    openResumeExperience();
   }
 
   function updateMapNudge() {
@@ -280,6 +300,8 @@
   /* Labs → KYB: left chat + world map (Find Meridian / Start New). */
   function openMapExperience() {
     ensureDemoSession();
+    priorSurface = "map";
+    syncChatBack(false);
     if (window.D3Nav) {
       window.D3Nav.openKybChat({ map: true });
       window.D3Nav.markChatIdle();
@@ -299,6 +321,8 @@
   /* Labs → KYB Verification: centered search + recent cards. */
   function openResumeExperience() {
     ensureDemoSession();
+    priorSurface = "resume";
+    syncChatBack(false);
     if (window.D3Nav) {
       window.D3Nav.openKybChat({ resume: true });
       window.D3Nav.markChatIdle();
@@ -394,6 +418,7 @@
     clearThread();
     setResumeVisible(false);
     updateMapNudge();
+    priorSurface = "map";
     if (resumeCard) resumeCard.classList.remove("is-live");
     if (detail) {
       var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
@@ -447,11 +472,12 @@
   workspace.querySelectorAll("[data-d3-kyb-start-new]").forEach(function (btn) {
     btn.addEventListener("click", startNew);
   });
-  workspace.querySelectorAll("[data-d3-kyb-back]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      openResumeExperience();
+  var chatBackBtn = document.querySelector("[data-d3-chat-back]");
+  if (chatBackBtn) {
+    chatBackBtn.addEventListener("click", function () {
+      leaveReport();
     });
-  });
+  }
 
   workspace.querySelectorAll("[data-d3-kyb-recent-card]").forEach(function (card) {
     card.addEventListener("click", function () {
@@ -515,7 +541,7 @@
         return;
       }
       if (go === "kyb") {
-        openResumeExperience();
+        leaveReport();
       }
     });
   }
@@ -524,6 +550,8 @@
     hasIncomplete: hasIncomplete,
     openMapExperience: openMapExperience,
     openResumeExperience: openResumeExperience,
+    leaveReport: leaveReport,
+    syncChatBack: syncChatBack,
     renderCrumbs: renderCrumbs,
     ensureDemoSession: ensureDemoSession,
     startNew: startNew,

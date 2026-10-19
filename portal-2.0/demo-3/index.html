@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="composer/prompt.css?v=5">
   <link rel="stylesheet" href="css/messages.css?v=3">
   <link rel="stylesheet" href="css/motion.css?v=7">
-  <link rel="stylesheet" href="css/d3-thinking.css?v=3">
+  <link rel="stylesheet" href="css/d3-thinking.css?v=4">
   <link rel="stylesheet" href="css/drawer.css?v=3">
   <link rel="stylesheet" href="../../Components/text-input/text-input.css">
   <link rel="stylesheet" href="../../Components/button/button.css">
@@ -51,10 +51,10 @@
   <link rel="stylesheet" href="css/d3-fa.css?v=3">
   <link rel="stylesheet" href="css/d3-shell.css?v=35">
   <link rel="stylesheet" href="css/d3-rail.css?v=18">
-  <link rel="stylesheet" href="css/d3-chat-pane.css?v=15">
+  <link rel="stylesheet" href="css/d3-chat-pane.css?v=18">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=15">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=20">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=22">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=2">
@@ -191,8 +191,11 @@
   <div class="d3-canvas">
   <aside class="d3-chat-pane" id="d3-chat-pane" data-d3-chat-pane aria-label="TruAI chat">
     <div class="d3-chat-pane__head">
+      <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible d3-chat-pane__back" data-d3-chat-back hidden aria-label="Back to KYB Verification">
+        <span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 3 5 8l5 5"/></svg></span>
+      </button>
       <p class="d3-chat-pane__brand">TruAI</p>
-      <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible d3-chat-pane__close" data-d3-chat-close aria-label="Close chat">
+      <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible d3-chat-pane__close" data-d3-chat-close aria-label="Minimize chat">
         <span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m4 4 8 8M12 4l-8 8"/></svg></span>
       </button>
     </div>
@@ -442,10 +445,6 @@
 
         <div class="d3-workspace__detail" data-d3-kyb-detail hidden>
         <div class="d3-workspace__detail-top">
-          <button type="button" class="d3-workspace__back" data-d3-kyb-back aria-label="Back to KYB Verification" hidden>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
-            <span>Back</span>
-          </button>
           <nav class="d3-workspace__crumb" data-d3-kyb-crumb aria-label="Breadcrumb" hidden></nav>
         </div>
 
@@ -1383,11 +1382,11 @@
 <script src="transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js?v=38"></script>
 <script src="js/d3-kyb-ubo-graph.js?v=1"></script>
 <script src="js/d3-kyb-result-tabs.js?v=1"></script>
-<script src="js/d3-kyb-resume.js?v=33"></script>
-<script src="js/d3-kyb-report-reveal.js?v=20"></script>
+<script src="js/d3-kyb-resume.js?v=37"></script>
+<script src="js/d3-kyb-report-reveal.js?v=22"></script>
 <script src="js/d3-kyb-map-search.js?v=39"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
-<script src="js/d3-kyb-agent.js?v=12"></script>
+<script src="js/d3-kyb-agent.js?v=14"></script>
 <script src="js/d3-motion.js?v=2"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=34"></script>

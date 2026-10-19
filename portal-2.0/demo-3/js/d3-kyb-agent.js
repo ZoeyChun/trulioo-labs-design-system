@@ -607,11 +607,18 @@
     stick();
   }
 
+  function showChatBack() {
+    if (window.D3KybResume && window.D3KybResume.syncChatBack) {
+      window.D3KybResume.syncChatBack(true);
+    }
+  }
+
   function showConfirmStep(biz) {
     if (!biz) return;
     ensureKybOpen();
     parkActive();
     hideFollow();
+    showChatBack();
     if (!candState.root || !candState.root.isConnected) {
       candState.root = playHtml("");
       candState.root.classList.add("d3-kyb-cand-panel", "d3-kyb-agent-wrap");
@@ -672,6 +679,7 @@
     var wrap = playHtml("");
     wrap.classList.add("d3-kyb-cand-panel");
     candState.root = wrap;
+    showChatBack();
     paintCandidateList();
     syncMapToVisible();
     return wrap;
@@ -689,10 +697,8 @@
 
   function playStartingVerification(biz) {
     var name = (biz && biz.name) || "this business";
-    var copy =
-      "Starting verification for <strong>" +
-      esc(name) +
-      "</strong>. I’ll progressively fill the report on the right as registry, ownership, and sanctions checks complete.";
+    var copy = "Start verification for <strong>" + esc(name) + "</strong>";
+    showChatBack();
     var node = clone("typing");
     if (!node) {
       playHtml("<p>" + copy + "</p>");
@@ -702,6 +708,16 @@
     if (label) label.innerHTML = copy;
     node.setAttribute("data-d3-kyb-starting", "");
     place(node);
+  }
+
+  function settleStartingVerification() {
+    document.querySelectorAll("[data-d3-kyb-starting]").forEach(function (node) {
+      var orb = node.querySelector(".d1-thinking__orb");
+      if (orb) orb.remove();
+      node.removeAttribute("data-d3-kyb-starting");
+      node.removeAttribute("role");
+      node.removeAttribute("aria-live");
+    });
   }
 
   function runConfirmedVerify(biz) {
@@ -1450,6 +1466,9 @@
   document.addEventListener("d3-view:kyb", function () {
     setSuggestions(SUGGEST_SEARCH);
   });
+
+  /* Drop the starting orb once the report chrome / business match is on screen. */
+  document.addEventListener("d3-kyb:verify-ui-ready", settleStartingVerification);
 
   window.D3KybAgent = {
     respond: respond,

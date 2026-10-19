@@ -810,6 +810,11 @@
     panel.innerHTML = html;
   }
 
+  function abortReveal() {
+    revealToken += 1;
+    currentBiz = null;
+  }
+
   async function reveal(biz) {
     if (!biz) return;
     currentBiz = biz;
@@ -819,6 +824,11 @@
     revealToken += 1;
     var token = revealToken;
     var data = reportData(biz);
+
+    /* Chat-pane Back (not the minimize X) — available as soon as verify starts. */
+    if (window.D3KybResume && window.D3KybResume.syncChatBack) {
+      window.D3KybResume.syncChatBack(true);
+    }
 
     document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
     if (window.D3Nav) window.D3Nav.markChatActive();
@@ -863,6 +873,7 @@
 
   window.D3KybReport = {
     reveal: reveal,
+    abort: abortReveal,
     selectTab: selectTab,
     renderOwnershipPanel: renderOwnershipPanel,
     renderRawPanel: renderRawPanel,

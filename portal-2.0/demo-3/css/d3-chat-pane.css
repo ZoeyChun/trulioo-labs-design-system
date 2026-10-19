@@ -68,6 +68,21 @@
   );
 }
 
+.d3-chat-pane__back {
+  display: none;
+  flex-shrink: 0;
+  order: -1;
+}
+
+.d3-chat-pane__back[hidden] {
+  display: none !important;
+}
+
+/* Search results + live verify — left of TruAI. X still only minimizes. */
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane__back:not([hidden]) {
+  display: inline-grid;
+}
+
 .d3-chat-pane__brand {
   margin: 0;
   font-size: 20px;
