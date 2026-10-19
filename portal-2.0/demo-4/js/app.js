@@ -24,6 +24,11 @@
     id: "apex",
     short: "Meridian Apex",
     name: "Meridian Apex Consulting Ltd.",
+    country: "United Kingdom",
+    status: "Active",
+    reg: "Companies House 11876542",
+    addr: "Suite 400, 1 King Street, London",
+    brief: "Shell profile · Virtual office · £1 capital",
     lead: "Meridian Apex Consulting Ltd. is a real, active UK company — Companies House 11876542, incorporated 1 Feb 2019, registered at a virtual office at Suite 400, 1 King Street, London.",
     ask: "I'll run the full KYB check on that entity now.",
     sumA: "Meridian Apex Consulting is a real, active UK company, but I wouldn't onboard it yet.",
@@ -54,6 +59,11 @@
     id: "trade",
     short: "Meridian Trade Holdings",
     name: "Meridian Trade Holdings Ltd.",
+    country: "United Kingdom",
+    status: "Active",
+    reg: "Companies House 11204887",
+    addr: "25 Bank Street, Canary Wharf",
+    brief: "Operating company · Canary Wharf trading address",
     lead: "Meridian Trade Holdings Ltd. is a distinct UK company from Meridian Apex — Companies House 11204887, incorporated 2018, at 25 Bank Street, Canary Wharf.",
     ask: "Running the KYB check on this entity instead.",
     sumA: "Meridian Trade Holdings Ltd. is active and filed at a Canary Wharf address.",
@@ -83,6 +93,11 @@
     id: "capital",
     short: "Meridian Capital",
     name: "Meridian Capital LLC",
+    country: "United States",
+    status: "Active",
+    reg: "NY DOS 4417762",
+    addr: "200 Vesey Street, New York",
+    brief: "Investment firm · Incorporated 2013 · New York DOS filing",
     lead: "Meridian Capital LLC is a New York entity — NY DOS 4417762, incorporated 2013, at 200 Vesey Street. This is not the UK consulting company.",
     ask: "I'll verify this LLC on its own record.",
     sumA: "Meridian Capital LLC is an active United States company.",
@@ -128,7 +143,40 @@
     { q: "What failed on the bank account?" }
   ];
 
-  var convo = { entity: null, linksShown: false };
+  var MERIDIANS = [APEX, TRADE, CAPITAL];
+  var CAND_GO_SVG =
+    '<svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>';
+
+  var convo = { entity: null, linksShown: false, pendingLinks: false };
+  var candState = { root: null, list: [], filterIds: [], mode: "list", pending: null, purpose: "kyb" };
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function investigatePlan(company) {
+    return {
+      log: { title: "Investigate " + company.short, detail: company.calls[0].panel, done: company.done },
+      parts: [
+        say(company.lead, company.ask),
+        { t: "tools", label: "Investigating", doneLabel: "Investigation complete", calls: company.calls },
+        { t: "report", company: company }
+      ],
+      suggestions: company.suggestions
+    };
+  }
+
+  function meridianPlan(purpose) {
+    return {
+      log: { title: "Resolve “Meridian”", detail: "Waiting for you to confirm the entity", hold: true },
+      parts: [{ t: "candidates", list: MERIDIANS.slice(), purpose: purpose || "kyb" }],
+      suggestions: []
+    };
+  }
 
   function namedCompany(text) {
     if (/trade holdings/i.test(text)) return TRADE;
@@ -165,6 +213,25 @@
     return { t: "text", body: text, ask: ask || "" };
   }
 
+  function linksPlan(company) {
+    var linked = company.id === "apex";
+    return {
+      log: {
+        title: linked ? "Check linked transactions" : "Search transaction history",
+        detail: linked ? LINK_CALLS[0].panel : "Searching your history",
+        done: linked ? "Found 3 connections" : "No connected transactions"
+      },
+      parts: linked
+        ? [
+            say("Pulling the records that share a name, device, or account with " + company.name + "."),
+            { t: "tools", label: "Looking for connected transactions", doneLabel: "3 connections found", calls: LINK_CALLS },
+            { t: "table", lead: "Three transactions are connected to " + company.name + ". Open a row for the KYC, device, or bank result.", note: "Jane Doe's document passed. The device is linked to other identities, and the bank account name does not match " + company.name + "." }
+          ]
+        : [say("I didn't find transactions that share a person, device, or account with " + company.name + ".")],
+      suggestions: linked ? LINK_SUGGESTIONS : company.suggestions
+    };
+  }
+
   function planReply(text) {
     var company = namedCompany(text);
     var intent = intentOf(text);
@@ -172,64 +239,27 @@
     if (company && (!convo.entity || company.id !== convo.entity.id) && intent !== "compare") {
       convo.entity = company;
       convo.linksShown = false;
-      return {
-        log: { title: "Investigate " + company.short, detail: company.calls[0].panel, done: company.done },
-        parts: [
-          say(company.lead, company.ask),
-          { t: "tools", label: "Investigating", doneLabel: "Investigation complete", calls: company.calls },
-          { t: "report", company: company }
-        ],
-        suggestions: company.suggestions
-      };
+      if (convo.pendingLinks) {
+        convo.pendingLinks = false;
+        convo.linksShown = true;
+        return linksPlan(company);
+      }
+      return investigatePlan(company);
     }
 
     if (intent === "links") {
       if (!convo.entity) {
-        return {
-          log: { title: "Resolve “Meridian”", detail: "Waiting for you to confirm the entity", hold: true },
-          parts: [say(
-            "“Meridian” matches multiple unrelated businesses, so I need to resolve the legal entity before I search your transaction history.",
-            "Which should I investigate — Meridian Apex Consulting Ltd., Meridian Trade Holdings Ltd., or Meridian Capital LLC?"
-          )],
-          suggestions: [
-            { q: "Meridian Apex Consulting Ltd." },
-            { q: "Meridian Trade Holdings Ltd." },
-            { q: "Meridian Capital LLC" }
-          ]
-        };
+        convo.pendingLinks = true;
+        return meridianPlan("links");
       }
       convo.linksShown = true;
-      var linked = convo.entity.id === "apex";
-      return {
-        log: {
-          title: linked ? "Check linked transactions" : "Search transaction history",
-          detail: linked ? LINK_CALLS[0].panel : "Searching your history",
-          done: linked ? "Found 3 connections" : "No connected transactions"
-        },
-        parts: linked
-          ? [
-              say("Pulling the records that share a name, device, or account with " + convo.entity.name + "."),
-              { t: "tools", label: "Looking for connected transactions", doneLabel: "3 connections found", calls: LINK_CALLS },
-              { t: "table", lead: "Three transactions are connected to " + convo.entity.name + ". Open a row for the KYC, device, or bank result.", note: "Jane Doe's document passed. The device is linked to other identities, and the bank account name does not match " + convo.entity.name + "." }
-            ]
-          : [say("I didn't find transactions that share a person, device, or account with " + convo.entity.name + ".")],
-        suggestions: linked ? LINK_SUGGESTIONS : convo.entity.suggestions
-      };
+      return linksPlan(convo.entity);
     }
 
-    if (!convo.entity && /meridian/i.test(text)) {
-      return {
-        log: { title: "Resolve “Meridian”", detail: "Waiting for you to confirm the entity", hold: true },
-        parts: [say(
-          "“Meridian” matches multiple unrelated businesses, so I need to resolve the legal entity before running the KYB check; otherwise ownership, registration, and sanctions results could be attached to the wrong company.",
-          "Which should I investigate — Meridian Apex Consulting Ltd., Meridian Trade Holdings Ltd., or Meridian Capital LLC?"
-        )],
-        suggestions: [
-          { q: "Meridian Apex Consulting Ltd." },
-          { q: "Meridian Trade Holdings Ltd." },
-          { q: "Meridian Capital LLC" }
-        ]
-      };
+    /* Ambiguous brand — never auto-lock one entity (Demo 3 rule). */
+    if (!convo.entity && /meridian/i.test(text) && !company) {
+      convo.pendingLinks = false;
+      return meridianPlan("kyb");
     }
 
     if (intent === "bvi") {
@@ -579,11 +609,233 @@
     place(node);
   }
 
-  async function showTyping(id) {
+  function companyById(id) {
+    for (var i = 0; i < MERIDIANS.length; i += 1) {
+      if (MERIDIANS[i].id === id) return MERIDIANS[i];
+    }
+    return null;
+  }
+
+  function candFilters(list) {
+    var countries = {};
+    list.forEach(function (c) {
+      countries[c.country] = (countries[c.country] || 0) + 1;
+    });
+    var filters = Object.keys(countries).map(function (country) {
+      return { id: "cc:" + country, label: country, kind: "country", country: country };
+    });
+    filters.push({ id: "active", label: "Active only", kind: "active" });
+    return filters;
+  }
+
+  function visibleCandidates() {
+    var list = candState.list.slice();
+    candState.filterIds.forEach(function (fid) {
+      if (fid === "active") {
+        list = list.filter(function (c) { return c.status === "Active"; });
+        return;
+      }
+      if (fid.indexOf("cc:") === 0) {
+        var country = fid.slice(3);
+        list = list.filter(function (c) { return c.country === country; });
+      }
+    });
+    return list;
+  }
+
+  function facetCount(filter, list) {
+    if (filter.kind === "active") {
+      return list.filter(function (c) { return c.status === "Active"; }).length;
+    }
+    return list.filter(function (c) { return c.country === filter.country; }).length;
+  }
+
+  function candidateCardHtml(c) {
+    var statusOk = c.status === "Active";
+    return (
+      '<button type="button" class="ai-cand" data-d4-cand="' + esc(c.id) + '">' +
+      '<span class="ai-cand__head">' +
+      '<span class="ai-cand__name">' + esc(c.name) + "</span>" +
+      '<span class="ai-cand__go" aria-hidden="true">' + CAND_GO_SVG + "</span>" +
+      "</span>" +
+      '<span class="ai-cand__facts">' +
+      '<span class="ai-cand__fact"><b>Jurisdiction</b>' + esc(c.country) + "</span>" +
+      '<span class="ai-cand__fact"><b>Status</b>' +
+      '<span class="ai-cand__status ai-cand__status--' + (statusOk ? "ok" : "off") + '">' +
+      esc(c.status || "—") +
+      "</span></span>" +
+      '<span class="ai-cand__fact ai-cand__fact--wide"><b>Registration</b>' + esc(c.reg) + "</span>" +
+      '<span class="ai-cand__fact ai-cand__fact--wide"><b>Address</b>' + esc(c.addr || "—") + "</span>" +
+      "</span>" +
+      (c.brief ? '<span class="ai-cand__note">' + esc(c.brief) + "</span>" : "") +
+      "</button>"
+    );
+  }
+
+  function paintCandidateList() {
+    if (!candState.root) return;
+    candState.mode = "list";
+    candState.pending = null;
+    var filters = candFilters(candState.list);
+    var list = visibleCandidates();
+    var countries = {};
+    list.forEach(function (c) { countries[c.country] = 1; });
+    var nCountries = Object.keys(countries).length;
+    var filtered = candState.filterIds.length > 0;
+
+    var chips = filters.map(function (f) {
+      var on = candState.filterIds.indexOf(f.id) !== -1;
+      var n = facetCount(f, candState.list);
+      return (
+        '<button type="button" class="ai-chip' + (on ? " ai-chip--on" : "") +
+        '" data-d4-cand-filter="' + esc(f.id) + '"' +
+        (n === 0 && !on ? " disabled" : "") + ">" +
+        esc(f.label) +
+        '<span class="ai-chip__n">' + n + "</span></button>"
+      );
+    }).join("");
+
+    var forLinks = candState.purpose === "links";
+    var lead =
+      list.length === 0
+        ? "No matches for these filters."
+        : list.length === 1
+          ? "One match left."
+          : filtered
+            ? list.length + " matches across " + nCountries + (nCountries === 1 ? " country" : " countries") + "."
+            : 'Which “Meridian” should I check?';
+
+    var sub =
+      list.length === 0
+        ? "Clear a filter to see candidates again."
+        : list.length === 1
+          ? forLinks
+            ? "Open it to search your transaction history."
+            : "Open it to run the KYB check."
+          : filtered
+            ? forLinks
+              ? "Narrow further, or open a card to search linked transactions."
+              : "Narrow further, or open a card to run the KYB check."
+            : list.length +
+              " legal entities share this name across " +
+              nCountries +
+              (nCountries === 1 ? " country" : " countries") +
+              ". They are unrelated companies, so picking the wrong one would attach " +
+              (forLinks
+                ? "linked transactions to the wrong business."
+                : "ownership, registration and sanctions results to the wrong business.");
+
+    candState.root.innerHTML =
+      '<div class="ai-reply">' +
+      '<p class="ai-reply__lead">' + lead + "</p>" +
+      '<p class="ai-reply__sub">' + sub + "</p>" +
+      "</div>" +
+      '<div class="ai-chips">' + chips + "</div>" +
+      '<div class="ai-cands">' + list.map(candidateCardHtml).join("") + "</div>";
+    stick();
+  }
+
+  function showConfirmStep(company) {
+    if (!company || !candState.root) return;
+    candState.mode = "confirm";
+    candState.pending = company;
+    var forLinks = candState.purpose === "links";
+    candState.root.innerHTML =
+      '<p class="ai-said">' + esc(company.name) + "</p>" +
+      '<div class="ai-reply">' +
+      '<p class="ai-reply__lead">' +
+      (forLinks ? "Search transactions linked to " : "Run a KYB check on ") +
+      esc(company.name) +
+      "?</p>" +
+      '<p class="ai-reply__sub">' + esc(company.country) + " · " + esc(company.reg) + "</p>" +
+      "</div>" +
+      '<div class="ai-confirm">' +
+      '<button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d4-cand-confirm="yes">Confirm</button>' +
+      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-d4-cand-confirm="no">Cancel</button>' +
+      "</div>";
+    stick();
+  }
+
+  function addCandidates(part) {
+    var wrap = document.createElement("div");
+    wrap.className = "d1-ai d1-enter d4-cand-panel";
+    place(wrap);
+    candState.root = wrap;
+    candState.list = (part.list || MERIDIANS).slice();
+    candState.filterIds = [];
+    candState.purpose = part.purpose || "kyb";
+    candState.pending = null;
+    candState.mode = "list";
+    paintCandidateList();
+  }
+
+  async function playPlan(plan, id) {
+    for (var i = 0; i < plan.parts.length; i += 1) {
+      var part = plan.parts[i];
+      if (part.t === "text") {
+        var ok = await showTyping(id);
+        if (!ok) return false;
+        addText(part);
+      } else if (part.t === "tools") {
+        var finished = await playTools(part, id);
+        if (!finished) return false;
+      } else if (part.t === "report") {
+        addReport(part.company);
+        finishWork(plan.log.done);
+        today.unshift({
+          title: "Generate verification report",
+          detail: "Created for " + part.company.short,
+          time: clockTime(),
+          icon: "memo"
+        });
+        renderFeed();
+        plan.log.settled = true;
+      } else if (part.t === "table") {
+        addTable(part);
+      } else if (part.t === "candidates") {
+        var searched = await showTyping(id, reduced ? 40 : 1800);
+        if (!searched) return false;
+        addCandidates(part);
+      }
+    }
+    return true;
+  }
+
+  async function runConfirmedCompany(company) {
+    if (!company || busy) return;
+    setSuggestions([]);
+    if (working && working.title.indexOf("Resolve") === 0) {
+      finishWork("Confirmed with you");
+    }
+    convo.entity = company;
+    var wantLinks = convo.pendingLinks || candState.purpose === "links";
+    convo.pendingLinks = false;
+    var plan;
+    if (wantLinks) {
+      convo.linksShown = true;
+      plan = linksPlan(company);
+    } else {
+      convo.linksShown = false;
+      plan = investigatePlan(company);
+    }
+    var id = ++runId;
+    setBusy(true);
+    beginWork(plan.log);
+    try {
+      var ok = await playPlan(plan, id);
+      if (!ok || id !== runId) return;
+      if (!plan.log.hold && !plan.log.settled) finishWork(plan.log.done);
+      setSuggestions(plan.suggestions);
+    } finally {
+      if (id === runId) setBusy(false);
+    }
+  }
+
+  async function showTyping(id, ms) {
     var node = clone("typing");
     if (!node) return true;
     place(node);
-    var ok = await wait(reduced ? 40 : 520, id);
+    var ok = await wait(reduced ? 40 : (ms || 520), id);
     node.remove();
     return ok;
   }
@@ -690,33 +942,16 @@
     if (working && working.title.indexOf("Resolve") === 0 && plan.log.title.indexOf("Investigate") === 0) {
       finishWork("Confirmed with you");
     }
+    if (working && working.title.indexOf("Resolve") === 0 && plan.log.title.indexOf("Check linked") === 0) {
+      finishWork("Confirmed with you");
+    }
+    if (working && working.title.indexOf("Resolve") === 0 && plan.log.title.indexOf("Search transaction") === 0) {
+      finishWork("Confirmed with you");
+    }
     beginWork(plan.log);
     try {
-      for (var i = 0; i < plan.parts.length; i += 1) {
-        var part = plan.parts[i];
-        if (part.t === "text") {
-          var ok = await showTyping(id);
-          if (!ok) return;
-          addText(part);
-        } else if (part.t === "tools") {
-          var finished = await playTools(part, id);
-          if (!finished) return;
-        } else if (part.t === "report") {
-          addReport(part.company);
-          finishWork(plan.log.done);
-          today.unshift({
-            title: "Generate verification report",
-            detail: "Created for " + part.company.short,
-            time: clockTime(),
-            icon: "memo"
-          });
-          renderFeed();
-          plan.log.settled = true;
-        } else if (part.t === "table") {
-          addTable(part);
-        }
-      }
-      if (id !== runId) return;
+      var ok = await playPlan(plan, id);
+      if (!ok || id !== runId) return;
       if (!plan.log.hold && !plan.log.settled) finishWork(plan.log.done);
       setSuggestions(plan.suggestions);
     } finally {
@@ -878,6 +1113,29 @@
   });
 
   thread.addEventListener("click", function (event) {
+    var filterBtn = event.target.closest("[data-d4-cand-filter]");
+    if (filterBtn && candState.root && candState.root.contains(filterBtn)) {
+      var fid = filterBtn.getAttribute("data-d4-cand-filter");
+      var idx = candState.filterIds.indexOf(fid);
+      if (idx === -1) candState.filterIds.push(fid);
+      else candState.filterIds.splice(idx, 1);
+      paintCandidateList();
+      return;
+    }
+    var candBtn = event.target.closest("[data-d4-cand]");
+    if (candBtn && candState.root && candState.root.contains(candBtn)) {
+      showConfirmStep(companyById(candBtn.getAttribute("data-d4-cand")));
+      return;
+    }
+    var confirmBtn = event.target.closest("[data-d4-cand-confirm]");
+    if (confirmBtn && candState.root && candState.root.contains(confirmBtn)) {
+      if (confirmBtn.getAttribute("data-d4-cand-confirm") === "yes") {
+        runConfirmedCompany(candState.pending);
+      } else {
+        paintCandidateList();
+      }
+      return;
+    }
     var toggle = event.target.closest("[data-d4-activity]");
     if (toggle) {
       var body = toggle.parentElement.querySelector(".d1-activity__body");
