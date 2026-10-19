@@ -158,11 +158,14 @@
   flex-shrink: 0;
 }
 
-.d1-activity__toggle img[hidden] {
-  display: none;
+/* FA sets display on .fa-*; beat that so run/done marks can truly hide. */
+.d1-activity__toggle [hidden],
+.d1-activity__mark [hidden] {
+  display: none !important;
 }
 
 .d1-activity__mark {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,9 +174,13 @@
 }
 
 .d1-activity__mark img,
+.d1-activity__mark .fa-solid,
+.d1-activity__mark .fa-regular,
 .d1-activity__toggle > img {
   width: 16px;
   height: 16px;
+  font-size: 16px;
+  line-height: 16px;
 }
 
 .d1-activity__toggle[aria-expanded="false"] .d1-chev-up,

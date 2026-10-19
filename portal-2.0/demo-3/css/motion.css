@@ -324,6 +324,7 @@
   .is-streaming::after,
   .d1-home[data-d1-stage="chat"] .d1-chat-head,
   .d1-typing span,
+  .d1-thinking__svg circle,
   .d1-spin,
   .d3-motion-enter .d3-agents__intro,
   .d3-motion-enter .d3-agents__section,

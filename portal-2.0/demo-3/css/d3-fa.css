@@ -1,0 +1,123 @@
+/* Demo 3 — Font Awesome regular + stroke line icons in TDS / portal slots */
+
+.tds-icon-btn__icon .fa-regular,
+.tds-icon-btn__icon .fa-solid,
+.tds-icon-btn__icon .d3-fa-line,
+.tds-btn__leading-icon .fa-regular,
+.tds-btn__leading-icon .fa-solid,
+.tds-btn__leading-icon .d3-fa-line,
+.tds-announcement__icon .fa-regular,
+.tds-announcement__icon .fa-solid,
+.tds-announcement__icon .d3-fa-line,
+.d3-agent-card__icon .fa-regular,
+.d3-agent-card__icon .fa-solid,
+.d3-agent-card__icon .d3-fa-line,
+.d3-prompt-card__arrow .fa-regular,
+.d3-prompt-card__arrow .d3-fa-line,
+.d3-agent-card__go .fa-regular,
+.d3-agent-card__go .d3-fa-line,
+.d1-brief__label .fa-regular,
+.d1-brief__label .d3-fa-line,
+.d1-brief__go .fa-regular,
+.d1-brief__go .d3-fa-line,
+.d1-demo__head .fa-regular,
+.d1-demo__head .d3-fa-line,
+.d1-demo__signal .fa-regular,
+.d1-demo__signal .d3-fa-line,
+.d1-chip .fa-regular,
+.d1-chip .d3-fa-line,
+.d1-menu-item .fa-regular,
+.d1-menu-item .d3-fa-line,
+.d1-who__name .fa-regular,
+.d1-who__name .d3-fa-line,
+.d1-org__mark .fa-regular,
+.d1-org__mark .d3-fa-line,
+.d3-kyb-overview__value .fa-regular,
+.d3-kyb-overview__value .d3-fa-line,
+.d3-kyb-chip .fa-regular,
+.d3-kyb-chip .d3-fa-line,
+.d3-askbar .fa-regular,
+.d3-askbar .d3-fa-line,
+.d1-confirm__result .fa-regular,
+.d1-confirm__result .d3-fa-line,
+.d1-activity__toggle .fa-regular,
+.d1-activity__toggle .d3-fa-line,
+.d1-alert .fa-regular,
+.d1-alert .d3-fa-line,
+.d1-table .fa-regular,
+.d1-table .d3-fa-line,
+.vb-upload .fa-regular,
+.vb-upload .d3-fa-line {
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+  width: 1em;
+  height: 1em;
+  text-align: center;
+  vertical-align: -0.125em;
+}
+
+.tds-icon-btn__icon .d3-fa-line,
+.tds-btn__leading-icon .d3-fa-line,
+.tds-announcement__icon .d3-fa-line,
+.d3-agent-card__icon .d3-fa-line,
+.d3-prompt-card__arrow .d3-fa-line,
+.d3-agent-card__go .d3-fa-line,
+.d1-brief__label .d3-fa-line,
+.d1-brief__go .d3-fa-line,
+.d1-demo__head .d3-fa-line,
+.d1-demo__signal .d3-fa-line,
+.d1-menu-item .d3-fa-line,
+.d1-who__name .d3-fa-line,
+.d1-org__mark .d3-fa-line,
+.d3-kyb-overview__value .d3-fa-line,
+.d3-askbar .d3-fa-line,
+.d1-table .d3-fa-line {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.d3-agent-card__icon .fa-regular,
+.d3-agent-card__icon .d3-fa-line {
+  color: var(--interactive-default, #004c45);
+}
+
+.d3-prompt-card__arrow .d3-fa-line,
+.d3-agent-card__go .d3-fa-line {
+  width: 12px;
+  height: 12px;
+}
+
+.d1-chip .d3-fa-line,
+.d1-who__name .d3-fa-line,
+.d3-askbar .d3-fa-line {
+  width: 12px;
+  height: 12px;
+}
+
+.d1-demo__head .d3-fa-line {
+  width: 14px;
+  height: 14px;
+}
+
+.d1-menu-item .fa-regular,
+.d1-menu-item .d3-fa-line {
+  font-size: 18px;
+  width: 24px;
+  height: 24px;
+}
+
+.d1-prompt__mode .fa-regular,
+.d1-prompt__mode .d3-fa-line {
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
+}
+
+.d3-kyb-similar__arrow.d3-fa-line,
+.d3-kyb-similar__clock.fa-regular {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+}

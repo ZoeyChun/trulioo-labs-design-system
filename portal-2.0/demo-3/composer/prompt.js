@@ -37,7 +37,6 @@
       return input.value.trim().length > 0 || files.length > 0;
     }
 
-    var sendIcon = send.querySelector("img");
     var busy = false;
 
     function syncSend() {
@@ -52,7 +51,6 @@
       var ready = canSend();
       send.disabled = !ready;
       send.classList.toggle("tds-icon-btn--primary", ready);
-      if (sendIcon) sendIcon.src = ready ? "assets/icons/arrow-up-on.svg" : "assets/icons/arrow-up.svg";
     }
 
     /* The stage owns the reply; it tells the composer when one is in flight so

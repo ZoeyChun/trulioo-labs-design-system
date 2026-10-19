@@ -45,17 +45,21 @@
   }
 
   function icon(name) {
-    if (name === "lock") return faIcon("fa-solid fa-lock");
+    if (name === "lock") {
+      return '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3.5" y="7" width="9" height="7" rx="1.25" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M5.5 7V5.25a2.5 2.5 0 0 1 5 0V7"/></svg>';
+    }
     if (name === "unlock") {
       return faSvg("0 -32 384 544", "M112 96C112 52 148 16 192 16C234 16 269 49 272 90C273 103 284 113 298 112C311 111 321 99 320 86C315 20 259 -32 192 -32C121 -32 64 25 64 96V160C29 160 0 189 0 224V448C0 483 29 512 64 512H320C355 512 384 483 384 448V224C384 189 355 160 320 160H112V96ZM64 208H112H320C329 208 336 215 336 224V448C336 457 329 464 320 464H64C55 464 48 457 48 448V224C48 215 55 208 64 208Z");
     }
-    if (name === "ellipsis") return faIcon("fa-solid fa-ellipsis");
+    if (name === "ellipsis") {
+      return '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="3" cy="8" r="1.25" fill="currentColor"/><circle cx="8" cy="8" r="1.25" fill="currentColor"/><circle cx="13" cy="8" r="1.25" fill="currentColor"/></svg>';
+    }
     if (name === "refresh") {
       return faSvg("0 -32 512 576", "M403 109C322 28 190 28 109 109L82 136H160C173 136 184 147 184 160C184 173 173 184 160 184H24C11 184 0 173 0 160V24C0 11 11 0 24 0C37 0 48 11 48 24V102L75 75C175 -25 337 -25 437 75C480 118 505 173 511 230C512 243 503 255 489 256C476 257 464 248 463 234C458 189 438 144 403 109ZM2 283C0 269 10 258 23 256C36 255 48 264 49 278C54 323 74 368 109 403C190 484 322 484 403 403L430 376H352C339 376 328 365 328 352C328 339 339 328 352 328H488C502 328 512 339 512 352V488C512 501 502 512 488 512C475 512 464 501 464 488V410L437 437C337 537 175 537 75 437C32 394 7 339 2 283Z");
     }
     if (name === "trash") return faIcon("fa-regular fa-trash-can");
-    if (name === "pen") return faIcon("fa-solid fa-pen");
-    if (name === "check") return faIcon("fa-solid fa-check");
+    if (name === "pen") return faIcon("fa-regular fa-pen-to-square");
+    if (name === "check") return faIcon("fa-regular fa-circle-check");
     return "";
   }
 

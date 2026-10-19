@@ -89,3 +89,9 @@
   bottom: 0;
   left: calc(100% + 12px);
 }
+
+/* Keep any open fly panel above siblings inside the rail. */
+.d1-fly:hover,
+.d1-fly:focus-within {
+  z-index: 30;
+}

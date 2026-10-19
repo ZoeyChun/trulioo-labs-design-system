@@ -171,7 +171,7 @@
     if (key === "status") {
       el.classList.add("d3-kyb-overview__value--ok");
       el.innerHTML =
-        '<img src="assets/icons/circle-check.svg" alt="" width="16" height="16"> ' +
+        '<i class="fa-regular fa-circle-check" aria-hidden="true"></i> ' +
         (htmlOrText || "Active");
     } else if (asHtml) {
       el.innerHTML = htmlOrText;
@@ -443,13 +443,13 @@
       if (phone) {
         phone.classList.remove("is-skeleton");
         phone.innerHTML =
-          '<img src="assets/icons/phone.svg" alt="" width="16" height="16"> ' + data.phone;
+          '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3.5 2.75c0-.4.3-.75.7-.75h1.6c.3 0 .58.2.68.48l.7 2a.75.75 0 0 1-.2.8L5.9 6.5a9.5 9.5 0 0 0 3.6 3.6l1.22-1.08a.75.75 0 0 1 .8-.2l2 .7c.28.1.48.38.48.68v1.6c0 .4-.35.7-.75.7A10.75 10.75 0 0 1 3.5 2.75Z"/></svg> ' + data.phone;
         phone.classList.add("d3-kyb-overview__value--ok", "is-revealed");
       }
       if (email) {
         email.classList.remove("is-skeleton");
         email.innerHTML =
-          '<img src="assets/icons/envelope.svg" alt="" width="16" height="16"> ' +
+          '<i class="fa-regular fa-envelope" aria-hidden="true"></i> ' +
           '<a class="d3-kyb-link" href="mailto:' +
           data.email +
           '">' +
@@ -657,7 +657,7 @@
         return (
           '<span class="d3-kyb-chip' +
           (warn ? " d3-kyb-chip--warn" : "") +
-          '"><img src="assets/icons/circle-check-faint.svg" alt="" width="16" height="16"> ' +
+          '"><i class="fa-regular fa-circle-check" aria-hidden="true"></i> ' +
           esc(row[0]) +
           ": " +
           esc(row[1]) +

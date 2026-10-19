@@ -372,11 +372,25 @@ body.org-admin a.d1-menu-item {
 .org-admin .fa-solid,
 .org-admin .fa-regular {
   font-family: "Font Awesome 7 Free";
-  font-weight: var(--fa-style, 900);
   font-style: normal;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.org-admin .fa-solid {
+  font-weight: 900;
+}
+
+.org-admin .fa-regular {
+  font-weight: 400;
+}
+
+.org-admin .d3-fa-line {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .org-admin .tds-icon-btn__icon {
@@ -389,10 +403,13 @@ body.org-admin a.d1-menu-item {
 
 .org-admin .tds-icon-btn__icon .fa-solid,
 .org-admin .tds-icon-btn__icon .fa-regular,
+.org-admin .tds-icon-btn__icon .d3-fa-line,
 .org-admin .tds-action-list-item__leading-visual .fa-solid,
 .org-admin .tds-action-list-item__leading-visual .fa-regular,
+.org-admin .tds-action-list-item__leading-visual .d3-fa-line,
 .org-admin .tds-radio-card__icon .fa-solid,
-.org-admin .tds-radio-card__icon .fa-regular {
+.org-admin .tds-radio-card__icon .fa-regular,
+.org-admin .tds-radio-card__icon .d3-fa-line {
   font-size: 16px;
   width: 16px;
   height: 16px;

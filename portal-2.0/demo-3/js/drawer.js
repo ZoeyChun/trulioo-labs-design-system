@@ -198,7 +198,12 @@
       expandBtn.setAttribute("aria-pressed", expanded ? "true" : "false");
       expandBtn.setAttribute("aria-label", expanded ? "Collapse" : "Expand");
     }
-    if (expandIcon) expandIcon.src = expanded ? "assets/icons/compress.svg" : "assets/icons/expand.svg";
+    if (expandIcon) {
+      expandIcon.outerHTML = expanded
+        ? '<svg data-d1-drawer-expand-icon class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.5 6.5H13.5V2.5M6.5 9.5H2.5V13.5M13.5 6.5 9 2M2.5 9.5 7 14"/></svg>'
+        : '<svg data-d1-drawer-expand-icon class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.5 2.5H13.5V6.5M6.5 13.5H2.5V9.5M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>';
+      expandIcon = expandBtn.querySelector("[data-d1-drawer-expand-icon]");
+    }
   }
 
   function isShellOpen() {

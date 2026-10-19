@@ -265,14 +265,18 @@
     place(node);
   }
 
-  async function playTyping(ms) {
+  async function playTyping(ms, label) {
     var node = clone("typing");
     if (!node) {
       await sleep(ms);
       return;
     }
+    var text = node.querySelector("[data-d1-thinking-label]");
+    if (text) text.textContent = label || "Searching business registries…";
     place(node);
-    await sleep(ms);
+    var wait = ms || 1800;
+    if (wait >= 600) wait = Math.max(wait, 1800);
+    await sleep(wait);
     node.remove();
   }
 
@@ -789,7 +793,7 @@
   function needSelectionHtml() {
     return (
       '<div class="tds-announcement tds-announcement--info">' +
-      '<span class="tds-announcement__icon" aria-hidden="true"><img src="assets/icons/sparkles-ai.svg" alt="" width="16" height="16"></span>' +
+      '<span class="tds-announcement__icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m3 13 6.5-6.5M10.5 3l.7 1.8L13 5.5l-1.8.7L10.5 8l-.7-1.8L8 5.5l1.8-.7L10.5 3ZM4 4.5l.4 1 .9.4-.9.4L4 7.5l-.4-1-.9-.4.9-.4L4 4.5Z"/></svg></span>' +
       '<div class="tds-announcement__content"><p class="tds-announcement__message">Select or verify a business first. I only answer from the demo KYB dataset — try “Find Meridian”, then pick a company.</p></div></div>'
     );
   }
@@ -1150,7 +1154,7 @@
     opts = opts || {};
     var html =
       '<div class="d1-alert d3-kyb-agent__action" data-d1-report-action>' +
-      '<img src="assets/icons/memo.svg" alt="" width="16" height="16">' +
+      '<i class="fa-regular fa-file-lines" aria-hidden="true"></i>' +
       "<span>" +
       esc(opts.label || "Verification report is ready") +
       "</span>" +
@@ -1176,7 +1180,7 @@
 
     var parsed = parseQuery(text);
     try {
-      await playTyping(420);
+      await playTyping(2000, "Searching business registries…");
       if (parsed.intent === "faq") await handleFaq(parsed);
       else if (parsed.intent === "find") await handleFind(parsed, text);
       else if (parsed.intent === "verify") await handleVerify(parsed);
@@ -1296,7 +1300,7 @@
     var el = document.createElement("div");
     el.className = "tds-announcement tds-announcement--inline tds-announcement--success d1-toast";
     el.innerHTML =
-      '<span class="tds-announcement__icon" aria-hidden="true"><img src="assets/icons/circle-check.svg" alt="" width="16" height="16"></span>' +
+      '<span class="tds-announcement__icon" aria-hidden="true"><i class="fa-regular fa-circle-check" aria-hidden="true"></i></span>' +
       '<div class="tds-announcement__content"><p class="tds-announcement__message">Export started for the verification report.</p></div>';
     document.body.appendChild(el);
     window.setTimeout(function () {

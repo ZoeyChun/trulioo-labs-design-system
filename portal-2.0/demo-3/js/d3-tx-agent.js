@@ -484,7 +484,7 @@
     if (!n) {
       html +=
         '<div class="tds-announcement tds-announcement--info d3-tx-agent__empty">' +
-        '<span class="tds-announcement__icon" aria-hidden="true"><img src="assets/icons/sparkles-ai.svg" alt="" width="16" height="16"></span>' +
+        '<span class="tds-announcement__icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m3 13 6.5-6.5M10.5 3l.7 1.8L13 5.5l-1.8.7L10.5 8l-.7-1.8L8 5.5l1.8-.7L10.5 3ZM4 4.5l.4 1 .9.4-.9.4L4 7.5l-.4-1-.9-.4.9-.4L4 4.5Z"/></svg></span>' +
         '<div class="tds-announcement__content"><p class="tds-announcement__message">Nothing in the current dataset matched that request. I only use the transactions shown in this demo — I won’t invent rows.</p></div>' +
         "</div>";
       return html + "</div>";
@@ -653,14 +653,18 @@
     place(node);
   }
 
-  async function playTyping(ms) {
+  async function playTyping(ms, label) {
     var node = clone("typing");
     if (!node) {
       await sleep(ms);
       return;
     }
+    var text = node.querySelector("[data-d1-thinking-label]");
+    if (text) text.textContent = label || "Reviewing verification activity…";
     place(node);
-    await sleep(ms);
+    var wait = ms || 1800;
+    if (wait >= 600) wait = Math.max(wait, 1800);
+    await sleep(wait);
     node.remove();
   }
 
@@ -781,7 +785,7 @@
     lastIntent = parsed.intent;
 
     try {
-      await playTyping(480);
+      await playTyping(2000, "Reviewing verification activity…");
 
       if (parsed.message && !parsed.spec) {
         playHtml("<p>" + esc(parsed.message) + "</p>");

@@ -147,10 +147,23 @@
   color: var(--interactive-default);
 }
 
-.d3-agent-card__icon img {
+.d3-agent-card__icon img,
+.d3-agent-card__icon .fa-regular,
+.d3-agent-card__icon .d3-fa-line {
   display: block;
   width: 16px;
   height: 16px;
+  font-size: 16px;
+  line-height: 16px;
+  text-align: center;
+}
+
+.d3-agent-card__go .fa-regular,
+.d3-agent-card__go .d3-fa-line {
+  font-size: 12px;
+  line-height: 1;
+  width: 12px;
+  height: 12px;
 }
 
 .d3-agent-card__name {
@@ -204,9 +217,10 @@
 }
 
 .d3-agent-card__go {
+  display: inline-flex;
   flex-shrink: 0;
-  font-size: 11px;
-  line-height: 1;
+  align-items: center;
+  justify-content: center;
   color: var(--icon-faint);
 }
 

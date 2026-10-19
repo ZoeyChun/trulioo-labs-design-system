@@ -844,7 +844,7 @@
 
       var verified = biz.verified
         ? '<div class="d3-kyb-similar__verified">' +
-          '<img class="d3-kyb-similar__clock" src="assets/icons/clock.svg" alt="" width="16" height="16">' +
+          '<i class="d3-kyb-similar__clock fa-regular fa-clock" aria-hidden="true"></i>' +
           "<span>" +
           escapeHtml(biz.verified) +
           "</span></div>"
@@ -853,7 +853,7 @@
       card.innerHTML =
         '<div class="d3-kyb-similar__head">' +
         '<span class="d3-kyb-similar__name"></span>' +
-        '<img class="d3-kyb-similar__arrow" src="assets/icons/arrow-right.svg" alt="" width="16" height="16">' +
+        '<svg class="d3-fa-line d3-kyb-similar__arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg>' +
         "</div>" +
         '<div class="d3-kyb-similar__field">' +
         '<span class="d3-kyb-similar__label">Address</span>' +

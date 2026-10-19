@@ -609,7 +609,11 @@
   flex: 0 0 auto;
   width: 16px;
   height: 16px;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
   opacity: 0.9;
+  color: var(--icon-faint, #8a9a90);
 }
 
 .d3-kyb-similar__field {
@@ -651,7 +655,10 @@
   flex: 0 0 auto;
   width: 16px;
   height: 16px;
-  /* Soften #172d2d glyph toward caption/faint icon. */
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+  /* Soften glyph toward caption/faint icon. */
   opacity: 0.55;
 }
 

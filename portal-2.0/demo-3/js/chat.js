@@ -483,8 +483,13 @@
   async function playTyping(part, token) {
     var node = clone("typing");
     if (!node) return;
+    var label = node.querySelector("[data-d1-thinking-label]");
+    if (label) label.textContent = part.label || "Thinking…";
     place(node);
-    await token.sleep(part.ms);
+    /* Demo-2 thinking orb needs ~1.8s+ to read; keep short interstitial beats. */
+    var ms = part.ms || 800;
+    if (ms >= 600) ms = Math.max(ms, 1800);
+    await token.sleep(ms);
     node.remove();
   }
 
@@ -496,12 +501,15 @@
     var iconWrap = document.createElement("span");
     iconWrap.className = "tds-announcement__icon";
     iconWrap.setAttribute("aria-hidden", "true");
-    var icon = document.createElement("img");
-    icon.src = warn ? "assets/icons/warning-amber.svg" : "assets/icons/circle-check.svg";
-    icon.alt = "";
-    icon.width = 16;
-    icon.height = 16;
-    iconWrap.appendChild(icon);
+    if (warn) {
+      iconWrap.innerHTML =
+        '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M8 2.5 14 13.5H2L8 2.5Z"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 6.5v3M8 11.5h.01"/></svg>';
+    } else {
+      var icon = document.createElement("i");
+      icon.className = "fa-regular fa-circle-check";
+      icon.setAttribute("aria-hidden", "true");
+      iconWrap.appendChild(icon);
+    }
     el.appendChild(iconWrap);
     var content = document.createElement("div");
     content.className = "tds-announcement__content";
@@ -544,14 +552,14 @@
     if (confirmed) {
       card.classList.remove("tds-announcement--info", "tds-announcement--warning");
       card.classList.add("tds-announcement--success");
-      var iconEl = node.querySelector("[data-d1-confirm-icon] img");
-      if (iconEl) iconEl.src = "assets/icons/circle-check.svg";
+      var iconEl = node.querySelector("[data-d1-confirm-icon] i, [data-d1-confirm-icon] img, [data-d1-confirm-icon] .d3-fa-line, [data-d1-confirm-icon] svg");
+      if (iconEl) {
+        iconEl.outerHTML = '<i class="fa-regular fa-circle-check" aria-hidden="true"></i>';
+      }
       result.classList.add("d1-confirm__result--done");
-      var img = document.createElement("img");
-      img.src = "assets/icons/circle-check.svg";
-      img.alt = "";
-      img.width = 16;
-      img.height = 16;
+      var img = document.createElement("i");
+      img.className = "fa-regular fa-circle-check";
+      img.setAttribute("aria-hidden", "true");
       result.appendChild(img);
       var span = document.createElement("span");
       span.textContent = part.toast || "Done";
@@ -891,7 +899,7 @@
       btn.className = "d1-chat-row" + (entry.id === activeId ? " d1-chat-row--current" : "");
       btn.setAttribute("role", "menuitem");
       btn.setAttribute("data-d1-chat-id", entry.id);
-      btn.innerHTML = '<img src="assets/icons/chat-dot.svg" alt="" width="5" height="5">';
+      btn.innerHTML = '<i class="fa-regular fa-circle" aria-hidden="true" style="font-size:5px"></i>';
       btn.appendChild(document.createTextNode(entry.title));
       chatList.appendChild(btn);
     });
@@ -948,7 +956,10 @@
   /* Thinking time tracks the size of the answer, so a one-line reply never
      takes as long as a full investigation. */
   function thinkFor(text) {
-    return Math.round(420 + Math.min(text.length, 420) * 2.1 + Math.random() * 280);
+    return Math.max(
+      1800,
+      Math.round(420 + Math.min(text.length, 420) * 2.1 + Math.random() * 280)
+    );
   }
 
   function say(text, ask) {
