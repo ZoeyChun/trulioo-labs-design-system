@@ -1,0 +1,383 @@
+/* TruAIBubble — port of portal-2.0/Misc/Loader TruAIBubble for Demo 4 */
+
+.truai-bubble {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  isolation: isolate;
+}
+
+.truai-bubble__orb-wrap {
+  position: relative;
+  z-index: 2;
+  margin-bottom: -4px;
+}
+
+.truai-bubble__orb {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #9edfb6;
+  transform-origin: 50% 50%;
+  box-shadow: none;
+  isolation: isolate;
+}
+
+.truai-bubble__blur {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  filter: blur(12px);
+  transform: scale(1.15);
+}
+
+.truai-bubble__blob {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  border-radius: 50%;
+}
+
+.truai-bubble__ring {
+  pointer-events: none;
+  position: absolute;
+  top: 25%;
+  right: 20.33%;
+  bottom: 25.66%;
+  left: 19.53%;
+  background: #004c45;
+  -webkit-mask-image: url("../assets/truai-bubble-orb-ring.svg");
+  mask-image: url("../assets/truai-bubble-orb-ring.svg");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+.truai-bubble__pill {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 6px 24px;
+  border-radius: 16px;
+  background: #fff;
+  /* Figma 1448:75070 DROP_SHADOW — softened for CSS (0-offset ambient reads heavier in browsers). */
+  box-shadow:
+    0 0 6px -2px rgba(0, 0, 0, 0.06),
+    0 0 16px -4px rgba(0, 0, 0, 0.08);
+  transition:
+    width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .truai-bubble__pill {
+    transition-duration: 0.12s;
+  }
+}
+
+.truai-bubble__title {
+  margin: 0;
+  color: #172d2d;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.truai-bubble__subslot {
+  position: relative;
+  width: 100%;
+  flex-shrink: 0;
+  height: 0;
+  transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.truai-bubble__subslot.is-open {
+  height: 18px;
+}
+
+.truai-bubble__sub {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(3px);
+  transition:
+    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.truai-bubble__sub.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.truai-bubble__sub.is-out {
+  opacity: 0;
+  transform: translateY(-2px);
+  transition-duration: 0.22s;
+}
+
+.truai-bubble__sub.is-swap-in {
+  transform: translateY(1px);
+  transition-duration: 0.4s;
+}
+
+.truai-bubble__sub.is-swap-in.is-in {
+  transform: translateY(0);
+}
+
+.truai-bubble__sub.is-swap-out {
+  transform: translateY(-1px);
+  transition-duration: 0.34s;
+}
+
+.truai-bubble__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  color: #617269;
+}
+
+.truai-bubble__icon img,
+.truai-bubble__icon svg {
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+.truai-bubble__label {
+  margin: 0;
+  color: #526660;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.truai-bubble__label.is-blink {
+  animation: truai-sub-blink 2.8s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.truai-bubble__dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b07a1a;
+  transform-origin: center;
+  animation:
+    truai-dot-enter 240ms cubic-bezier(0.22, 1, 0.36, 1) both,
+    truai-dot-pulse 2.2s cubic-bezier(0.37, 0, 0.63, 1) 240ms infinite;
+}
+
+.truai-bubble__measure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.truai-bubble__measure-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: max-content;
+  padding: 6px 24px;
+  border-radius: 16px;
+  background: #fff;
+}
+
+@keyframes truai-sub-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes truai-dot-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes truai-dot-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .truai-bubble__label.is-blink,
+  .truai-bubble__dot,
+  .truai-panel__label.is-blink {
+    animation: none;
+  }
+}
+
+/* Panel header — Figma 1448:75531 (80px orb + title + status, no pill chrome) */
+
+.truai-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  isolation: isolate;
+}
+
+.truai-panel__orb-wrap {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.truai-panel__orb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #9edfb6;
+  transform-origin: 50% 50%;
+  /* Figma LogoIcon DROP_SHADOW — soft teal glow */
+  box-shadow: 0 0 46.2px 0 rgba(35, 205, 168, 0.3);
+  isolation: isolate;
+}
+
+.truai-panel__blur {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  filter: blur(14px);
+  transform: scale(1.15);
+}
+
+.truai-panel__blob {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  border-radius: 50%;
+}
+
+.truai-panel__ring {
+  pointer-events: none;
+  position: absolute;
+  top: 25%;
+  right: 20.33%;
+  bottom: 25.66%;
+  left: 19.53%;
+  background: #004c45;
+  -webkit-mask-image: url("../assets/truai-bubble-orb-ring.svg");
+  mask-image: url("../assets/truai-bubble-orb-ring.svg");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+.truai-panel__text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 6px 24px;
+  border-radius: 16px;
+}
+
+.truai-panel__title {
+  margin: 0;
+  color: #172d2d;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.truai-panel__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 18px;
+}
+
+.truai-panel__status[hidden] {
+  display: none;
+}
+
+.truai-panel__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  color: #617269;
+}
+
+.truai-panel__icon img,
+.truai-panel__icon svg {
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+.truai-panel__label {
+  margin: 0;
+  color: #526660;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.truai-panel__label.is-blink {
+  animation: truai-sub-blink 2.8s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}

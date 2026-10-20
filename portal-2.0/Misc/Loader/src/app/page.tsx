@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 const DEMOS = [
+  { href: "/experiments/truai-bubble", title: "TruAI collapsed bubble", detail: "Status bubble with animated mesh orb" },
   { href: "/experiments/mesh-loader", title: "Mesh loader", detail: "Animated mesh gradient with the Trulioo dots logo" },
   { href: "/experiments/orbs", title: "Thinking orbs", detail: "TruAI thinking orb states" },
   { href: "/experiments/orbs/webgl", title: "WebGL orb", detail: "Voice-driven WebGL orb" },

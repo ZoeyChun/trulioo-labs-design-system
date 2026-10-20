@@ -11,8 +11,6 @@
   var send = document.querySelector("[data-d4-send]");
   var feed = document.querySelector("[data-d4-feed]");
   var panel = document.querySelector("[data-d4-panel]");
-  var status = document.querySelector("[data-d4-status]");
-  var statusLabel = document.querySelector("[data-d4-status-label]");
   var chatSlot = document.querySelector("[data-d4-composer-chat]");
   if (!stage || !composer || !thread || !feed) return;
 
@@ -384,6 +382,7 @@
       icon: icon || working.icon || ""
     });
     working = null;
+    setTruAIBoth({ state: "completed" });
     renderFeed();
   }
 
@@ -442,10 +441,7 @@
     html += '<section class="d4-group"><h2>Yesterday</h2>' + renderItems(yesterday, false) + "</section>";
     feed.innerHTML = html;
     feed.scrollTop = top;
-    var count = working ? 1 : 0;
-    status.classList.toggle("is-idle", !working);
-    statusLabel.textContent = count ? "Working on " + count + " task" : "Idle";
-    if (miniStatus) miniStatus.textContent = miniLabel();
+    syncTruAIBubble();
   }
 
   /* ---------------------------------------------------------------- thread */
@@ -517,6 +513,11 @@
     positionMini();
   }
 
+  function syncComposerHeight() {
+    /* Tall chat/home composers size the field via CSS — clear any leftover inline height. */
+    if (input) input.style.height = "";
+  }
+
   function showChat() {
     hidePages();
     stage.setAttribute("data-d4-stage", "chat");
@@ -525,6 +526,7 @@
     homeView.hidden = true;
     chatView.hidden = false;
     if (chatSlot && composer.parentElement !== chatSlot) chatSlot.appendChild(composer);
+    syncComposerHeight();
     syncPanelToggle();
   }
 
@@ -542,6 +544,7 @@
       var cards = homeView.querySelector(".d4-cards");
       homeView.insertBefore(composer, cards);
     }
+    syncComposerHeight();
   }
 
   function stick() {
@@ -588,8 +591,29 @@
 
   var reportCompany = null;
 
+  function playStartingVerification(company) {
+    var name = (company && company.name) || "this business";
+    var node = clone("typing");
+    if (!node) return;
+    var label = node.querySelector("[data-d1-thinking-label]");
+    if (label) label.innerHTML = "Start verification for <strong>" + esc(name) + "</strong>";
+    node.setAttribute("data-d4-kyb-starting", "");
+    place(node);
+  }
+
+  function settleStartingVerification() {
+    document.querySelectorAll("[data-d4-kyb-starting]").forEach(function (node) {
+      var orb = node.querySelector(".d1-thinking__orb");
+      if (orb) orb.remove();
+      node.removeAttribute("data-d4-kyb-starting");
+      node.removeAttribute("role");
+      node.removeAttribute("aria-live");
+    });
+  }
+
   function addReport(company) {
     reportCompany = company;
+    settleStartingVerification();
     var node = clone("report");
     if (!node) return;
     node.querySelector("[data-d4-co]").textContent = company.name;
@@ -773,7 +797,13 @@
     for (var i = 0; i < plan.parts.length; i += 1) {
       var part = plan.parts[i];
       if (part.t === "text") {
-        var ok = await showTyping(id);
+        /* Starting-verification row already carries the orb — don't stack another. */
+        var ok;
+        if (document.querySelector("[data-d4-kyb-starting]")) {
+          ok = await wait(reduced ? 40 : 900, id);
+        } else {
+          ok = await showTyping(id);
+        }
         if (!ok) return false;
         addText(part);
       } else if (part.t === "tools") {
@@ -807,6 +837,12 @@
     if (working && working.title.indexOf("Resolve") === 0) {
       finishWork("Confirmed with you");
     }
+    if (candState.root) {
+      candState.root.remove();
+      candState.root = null;
+      candState.pending = null;
+      candState.mode = "list";
+    }
     convo.entity = company;
     var wantLinks = convo.pendingLinks || candState.purpose === "links";
     convo.pendingLinks = false;
@@ -820,6 +856,8 @@
     }
     var id = ++runId;
     setBusy(true);
+    setTruAIBoth({ state: "thinking" });
+    playStartingVerification(company);
     beginWork(plan.log);
     try {
       var ok = await playPlan(plan, id);
@@ -827,20 +865,27 @@
       if (!plan.log.hold && !plan.log.settled) finishWork(plan.log.done);
       setSuggestions(plan.suggestions);
     } finally {
+      settleStartingVerification();
       if (id === runId) setBusy(false);
     }
   }
 
-  async function showTyping(id, ms) {
+  async function showTyping(id, ms, labelText) {
     var node = clone("typing");
     if (!node) return true;
+    var label = node.querySelector("[data-d1-thinking-label]");
+    if (label && labelText) label.textContent = labelText;
     place(node);
-    var ok = await wait(reduced ? 40 : (ms || 520), id);
+    /* Thinking orb needs ~1.8s+ to read; keep short interstitial beats. */
+    var duration = ms || 800;
+    if (!reduced && duration >= 600) duration = Math.max(duration, 1800);
+    var ok = await wait(reduced ? 40 : duration, id);
     node.remove();
     return ok;
   }
 
   async function playTools(part, id) {
+    settleStartingVerification();
     var node = clone("tools");
     if (!node) return false;
     var label = node.querySelector("[data-d4-tools-label]");
@@ -939,6 +984,7 @@
     var id = ++runId;
     setBusy(true);
     setSuggestions([]);
+    setTruAIBoth({ state: "thinking" });
     if (working && working.title.indexOf("Resolve") === 0 && plan.log.title.indexOf("Investigate") === 0) {
       finishWork("Confirmed with you");
     }
@@ -965,60 +1011,108 @@
     showChat();
     addUser(value);
     input.value = "";
+    syncComposerHeight();
     send.disabled = true;
     respond(value);
-  }
-
-  /* ------------------------------------------------------------------ orb */
-
-  function paintOrb() {
-    document.querySelectorAll("[data-d4-orb]").forEach(function (canvas) {
-    if (!canvas.getContext) return;
-    var ctx = canvas.getContext("2d");
-    var grid = [
-      [[1, 0.82, 0.4], [0.62, 0.88, 0.72], [0.35, 0.78, 0.79], [1, 0.82, 0.4]],
-      [[0.62, 0.88, 0.72], [0.62, 0.88, 0.72], [0.62, 0.88, 0.72], [0.09, 0.4, 0.2]],
-      [[0.09, 0.4, 0.2], [0.35, 0.65, 0.65], [0.2, 0.65, 0.55], [0.1, 0.55, 0.7]],
-      [[0.02, 0.84, 0.63], [0.1, 0.7, 0.65], [0.27, 0.7, 0.79], [0.07, 0.54, 0.7]]
-    ];
-    var size = canvas.width;
-    var image = ctx.createImageData(size, size);
-    var data = image.data;
-    for (var y = 0; y < size; y += 1) {
-      for (var x = 0; x < size; x += 1) {
-        var dx = x - size / 2;
-        var dy = y - size / 2;
-        var i = (y * size + x) * 4;
-        if (dx * dx + dy * dy > (size / 2) * (size / 2)) {
-          data[i + 3] = 0;
-          continue;
-        }
-        var u = (x / (size - 1)) * 3;
-        var v = (y / (size - 1)) * 3;
-        var x0 = Math.min(2, Math.floor(u));
-        var y0 = Math.min(2, Math.floor(v));
-        var tx = u - x0;
-        var ty = v - y0;
-        var c00 = grid[y0][x0];
-        var c10 = grid[y0][x0 + 1];
-        var c01 = grid[y0 + 1][x0];
-        var c11 = grid[y0 + 1][x0 + 1];
-        for (var c = 0; c < 3; c += 1) {
-          var a = c00[c] * (1 - tx) + c10[c] * tx;
-          var b = c01[c] * (1 - tx) + c11[c] * tx;
-          data[i + c] = Math.round((a * (1 - ty) + b * ty) * 255);
-        }
-        data[i + 3] = 255;
-      }
-    }
-    ctx.putImageData(image, 0, 0);
-    });
   }
 
   /* ----------------------------------------------------------------- chrome */
 
   var mini = document.querySelector("[data-d4-mini]");
-  var miniStatus = document.querySelector("[data-d4-mini-status]");
+  var truaiBubbleHost = document.querySelector("[data-d4-truai-bubble]");
+  var truaiPanelHost = document.querySelector("[data-d4-panel-truai]");
+  var truaiBubble = null;
+  var truaiPanel = null;
+  var bubbleThinkTimer = null;
+
+  var ICON_SEARCH =
+    '<img src="assets/icons/magnifying-glass.svg" alt="" width="12" height="12">';
+  var ICON_DOC =
+    '<img src="assets/icons/memo.svg" alt="" width="12" height="12">';
+
+  /** Map demo-4 mini status labels → acting props (icon + ≤2-word label). */
+  function bubbleActingFromMini() {
+    var label = miniLabel();
+    if (!label || label === "Idle") {
+      return { actingLabel: "Working", actingIconHtml: ICON_SEARCH };
+    }
+    if (label === "Writing report") {
+      return { actingLabel: label, actingIconHtml: ICON_DOC };
+    }
+    if (label === "Awaiting input") {
+      return { actingLabel: label, actingIconHtml: ICON_SEARCH };
+    }
+    /* Browsing sources, Reviewing filings/ownership, Screening lists,
+       Scanning history, Investigating, Answering, Working, … */
+    return { actingLabel: label, actingIconHtml: ICON_SEARCH };
+  }
+
+  function setTruAIBoth(props) {
+    if (truaiBubble) truaiBubble.set(props);
+    if (truaiPanel) truaiPanel.set(props);
+  }
+
+  function truaiState() {
+    if (truaiBubble) return truaiBubble.getState();
+    if (truaiPanel) return truaiPanel.getState();
+    return "idle";
+  }
+
+  function syncTruAIBubble() {
+    if (!truaiBubble && !truaiPanel) return;
+    /* Don’t clobber the completed hold unless new work has already started. */
+    if (truaiState() === "completed" && !working) return;
+    if (!working) {
+      if (bubbleThinkTimer) {
+        clearTimeout(bubbleThinkTimer);
+        bubbleThinkTimer = null;
+      }
+      setTruAIBoth({ state: "idle", actingLabel: "", actingIconHtml: "" });
+      return;
+    }
+    var acting = bubbleActingFromMini();
+    /* Keep a short Thinking… beat before swapping to the acting label. */
+    if (truaiState() === "thinking") {
+      if (!bubbleThinkTimer) {
+        bubbleThinkTimer = setTimeout(function () {
+          bubbleThinkTimer = null;
+          if (!working) return;
+          if (truaiState() === "completed") return;
+          var next = bubbleActingFromMini();
+          setTruAIBoth({
+            state: "acting",
+            actingLabel: next.actingLabel,
+            actingIconHtml: next.actingIconHtml
+          });
+        }, reduced ? 40 : 550);
+      }
+      return;
+    }
+    setTruAIBoth({
+      state: "acting",
+      actingLabel: acting.actingLabel,
+      actingIconHtml: acting.actingIconHtml
+    });
+  }
+
+  if (window.TruAIBubble) {
+    if (truaiBubbleHost) {
+      truaiBubble = window.TruAIBubble.mount(truaiBubbleHost, {
+        state: "idle",
+        onCompletedEnd: function () {
+          setTruAIBoth({ state: "idle" });
+        }
+      });
+    }
+    if (truaiPanelHost && window.TruAIBubble.mountPanel) {
+      truaiPanel = window.TruAIBubble.mountPanel(truaiPanelHost, {
+        state: "idle",
+        onCompletedEnd: function () {
+          setTruAIBoth({ state: "idle" });
+        }
+      });
+    }
+  }
 
   function syncPanelToggle() {
     var open = !panel.hidden;
@@ -1058,6 +1152,7 @@
 
   input.addEventListener("input", function () {
     if (!busy) send.disabled = !input.value.trim();
+    syncComposerHeight();
   });
 
   input.addEventListener("keydown", function (event) {
@@ -1341,7 +1436,6 @@
     if (event.key === "Escape" && drawer && !drawer.hidden) closeDrawer();
   });
 
-  paintOrb();
   renderFeed();
   syncPanelToggle();
 })();
