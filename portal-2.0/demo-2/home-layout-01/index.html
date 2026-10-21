@@ -1,0 +1,193 @@
+<!-- Portal 2.0 home, Layout 01 / Design 6 — built from Figma
+     "Portal-2.0-Design---2026", node 1476:49405.
+     https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/?node-id=1476-49405
+
+     A different home from demo-2/home (node 1015:91926): the stat strip,
+     action cards, transaction table and the docked TruAI panel are all
+     gone. What's left is a centred hero — greeting, prompt input, three
+     suggestion chips — floating on a dot field, with a Quick start row of
+     three report cards below it. The side rail drops to a single nav item.
+
+     The dot field in the node is two overlapping raster tiles
+     (1496:54059 / 1496:54061). It is generated at runtime here instead —
+     see js/dot-field.js — so it can be re-coloured, re-spaced and
+     animated. The Figma look is reproduced exactly by the `static`
+     style at the shipped defaults.
+
+     Card thumbnails are the exact PNGs exported from the node.
+     Font Awesome Pro isn't licensed for this repo, so the node's FA icons
+     are inlined as equivalent 24px SVG paths — same glyph, same size. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home — Trulioo Portal 2.0</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+
+  <link rel="stylesheet" href="css/page.css">
+  <!-- Review tool, not part of the design. Drop this line and the two
+       dot-controls references at the bottom to ship the page clean. -->
+  <link rel="stylesheet" href="css/dot-controls.css">
+</head>
+<body>
+
+<div class="v2-shell">
+
+  <!-- ============================================================
+       Side rail — 72px, node 1476:49406
+       ============================================================ -->
+  <aside class="v2-rail" aria-label="Primary">
+    <div class="v2-rail__header">
+      <span class="v2-rail__logo">
+        <img src="assets/logo-mark.svg" alt="Trulioo" width="29.9995" height="24.6106">
+      </span>
+    </div>
+
+    <nav class="v2-rail__main">
+      <!-- The node ships one nav item: FA "message". -->
+      <a class="v2-rail__item" href="#" aria-label="Conversations">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 3.75h15A2.25 2.25 0 0 1 21.75 6v9a2.25 2.25 0 0 1-2.25 2.25H9.56l-3.78 3.03A.75.75 0 0 1 4.5 19.7v-2.45A2.25 2.25 0 0 1 2.25 15V6A2.25 2.25 0 0 1 4.5 3.75Zm0 1.5A.75.75 0 0 0 3.75 6v9c0 .41.34.75.75.75h.75a.75.75 0 0 1 .75.75v1.63l2.78-2.21a.75.75 0 0 1 .47-.17h10a.75.75 0 0 0 .75-.75V6a.75.75 0 0 0-.75-.75h-15Z" fill="currentColor"/></svg>
+      </a>
+    </nav>
+
+    <div class="v2-rail__footer">
+      <button type="button" class="v2-rail__gear" aria-label="Settings">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8.25a3.75 3.75 0 1 1 0 7.5 3.75 3.75 0 0 1 0-7.5Zm0 1.5a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z" fill="currentColor"/><path d="M10.6 2.25h2.8a1.5 1.5 0 0 1 1.48 1.25l.17 1a7.6 7.6 0 0 1 1.1.64l.95-.37a1.5 1.5 0 0 1 1.84.66l1.4 2.42a1.5 1.5 0 0 1-.36 1.92l-.78.63a7.7 7.7 0 0 1 0 1.28l.78.63a1.5 1.5 0 0 1 .36 1.92l-1.4 2.42a1.5 1.5 0 0 1-1.84.66l-.95-.37a7.6 7.6 0 0 1-1.1.64l-.17 1a1.5 1.5 0 0 1-1.48 1.25h-2.8a1.5 1.5 0 0 1-1.48-1.25l-.17-1a7.6 7.6 0 0 1-1.1-.64l-.95.37a1.5 1.5 0 0 1-1.84-.66l-1.4-2.42a1.5 1.5 0 0 1 .36-1.92l.78-.63a7.7 7.7 0 0 1 0-1.28l-.78-.63a1.5 1.5 0 0 1-.36-1.92l1.4-2.42a1.5 1.5 0 0 1 1.84-.66l.95.37a7.6 7.6 0 0 1 1.1-.64l.17-1a1.5 1.5 0 0 1 1.48-1.25Zm0 1.5-.2 1.2a1.5 1.5 0 0 1-.93 1.15 6.1 6.1 0 0 0-.88.51 1.5 1.5 0 0 1-1.47.14l-1.13-.44-1.4 2.42.93.76a1.5 1.5 0 0 1 .54 1.37 6.2 6.2 0 0 0 0 1.02 1.5 1.5 0 0 1-.54 1.37l-.93.76 1.4 2.42 1.13-.44a1.5 1.5 0 0 1 1.47.14c.28.2.57.37.88.51a1.5 1.5 0 0 1 .93 1.15l.2 1.2h2.8l.2-1.2a1.5 1.5 0 0 1 .93-1.15c.31-.14.6-.31.88-.51a1.5 1.5 0 0 1 1.47-.14l1.13.44 1.4-2.42-.93-.76a1.5 1.5 0 0 1-.54-1.37 6.2 6.2 0 0 0 0-1.02 1.5 1.5 0 0 1 .54-1.37l.93-.76-1.4-2.42-1.13.44a1.5 1.5 0 0 1-1.47-.14 6.1 6.1 0 0 0-.88-.51 1.5 1.5 0 0 1-.93-1.15l-.2-1.2h-2.8Z" fill="currentColor"/></svg>
+      </button>
+    </div>
+
+    <div class="v2-rail__user">
+      <button type="button" class="v2-rail__avatar" aria-label="Jane Doe — account">JD</button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       MainContentArea — node 1476:49457
+       ============================================================ -->
+  <main class="v2-main">
+
+    <!-- Generated dot field. Decorative: it carries no information the
+         page doesn't state in text, so it stays out of the a11y tree
+         and never takes pointer events. -->
+    <canvas class="v2-dots" id="v2-dots" aria-hidden="true"></canvas>
+
+    <div class="v2-slot">
+      <h1 class="v2-visually-hidden">Portal home</h1>
+
+      <!-- Hero — node 1476:49506 -->
+      <section class="v2-hero" aria-labelledby="v2-greeting">
+        <h2 class="v2-greeting" id="v2-greeting">Welcome back, Jane</h2>
+
+        <form class="v2-prompt" action="#" onsubmit="return false;">
+          <span class="v2-prompt__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M13.6 2.4a.6.6 0 0 1 1.14 0l1.1 3.3a.6.6 0 0 0 .38.38l3.3 1.1a.6.6 0 0 1 0 1.14l-3.3 1.1a.6.6 0 0 0-.38.38l-1.1 3.3a.6.6 0 0 1-1.14 0l-1.1-3.3a.6.6 0 0 0-.38-.38l-3.3-1.1a.6.6 0 0 1 0-1.14l3.3-1.1a.6.6 0 0 0 .38-.38l1.1-3.3Z" fill="currentColor"/><path d="M6.6 13.1a.5.5 0 0 1 .95 0l.62 1.86a.5.5 0 0 0 .32.32l1.86.62a.5.5 0 0 1 0 .95l-1.86.62a.5.5 0 0 0-.32.32l-.62 1.86a.5.5 0 0 1-.95 0l-.62-1.86a.5.5 0 0 0-.32-.32l-1.86-.62a.5.5 0 0 1 0-.95l1.86-.62a.5.5 0 0 0 .32-.32l.62-1.86Z" fill="currentColor"/></svg>
+          </span>
+
+          <label class="v2-visually-hidden" for="v2-ask">Ask TruAI</label>
+          <input class="v2-prompt__input" id="v2-ask" type="text" autocomplete="off"
+                 placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit.">
+
+          <button class="v2-prompt__send" type="submit" aria-label="Send">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.47 4.47a.75.75 0 0 1 1.06 0l6 6a.75.75 0 1 1-1.06 1.06l-4.72-4.72V19.5a.75.75 0 0 1-1.5 0V6.81l-4.72 4.72a.75.75 0 0 1-1.06-1.06l6-6Z" fill="currentColor"/></svg>
+          </button>
+        </form>
+
+        <!-- Suggestion chips — node 1476:49520 -->
+        <div class="v2-chips">
+          <button type="button" class="v2-chip">
+            <span class="v2-chip__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4.75 2.75h10.5a1 1 0 0 1 1 1v4.5h3a1 1 0 0 1 1 1v10.5a.75.75 0 0 1-.75.75H3.25a.75.75 0 0 1 0-1.5h.5V3.75a1 1 0 0 1 1-1Zm.5 1.5V19h9.5V4.25h-9.5Zm11 5.5V19h2.5V9.75h-2.5ZM7 6.25h2v1.5H7v-1.5Zm4 0h2v1.5h-2v-1.5ZM7 9.75h2v1.5H7v-1.5Zm4 0h2v1.5h-2v-1.5ZM7 13.25h2v1.5H7v-1.5Zm4 0h2v1.5h-2v-1.5Z" fill="currentColor"/></svg>
+            </span>
+            Verify Business
+          </button>
+          <button type="button" class="v2-chip">
+            <span class="v2-chip__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.25a4.25 4.25 0 1 1 0 8.5 4.25 4.25 0 0 1 0-8.5Zm0 1.5a2.75 2.75 0 1 0 0 5.5 2.75 2.75 0 0 0 0-5.5ZM10.75 13.25h2.5A6.25 6.25 0 0 1 19.5 19.5a.75.75 0 0 1-1.5 0 4.75 4.75 0 0 0-4.75-4.75h-2.5A4.75 4.75 0 0 0 6 19.5a.75.75 0 0 1-1.5 0 6.25 6.25 0 0 1 6.25-6.25Z" fill="currentColor"/></svg>
+            </span>
+            Verify Person
+          </button>
+          <button type="button" class="v2-chip">
+            <span class="v2-chip__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M10.7 3.6a1.5 1.5 0 0 1 2.6 0l8.2 14.4a1.5 1.5 0 0 1-1.3 2.25H3.8a1.5 1.5 0 0 1-1.3-2.25L10.7 3.6Zm1.3.9L3.8 18.75h16.4L12 4.5Zm-.75 4.5h1.5v5h-1.5v-5Zm0 6.5h1.5v1.5h-1.5v-1.5Z" fill="currentColor"/></svg>
+            </span>
+            Check Risk Signals
+          </button>
+        </div>
+      </section>
+
+      <!-- Quick start — node 1476:49530 -->
+      <section class="v2-quick" aria-labelledby="v2-quick-h">
+        <h2 class="v2-quick__title" id="v2-quick-h">Quick start</h2>
+
+        <div class="v2-quick__row">
+          <a class="v2-qcard" href="#">
+            <span class="v2-qcard__head">
+              <span class="v2-qcard__titlerow">
+                <span class="v2-qcard__title">Business verification report</span>
+                <span class="v2-qcard__go" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+                </span>
+              </span>
+              <span class="v2-qcard__sub">Verify a company and its ownership across 195+ countries.</span>
+            </span>
+            <span class="v2-qcard__shot">
+              <img src="assets/card-business-verification.png" alt="" width="1080" height="770" loading="lazy">
+            </span>
+          </a>
+
+          <a class="v2-qcard" href="#">
+            <span class="v2-qcard__head">
+              <span class="v2-qcard__titlerow">
+                <span class="v2-qcard__title">KYC report</span>
+                <span class="v2-qcard__go" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+                </span>
+              </span>
+              <span class="v2-qcard__sub">Summarise identity checks for an individual customer.</span>
+            </span>
+            <span class="v2-qcard__shot">
+              <img src="assets/card-kyc-report.png" alt="" width="1440" height="1026" loading="lazy">
+            </span>
+          </a>
+
+          <a class="v2-qcard" href="../transaction-history/index.html">
+            <span class="v2-qcard__head">
+              <span class="v2-qcard__titlerow">
+                <span class="v2-qcard__title">View recent transactions</span>
+                <span class="v2-qcard__go" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>
+                </span>
+              </span>
+              <span class="v2-qcard__sub">Review the latest verification results and outcomes.</span>
+            </span>
+            <span class="v2-qcard__shot">
+              <img src="assets/card-transactions.png" alt="" width="1080" height="768" loading="lazy">
+            </span>
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="js/dot-field.js"></script>
+<!-- Review tool — remove this script and its stylesheet to ship clean. -->
+<script src="js/dot-controls.js"></script>
+<script>
+  (function () {
+    var canvas = document.getElementById('v2-dots');
+    // A look saved from the control panel wins over the shipped default,
+    // so a chosen setting survives a reload while options are compared.
+    var saved = window.TruDotControls ? window.TruDotControls.load() : null;
+    var field = window.TruDotField.mount(canvas, saved);
+    if (window.TruDotControls) window.TruDotControls.init(field);
+  })();
+</script>
+
+</body>
+</html>
