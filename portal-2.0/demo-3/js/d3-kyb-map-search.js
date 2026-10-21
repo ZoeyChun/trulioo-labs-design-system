@@ -468,6 +468,7 @@
   var locMarker = null;
   var activeId = null;
   var searchBusy = false;
+  var awaitingCountry = false;
 
   function ensureMap() {
     if (map) {
@@ -531,8 +532,32 @@
     activeId = null;
   }
 
+  /* Replace the map with a search-setup empty state until jurisdiction is known.
+     showHomeLocation must not run over this — it was restoring the SF pin. */
+  function setAwaitingCountry(on, queryLabel) {
+    awaitingCountry = !!on;
+    var awaitEl = document.querySelector("[data-d3-kyb-map-await]");
+    if (mapEl) mapEl.classList.toggle("is-awaiting-country", awaitingCountry);
+    if (awaitEl) {
+      awaitEl.hidden = !awaitingCountry;
+      var qEl = awaitEl.querySelector("[data-d3-kyb-map-await-query]");
+      if (qEl) qEl.textContent = queryLabel || "this business";
+    }
+    if (awaitingCountry) {
+      clearBizMarkers();
+      if (map && locMarker && map.hasLayer(locMarker)) {
+        try {
+          map.removeLayer(locMarker);
+        } catch (e) {}
+      }
+      setCaption("");
+    }
+  }
+
   function showHomeLocation(opts) {
     opts = opts || {};
+    /* Don't bring SF back while chat is still collecting country. */
+    if (awaitingCountry && !opts.force) return;
     var m = ensureMap();
     if (!m) {
       window.setTimeout(function () {
@@ -554,7 +579,8 @@
         easeLinearity: 0.2
       });
     }
-    setCaption("San Francisco · Ask TruAI to find a business");
+    if (!opts.keepAwaiting) setAwaitingCountry(false);
+    setCaption("Ask TruAI to find a business");
   }
 
   /* Crossfade resume/report → map, then continue. */
@@ -713,6 +739,7 @@
     var list = items && items.length ? items.slice() : MERIDIANS.slice();
     lastResults = list.slice();
     var label = captionText || matchCaption(list);
+    setAwaitingCountry(false);
     setCaption(label);
     transitionToMap(function () {
       var m = ensureMap();
@@ -1003,9 +1030,31 @@
               " matching “" +
               q +
               "”. Select a location on the map or a company below to verify.";
-      /* Location first, then zoom out as matches land. */
-      if (matches.length) {
+      /* No jurisdiction yet → ask for country; don't imply cross-border hit counts. */
+      var needsCountry = !place.country && !place.cc && !!(needle || q);
+      if (needsCountry) {
+        ensureMapSurface();
+        setAwaitingCountry(true, needle || q);
+        window.setTimeout(function () {
+          if (window.D3KybAgent && typeof window.D3KybAgent.askCountry === "function") {
+            window.D3KybAgent.askCountry(needle || q);
+          } else {
+            appendTurn(
+              "assistant",
+              "Which country is “" +
+                (needle || q) +
+                "” registered in? Reply with the country — KYB searches run one jurisdiction at a time."
+            );
+          }
+          searchBusy = false;
+        }, opts.delay != null ? opts.delay : 420);
+      } else if (matches.length) {
         revealMatches(matches, matchCaption(matches));
+        window.setTimeout(function () {
+          appendTurn("assistant", reply);
+          if (matches.length) appendSuggestions(matches);
+          searchBusy = false;
+        }, opts.delay != null ? opts.delay : 420);
       } else {
         ensureMapSurface();
         /* Empty scoped search: keep the map on the named country if we can. */
@@ -1029,14 +1078,24 @@
             }
           }
         }
+        window.setTimeout(function () {
+          appendTurn("assistant", reply);
+          searchBusy = false;
+        }, opts.delay != null ? opts.delay : 420);
       }
-      window.setTimeout(function () {
-        appendTurn("assistant", reply);
-        if (matches.length) appendSuggestions(matches);
-        searchBusy = false;
-      }, opts.delay != null ? opts.delay : 420);
     } else {
-      if (matches.length) {
+      if (
+        !place.country &&
+        !place.cc &&
+        !!(needle || q) &&
+        window.D3KybAgent &&
+        typeof window.D3KybAgent.askCountry === "function"
+      ) {
+        ensureMapSurface();
+        setAwaitingCountry(true, needle || q);
+        window.D3KybAgent.askCountry(needle || q);
+      } else if (matches.length) {
+        setAwaitingCountry(false);
         revealMatches(matches, "Matches · " + matches.length);
       } else {
         ensureMapSurface();
@@ -1261,6 +1320,7 @@
     plotResults: plotResults,
     revealMatches: revealMatches,
     ensureMapSurface: ensureMapSurface,
+    setAwaitingCountry: setAwaitingCountry,
     getSelected: function () {
       return selectedBiz;
     },

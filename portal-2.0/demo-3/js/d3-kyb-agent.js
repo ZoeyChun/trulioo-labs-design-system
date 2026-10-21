@@ -15,14 +15,24 @@
     filterIds: [],
     queryLabel: "Meridian",
     root: null,
-    mode: "list" /* list | confirm */,
+    mode: "list" /* country | list | confirm */,
     pending: null
   };
 
   var SUGGEST_SEARCH = [
     { q: "Find Meridian" },
-    { q: "Verify Meridian Capital LLC" },
-    { q: "Who owns this business?" }
+    { q: "Meridian, United States" },
+    { q: "Verify Meridian Capital LLC" }
+  ];
+
+  /* Supported markets for this demo — product config, not search-result facets. */
+  var DEMO_JURISDICTIONS = [
+    { id: "us", cc: "US", label: "United States" },
+    { id: "gb", cc: "GB", label: "United Kingdom" },
+    { id: "sg", cc: "SG", label: "Singapore" },
+    { id: "se", cc: "SE", label: "Sweden" },
+    { id: "de", cc: "DE", label: "Germany" },
+    { id: "au", cc: "AU", label: "Australia" }
   ];
   var SUGGEST_AFTER = [
     { q: "Why is this entity high risk?" },
@@ -344,6 +354,15 @@
     return (biz.cc || "US").toUpperCase();
   }
 
+  function showAwaitingCountry(queryLabel) {
+    var map = window.D3KybMapSearch;
+    if (!map) return;
+    if (typeof map.ensureMapSurface === "function") map.ensureMapSurface();
+    if (typeof map.setAwaitingCountry === "function") {
+      map.setAwaitingCountry(true, queryLabel);
+    }
+  }
+
   function buildCandFilters(list) {
     var byCc = {};
     list.forEach(function (c) {
@@ -613,6 +632,107 @@
     }
   }
 
+  /* Name without country — ask in chat only. No country filter chips (those
+     imply result facets). Map stays blank until a jurisdiction is named. */
+  function playCountryAsk(queryLabel) {
+    hideFollow();
+    showChatBack();
+    candState.list = [];
+    candState.filterIds = [];
+    candState.queryLabel = queryLabel || "Meridian";
+    candState.pending = null;
+    candState.mode = "country";
+    compareIds = [];
+
+    showAwaitingCountry(candState.queryLabel);
+
+    var wrap = playHtml("");
+    wrap.classList.add("d3-kyb-cand-panel");
+    candState.root = wrap;
+    wrap.innerHTML =
+      '<div class="ai-reply">' +
+      '<p class="ai-reply__lead">Which country is this business registered in?</p>' +
+      '<p class="ai-reply__sub">I can search for “' +
+      esc(candState.queryLabel) +
+      "” once I know the jurisdiction. Reply with the country of registration — for example <strong>United States</strong> or “" +
+      esc(candState.queryLabel) +
+      ', United Kingdom”.</p>' +
+      "</div>";
+    stick();
+
+    var input = document.querySelector("[data-d1-input]") || document.querySelector("[data-d3-pane-input]");
+    if (input) {
+      input.placeholder = "Country of registration, e.g. United States";
+      try {
+        input.focus();
+      } catch (e) {}
+    }
+    return wrap;
+  }
+
+  function applyCountryPick(cc, countryLabel) {
+    var code = String(cc || "").toUpperCase();
+    var label = countryLabel || "";
+    if (!code && !label) {
+      var known = DEMO_JURISDICTIONS.filter(function (j) {
+        return j.id === String(cc || "").toLowerCase() || j.label === label;
+      })[0];
+      if (known) {
+        code = known.cc;
+        label = known.label;
+      }
+    }
+    if (!code && label) {
+      var byLabel = DEMO_JURISDICTIONS.filter(function (j) {
+        return j.label === label;
+      })[0];
+      if (byLabel) code = byLabel.cc;
+    }
+    if (!label && code) {
+      var byCc = DEMO_JURISDICTIONS.filter(function (j) {
+        return j.cc === code;
+      })[0];
+      if (byCc) label = byCc.label;
+    }
+    if (!code && !label) return false;
+
+    var scope = {
+      cc: code.toLowerCase(),
+      country: label || code
+    };
+    var map = window.D3KybMapSearch;
+    if (!map || typeof map.findBusinesses !== "function") return false;
+
+    var needle = /meridian/i.test(candState.queryLabel || "")
+      ? "meridian"
+      : candState.queryLabel;
+    var scoped = map.findBusinesses(needle, scope);
+    if (!scoped.length && /meridian/i.test(candState.queryLabel || "")) {
+      scoped = map.findBusinesses("meridian", scope);
+    }
+
+    if (!scoped.length) {
+      if (map.setAwaitingCountry) map.setAwaitingCountry(false);
+      if (map.plotResults) map.plotResults([], scope.country + " · no matches");
+      playHtml(
+        "<p>No businesses matching “" +
+          esc(candState.queryLabel) +
+          "” in <strong>" +
+          esc(scope.country) +
+          "</strong> in this demo. Try another country, or “Meridian, United States”.</p>"
+      );
+      candState.mode = "country";
+      showAwaitingCountry(candState.queryLabel);
+      setSuggestions(SUGGEST_SEARCH);
+      return true;
+    }
+
+    if (map.setAwaitingCountry) map.setAwaitingCountry(false);
+    revealScopedMatches(scoped, scope);
+    playCandidateResults(scoped, candState.queryLabel || "Meridian", scope);
+    return true;
+  }
+
   function showConfirmStep(biz) {
     if (!biz) return;
     ensureKybOpen();
@@ -626,6 +746,7 @@
     candState.mode = "confirm";
     candState.pending = biz;
     focusCandOnMap(biz);
+    var addr = biz.addr || biz.city || "";
     candState.root.innerHTML =
       '<p class="ai-said">' +
       esc(biz.name) +
@@ -638,6 +759,7 @@
       esc(bizCountry(biz)) +
       " · " +
       esc(biz.reg) +
+      (addr ? "<br>" + esc(addr) : "") +
       "</p>" +
       "</div>" +
       '<div class="ai-confirm">' +
@@ -911,12 +1033,12 @@
     } else if (parsed.topic === "countries") {
       html =
         "<p><strong>Supported jurisdictions (demo)</strong></p>" +
-        "<p>This Meridian search spans <strong>United States, United Kingdom, Singapore, Sweden, Germany, and Australia</strong>. Use the country chips after search to narrow — the live product covers many more markets.</p>";
+        "<p>This Meridian search spans <strong>United States, United Kingdom, Singapore, Sweden, Germany, and Australia</strong>. Name a country with the business (e.g. “Meridian, United States”), or I’ll ask which country to search before opening the map. The live product covers many more markets.</p>";
     } else {
       html =
         "<p><strong>How verification works</strong></p>" +
         "<ol>" +
-        "<li>Search for the business by name</li>" +
+        "<li>Search by business name — then pick a country if it wasn’t named</li>" +
         "<li>Confirm the correct legal entity from the matches</li>" +
         "<li>Run KYB — the report fills in overview, ownership / UBOs, and risk signals</li>" +
         "<li>Export when you need a shareable copy of the verified report</li>" +
@@ -924,6 +1046,23 @@
     }
     playHtml(html);
     setSuggestions(SUGGEST_SEARCH);
+  }
+
+  function revealScopedMatches(matches, scope) {
+    var map = window.D3KybMapSearch;
+    if (!map || !matches || !matches.length) return;
+    var caption =
+      typeof map.matchCaption === "function"
+        ? map.matchCaption(matches)
+        : scope && scope.country
+          ? scope.country + " · " + matches.length + " matches"
+          : "Matches · " + matches.length;
+    if (typeof map.revealMatches === "function") {
+      map.revealMatches(matches, caption);
+    } else {
+      map.ensureMapSurface && map.ensureMapSurface();
+      map.plotResults(matches, caption);
+    }
   }
 
   async function handleFind(parsed, userText) {
@@ -935,44 +1074,30 @@
       return;
     }
     var scope = { country: parsed.country || null, cc: parsed.cc || null };
+    /* No jurisdiction yet — don't run a cross-border search; ask for country. */
+    if (!scope.country && !scope.cc) {
+      playCountryAsk(parsed.query || "Meridian");
+      hideFollow();
+      return;
+    }
     var needle = /meridian/i.test(parsed.query || "") ? "meridian" : parsed.query;
-    /* Agent already rendered the user turn — show location, then zoom to matches. */
     var matches = map.findBusinesses(needle, scope);
     if (!matches.length && /meridian/i.test(parsed.query || "")) {
       matches = map.findBusinesses("meridian", scope);
-      if (!matches.length && !scope.country) matches = businesses().slice();
-    }
-    if (matches.length) {
-      if (typeof map.revealMatches === "function") {
-        map.revealMatches(
-          matches,
-          typeof map.matchCaption === "function"
-            ? map.matchCaption(matches)
-            : "Matches · " + matches.length
-        );
-      } else {
-        map.ensureMapSurface();
-        map.plotResults(
-          matches,
-          typeof map.matchCaption === "function"
-            ? map.matchCaption(matches)
-            : "Matches · " + matches.length
-        );
-      }
-    } else {
-      map.ensureMapSurface();
     }
     if (!matches.length) {
+      map.ensureMapSurface();
       playHtml(
         "<p>No businesses in this demo dataset matched “" +
           esc(parsed.query) +
-          (scope.country ? "” in " + esc(scope.country) : "”") +
-          ". Try “Meridian, United States” or “Find Meridian”.</p>"
+          "” in " +
+          esc(scope.country) +
+          ". Try another country, or “Meridian, United States”.</p>"
       );
       setSuggestions(SUGGEST_SEARCH);
       return;
     }
-    /* Demo-2 flow: country chips + candidate cards → confirm → report. Map stays as plotted. */
+    revealScopedMatches(matches, scope);
     playCandidateResults(matches, parsed.query || "Meridian", scope);
     hideFollow();
   }
@@ -986,24 +1111,14 @@
     /* Prefer multi-match disambiguation before any single findByName hit —
        “Meridian” must never auto-lock one US entity. */
     if (!biz && parsed.name && map) {
+      if (!scope.country && !scope.cc) {
+        playCountryAsk(parsed.name || "Meridian");
+        hideFollow();
+        return;
+      }
       var loose = map.findBusinesses(parsed.name, scope);
       if (loose && loose.length > 1) {
-        if (typeof map.revealMatches === "function") {
-          map.revealMatches(
-            loose,
-            typeof map.matchCaption === "function"
-              ? map.matchCaption(loose)
-              : "Matches · " + loose.length
-          );
-        } else {
-          map.ensureMapSurface();
-          map.plotResults(
-            loose,
-            typeof map.matchCaption === "function"
-              ? map.matchCaption(loose)
-              : "Matches · " + loose.length
-          );
-        }
+        revealScopedMatches(loose, scope);
         playCandidateResults(loose, parsed.name || "Meridian", scope);
         hideFollow();
         return;
@@ -1158,13 +1273,10 @@
   async function handleSummary() {
     var biz = selected();
     if (!biz) {
-      var all = businesses();
       playHtml(
-        "<p>No business is selected yet. Here’s the demo dataset I can verify (" +
-          all.length +
-          " Meridian entities).</p>"
+        "<p>No business is selected yet. Tell me a company name and country to start a KYB search.</p>"
       );
-      playCandidateResults(all, "Meridian");
+      playCountryAsk("Meridian");
       hideFollow();
       return;
     }
@@ -1282,8 +1394,25 @@
     renderUser(text);
     historyTurns.push({ role: "user", text: text });
 
-    var parsed = parseQuery(text);
     try {
+      /* Follow-up while waiting on a country: “United States” / “Germany”. */
+      if (candState.mode === "country" && candState.list.length) {
+        var placeReply = placeFromText(text);
+        if (placeReply.country || placeReply.cc) {
+          await playTyping(1200, "Scoping to " + (placeReply.country || "that country") + "…");
+          if (
+            applyCountryPick(
+              placeReply.cc || "",
+              placeReply.country || ""
+            )
+          ) {
+            historyTurns.push({ role: "assistant", intent: "find" });
+            return;
+          }
+        }
+      }
+
+      var parsed = parseQuery(text);
       await playTyping(2000, "Searching business registries…");
       if (parsed.intent === "faq") await handleFaq(parsed);
       else if (parsed.intent === "find") await handleFind(parsed, text);
@@ -1336,6 +1465,16 @@
         paintCandidateList();
         restoreMapList();
       }
+      return;
+    }
+
+    var countryPick = event.target.closest("[data-d3-kyb-country-pick]");
+    if (countryPick) {
+      event.preventDefault();
+      applyCountryPick(
+        countryPick.getAttribute("data-d3-kyb-country-pick") || "",
+        countryPick.getAttribute("data-d3-kyb-country-label") || ""
+      );
       return;
     }
 
@@ -1475,6 +1614,7 @@
     parseQuery: parseQuery,
     selected: selected,
     confirmSelect: confirmSelect,
-    showMatches: playCandidateResults
+    showMatches: playCandidateResults,
+    askCountry: playCountryAsk
   };
 })();

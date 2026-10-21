@@ -51,10 +51,10 @@
   <link rel="stylesheet" href="css/d3-fa.css?v=3">
   <link rel="stylesheet" href="css/d3-shell.css?v=35">
   <link rel="stylesheet" href="css/d3-rail.css?v=18">
-  <link rel="stylesheet" href="css/d3-chat-pane.css?v=18">
+  <link rel="stylesheet" href="css/d3-chat-pane.css?v=19">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=15">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=22">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=27">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=2">
@@ -437,8 +437,35 @@
         <!-- Default KYB landing: left chat + interactive map (Leaflet / Carto, free) -->
         <div class="d3-kyb-map" data-d3-kyb-map aria-hidden="false">
           <div class="d3-kyb-map__leaflet" data-d3-kyb-leaflet role="application" aria-label="Business search map"></div>
+          <div class="d3-kyb-map__await" data-d3-kyb-map-await hidden>
+            <div class="d3-kyb-setup">
+              <div class="d3-kyb-setup__status" role="status">
+                <span class="d3-kyb-setup__pulse" aria-hidden="true"></span>
+                Waiting for country
+              </div>
+              <h2 class="d3-kyb-setup__title">Search in progress</h2>
+              <p class="d3-kyb-setup__lead">
+                Looking up <strong data-d3-kyb-map-await-query>—</strong>. Reply with the country of registration in chat to continue.
+              </p>
+              <div class="d3-kyb-setup__rail" aria-label="Search progress">
+                <div class="d3-kyb-setup__rail-item is-done">
+                  <span class="d3-kyb-setup__rail-dot" aria-hidden="true"></span>
+                  <span class="d3-kyb-setup__rail-text">Name set</span>
+                </div>
+                <div class="d3-kyb-setup__rail-item is-current">
+                  <span class="d3-kyb-setup__rail-dot" aria-hidden="true"></span>
+                  <span class="d3-kyb-setup__rail-text">Country needed</span>
+                </div>
+                <div class="d3-kyb-setup__rail-item is-todo">
+                  <span class="d3-kyb-setup__rail-dot" aria-hidden="true"></span>
+                  <span class="d3-kyb-setup__rail-text">Business matches</span>
+                </div>
+              </div>
+              <p class="d3-kyb-setup__hint">Example: <span>United States</span> or <span>United Kingdom</span></p>
+            </div>
+          </div>
           <div class="d3-kyb-map__overlay">
-            <p class="d3-kyb-map__caption" data-d3-kyb-map-caption>San Francisco · Ask TruAI to find a business</p>
+            <p class="d3-kyb-map__caption" data-d3-kyb-map-caption>Ask TruAI to find a business</p>
             <div class="d3-kyb-map__resume-nudge" data-d3-kyb-map-nudge hidden></div>
           </div>
         </div>
@@ -1384,9 +1411,9 @@
 <script src="js/d3-kyb-result-tabs.js?v=1"></script>
 <script src="js/d3-kyb-resume.js?v=37"></script>
 <script src="js/d3-kyb-report-reveal.js?v=22"></script>
-<script src="js/d3-kyb-map-search.js?v=39"></script>
+<script src="js/d3-kyb-map-search.js?v=43"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
-<script src="js/d3-kyb-agent.js?v=14"></script>
+<script src="js/d3-kyb-agent.js?v=18"></script>
 <script src="js/d3-motion.js?v=2"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=34"></script>
