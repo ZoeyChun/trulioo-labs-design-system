@@ -46,17 +46,44 @@ button {
   max-height: 100dvh;
   min-height: 0;
   overflow: hidden;
-  padding-right: var(--spacing-8);
+  padding-right: 0;
   background: var(--surface-neutral-02);
 }
 
-/* Rail markup/styles come from Demo 1 shell + Demo 3 d3-rail. */
+/* Panel open — gutter for the floating TruAI card (white stage, not gray shell). */
+.d4-app:has(.d4-panel:not([hidden])) {
+  padding-right: var(--spacing-8);
+}
+
+.d4-app:has(.d4-panel:not([hidden])) .d4-body {
+  background: var(--surface-neutral-01);
+}
+
+/* Rail — Figma 1512:90015 SideNav (72px, surface-neutral-02). */
 .d4-app .d1-rail {
   flex-shrink: 0;
   height: 100%;
   min-height: 0;
   overflow: visible;
+  background: var(--surface-neutral-02); /* #f4f6f4 — beats Demo 1 shell 03 */
   border-right: 1px solid var(--border-subtle);
+}
+
+.d4-app .d1-rail__header {
+  padding: 20px var(--padding-lg) var(--padding-lg);
+}
+
+.d4-app .d1-rail__nav {
+  padding: var(--padding-xl) var(--padding-lg);
+}
+
+.d4-app .d1-rail__nav-bottom {
+  gap: var(--spacing-16);
+  padding-top: 0;
+}
+
+.d4-app .d1-rail__account {
+  padding: var(--padding-md);
 }
 
 .d4-app .d1-menu-item {
@@ -72,6 +99,11 @@ button {
   min-height: 0;
   height: 100%;
   overflow: hidden;
+}
+
+/* TruAI card floats on white — no gray app gutter behind it. */
+.d4-app:has(.d4-panel:not([hidden])) .d4-body {
+  background: var(--surface-neutral-01);
 }
 
 .d4-center {
@@ -95,6 +127,13 @@ button {
   justify-content: stretch;
   padding: 0;
   overflow: hidden;
+}
+
+/* Chat canvas — Figma 1512:90073 surface-neutral-01 (white). */
+.d4-center[data-d4-stage="chat"],
+.d4-center[data-d4-stage="chat"] .d4-chat,
+.d4-center[data-d4-stage="chat"] .d4-chat__col {
+  background: var(--surface-neutral-01);
 }
 
 .d4-page {
@@ -219,6 +258,7 @@ button {
 .d4-prompt__field {
   display: flex;
   flex: 1 1 auto;
+  order: 1;
   min-height: 0;
 }
 
@@ -239,23 +279,17 @@ button {
   color: var(--text-placeholder);
 }
 
-.d4-prompt__bar,
 .d4-prompt__sendwrap {
   display: flex;
   align-items: center;
-}
-
-.d4-prompt__bar {
-  justify-content: flex-end;
-}
-
-/* Attachment (+) retired — hide on every surface. */
-.d4-prompt button[aria-label="Add"] {
-  display: none !important;
-}
-
-.d4-prompt__sendwrap {
+  order: 2;
   gap: var(--spacing-8);
+  align-self: flex-end;
+}
+
+/* Home keeps the tall teal box — hide attachment until chat. */
+.d4-home .d4-prompt > .d4-iconbtn[aria-label="Add"] {
+  display: none;
 }
 
 .d4-iconbtn {
@@ -316,7 +350,7 @@ button {
 .d4-mini {
   position: absolute;
   z-index: 5;
-  top: 12px;
+  top: 24px;
   left: 50%;
   display: flex;
   justify-content: center;
@@ -363,32 +397,88 @@ button {
   height: 16px;
 }
 
-/* Report drawer sits in the center, beside the chat. The activity panel stays. */
+/* Report open — chat 1x (min 320) / report 2x; TruAI panel fixed beside. */
+.d4-body:has(.d4-center.is-report) {
+  gap: var(--spacing-8);
+  padding-right: var(--spacing-8);
+}
+
+.d4-body:has(.d4-center.is-report) .d4-center.is-report {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .d4-center.is-report {
   flex-direction: row;
   align-items: stretch;
   gap: var(--spacing-12);
   padding: var(--spacing-12);
+  min-width: 0;
 }
 
 .d4-center.is-report .d4-chat {
+  container-type: inline-size;
+  container-name: d4-chat;
   flex: 1 1 0;
   width: auto;
-  min-width: 280px;
+  min-width: 320px;
 }
 
-.d4-center.is-report .d4-chat-head,
-.d4-center.is-report .d4-chat .d1-thread,
-.d4-center.is-report .d4-chat .d1-follow,
+.d4-center.is-report .d4-chat-head {
+  padding: var(--spacing-16);
+}
+
+/* Figma 1523:92602 — report-open chat uses 32px pad, left-aligned column. */
+.d4-center.is-report .d4-chat .d1-thread {
+  align-items: stretch;
+  gap: var(--spacing-40);
+  padding: var(--spacing-32);
+}
+
 .d4-center.is-report .d4-chat [data-d4-composer-chat] {
-  padding-inline: clamp(12px, 2vw, 24px);
+  padding: var(--spacing-32);
+  background: linear-gradient(
+    to top,
+    var(--surface-neutral-01) 0%,
+    var(--surface-neutral-01) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.d4-center.is-report .d4-chat .d1-ai,
+.d4-center.is-report .d4-chat .d1-turn,
+.d4-center.is-report .d4-chat .d1-block,
+.d4-center.is-report .d4-chat .d4-cand-panel,
+.d4-center.is-report .d4-chat .d1-thinking,
+.d4-center.is-report .d4-chat .d4-dots-load,
+.d4-center.is-report .d4-chat .d1-follow {
+  max-width: none;
+  align-self: stretch;
+}
+
+.d4-center.is-report .d4-chat .d4-prompt {
+  max-width: none;
+  width: 100%;
+}
+
+/* Suggestions nest inside ready (Figma) — kill thread gap when still a sibling. */
+.d4-center.is-report .d4-chat .d4-report-ready + .d1-follow.is-on {
+  margin-top: calc(var(--spacing-32) - var(--spacing-40));
+}
+
+.d4-center.is-report .d4-chat .d4-report-ready .d1-follow {
+  margin-top: 0;
+}
+
+.d4-center.is-report .d4-chat-back {
+  max-width: 100%;
 }
 
 .d4-drawer {
-  flex: 0 0 62%;
-  width: 62%;
-  max-width: 920px;
-  min-width: 420px;
+  flex: 2 1 0;
+  width: auto;
+  max-width: none;
+  min-width: 0;
   height: 100%;
   pointer-events: auto;
   border-color: var(--border-subtle);
@@ -408,9 +498,571 @@ button {
   display: none !important;
 }
 
-/* Full-screen report: hide TruAI panel (sibling of the center stage). */
-.d4-body:has(.d4-center.is-report-full) .d4-panel {
+/* Report skeleton loading — Figma 1512:91081 (crossfade, no display flips). */
+.d1-doc.is-loading [data-d4-doc-tag],
+.d1-doc.is-loading [data-d4-doc-export] {
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+}
+
+.d1-doc [data-d4-doc-tag],
+.d1-doc [data-d4-doc-export] {
+  transition:
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.d1-doc:not(.is-loading) [data-d4-doc-tag],
+.d1-doc:not(.is-loading) [data-d4-doc-export] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stack skeleton + filled in one cell for seamless crossfade. */
+.d1-doc.is-loading [data-d4-reveal] {
+  display: grid;
+  align-items: start;
+  column-gap: 0;
+}
+
+.d1-doc.is-loading .d1-field[data-d4-reveal] > .d1-field__label {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.d1-doc.is-loading .d1-field[data-d4-reveal] > .d1-skel-stack,
+.d1-doc.is-loading .d1-field[data-d4-reveal] > .d1-field__filled {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.d1-doc.is-loading .d1-pills[data-d4-reveal] > .d1-skel-pills,
+.d1-doc.is-loading .d1-pills[data-d4-reveal] > .d1-pills__filled {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.d1-field__filled,
+.d1-pills__filled {
+  display: flex;
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0.04s;
+}
+
+.d1-field__filled {
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.d1-pills__filled {
+  flex-wrap: wrap;
+  gap: var(--spacing-8);
+}
+
+.d1-skel-stack,
+.d1-skel-pills {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.d1-doc:not(.is-loading) .d1-skel-stack,
+.d1-doc:not(.is-loading) .d1-skel-pills {
   display: none !important;
+}
+
+.d1-doc:not(.is-loading) .d1-field__filled,
+.d1-doc:not(.is-loading) .d1-pills__filled {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition: none;
+}
+
+.d1-doc.is-loading [data-d4-reveal].is-in .d1-skel-stack,
+.d1-doc.is-loading [data-d4-reveal].is-in .d1-skel-pills {
+  opacity: 0;
+  transform: translateY(-2px) scale(0.98);
+  pointer-events: none;
+}
+
+.d1-doc.is-loading [data-d4-reveal].is-in .d1-field__filled,
+.d1-doc.is-loading [data-d4-reveal].is-in .d1-pills__filled {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.d1-skel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.d1-skel-stack--row {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.d1-skel {
+  display: block;
+  height: 12px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    105deg,
+    var(--surface-neutral-02) 0%,
+    var(--surface-neutral-02) 35%,
+    color-mix(in srgb, var(--surface-neutral-01) 70%, var(--surface-neutral-03)) 50%,
+    var(--surface-neutral-02) 65%,
+    var(--surface-neutral-02) 100%
+  );
+  background-size: 220% 100%;
+  animation: d4-skel-shine 1.6s ease-in-out infinite;
+}
+
+.d1-skel:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.d1-skel:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+.d1-skel--full {
+  width: 100%;
+}
+
+.d1-skel--dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.d1-skel--icon {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.d1-skel-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.d1-skel-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-4) 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 9999px;
+  background: var(--surface-neutral-02);
+  overflow: hidden;
+}
+
+.d1-skel-pill .d1-skel {
+  animation-delay: 0.08s;
+}
+
+.d1-skel-pill:nth-child(2) .d1-skel {
+  animation-delay: 0.18s;
+}
+
+.d1-skel-pill:nth-child(3) .d1-skel {
+  animation-delay: 0.28s;
+}
+
+.d1-skel-pill:nth-child(4) .d1-skel {
+  animation-delay: 0.38s;
+}
+
+@keyframes d4-skel-shine {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* Soft drawer entrance while report generates. */
+.d4-drawer.is-revealing {
+  animation: d4-drawer-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes d4-drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d1-skel {
+    animation: none;
+    background: var(--surface-neutral-02);
+  }
+
+  .d1-field__filled,
+  .d1-pills__filled,
+  .d1-skel-stack,
+  .d1-skel-pills,
+  .d1-doc [data-d4-doc-tag],
+  .d1-doc [data-d4-doc-export] {
+    transition: none !important;
+  }
+
+  .d4-drawer.is-revealing {
+    animation: none;
+  }
+}
+
+.d4-center.is-report .d1-doc-grid {
+  column-gap: 24px;
+  row-gap: 32px;
+}
+
+/* Report ready — Figma 1523:92602 (title+card 16, then sections 32). */
+.d4-chat .d4-report-ready.d1-block,
+.d4-report-ready {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  width: 100%;
+}
+
+.d4-ready__hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  width: 100%;
+}
+
+.d4-ready__title {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 20px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 28px;
+  overflow-wrap: anywhere;
+}
+
+.d4-ready__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: var(--spacing-16);
+  border-radius: var(--radius-3xl);
+  background: var(--surface-neutral-02);
+  box-sizing: border-box;
+}
+
+.d4-ready__heading {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+  overflow-wrap: anywhere;
+}
+
+/* Wide chat: icon | meta | tag + Viewing in one row. */
+.d4-ready__entity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: var(--spacing-12);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-01);
+  box-sizing: border-box;
+}
+
+.d4-ready__entity.is-viewing {
+  border-color: var(--border-focus, #0e8a78);
+}
+
+.d4-ready__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-neutral-02);
+  color: var(--icon-faint);
+}
+
+.d4-ready__icon img {
+  display: block;
+  width: 24px;
+  height: 32px;
+}
+
+.d4-ready__meta {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.d4-ready__name {
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+
+.d4-ready__addr {
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+
+.d4-ready__reg {
+  color: var(--text-placeholder);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: 18px;
+}
+
+/* Wide: actions dissolve so tag + button sit in the entity row. */
+.d4-ready__actions {
+  display: contents;
+}
+
+.d4-ready__viewing {
+  flex-shrink: 0;
+  margin: 0;
+  padding: var(--padding-sm) var(--padding-md);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-neutral-01);
+  color: var(--text-default);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  cursor: pointer;
+}
+
+.d4-ready__viewing:hover {
+  background: var(--surface-neutral-02);
+}
+
+.d4-ready__viewing:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Report-open chat is always the narrow column (Figma 1523:92602). */
+.d4-center.is-report .d4-ready__entity {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.d4-center.is-report .d4-ready__meta {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.d4-center.is-report .d4-ready__actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Narrow chat without report — same stack (Figma 1523:92542). */
+@container d4-chat (max-width: 420px) {
+  .d4-ready__entity {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .d4-ready__meta {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .d4-ready__actions {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+  }
+}
+
+.d4-chat .d4-report-ready .d1-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  width: 100%;
+}
+
+.d4-chat .d4-report-ready .d1-summary h3 {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+}
+
+.d4-chat .d4-report-ready .d1-summary__body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.d4-chat .d4-report-ready .d1-summary p {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: 22px;
+}
+
+.d4-chat .d4-report-ready .d1-summary p + p {
+  margin-top: 12px;
+}
+
+/* Suggestions — Figma 1523:92602 (heading/xs 14/20). */
+.d4-chat .d1-follow.is-on {
+  gap: var(--spacing-4);
+}
+
+.d4-chat .d1-follow h2 {
+  margin: 0;
+  color: var(--text-caption);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+}
+
+.d4-chat .d1-suggest-row {
+  gap: var(--spacing-12);
+  padding: var(--spacing-8) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-lg);
+}
+
+.d4-chat .d1-suggest-row:last-child {
+  border-bottom: 0;
+}
+
+.d4-chat .d1-suggest-row__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+}
+
+.d4-chat .d1-suggest-row__icon img {
+  display: block;
+  width: 16px;
+  height: 16px;
+  opacity: 1;
+}
+
+.d4-chat .d1-suggest-row:hover .d1-suggest-row__icon {
+  background: var(--surface-hover);
+}
+
+.d4-chat .d1-suggest-row:hover span:first-child {
+  color: var(--text-default);
+}
+
+/* News & Alerts pills — Figma 1512:92168 */
+.d4-drawer .d1-doc__heading {
+  color: var(--text-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-md);
+}
+
+.d4-drawer .d1-doc-split > .d1-doc__section {
+  gap: var(--spacing-24);
+}
+
+.d4-drawer .d1-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-8);
+  width: 100%;
+}
+
+.d4-drawer .d1-doc:not(.is-loading) .d1-pills[data-d4-reveal] > .d1-pills__filled {
+  display: contents;
+}
+
+.d4-drawer .d1-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--spacing-4) var(--padding-sm);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-badge);
+  background: var(--surface-neutral-02);
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+}
+
+.d4-drawer .d1-pill img {
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* TDS overflow tabs — no visible scrollbar (chevron overflow instead). */
+.d4-doc-tabs {
+  width: 100%;
+  min-width: 0;
+}
+
+.d4-doc-tabs .tds-tabs__list {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.d4-doc-tabs .tds-tabs__list::-webkit-scrollbar {
+  display: none;
 }
 
 .d4-center.is-report-full .d4-drawer {
@@ -426,27 +1078,10 @@ button {
   align-items: center;
   flex-shrink: 0;
   width: 100%;
-  /* Same horizontal inset as thread / composer / follow. */
-  padding: var(--spacing-16) clamp(16px, 4vw, 64px);
+  min-height: 52px;
+  padding: var(--spacing-16);
   border-bottom: 0;
-  background: var(--surface-neutral-02);
-}
-
-/* Soft veil under the title row so scroll doesn’t hit a hard edge. */
-.d4-chat-head::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: 24px;
-  background: linear-gradient(
-    180deg,
-    var(--surface-neutral-02) 0%,
-    color-mix(in srgb, var(--surface-neutral-02) 55%, transparent) 55%,
-    transparent 100%
-  );
-  pointer-events: none;
+  background: transparent;
 }
 
 .d4-chat-back {
@@ -460,14 +1095,9 @@ button {
   border: 0;
   background: transparent;
   color: var(--text-default);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-xl);
-}
-
-/* With the report open the bubble sits mid-column; keep the title left of it. */
-.d4-center.is-report .d4-chat-back {
-  max-width: calc(50% - 56px);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
 }
 
 .d4-center.is-report .d4-chat-back [data-d4-title] {
@@ -482,18 +1112,34 @@ button {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-default);
 }
 
 .d4-chat-back__icon img {
   display: block;
-  width: 16px;
-  height: 16px;
+  width: 11px;
+  height: 11px;
 }
 
+/* User bubble — mint pill (Figma Prompt #c2ede4, radius 24). */
 .d4-chat .d1-user p {
-  background: var(--surface-neutral-01);
+  max-width: max-content;
+  padding: var(--spacing-16);
+  border: 0;
+  border-radius: var(--radius-3xl);
+  background: #c2ede4;
+  box-shadow: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: 18px;
+}
+
+.d4-chat .d1-ai {
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  line-height: 22px;
 }
 
 /* Message enter — spring rise (demo-3 / v2-rise cadence). */
@@ -512,16 +1158,28 @@ button {
   }
 }
 
-/* Every AI reply type spans the full chat column (no narrow bubbles). */
+/* Content column — max 800px, centered; side pad 160 when TruAI collapsed. */
 .d4-chat .d1-ai,
 .d4-chat .d1-turn,
 .d4-chat .d1-block,
 .d4-chat .d4-cand-panel,
-.d4-chat .d1-thinking {
+.d4-chat .d1-thinking,
+.d4-chat .d4-dots-load,
+.d4-chat .d1-follow {
   width: 100%;
-  max-width: none;
-  align-self: stretch;
+  max-width: 800px;
+  align-self: center;
   box-sizing: border-box;
+}
+
+/* Spinner / check mark sits on the text midline (not top-aligned). */
+.d4-chat .d1-activity__toggle {
+  align-items: center;
+}
+
+.d4-chat .d1-activity__toggle > .d1-chev-down,
+.d4-chat .d1-activity__toggle > .d1-chev-up {
+  margin-top: 0;
 }
 
 .d4-chat .d1-activity__toggle [data-d4-activity-label] {
@@ -535,81 +1193,115 @@ button {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  align-items: stretch;
-  gap: var(--spacing-16);
+  align-items: center;
+  gap: var(--spacing-40);
   width: 100%;
   min-height: 0;
-  margin-bottom: var(--spacing-16);
-  padding: var(--spacing-24) clamp(16px, 4vw, 64px) 0;
+  margin-bottom: 0;
+  padding: var(--spacing-32) clamp(24px, 11vw, var(--spacing-160));
   overflow: auto;
-  /* Feather the top of the scrollport so messages ease under the header. */
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0,
-    #000 36px,
-    #000 calc(100% - 12px),
-    #000 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0,
-    #000 36px,
-    #000 calc(100% - 12px),
-    #000 100%
-  );
 }
 
+/* In-thread follow-ups (scroll with chat — not sticky above composer). */
 .d4-chat .d1-follow {
   display: none;
-  flex-shrink: 0;
   flex-direction: column;
+  align-items: stretch;
   gap: var(--spacing-4);
-  margin: var(--spacing-8) 0 var(--spacing-16);
-  padding-inline: clamp(16px, 4vw, 64px);
+  margin: 0;
+  padding: 0;
 }
 
 .d4-chat .d1-follow.is-on {
   display: flex;
 }
 
-/* Chat composer — Figma 1380:72112 PromptInput: full width of the chat column. */
+/* Chat composer — Figma 1512:90269 single-row PromptInput. */
 .d4-chat .d4-prompt {
+  display: flex;
   flex: 0 0 auto;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--spacing-8);
   width: 100%;
-  max-width: none;
-  height: 120px;
-  gap: 8px;
-  padding: 16px;
+  max-width: 800px;
+  height: auto;
+  min-height: 60px;
+  margin: 0 auto;
+  padding: var(--spacing-16);
+  border: 0;
+  border-radius: var(--radius-3xl);
+  background: var(--surface-neutral-01);
+  box-shadow:
+    0 0 6px -2px rgba(0, 0, 0, 0.1),
+    0 0 16px -4px rgba(0, 0, 0, 0.16),
+    0 4px 6px -2px rgba(0, 0, 0, 0.06),
+    0 8px 16px -4px rgba(0, 0, 0, 0.06);
+}
+
+.d4-chat .d4-prompt > .d4-iconbtn[aria-label="Add"] {
+  display: none;
 }
 
 .d4-chat .d4-prompt__field {
   display: flex;
   flex: 1 1 auto;
-  min-height: 0;
+  order: 1;
+  align-items: center;
+  width: auto;
+  min-width: 0;
+  min-height: 28px;
 }
 
 .d4-chat .d4-prompt textarea {
-  height: 100%;
-  min-height: 0;
-  max-height: none;
+  height: 22px;
+  min-height: 22px;
+  max-height: 132px;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-size: var(--font-size-sm);
   line-height: 18px;
 }
 
-.d4-chat .d4-prompt__bar {
-  flex: 0 0 auto;
-  align-self: stretch;
-  width: 100%;
-  height: auto;
-  justify-content: flex-end;
+.d4-chat .d4-prompt__sendwrap {
+  order: 2;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.d4-chat .d4-prompt [aria-label="Voice input"] {
+  display: none;
+}
+
+.d4-chat .d4-send:disabled {
+  background: var(--surface-neutral-04);
+  color: var(--icon-faint);
 }
 
 .d4-chat [data-d4-composer-chat] {
+  display: flex;
   flex-shrink: 0;
+  justify-content: center;
   width: 100%;
-  padding: 0 clamp(16px, 4vw, 64px) var(--spacing-24);
+  padding: var(--spacing-32) clamp(24px, 11vw, var(--spacing-160));
   box-sizing: border-box;
+  background: linear-gradient(
+    to top,
+    var(--surface-neutral-01) 0%,
+    var(--surface-neutral-01) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* Panel open (no report) — tighter side inset. Report-open keeps 32px above. */
+.d4-app:has(.d4-panel:not([hidden])):not(:has(.d4-center.is-report)) .d4-chat .d1-thread,
+.d4-app:has(.d4-panel:not([hidden])):not(:has(.d4-center.is-report)) .d4-chat [data-d4-composer-chat] {
+  padding-inline: clamp(16px, 4vw, 64px);
+}
+
+.d4-app:has(.d4-panel:not([hidden])):not(:has(.d4-center.is-report)) .d4-chat [data-d4-composer-chat] {
+  background: transparent;
 }
 
 /* ----------------------------------------------------------------- panel */
@@ -618,8 +1310,11 @@ button {
   display: flex;
   flex-direction: column;
   flex: 0 0 280px;
+  flex-shrink: 0;
   align-self: stretch;
   width: 280px;
+  min-width: 280px;
+  max-width: 280px;
   max-height: calc(100% - 16px);
   height: calc(100% - 16px);
   margin: 8px 0;
@@ -629,6 +1324,7 @@ button {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   background: var(--surface-neutral-01);
+  box-sizing: border-box;
 }
 
 .d4-panel[hidden] {
@@ -697,6 +1393,16 @@ button {
   display: flex;
   gap: 12px;
   align-items: stretch;
+}
+
+/* Live spinner row (title only) — center icon with the label. */
+.d4-act:not(:has(.d4-act__detail)):not(:has(.d4-act__time)) {
+  align-items: center;
+}
+
+.d4-act:not(:has(.d4-act__detail)):not(:has(.d4-act__time)) .d4-act__body {
+  padding-bottom: 0;
+  justify-content: center;
 }
 
 .d4-act__rail {
@@ -769,6 +1475,7 @@ button {
 .d4-act__title {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+  overflow-wrap: anywhere;
 }
 
 .d4-act__detail {
@@ -795,8 +1502,10 @@ button {
 
 @media (max-width: 1100px) {
   .d4-panel {
-    flex-basis: 260px;
+    flex: 0 0 260px;
     width: 260px;
+    min-width: 260px;
+    max-width: 260px;
   }
 }
 
@@ -827,245 +1536,379 @@ button {
 }
 
 /* --------------------------------------------------------- candidates
-   Demo 3 KYB multi-entity panel (chips → cards → confirm). */
+   Figma 1479:84168 — multi-match card (orb + chips + rows + pager). */
 
 .d4-cand-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-12, 12px);
   width: 100%;
-  max-width: none;
+  max-width: 800px;
+  align-self: center;
   box-sizing: border-box;
 }
 
-.d4-cand-panel .ai-said {
-  align-self: flex-end;
-  max-width: 85%;
-  margin: 0;
-  padding: var(--spacing-16, 16px);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl, 16px);
-  font-size: var(--font-size-sm, 14px);
-  line-height: 18px;
-  color: var(--text-default);
-  background: var(--surface-neutral-02);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+.d4-match {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
 }
 
-.d4-cand-panel .ai-reply {
+.d4-match__orb {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 28% 22%, #ffd166 0%, transparent 42%),
+    radial-gradient(circle at 78% 30%, #5ac8c9 0%, transparent 45%),
+    radial-gradient(circle at 40% 78%, #05d6a0 0%, transparent 48%),
+    radial-gradient(circle at 70% 70%, #11663a 0%, #163d34 70%);
+}
+
+.d4-match__card {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  gap: var(--spacing-8, 8px);
+  gap: 12px;
+  min-width: 0;
+  padding: var(--spacing-16);
+  border-radius: var(--radius-3xl);
+  background: var(--surface-neutral-02);
+  box-sizing: border-box;
 }
 
-.d4-cand-panel .ai-reply__lead {
+.d4-match__title {
   margin: 0;
-  font-size: var(--font-size-md, 16px);
-  font-weight: var(--font-weight-semibold, 600);
-  line-height: var(--line-height-md, 24px);
   color: var(--text-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
 }
 
-.d4-cand-panel .ai-reply__sub {
-  margin: 0;
-  font-size: var(--font-size-sm, 14px);
-  font-weight: var(--font-weight-regular, 400);
-  line-height: var(--line-height-sm, 20px);
-  color: var(--text-description);
-}
-
-.d4-cand-panel .ai-confirm {
+.d4-match__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-8, 8px);
-  align-items: center;
+  gap: 8px;
+  width: 100%;
 }
 
-.d4-cand-panel .ai-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-8, 8px);
-}
-
-.d4-cand-panel .ai-chip {
+.d4-match__chip {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-8, 8px);
-  padding: 6px 12px;
+  gap: 4px;
+  margin: 0;
+  padding: var(--spacing-8) var(--spacing-12);
   border: 1px solid var(--border-subtle);
-  border-radius: 999px;
-  font-family: inherit;
-  font-size: var(--font-size-xs, 12px);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-default);
+  border-radius: 9999px;
   background: var(--surface-neutral-01);
+  color: var(--text-description);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
   cursor: pointer;
-  transition:
-    border-color 160ms ease,
-    background-color 160ms ease,
-    color 160ms ease,
-    scale 120ms ease-out;
 }
 
-.d4-cand-panel .ai-chip__n {
-  font-variant-numeric: tabular-nums;
-  color: var(--text-caption);
-}
-
-.d4-cand-panel .ai-chip:hover {
+.d4-match__chip:hover {
   border-color: var(--border-strong);
 }
 
-.d4-cand-panel .ai-chip:active {
-  scale: 0.97;
+.d4-match__chip.is-on {
+  border-color: var(--interactive-default);
+  color: var(--text-default);
+  box-shadow: 0 0 0 1px var(--interactive-default);
 }
 
-.d4-cand-panel .ai-chip:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  pointer-events: none;
+.d4-match__chip-n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: var(--surface-neutral-03);
+  color: var(--text-default);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
 }
 
-.d4-cand-panel .ai-chip--on {
-  border-color: transparent;
-  color: var(--text-inverse);
-  background: var(--interactive-default);
+.d4-match__chip.is-on .d4-match__chip-n {
+  background: color-mix(in srgb, var(--interactive-default) 14%, var(--surface-neutral-01));
 }
 
-.d4-cand-panel .ai-chip--on .ai-chip__n {
-  color: var(--color-teal-30, #9ed9d0);
+.d4-match__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  width: 100%;
 }
 
-.d4-cand-panel .ai-chip:focus-visible {
+.d4-match__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-12);
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-01);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.d4-match__row:hover {
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+.d4-match__row:focus-visible {
   outline: 2px solid var(--border-focus);
   outline-offset: 2px;
 }
 
-.d4-cand-panel .ai-cands {
+.d4-match__thumb {
+  display: block;
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+}
+
+.d4-match__meta {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  gap: var(--spacing-12, 12px);
-  width: 100%;
-  max-width: 480px;
+  gap: 2px;
+  min-width: 0;
 }
 
-.d4-cand-panel .ai-cand {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-12, 12px);
-  width: 100%;
-  max-width: 480px;
-  padding: var(--spacing-16, 16px);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-xl, 16px);
-  font-family: inherit;
-  text-align: left;
-  background: var(--surface-neutral-01);
-  cursor: pointer;
-  transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    scale 120ms ease-out;
+.d4-match__name {
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
 }
 
-.d4-cand-panel .ai-cand:hover,
-.d4-cand-panel .ai-cand--on {
-  border-color: var(--interactive-default);
-  box-shadow: 0 0 0 3px var(--interactive-subtle);
+.d4-match__addr {
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: 18px;
 }
 
-.d4-cand-panel .ai-cand:active {
-  scale: 0.98;
+.d4-match__reg {
+  color: var(--text-placeholder);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: 18px;
 }
 
-.d4-cand-panel .ai-cand__head {
+.d4-match__badge {
+  flex-shrink: 0;
+  padding: 2px var(--padding-sm);
+  border-radius: 9999px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.d4-match__badge--positive {
+  background: var(--surface-positive);
+  color: var(--text-positive);
+}
+
+.d4-match__badge--intermediate {
+  background: var(--surface-intermediate);
+  color: var(--text-intermediate);
+}
+
+.d4-match__badge--negative {
+  background: var(--surface-negative);
+  color: var(--text-negative);
+}
+
+.d4-match__empty {
+  margin: 0;
+  padding: var(--spacing-16);
+  color: var(--text-description);
+  font-size: var(--font-size-sm);
+  line-height: 22px;
+}
+
+.d4-match__foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-8, 8px);
+  gap: var(--spacing-16);
+  width: 100%;
 }
 
-.d4-cand-panel .ai-cand__name {
-  font-size: var(--font-size-md, 16px);
-  font-weight: var(--font-weight-semibold, 600);
-  line-height: 20px;
-  color: var(--text-default);
+.d4-match__range {
+  flex: 1 1 auto;
+  margin: 0;
+  color: var(--text-description);
+  font-size: var(--font-size-sm);
+  line-height: 22px;
 }
 
-.d4-cand-panel .ai-cand__go {
+.d4-match__pager {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.d4-match__page {
   display: grid;
-  flex: 0 0 auto;
   place-items: center;
-  width: 20px;
-  height: 20px;
-  color: var(--icon-default);
-  transition: transform 160ms ease;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: var(--padding-sm);
+  border: 0;
+  border-radius: 9999px;
+  background: var(--surface-neutral-03);
+  cursor: pointer;
 }
 
-.d4-cand-panel .ai-cand__go svg {
+.d4-match__page img {
+  display: block;
   width: 16px;
   height: 16px;
 }
 
-.d4-cand-panel .ai-cand:hover .ai-cand__go {
-  transform: translateX(2px);
+.d4-match__page--next {
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-neutral-01);
 }
 
-.d4-cand-panel .ai-cand__facts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-8, 8px) var(--spacing-12, 12px);
+.d4-match__page--next img {
+  transform: scaleX(-1);
 }
 
-.d4-cand-panel .ai-cand__fact {
+.d4-match__page:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.d4-match__page:not(:disabled):hover {
+  background: var(--surface-neutral-04);
+}
+
+.d4-match__page--next:not(:disabled):hover {
+  background: var(--surface-neutral-02);
+}
+
+/* Selected business — Figma 1479:84540 */
+.d4-match--selected {
+  gap: 0;
+}
+
+.d4-match__head {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.d4-match__head .d4-match__title {
+  flex: 1 1 auto;
   min-width: 0;
-  font-size: var(--font-size-xs, 12px);
-  line-height: 18px;
-  color: var(--text-default);
 }
 
-.d4-cand-panel .ai-cand__fact--wide {
-  grid-column: 1 / -1;
-}
-
-.d4-cand-panel .ai-cand__fact b {
-  font-size: var(--font-size-xs, 12px);
-  font-weight: var(--font-weight-medium, 500);
+.d4-match__change {
+  flex-shrink: 0;
+  margin: 0;
+  padding: var(--padding-xs) var(--padding-sm);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--interactive-default);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   line-height: 16px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-caption);
+  cursor: pointer;
 }
 
-.d4-cand-panel .ai-cand__status {
-  font-weight: var(--font-weight-medium, 500);
+.d4-match__change:hover {
+  background: color-mix(in srgb, var(--interactive-default) 8%, transparent);
 }
 
-.d4-cand-panel .ai-cand__status--ok {
-  color: var(--text-positive);
+.d4-match__change:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
 }
 
-.d4-cand-panel .ai-cand__status--off {
-  color: var(--text-negative);
+.d4-match__row--static {
+  cursor: default;
 }
 
-.d4-cand-panel .ai-cand__note {
-  font-size: var(--font-size-xs, 12px);
-  line-height: 18px;
-  color: var(--color-neutral-50, #6b7280);
+.d4-match__row--static:hover {
+  box-shadow: none;
+}
+
+/* Soft organic dots grid (replaces progress bar after match select). */
+.d4-dots-load {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  max-width: 800px;
+  align-self: center;
+  box-sizing: border-box;
+}
+
+.d4-dots-load__stage {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-start;
+  width: 240px;
+  height: 160px;
+  padding-top: 8px;
+}
+
+.d4-dots-load__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 14), 5px);
+  grid-template-rows: repeat(var(--rows, 10), 5px);
+  gap: 5px;
+}
+
+.d4-dots-load__dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #7a8b82;
+  opacity: calc(0.12 + var(--edge, 1) * 0.28);
+  justify-self: center;
+  align-self: center;
+  animation: d4-dot-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes d4-dot-pulse {
+  0%,
+  100% {
+    opacity: calc(0.1 + var(--edge, 1) * 0.18);
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: calc(0.35 + var(--edge, 1) * 0.55);
+    transform: scale(1.05);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .d4-cand-panel .ai-chip,
-  .d4-cand-panel .ai-cand,
-  .d4-cand-panel .ai-cand__go {
-    transition: none;
-  }
-
-  .d4-cand-panel .ai-cand:hover .ai-cand__go {
+  .d4-dots-load__dot {
+    animation: none;
+    opacity: calc(0.25 + var(--edge, 1) * 0.35);
     transform: none;
   }
 }

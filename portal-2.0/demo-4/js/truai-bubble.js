@@ -409,6 +409,18 @@
       });
     }
 
+    function hostVisible() {
+      /* Panel-open hides the mini via [hidden]; offsetWidth is 0 and breaks pill text. */
+      if (!host || !host.isConnected) return false;
+      if (host.hidden) return false;
+      var node = host;
+      while (node) {
+        if (node.hidden) return false;
+        node = node.parentElement;
+      }
+      return true;
+    }
+
     function measure(sub) {
       ensureMeasureSlots(sub);
       var key = measureKey(sub);
@@ -425,8 +437,49 @@
       pillEl.style.height = size.h + "px";
     }
 
+    /** Re-apply current status after the host becomes visible again. */
+    function refreshLayout() {
+      if (destroyed) return;
+      clearTimers();
+      gen += 1;
+      growPending = false;
+      holdSlot = false;
+      isSwap = false;
+      var target = subForState(visualState(), props.actingLabel, props.actingIconHtml);
+      shown = target;
+      subSlot.innerHTML = "";
+      if (target) {
+        var el = buildSubEl(target, false);
+        el.classList.add("is-in");
+        subSlot.appendChild(el);
+        setSlotOpen(true);
+      } else {
+        setSlotOpen(false);
+      }
+      setPillSize(measure(target));
+    }
+
     function setSlotOpen(open) {
       subSlot.classList.toggle("is-open", open);
+    }
+
+    /** Drop lines already fading out so a new state can't stack on them. */
+    function dropFadedSubs() {
+      subSlot.querySelectorAll(".truai-bubble__sub.is-out").forEach(function (node) {
+        if (node.parentNode) node.parentNode.removeChild(node);
+      });
+    }
+
+    function showOnly(sub) {
+      subSlot.innerHTML = "";
+      if (!sub) {
+        setSlotOpen(false);
+        return;
+      }
+      var el = buildSubEl(sub, false);
+      el.classList.add("is-in");
+      subSlot.appendChild(el);
+      setSlotOpen(true);
     }
 
     function buildSubEl(sub, swap) {
@@ -482,10 +535,21 @@
 
     function runTransition(next) {
       clearTimers();
+      dropFadedSubs();
       var myGen = ++gen;
       var still = function () {
         return myGen === gen && !destroyed;
       };
+
+      /* Hidden host can't measure — keep logical state; refresh on show. */
+      if (!hostVisible()) {
+        growPending = false;
+        holdSlot = false;
+        isSwap = false;
+        shown = next;
+        subSlot.innerHTML = "";
+        return;
+      }
 
       var prev = shown;
       var same =
@@ -505,6 +569,11 @@
             setPillSize(measure(null));
           }
         } else {
+          /* One line only — a cancelled swap can leave the previous label behind. */
+          var live = subSlot.querySelectorAll(".truai-bubble__sub:not(.is-out)");
+          if (live.length !== 1 || live[0].getAttribute("data-sub-key") !== next.key) {
+            showOnly(next);
+          }
           setPillSize(measure(next));
         }
         return;
@@ -565,25 +634,25 @@
         holdSlot = false;
         isSwap = true;
         setSlotOpen(true);
-        after(20, function () {
+        setPillSize(measure(next));
+        var exiting = [];
+        subSlot.querySelectorAll(".truai-bubble__sub").forEach(function (node) {
+          node.classList.remove("is-in", "is-swap-in");
+          node.classList.add("is-out", "is-swap-out");
+          exiting.push(node);
+        });
+        shown = next;
+        var incoming = buildSubEl(next, true);
+        subSlot.appendChild(incoming);
+        requestAnimationFrame(function () {
+          incoming.classList.add("is-in");
+        });
+        after(Math.max(SUB_SWAP_IN_S, SUB_SWAP_OUT_S) * 1000 + 40, function () {
           if (!still()) return;
-          setPillSize(measure(next));
-          var exiting = subSlot.querySelector(".truai-bubble__sub");
-          if (exiting) {
-            exiting.classList.remove("is-in", "is-swap-in");
-            exiting.classList.add("is-out", "is-swap-out");
-          }
-          shown = next;
-          var incoming = buildSubEl(next, true);
-          subSlot.appendChild(incoming);
-          requestAnimationFrame(function () {
-            incoming.classList.add("is-in");
+          exiting.forEach(function (node) {
+            if (node.parentNode) node.parentNode.removeChild(node);
           });
-          after(Math.max(SUB_SWAP_IN_S, SUB_SWAP_OUT_S) * 1000 + 40, function () {
-            if (!still()) return;
-            if (exiting && exiting.parentNode) exiting.parentNode.removeChild(exiting);
-            isSwap = false;
-          });
+          isSwap = false;
         });
         return;
       }
@@ -666,6 +735,9 @@
       },
       getState: function () {
         return props.state;
+      },
+      refresh: function () {
+        refreshLayout();
       },
       destroy: function () {
         destroyed = true;

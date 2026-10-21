@@ -12,6 +12,7 @@
   var feed = document.querySelector("[data-d4-feed]");
   var panel = document.querySelector("[data-d4-panel]");
   var chatSlot = document.querySelector("[data-d4-composer-chat]");
+  var titleEl = document.querySelector("[data-d4-title]");
   if (!stage || !composer || !thread || !feed) return;
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -47,9 +48,9 @@
       sanctions: "No officer matched OFAC, UN, or EU consolidated lists. The sanctions result is clean — the risk here is the shell profile, not sanctions."
     },
     suggestions: [
-      { q: "Show me transactions connected to this business" },
-      { q: "Who is behind the BVI holding company?" },
-      { q: "What should I request before onboarding?" }
+      { q: "Show me the 3 connections" },
+      { q: "Why wouldn't you onboard it?" },
+      { q: "What's in the verification report?" }
     ]
   };
 
@@ -142,11 +143,133 @@
   ];
 
   var MERIDIANS = [APEX, TRADE, CAPITAL];
-  var CAND_GO_SVG =
-    '<svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>';
 
-  var convo = { entity: null, linksShown: false, pendingLinks: false };
-  var candState = { root: null, list: [], filterIds: [], mode: "list", pending: null, purpose: "kyb" };
+  /* Figma 1479:84168 — multi-match list. Chip counts = businesses per country. */
+  var MATCH_PAGE_SIZE = 3;
+  var MATCH_COUNTRY_ORDER = [
+    "United States",
+    "Canada",
+    "United Kingdom",
+    "Australia",
+    "Ireland"
+  ];
+  /* Street-level facade thumbs per hit; Figma 1512:91345 building icon if missing. */
+  var MATCH_THUMB_FALLBACK = "assets/cand/match-fallback.png";
+
+  function matchTone(score) {
+    if (score >= 85) return "positive";
+    if (score >= 70) return "intermediate";
+    return "negative";
+  }
+
+  function makeHit(id, companyId, name, addr, reg, country, city, region, score, thumb) {
+    return {
+      id: id,
+      companyId: companyId || null,
+      name: name,
+      addr: addr,
+      reg: reg,
+      country: country,
+      city: city,
+      region: region,
+      match: score,
+      tone: matchTone(score),
+      thumb: thumb || MATCH_THUMB_FALLBACK
+    };
+  }
+
+  var MATCH_HITS = [
+    makeHit("hit-austin", "capital", "Meridian Apex LLC", "800 Market St, Austin, US", "Reg. TX-462913", "United States", "Austin", "Texas", 94, "assets/cand/match-austin.jpg"),
+    makeHit("hit-nyc", "capital", "Meridian Capital LLC", "200 Vesey St, New York, US", "Reg. NY-4417762", "United States", "New York", "New York", 91, "assets/cand/match-nyc.jpg"),
+    makeHit("hit-chicago", null, "Meridian Partners Inc.", "233 S Wacker Dr, Chicago, US", "Reg. IL-880214", "United States", "Chicago", "Illinois", 88, "assets/cand/match-chicago.jpg"),
+    makeHit("hit-seattle", null, "Meridian Holdings LLC", "1201 2nd Ave, Seattle, US", "Reg. WA-551902", "United States", "Seattle", "Washington", 76, "assets/cand/match-seattle.jpg"),
+    makeHit("hit-miami", null, "Meridian Group LLC", "100 SE 2nd St, Miami, US", "Reg. FL-339441", "United States", "Miami", "Florida", 71, "assets/cand/match-miami.jpg"),
+    makeHit("hit-vancouver", null, "Meridian North Inc.", "555 Burrard St, Vancouver, CA", "Reg. BC-771204", "Canada", "Vancouver", "British Columbia", 68, "assets/cand/match-vancouver.jpg"),
+    makeHit("hit-toronto", "trade", "Meridian Apex Co.", "22 King Rd, Toronto, CA", "Reg. ON-462913", "Canada", "Toronto", "Ontario", 62, "assets/cand/match-toronto.jpg"),
+    makeHit("hit-montreal", null, "Meridian Bay Ltd.", "1250 René-Lévesque, Montréal, CA", "Reg. QC-229088", "Canada", "Montréal", "Quebec", 55, "assets/cand/match-montreal.jpg"),
+    makeHit("hit-london", "apex", "Meridian Apex Consulting Ltd.", "1 King Street, London, GB", "Reg. 11876542", "United Kingdom", "London", "England", 85, "assets/cand/match-london.jpg"),
+    makeHit("hit-canary", "trade", "Meridian Trade Holdings Ltd.", "25 Bank Street, London, GB", "Reg. 11204887", "United Kingdom", "London", "England", 79, "assets/cand/match-canary.jpg"),
+    makeHit("hit-sydney", null, "Meridian Pacific Pty Ltd", "1 Macquarie Pl, Sydney, AU", "Reg. ACN-604881", "Australia", "Sydney", "New South Wales", 73, "assets/cand/match-sydney.jpg"),
+    makeHit("hit-dublin", "apex", "Meridian Apex LTD", "14 Harbour St, Dublin, IE", "Reg. 462913", "Ireland", "Dublin", "Leinster", 81, "assets/cand/match-dublin.jpg")
+  ].sort(function (a, b) {
+    return b.match - a.match;
+  });
+
+  var MATCH_FACETS = MATCH_COUNTRY_ORDER.map(function (country) {
+    var n = MATCH_HITS.filter(function (h) {
+      return h.country === country;
+    }).length;
+    return { id: "cc:" + country, label: country, n: n, country: country };
+  }).filter(function (f) {
+    return f.n > 0;
+  });
+  var MATCH_TOTAL = MATCH_HITS.length;
+
+  var MATCH_INTRO =
+    "“Meridian” matches multiple unrelated businesses, so I need to resolve the legal entity before running the KYB check; otherwise ownership, registration, and sanctions results could be attached to the wrong company.";
+
+  /* Figma 1512:91348 — ready-state follow-ups. */
+  var READY_SUGGESTIONS = [
+    { q: "Show me the 3 connections" },
+    { q: "Why wouldn't you onboard it?" },
+    { q: "What's in the verification report?" }
+  ];
+
+  var convo = {
+    entity: null,
+    linksShown: false,
+    pendingLinks: false,
+    awaitingCountry: false,
+    country: null,
+    searchPurpose: "kyb"
+  };
+
+  var COUNTRY_MATCHERS = [
+    { id: "United States", re: /(?:^|\b)(?:united states|u\.s\.a\.?|u\.s\.?|usa|america|us)(?=$|\b)/i },
+    { id: "United Kingdom", re: /(?:^|\b)(?:united kingdom|u\.k\.?|great britain|britain|england|uk)(?=$|\b)/i },
+    { id: "Canada", re: /\bcanada\b/i },
+    { id: "Australia", re: /\baustralia\b/i },
+    { id: "Ireland", re: /\bireland\b/i }
+  ];
+
+  function countryFromText(text) {
+    var raw = String(text || "");
+    for (var i = 0; i < COUNTRY_MATCHERS.length; i += 1) {
+      if (COUNTRY_MATCHERS[i].re.test(raw)) return COUNTRY_MATCHERS[i].id;
+    }
+    return null;
+  }
+
+  function hitsInCountry(country) {
+    return MATCH_HITS.filter(function (hit) {
+      return hit.country === country;
+    });
+  }
+
+  function askCountryPlan(again) {
+    return {
+      log: { title: "Resolve “Meridian”", detail: "Waiting for a country", hold: true },
+      parts: [
+        say(
+          again
+            ? "I didn't catch a country. Which country should I search?"
+            : "Which country should I search?"
+        )
+      ],
+      suggestions: []
+    };
+  }
+  var candState = {
+    root: null,
+    list: [],
+    filterIds: [],
+    mode: "list",
+    pending: null,
+    selectedHit: null,
+    purpose: "kyb",
+    page: 0,
+    useDotsLoad: false
+  };
 
   function esc(str) {
     return String(str == null ? "" : str)
@@ -168,10 +291,22 @@
     };
   }
 
-  function meridianPlan(purpose) {
+  function meridianPlan(purpose, country) {
     return {
       log: { title: "Resolve “Meridian”", detail: "Waiting for you to confirm the entity", hold: true },
-      parts: [{ t: "candidates", list: MERIDIANS.slice(), purpose: purpose || "kyb" }],
+      parts: [
+        say(
+          "Here are the " +
+            country +
+            " matches. Filter by city or state, then pick the business."
+        ),
+        {
+          t: "candidates",
+          list: hitsInCountry(country),
+          purpose: purpose || "kyb",
+          country: country
+        }
+      ],
       suggestions: []
     };
   }
@@ -231,33 +366,57 @@
   }
 
   function planReply(text) {
+    if (convo.awaitingCountry) {
+      var picked = countryFromText(text);
+      if (!picked) return askCountryPlan(true);
+      convo.awaitingCountry = false;
+      convo.country = picked;
+      return meridianPlan(convo.searchPurpose || "kyb", picked);
+    }
+
     var company = namedCompany(text);
     var intent = intentOf(text);
+    var inlineCountry = countryFromText(text);
 
+    /* A new business name asks for country before any entity is locked. */
     if (company && (!convo.entity || company.id !== convo.entity.id) && intent !== "compare") {
-      convo.entity = company;
+      convo.entity = null;
       convo.linksShown = false;
-      if (convo.pendingLinks) {
-        convo.pendingLinks = false;
-        convo.linksShown = true;
-        return linksPlan(company);
+      convo.searchPurpose = convo.pendingLinks || intent === "links" ? "links" : "kyb";
+      convo.pendingLinks = convo.searchPurpose === "links";
+      if (inlineCountry) {
+        convo.country = inlineCountry;
+        return meridianPlan(convo.searchPurpose, inlineCountry);
       }
-      return investigatePlan(company);
+      convo.awaitingCountry = true;
+      return askCountryPlan(false);
     }
 
     if (intent === "links") {
       if (!convo.entity) {
         convo.pendingLinks = true;
-        return meridianPlan("links");
+        convo.searchPurpose = "links";
+        if (inlineCountry) {
+          convo.country = inlineCountry;
+          return meridianPlan("links", inlineCountry);
+        }
+        convo.awaitingCountry = true;
+        return askCountryPlan(false);
       }
       convo.linksShown = true;
       return linksPlan(convo.entity);
     }
 
-    /* Ambiguous brand — never auto-lock one entity (Demo 3 rule). */
+    /* Ambiguous brand — ask country, then city/state filters (not a country chip row). */
     if (!convo.entity && /meridian/i.test(text) && !company) {
-      convo.pendingLinks = false;
-      return meridianPlan("kyb");
+      convo.pendingLinks = intent === "links";
+      convo.searchPurpose = intent === "links" ? "links" : "kyb";
+      if (inlineCountry) {
+        convo.country = inlineCountry;
+        return meridianPlan(convo.searchPurpose, inlineCountry);
+      }
+      convo.awaitingCountry = true;
+      return askCountryPlan(false);
     }
 
     if (intent === "bvi") {
@@ -317,6 +476,14 @@
   /* -------------------------------------------------------------- activity */
 
   var working = null;
+
+  var ICON_SEARCH =
+    '<img src="assets/icons/magnifying-glass.svg" alt="" width="12" height="12">';
+  var ICON_DOC =
+    '<img src="assets/icons/file-lines.svg" alt="" width="9" height="11">';
+  /* Figma 1523:92474 — Awaiting input. */
+  var ICON_AWAIT =
+    '<img src="assets/icons/hand-pointer.svg" alt="" width="10" height="11">';
 
   var today = [];
 
@@ -391,7 +558,7 @@
       return '<span class="d4-act__icon"><img class="d4-spin" src="assets/icons/spinner.svg" alt="" width="16" height="16"></span>';
     }
     if (kind === "memo") {
-      return '<span class="d4-act__icon d4-act__icon--badge"><svg class="d4-act__report" width="12" height="16" viewBox="0 0 12 16" fill="none" aria-hidden="true"><path d="M2 1.5C1.71875 1.5 1.5 1.71875 1.5 2V14C1.5 14.2812 1.71875 14.5 2 14.5H10C10.2812 14.5 10.5 14.2812 10.5 14V2C10.5 1.71875 10.2812 1.5 10 1.5H2ZM0 2C0 0.90625 0.90625 0 2 0H10C11.0938 0 12 0.90625 12 2V14C12 15.0938 11.0938 16 10 16H2C0.90625 16 0 15.0938 0 14V2ZM3.75 4H8.25C8.65625 4 9 4.34375 9 4.75C9 5.15625 8.65625 5.5 8.25 5.5H3.75C3.34375 5.5 3 5.15625 3 4.75C3 4.34375 3.34375 4 3.75 4ZM3.75 7H8.25C8.65625 7 9 7.34375 9 7.75C9 8.15625 8.65625 8.5 8.25 8.5H3.75C3.34375 8.5 3 8.15625 3 7.75C3 7.34375 3.34375 7 3.75 7ZM3.75 10H5.25C5.65625 10 6 10.3438 6 10.75C6 11.1562 5.65625 11.5 5.25 11.5H3.75C3.34375 11.5 3 11.1562 3 10.75C3 10.3438 3.34375 10 3.75 10Z" fill="#526660"/></svg></span>';
+      return '<span class="d4-act__icon d4-act__icon--badge"><img class="d4-act__report" src="assets/icons/memo.svg" alt="" width="12" height="16"></span>';
     }
     if (kind === "check") {
       return '<span class="d4-act__icon d4-act__icon--badge"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM2.5 8a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Zm7.9-1.4a.75.75 0 0 1 0 1.06l-2.7 2.7a.75.75 0 0 1-1.06 0l-1.3-1.3a.75.75 0 1 1 1.06-1.06l.77.77 2.17-2.17a.75.75 0 0 1 1.06 0Z"/></svg></span>';
@@ -402,31 +569,109 @@
     return '<span class="d4-act__icon"><span class="d4-dot"></span></span>';
   }
 
+  function chatHeaderTitle() {
+    return titleEl ? String(titleEl.textContent || "").trim() : "";
+  }
+
   function renderItems(items, live) {
     return items.map(function (item, index) {
       var last = index === items.length - 1;
       var line = last ? "" : '<span class="d4-act__line"></span>';
-      var time = item.time ? '<p class="d4-act__time">' + item.time + "</p>" : "";
-      return '<div class="d4-act">' +
-        '<div class="d4-act__rail">' + iconMarkup(item.icon, live) + line + "</div>" +
-        '<div class="d4-act__body"><p class="d4-act__title">' + item.title + "</p>" +
-        '<p class="d4-act__detail">' + item.detail + "</p>" + time + "</div></div>";
+      var time = !live && item.time ? '<p class="d4-act__time">' + item.time + "</p>" : "";
+      /* Live spinner: chat header title only — no dynamic subtext. */
+      var title = live ? chatHeaderTitle() || item.title : item.title;
+      var detailHtml =
+        live || !item.detail ? "" : '<p class="d4-act__detail">' + item.detail + "</p>";
+      return (
+        '<div class="d4-act">' +
+        '<div class="d4-act__rail">' +
+        iconMarkup(item.icon, live) +
+        line +
+        "</div>" +
+        '<div class="d4-act__body"><p class="d4-act__title">' +
+        title +
+        "</p>" +
+        detailHtml +
+        time +
+        "</div></div>"
+      );
     }).join("");
   }
 
+  function chatIsAwaiting() {
+    if (busy) return false;
+    if (suggest && suggest.classList.contains("is-on")) return true;
+    if (candState.root && candState.mode === "list") return true;
+    if (!working) return false;
+    var waitText = ((working.detail || "") + " " + (working.title || "")).toLowerCase();
+    return /waiting|confirm|resolve|start a new|continue/.test(waitText);
+  }
+
+  function ensureAwaitingInput(opts) {
+    opts = opts || {};
+    beginWork({
+      title: opts.title || "Awaiting input",
+      detail: opts.detail || "Waiting for you to continue",
+      hold: true,
+      drop: opts.drop !== false
+    });
+  }
+
+  /** Short TruAI label from what’s visible in chat (≤2 words). */
+  function resolveBubbleStatus() {
+    if (document.querySelector("[data-d4-dots-load], [data-d4-kyb-starting]")) {
+      return { label: "Investigating", iconHtml: ICON_SEARCH };
+    }
+    var doc = reportDoc();
+    var workText = working
+      ? ((working.detail || "") + " " + (working.title || "")).toLowerCase()
+      : "";
+    if (doc && doc.classList.contains("is-loading")) {
+      /* Dots path already mapped to Investigating; tools rows keep step labels. */
+      if (!thread.querySelector(".d1-activity__toggle--current") || /report|generat|writing/.test(workText)) {
+        return { label: "Generating report", iconHtml: ICON_DOC };
+      }
+    }
+    if (chatIsAwaiting()) {
+      return { label: "Awaiting input", iconHtml: ICON_AWAIT };
+    }
+    if (!working) {
+      return { label: "", iconHtml: "", idle: true };
+    }
+    if (/waiting|confirm|resolve|start a new|continue/.test(workText)) {
+      return { label: "Awaiting input", iconHtml: ICON_AWAIT };
+    }
+    if (/report|generat|writing/.test(workText)) {
+      return { label: "Generating report", iconHtml: ICON_DOC };
+    }
+    if (/companies house|registry|dos|matching/.test(workText)) {
+      return { label: "Browsing sources", iconHtml: ICON_SEARCH };
+    }
+    if (/capital|filing|filings|virtual office|address|vesey|canary/.test(workText)) {
+      return { label: "Reviewing filings", iconHtml: ICON_SEARCH };
+    }
+    if (/ofac|sanction|screening/.test(workText)) {
+      return { label: "Screening lists", iconHtml: ICON_SEARCH };
+    }
+    if (/transaction|device|account|people|connections|links|history|kyc|bank/.test(workText)) {
+      return { label: "Scanning history", iconHtml: ICON_SEARCH };
+    }
+    if (/ownership|bvi|holding/.test(workText)) {
+      return { label: "Reviewing ownership", iconHtml: ICON_SEARCH };
+    }
+    if (/investigate/.test(workText)) {
+      return { label: "Investigating", iconHtml: ICON_SEARCH };
+    }
+    if (/answer|follow-up|checking/.test(workText)) {
+      return { label: "Answering", iconHtml: ICON_SEARCH };
+    }
+    return { label: "Working", iconHtml: ICON_SEARCH };
+  }
+
   function miniLabel() {
-    if (!working) return "Idle";
-    var text = ((working.detail || "") + " " + (working.title || "")).toLowerCase();
-    if (/waiting|confirm|resolve|start a new/.test(text)) return "Awaiting input";
-    if (/companies house|registry|dos|matching/.test(text)) return "Browsing sources";
-    if (/capital|filing|filings|virtual office|address|vesey|canary/.test(text)) return "Reviewing filings";
-    if (/ofac|sanction|screening/.test(text)) return "Screening lists";
-    if (/transaction|device|account|people|connections|links|history|kyc|bank/.test(text)) return "Scanning history";
-    if (/ownership|bvi|holding/.test(text)) return "Reviewing ownership";
-    if (/report/.test(text)) return "Writing report";
-    if (/investigate/.test(text)) return "Investigating";
-    if (/answer|follow-up|checking/.test(text)) return "Answering";
-    return "Working";
+    var status = resolveBubbleStatus();
+    if (status.idle) return "Idle";
+    return status.label || "Idle";
   }
 
   function renderFeed() {
@@ -514,8 +759,15 @@
   }
 
   function syncComposerHeight() {
-    /* Tall chat/home composers size the field via CSS — clear any leftover inline height. */
-    if (input) input.style.height = "";
+    if (!input) return;
+    var inChat = chatSlot && composer.parentElement === chatSlot;
+    if (!inChat) {
+      input.style.height = "";
+      return;
+    }
+    /* Compact single-row chat composer (Figma 1512:90269) grows with typed lines. */
+    input.style.height = "22px";
+    input.style.height = Math.min(input.scrollHeight, 132) + "px";
   }
 
   function showChat() {
@@ -528,6 +780,7 @@
     if (chatSlot && composer.parentElement !== chatSlot) chatSlot.appendChild(composer);
     syncComposerHeight();
     syncPanelToggle();
+    stick(true);
   }
 
   function showHome() {
@@ -544,14 +797,109 @@
       var cards = homeView.querySelector(".d4-cards");
       homeView.insertBefore(composer, cards);
     }
+    setChatTitle("Chat");
+    convo.awaitingCountry = false;
     syncComposerHeight();
   }
 
-  function stick() {
-    thread.scrollTop = thread.scrollHeight;
+  var threadFollows = true;
+  var threadScrolling = false;
+
+  function threadAtBottom() {
+    if (!thread) return true;
+    return thread.scrollHeight - thread.scrollTop - thread.clientHeight <= 48;
   }
 
-  var titleEl = document.querySelector("[data-d4-title]");
+  function stick(force) {
+    if (!thread) return;
+    if (force) threadFollows = true;
+    if (!threadFollows) return;
+    threadScrolling = true;
+    thread.scrollTop = thread.scrollHeight;
+    requestAnimationFrame(function () {
+      if (!thread || !threadFollows) {
+        threadScrolling = false;
+        return;
+      }
+      thread.scrollTop = thread.scrollHeight;
+      requestAnimationFrame(function () {
+        threadScrolling = false;
+      });
+    });
+  }
+
+  if (thread) {
+    thread.addEventListener("scroll", function () {
+      if (threadScrolling) return;
+      threadFollows = threadAtBottom();
+    }, { passive: true });
+    thread.addEventListener("load", function (event) {
+      if (event.target && event.target.tagName === "IMG") stick();
+    }, true);
+    if (window.ResizeObserver) {
+      new ResizeObserver(function () {
+        if (threadFollows) stick();
+      }).observe(thread);
+    }
+  }
+
+  function setChatTitle(label) {
+    if (!titleEl || !label) return;
+    titleEl.textContent = label;
+    if (working) renderFeed();
+  }
+
+  /** Header title from prompt + plan context (Figma: “Verify Meridian Apex…”). */
+  function updateChatTitle(text, plan) {
+    if (!titleEl) return;
+    plan = plan || { parts: [], log: {} };
+    var linksPlanHit = plan.log && /linked|transaction history/i.test(plan.log.title || "");
+    var cand = null;
+    for (var i = 0; i < (plan.parts || []).length; i += 1) {
+      if (plan.parts[i].t === "candidates") {
+        cand = plan.parts[i];
+        break;
+      }
+    }
+
+    if (convo.entity) {
+      setChatTitle(
+        convo.linksShown || linksPlanHit
+          ? "Linked transactions — " + convo.entity.short
+          : "Verify " + convo.entity.name
+      );
+      return;
+    }
+
+    if (cand) {
+      setChatTitle(cand.purpose === "links" ? "Search transaction history" : "Verify Meridian");
+      return;
+    }
+
+    if (plan.log && plan.log.title === "Start a new verification") {
+      setChatTitle("Start a new verification");
+      return;
+    }
+
+    var company = namedCompany(text || "");
+    var intent = intentOf(text || "");
+    if (company) {
+      setChatTitle(intent === "links" ? "Linked transactions — " + company.short : "Verify " + company.name);
+      return;
+    }
+    if (/meridian/i.test(text || "")) {
+      setChatTitle(intent === "links" || /transaction/i.test(text) ? "Search transaction history" : "Verify Meridian");
+      return;
+    }
+    if (intent === "links" || /transaction history/i.test(text || "")) {
+      setChatTitle("Search transaction history");
+      return;
+    }
+
+    var cleaned = String(text || "").replace(/\s+/g, " ").trim();
+    if (!cleaned) return;
+    setChatTitle(cleaned.length > 52 ? cleaned.slice(0, 49) + "…" : cleaned);
+  }
 
   function clone(name) {
     var tpl = document.querySelector('[data-d4-tpl="' + name + '"]');
@@ -559,7 +907,12 @@
   }
 
   function place(node) {
-    thread.appendChild(node);
+    /* Keep “Continue your investigation” at the end of the thread. */
+    if (suggest && suggest.parentElement === thread) {
+      thread.insertBefore(node, suggest);
+    } else {
+      thread.appendChild(node);
+    }
     stick();
     return node;
   }
@@ -569,9 +922,7 @@
     if (!node) return;
     node.querySelector("p").textContent = text;
     place(node);
-    if (titleEl && titleEl.textContent === "Chat") {
-      titleEl.textContent = text.length > 48 ? text.slice(0, 45) + "…" : text;
-    }
+    stick(true);
   }
 
   function addText(part) {
@@ -611,18 +962,38 @@
     });
   }
 
+  function prepareReadyThread() {
+    /* Keep prior chat (user, AI, match row) for scrollback — only drop loaders. */
+    thread.querySelectorAll(".d4-dots-load, .d1-thinking, [data-d4-kyb-starting]").forEach(function (el) {
+      el.remove();
+    });
+  }
+
   function addReport(company) {
     reportCompany = company;
     settleStartingVerification();
+    var hit = candState.selectedHit;
+    prepareReadyThread();
+    finishReportSkeleton();
     var node = clone("report");
     if (!node) return;
     node.querySelector("[data-d4-co]").textContent = company.name;
-    var tag = node.querySelector("[data-d4-report-tag]");
-    tag.textContent = company.tag;
-    tag.className = "d1-tag d1-tag--" + (company.tone === "positive" ? "positive" : "review");
+    var readyName = node.querySelector("[data-d4-ready-name]");
+    var readyAddr = node.querySelector("[data-d4-ready-addr]");
+    var readyReg = node.querySelector("[data-d4-ready-reg]");
+    if (readyName) readyName.textContent = hit ? hit.name : company.name;
+    if (readyAddr) readyAddr.textContent = hit ? hit.addr : company.addr;
+    if (readyReg) readyReg.textContent = hit ? hit.reg : company.reg;
     node.querySelector("[data-d4-sum-a]").textContent = company.sumA;
     node.querySelector("[data-d4-sum-b]").textContent = company.sumB;
     place(node);
+    if (!drawer || drawer.hidden) openDrawer("report");
+    else {
+      syncReportHead();
+      syncReadyCard();
+    }
+    if (suggest && suggest.classList.contains("is-on")) mountSuggestionsHost();
+    stick();
   }
 
   function addTable(part) {
@@ -640,59 +1011,162 @@
     return null;
   }
 
-  function candFilters(list) {
-    var countries = {};
-    list.forEach(function (c) {
-      countries[c.country] = (countries[c.country] || 0) + 1;
+  function hitById(id) {
+    for (var i = 0; i < MATCH_HITS.length; i += 1) {
+      if (MATCH_HITS[i].id === id) return MATCH_HITS[i];
+    }
+    return null;
+  }
+
+  function mockCompanyFromHit(hit) {
+    var short = hit.name.replace(
+      /\s+(LLC|LTD|Ltd\.?|Inc\.?|Co\.?|Pty Ltd)\.?$/i,
+      ""
+    );
+    var strong = hit.match >= 85;
+    return {
+      id: hit.id,
+      short: short || hit.name,
+      name: hit.name,
+      country: hit.country,
+      status: "Active",
+      reg: hit.reg,
+      addr: hit.addr,
+      brief: hit.match + "% name match · " + hit.country,
+      lead:
+        hit.name +
+        " is a registry match in " +
+        hit.country +
+        " — " +
+        hit.reg +
+        ", filed at " +
+        hit.addr +
+        ".",
+      ask: "I'll run the full KYB check on that entity now.",
+      sumA: hit.name + " is an active " + hit.country + " company.",
+      sumB: strong
+        ? "Nothing in your other transactions ties this entity to Daniel Reyes, the shared device, or account ••4417."
+        : "The name match is only moderate — confirm the registration number before you treat this as the same business.",
+      tag: strong ? "Verified" : "Needs review",
+      tone: strong ? "positive" : "review",
+      done: strong ? "Verified — registry match" : "Needs review — confirm entity",
+      calls: [
+        {
+          label: "Matching against the " + hit.country + " registry",
+          done: "Matched on " + hit.reg,
+          panel: "Matching " + hit.reg,
+          ms: 1300,
+          detail: [hit.reg + " — status active", "Filed at " + hit.addr]
+        },
+        {
+          label: "Confirming the filed address",
+          done: "Filed address matches",
+          panel: hit.addr,
+          ms: 1200,
+          detail: [hit.addr]
+        },
+        {
+          label: "Scanning your transaction history for links",
+          done: "No connected transactions",
+          panel: "No link to Daniel Reyes or account ••4417",
+          ms: 1400,
+          detail: ["No connection to Daniel Reyes, device 235252021, or account ••4417"]
+        }
+      ],
+      facts: {
+        director: "The local filing lists its own officers. None of them overlap with Meridian Apex Consulting Ltd. in the demo dataset.",
+        onboard: strong
+          ? "This record looks clean in the demo dataset. Standard documentation would be enough."
+          : "Before onboarding, confirm the registration number and request proof that this is the entity on the application.",
+        address: hit.addr + " — the filed address on this match.",
+        sanctions: "No officer returned a sanctions match."
+      },
+      suggestions: [
+        { q: "How is this different from Meridian Apex?" },
+        { q: "Who is the listed director?" },
+        { q: "What should I request before onboarding?" }
+      ]
+    };
+  }
+
+  function companyFromHit(hit) {
+    if (!hit) return null;
+    var base = hit.companyId ? companyById(hit.companyId) : null;
+    if (base) {
+      return Object.assign({}, base, {
+        name: hit.name,
+        country: hit.country,
+        reg: hit.reg,
+        addr: hit.addr,
+        short: hit.name.replace(/\s+(LLC|LTD|Ltd\.?|Inc\.?|Co\.?|Pty Ltd)\.?$/i, "") || base.short
+      });
+    }
+    return mockCompanyFromHit(hit);
+  }
+
+  function hitMatchesPlace(hit, fid) {
+    if (fid.indexOf("city:") === 0) return hit.city === fid.slice(5);
+    if (fid.indexOf("region:") === 0) return hit.region === fid.slice(7);
+    return false;
+  }
+
+  function facetsFromHits(hits) {
+    var cityN = {};
+    var regionN = {};
+    hits.forEach(function (hit) {
+      if (hit.city) cityN[hit.city] = (cityN[hit.city] || 0) + 1;
+      if (hit.region) regionN[hit.region] = (regionN[hit.region] || 0) + 1;
     });
-    var filters = Object.keys(countries).map(function (country) {
-      return { id: "cc:" + country, label: country, kind: "country", country: country };
+    var facets = [];
+    Object.keys(regionN).sort().forEach(function (region) {
+      facets.push({
+        id: "region:" + region,
+        label: cityN[region] ? region + " (state)" : region,
+        n: regionN[region]
+      });
     });
-    filters.push({ id: "active", label: "Active only", kind: "active" });
-    return filters;
+    Object.keys(cityN).sort().forEach(function (city) {
+      facets.push({
+        id: "city:" + city,
+        label: city,
+        n: cityN[city]
+      });
+    });
+    return facets;
   }
 
   function visibleCandidates() {
     var list = candState.list.slice();
-    candState.filterIds.forEach(function (fid) {
-      if (fid === "active") {
-        list = list.filter(function (c) { return c.status === "Active"; });
-        return;
-      }
-      if (fid.indexOf("cc:") === 0) {
-        var country = fid.slice(3);
-        list = list.filter(function (c) { return c.country === country; });
-      }
+    if (!candState.filterIds.length) return list;
+    return list.filter(function (hit) {
+      return candState.filterIds.some(function (fid) {
+        return hitMatchesPlace(hit, fid);
+      });
     });
-    return list;
   }
 
-  function facetCount(filter, list) {
-    if (filter.kind === "active") {
-      return list.filter(function (c) { return c.status === "Active"; }).length;
-    }
-    return list.filter(function (c) { return c.country === filter.country; }).length;
-  }
-
-  function candidateCardHtml(c) {
-    var statusOk = c.status === "Active";
+  function matchRowHtml(hit, opts) {
+    opts = opts || {};
+    var tag = opts.staticRow ? "div" : "button";
+    var open =
+      "<" +
+      tag +
+      (opts.staticRow
+        ? ' class="d4-match__row d4-match__row--static"'
+        : ' type="button" class="d4-match__row" data-d4-cand="' + esc(hit.id) + '"') +
+      ">";
     return (
-      '<button type="button" class="ai-cand" data-d4-cand="' + esc(c.id) + '">' +
-      '<span class="ai-cand__head">' +
-      '<span class="ai-cand__name">' + esc(c.name) + "</span>" +
-      '<span class="ai-cand__go" aria-hidden="true">' + CAND_GO_SVG + "</span>" +
+      open +
+      '<img class="d4-match__thumb" src="' + esc(hit.thumb) + '" alt="" width="54" height="54"' +
+      ' onerror="this.onerror=null;this.src=\'' + MATCH_THUMB_FALLBACK + "'\">" +
+      '<span class="d4-match__meta">' +
+      '<span class="d4-match__name">' + esc(hit.name) + "</span>" +
+      '<span class="d4-match__addr">' + esc(hit.addr) + "</span>" +
+      '<span class="d4-match__reg">' + esc(hit.reg) + "</span>" +
       "</span>" +
-      '<span class="ai-cand__facts">' +
-      '<span class="ai-cand__fact"><b>Jurisdiction</b>' + esc(c.country) + "</span>" +
-      '<span class="ai-cand__fact"><b>Status</b>' +
-      '<span class="ai-cand__status ai-cand__status--' + (statusOk ? "ok" : "off") + '">' +
-      esc(c.status || "—") +
-      "</span></span>" +
-      '<span class="ai-cand__fact ai-cand__fact--wide"><b>Registration</b>' + esc(c.reg) + "</span>" +
-      '<span class="ai-cand__fact ai-cand__fact--wide"><b>Address</b>' + esc(c.addr || "—") + "</span>" +
-      "</span>" +
-      (c.brief ? '<span class="ai-cand__note">' + esc(c.brief) + "</span>" : "") +
-      "</button>"
+      '<span class="d4-match__badge d4-match__badge--' + esc(hit.tone) + '">' +
+      esc(String(hit.match)) + "% match</span>" +
+      "</" + tag + ">"
     );
   }
 
@@ -700,96 +1174,140 @@
     if (!candState.root) return;
     candState.mode = "list";
     candState.pending = null;
-    var filters = candFilters(candState.list);
+    candState.selectedHit = null;
+    candState.useDotsLoad = false;
     var list = visibleCandidates();
-    var countries = {};
-    list.forEach(function (c) { countries[c.country] = 1; });
-    var nCountries = Object.keys(countries).length;
-    var filtered = candState.filterIds.length > 0;
+    var pageCount = Math.max(1, Math.ceil(list.length / MATCH_PAGE_SIZE));
+    if (candState.page >= pageCount) candState.page = pageCount - 1;
+    if (candState.page < 0) candState.page = 0;
+    var start = candState.page * MATCH_PAGE_SIZE;
+    var pageRows = list.slice(start, start + MATCH_PAGE_SIZE);
+    var rangeStart = list.length ? start + 1 : 0;
+    var rangeEnd = start + pageRows.length;
+    var totalLabel = candState.filterIds.length ? list.length : candState.list.length;
+    var facets = candState.facets || [];
 
-    var chips = filters.map(function (f) {
+    var chips = facets.map(function (f) {
       var on = candState.filterIds.indexOf(f.id) !== -1;
-      var n = facetCount(f, candState.list);
       return (
-        '<button type="button" class="ai-chip' + (on ? " ai-chip--on" : "") +
-        '" data-d4-cand-filter="' + esc(f.id) + '"' +
-        (n === 0 && !on ? " disabled" : "") + ">" +
-        esc(f.label) +
-        '<span class="ai-chip__n">' + n + "</span></button>"
+        '<button type="button" class="d4-match__chip' + (on ? " is-on" : "") +
+        '" data-d4-cand-filter="' + esc(f.id) + '">' +
+        '<span class="d4-match__chip-label">' + esc(f.label) + "</span>" +
+        '<span class="d4-match__chip-n">' + f.n + "</span>" +
+        "</button>"
       );
     }).join("");
 
-    var forLinks = candState.purpose === "links";
-    var lead =
-      list.length === 0
-        ? "No matches for these filters."
-        : list.length === 1
-          ? "One match left."
-          : filtered
-            ? list.length + " matches across " + nCountries + (nCountries === 1 ? " country" : " countries") + "."
-            : 'Which “Meridian” should I check?';
+    var rows =
+      pageRows.length > 0
+        ? pageRows.map(function (hit) {
+            return matchRowHtml(hit);
+          }).join("")
+        : '<p class="d4-match__empty">No matches in this city or state. Clear a filter to see results again.</p>';
 
-    var sub =
-      list.length === 0
-        ? "Clear a filter to see candidates again."
-        : list.length === 1
-          ? forLinks
-            ? "Open it to search your transaction history."
-            : "Open it to run the KYB check."
-          : filtered
-            ? forLinks
-              ? "Narrow further, or open a card to search linked transactions."
-              : "Narrow further, or open a card to run the KYB check."
-            : list.length +
-              " legal entities share this name across " +
-              nCountries +
-              (nCountries === 1 ? " country" : " countries") +
-              ". They are unrelated companies, so picking the wrong one would attach " +
-              (forLinks
-                ? "linked transactions to the wrong business."
-                : "ownership, registration and sanctions results to the wrong business.");
+    var prevDisabled = candState.page <= 0;
+    var nextDisabled = candState.page >= pageCount - 1;
 
     candState.root.innerHTML =
-      '<div class="ai-reply">' +
-      '<p class="ai-reply__lead">' + lead + "</p>" +
-      '<p class="ai-reply__sub">' + sub + "</p>" +
-      "</div>" +
-      '<div class="ai-chips">' + chips + "</div>" +
-      '<div class="ai-cands">' + list.map(candidateCardHtml).join("") + "</div>";
+      '<div class="d4-match">' +
+      '<div class="d4-match__orb" aria-hidden="true"></div>' +
+      '<div class="d4-match__card">' +
+      '<p class="d4-match__title">Which “Meridian” should I investigate?</p>' +
+      '<div class="d4-match__chips">' + chips + "</div>" +
+      '<div class="d4-match__list">' + rows + "</div>" +
+      '<div class="d4-match__foot">' +
+      '<p class="d4-match__range">' + rangeStart + "-" + rangeEnd + " of " + totalLabel + "</p>" +
+      '<div class="d4-match__pager">' +
+      '<button type="button" class="d4-match__page" data-d4-cand-page="-1"' +
+      (prevDisabled ? " disabled" : "") +
+      ' aria-label="Previous page">' +
+      '<img src="assets/icons/chevron-left.svg" alt="" width="16" height="16">' +
+      "</button>" +
+      '<button type="button" class="d4-match__page d4-match__page--next" data-d4-cand-page="1"' +
+      (nextDisabled ? " disabled" : "") +
+      ' aria-label="Next page">' +
+      '<img src="assets/icons/chevron-left.svg" alt="" width="16" height="16">' +
+      "</button>" +
+      "</div></div></div></div>";
     stick();
   }
 
-  function showConfirmStep(company) {
-    if (!company || !candState.root) return;
-    candState.mode = "confirm";
-    candState.pending = company;
-    var forLinks = candState.purpose === "links";
+  /* Figma 1479:84540 — selected business: title + Change + single row. */
+  function paintSelectedCandidate(hit) {
+    if (!candState.root || !hit) return;
+    candState.mode = "selected";
+    candState.selectedHit = hit;
+    candState.pending = companyFromHit(hit);
     candState.root.innerHTML =
-      '<p class="ai-said">' + esc(company.name) + "</p>" +
-      '<div class="ai-reply">' +
-      '<p class="ai-reply__lead">' +
-      (forLinks ? "Search transactions linked to " : "Run a KYB check on ") +
-      esc(company.name) +
-      "?</p>" +
-      '<p class="ai-reply__sub">' + esc(company.country) + " · " + esc(company.reg) + "</p>" +
+      '<div class="d4-match d4-match--selected">' +
+      '<div class="d4-match__card">' +
+      '<div class="d4-match__head">' +
+      '<p class="d4-match__title">Which “Meridian” should I investigate?</p>' +
+      '<button type="button" class="d4-match__change" data-d4-cand-change>Change</button>' +
       "</div>" +
-      '<div class="ai-confirm">' +
-      '<button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d4-cand-confirm="yes">Confirm</button>' +
-      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-d4-cand-confirm="no">Cancel</button>' +
-      "</div>";
+      '<div class="d4-match__list">' + matchRowHtml(hit, { staticRow: true }) + "</div>" +
+      "</div></div>";
     stick();
+  }
+
+  function clearAfterCandidates() {
+    if (!candState.root) return;
+    var el = candState.root.nextElementSibling;
+    while (el) {
+      var next = el.nextElementSibling;
+      if (
+        el.classList.contains("d1-turn") ||
+        el.classList.contains("d4-dots-load") ||
+        el.classList.contains("d1-thinking") ||
+        el.classList.contains("d1-block") ||
+        el.hasAttribute("data-d4-dots-load")
+      ) {
+        el.remove();
+        el = next;
+        continue;
+      }
+      break;
+    }
+  }
+
+  function changeSelectedCandidate() {
+    runId += 1;
+    setBusy(false);
+    clearAfterCandidates();
+    if (working && working.title && working.title.indexOf("Investigate") === 0) {
+      archiveWorking();
+    }
+    var doc = reportDoc();
+    if (doc) {
+      doc.classList.remove("is-loading");
+      doc.querySelectorAll("[data-d4-reveal]").forEach(function (el) {
+        el.classList.remove("is-in");
+      });
+    }
+    closeDrawer();
+    paintCandidateList();
+    ensureAwaitingInput({
+      title: "Resolve “Meridian”",
+      detail: "Waiting for you to confirm the entity",
+      drop: false
+    });
   }
 
   function addCandidates(part) {
     var wrap = document.createElement("div");
-    wrap.className = "d1-ai d1-enter d4-cand-panel";
+    wrap.className = "d1-enter d4-cand-panel";
     place(wrap);
     candState.root = wrap;
-    candState.list = (part.list || MERIDIANS).slice();
+    candState.list = (part.list || MATCH_HITS).slice();
+    candState.facets = facetsFromHits(candState.list);
     candState.filterIds = [];
+    candState.country = part.country || "";
     candState.purpose = part.purpose || "kyb";
     candState.pending = null;
+    candState.selectedHit = null;
+    candState.useDotsLoad = false;
     candState.mode = "list";
+    candState.page = 0;
     paintCandidateList();
   }
 
@@ -797,6 +1315,8 @@
     for (var i = 0; i < plan.parts.length; i += 1) {
       var part = plan.parts[i];
       if (part.t === "text") {
+        /* Match-select flow: user bubble → dots loader → report (Figma 1479:84540). */
+        if (candState.useDotsLoad) continue;
         /* Starting-verification row already carries the orb — don't stack another. */
         var ok;
         if (document.querySelector("[data-d4-kyb-starting]")) {
@@ -807,18 +1327,18 @@
         if (!ok) return false;
         addText(part);
       } else if (part.t === "tools") {
-        var finished = await playTools(part, id);
+        var finished = candState.useDotsLoad
+          ? await playDotsLoad(part, id)
+          : await playTools(part, id);
         if (!finished) return false;
       } else if (part.t === "report") {
-        addReport(part.company);
-        finishWork(plan.log.done);
-        today.unshift({
+        beginWork({
           title: "Generate verification report",
-          detail: "Created for " + part.company.short,
-          time: clockTime(),
+          detail: "Writing the verification report",
           icon: "memo"
         });
-        renderFeed();
+        addReport(part.company);
+        finishWork("Created for " + part.company.short, "memo");
         plan.log.settled = true;
       } else if (part.t === "table") {
         addTable(part);
@@ -831,17 +1351,29 @@
     return true;
   }
 
-  async function runConfirmedCompany(company) {
+  async function selectCandidate(hit) {
+    var company = companyFromHit(hit);
+    if (!company || busy || !hit) return;
+    paintSelectedCandidate(hit);
+    addUser(company.name);
+    await runConfirmedCompany(company, { fromMatch: true });
+  }
+
+  async function runConfirmedCompany(company, opts) {
     if (!company || busy) return;
+    opts = opts || {};
     setSuggestions([]);
     if (working && working.title.indexOf("Resolve") === 0) {
       finishWork("Confirmed with you");
     }
-    if (candState.root) {
+    var fromMatch = !!opts.fromMatch && !!candState.root;
+    if (!fromMatch && candState.root) {
       candState.root.remove();
       candState.root = null;
       candState.pending = null;
+      candState.selectedHit = null;
       candState.mode = "list";
+      candState.useDotsLoad = false;
     }
     convo.entity = company;
     var wantLinks = convo.pendingLinks || candState.purpose === "links";
@@ -854,19 +1386,28 @@
       convo.linksShown = false;
       plan = investigatePlan(company);
     }
+    setChatTitle(wantLinks ? "Linked transactions — " + company.short : "Verify " + company.name);
     var id = ++runId;
     setBusy(true);
     setTruAIBoth({ state: "thinking" });
-    playStartingVerification(company);
+    candState.useDotsLoad = fromMatch;
+    if (!fromMatch) playStartingVerification(company);
     beginWork(plan.log);
     try {
       var ok = await playPlan(plan, id);
       if (!ok || id !== runId) return;
       if (!plan.log.hold && !plan.log.settled) finishWork(plan.log.done);
-      setSuggestions(plan.suggestions);
+      setSuggestions(fromMatch ? READY_SUGGESTIONS : plan.suggestions);
     } finally {
       settleStartingVerification();
-      if (id === runId) setBusy(false);
+      document.querySelectorAll("[data-d4-dots-load]").forEach(function (node) {
+        node.remove();
+      });
+      candState.useDotsLoad = false;
+      if (id === runId) {
+        setBusy(false);
+        syncTruAIBubble();
+      }
     }
   }
 
@@ -884,8 +1425,96 @@
     return ok;
   }
 
+  /* Soft organic dots grid (replaces progress bar after match select). */
+  function dotsLoadHtml() {
+    var cols = 14;
+    var rows = 10;
+    var cx = (cols - 1) / 2;
+    var cy = (rows - 1) / 2;
+    var dots = "";
+    var r;
+    var c;
+    for (r = 0; r < rows; r += 1) {
+      for (c = 0; c < cols; c += 1) {
+        /* Soft ellipse mask — denser center, feathered edges. */
+        var nx = (c - cx) / (cx + 0.01);
+        var ny = (r - cy) / (cy + 0.01);
+        var dist = Math.sqrt(nx * nx * 0.72 + ny * ny);
+        if (dist > 1.05) continue;
+        var edge = Math.max(0, Math.min(1, (1.05 - dist) / 0.45));
+        var delay = (r * 0.7 + c) * 0.04 + dist * 0.12;
+        dots +=
+          '<span class="d4-dots-load__dot" style="grid-column:' +
+          (c + 1) +
+          ";grid-row:" +
+          (r + 1) +
+          ";--edge:" +
+          edge.toFixed(3) +
+          ";animation-delay:-" +
+          delay.toFixed(2) +
+          's"></span>';
+      }
+    }
+    return (
+      '<div class="d4-match__orb" aria-hidden="true"></div>' +
+      '<div class="d4-dots-load__stage" aria-hidden="true">' +
+      '<div class="d4-dots-load__grid" style="--cols:' +
+      cols +
+      ";--rows:" +
+      rows +
+      '">' +
+      dots +
+      "</div></div>"
+    );
+  }
+
+  async function playDotsLoad(part, id) {
+    settleStartingVerification();
+    document.querySelectorAll("[data-d4-dots-load]").forEach(function (n) {
+      n.remove();
+    });
+    var node = document.createElement("div");
+    node.className = "d4-dots-load d1-enter";
+    node.setAttribute("role", "status");
+    node.setAttribute("aria-live", "polite");
+    node.setAttribute("aria-label", part.label || "Investigating");
+    node.setAttribute("data-d4-dots-load", "");
+    node.innerHTML = dotsLoadHtml();
+    place(node);
+
+    if (convo.entity) startReportSkeleton(convo.entity);
+    syncTruAIBubble();
+
+    var calls = part.calls || [];
+    var totalMs = 0;
+    calls.forEach(function (c) {
+      totalMs += c.ms || 1100;
+    });
+    var revealRun = revealReportDuring(totalMs, id);
+
+    for (var i = 0; i < calls.length; i += 1) {
+      noteWork(calls[i].panel || calls[i].label);
+      var ok = await wait(reduced ? 40 : calls[i].ms || 1100, id);
+      if (!ok) {
+        node.remove();
+        return false;
+      }
+    }
+    var revealed = await revealRun;
+    if (!revealed) {
+      node.remove();
+      return false;
+    }
+    finishReportSkeleton();
+    node.remove();
+    return true;
+  }
+
   async function playTools(part, id) {
     settleStartingVerification();
+    if (convo.entity && part.label === "Investigating") {
+      startReportSkeleton(convo.entity);
+    }
     var node = clone("tools");
     if (!node) return false;
     var label = node.querySelector("[data-d4-tools-label]");
@@ -895,6 +1524,18 @@
     var steps = node.querySelector("[data-d4-steps]");
     label.textContent = part.label;
     place(node);
+
+    var doc = reportDoc();
+    var revealFields = doc
+      ? Array.prototype.slice.call(doc.querySelectorAll("[data-d4-reveal]"))
+      : [];
+    var revealAt = 0;
+    function revealNext() {
+      if (revealAt < revealFields.length) {
+        revealFields[revealAt].classList.add("is-in");
+        revealAt += 1;
+      }
+    }
 
     var rows = [];
     for (var i = 0; i < part.calls.length; i += 1) {
@@ -920,6 +1561,7 @@
       pct.textContent = Math.round((i / part.calls.length) * 100) + "%";
       fill.style.width = pct.textContent;
       stick();
+      revealNext();
 
       var lines = call.detail || [];
       var slice = lines.length ? call.ms / (lines.length + 1) : call.ms;
@@ -931,6 +1573,7 @@
         if (call.hit === j) line.className = "d1-activity__hit";
         detail.appendChild(line);
         stick();
+        revealNext();
       }
       var doneWait = await wait(slice, id);
       if (!doneWait) return false;
@@ -945,6 +1588,13 @@
       stick();
     }
 
+    while (revealAt < revealFields.length) {
+      revealNext();
+      var more = await wait(reduced ? 20 : 300, id);
+      if (!more) return false;
+    }
+    if (convo.entity && part.label === "Investigating") finishReportSkeleton();
+
     label.textContent = part.doneLabel || "Investigation complete";
     fill.classList.add("d1-progress__fill--done");
     if (check) check.hidden = false;
@@ -952,14 +1602,25 @@
     return true;
   }
 
-  function setSuggestions(items) {
+  function mountSuggestionsHost() {
+    if (!suggest || !thread) return;
+    /* Figma 1523:92602 — suggestions sit inside the ready column (32px gap). */
+    var ready = thread.querySelector(".d4-report-ready");
+    var host = ready || thread;
+    if (suggest.parentElement !== host) host.appendChild(suggest);
+  }
+
+  function setSuggestions(items, headingText) {
+    if (!suggest) return;
     suggest.innerHTML = "";
     if (!items || !items.length) {
       suggest.classList.remove("is-on");
+      if (suggest.parentElement !== thread) thread.appendChild(suggest);
+      syncTruAIBubble();
       return;
     }
     var heading = document.createElement("h2");
-    heading.textContent = "Continue your investigation";
+    heading.textContent = headingText || "Continue your investigation";
     suggest.appendChild(heading);
     items.forEach(function (item) {
       var btn = document.createElement("button");
@@ -968,19 +1629,40 @@
       var label = document.createElement("span");
       label.textContent = item.q;
       btn.appendChild(label);
+      var iconWrap = document.createElement("span");
+      iconWrap.className = "d1-suggest-row__icon";
+      iconWrap.setAttribute("aria-hidden", "true");
       var icon = document.createElement("img");
       icon.src = "assets/icons/arrow-right.svg";
       icon.alt = "";
       icon.width = 16;
       icon.height = 16;
-      btn.appendChild(icon);
+      iconWrap.appendChild(icon);
+      btn.appendChild(iconWrap);
       suggest.appendChild(btn);
     });
     suggest.classList.add("is-on");
+    mountSuggestionsHost();
+    stick();
+    /* Report is done — don’t start another Working now spinner. */
+    if (thread && thread.querySelector(".d4-report-ready")) {
+      if (working) {
+        working = null;
+        renderFeed();
+      } else {
+        syncTruAIBubble();
+      }
+      return;
+    }
+    ensureAwaitingInput({
+      detail: "Waiting for you to continue",
+      drop: true
+    });
   }
 
   async function respond(text) {
     var plan = planReply(text);
+    updateChatTitle(text, plan);
     var id = ++runId;
     setBusy(true);
     setSuggestions([]);
@@ -999,9 +1681,12 @@
       var ok = await playPlan(plan, id);
       if (!ok || id !== runId) return;
       if (!plan.log.hold && !plan.log.settled) finishWork(plan.log.done);
-      setSuggestions(plan.suggestions);
+      setSuggestions(plan.suggestions, plan.suggestHeading);
     } finally {
-      if (id === runId) setBusy(false);
+      if (id === runId) {
+        setBusy(false);
+        syncTruAIBubble();
+      }
     }
   }
 
@@ -1025,26 +1710,17 @@
   var truaiPanel = null;
   var bubbleThinkTimer = null;
 
-  var ICON_SEARCH =
-    '<img src="assets/icons/magnifying-glass.svg" alt="" width="12" height="12">';
-  var ICON_DOC =
-    '<img src="assets/icons/memo.svg" alt="" width="12" height="12">';
-
-  /** Map demo-4 mini status labels → acting props (icon + ≤2-word label). */
+  /** Map chat phase → TruAI acting props (icon + ≤2-word label). */
   function bubbleActingFromMini() {
-    var label = miniLabel();
-    if (!label || label === "Idle") {
-      return { actingLabel: "Working", actingIconHtml: ICON_SEARCH };
+    var status = resolveBubbleStatus();
+    if (status.idle || !status.label) {
+      return { actingLabel: "", iconHtml: "", idle: true };
     }
-    if (label === "Writing report") {
-      return { actingLabel: label, actingIconHtml: ICON_DOC };
-    }
-    if (label === "Awaiting input") {
-      return { actingLabel: label, actingIconHtml: ICON_SEARCH };
-    }
-    /* Browsing sources, Reviewing filings/ownership, Screening lists,
-       Scanning history, Investigating, Answering, Working, … */
-    return { actingLabel: label, actingIconHtml: ICON_SEARCH };
+    return {
+      actingLabel: status.label,
+      actingIconHtml: status.iconHtml,
+      idle: false
+    };
   }
 
   function setTruAIBoth(props) {
@@ -1060,9 +1736,10 @@
 
   function syncTruAIBubble() {
     if (!truaiBubble && !truaiPanel) return;
-    /* Don’t clobber the completed hold unless new work has already started. */
-    if (truaiState() === "completed" && !working) return;
-    if (!working) {
+    var acting = bubbleActingFromMini();
+    /* Don’t clobber the completed hold unless chat already needs a new status. */
+    if (truaiState() === "completed" && acting.idle) return;
+    if (acting.idle) {
       if (bubbleThinkTimer) {
         clearTimeout(bubbleThinkTimer);
         bubbleThinkTimer = null;
@@ -1070,15 +1747,17 @@
       setTruAIBoth({ state: "idle", actingLabel: "", actingIconHtml: "" });
       return;
     }
-    var acting = bubbleActingFromMini();
     /* Keep a short Thinking… beat before swapping to the acting label. */
     if (truaiState() === "thinking") {
       if (!bubbleThinkTimer) {
         bubbleThinkTimer = setTimeout(function () {
           bubbleThinkTimer = null;
-          if (!working) return;
           if (truaiState() === "completed") return;
           var next = bubbleActingFromMini();
+          if (next.idle) {
+            setTruAIBoth({ state: "idle", actingLabel: "", actingIconHtml: "" });
+            return;
+          }
           setTruAIBoth({
             state: "acting",
             actingLabel: next.actingLabel,
@@ -1100,7 +1779,7 @@
       truaiBubble = window.TruAIBubble.mount(truaiBubbleHost, {
         state: "idle",
         onCompletedEnd: function () {
-          setTruAIBoth({ state: "idle" });
+          syncTruAIBubble();
         }
       });
     }
@@ -1108,7 +1787,7 @@
       truaiPanel = window.TruAIBubble.mountPanel(truaiPanelHost, {
         state: "idle",
         onCompletedEnd: function () {
-          setTruAIBoth({ state: "idle" });
+          syncTruAIBubble();
         }
       });
     }
@@ -1121,9 +1800,17 @@
     document.querySelectorAll("[data-d4-panel-toggle]").forEach(function (btn) {
       btn.setAttribute("aria-pressed", open ? "true" : "false");
     });
+    /* Mini was [hidden] while panel open — remasure pill text after it returns. */
+    if (!open && truaiBubble && typeof truaiBubble.refresh === "function") {
+      requestAnimationFrame(function () {
+        if (mini && !mini.hidden) truaiBubble.refresh();
+      });
+    }
   }
 
   function setPanel(open) {
+    /* Report and the TruAI panel never share the stage — opening one closes the other. */
+    if (open && drawer && !drawer.hidden) closeDrawer();
     panel.hidden = !open;
     syncPanelToggle();
   }
@@ -1180,7 +1867,7 @@
   function startNewVerification() {
     if (busy) return;
     showChat();
-    if (titleEl && titleEl.textContent === "Chat") titleEl.textContent = "Start a new verification";
+    setChatTitle("Start a new verification");
     addText(say("Which business or person should I verify?"));
     beginWork({
       title: "Start a new verification",
@@ -1208,27 +1895,29 @@
   });
 
   thread.addEventListener("click", function (event) {
+    var pageBtn = event.target.closest("[data-d4-cand-page]");
+    if (pageBtn && candState.root && candState.root.contains(pageBtn) && !pageBtn.disabled) {
+      candState.page += Number(pageBtn.getAttribute("data-d4-cand-page")) || 0;
+      paintCandidateList();
+      return;
+    }
     var filterBtn = event.target.closest("[data-d4-cand-filter]");
     if (filterBtn && candState.root && candState.root.contains(filterBtn)) {
       var fid = filterBtn.getAttribute("data-d4-cand-filter");
-      var idx = candState.filterIds.indexOf(fid);
-      if (idx === -1) candState.filterIds.push(fid);
-      else candState.filterIds.splice(idx, 1);
+      /* Single country chip — toggle on/off. */
+      candState.filterIds = candState.filterIds[0] === fid ? [] : [fid];
+      candState.page = 0;
       paintCandidateList();
+      return;
+    }
+    var changeBtn = event.target.closest("[data-d4-cand-change]");
+    if (changeBtn && candState.root && candState.root.contains(changeBtn)) {
+      changeSelectedCandidate();
       return;
     }
     var candBtn = event.target.closest("[data-d4-cand]");
     if (candBtn && candState.root && candState.root.contains(candBtn)) {
-      showConfirmStep(companyById(candBtn.getAttribute("data-d4-cand")));
-      return;
-    }
-    var confirmBtn = event.target.closest("[data-d4-cand-confirm]");
-    if (confirmBtn && candState.root && candState.root.contains(confirmBtn)) {
-      if (confirmBtn.getAttribute("data-d4-cand-confirm") === "yes") {
-        runConfirmedCompany(candState.pending);
-      } else {
-        paintCandidateList();
-      }
+      selectCandidate(hitById(candBtn.getAttribute("data-d4-cand")));
       return;
     }
     var toggle = event.target.closest("[data-d4-activity]");
@@ -1254,7 +1943,7 @@
       vote.setAttribute("aria-pressed", pressed ? "false" : "true");
       return;
     }
-    if (event.target.closest(".d1-alert__view")) {
+    if (event.target.closest(".d1-alert__view, [data-d4-alert-view]")) {
       openDrawer("report");
       return;
     }
@@ -1319,10 +2008,84 @@
     var company = reportCompany;
     if (!company || !docName) return;
     docName.textContent = company.name;
-    var positive = company.tone === "positive";
-    docTag.className = "d1-tag d1-tag--icon d1-tag--" + (positive ? "positive" : "review");
-    docTagIcon.src = positive ? "assets/icons/circle-check.svg" : "assets/icons/warning-amber.svg";
-    docTagLabel.textContent = company.tag;
+    /* Figma 1512:91348 ready report uses Verified on the drawer. */
+    var readyView = !!thread.querySelector(".d4-report-ready");
+    var positive = readyView || company.tone === "positive";
+    if (docTag) {
+      docTag.className = "d1-tag d1-tag--icon d1-tag--" + (positive ? "positive" : "review");
+    }
+    if (docTagIcon) {
+      docTagIcon.src = positive ? "assets/icons/circle-check.svg" : "assets/icons/warning-amber.svg";
+    }
+    if (docTagLabel) docTagLabel.textContent = positive ? "Verified" : company.tag;
+    var countryEl = document.querySelector("[data-d4-doc-country]");
+    if (countryEl) countryEl.textContent = company.country || "United Kingdom";
+  }
+
+  function reportDoc() {
+    return document.querySelector('[data-d4-drawer-view="report"]');
+  }
+
+  function startReportSkeleton(company) {
+    reportCompany = company;
+    var doc = reportDoc();
+    if (doc) {
+      doc.classList.add("is-loading");
+      doc.querySelectorAll("[data-d4-reveal]").forEach(function (el) {
+        el.classList.remove("is-in");
+      });
+    }
+    openDrawer("report");
+    if (drawer && !reduced) {
+      drawer.classList.remove("is-revealing");
+      void drawer.offsetWidth;
+      drawer.classList.add("is-revealing");
+      window.setTimeout(function () {
+        if (drawer) drawer.classList.remove("is-revealing");
+      }, 500);
+    }
+    syncTruAIBubble();
+  }
+
+  function finishReportSkeleton() {
+    var doc = reportDoc();
+    if (!doc) return;
+    doc.querySelectorAll("[data-d4-reveal]").forEach(function (el) {
+      el.classList.add("is-in");
+    });
+    /* Let the last crossfades settle, then show tag/export. */
+    window.setTimeout(
+      function () {
+        doc.classList.remove("is-loading");
+        syncReportHead();
+        syncTruAIBubble();
+      },
+      reduced ? 0 : 320
+    );
+  }
+
+  async function revealReportDuring(totalMs, id) {
+    var doc = reportDoc();
+    if (!doc) return true;
+    var fields = Array.prototype.slice.call(doc.querySelectorAll("[data-d4-reveal]"));
+    if (!fields.length) return true;
+    /* Balanced pace: readable crossfades without dragging. */
+    var duration = Math.max(6500, Math.floor((totalMs || 2400) * 1.55));
+    var step = Math.max(380, Math.floor(duration / fields.length));
+    var i;
+    for (i = 0; i < fields.length; i += 1) {
+      /* Double rAF so the browser paints the skeleton before crossfade. */
+      await new Promise(function (resolve) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(resolve);
+        });
+      });
+      fields[i].classList.add("is-in");
+      var ok = await wait(reduced ? 20 : step, id);
+      if (!ok) return false;
+    }
+    /* Hold so the final field’s fade can finish before chrome appears. */
+    return wait(reduced ? 0 : 360, id);
   }
 
   function showDrawerView(id) {
@@ -1330,9 +2093,7 @@
       view.hidden = view.getAttribute("data-d4-drawer-view") !== id;
     });
     if (id === "report") {
-      document.querySelectorAll("[data-d4-doc-tab]").forEach(function (tab) {
-        tab.setAttribute("aria-selected", tab.getAttribute("data-d4-doc-tab") === "overview" ? "true" : "false");
-      });
+      setDocTab("overview");
       var overview = document.querySelector("[data-d4-doc-panel='overview']");
       var empty = document.querySelector("[data-d4-doc-panel='empty']");
       if (overview) overview.hidden = false;
@@ -1362,6 +2123,23 @@
     });
   }
 
+  function reportDrawerOpen() {
+    return !!(drawer && !drawer.hidden && drawerMode === "report");
+  }
+
+  function syncReadyCard() {
+    var viewing = reportDrawerOpen();
+    thread.querySelectorAll(".d4-report-ready").forEach(function (card) {
+      var entity = card.querySelector(".d4-ready__entity");
+      var btn = card.querySelector("[data-d4-alert-view]");
+      if (entity) entity.classList.toggle("is-viewing", viewing);
+      if (btn) {
+        btn.textContent = viewing ? "Viewing" : "View";
+        btn.setAttribute("aria-pressed", viewing ? "true" : "false");
+      }
+    });
+  }
+
   function openDrawer(kind) {
     if (!drawer) return;
     kind = kind || "report";
@@ -1383,7 +2161,10 @@
     drawer.hidden = false;
     drawer.setAttribute("aria-hidden", "false");
     stage.classList.add("is-report");
-    positionMini();
+    /* Collapsed bubble while the report is open. */
+    setPanel(false);
+    syncReadyCard();
+    window.dispatchEvent(new Event("resize"));
   }
 
   function closeDrawer() {
@@ -1401,6 +2182,7 @@
     thread.querySelectorAll("tr[data-d4-tx]").forEach(function (tr) {
       tr.removeAttribute("aria-current");
     });
+    syncReadyCard();
   }
 
   function toggleDrawerExpand() {
@@ -1415,18 +2197,55 @@
     if (expandIcon) expandIcon.src = drawerExpanded ? "assets/icons/compress.svg" : "assets/icons/expand.svg";
   }
 
+  function setDocTab(id) {
+    document.querySelectorAll("[data-d4-doc-tab]").forEach(function (tab) {
+      var on = tab.getAttribute("data-d4-doc-tab") === id;
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+      tab.classList.toggle("tds-tab-item--active", on);
+    });
+    var overview = document.querySelector("[data-d4-doc-panel='overview']");
+    var empty = document.querySelector("[data-d4-doc-panel='empty']");
+    var showOverview = id === "overview";
+    if (overview) overview.hidden = !showOverview;
+    if (empty) empty.hidden = showOverview;
+  }
+
   document.querySelectorAll("[data-d4-doc-tab]").forEach(function (tab) {
     tab.addEventListener("click", function () {
-      var showOverview = tab.getAttribute("data-d4-doc-tab") === "overview";
-      document.querySelectorAll("[data-d4-doc-tab]").forEach(function (other) {
-        other.setAttribute("aria-selected", other === tab ? "true" : "false");
-      });
-      var overview = document.querySelector("[data-d4-doc-panel='overview']");
-      var empty = document.querySelector("[data-d4-doc-panel='empty']");
-      if (overview) overview.hidden = !showOverview;
-      if (empty) empty.hidden = showOverview;
+      setDocTab(tab.getAttribute("data-d4-doc-tab"));
     });
   });
+
+  function initDocTabsScroll() {
+    document.querySelectorAll("[data-d4-doc-tabs], [data-tabs-scrollable]").forEach(function (tabs) {
+      var list = tabs.querySelector(".tds-tabs__list");
+      var leftBtn = tabs.querySelector('[data-tabs-scroll="left"]');
+      var rightBtn = tabs.querySelector('[data-tabs-scroll="right"]');
+      if (!list || !leftBtn || !rightBtn) return;
+
+      function updateOverflowButtons() {
+        var canScrollLeft = list.scrollLeft > 1;
+        var canScrollRight = list.scrollLeft + list.clientWidth < list.scrollWidth - 1;
+        leftBtn.classList.toggle("tds-tabs__overflow-btn--visible", canScrollLeft);
+        rightBtn.classList.toggle("tds-tabs__overflow-btn--visible", canScrollRight);
+        leftBtn.tabIndex = canScrollLeft ? 0 : -1;
+        rightBtn.tabIndex = canScrollRight ? 0 : -1;
+      }
+
+      leftBtn.addEventListener("click", function () {
+        list.scrollBy({ left: -list.clientWidth * 0.6, behavior: "smooth" });
+      });
+      rightBtn.addEventListener("click", function () {
+        list.scrollBy({ left: list.clientWidth * 0.6, behavior: "smooth" });
+      });
+      list.addEventListener("scroll", updateOverflowButtons, { passive: true });
+      window.addEventListener("resize", updateOverflowButtons);
+      if (typeof ResizeObserver !== "undefined") {
+        new ResizeObserver(updateOverflowButtons).observe(list);
+      }
+      updateOverflowButtons();
+    });
+  }
 
   var drawerClose = document.querySelector("[data-d4-drawer-close]");
   if (drawerClose) drawerClose.addEventListener("click", closeDrawer);
@@ -1436,6 +2255,7 @@
     if (event.key === "Escape" && drawer && !drawer.hidden) closeDrawer();
   });
 
+  initDocTabsScroll();
   renderFeed();
   syncPanelToggle();
 })();
