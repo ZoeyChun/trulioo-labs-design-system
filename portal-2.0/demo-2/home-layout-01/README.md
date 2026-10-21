@@ -15,9 +15,21 @@ js/dot-controls.js      the tweak panel — review tool, not the design
 assets/                 logo mark + the three card thumbnails, exported from the node
 ```
 
-Geometry is verified against the node: hero 760 × 186 at y 215 inside the slot,
-prompt input 60 tall, Quick start 1214 wide at y 583, cards 300 tall. The whole
-page fits 1440 × 1024 without scrolling, as it does in Figma.
+Geometry is verified against the node: hero 760 × 186, prompt input 60 tall,
+Quick start 1214 wide, cards 300 tall.
+
+**The home screen does not scroll.** Figma's fixed vertical offsets (hero at
+y 215, Quick start at y 583) only fit at exactly 1024 tall and pushed the cards
+off the bottom of anything shorter. Instead `.v2-slot` is a flex column where
+the hero's and Quick start's top margins are both `auto`: the free height is
+split evenly between the gap above the hero and the gap below it, and the card
+row always lands on the bottom edge. At 1024 that puts both gaps at 201px —
+within ~15px of the node — and below it the gaps close rather than scrolling.
+Verified at 1024, 900, 800, 700 and 640 tall.
+
+Below ~620px tall, and in the stacked card layout under 900px wide, the slot
+does scroll; there is no height at which both the hero and three full-size
+cards fit. Those two cases have explicit rules rather than collapsed margins.
 
 ## The dot field
 
@@ -106,29 +118,30 @@ boundary looks the same whether the shape is big or small.
 
 ### Config
 
-These are the shipped defaults — two overlapping discs of hex lattice, cleared
-under the hero. That is a chosen composition, not the Figma node; the node
-itself is the **Figma** preset in the panel (`static` + `shape: 'full'`).
+These are the shipped defaults — two overlapping discs of square lattice,
+sitting low and cleared under the hero. That is a chosen composition, not the
+Figma node; the node itself is the **Figma** preset in the panel (`static` +
+`shape: 'full'`).
 
 ```js
 TruDotField.mount(document.getElementById('v2-dots'), {
   style:      'shimmer-twinkle',
-  formation:  'hex',
-  spacing:    36,        // px between dot centres — density
+  formation:  'grid',
+  spacing:    34,        // px between dot centres — density
   size:       2,         // dot radius, px
-  color:      '#8a9a90', // --color-neutral-50, the Figma colour
+  color:      '#587965', // off the Trulioo ramp — listed as "Moss" in the panel
   opacity:    0.55,      // resting alpha
 
   shape:      'pair',    // region mask
-  shapeScale: 1.5,       // 0.25–2, relative to half the shorter side
+  shapeScale: 1.7,       // 0.25–2, relative to half the shorter side
   shapeX:     0.5,       // region centre, fraction of width
-  shapeY:     0.55,      // region centre, fraction of height
+  shapeY:     0.64,      // region centre, fraction of height
   feather:    0.2,       // region edge softness, fraction of its radius
 
   clear:      0.8,       // strength of the hole under the hero, 0–1
   clearSize:  0.47,      // its radius, fraction of the canvas
   clearX:     0.5,       // its centre, fraction of width
-  clearY:     0.30,      // its centre, fraction of height
+  clearY:     0.42,      // its centre, fraction of height
 
   fade:       0.72,      // height fraction at which the field has faded out
 

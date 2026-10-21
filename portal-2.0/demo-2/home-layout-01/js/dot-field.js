@@ -75,9 +75,13 @@
   ];
 
   /* Palette presets. `sage` is the colour sampled from the Figma tiles
-     (--color-neutral-50). The rest are on the Trulioo ramp. */
+     (--color-neutral-50); `moss` is the shipped default and is off the
+     Trulioo ramp — it is listed so the panel's dropdown reflects the
+     live colour instead of silently falling back to Sage. The rest are
+     on the ramp. */
   var COLORS = [
-    { id: 'sage',   label: 'Sage (Figma default)', value: '#8a9a90' },
+    { id: 'moss',   label: 'Moss (default)',       value: '#587965' },
+    { id: 'sage',   label: 'Sage (Figma)',         value: '#8a9a90' },
     { id: 'mist',   label: 'Mist',                 value: '#c5cec8' },
     { id: 'teal',   label: 'Teal',                 value: '#0e8a78' },
     { id: 'forest', label: 'Forest',               value: '#004c45' },
@@ -86,27 +90,27 @@
   ];
 
   /* The shipped look. This is a chosen composition, not the Figma node
-     — two overlapping discs of hex lattice, cleared under the hero.
-     The node itself is the `Figma` preset in the control panel
-     (`static` + `shape: 'full'`), kept there for comparison. */
+     — two overlapping discs of square lattice, sitting low and cleared
+     under the hero. The node itself is the `Figma` preset in the
+     control panel (`static` + `shape: 'full'`), kept for comparison. */
   var DEFAULTS = {
     style:      'shimmer-twinkle',
-    formation:  'hex',
-    spacing:    36,     /* px between dot centres — density */
+    formation:  'grid',
+    spacing:    34,     /* px between dot centres — density */
     size:       2,      /* dot radius in px */
-    color:      '#8a9a90',
+    color:      '#587965',
     opacity:    0.55,   /* base alpha before masks and animation */
 
     shape:      'pair', /* region mask */
-    shapeScale: 1.5,    /* 0.25–2, relative to half the shorter side */
+    shapeScale: 1.7,    /* 0.25–2, relative to half the shorter side */
     shapeX:     0.5,    /* region centre, fraction of width */
-    shapeY:     0.55,   /* region centre, fraction of height */
+    shapeY:     0.64,   /* region centre, fraction of height */
     feather:    0.2,    /* region edge softness, fraction of its radius */
 
     clear:      0.8,    /* strength of the hole under the hero, 0–1 */
     clearSize:  0.47,   /* its radius, fraction of the canvas */
     clearX:     0.5,    /* its centre, fraction of width */
-    clearY:     0.30,   /* its centre, fraction of height */
+    clearY:     0.42,   /* its centre, fraction of height */
 
     fade:       0.72,   /* height fraction where the field has faded out */
 

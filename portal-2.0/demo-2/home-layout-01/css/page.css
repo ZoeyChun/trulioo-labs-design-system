@@ -182,11 +182,26 @@ body {
   pointer-events: none;
 }
 
-/* Slot — node 1476:49459, 16px inset inside the card. The page scrolls
-   here rather than on body, so the card edge stays put. */
+/* Slot — node 1476:49459, 16px inset inside the card.
+
+   A flex column rather than a block: the hero's and Quick start's top
+   margins are both `auto`, so the free height is split evenly between
+   the gap above the hero and the gap below it, and Quick start always
+   lands on the bottom edge. The home screen never scrolls.
+
+   Figma's fixed offsets (hero at y 215, Quick start at y 583) only fit
+   at exactly 1024 tall; anything shorter pushed the cards off the
+   bottom. At 1024 this distribution lands within ~15px of the node,
+   and below that it closes the gaps instead of scrolling.
+
+   Any scrolling that remains — a very short window, or the stacked
+   card layout under 900px wide — happens here rather than on body, so
+   the card edge stays put. */
 .v2-slot {
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   padding: 16px;
   overflow-y: auto;
@@ -200,8 +215,8 @@ body {
 /* ------------------------------------------------------------------
    Hero — node 1476:49506
 
-   760px wide, centred, 215px from the top of the slot; 24px between
-   greeting, prompt and chips.
+   760px wide, centred; 24px between greeting, prompt and chips. The
+   `auto` top margin is half the slot's free height — see .v2-slot.
    ------------------------------------------------------------------ */
 
 .v2-hero {
@@ -209,9 +224,10 @@ body {
   flex-direction: column;
   gap: var(--spacing-24);
   align-items: center;
+  flex: 0 0 auto;
   width: 100%;
   max-width: 760px;
-  margin: 215px auto 0;
+  margin: auto auto 0;
 }
 
 .v2-greeting {
@@ -339,19 +355,20 @@ body {
 /* ------------------------------------------------------------------
    Quick start — node 1476:49530
 
-   1214px wide, 182px below the hero (node y 583 against a hero that
-   ends at 401), 24px between heading and card row.
+   1214px wide, 24px between heading and card row. The `auto` top
+   margin is the other half of the slot's free height, which pins the
+   card row to the bottom edge — see .v2-slot.
    ------------------------------------------------------------------ */
 
 .v2-quick {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-24);
+  flex: 0 0 auto;
   width: 100%;
   max-width: 1214px;
-  margin: 182px auto 0;
-  /* Figma leaves 37px under the card row inside the slot; this keeps a
-     comparable gap while still giving the scroll a resting edge. */
+  margin: auto auto 0;
+  /* Figma leaves 37px under the card row inside the slot. */
   padding-bottom: var(--spacing-32);
 }
 
@@ -451,23 +468,33 @@ body {
 
 
 /* ------------------------------------------------------------------
-   Narrow viewports
+   Narrow and short viewports
 
-   The node is a 1440 desktop frame. These keep it usable below that
-   without inventing a second responsive spec: the hero's top offset
-   collapses first (it is the most expendable space on the page), then
-   the card row wraps.
+   The node is a 1440 × 1024 desktop frame. These keep it usable below
+   that without inventing a second responsive spec. The vertical rhythm
+   needs no breakpoint at all — the auto margins close the gaps as the
+   window shortens, down to roughly 620px tall, which is where the hero
+   and the card row finally meet.
+
+   Below that the autos are exhausted and the slot scrolls. Pinning the
+   hero to a small fixed offset there keeps the scroll predictable
+   rather than leaving it to collapsed margins.
    ------------------------------------------------------------------ */
 
 @media (max-width: 1280px) {
-  .v2-hero  { margin-top: 140px; }
-  .v2-quick { margin-top: 120px; }
-  .v2-slot  { padding: 16px var(--spacing-24); }
+  .v2-slot { padding: 16px var(--spacing-24); }
+}
+
+@media (max-height: 620px) {
+  .v2-hero  { margin-top: var(--spacing-40); }
+  .v2-quick { margin-top: var(--spacing-40); }
 }
 
 @media (max-width: 900px) {
-  .v2-hero  { margin-top: 88px; }
-  .v2-quick { margin-top: 80px; }
+  /* Stacked cards make the page taller than any viewport, so this is
+     the one layout that is expected to scroll. */
+  .v2-hero  { margin-top: var(--spacing-48); }
+  .v2-quick { margin-top: var(--spacing-48); }
   .v2-quick__row { flex-wrap: wrap; }
   .v2-qcard { flex-basis: 100%; }
   .v2-greeting { font-size: var(--font-size-4xl); line-height: 40px; }
