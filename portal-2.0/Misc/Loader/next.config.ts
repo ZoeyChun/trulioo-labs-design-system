@@ -9,6 +9,9 @@ const appRoot = path.dirname(fileURLToPath(import.meta.url));
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   ...(basePath ? { basePath, assetPrefix: basePath } : {}),
   turbopack: {
     root: appRoot,

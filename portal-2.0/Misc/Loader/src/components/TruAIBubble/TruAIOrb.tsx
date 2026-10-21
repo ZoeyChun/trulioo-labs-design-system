@@ -14,8 +14,8 @@ import {
   stepOrb,
 } from "./orbMotion";
 
-/** Figma Icon/Blue-700 — static, never animates. */
-const RING_SRC = "/figma/truai-bubble-orb-ring.svg";
+/** Figma Icon/Blue-700 — static, never animates. Prefix matches GitHub Pages basePath. */
+const RING_SRC = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/figma/truai-bubble-orb-ring.svg`;
 
 type TruAIOrbProps = {
   state: TruAIState;
