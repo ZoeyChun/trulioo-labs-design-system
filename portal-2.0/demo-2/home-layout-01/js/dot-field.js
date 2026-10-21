@@ -96,23 +96,23 @@
   var DEFAULTS = {
     style:      'shimmer-twinkle',
     formation:  'grid',
-    spacing:    34,     /* px between dot centres — density */
+    spacing:    30,     /* px between dot centres — density */
     size:       2,      /* dot radius in px */
     color:      '#587965',
     opacity:    0.55,   /* base alpha before masks and animation */
 
     shape:      'pair', /* region mask */
-    shapeScale: 1.7,    /* 0.25–2, relative to half the shorter side */
+    shapeScale: 1.8,    /* 0.25–2, relative to half the shorter side */
     shapeX:     0.5,    /* region centre, fraction of width */
-    shapeY:     0.64,   /* region centre, fraction of height */
-    feather:    0.2,    /* region edge softness, fraction of its radius */
+    shapeY:     0.61,   /* region centre, fraction of height */
+    feather:    0.34,   /* region edge softness, fraction of its radius */
 
     clear:      0.8,    /* strength of the hole under the hero, 0–1 */
     clearSize:  0.47,   /* its radius, fraction of the canvas */
     clearX:     0.5,    /* its centre, fraction of width */
     clearY:     0.42,   /* its centre, fraction of height */
 
-    fade:       0.72,   /* height fraction where the field has faded out */
+    fade:       0.54,   /* height fraction where the field has faded out */
 
     intensity:  1,      /* animation amplitude, 0–1 */
     speed:      0.4,    /* cycles per second */
