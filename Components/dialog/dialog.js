@@ -21,7 +21,10 @@
   }
 
   function syncBodyScrollLock() {
-    const hasOpenLive = document.querySelector(".tds-dialog:not([hidden]):not(.tds-dialog--inline)");
+    /* Scoped dialogs (e.g. overlay only over a pane) must not lock page/chat scroll. */
+    const hasOpenLive = document.querySelector(
+      ".tds-dialog:not([hidden]):not(.tds-dialog--inline):not(.tds-dialog--scoped)"
+    );
     document.body.classList.toggle("tds-dialog-open", Boolean(hasOpenLive));
   }
 

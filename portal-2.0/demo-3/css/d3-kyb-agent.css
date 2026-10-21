@@ -418,3 +418,76 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+/* KYB dialogs — scoped to workspace (does not cover chat) */
+.d3-workspace .d3-kyb-raw-dialog.tds-dialog,
+.d3-workspace .d3-kyb-details-dialog.tds-dialog {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+}
+
+.d3-kyb-raw-dialog.tds-dialog--scoped .tds-dialog__backdrop,
+.d3-kyb-details-dialog.tds-dialog--scoped .tds-dialog__backdrop {
+  padding: 24px;
+}
+
+.d3-kyb-raw-dialog.tds-dialog--scoped .tds-dialog__panel,
+.d3-kyb-details-dialog.tds-dialog--scoped .tds-dialog__panel {
+  max-height: calc(100% - 48px);
+}
+
+.d3-kyb-raw-dialog .tds-dialog__body {
+  padding: 16px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.d3-kyb-raw-dialog__panel.kyb-json-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-height: 0;
+  max-height: min(657px, calc(100vh - 160px));
+  padding: 24px;
+  background-color: var(--surface-neutral-02, #f4f6f4);
+  border-radius: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.d3-kyb-raw-dialog__panel .kyb-json-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.d3-kyb-raw-dialog__panel .kyb-json-panel__lang {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--text-default, #172d2d);
+  text-transform: lowercase;
+}
+
+.d3-kyb-raw-dialog__panel .kyb-json-panel__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.d3-kyb-raw-dialog__panel .kyb-json-panel__pre {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--text-description, #526660);
+  white-space: pre-wrap;
+  word-break: break-word;
+}

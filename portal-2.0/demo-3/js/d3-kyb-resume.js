@@ -376,6 +376,10 @@
             ? "d1-tag--negative"
             : "d1-tag--positive");
     }
+    /* Populate Owners & UBOs / other report tabs (resume path skips reveal). */
+    if (window.D3KybReport && window.D3KybReport.seedFromName) {
+      window.D3KybReport.seedFromName(name);
+    }
     if (resumeCard && detail) {
       var metaBlocks = resumeCard.querySelectorAll(".d3-workspace__meta > div:not(.d3-workspace__meta-divider)");
       if (metaBlocks[0]) {

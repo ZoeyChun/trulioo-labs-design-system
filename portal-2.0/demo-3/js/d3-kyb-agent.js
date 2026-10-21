@@ -236,7 +236,7 @@
       return { intent: "tab", tab: "signals" };
     }
     if (/raw data|sources/.test(lower)) {
-      return { intent: "tab", tab: /source/.test(lower) ? "sources" : "raw" };
+      return { intent: "tab", tab: /source/.test(lower) ? "signals" : "raw" };
     }
 
     /* “Meridian Capital LLC, United States” / “Acme Inc United Kingdom” */

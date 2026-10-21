@@ -1,9 +1,131 @@
-/* Demo 3 — Ownership / UBO graph (ported from pages/KYB Results). */
+/* Demo 3 — Owners & UBOs tab (Figma 1467:21143). */
 
 .d3-kyb-panel[data-d3-kyb-panel="ownership"] {
-  flex: 1 1 auto;
-  min-height: 0;
-  gap: var(--spacing-16, 16px);
+  gap: var(--spacing-24, 24px);
+  width: 100%;
+  min-width: 0;
+}
+
+.d3-kyb-ownership {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+  width: 100%;
+  min-width: 0;
+}
+
+.d3-kyb-ownership__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.d3-kyb-ownership__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #262933;
+}
+
+.d3-kyb-ownership__view[hidden] {
+  display: none !important;
+}
+
+.d3-kyb-ownership__view[data-d3-kyb-own-panel="table"]:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+  width: 100%;
+  min-width: 0;
+}
+
+.d3-kyb-ownership__table {
+  width: 100%;
+  min-width: 0;
+}
+
+.d3-kyb-ownership__table .tds-data-table thead th {
+  background: var(--surface-neutral-02, #f4f6f4);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-description, #526660);
+}
+
+.d3-kyb-officer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-24, 24px);
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d3-kyb-officer__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #262933;
+}
+
+.d3-kyb-officer__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.d3-kyb-officer__row {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.d3-kyb-officer__field {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.d3-kyb-officer__field--spacer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.d3-kyb-officer__field .d3-kyb-overview__value--ok {
+  color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-officer__field .d3-kyb-overview__value--ok .d3-fa-line {
+  color: var(--icon-positive, #3d8b5e);
+}
+
+@media (max-width: 900px) {
+  .d3-kyb-officer__row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .d3-kyb-officer__field--spacer {
+    display: none;
+  }
+}
+
+.d3-kyb-ownership__view[data-d3-kyb-own-panel="graph"]:not([hidden]) {
+  display: block;
+  width: 100%;
+  min-height: 520px;
 }
 
 .d3-kyb-ubo-graph {

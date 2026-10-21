@@ -1,5 +1,4 @@
-/* Demo 3 — Mount KYB Results Ownership / UBO React graph into the
-   verification report Ownership / UBO panel. */
+/* Demo 3 — Ownership / UBO report panel (table + graph + officers). */
 (function () {
   /* Rich demo tree from pages/KYB Results (Meridian Holdings). */
   var MERIDIAN_HOLDINGS_GRAPH = {
@@ -118,107 +117,83 @@
                 truai:
                   "Director appointed alongside shareholders at a registered-agent address with no verifiable national ID on file.",
                 prompt: "Who is the UBO?",
-                findings: [
-                  "Linked to 2 unscreened entities",
-                  "No verifiable national ID on file"
-                ]
+                findings: ["No verifiable national ID", "Shares registered-agent address with shareholders"]
               }
             }
-          ]
-        },
-        {
-          id: "apex",
-          type: "business",
-          name: "Apex Financial",
-          subtitle: "Subsidiary Company",
-          risk: "medium",
-          details: {
-            status: "Active",
-            statusTone: "positive",
-            fields: [
-              { label: "Country", value: "United States" },
-              { label: "Jurisdiction", value: "Illinois" },
-              { label: "Business Number", value: "88210445" },
-              { label: "Tax ID", value: "88-2104451" }
-            ],
-            truai:
-              "Subsidiary registered in Illinois with two reported beneficial owners and limited public disclosure.",
-            prompt: "Who controls this subsidiary?",
-            findings: [
-              "Connie M. holds 95% ownership",
-              "Sarah Wong listed as UBO with medium risk signals"
-            ]
-          },
-          children: [
-            { id: "connie", type: "person", name: "Connie M.", subtitle: "Owns 95%", risk: "low" },
-            { id: "sarah", type: "person", name: "Sarah Wong", subtitle: "UBO", risk: "medium" }
           ]
         }
       ]
     }
   };
 
-  function clone(value) {
-    return JSON.parse(JSON.stringify(value));
+  var MERIDIAN_TABLE_ROWS = [
+    {
+      name: "James Morton",
+      sub: "Shareholder",
+      pct: "65%",
+      address: "71 Stevenson St, San Francisco",
+      status: "positive",
+      statusLabel: "Clear"
+    },
+    {
+      name: "Walter Decosta",
+      sub: "Shareholder",
+      pct: "35%",
+      address: "71 Stevenson St, San Francisco",
+      status: "negative",
+      statusLabel: "2 more entities connected"
+    }
+  ];
+
+  var MERIDIAN_OFFICER = {
+    givenName: "MARK",
+    surname: "WILLIAMSON",
+    fullName: "MARK WILLIAMSON",
+    nationalId: "123415",
+    dob: "1976-02-12",
+    position: "CHIEF OPERATING OFFICER",
+    designation: "Not provided",
+    type: "Individual",
+    status: "Active",
+    beginDate: "2017-07-18",
+    endDate: "2020-01-12",
+    address1: "1 SW Bow Street, Portland, OR 97005-6453",
+    address1Note: "Primary registered address",
+    address2: "22 CALGARY AVENUE, Suite 400, Calgary, AB",
+    address2Note: "Second address — partially visible, remainder not available"
+  };
+
+  function clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
   }
 
-  function slugId(name, index) {
-    return (
-      "owner-" +
-      index +
-      "-" +
-      String(name || "entity")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "")
-        .slice(0, 24)
-    );
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   function synthesizeFromOwnership(biz) {
-    var owners = (biz.ownership || []).filter(function (row) {
-      return row && row.name && row.pct !== "—";
-    });
-    var children = owners.map(function (owner, index) {
-      var pct = owner.pct || "";
-      var subtitle =
-        pct.indexOf("%") >= 0
-          ? "Owns " + pct
-          : owner.role || owner.note || pct || "Ownership party";
-      return {
-        id: slugId(owner.name, index),
-        type: owner.type === "person" ? "person" : "business",
-        name: owner.name,
-        subtitle: subtitle,
-        risk: owner.flagged ? "high" : null,
-        details: owner.note
-          ? {
-              status: owner.flagged ? "Review" : "Clear",
-              statusTone: owner.flagged ? "negative" : "positive",
-              fields: [
-                { label: "Role", value: owner.role || "—" },
-                { label: "Ownership %", value: owner.pct || "—" },
-                {
-                  label: "Entity type",
-                  value: owner.type === "person" ? "Natural person" : "Corporate"
-                }
-              ],
-              findings: owner.note ? [owner.note] : []
-            }
-          : undefined
-      };
-    });
-
+    var owners = biz.ownership || [];
     return {
+      riskFilter: null,
       tree: {
         id: "root",
         type: "business",
-        name: biz.name || "Root Business",
+        name: biz.name || "Business",
         subtitle: "Root Business",
-        risk: biz.riskLevel === "high" ? "high" : biz.riskLevel === "medium" ? "medium" : null,
-        children: children
-      },
-      riskFilter: null
+        children: owners.map(function (owner, i) {
+          return {
+            id: "owner-" + i,
+            type: owner.type === "corp" ? "business" : "person",
+            name: owner.name,
+            subtitle: owner.pct ? "Owns " + owner.pct : owner.role || "",
+            risk: owner.flagged ? "high" : undefined
+          };
+        })
+      }
     };
   }
 
@@ -226,11 +201,10 @@
     if (!biz) return null;
     if (biz.ownershipGraph && biz.ownershipGraph.tree) {
       return {
-        tree: clone(biz.ownershipGraph.tree),
+        tree: biz.ownershipGraph.tree,
         riskFilter: biz.ownershipGraph.riskFilter || null
       };
     }
-    /* Meridian demo entities get the full KYB Results ownership canvas. */
     if (/meridian/i.test(biz.name || "")) {
       var rich = clone(MERIDIAN_HOLDINGS_GRAPH);
       rich.tree.name = biz.name;
@@ -246,34 +220,230 @@
     return synthesizeFromOwnership(biz);
   }
 
-  function panelMarkup(title) {
+  function tableRowsFromBiz(biz) {
+    if (/meridian/i.test((biz && biz.name) || "")) return MERIDIAN_TABLE_ROWS.slice();
+    var rows = (biz.ownership || []).map(function (owner) {
+      return {
+        name: owner.name || "—",
+        sub: owner.role || owner.note || (owner.type === "corp" ? "Corporate" : "Individual"),
+        pct: owner.pct || "—",
+        address: owner.address || biz.addr || "—",
+        status: owner.flagged ? "negative" : "positive",
+        statusLabel: owner.flagged
+          ? owner.screeningLabel || "Needs review"
+          : owner.screeningLabel || "Clear"
+      };
+    });
+    /* Demo reports opened from resume/recent often lack ownership — never leave the tab blank. */
+    return rows.length ? rows : MERIDIAN_TABLE_ROWS.slice();
+  }
+
+  function officerFromBiz(biz) {
+    if (biz && biz.officer) return biz.officer;
+    return MERIDIAN_OFFICER;
+  }
+
+  function rowMarkup(row) {
+    var tagClass =
+      row.status === "negative" ? "tds-tag--negative" : "tds-tag--positive";
     return (
-      '<div class="d3-kyb-ubo-graph">' +
-      '<h3 class="d3-kyb-ubo-graph__title d3-kyb-overview__title">' +
-      title +
-      "</h3>" +
-      '<div class="kyb-ubo-graph-layout" id="kyb-ubo-graph-fullscreen-root">' +
-      '<div class="kyb-ownership-graph kyb-ubo-graph-layout__canvas" data-kyb-ownership-graph aria-label="Ownership structure graph"></div>' +
-      "</div></div>"
+      "<tr>" +
+      '<td class="tds-data-table__text-cell tds-data-table__text-cell--subtext">' +
+      '<span class="tds-data-table__cell-inner"><span class="tds-data-table__cell-text-stack">' +
+      "<span>" +
+      esc(row.name) +
+      '</span><span class="tds-data-table__cell-subtext">' +
+      esc(row.sub) +
+      "</span></span></span></td>" +
+      '<td class="tds-data-table__text-cell">' +
+      esc(row.pct) +
+      "</td>" +
+      '<td class="tds-data-table__text-cell">' +
+      esc(row.address) +
+      "</td>" +
+      '<td class="tds-data-table__text-cell"><span class="tds-data-table__label-cell">' +
+      '<span class="tds-tag tds-tag--md ' +
+      tagClass +
+      '">' +
+      esc(row.statusLabel) +
+      "</span></span></td>" +
+      "</tr>"
     );
   }
 
-  function mountInto(panel, biz) {
-    if (!panel || !biz) return false;
+  function fieldMarkup(label, value, note) {
+    return (
+      '<div class="d3-kyb-officer__field">' +
+      '<p class="d3-kyb-overview__label">' +
+      esc(label) +
+      "</p>" +
+      '<p class="d3-kyb-overview__value">' +
+      esc(value) +
+      "</p>" +
+      (note ? '<p class="d3-kyb-overview__note">' + esc(note) + "</p>" : "") +
+      "</div>"
+    );
+  }
+
+  function statusFieldMarkup(value) {
+    return (
+      '<div class="d3-kyb-officer__field">' +
+      '<p class="d3-kyb-overview__label">Status</p>' +
+      '<p class="d3-kyb-overview__value d3-kyb-overview__value--ok">' +
+      '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+      '<circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.5"/>' +
+      '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m5.25 8.25 1.75 1.75 3.75-3.75"/>' +
+      "</svg> " +
+      esc(value) +
+      "</p></div>"
+    );
+  }
+
+  function officerMarkup(officer) {
+    if (!officer) return "";
+    return (
+      '<section class="d3-kyb-officer" aria-label="Directors, Officers and PSCs">' +
+      '<h3 class="d3-kyb-officer__title">Directors, Officers &amp; PSCs</h3>' +
+      '<div class="d3-kyb-officer__grid">' +
+      '<div class="d3-kyb-officer__row">' +
+      fieldMarkup("Given Name", officer.givenName) +
+      fieldMarkup("Surname", officer.surname) +
+      fieldMarkup("Full Name", officer.fullName) +
+      "</div>" +
+      '<div class="d3-kyb-officer__row">' +
+      fieldMarkup("National ID Number", officer.nationalId) +
+      fieldMarkup("Date of Birth", officer.dob) +
+      fieldMarkup("Position", officer.position) +
+      "</div>" +
+      '<div class="d3-kyb-officer__row">' +
+      fieldMarkup("Designation", officer.designation) +
+      fieldMarkup("Type", officer.type) +
+      statusFieldMarkup(officer.status) +
+      "</div>" +
+      '<div class="d3-kyb-officer__row">' +
+      fieldMarkup("Begin Date", officer.beginDate) +
+      fieldMarkup("End Date", officer.endDate) +
+      '<div class="d3-kyb-officer__field d3-kyb-officer__field--spacer" aria-hidden="true"></div>' +
+      "</div>" +
+      '<div class="d3-kyb-officer__row">' +
+      fieldMarkup("Address 1", officer.address1, officer.address1Note) +
+      fieldMarkup("Address 2", officer.address2, officer.address2Note) +
+      '<div class="d3-kyb-officer__field d3-kyb-officer__field--spacer" aria-hidden="true"></div>' +
+      "</div></div></section>"
+    );
+  }
+
+  function panelMarkup(bizOrTitle) {
+    var biz = typeof bizOrTitle === "object" && bizOrTitle ? bizOrTitle : null;
+    var title = biz ? "Ownership & UBO" : String(bizOrTitle || "Ownership & UBO");
+    var rows = biz ? tableRowsFromBiz(biz) : MERIDIAN_TABLE_ROWS;
+    var officer = biz ? officerFromBiz(biz) : MERIDIAN_OFFICER;
+    var tbody = rows.map(rowMarkup).join("");
+
+    return (
+      '<div class="d3-kyb-ownership" data-d3-kyb-ownership data-d3-kyb-own-view="table">' +
+      '<div class="d3-kyb-ownership__head">' +
+      '<h3 class="d3-kyb-ownership__title">' +
+      esc(title) +
+      "</h3>" +
+      '<div class="tds-segmented-control tds-segmented-control--icon-only" role="group" aria-label="Ownership view" data-d3-kyb-own-view-control>' +
+      '<button type="button" class="tds-segmented-control__item" aria-pressed="false" aria-label="UBO graph view" data-d3-kyb-own-view="graph">' +
+      '<span class="tds-segmented-control__icon" aria-hidden="true">' +
+      '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="8" cy="3.25" r="1.75" stroke="currentColor" stroke-width="1.25"/>' +
+      '<circle cx="4" cy="12.25" r="1.75" stroke="currentColor" stroke-width="1.25"/>' +
+      '<circle cx="12" cy="12.25" r="1.75" stroke="currentColor" stroke-width="1.25"/>' +
+      '<path d="M8 5v2M8 7H4M8 7h4M4 7v3.5M12 7v3.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>' +
+      "</svg></span></button>" +
+      '<button type="button" class="tds-segmented-control__item tds-segmented-control__item--selected" aria-pressed="true" aria-label="Table view" data-d3-kyb-own-view="table">' +
+      '<span class="tds-segmented-control__icon" aria-hidden="true">' +
+      '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="2.5" y="2.5" width="11" height="11" rx="1" stroke="currentColor" stroke-width="1.25"/>' +
+      '<path d="M2.5 6h11M2.5 9.5h11M6 2.5v11" stroke="currentColor" stroke-width="1.25"/>' +
+      "</svg></span></button>" +
+      "</div></div>" +
+      '<div class="d3-kyb-ownership__view" data-d3-kyb-own-panel="table">' +
+      '<div class="tds-data-table-container d3-kyb-ownership__table">' +
+      '<div class="tds-data-table__wrapper">' +
+      '<table class="tds-data-table tds-data-table--comfort">' +
+      "<thead><tr>" +
+      '<th aria-sort="none">Name</th>' +
+      '<th aria-sort="none">Ownership</th>' +
+      '<th aria-sort="none">Address</th>' +
+      '<th aria-sort="none">Screening Status</th>' +
+      "</tr></thead>" +
+      "<tbody>" +
+      tbody +
+      "</tbody></table></div></div>" +
+      officerMarkup(officer) +
+      "</div>" +
+      '<div class="d3-kyb-ownership__view" data-d3-kyb-own-panel="graph" hidden>' +
+      '<div class="d3-kyb-ubo-graph">' +
+      '<div class="kyb-ubo-graph-layout" id="kyb-ubo-graph-fullscreen-root">' +
+      '<div class="kyb-ownership-graph kyb-ubo-graph-layout__canvas" data-kyb-ownership-graph aria-label="Ownership structure graph"></div>' +
+      "</div></div></div></div>"
+    );
+  }
+
+  function setView(panel, view) {
+    var root = panel.querySelector("[data-d3-kyb-ownership]");
+    if (!root) return;
+    root.setAttribute("data-d3-kyb-own-view", view);
+    root.querySelectorAll("[data-d3-kyb-own-view]").forEach(function (btn) {
+      if (!btn.closest("[data-d3-kyb-own-view-control]")) return;
+      var on = btn.getAttribute("data-d3-kyb-own-view") === view;
+      btn.classList.toggle("tds-segmented-control__item--selected", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    root.querySelectorAll("[data-d3-kyb-own-panel]").forEach(function (pane) {
+      pane.hidden = pane.getAttribute("data-d3-kyb-own-panel") !== view;
+    });
+  }
+
+  function bindViewToggle(panel, biz) {
+    var control = panel.querySelector("[data-d3-kyb-own-view-control]");
+    if (!control || control.getAttribute("data-bound") === "1") return;
+    control.setAttribute("data-bound", "1");
+    control.querySelectorAll("[data-d3-kyb-own-view]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var view = btn.getAttribute("data-d3-kyb-own-view") || "table";
+        setView(panel, view);
+        if (view === "graph" && biz) {
+          window.requestAnimationFrame(function () {
+            mountGraphOnly(panel, biz);
+          });
+        }
+      });
+    });
+  }
+
+  function mountGraphOnly(panel, biz) {
     var graph = graphFromBiz(biz);
-    if (!graph || !graph.tree) return false;
-
-    var container = panel.querySelector("[data-kyb-ownership-graph]");
-    if (!container) {
-      panel.innerHTML = panelMarkup("Ownership / UBO");
-      container = panel.querySelector("[data-kyb-ownership-graph]");
+    if (!graph || !graph.tree) {
+      /* Fall back to Meridian demo tree so graph toggle is never empty. */
+      graph = graphFromBiz({ name: "Meridian Apex Consulting Ltd." });
     }
+    if (!graph || !graph.tree) return false;
+    var container = panel.querySelector("[data-kyb-ownership-graph]");
     if (!container || !window.KybUboGraph || !window.KybUboGraph.mount) return false;
-
     window.KybUboGraph.mount(container, {
       tree: graph.tree,
       riskFilter: graph.riskFilter
     });
+    return true;
+  }
+
+  function mountInto(panel, biz) {
+    if (!panel || !biz) return false;
+
+    /* Always rebuild so tab switches never land on a blank shell. */
+    if (window.KybUboGraph && window.KybUboGraph.unmount) {
+      var prev = panel.querySelector("[data-kyb-ownership-graph]");
+      if (prev) window.KybUboGraph.unmount(prev);
+    }
+    panel.innerHTML = panelMarkup(biz);
+    bindViewToggle(panel, biz);
+    setView(panel, "table");
     return true;
   }
 
@@ -287,6 +457,7 @@
     graphFromBiz: graphFromBiz,
     mountInto: mountInto,
     unmountFrom: unmountFrom,
-    panelMarkup: panelMarkup
+    panelMarkup: panelMarkup,
+    setView: setView
   };
 })();

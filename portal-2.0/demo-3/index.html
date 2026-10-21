@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="../../Components/announcement/announcement.css">
   <link rel="stylesheet" href="../../Components/data-field/data-field.css">
   <link rel="stylesheet" href="../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../Components/segmented-control/segmented-control.css">
   <link rel="stylesheet" href="../../Components/checkbox/checkbox.css">
   <link rel="stylesheet" href="../../Components/stat-card/stat-card.css">
   <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
@@ -54,14 +55,14 @@
   <link rel="stylesheet" href="css/d3-chat-pane.css?v=19">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=15">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=27">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=32">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=2">
-  <link rel="stylesheet" href="css/d3-kyb-agent.css?v=5">
-  <link rel="stylesheet" href="css/d3-kyb-result-tabs.css?v=1">
+  <link rel="stylesheet" href="css/d3-kyb-agent.css?v=8">
+  <link rel="stylesheet" href="css/d3-kyb-result-tabs.css?v=5">
   <link rel="stylesheet" href="transactions/kyb-results/ubo-graph-dist/kyb-ubo-graph-react.css?v=4">
-  <link rel="stylesheet" href="css/d3-kyb-ubo-graph.css?v=2">
+  <link rel="stylesheet" href="css/d3-kyb-ubo-graph.css?v=5">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <!-- cache bump for PageShell 1280:20394 -->
 </head>
@@ -663,16 +664,19 @@
             <div class="d3-kyb-resume__identity">
               <div class="d3-workspace__biz-row">
                 <div class="d3-workspace__biz">
-                  <h2 class="d3-workspace__biz-name">Acme Inc.</h2>
-                  <span class="d1-tag d1-tag--positive">Verified</span>
+                  <h2 class="d3-workspace__biz-name">Meridian Apex Consulting Ltd.</h2>
+                  <span class="d1-tag d1-tag--positive">
+                    <i class="fa-regular fa-circle-check" aria-hidden="true"></i>
+                    Verified
+                  </span>
                 </div>
                 <div class="d3-workspace__biz-actions">
                   <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm d3-kyb-details" data-d3-kyb-details data-dialog-open="d3-kyb-details-dialog" hidden>
-                    <span class="tds-btn__leading-icon" aria-hidden="true"><i class="fa-regular fa-file-lines" aria-hidden="true"></i></span>
+                    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11"/></svg></span>
                     Details
                   </button>
                   <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm d3-kyb-export" data-d3-kyb-export hidden>
-                    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 10V3m0 0L5 6m3-3 3 3M3 11v1.5A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V11"/></svg></span>
+                    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 3v7m0 0 2.75-2.75M8 10 5.25 7.25M3 11.5V12a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 13 12v-.5"/></svg></span>
                     Export
                   </button>
                 </div>
@@ -700,11 +704,10 @@
 
             <div class="d3-kyb-tabs" role="tablist" aria-label="Verification sections">
               <button type="button" class="d3-kyb-tabs__item is-active" role="tab" aria-selected="true" data-d3-kyb-tab="overview">Overview</button>
-              <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="ownership">Ownership / UBO</button>
+              <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="ownership">Owners &amp; UBOs</button>
+              <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="signals">Match Signals &amp; Sources</button>
+              <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="additional">Additional Data</button>
               <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="web">Web &amp; Social Insights</button>
-              <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="signals">Match Signals</button>
-              <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="raw">Raw Data</button>
-              <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="sources">Sources</button>
             </div>
 
             <div class="d3-kyb-panel" data-d3-kyb-panel="overview">
@@ -720,27 +723,22 @@
               </div>
 
               <div class="d3-kyb-overview">
-                <h3 class="d3-kyb-overview__title">Company Overview:</h3>
+                <div class="d3-kyb-overview__head">
+                  <h3 class="d3-kyb-overview__title">Company Overview:</h3>
+                  <button type="button" class="tds-btn tds-btn--primary tds-btn--sm d3-kyb-view-raw" data-d3-kyb-view-raw data-dialog-open="d3-kyb-raw-dialog">
+                    <span class="tds-btn__leading-icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m5.5 4.5-3 3.5 3 3.5M10.5 4.5l3 3.5-3 3.5"/></svg></span>
+                    View Raw Data
+                  </button>
+                </div>
                 <div class="d3-kyb-overview__rows">
                   <div class="d3-kyb-overview__row">
                     <div>
-                      <p class="d3-kyb-overview__label">Operations and industry</p>
-                      <p class="d3-kyb-overview__value" data-d3-field="industry">Registered under NAICS 541611</p>
-                      <p class="d3-kyb-overview__note" data-d3-field="industryNote">(management consulting activities), a catch-all code. No evidence of active trading, clients, or revenue.</p>
+                      <p class="d3-kyb-overview__label">Registration number</p>
+                      <p class="d3-kyb-overview__value" data-d3-field="regNumber">BRN 11876542</p>
                     </div>
                     <div>
-                      <p class="d3-kyb-overview__label">Registration date</p>
-                      <p class="d3-kyb-overview__value" data-d3-field="regDate">Incorporated Feb 1, 2019 (Delaware)</p>
-                    </div>
-                  </div>
-                  <div class="d3-kyb-overview__row">
-                    <div>
-                      <p class="d3-kyb-overview__label">Legal form</p>
-                      <p class="d3-kyb-overview__value" data-d3-field="legalForm">Private company limited by shares</p>
-                    </div>
-                    <div>
-                      <p class="d3-kyb-overview__label">Business address</p>
-                      <p class="d3-kyb-overview__value" data-d3-field="address">Suite 400, 1209 Orange Street, Wilmington, DE, 19801</p>
+                      <p class="d3-kyb-overview__label">TAX ID</p>
+                      <p class="d3-kyb-overview__value" data-d3-field="taxId">GB341209876</p>
                     </div>
                   </div>
                   <div class="d3-kyb-overview__row">
@@ -750,17 +748,29 @@
                     </div>
                     <div>
                       <p class="d3-kyb-overview__label">Sizing</p>
-                      <p class="d3-kyb-overview__value" data-d3-field="sizing">0 employees; $1 authorized / $1 paid-in capital.</p>
+                      <p class="d3-kyb-overview__value" data-d3-field="sizing">0 employees; $1 authorised / $1 paid-up capital.</p>
                     </div>
                   </div>
                   <div class="d3-kyb-overview__row">
                     <div>
-                      <p class="d3-kyb-overview__label">Registration number</p>
-                      <p class="d3-kyb-overview__value" data-d3-field="regNumber">BRN 11876542</p>
+                      <p class="d3-kyb-overview__label">Legal form</p>
+                      <p class="d3-kyb-overview__value" data-d3-field="legalForm">Private company limited by shares</p>
                     </div>
                     <div>
-                      <p class="d3-kyb-overview__label">TAX ID</p>
-                      <p class="d3-kyb-overview__value" data-d3-field="taxId">EIN 34-1209876</p>
+                      <p class="d3-kyb-overview__label">Business address</p>
+                      <p class="d3-kyb-overview__value" data-d3-field="address">Suite 400, 1 King Street, London EC2V 8AU - virtual office at a formations-agent suite; no operational premises.</p>
+                    </div>
+                  </div>
+                  <div class="d3-kyb-overview__row">
+                    <div>
+                      <p class="d3-kyb-overview__label">Operations and industry</p>
+                      <p class="d3-kyb-overview__value" data-d3-field="industry">Registered under SIC 70229</p>
+                      <p class="d3-kyb-overview__note" data-d3-field="industryNote">(management consultancy activities), a catch-all code.
+No evidence of active trading, clients, or revenue.</p>
+                    </div>
+                    <div>
+                      <p class="d3-kyb-overview__label">Registration date</p>
+                      <p class="d3-kyb-overview__value" data-d3-field="regDate">Incorporated 1 Feb 2019 (England &amp; Wales)</p>
                     </div>
                   </div>
                 </div>
@@ -774,15 +784,15 @@
                   <div class="d3-kyb-comms__fields">
                     <div>
                       <p class="d3-kyb-overview__label">Telephone</p>
-                      <p class="d3-kyb-overview__value d3-kyb-overview__value--ok" data-d3-field="phone">
-                        <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3.5 2.75c0-.4.3-.75.7-.75h1.6c.3 0 .58.2.68.48l.7 2a.75.75 0 0 1-.2.8L5.9 6.5a9.5 9.5 0 0 0 3.6 3.6l1.22-1.08a.75.75 0 0 1 .8-.2l2 .7c.28.1.48.38.48.68v1.6c0 .4-.35.7-.75.7A10.75 10.75 0 0 1 3.5 2.75Z"/></svg>
-                        +44 20 7946 0000
+                      <p class="d3-kyb-overview__value d3-kyb-overview__value--contact" data-d3-field="phone">
+                        <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" d="M3.5 2.5h2l1 3-1.25.75a6.5 6.5 0 0 0 3 3L8.5 8l3 1v2a1 1 0 0 1-1 1A10.5 10.5 0 0 1 2.5 3.5a1 1 0 0 1 1-1z"/></svg>
+                        +1 280 794 0000
                       </p>
                     </div>
                     <div>
                       <p class="d3-kyb-overview__label">Email</p>
-                      <p class="d3-kyb-overview__value d3-kyb-overview__value--ok" data-d3-field="email">
-                        <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                      <p class="d3-kyb-overview__value d3-kyb-overview__value--contact" data-d3-field="email">
+                        <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.5" y="4" width="11" height="8" rx="1.25" stroke="currentColor" stroke-width="1.25"/><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" d="m3.5 5.25 4.5 3.25L12.5 5.25"/></svg>
                         <a class="d3-kyb-link" href="mailto:info@meridianapexconsulting.co.uk">info@meridianapexconsulting.co.uk</a>
                       </p>
                     </div>
@@ -801,18 +811,16 @@
             </div>
 
             <div class="d3-kyb-panel" data-d3-kyb-panel="ownership" hidden>
-              <div class="d3-kyb-ubo-graph">
-                <h3 class="d3-kyb-ubo-graph__title d3-kyb-overview__title">Ownership / UBO</h3>
-                <div class="kyb-ubo-graph-layout" id="kyb-ubo-graph-fullscreen-root">
-                  <div class="kyb-ownership-graph kyb-ubo-graph-layout__canvas" data-kyb-ownership-graph aria-label="Ownership structure graph"></div>
-                </div>
-              </div>
+              <!-- Filled by D3KybUboGraph.panelMarkup on verify -->
             </div>
             <div class="d3-kyb-panel" data-d3-kyb-panel="web" hidden>
               <p class="d3-workspace__hint">Web &amp; Social Insights load after verification.</p>
             </div>
             <div class="d3-kyb-panel" data-d3-kyb-panel="signals" hidden>
               <p class="d3-workspace__hint">Match Signals load after verification.</p>
+            </div>
+            <div class="d3-kyb-panel" data-d3-kyb-panel="additional" hidden>
+              <p class="d3-workspace__hint">Additional data loads after verification.</p>
             </div>
             <div class="d3-kyb-panel" data-d3-kyb-panel="raw" hidden>
               <div class="d3-kyb-raw">
@@ -836,6 +844,72 @@
             </div>
           </div>
         </article>
+        </div>
+
+        <!-- Scoped to workspace: overlay must not cover chat -->
+        <div class="tds-dialog tds-dialog--center tds-dialog--md tds-dialog--scoped d3-kyb-details-dialog" id="d3-kyb-details-dialog" hidden>
+          <div class="tds-dialog__backdrop">
+            <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="d3-kyb-details-title" tabindex="-1">
+              <header class="tds-dialog__header">
+                <div class="tds-dialog__header-row">
+                  <h2 class="tds-dialog__title" id="d3-kyb-details-title">Details</h2>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">
+                    <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+                  </button>
+                </div>
+                <div class="tds-dialog__divider" role="presentation"></div>
+              </header>
+              <div class="tds-dialog__body">
+                <dl class="d3-kyb-details-meta" data-d3-kyb-details-meta>
+                  <div>
+                    <dt>Country / Jurisdiction</dt>
+                    <dd data-d3-kyb-detail-country>
+                      United States
+                      <span class="fi fi-us d3-workspace__flag" aria-hidden="true"></span>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Transaction ID</dt>
+                    <dd data-d3-kyb-detail-txid title="8c2f4e7a-19bd-4f02-a6c1-77de42915b3a">8c2f4e7a-19bd-4f02-a6c1-77de42915b3a</dd>
+                  </div>
+                  <div>
+                    <dt>Date</dt>
+                    <dd data-d3-kyb-detail-date>17 Jun 2026, 2:14 PM</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tds-dialog tds-dialog--center tds-dialog--lg tds-dialog--scoped d3-kyb-raw-dialog" id="d3-kyb-raw-dialog" hidden>
+          <div class="tds-dialog__backdrop">
+            <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="d3-kyb-raw-title" tabindex="-1">
+              <header class="tds-dialog__header">
+                <div class="tds-dialog__header-row">
+                  <h2 class="tds-dialog__title" id="d3-kyb-raw-title">Raw Data</h2>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">
+                    <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+                  </button>
+                </div>
+                <div class="tds-dialog__divider" role="presentation"></div>
+              </header>
+              <div class="tds-dialog__body">
+                <div class="kyb-json-panel d3-kyb-raw-dialog__panel">
+                  <div class="kyb-json-panel__header">
+                    <span class="kyb-json-panel__lang">json</span>
+                    <button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" data-d3-kyb-json-copy aria-label="Copy raw JSON">
+                      <span class="tds-btn__leading-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 5.5V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg></span>
+                      Copy
+                    </button>
+                  </div>
+                  <div class="kyb-json-panel__body">
+                    <pre class="kyb-json-panel__pre" data-d3-kyb-raw-pre></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
       <div class="d1-home" data-d1-stage="home" data-d1-repeat="true">
@@ -1362,41 +1436,6 @@
 
 </div>
 
-<div class="tds-dialog tds-dialog--center tds-dialog--md" id="d3-kyb-details-dialog" hidden>
-  <div class="tds-dialog__backdrop">
-    <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="d3-kyb-details-title" tabindex="-1">
-      <header class="tds-dialog__header">
-        <div class="tds-dialog__header-row">
-          <h2 class="tds-dialog__title" id="d3-kyb-details-title">Details</h2>
-          <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">
-            <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
-          </button>
-        </div>
-        <div class="tds-dialog__divider" role="presentation"></div>
-      </header>
-      <div class="tds-dialog__body">
-        <dl class="d3-kyb-details-meta" data-d3-kyb-details-meta>
-          <div>
-            <dt>Country / Jurisdiction</dt>
-            <dd data-d3-kyb-detail-country>
-              United States
-              <span class="fi fi-us d3-workspace__flag" aria-hidden="true"></span>
-            </dd>
-          </div>
-          <div>
-            <dt>Transaction ID</dt>
-            <dd data-d3-kyb-detail-txid title="8c2f4e7a-19bd-4f02-a6c1-77de42915b3a">8c2f4e7a-19bd-4f02-a6c1-77de42915b3a</dd>
-          </div>
-          <div>
-            <dt>Date</dt>
-            <dd data-d3-kyb-detail-date>17 Jun 2026, 2:14 PM</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script src="js/loader-mark.js"></script>
 <script src="js/auth-gate.js?v=1"></script>
 <script src="composer/prompt.js?v=3"></script>
@@ -1407,13 +1446,13 @@
 <script src="../../Components/dialog/dialog.js"></script>
 <script src="../../pages/shared/tds-interactive-select.js"></script>
 <script src="transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js?v=38"></script>
-<script src="js/d3-kyb-ubo-graph.js?v=1"></script>
-<script src="js/d3-kyb-result-tabs.js?v=1"></script>
-<script src="js/d3-kyb-resume.js?v=37"></script>
-<script src="js/d3-kyb-report-reveal.js?v=22"></script>
-<script src="js/d3-kyb-map-search.js?v=43"></script>
+<script src="js/d3-kyb-ubo-graph.js?v=5"></script>
+<script src="js/d3-kyb-result-tabs.js?v=6"></script>
+<script src="js/d3-kyb-resume.js?v=38"></script>
+<script src="js/d3-kyb-report-reveal.js?v=31"></script>
+<script src="js/d3-kyb-map-search.js?v=45"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
-<script src="js/d3-kyb-agent.js?v=18"></script>
+<script src="js/d3-kyb-agent.js?v=20"></script>
 <script src="js/d3-motion.js?v=2"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=34"></script>

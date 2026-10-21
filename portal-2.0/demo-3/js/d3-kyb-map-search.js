@@ -223,24 +223,59 @@
       lon: -0.093,
       riskLevel: "high",
       ownership: [
-        { name: "Nominee Director Services Ltd.", type: "corp", role: "Director", pct: "—", flagged: true, note: "Corporate nominee director — no natural person on the filing." },
-        { name: "Apex Holdings Nominee", type: "corp", role: "Shareholder", pct: "100%", flagged: true, note: "Ownership stops at a nominee vehicle." }
+        {
+          name: "James Morton",
+          type: "person",
+          role: "Shareholder",
+          pct: "65%",
+          address: "71 Stevenson St, San Francisco",
+          flagged: false,
+          screeningLabel: "Clear"
+        },
+        {
+          name: "Walter Decosta",
+          type: "person",
+          role: "Shareholder",
+          pct: "35%",
+          address: "71 Stevenson St, San Francisco",
+          flagged: true,
+          screeningLabel: "2 more entities connected"
+        }
       ],
+      officer: {
+        givenName: "MARK",
+        surname: "WILLIAMSON",
+        fullName: "MARK WILLIAMSON",
+        nationalId: "123415",
+        dob: "1976-02-12",
+        position: "CHIEF OPERATING OFFICER",
+        designation: "Not provided",
+        type: "Individual",
+        status: "Active",
+        beginDate: "2017-07-18",
+        endDate: "2020-01-12",
+        address1: "1 SW Bow Street, Portland, OR 97005-6453",
+        address1Note: "Primary registered address",
+        address2: "22 CALGARY AVENUE, Suite 400, Calgary, AB",
+        address2Note: "Second address — partially visible, remainder not available"
+      },
       risks: [
         { id: "shell", label: "Shell / no trading evidence", severity: "high", evidence: "0 employees; £1 capital; catch-all SIC; virtual office." }
       ],
       alerts: { adverseMedia: "None found", sanctions: "None found", litigation: "None found", positivePress: "None found" },
       report: {
-        industry: "Management consultancy (SIC 70229)",
-        industryNote: "Catch-all SIC code with no evidence of active trading, clients, or revenue.",
+        industry: "Registered under SIC 70229",
+        industryNote:
+          "(management consultancy activities), a catch-all code.\nNo evidence of active trading, clients, or revenue.",
         regDate: "Incorporated 1 Feb 2019 (England & Wales)",
         legalForm: "Private company limited by shares",
-        address: "Suite 400, 1 King Street, London EC2V 8AU — virtual office",
-        sizing: "0 employees; £1 authorised / £1 paid-up capital.",
-        regNumber: "Companies House 08842190",
+        address:
+          "Suite 400, 1 King Street, London EC2V 8AU - virtual office at a formations-agent suite; no operational premises.",
+        sizing: "0 employees; $1 authorised / $1 paid-up capital.",
+        regNumber: "BRN 11876542",
         taxId: "GB341209876",
-        phone: "+44 20 7946 0000",
-        email: "info@meridianapexconsulting.example",
+        phone: "+1 280 794 0000",
+        email: "info@meridianapexconsulting.co.uk",
         country: "United Kingdom",
         sumA: "Meridian Apex Consulting Ltd. is active at Companies House, but filings describe a shell profile with a virtual office and £1 of capital."
       }

@@ -54,22 +54,37 @@
     });
   }
 
+  function setBizTag(label, tone) {
+    if (!bizTag) return;
+    bizTag.className = "d1-tag d1-tag--" + (tone || "review");
+    if (tone === "positive") {
+      bizTag.innerHTML =
+        '<i class="fa-regular fa-circle-check" aria-hidden="true"></i> ' +
+        (label || "Verified");
+    } else {
+      bizTag.textContent = label || "Verifying…";
+    }
+  }
+
   function reportData(biz) {
     var base = biz.report || {};
     return {
-      industry: base.industry || "Registered under NAICS 541611",
+      industry: base.industry || "Registered under SIC 70229",
       industryNote:
         base.industryNote ||
-        "(management consulting activities), a catch-all code. No evidence of active trading, clients, or revenue.",
-      regDate: base.regDate || "Incorporated Feb 1, 2019 (Delaware)",
+        "(management consultancy activities), a catch-all code.\nNo evidence of active trading, clients, or revenue.",
+      regDate: base.regDate || "Incorporated 1 Feb 2019 (England & Wales)",
       legalForm: base.legalForm || "Private company limited by shares",
-      address: base.address || biz.addr,
+      address:
+        base.address ||
+        biz.addr ||
+        "Suite 400, 1 King Street, London EC2V 8AU - virtual office at a formations-agent suite; no operational premises.",
       status: base.status || biz.status || "Active",
-      sizing: base.sizing || "0 employees; $1 authorized / $1 paid-in capital.",
-      regNumber: base.regNumber || biz.reg,
-      taxId: base.taxId || "EIN 34-1209876",
-      phone: base.phone || "+1 (212) 555-0148",
-      email: base.email || "info@" + (biz.name || "company").toLowerCase().replace(/[^a-z0-9]+/g, "") + ".com",
+      sizing: base.sizing || "0 employees; $1 authorised / $1 paid-up capital.",
+      regNumber: base.regNumber || biz.reg || "BRN 11876542",
+      taxId: base.taxId || "GB341209876",
+      phone: base.phone || "+1 280 794 0000",
+      email: base.email || "info@meridianapexconsulting.co.uk",
       country: base.country || biz.country || "United States",
       sumA:
         base.sumA ||
@@ -258,10 +273,7 @@
     /* Company name appears immediately in the report identity block. */
     if (pageTitle) pageTitle.hidden = true;
     if (bizName) bizName.textContent = biz.name;
-    if (bizTag) {
-      bizTag.textContent = "Verifying…";
-      bizTag.className = "d1-tag d1-tag--review";
-    }
+    setBizTag("Verifying…", "review");
     var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
     if (detailsBtn) detailsBtn.hidden = false;
     var exportBtn = detail.querySelector("[data-d3-kyb-export]");
@@ -432,17 +444,12 @@
       prev.body.hidden = true;
     });
 
-    if (bizTag) {
-      if (biz.riskLevel === "high" || (biz.risks && biz.risks.some(function (r) { return r.severity === "high"; }))) {
-        bizTag.textContent = "Needs review";
-        bizTag.className = "d1-tag d1-tag--review";
-      } else if (biz.riskLevel === "medium") {
-        bizTag.textContent = "Verified · review notes";
-        bizTag.className = "d1-tag d1-tag--review";
-      } else {
-        bizTag.textContent = "Verified";
-        bizTag.className = "d1-tag d1-tag--positive";
-      }
+    if (biz.riskLevel === "high" || (biz.risks && biz.risks.some(function (r) { return r.severity === "high"; }))) {
+      setBizTag("Needs review", "review");
+    } else if (biz.riskLevel === "medium") {
+      setBizTag("Verified · review notes", "review");
+    } else {
+      setBizTag("Verified", "positive");
     }
     if (lower) {
       lower.classList.remove("is-skeleton");
@@ -451,21 +458,22 @@
       var phone = lower.querySelector(".d3-kyb-comms [data-d3-field=\"phone\"]");
       var email = lower.querySelector(".d3-kyb-comms [data-d3-field=\"email\"]");
       if (phone) {
-        phone.classList.remove("is-skeleton");
+        phone.classList.remove("is-skeleton", "d3-kyb-overview__value--ok");
         phone.innerHTML =
-          '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3.5 2.75c0-.4.3-.75.7-.75h1.6c.3 0 .58.2.68.48l.7 2a.75.75 0 0 1-.2.8L5.9 6.5a9.5 9.5 0 0 0 3.6 3.6l1.22-1.08a.75.75 0 0 1 .8-.2l2 .7c.28.1.48.38.48.68v1.6c0 .4-.35.7-.75.7A10.75 10.75 0 0 1 3.5 2.75Z"/></svg> ' + data.phone;
-        phone.classList.add("d3-kyb-overview__value--ok", "is-revealed");
+          '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" d="M3.5 2.5h2l1 3-1.25.75a6.5 6.5 0 0 0 3 3L8.5 8l3 1v2a1 1 0 0 1-1 1A10.5 10.5 0 0 1 2.5 3.5a1 1 0 0 1 1-1z"/></svg> ' +
+          esc(data.phone);
+        phone.classList.add("d3-kyb-overview__value--contact", "is-revealed");
       }
       if (email) {
-        email.classList.remove("is-skeleton");
+        email.classList.remove("is-skeleton", "d3-kyb-overview__value--ok");
         email.innerHTML =
-          '<i class="fa-regular fa-envelope" aria-hidden="true"></i> ' +
+          '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.5" y="4" width="11" height="8" rx="1.25" stroke="currentColor" stroke-width="1.25"/><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" d="m3.5 5.25 4.5 3.25L12.5 5.25"/></svg> ' +
           '<a class="d3-kyb-link" href="mailto:' +
-          data.email +
+          esc(data.email) +
           '">' +
-          data.email +
+          esc(data.email) +
           "</a>";
-        email.classList.add("d3-kyb-overview__value--ok", "is-revealed");
+        email.classList.add("d3-kyb-overview__value--contact", "is-revealed");
       }
     }
 
@@ -587,40 +595,118 @@
 
   function selectTab(id, opts) {
     opts = opts || {};
+    /* Sources live inside Match Signals & Sources. */
+    if (id === "sources") id = "signals";
+    var panel = resumeCard.querySelector('[data-d3-kyb-panel="' + id + '"]');
+    if (!panel) return false;
     var tab = resumeCard.querySelector('[data-d3-kyb-tab="' + id + '"]');
-    if (!tab) return false;
     resumeCard.querySelectorAll("[data-d3-kyb-tab]").forEach(function (t) {
-      var on = t === tab;
+      var on = !!tab && t === tab;
       t.classList.toggle("is-active", on);
       t.setAttribute("aria-selected", on ? "true" : "false");
     });
-    resumeCard.querySelectorAll("[data-d3-kyb-panel]").forEach(function (panel) {
-      panel.hidden = panel.getAttribute("data-d3-kyb-panel") !== id;
+    resumeCard.querySelectorAll("[data-d3-kyb-panel]").forEach(function (p) {
+      p.hidden = p.getAttribute("data-d3-kyb-panel") !== id;
     });
-    if (!opts.silent) {
-      var panel = resumeCard.querySelector('[data-d3-kyb-panel="' + id + '"]');
-      if (panel) {
-        panel.classList.remove("d3-kyb-panel--flash");
-        void panel.offsetWidth;
-        panel.classList.add("d3-kyb-panel--flash");
-      }
+    /* Keep tab content in view — body may still be scrolled from Overview. */
+    if (resumeCard) {
+      var body = resumeCard.querySelector(".d3-kyb-resume__body");
+      if (body) body.scrollTop = 0;
     }
-    /* Remount when the panel becomes visible so the React graph gets real size. */
-    if (id === "ownership" && currentBiz) {
+    if (!opts.silent) {
+      panel.classList.remove("d3-kyb-panel--flash");
+      void panel.offsetWidth;
+      panel.classList.add("d3-kyb-panel--flash");
+    }
+    /* Ensure tab bodies exist (resume/recent opens never called reveal). */
+    if (id === "ownership") {
       window.requestAnimationFrame(function () {
-        mountOwnershipGraph(currentBiz);
+        ensureOwnershipPanel(resolveBiz());
       });
     }
+    if (id === "signals" || id === "sources") {
+      window.requestAnimationFrame(function () {
+        ensureSignalsPanel(resolveBiz());
+      });
+    }
+    if (id === "web") {
+      window.requestAnimationFrame(function () {
+        ensureWebPanel(resolveBiz());
+      });
+    }
+    if (id === "additional") {
+      window.requestAnimationFrame(function () {
+        ensureAdditionalPanel(resolveBiz());
+      });
+    }
+    if (id === "raw") {
+      var rawBiz = resolveBiz();
+      if (rawBiz) renderRawPanel(rawBiz);
+    }
     return true;
+  }
+
+  function resolveBiz() {
+    if (currentBiz) return currentBiz;
+    var name =
+      (bizName && bizName.textContent && bizName.textContent.trim()) ||
+      "Business";
+    var found = null;
+    if (window.D3KybMapSearch && window.D3KybMapSearch.findByName) {
+      found = window.D3KybMapSearch.findByName(name);
+    }
+    if (!found && window.D3KybMapSearch && window.D3KybMapSearch.businesses) {
+      found = window.D3KybMapSearch.businesses.find(function (b) {
+        return b && b.name && b.name.toLowerCase() === name.toLowerCase();
+      });
+    }
+    currentBiz = found || { name: name, ownership: [], status: "Active" };
+    return currentBiz;
+  }
+
+  function ensureOwnershipPanel(biz) {
+    var panel = resumeCard.querySelector('[data-d3-kyb-panel="ownership"]');
+    if (!panel || !biz || !window.D3KybUboGraph) return false;
+    renderOwnershipPanel(biz);
+    return true;
+  }
+
+  function ensureSignalsPanel(biz) {
+    var panel = resumeCard.querySelector('[data-d3-kyb-panel="signals"]');
+    if (!panel || !biz) return false;
+    if (window.D3KybResultTabs && window.D3KybResultTabs.renderMatchSignalsPanel) {
+      window.D3KybResultTabs.renderMatchSignalsPanel(panel, biz);
+      return true;
+    }
+    renderSignalsPanel(biz);
+    return true;
+  }
+
+  function ensureWebPanel(biz) {
+    var panel = resumeCard.querySelector('[data-d3-kyb-panel="web"]');
+    if (!panel || !biz) return false;
+    if (window.D3KybResultTabs && window.D3KybResultTabs.renderWebPanel) {
+      window.D3KybResultTabs.renderWebPanel(panel, biz);
+      return true;
+    }
+    return false;
+  }
+
+  function ensureAdditionalPanel(biz) {
+    var panel = resumeCard.querySelector('[data-d3-kyb-panel="additional"]');
+    if (!panel || !biz) return false;
+    if (window.D3KybResultTabs && window.D3KybResultTabs.renderAdditionalPanel) {
+      window.D3KybResultTabs.renderAdditionalPanel(panel, biz);
+      return true;
+    }
+    return false;
   }
 
   function mountOwnershipGraph(biz) {
     var panel = resumeCard.querySelector('[data-d3-kyb-panel="ownership"]');
     if (!panel || !biz || !window.D3KybUboGraph) return false;
-    if (!window.KybUboGraph || !window.KybUboGraph.mount) {
-      console.warn("[D3KybReport] KybUboGraph bundle not loaded");
-      return false;
-    }
+    /* Table / officers markup mounts without the React graph bundle. */
+    if (!window.D3KybUboGraph.mountInto) return false;
     return window.D3KybUboGraph.mountInto(panel, biz);
   }
 
@@ -632,29 +718,15 @@
       window.D3KybUboGraph.unmountFrom(panel);
     }
 
-    var graph =
-      window.D3KybUboGraph && window.D3KybUboGraph.graphFromBiz
-        ? window.D3KybUboGraph.graphFromBiz(biz)
-        : null;
+    var mounted =
+      window.D3KybUboGraph && window.D3KybUboGraph.mountInto
+        ? window.D3KybUboGraph.mountInto(panel, biz)
+        : false;
 
-    if (!graph || !graph.tree) {
+    if (!mounted) {
       panel.innerHTML =
         '<p class="d3-workspace__hint">No ownership / UBO records are available for this entity in the demo dataset.</p>';
-      return;
     }
-
-    panel.innerHTML =
-      window.D3KybUboGraph && window.D3KybUboGraph.panelMarkup
-        ? window.D3KybUboGraph.panelMarkup("Ownership / UBO")
-        : "";
-
-    /*
-     * Always mount after markup is in place. Hidden panels get a second
-     * remount from selectTab once Ownership / UBO is shown (for real size).
-     */
-    window.requestAnimationFrame(function () {
-      mountOwnershipGraph(biz);
-    });
   }
 
   function formalBusinessName(name) {
@@ -733,26 +805,41 @@
     });
   }
 
+  function fillRawJson(root, biz) {
+    if (!root || !biz) return;
+    var pre = root.querySelector("[data-d3-kyb-raw-pre]");
+    if (pre) pre.textContent = buildRawJsonText(biz);
+    bindRawCopy(root);
+  }
+
   function renderRawPanel(biz) {
     var panel = resumeCard.querySelector('[data-d3-kyb-panel="raw"]');
-    if (!panel || !biz) return;
-    var pre = panel.querySelector("[data-d3-kyb-raw-pre]");
-    if (!pre) {
-      panel.innerHTML =
-        '<div class="d3-kyb-raw">' +
-        '<h3 class="d3-kyb-overview__title">Raw Data</h3>' +
-        '<div class="kyb-json-panel">' +
-        '<div class="kyb-json-panel__header">' +
-        '<span class="kyb-json-panel__lang">json</span>' +
-        '<button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" data-d3-kyb-json-copy aria-label="Copy raw JSON">' +
-        '<span class="tds-btn__leading-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 5.5V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg></span>' +
-        "Copy</button></div>" +
-        '<div class="kyb-json-panel__body"><pre class="kyb-json-panel__pre" data-d3-kyb-raw-pre></pre></div>' +
-        "</div></div>";
-      pre = panel.querySelector("[data-d3-kyb-raw-pre]");
+    if (panel && biz) {
+      var pre = panel.querySelector("[data-d3-kyb-raw-pre]");
+      if (!pre) {
+        panel.innerHTML =
+          '<div class="d3-kyb-raw">' +
+          '<h3 class="d3-kyb-overview__title">Raw Data</h3>' +
+          '<div class="kyb-json-panel">' +
+          '<div class="kyb-json-panel__header">' +
+          '<span class="kyb-json-panel__lang">json</span>' +
+          '<button class="tds-btn tds-btn--secondary tds-btn--sm" type="button" data-d3-kyb-json-copy aria-label="Copy raw JSON">' +
+          '<span class="tds-btn__leading-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 5.5V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg></span>' +
+          "Copy</button></div>" +
+          '<div class="kyb-json-panel__body"><pre class="kyb-json-panel__pre" data-d3-kyb-raw-pre></pre></div>' +
+          "</div></div>";
+      }
+      fillRawJson(panel, biz);
     }
-    if (pre) pre.textContent = buildRawJsonText(biz);
-    bindRawCopy(panel);
+    fillRawJson(document.getElementById("d3-kyb-raw-dialog"), biz);
+  }
+
+  function openRawDialog(biz) {
+    var target = biz || resolveBiz();
+    if (target) renderRawPanel(target);
+    if (typeof window.openTdsDialog === "function") {
+      window.openTdsDialog("d3-kyb-raw-dialog");
+    }
   }
 
   function renderAlerts(biz) {
@@ -867,9 +954,19 @@
     );
   }
 
-  /* Bind Copy on the static Raw Data shell before a verify runs. */
+  /* Bind Copy on static Raw Data shells before a verify runs. */
   var rawShell = resumeCard.querySelector('[data-d3-kyb-panel="raw"]');
   if (rawShell) bindRawCopy(rawShell);
+  var rawDialog = document.getElementById("d3-kyb-raw-dialog");
+  if (rawDialog) bindRawCopy(rawDialog);
+
+  var viewRawBtn = resumeCard.querySelector("[data-d3-kyb-view-raw]");
+  if (viewRawBtn) {
+    viewRawBtn.addEventListener("click", function () {
+      /* Fill JSON; data-dialog-open opens #d3-kyb-raw-dialog. */
+      renderRawPanel(currentBiz || resolveBiz());
+    });
+  }
 
   window.D3KybReport = {
     reveal: reveal,
@@ -877,6 +974,18 @@
     selectTab: selectTab,
     renderOwnershipPanel: renderOwnershipPanel,
     renderRawPanel: renderRawPanel,
+    openRawDialog: openRawDialog,
+    seedFromName: function (name) {
+      currentBiz = null;
+      if (bizName && name) bizName.textContent = name;
+      var biz = resolveBiz();
+      renderOwnershipPanel(biz);
+      renderRawPanel(biz);
+      if (window.D3KybResultTabs && window.D3KybResultTabs.renderAll) {
+        window.D3KybResultTabs.renderAll(resumeCard, biz);
+      }
+      return biz;
+    },
     getCurrent: function () {
       return currentBiz;
     }

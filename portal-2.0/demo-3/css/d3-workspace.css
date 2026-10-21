@@ -369,6 +369,8 @@
 .d3-workspace[data-d3-kyb-surface="report"] .d3-workspace__detail {
   gap: 16px;
   padding: 20px 20px 24px;
+  /* Card fills the column; report body scrolls inside. */
+  overflow: hidden;
 }
 
 .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-resume.is-live {
@@ -380,13 +382,20 @@
   align-self: stretch;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-resume.is-live .d3-kyb-resume__body {
   flex: 1 1 auto;
   width: 100%;
   min-width: 0;
+  min-height: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: var(--spacing-24, 24px);
+  -webkit-overflow-scrolling: touch;
 }
 
 .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-panel[data-d3-kyb-panel="overview"] {
@@ -397,8 +406,6 @@
 .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-panel[data-d3-kyb-panel="ownership"] {
   width: 100%;
   min-width: 0;
-  min-height: 0;
-  flex: 1 1 auto;
 }
 
 .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-hero {
@@ -1268,7 +1275,17 @@
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-12, 12px);
+}
+
+.d3-kyb-resume .d1-tag {
+  gap: var(--gap-xs, 4px);
+}
+
+.d3-kyb-resume .d1-tag i {
+  font-size: 11px;
+  line-height: 1;
+  color: var(--icon-positive, #3d8b5e);
 }
 
 .d3-kyb-details-meta {
@@ -1434,6 +1451,11 @@
   padding: var(--spacing-24, 24px) var(--spacing-24, 24px) 0;
 }
 
+/* Scroll lives on the body — children keep intrinsic height (do not flex-shrink). */
+.d3-kyb-resume__body > * {
+  flex-shrink: 0;
+}
+
 .d3-kyb-resume__identity {
   display: flex;
   flex-direction: column;
@@ -1457,8 +1479,11 @@
 .d3-kyb-tabs {
   display: flex;
   flex-wrap: nowrap;
+  flex-shrink: 0;
   gap: 32px;
   overflow-x: auto;
+  /* overflow ≠ visible zeroes auto min-height in a flex column and crushed the tabs to 1px */
+  min-height: 29px;
   border-bottom: 1px solid var(--border-strong, #c5cec8);
 }
 
@@ -1508,8 +1533,8 @@
   position: relative;
   width: 100%;
   max-width: none;
-  height: 200px;
-  border-radius: var(--radius-xl, 12px);
+  height: 182px;
+  border-radius: var(--radius-lg, 8px);
   overflow: hidden;
   background: var(--surface-neutral-01, #fff);
 }
@@ -1575,14 +1600,14 @@
   inset: 0;
   z-index: 1;
   border-radius: inherit;
-  background: rgba(244, 246, 244, 0.35);
+  background: rgba(244, 246, 244, 0.6);
   mix-blend-mode: multiply;
   pointer-events: none;
 }
 
 .d3-kyb-hero__photo {
   position: absolute;
-  left: 13px;
+  left: 12px;
   top: 12px;
   z-index: 2;
   width: 238px;
@@ -1590,7 +1615,6 @@
   border-radius: var(--radius-2xl, 16px);
   object-fit: cover;
   display: block;
-  box-shadow: 0 4px 16px rgba(23, 45, 45, 0.12);
 }
 
 .d3-kyb-hero__pin {
@@ -1635,12 +1659,24 @@
   width: 100%;
 }
 
+.d3-kyb-overview__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
 .d3-kyb-overview__title {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
   color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-view-raw {
+  flex: 0 0 auto;
 }
 
 .d3-kyb-overview__rows {
@@ -1689,12 +1725,34 @@
   gap: 8px;
 }
 
+.d3-kyb-overview__value--ok i {
+  color: var(--icon-positive, #3d8b5e);
+}
+
+.d3-kyb-overview__value--contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.d3-kyb-overview__value--contact > i,
+.d3-kyb-overview__value--contact > svg {
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--icon-faint, #617269);
+}
+
 .d3-kyb-overview__note {
   margin: 0;
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
   color: var(--text-description, #526660);
+  white-space: pre-line;
 }
 
 .d3-kyb-link {
@@ -1750,9 +1808,13 @@
   white-space: nowrap;
 }
 
+.d3-kyb-chip i,
 .d3-kyb-chip img {
   display: block;
   flex-shrink: 0;
+  color: var(--icon-faint, #617269);
+  font-size: 16px;
+  line-height: 1;
 }
 
 @media (max-width: 900px) {
