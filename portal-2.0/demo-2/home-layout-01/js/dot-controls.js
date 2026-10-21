@@ -20,40 +20,40 @@
      the panel before would keep seeing the old look and never the new
      default. v2 added shape and clear placement; v3 onward are
      successive changes to the shipped composition. */
-  var STORE_KEY = 'tru-dot-field-v5';
+  var STORE_KEY = 'tru-dot-field-v7';
 
   /* Named starting points. Each is a full config patch; the panel
      applies one wholesale and the controls then show where it landed. */
   var PRESETS = [
     {
       id: 'figma', label: 'Figma',
-      patch: { style: 'static', formation: 'staggered', shape: 'full', spacing: 40, size: 2, color: '#8a9a90', opacity: 0.55, clear: 0.65, clearSize: 0.42, clearX: 0.5, clearY: 0.30, fade: 0.68, shapeScale: 1, shapeX: 0.5, shapeY: 0.42, feather: 0.12, intensity: 0.7, speed: 0.4, angle: 35 }
+      patch: { style: 'static', formation: 'staggered', shape: 'full', spacing: 40, size: 2, sizeVary: 0, color: '#8a9a90', opacity: 0.55, clear: 0.65, clearSize: 0.42, clearX: 0.5, clearY: 0.30, fade: 0.68, shapeScale: 1, shapeX: 0.5, shapeY: 0.42, feather: 0.12, intensity: 0.7, speed: 0.4, angle: 35 }
     },
     {
       id: 'shimmer', label: 'Shimmer',
-      patch: { style: 'shimmer-twinkle', formation: 'staggered', shape: 'full', spacing: 40, size: 2, color: '#8a9a90', opacity: 0.55, clear: 0.65, clearSize: 0.42, clearX: 0.5, clearY: 0.30, fade: 0.68, shapeScale: 1, shapeX: 0.5, shapeY: 0.42, feather: 0.12, intensity: 0.7, speed: 0.4, angle: 35 }
+      patch: { style: 'shimmer-twinkle', formation: 'staggered', shape: 'full', spacing: 40, size: 2, sizeVary: 0, color: '#8a9a90', opacity: 0.55, clear: 0.65, clearSize: 0.42, clearX: 0.5, clearY: 0.30, fade: 0.68, shapeScale: 1, shapeX: 0.5, shapeY: 0.42, feather: 0.12, intensity: 0.7, speed: 0.4, angle: 35 }
     },
     {
       id: 'trio', label: 'Trio',
       /* The reference layout: three overlapping discs of pattern,
          sitting behind and around the hero rather than filling it. */
-      patch: { style: 'shimmer-twinkle', formation: 'staggered', shape: 'cluster', spacing: 24, size: 1.5, color: '#8a9a90', opacity: 0.65, clear: 0.35, clearSize: 0.24, clearX: 0.5, clearY: 0.30, fade: 0.92, shapeScale: 1.1, shapeX: 0.5, shapeY: 0.34, feather: 0.1, intensity: 0.7, speed: 0.35, angle: 35 }
+      patch: { style: 'shimmer-twinkle', formation: 'staggered', shape: 'cluster', spacing: 24, size: 1.5, sizeVary: 0, color: '#8a9a90', opacity: 0.65, clear: 0.35, clearSize: 0.24, clearX: 0.5, clearY: 0.30, fade: 0.92, shapeScale: 1.1, shapeX: 0.5, shapeY: 0.34, feather: 0.1, intensity: 0.7, speed: 0.35, angle: 35 }
     },
     {
       id: 'orb', label: 'Orb',
-      patch: { style: 'breathe', formation: 'hex', shape: 'circle', spacing: 24, size: 1.5, color: '#c5cec8', opacity: 0.75, clear: 0.55, clearSize: 0.26, clearX: 0.5, clearY: 0.30, fade: 0.8, shapeScale: 0.95, shapeX: 0.5, shapeY: 0.32, feather: 0.18, intensity: 0.5, speed: 0.14, angle: 35 }
+      patch: { style: 'breathe', formation: 'hex', shape: 'circle', spacing: 24, size: 1.5, sizeVary: 0, color: '#c5cec8', opacity: 0.75, clear: 0.55, clearSize: 0.26, clearX: 0.5, clearY: 0.30, fade: 0.8, shapeScale: 0.95, shapeX: 0.5, shapeY: 0.32, feather: 0.18, intensity: 0.5, speed: 0.14, angle: 35 }
     },
     {
       id: 'halo', label: 'Halo',
-      patch: { style: 'ripple', formation: 'rings', shape: 'ring', spacing: 28, size: 1.8, color: '#0e8a78', opacity: 0.45, clear: 0, clearSize: 0.3, clearX: 0.5, clearY: 0.3, fade: 0.82, shapeScale: 1.25, shapeX: 0.5, shapeY: 0.3, feather: 0.3, intensity: 0.75, speed: 0.22, angle: 35 }
+      patch: { style: 'ripple', formation: 'rings', shape: 'ring', spacing: 28, size: 1.8, sizeVary: 0, color: '#0e8a78', opacity: 0.45, clear: 0, clearSize: 0.3, clearX: 0.5, clearY: 0.3, fade: 0.82, shapeScale: 1.25, shapeX: 0.5, shapeY: 0.3, feather: 0.3, intensity: 0.75, speed: 0.22, angle: 35 }
     },
     {
       id: 'drift', label: 'Drift',
-      patch: { style: 'drift', formation: 'staggered', shape: 'blobs', spacing: 28, size: 1.6, color: '#8a9a90', opacity: 0.6, clear: 0.3, clearSize: 0.22, clearX: 0.5, clearY: 0.3, fade: 0.92, shapeScale: 1.25, shapeX: 0.5, shapeY: 0.34, feather: 0.22, intensity: 0.8, speed: 0.3, angle: 35 }
+      patch: { style: 'drift', formation: 'staggered', shape: 'blobs', spacing: 28, size: 1.6, sizeVary: 0, color: '#8a9a90', opacity: 0.6, clear: 0.3, clearSize: 0.22, clearX: 0.5, clearY: 0.3, fade: 0.92, shapeScale: 1.25, shapeX: 0.5, shapeY: 0.34, feather: 0.22, intensity: 0.8, speed: 0.3, angle: 35 }
     }
   ];
 
-  /* Panel layout. Sections keep eighteen controls legible; each row is
+  /* Panel layout. Sections keep twenty controls legible; each row is
      either a select, a slider, or the colour pair.
 
      `styles`     — show only for these animation styles
@@ -67,9 +67,10 @@
       rows: [
         { kind: 'select', key: 'formation', label: 'Formation', list: 'FORMATIONS' },
         { kind: 'color' },
-        { key: 'spacing', label: 'Density',  min: 16,  max: 80, step: 2,    unit: 'px', invert: true },
-        { key: 'size',    label: 'Dot size', min: 1,   max: 4,  step: 0.1,  unit: 'px' },
-        { key: 'opacity', label: 'Opacity',  min: 0.1, max: 1,  step: 0.05 }
+        { key: 'spacing',  label: 'Density',        min: 16,  max: 80, step: 2, unit: 'px', invert: true },
+        { key: 'size',     label: 'Dot size',       min: 1,   max: 4, step: 0.1, unit: 'px' },
+        { key: 'sizeVary', label: 'Size variation', min: 0,   max: 1, step: 0.05 },
+        { key: 'opacity',  label: 'Opacity',        min: 0.1, max: 1, step: 0.05 }
       ]
     },
     {

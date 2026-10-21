@@ -9,9 +9,13 @@ left is a centred hero on a dot field, with a Quick start row below it.
 ```
 index.html              markup, transcribed from the node
 css/page.css            the page
-css/dot-controls.css    the tweak panel — review tool, not the design
 js/dot-field.js         the generated dot background
+
+dot-background.html     the field on its own — sandbox, not the design
+css/dot-background.css  that sandbox's chrome
+css/dot-controls.css    the tweak panel — review tool, not the design
 js/dot-controls.js      the tweak panel — review tool, not the design
+
 assets/                 logo mark + the three card thumbnails, exported from the node
 ```
 
@@ -127,8 +131,9 @@ Figma node; the node itself is the **Figma** preset in the panel (`static` +
 TruDotField.mount(document.getElementById('v2-dots'), {
   style:      'shimmer-twinkle',
   formation:  'grid',
-  spacing:    30,        // px between dot centres — density
+  spacing:    26,        // px between dot centres — density
   size:       2,         // dot radius, px
+  sizeVary:   0.45,      // per-dot radius spread, 0–1; 0 = all dots equal
   color:      '#587965', // off the Trulioo ramp — listed as "Moss" in the panel
   opacity:    0.55,      // resting alpha
 
@@ -146,7 +151,7 @@ TruDotField.mount(document.getElementById('v2-dots'), {
   fade:       0.54,      // height fraction at which the field has faded out
 
   intensity:  1,         // animation amplitude, 0–1
-  speed:      0.4,       // cycles per second
+  speed:      0.25,      // cycles per second
   angle:      35         // travel direction, degrees — shimmer, scan, band
 });
 ```
@@ -168,10 +173,18 @@ clean transcription of the node, and it sits behind a toggle so the default view
 of the page is the design.
 
 Controls are grouped into **Pattern** (formation, colour, density, dot size,
-opacity), **Shape** (region, size, position X/Y, edge softness, field height),
-**Centre clear** (strength, size, position X/Y) and **Motion** (animation,
-intensity, speed, direction). Rows that don't apply to the current style or
-shape hide themselves.
+size variation, opacity), **Shape** (region, size, position X/Y, edge softness,
+field height), **Centre clear** (strength, size, position X/Y) and **Motion**
+(animation, intensity, speed, direction). Rows that don't apply to the current
+style or shape hide themselves.
+
+**Size variation** spreads the dot radius across the field — `0` leaves every
+dot identical, `1` spans 0.4× to 1.6× of `size`. It is a fixed property of each
+dot, not a motion: the value comes from the dot's own grid coordinates via the
+R2 low-discrepancy constants, so the field holds a stable mix of weights rather
+than dots that grow and shrink. Those constants deliberately differ from the
+twinkle phase; sharing them would make the big dots always the bright ones,
+which reads as a pattern rather than as texture.
 
 Presets — Figma, Shimmer, Trio, Orb, Halo, Drift — are starting points; the
 dropdowns and sliders take it from there. Settings persist to `localStorage`, so
@@ -180,7 +193,25 @@ you the object above to paste into `index.html`.
 
 Once a look is agreed, drop both `dot-controls` references from `index.html`
 (the stylesheet in `<head>` and the script at the bottom), pass the copied
-config to `TruDotField.mount`, and delete the two files.
+config to `TruDotField.mount`, and delete `js/dot-controls.js`,
+`css/dot-controls.css`, `dot-background.html` and `css/dot-background.css`.
+
+## dot-background.html
+
+The same field and the same panel with the page taken away — an empty white
+surface, the canvas, and the Background button. Use it to judge the pattern on
+its own, without the hero and cards sitting on top of it.
+
+It shares `dot-field.js`, `dot-controls.js` and the panel's `localStorage` key
+with `index.html`, so **a look tuned in the sandbox is the look the home page
+loads next** — no copying between them. `Copy config` is still how a settled
+look becomes the shipped default in `dot-field.js`.
+
+One difference: the sandbox canvas is full bleed, while the home page's is the
+content area beside the 72px rail. Every composition value is a fraction of the
+canvas, so proportions carry over, but the home page's box is a little narrower
+relative to its height. Check anything borderline on `index.html` before calling
+it done.
 
 ## Icons
 

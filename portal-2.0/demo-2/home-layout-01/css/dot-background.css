@@ -1,0 +1,49 @@
+/* ============================================================
+   Dot background sandbox — page chrome only.
+   ============================================================
+   Styles dot-background.html, nothing else. The field itself is
+   js/dot-field.js and the panel is css/dot-controls.css; this file
+   only gives them an empty white surface to sit on.
+   ------------------------------------------------------------------ */
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  color: var(--text-default);
+  /* White, matching .v2-main on the home page — the field is designed
+     against that surface, so judging it on anything else would be
+     misleading. */
+  background: var(--surface-neutral-01);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Full bleed. The composition values (shapeX/Y, clearX/Y, fade) are
+   fractions of the canvas, so what you tune here transfers to the home
+   page at the same proportions — see the note in dot-background.html
+   about the rail. */
+.sandbox__dots {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The page carries no visible chrome of its own — the whole point is
+   an unobstructed view of the pattern. The <h1> is for the document
+   outline and screen readers only. */
+.v2-visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

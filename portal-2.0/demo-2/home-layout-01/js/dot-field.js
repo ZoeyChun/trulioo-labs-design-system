@@ -96,8 +96,9 @@
   var DEFAULTS = {
     style:      'shimmer-twinkle',
     formation:  'grid',
-    spacing:    30,     /* px between dot centres — density */
+    spacing:    26,     /* px between dot centres — density */
     size:       2,      /* dot radius in px */
+    sizeVary:   0.45,   /* per-dot radius spread, 0–1; 0 = all equal */
     color:      '#587965',
     opacity:    0.55,   /* base alpha before masks and animation */
 
@@ -115,11 +116,13 @@
     fade:       0.54,   /* height fraction where the field has faded out */
 
     intensity:  1,      /* animation amplitude, 0–1 */
-    speed:      0.4,    /* cycles per second */
+    speed:      0.25,   /* cycles per second */
     angle:      35      /* travel direction, degrees — shimmer + scan */
   };
 
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+  function frac(x) { return x - Math.floor(x); }
 
   /* Hermite ease used for every mask edge — no hard cut-offs anywhere. */
   function smoothstep(edge0, edge1, x) {
@@ -318,6 +321,14 @@
       /* Ripple measures from the region centre, so the rings leave
          wherever the shape is. */
       p.d = Math.hypot(p.x - scx, p.y - scy);
+
+      /* Stable per-dot value in [0,1) driving size variation. The R2
+         low-discrepancy constants spread it evenly across the lattice
+         with no clumping, and deliberately differ from the twinkle
+         phase above — sharing them would make the big dots always the
+         bright ones, which reads as a pattern rather than as texture. */
+      p.v = frac(p.c * 0.7548776662 + p.r * 0.5698402909);
+
       out.push(p);
     }
 
@@ -460,9 +471,18 @@
         }
 
         if (a <= 0.004) continue;
+
+        /* Size variation is a fixed property of the dot, not a motion:
+           p.v never changes, so the field has a stable mix of weights
+           rather than dots that grow and shrink. At sizeVary 1 the
+           radius spans 0.4x to 1.6x of `size`. */
+        var r = cfg.sizeVary
+          ? Math.max(0.2, cfg.size * (1 + cfg.sizeVary * (p.v - 0.5) * 1.2))
+          : cfg.size;
+
         ctx.globalAlpha = a > 1 ? 1 : a;
         ctx.beginPath();
-        ctx.arc(x, y, cfg.size, 0, TAU);
+        ctx.arc(x, y, r, 0, TAU);
         ctx.fill();
       }
 

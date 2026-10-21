@@ -1,0 +1,55 @@
+<!-- Dot background sandbox.
+
+     The same field and the same control panel as index.html, with the
+     page taken away: an empty white surface, the canvas, and the
+     Background button. For judging the pattern on its own and for
+     tuning a look without the hero and cards sitting on top of it.
+
+     It shares js/dot-field.js, js/dot-controls.js and the panel's
+     localStorage key with index.html, so a look tuned here IS the look
+     the home page loads next — no copying needed. "Copy config" still
+     gives you the object to paste into index.html when a look is
+     settled and should become the shipped default.
+
+     One difference worth knowing: the canvas is full bleed here, while
+     on the home page it is the content area beside the 72px rail. The
+     composition values are all fractions of the canvas, so proportions
+     carry over, but the home page's box is a little narrower relative
+     to its height. Check anything borderline on index.html before
+     calling it done. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dot background — Trulioo Portal 2.0</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+
+  <link rel="stylesheet" href="css/dot-background.css">
+  <link rel="stylesheet" href="css/dot-controls.css">
+</head>
+<body>
+
+<h1 class="v2-visually-hidden">Dot background sandbox</h1>
+
+<canvas class="sandbox__dots" id="v2-dots" aria-hidden="true"></canvas>
+
+<script src="js/dot-field.js"></script>
+<script src="js/dot-controls.js"></script>
+<script>
+  (function () {
+    var canvas = document.getElementById('v2-dots');
+    // Same shape as index.html: a saved look wins over the shipped
+    // default, which is what keeps the two pages in step.
+    var saved = window.TruDotControls ? window.TruDotControls.load() : null;
+    var field = window.TruDotField.mount(canvas, saved);
+    window.TruDotControls.init(field);
+  })();
+</script>
+
+</body>
+</html>
