@@ -85,28 +85,32 @@
     { id: 'violet', label: 'Violet',               value: '#592d80' }
   ];
 
+  /* The shipped look. This is a chosen composition, not the Figma node
+     — two overlapping discs of hex lattice, cleared under the hero.
+     The node itself is the `Figma` preset in the control panel
+     (`static` + `shape: 'full'`), kept there for comparison. */
   var DEFAULTS = {
     style:      'shimmer-twinkle',
-    formation:  'staggered',
-    spacing:    40,     /* px between dot centres — density */
+    formation:  'hex',
+    spacing:    36,     /* px between dot centres — density */
     size:       2,      /* dot radius in px */
     color:      '#8a9a90',
     opacity:    0.55,   /* base alpha before masks and animation */
 
-    shape:      'full', /* region mask */
-    shapeScale: 1,      /* 0.25–2, relative to half the shorter side */
+    shape:      'pair', /* region mask */
+    shapeScale: 1.5,    /* 0.25–2, relative to half the shorter side */
     shapeX:     0.5,    /* region centre, fraction of width */
-    shapeY:     0.42,   /* region centre, fraction of height */
-    feather:    0.12,   /* region edge softness, fraction of its radius */
+    shapeY:     0.55,   /* region centre, fraction of height */
+    feather:    0.2,    /* region edge softness, fraction of its radius */
 
-    clear:      0.65,   /* strength of the hole under the hero, 0–1 */
-    clearSize:  0.42,   /* its radius, fraction of the canvas */
+    clear:      0.8,    /* strength of the hole under the hero, 0–1 */
+    clearSize:  0.47,   /* its radius, fraction of the canvas */
     clearX:     0.5,    /* its centre, fraction of width */
     clearY:     0.30,   /* its centre, fraction of height */
 
-    fade:       0.68,   /* height fraction where the field has faded out */
+    fade:       0.72,   /* height fraction where the field has faded out */
 
-    intensity:  0.7,    /* animation amplitude, 0–1 */
+    intensity:  1,      /* animation amplitude, 0–1 */
     speed:      0.4,    /* cycles per second */
     angle:      35      /* travel direction, degrees — shimmer + scan */
   };

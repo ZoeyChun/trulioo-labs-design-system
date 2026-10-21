@@ -106,33 +106,42 @@ boundary looks the same whether the shape is big or small.
 
 ### Config
 
+These are the shipped defaults — two overlapping discs of hex lattice, cleared
+under the hero. That is a chosen composition, not the Figma node; the node
+itself is the **Figma** preset in the panel (`static` + `shape: 'full'`).
+
 ```js
 TruDotField.mount(document.getElementById('v2-dots'), {
   style:      'shimmer-twinkle',
-  formation:  'staggered',
-  spacing:    40,        // px between dot centres — density
+  formation:  'hex',
+  spacing:    36,        // px between dot centres — density
   size:       2,         // dot radius, px
   color:      '#8a9a90', // --color-neutral-50, the Figma colour
   opacity:    0.55,      // resting alpha
 
-  shape:      'full',    // region mask
-  shapeScale: 1,         // 0.25–2, relative to half the shorter side
+  shape:      'pair',    // region mask
+  shapeScale: 1.5,       // 0.25–2, relative to half the shorter side
   shapeX:     0.5,       // region centre, fraction of width
-  shapeY:     0.42,      // region centre, fraction of height
-  feather:    0.12,      // region edge softness, fraction of its radius
+  shapeY:     0.55,      // region centre, fraction of height
+  feather:    0.2,       // region edge softness, fraction of its radius
 
-  clear:      0.65,      // strength of the hole under the hero, 0–1
-  clearSize:  0.42,      // its radius, fraction of the canvas
+  clear:      0.8,       // strength of the hole under the hero, 0–1
+  clearSize:  0.47,      // its radius, fraction of the canvas
   clearX:     0.5,       // its centre, fraction of width
   clearY:     0.30,      // its centre, fraction of height
 
-  fade:       0.68,      // height fraction at which the field has faded out
+  fade:       0.72,      // height fraction at which the field has faded out
 
-  intensity:  0.7,       // animation amplitude, 0–1
+  intensity:  1,         // animation amplitude, 0–1
   speed:      0.4,       // cycles per second
   angle:      35         // travel direction, degrees — shimmer, scan, band
 });
 ```
+
+`TruDotControls` stores a chosen look under a versioned `localStorage` key, and
+a stored config is applied wholesale at mount. **Bump `STORE_KEY` in
+`js/dot-controls.js` whenever you change these defaults** — otherwise anyone who
+has opened the panel before keeps seeing the old look and never the new one.
 
 `clear` and `fade` are what keep the field off the greeting and off Quick start
 — the two offset tiles in Figma do the same thing by hand. Set `clear` to `0`

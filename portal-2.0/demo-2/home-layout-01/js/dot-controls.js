@@ -15,9 +15,12 @@
 (function (global) {
   'use strict';
 
-  /* v2 — the config gained shape and clear placement, so old stored
-     values would be a partial match. Bumping the key discards them. */
-  var STORE_KEY = 'tru-dot-field-v2';
+  /* Bumped whenever the shipped defaults change. A stored config is
+     applied wholesale at mount, so without this anyone who had opened
+     the panel before would keep seeing the old look and never the new
+     default. v2 added shape and clear placement; v3 is the hex/pair
+     composition. */
+  var STORE_KEY = 'tru-dot-field-v3';
 
   /* Named starting points. Each is a full config patch; the panel
      applies one wholesale and the controls then show where it landed. */
