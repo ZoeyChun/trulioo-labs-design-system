@@ -341,13 +341,13 @@
     var tbody = rows.map(rowMarkup).join("");
 
     return (
-      '<div class="d3-kyb-ownership" data-d3-kyb-ownership data-d3-kyb-own-view="table">' +
+      '<div class="d3-kyb-ownership" data-d3-kyb-ownership data-d3-kyb-own-view="graph">' +
       '<div class="d3-kyb-ownership__head">' +
       '<h3 class="d3-kyb-ownership__title">' +
       esc(title) +
       "</h3>" +
       '<div class="tds-segmented-control tds-segmented-control--icon-only" role="group" aria-label="Ownership view" data-d3-kyb-own-view-control>' +
-      '<button type="button" class="tds-segmented-control__item" aria-pressed="false" aria-label="UBO graph view" data-d3-kyb-own-view="graph">' +
+      '<button type="button" class="tds-segmented-control__item tds-segmented-control__item--selected" aria-pressed="true" aria-label="UBO graph view" data-d3-kyb-own-view="graph">' +
       '<span class="tds-segmented-control__icon" aria-hidden="true">' +
       '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
       '<circle cx="8" cy="3.25" r="1.75" stroke="currentColor" stroke-width="1.25"/>' +
@@ -355,14 +355,14 @@
       '<circle cx="12" cy="12.25" r="1.75" stroke="currentColor" stroke-width="1.25"/>' +
       '<path d="M8 5v2M8 7H4M8 7h4M4 7v3.5M12 7v3.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>' +
       "</svg></span></button>" +
-      '<button type="button" class="tds-segmented-control__item tds-segmented-control__item--selected" aria-pressed="true" aria-label="Table view" data-d3-kyb-own-view="table">' +
+      '<button type="button" class="tds-segmented-control__item" aria-pressed="false" aria-label="Table view" data-d3-kyb-own-view="table">' +
       '<span class="tds-segmented-control__icon" aria-hidden="true">' +
       '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
       '<rect x="2.5" y="2.5" width="11" height="11" rx="1" stroke="currentColor" stroke-width="1.25"/>' +
       '<path d="M2.5 6h11M2.5 9.5h11M6 2.5v11" stroke="currentColor" stroke-width="1.25"/>' +
       "</svg></span></button>" +
       "</div></div>" +
-      '<div class="d3-kyb-ownership__view" data-d3-kyb-own-panel="table">' +
+      '<div class="d3-kyb-ownership__view" data-d3-kyb-own-panel="table" hidden>' +
       '<div class="tds-data-table-container d3-kyb-ownership__table">' +
       '<div class="tds-data-table__wrapper">' +
       '<table class="tds-data-table tds-data-table--comfort">' +
@@ -377,7 +377,7 @@
       "</tbody></table></div></div>" +
       officerMarkup(officer) +
       "</div>" +
-      '<div class="d3-kyb-ownership__view" data-d3-kyb-own-panel="graph" hidden>' +
+      '<div class="d3-kyb-ownership__view" data-d3-kyb-own-panel="graph">' +
       '<div class="d3-kyb-ubo-graph">' +
       '<div class="kyb-ubo-graph-layout" id="kyb-ubo-graph-fullscreen-root">' +
       '<div class="kyb-ownership-graph kyb-ubo-graph-layout__canvas" data-kyb-ownership-graph aria-label="Ownership structure graph"></div>' +
@@ -443,7 +443,10 @@
     }
     panel.innerHTML = panelMarkup(biz);
     bindViewToggle(panel, biz);
-    setView(panel, "table");
+    setView(panel, "graph");
+    window.requestAnimationFrame(function () {
+      mountGraphOnly(panel, biz);
+    });
     return true;
   }
 
