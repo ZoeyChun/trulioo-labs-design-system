@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<!-- Demo 3 — TruAI panel lab
+     Isolated AI panel for UI experiments. Meridian KYB chat still works in-panel.
+     Templates below are copied from demo-3/index.html (data-d1-tpl) — keep in sync. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TruAI panel lab — Demo 3</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../Components/button/button.css">
+  <link rel="stylesheet" href="../../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../../Components/stat-card/stat-card.css">
+  <link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../../assets/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="../css/shell.css">
+  <link rel="stylesheet" href="../composer/prompt.css?v=5">
+  <link rel="stylesheet" href="../css/messages.css?v=3">
+  <link rel="stylesheet" href="../css/motion.css?v=7">
+  <link rel="stylesheet" href="../css/d3-thinking.css?v=4">
+  <link rel="stylesheet" href="../css/loader.css?v=1">
+  <link rel="stylesheet" href="../css/d3-fa.css?v=3">
+  <link rel="stylesheet" href="../css/d3-shell.css?v=35">
+  <link rel="stylesheet" href="../components/ai-panel/ai-panel.css?v=5">
+  <link rel="stylesheet" href="../css/d3-workspace.css?v=32">
+  <link rel="stylesheet" href="../css/d3-kyb-search.css?v=2">
+  <link rel="stylesheet" href="../css/d3-kyb-agent.css?v=8">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="lab.css?v=4">
+</head>
+<body class="d3-ai-panel-lab d1-app-ready">
+
+<!-- Docked like demo-3 (478px); expand / resize / minimize stay on the panel. -->
+<div class="d1-shell" data-d3-lab data-d3-view="chat" data-d3-chat="open" data-d3-chat-mode="kyb">
+
+  <div class="d3-canvas">
+    <!-- Live TruAI panel (Meridian flow). Mounted by components/ai-panel/ai-panel.js -->
+    <div class="d3-lab-live">
+      <div data-d3-ai-panel-mount></div>
+    </div>
+
+    <!-- Labeled component specimens — filled by lab-boot.js via D3AiPanel.parts + templates -->
+    <aside class="d3-lab-gallery" data-d3-lab-gallery aria-label="AI panel component gallery"></aside>
+
+    <!-- Off-layout KYB stubs (map/report) for agent init — hidden via lab.css. -->
+    <main class="d1-main" data-d1-drawer="closed" aria-hidden="true">
+      <section class="d3-workspace d3-lab-workspace" data-d3-workspace data-d3-kyb-surface="map" aria-label="KYB map stub">
+        <div class="d3-kyb-map" data-d3-kyb-map aria-hidden="false">
+          <div class="d3-kyb-map__leaflet" data-d3-kyb-leaflet role="application" aria-label="Business search map"></div>
+          <div class="d3-kyb-map__await" data-d3-kyb-map-await hidden>
+            <p>Waiting for country in chat… <strong data-d3-kyb-map-await-query>—</strong></p>
+          </div>
+          <div class="d3-kyb-map__overlay">
+            <p class="d3-kyb-map__caption" data-d3-kyb-map-caption>Ask TruAI to find a business</p>
+            <div class="d3-kyb-map__resume-nudge" data-d3-kyb-map-nudge hidden></div>
+          </div>
+        </div>
+
+        <div class="d3-workspace__detail" data-d3-kyb-detail hidden>
+          <nav class="d3-workspace__crumb" data-d3-kyb-crumb aria-label="Breadcrumb" hidden></nav>
+          <h1 class="d3-workspace__title" hidden>KYB Verification</h1>
+          <p class="d3-workspace__fresh" data-d3-kyb-fresh hidden></p>
+          <dl class="d3-workspace__meta" hidden>
+            <div><dt>Country</dt><dd data-d3-kyb-detail-country></dd></div>
+            <div><dt>Transaction ID</dt><dd data-d3-kyb-detail-txid></dd></div>
+            <div><dt>Date</dt><dd data-d3-kyb-detail-date></dd></div>
+          </dl>
+
+          <article class="d3-workspace__card d3-kyb-resume" data-d3-kyb-resume hidden>
+            <div class="d3-kyb-resume__body">
+              <div class="d3-kyb-resume__identity">
+                <div class="d3-workspace__biz-row">
+                  <div class="d3-workspace__biz">
+                    <h2 class="d3-workspace__biz-name">Meridian Apex Consulting Ltd.</h2>
+                    <span class="d1-tag d1-tag--positive">Verified</span>
+                  </div>
+                  <div class="d3-workspace__biz-actions">
+                    <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-kyb-details hidden>Details</button>
+                    <button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-kyb-export hidden>Export</button>
+                  </div>
+                </div>
+              </div>
+              <div class="d3-kyb-tabs" role="tablist" aria-label="Verification sections">
+                <button type="button" class="d3-kyb-tabs__item is-active" role="tab" aria-selected="true" data-d3-kyb-tab="overview">Overview</button>
+                <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="ownership">Owners &amp; UBOs</button>
+                <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="signals">Match Signals</button>
+              </div>
+              <div class="d3-kyb-panel" data-d3-kyb-panel="overview">
+                <div class="d3-kyb-hero" aria-hidden="true">
+                  <div class="d3-kyb-hero__leaflet" data-d3-kyb-hero-map role="img" aria-label="Selected business location"></div>
+                  <img class="d3-kyb-hero__map" data-d3-kyb-hero-fallback src="../assets/kyb-resume/map.png" alt="" width="769" height="182" hidden>
+                  <div class="d3-kyb-hero__pin" data-d3-kyb-hero-pin hidden></div>
+                </div>
+                <div class="d3-kyb-overview">
+                  <div class="d3-kyb-overview__rows">
+                    <p class="d3-kyb-overview__value" data-d3-field="regNumber"></p>
+                    <p class="d3-kyb-overview__value" data-d3-field="taxId"></p>
+                    <p class="d3-kyb-overview__value" data-d3-field="status"></p>
+                    <p class="d3-kyb-overview__value" data-d3-field="sizing"></p>
+                    <p class="d3-kyb-overview__value" data-d3-field="legalForm"></p>
+                    <p class="d3-kyb-overview__value" data-d3-field="address"></p>
+                    <p class="d3-kyb-overview__value" data-d3-field="industry"></p>
+                    <p class="d3-kyb-overview__note" data-d3-field="industryNote"></p>
+                    <p class="d3-kyb-overview__value" data-d3-field="regDate"></p>
+                    <p class="d3-kyb-overview__value" data-d3-field="phone"></p>
+                    <p class="d3-kyb-overview__value" data-d3-field="email"></p>
+                  </div>
+                </div>
+                <div class="d3-kyb-lower"></div>
+              </div>
+              <div class="d3-kyb-panel" data-d3-kyb-panel="ownership" hidden></div>
+              <div class="d3-kyb-panel" data-d3-kyb-panel="signals" hidden></div>
+              <div class="d3-kyb-panel" data-d3-kyb-panel="raw" hidden>
+                <pre data-d3-kyb-raw-pre></pre>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Hidden park source for thread/composer (d3-chat-bridge + d3-kyb-agent).
+       Message templates must stay in sync with demo-3/index.html for now. -->
+  <div class="d3-lab-park" aria-hidden="true">
+    <div data-d1-stage="home"></div>
+    <div class="d1-thread" data-d1-thread></div>
+    <div class="d1-follow" data-d1-follow hidden>
+      <button type="button" class="d1-suggest-row" data-d1-suggest><span></span></button>
+      <button type="button" class="d1-suggest-row" data-d1-suggest><span></span></button>
+      <button type="button" class="d1-suggest-row" data-d1-suggest><span></span></button>
+    </div>
+    <div class="d1-composer" data-d1-composer>
+      <form class="d1-prompt" data-d1-form action="#" method="post">
+        <ul class="d1-prompt__files" data-d1-file-list></ul>
+        <div class="d1-prompt__field">
+          <label class="d1-visually-hidden" for="d3-lab-prompt">Message</label>
+          <textarea id="d3-lab-prompt" class="d1-prompt__input" data-d1-input rows="1" placeholder="" aria-label="Business name and country"></textarea>
+        </div>
+        <div class="d1-prompt__bar">
+          <div class="d1-prompt__actions">
+            <div class="d1-prompt__agent" hidden>
+              <button type="button" class="d1-prompt__mode" data-d1-agent aria-haspopup="listbox" aria-expanded="false">
+                <span data-d1-agent-label>Auto</span>
+              </button>
+              <ul class="d1-prompt__menu" data-d1-agent-menu role="listbox" hidden>
+                <li role="presentation"><button type="button" class="d1-prompt__option" role="option" data-d1-agent-option data-agent="auto" aria-selected="true">Auto</button></li>
+                <li role="presentation"><button type="button" class="d1-prompt__option" role="option" data-d1-agent-option data-agent="kyb" aria-selected="false">KYB Agent</button></li>
+              </ul>
+            </div>
+            <div class="d1-prompt__send-wrap">
+              <button type="submit" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--circular d1-prompt__send" data-d1-send aria-label="Send" disabled>
+                <span class="tds-icon-btn__icon">
+                  <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 13V3m0 0L4.5 6.5M8 3l3.5 3.5"/></svg>
+                  <span class="d1-stop-square" aria-hidden="true"></span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <p class="d1-visually-hidden" data-d1-status aria-live="polite"></p>
+      </form>
+    </div>
+
+<template data-d1-tpl="user">
+              <section class="d1-turn d1-enter">
+                <div class="d1-user"><p></p></div>
+              </section>
+            </template>
+
+<template data-d1-tpl="ai">
+              <div class="d1-ai d1-enter"></div>
+            </template>
+
+<template data-d1-tpl="typing">
+              <div class="d1-thinking d1-enter" role="status" aria-live="polite">
+                <span class="d1-thinking__orb" aria-hidden="true">
+                  <svg class="d1-thinking__svg" viewBox="0 0 48.759 40" fill="currentColor">
+                    <circle cx="2.371" cy="16.893" r="1.456" style="animation-delay:-1.180s"/>
+                    <circle cx="4.527" cy="11.232" r="1.284" style="animation-delay:-1.312s"/>
+                    <circle cx="7.886" cy="6.714" r="1.154" style="animation-delay:-1.437s"/>
+                    <circle cx="12.305" cy="3.384" r="1.014" style="animation-delay:-1.564s"/>
+                    <circle cx="16.667" cy="1.59" r="0.766" style="animation-delay:-1.675s"/>
+                    <circle cx="25.191" cy="1.591" r="0.727" style="animation-delay:-1.886s"/>
+                    <circle cx="29.645" cy="1.008" r="0.692" style="animation-delay:-1.995s"/>
+                    <circle cx="34.03" cy="1.591" r="0.729" style="animation-delay:-2.097s"/>
+                    <circle cx="38.2" cy="3.384" r="1.012" style="animation-delay:-2.198s"/>
+                    <circle cx="42.263" cy="6.714" r="1.149" style="animation-delay:-2.312s"/>
+                    <circle cx="45.147" cy="11.232" r="1.284" style="animation-delay:-2.427s"/>
+                    <circle cx="46.721" cy="16.893" r="1.456" style="animation-delay:-2.552s"/>
+                    <circle cx="46.395" cy="23.102" r="1.455" style="animation-delay:-0.067s"/>
+                    <circle cx="44.236" cy="28.767" r="1.283" style="animation-delay:-0.199s"/>
+                    <circle cx="40.874" cy="33.281" r="1.153" style="animation-delay:-0.325s"/>
+                    <circle cx="36.449" cy="36.609" r="1.014" style="animation-delay:-0.452s"/>
+                    <circle cx="32.105" cy="38.397" r="0.769" style="animation-delay:-0.562s"/>
+                    <circle cx="23.571" cy="38.401" r="0.731" style="animation-delay:-0.774s"/>
+                    <circle cx="19.124" cy="38.989" r="0.693" style="animation-delay:-0.882s"/>
+                    <circle cx="14.737" cy="38.401" r="0.732" style="animation-delay:-0.984s"/>
+                    <circle cx="10.571" cy="36.609" r="1.012" style="animation-delay:-1.085s"/>
+                    <circle cx="6.497" cy="33.281" r="1.151" style="animation-delay:-1.199s"/>
+                    <circle cx="3.611" cy="28.767" r="1.282" style="animation-delay:-1.314s"/>
+                    <circle cx="2.042" cy="23.105" r="1.459" style="animation-delay:-1.439s"/>
+                    <circle cx="10.901" cy="16.891" r="1.413" style="animation-delay:-1.221s"/>
+                    <circle cx="13.062" cy="11.214" r="1.26" style="animation-delay:-1.429s"/>
+                    <circle cx="16.425" cy="6.714" r="1.154" style="animation-delay:-1.607s"/>
+                    <circle cx="20.838" cy="3.381" r="1.014" style="animation-delay:-1.765s"/>
+                    <circle cx="33.732" cy="6.714" r="1.151" style="animation-delay:-2.159s"/>
+                    <circle cx="36.625" cy="11.214" r="1.261" style="animation-delay:-2.320s"/>
+                    <circle cx="38.193" cy="16.891" r="1.413" style="animation-delay:-2.512s"/>
+                    <circle cx="37.865" cy="23.097" r="1.413" style="animation-delay:-0.108s"/>
+                    <circle cx="35.704" cy="28.766" r="1.261" style="animation-delay:-0.316s"/>
+                    <circle cx="32.34" cy="33.281" r="1.151" style="animation-delay:-0.494s"/>
+                    <circle cx="27.921" cy="36.609" r="1.012" style="animation-delay:-0.652s"/>
+                    <circle cx="15.023" cy="33.281" r="1.151" style="animation-delay:-1.047s"/>
+                    <circle cx="12.134" cy="28.766" r="1.261" style="animation-delay:-1.208s"/>
+                    <circle cx="10.574" cy="23.097" r="1.413" style="animation-delay:-1.399s"/>
+                  </svg>
+                </span>
+                <span class="d1-thinking__text" data-d1-thinking-label>Thinking…</span>
+              </div>
+            </template>
+
+<template data-d1-tpl="tools">
+              <section class="d1-block d1-enter">
+                <div class="d1-progress">
+                  <div class="d1-progress__row">
+                    <span data-d1-tools-label>Investigating</span>
+                    <span class="d1-progress__pct">0%</span>
+                    <i data-d1-tools-check class="fa-regular fa-circle-check" aria-hidden="true"></i>
+                  </div>
+                  <div class="d1-progress__track"><div class="d1-progress__fill d1-progress__fill--active"></div></div>
+                </div>
+                <div class="d1-steps" data-d1-steps></div>
+              </section>
+            </template>
+
+<template data-d1-tpl="activity">
+              <div class="d1-activity d1-enter">
+                <button type="button" class="d1-activity__toggle d1-activity__toggle--current" data-d1-activity aria-expanded="true">
+                  <span class="d1-activity__mark">
+                    <i data-d1-mark="run" class="d1-spin fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                    <i data-d1-mark="done" class="fa-regular fa-circle-check" aria-hidden="true" hidden></i>
+                  </span>
+                  <span data-d1-activity-label></span>
+                  <svg class="d3-fa-line d1-chev-down" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 6 4 4 4-4"/></svg>
+                  <svg class="d3-fa-line d1-chev-up" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 10 4-4 4 4"/></svg>
+                </button>
+                <div class="d1-activity__body">
+                  <div class="d1-activity__rail"><img src="../assets/icons/divider.svg" alt="" width="1" height="68"></div>
+                  <div class="d1-activity__detail" data-d1-activity-detail></div>
+                </div>
+              </div>
+            </template>
+
+<template data-d1-tpl="report">
+              <section class="d1-block d1-enter">
+                <div>
+                  <h2 class="d1-report__title"><span data-d1-co>Meridian Apex Consulting Ltd.</span></h2>
+                  <span class="d1-tag d1-tag--positive" data-d1-report-tag>Verified</span>
+                  <div class="d1-report__body">
+                    <div class="d1-summary" data-d1-summary>
+                      <h3>Summary</h3>
+                      <p data-d1-sum-a></p>
+                      <p data-d1-sum-b hidden></p>
+                    </div>
+                    <div class="d1-alert" data-d1-report-action>
+                      <i class="fa-regular fa-file-lines" aria-hidden="true"></i>
+                      <span>Verification report is ready</span>
+                      <button type="button" class="tds-btn tds-btn--primary tds-btn--md d1-alert__export" data-d1-report-export>Export</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="d1-actions">
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Share"><span class="tds-icon-btn__icon"><i class="fa-regular fa-share-from-square" aria-hidden="true"></i></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-copy aria-label="Copy"><span class="tds-icon-btn__icon"><i class="fa-regular fa-copy" aria-hidden="true"></i></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-regen aria-label="Regenerate"><span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M13 8a5 5 0 1 1-1.2-3.25M13 3.5V6.5H10"/></svg></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-vote aria-pressed="false" aria-label="Good response"><span class="tds-icon-btn__icon"><i class="fa-regular fa-thumbs-up" aria-hidden="true"></i></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-vote aria-pressed="false" aria-label="Poor response"><span class="tds-icon-btn__icon"><i class="fa-regular fa-thumbs-down" aria-hidden="true"></i></span></button>
+                </div>
+              </section>
+            </template>
+
+<template data-d1-tpl="confirm">
+              <section class="d1-block d1-enter">
+                <div class="tds-announcement tds-announcement--info d1-confirm" data-d1-confirm-card>
+                  <span class="tds-announcement__icon" data-d1-confirm-icon aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m3 13 6.5-6.5M10.5 3l.7 1.8L13 5.5l-1.8.7L10.5 8l-.7-1.8L8 5.5l1.8-.7L10.5 3ZM4 4.5l.4 1 .9.4-.9.4L4 7.5l-.4-1-.9-.4.9-.4L4 4.5Z"/></svg></span>
+                  <div class="tds-announcement__content">
+                    <p class="tds-announcement__title" data-d1-confirm-action></p>
+                    <p class="tds-announcement__message" data-d1-confirm-detail></p>
+                    <div class="tds-announcement__actions" data-d1-confirm-buttons>
+                      <button type="button" class="tds-btn tds-btn--sm tds-btn--primary" data-d1-confirm-yes>Confirm</button>
+                      <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" data-d1-confirm-no>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </template>
+
+<template data-d1-tpl="analysis">
+              <section class="d1-block d1-enter">
+                <div class="d1-card" data-d1-analysis-card>
+                  <h3 class="d1-card__title" data-d1-analysis-title></h3>
+                  <div class="d1-card__body" data-d1-analysis-rows></div>
+                </div>
+              </section>
+            </template>
+
+<template data-d1-tpl="compare">
+              <section class="d1-block d1-enter">
+                <div class="tds-data-table-container d1-compare-table">
+                  <table class="tds-data-table tds-data-table--compact">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th data-d1-compare-left></th>
+                        <th data-d1-compare-right></th>
+                      </tr>
+                    </thead>
+                    <tbody data-d1-compare-rows></tbody>
+                  </table>
+                </div>
+              </section>
+            </template>
+
+<template data-d1-tpl="guide">
+              <section class="d1-block d1-enter">
+                <div class="d1-card" data-d1-guide-card>
+                  <h3 class="d1-card__title" data-d1-guide-title></h3>
+                  <div class="d1-card__body" data-d1-guide-steps></div>
+                </div>
+              </section>
+            </template>
+  </div>
+
+</div>
+
+<script src="../components/ai-panel/parts/util.js?v=1"></script>
+<script src="../components/ai-panel/parts/icons.js?v=4"></script>
+<script src="../components/ai-panel/parts/icon-btn.js?v=1"></script>
+<script src="../components/ai-panel/parts/prompt-card.js?v=1"></script>
+<script src="../components/ai-panel/parts/composer.js?v=1"></script>
+<script src="../components/ai-panel/parts/header.js?v=2"></script>
+<script src="../components/ai-panel/parts/askbar.js?v=1"></script>
+<script src="../components/ai-panel/parts/size.js?v=1"></script>
+<script src="../components/ai-panel/ai-panel.js?v=5"></script>
+<!-- No auth-gate.js — lab is usable without sign-in. -->
+<script src="../composer/prompt.js?v=3"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="../js/d3-kyb-report-reveal.js?v=31"></script>
+<script src="../js/d3-kyb-map-search.js?v=45"></script>
+<script src="../js/d3-kyb-agent.js?v=21"></script>
+<script src="../js/d3-nav.js?v=36"></script>
+<script src="../js/d3-chat-bridge.js?v=9"></script>
+<script src="lab-boot.js?v=4"></script>
+</body>
+</html>

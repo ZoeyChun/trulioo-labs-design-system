@@ -1,0 +1,168 @@
+<template data-d1-tpl="user">
+              <section class="d1-turn d1-enter">
+                <div class="d1-user"><p></p></div>
+              </section>
+            </template>
+
+<template data-d1-tpl="ai">
+              <div class="d1-ai d1-enter"></div>
+            </template>
+
+<template data-d1-tpl="typing">
+              <div class="d1-thinking d1-enter" role="status" aria-live="polite">
+                <span class="d1-thinking__orb" aria-hidden="true">
+                  <svg class="d1-thinking__svg" viewBox="0 0 48.759 40" fill="currentColor">
+                    <circle cx="2.371" cy="16.893" r="1.456" style="animation-delay:-1.180s"/>
+                    <circle cx="4.527" cy="11.232" r="1.284" style="animation-delay:-1.312s"/>
+                    <circle cx="7.886" cy="6.714" r="1.154" style="animation-delay:-1.437s"/>
+                    <circle cx="12.305" cy="3.384" r="1.014" style="animation-delay:-1.564s"/>
+                    <circle cx="16.667" cy="1.59" r="0.766" style="animation-delay:-1.675s"/>
+                    <circle cx="25.191" cy="1.591" r="0.727" style="animation-delay:-1.886s"/>
+                    <circle cx="29.645" cy="1.008" r="0.692" style="animation-delay:-1.995s"/>
+                    <circle cx="34.03" cy="1.591" r="0.729" style="animation-delay:-2.097s"/>
+                    <circle cx="38.2" cy="3.384" r="1.012" style="animation-delay:-2.198s"/>
+                    <circle cx="42.263" cy="6.714" r="1.149" style="animation-delay:-2.312s"/>
+                    <circle cx="45.147" cy="11.232" r="1.284" style="animation-delay:-2.427s"/>
+                    <circle cx="46.721" cy="16.893" r="1.456" style="animation-delay:-2.552s"/>
+                    <circle cx="46.395" cy="23.102" r="1.455" style="animation-delay:-0.067s"/>
+                    <circle cx="44.236" cy="28.767" r="1.283" style="animation-delay:-0.199s"/>
+                    <circle cx="40.874" cy="33.281" r="1.153" style="animation-delay:-0.325s"/>
+                    <circle cx="36.449" cy="36.609" r="1.014" style="animation-delay:-0.452s"/>
+                    <circle cx="32.105" cy="38.397" r="0.769" style="animation-delay:-0.562s"/>
+                    <circle cx="23.571" cy="38.401" r="0.731" style="animation-delay:-0.774s"/>
+                    <circle cx="19.124" cy="38.989" r="0.693" style="animation-delay:-0.882s"/>
+                    <circle cx="14.737" cy="38.401" r="0.732" style="animation-delay:-0.984s"/>
+                    <circle cx="10.571" cy="36.609" r="1.012" style="animation-delay:-1.085s"/>
+                    <circle cx="6.497" cy="33.281" r="1.151" style="animation-delay:-1.199s"/>
+                    <circle cx="3.611" cy="28.767" r="1.282" style="animation-delay:-1.314s"/>
+                    <circle cx="2.042" cy="23.105" r="1.459" style="animation-delay:-1.439s"/>
+                    <circle cx="10.901" cy="16.891" r="1.413" style="animation-delay:-1.221s"/>
+                    <circle cx="13.062" cy="11.214" r="1.26" style="animation-delay:-1.429s"/>
+                    <circle cx="16.425" cy="6.714" r="1.154" style="animation-delay:-1.607s"/>
+                    <circle cx="20.838" cy="3.381" r="1.014" style="animation-delay:-1.765s"/>
+                    <circle cx="33.732" cy="6.714" r="1.151" style="animation-delay:-2.159s"/>
+                    <circle cx="36.625" cy="11.214" r="1.261" style="animation-delay:-2.320s"/>
+                    <circle cx="38.193" cy="16.891" r="1.413" style="animation-delay:-2.512s"/>
+                    <circle cx="37.865" cy="23.097" r="1.413" style="animation-delay:-0.108s"/>
+                    <circle cx="35.704" cy="28.766" r="1.261" style="animation-delay:-0.316s"/>
+                    <circle cx="32.34" cy="33.281" r="1.151" style="animation-delay:-0.494s"/>
+                    <circle cx="27.921" cy="36.609" r="1.012" style="animation-delay:-0.652s"/>
+                    <circle cx="15.023" cy="33.281" r="1.151" style="animation-delay:-1.047s"/>
+                    <circle cx="12.134" cy="28.766" r="1.261" style="animation-delay:-1.208s"/>
+                    <circle cx="10.574" cy="23.097" r="1.413" style="animation-delay:-1.399s"/>
+                  </svg>
+                </span>
+                <span class="d1-thinking__text" data-d1-thinking-label>Thinking…</span>
+              </div>
+            </template>
+
+<template data-d1-tpl="tools">
+              <section class="d1-block d1-enter">
+                <div class="d1-progress">
+                  <div class="d1-progress__row">
+                    <span data-d1-tools-label>Investigating</span>
+                    <span class="d1-progress__pct">0%</span>
+                    <i data-d1-tools-check class="fa-regular fa-circle-check" aria-hidden="true"></i>
+                  </div>
+                  <div class="d1-progress__track"><div class="d1-progress__fill d1-progress__fill--active"></div></div>
+                </div>
+                <div class="d1-steps" data-d1-steps></div>
+              </section>
+            </template>
+
+<template data-d1-tpl="activity">
+              <div class="d1-activity d1-enter">
+                <button type="button" class="d1-activity__toggle d1-activity__toggle--current" data-d1-activity aria-expanded="true">
+                  <span class="d1-activity__mark">
+                    <i data-d1-mark="run" class="d1-spin fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                    <i data-d1-mark="done" class="fa-regular fa-circle-check" aria-hidden="true" hidden></i>
+                  </span>
+                  <span data-d1-activity-label></span>
+                  <svg class="d3-fa-line d1-chev-down" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 6 4 4 4-4"/></svg>
+                  <svg class="d3-fa-line d1-chev-up" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 10 4-4 4 4"/></svg>
+                </button>
+                <div class="d1-activity__body">
+                  <div class="d1-activity__rail"><img src="../assets/icons/divider.svg" alt="" width="1" height="68"></div>
+                  <div class="d1-activity__detail" data-d1-activity-detail></div>
+                </div>
+              </div>
+            </template>
+
+<template data-d1-tpl="report">
+              <section class="d1-block d1-enter">
+                <div>
+                  <h2 class="d1-report__title"><span data-d1-co>Meridian Apex Consulting Ltd.</span></h2>
+                  <span class="d1-tag d1-tag--positive" data-d1-report-tag>Verified</span>
+                  <div class="d1-report__body">
+                    <div class="d1-summary" data-d1-summary>
+                      <h3>Summary</h3>
+                      <p data-d1-sum-a></p>
+                      <p data-d1-sum-b hidden></p>
+                    </div>
+                    <div class="d1-alert" data-d1-report-action>
+                      <i class="fa-regular fa-file-lines" aria-hidden="true"></i>
+                      <span>Verification report is ready</span>
+                      <button type="button" class="tds-btn tds-btn--primary tds-btn--md d1-alert__export" data-d1-report-export>Export</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="d1-actions">
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Share"><span class="tds-icon-btn__icon"><i class="fa-regular fa-share-from-square" aria-hidden="true"></i></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-copy aria-label="Copy"><span class="tds-icon-btn__icon"><i class="fa-regular fa-copy" aria-hidden="true"></i></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-regen aria-label="Regenerate"><span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M13 8a5 5 0 1 1-1.2-3.25M13 3.5V6.5H10"/></svg></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-vote aria-pressed="false" aria-label="Good response"><span class="tds-icon-btn__icon"><i class="fa-regular fa-thumbs-up" aria-hidden="true"></i></span></button>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" data-d1-vote aria-pressed="false" aria-label="Poor response"><span class="tds-icon-btn__icon"><i class="fa-regular fa-thumbs-down" aria-hidden="true"></i></span></button>
+                </div>
+              </section>
+            </template>
+
+<template data-d1-tpl="confirm">
+              <section class="d1-block d1-enter">
+                <div class="tds-announcement tds-announcement--info d1-confirm" data-d1-confirm-card>
+                  <span class="tds-announcement__icon" data-d1-confirm-icon aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m3 13 6.5-6.5M10.5 3l.7 1.8L13 5.5l-1.8.7L10.5 8l-.7-1.8L8 5.5l1.8-.7L10.5 3ZM4 4.5l.4 1 .9.4-.9.4L4 7.5l-.4-1-.9-.4.9-.4L4 4.5Z"/></svg></span>
+                  <div class="tds-announcement__content">
+                    <p class="tds-announcement__title" data-d1-confirm-action></p>
+                    <p class="tds-announcement__message" data-d1-confirm-detail></p>
+                    <div class="tds-announcement__actions" data-d1-confirm-buttons>
+                      <button type="button" class="tds-btn tds-btn--sm tds-btn--primary" data-d1-confirm-yes>Confirm</button>
+                      <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" data-d1-confirm-no>Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </template>
+
+<template data-d1-tpl="analysis">
+              <section class="d1-block d1-enter">
+                <div class="d1-card" data-d1-analysis-card>
+                  <h3 class="d1-card__title" data-d1-analysis-title></h3>
+                  <div class="d1-card__body" data-d1-analysis-rows></div>
+                </div>
+              </section>
+            </template>
+
+<template data-d1-tpl="compare">
+              <section class="d1-block d1-enter">
+                <div class="tds-data-table-container d1-compare-table">
+                  <table class="tds-data-table tds-data-table--compact">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th data-d1-compare-left></th>
+                        <th data-d1-compare-right></th>
+                      </tr>
+                    </thead>
+                    <tbody data-d1-compare-rows></tbody>
+                  </table>
+                </div>
+              </section>
+            </template>
+
+<template data-d1-tpl="guide">
+              <section class="d1-block d1-enter">
+                <div class="d1-card" data-d1-guide-card>
+                  <h3 class="d1-card__title" data-d1-guide-title></h3>
+                  <div class="d1-card__body" data-d1-guide-steps></div>
+                </div>
+              </section>
+            </template>

@@ -340,10 +340,16 @@
     });
   });
 
-  /* Default */
-  shell.setAttribute("data-d3-view", "home");
-  shell.setAttribute("data-d3-chat", "closed");
-  setActiveNav("home");
+  /* Default portal landing. Lab pages set data-d3-lab and own their initial view/chat. */
+  if (!shell.hasAttribute("data-d3-lab")) {
+    shell.setAttribute("data-d3-view", "home");
+    shell.setAttribute("data-d3-chat", "closed");
+    setActiveNav("home");
+  } else {
+    var labMode = shell.getAttribute("data-d3-chat-mode") || "kyb";
+    var labOpen = shell.getAttribute("data-d3-chat") !== "closed";
+    setChatOpen(labOpen, labMode);
+  }
   forceRepeat();
 
   function forceRepeat() {

@@ -75,7 +75,17 @@ Docked width is stored in `sessionStorage` (`d3-chat-pane-w`) and restored on re
 - `[data-d3-chat-thread]`, `[data-d3-chat-composer]`, `[data-d3-pane-input]`
 - `[data-d3-askbar]`
 
+## Panel lab
+
+Standalone page (no portal shell / no sign-in) for UI experiments:
+
+`../ai-panel-lab/index.html` — GitHub Pages:
+`…/portal-2.0/demo-3/ai-panel-lab/`
+
+Live Meridian panel on the left; labeled component gallery on the right
+(renders via `D3AiPanel.parts.*` + chat template clones).
+
 ## Not in this component (yet)
 
 Message templates (`data-d1-tpl`), KYB flow UI, and agent logic stay in
-`index.html` / `js/`.
+`index.html` / `js/` (lab page copies the templates it needs).

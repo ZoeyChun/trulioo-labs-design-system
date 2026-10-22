@@ -18,6 +18,18 @@ Local: http://127.0.0.1:8765/portal-2.0/demo-3/sign-in/index.html?fresh=1
 Without `?fresh=1`, an existing `d3-signed-in` session skips straight to the portal.  
 Unsigned visits to `demo-3/` or `demo-3/index.html` redirect to `sign-in/index.html`.
 
+## TruAI panel lab
+
+Isolated AI panel for UI experiments (no full portal shell, **no sign-in**).
+Meridian KYB conversation (verify → progress → results) still runs in the panel.
+
+| | URL |
+|--|--|
+| GitHub Pages | [demo-3/ai-panel-lab/](https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/ai-panel-lab/) |
+| Local | http://127.0.0.1:8765/portal-2.0/demo-3/ai-panel-lab/ |
+
+`data-d1-tpl` message templates are copied into `ai-panel-lab/index.html` from the portal — keep them in sync when portal templates change.
+
 ## Auth file map
 
 ```
@@ -29,6 +41,7 @@ demo-3/
     assets/
   components/
     ai-panel/           # TruAI chat chrome (mount + CSS + prompts)
+  ai-panel-lab/         # Standalone panel lab (no auth)
   js/
     auth-gate.js        # Session gate + post-login loader
   css/
