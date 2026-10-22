@@ -386,8 +386,9 @@
       var IDLE_MAX = 132;
       function autosizeIdleInput() {
         idleInput.style.height = IDLE_LINE + "px";
-        idleInput.style.height =
-          Math.min(IDLE_MAX, Math.max(IDLE_LINE, idleInput.scrollHeight)) + "px";
+        var next = Math.min(IDLE_MAX, Math.max(IDLE_LINE, idleInput.scrollHeight));
+        idleInput.style.height = next + "px";
+        idleInput.classList.toggle("is-multiline", next > IDLE_LINE + 1);
       }
       idleInput.addEventListener("input", autosizeIdleInput);
       idleInput.addEventListener("keydown", function (event) {

@@ -71,10 +71,16 @@
   min-height: 22px;
   max-height: 132px; /* ~6 lines */
   overflow-x: hidden;
-  overflow-y: auto;
+  /* Hidden at rest — overflow-y:auto showed a phantom scrollbar at 1 line. */
+  overflow-y: hidden;
   font-size: 14px;
   line-height: 22px;
   resize: none;
+}
+
+.d3-pane-idle-form .d1-prompt__input.is-multiline,
+.d3-chat-pane .d1-prompt__input.is-multiline {
+  overflow-y: auto;
 }
 
 .d3-pane-idle-form .d1-prompt__bar,

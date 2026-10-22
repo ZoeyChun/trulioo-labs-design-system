@@ -45,11 +45,13 @@
     function autosizePaneInput() {
       if (!input.closest(".d3-chat-pane")) {
         input.style.height = "";
+        input.classList.remove("is-multiline");
         return;
       }
       input.style.height = PANE_LINE + "px";
       var next = Math.min(PANE_MAX, Math.max(PANE_LINE, input.scrollHeight));
       input.style.height = next + "px";
+      input.classList.toggle("is-multiline", next > PANE_LINE + 1);
     }
 
     function syncSend() {

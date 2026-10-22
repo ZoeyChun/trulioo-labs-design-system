@@ -269,11 +269,15 @@
 
     var activityHtml = cloneTpl("activity", function (root) {
       setText(root, "[data-d1-activity-label]", "Searching registries");
-      setText(
-        root,
-        "[data-d1-activity-detail]",
-        "Querying United States business registries for Meridian…"
-      );
+      /* Detail lines must be <p> — styles are `.d1-activity__detail p` (size + muted color). */
+      var detail = root.querySelector("[data-d1-activity-detail]");
+      if (detail) {
+        detail.innerHTML = "";
+        var p = document.createElement("p");
+        p.textContent =
+          "Querying United States business registries for Meridian…";
+        detail.appendChild(p);
+      }
     });
 
     var confirmHtml = cloneTpl("confirm", function (root) {
