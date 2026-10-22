@@ -12,6 +12,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { EASE, EASE_CSS } from "./easings";
 import { ORB_OVERLAP } from "./orbMotion";
+import { foundersGrotesk } from "./foundersGrotesk";
 import { TruAIOrb } from "./TruAIOrb";
 import type { TruAIBubbleProps, TruAIState } from "./types";
 
@@ -375,11 +376,13 @@ export function TruAIBubble({
       >
         <div className="flex shrink-0 items-center">
           <p
-            className="whitespace-nowrap font-medium not-italic"
+            className={cn(
+              foundersGrotesk.className,
+              "whitespace-nowrap font-normal not-italic",
+            )}
             style={{
-              fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
-              fontSize: 16,
-              lineHeight: "22px",
+              fontSize: 18,
+              lineHeight: "24px",
               color: "#172d2d",
             }}
           >
@@ -490,11 +493,13 @@ function MeasureSlot({
     >
       <div className="flex items-center">
         <p
-          className="whitespace-nowrap font-medium"
+          className={cn(
+            foundersGrotesk.className,
+            "whitespace-nowrap font-normal",
+          )}
           style={{
-            fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
-            fontSize: 16,
-            lineHeight: "22px",
+            fontSize: 18,
+            lineHeight: "24px",
           }}
         >
           TruAI
