@@ -27,11 +27,13 @@ demo-3/
     sign-in.js
     sign-in.css
     assets/
+  components/
+    ai-panel/           # TruAI chat chrome (mount + CSS + prompts)
   js/
     auth-gate.js        # Session gate + post-login loader
   css/
     loader.css          # Loader + shell reveal
-  index.html            # Portal (links auth-gate + loader)
+  index.html            # Portal shell (mounts ai-panel)
 ```
 
 Session keys: `d3-signed-in`, `d3-from-signin` (Demo 3 only). Demo 1 keeps its own `d1-signed-in`.

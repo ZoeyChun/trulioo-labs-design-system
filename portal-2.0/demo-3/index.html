@@ -52,7 +52,7 @@
   <link rel="stylesheet" href="css/d3-fa.css?v=3">
   <link rel="stylesheet" href="css/d3-shell.css?v=35">
   <link rel="stylesheet" href="css/d3-rail.css?v=18">
-  <link rel="stylesheet" href="css/d3-chat-pane.css?v=19">
+  <link rel="stylesheet" href="components/ai-panel/ai-panel.css?v=4">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=15">
   <link rel="stylesheet" href="css/d3-workspace.css?v=32">
@@ -190,172 +190,8 @@
 
   <!-- Figma PageShell 1280:20394 — canvas holds TruAI panel + main -->
   <div class="d3-canvas">
-  <aside class="d3-chat-pane" id="d3-chat-pane" data-d3-chat-pane aria-label="TruAI chat">
-    <div class="d3-chat-pane__head">
-      <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible d3-chat-pane__back" data-d3-chat-back hidden aria-label="Back to KYB Verification">
-        <span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 3 5 8l5 5"/></svg></span>
-      </button>
-      <p class="d3-chat-pane__brand">TruAI</p>
-      <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible d3-chat-pane__close" data-d3-chat-close aria-label="Minimize chat">
-        <span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m4 4 8 8M12 4l-8 8"/></svg></span>
-      </button>
-    </div>
-    <div class="d3-chat-pane__body">
-      <div class="d3-chat-pane__empty">
-        <div>
-          <p class="d3-chat-pane__hello" data-d3-chat-hello>What would you like to accomplish?</p>
-          <p class="d3-chat-pane__sub" data-d3-chat-sub hidden></p>
-        </div>
-        <div class="d3-chat-pane__prompts" data-d3-prompt-set="hub">
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Which agent can verify a business" data-agent="kyb">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Which agent can verify a business</span>
-              <span class="d3-prompt-card__desc">Run KYB or KYC on a new entity</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Help me investigate ownership" data-agent="kyb">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Help me investigate ownership</span>
-              <span class="d3-prompt-card__desc">Find past checks by name or ID</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Explore available demo capabilities" data-agent="kyb">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Explore available demo capabilities</span>
-              <span class="d3-prompt-card__desc">Dig into ownership, alerts, and evidence</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-        </div>
-        <div class="d3-chat-pane__prompts" data-d3-prompt-set="kyb" hidden>
-          <!-- Synced from demo-2/verify-business TruAI suggestions -->
-          <button type="button" class="d3-prompt-card" data-d3-prompt="What information do I need?" data-agent="kyb">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">What information do I need?</span>
-              <span class="d3-prompt-card__desc">Fields and documents required to start a check</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Which countries are supported?" data-agent="kyb">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Which countries are supported?</span>
-              <span class="d3-prompt-card__desc">Jurisdictions available for business verification</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="How does verification work?" data-agent="kyb">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">How does verification work?</span>
-              <span class="d3-prompt-card__desc">Steps from search to a verified report</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-        </div>
-        <div class="d3-chat-pane__prompts" data-d3-prompt-set="tx" hidden>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Show declined transactions" data-agent="tx">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Show declined transactions</span>
-              <span class="d3-prompt-card__desc">Filter the table to declined results</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Find high-risk transactions" data-agent="tx">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Find high-risk transactions</span>
-              <span class="d3-prompt-card__desc">Surface high-risk rows in view</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Summarize recent activity" data-agent="tx">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Summarize recent activity</span>
-              <span class="d3-prompt-card__desc">Overview of what’s in the table</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-        </div>
-        <div class="d3-chat-pane__prompts" data-d3-prompt-set="kyc" hidden>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Verify Jane Doe" data-agent="kyc">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Verify Jane Doe</span>
-              <span class="d3-prompt-card__desc">Check person identity with documents</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Did Jane Doe's document match?" data-agent="kyc">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Did Jane Doe’s document match?</span>
-              <span class="d3-prompt-card__desc">Review the KYC document result</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Device intelligence" data-agent="kyc">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Device intelligence</span>
-              <span class="d3-prompt-card__desc">Evaluate device risk for this identity</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-        </div>
-        <div class="d3-chat-pane__prompts" data-d3-prompt-set="org" hidden>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Invite a new user" data-agent="org">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Invite a new user</span>
-              <span class="d3-prompt-card__desc">Open the invite dialog on the right</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Show pending invitations" data-agent="org">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Show pending invitations</span>
-              <span class="d3-prompt-card__desc">Switch to the invitations tab</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-          <button type="button" class="d3-prompt-card" data-d3-prompt="Show locked accounts" data-agent="org">
-            <span class="d3-prompt-card__text">
-              <span class="d3-prompt-card__title">Show locked accounts</span>
-              <span class="d3-prompt-card__desc">Filter org users to locked status</span>
-            </span>
-            <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
-          </button>
-        </div>
-      </div>
-      <div class="d3-chat-pane__thread" data-d3-chat-thread></div>
-      <div class="d3-chat-pane__composer" data-d3-chat-composer>
-        <!-- Idle composer shown until Demo 1 composer is parked here -->
-        <form class="d1-prompt d3-pane-idle-form" data-d3-pane-form action="#" method="post">
-          <div class="d1-prompt__field">
-            <textarea id="d3-pane-prompt" class="d1-prompt__input" data-d3-pane-input rows="1" placeholder="Describe your task or ask about an agent" aria-label="Describe your task or ask about an agent"></textarea>
-          </div>
-          <div class="d1-prompt__bar">
-            <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Add attachment" hidden>
-              <span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 3v10M3 8h10"/></svg></span>
-            </button>
-            <div class="d1-prompt__actions">
-              <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular" aria-label="Voice input" hidden>
-                <span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 1.75a2.25 2.25 0 0 0-2.25 2.25v4a2.25 2.25 0 1 0 4.5 0v-4A2.25 2.25 0 0 0 8 1.75Zm-4.5 6.5a4.5 4.5 0 0 0 9 0M8 12.25V14.5"/></svg></span>
-              </button>
-              <button type="submit" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--secondary tds-icon-btn--circular" aria-label="Send">
-                <span class="tds-icon-btn__icon"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 13V3m0 0L4.5 6.5M8 3l3.5 3.5"/></svg></span>
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Collapsed TruAI ask bar — synced from demo-2 (shows when chat panel closes). -->
-  <button type="button" class="d3-askbar" data-d3-askbar
-          aria-controls="d3-chat-pane" aria-expanded="false" tabindex="-1">
-    <span class="d3-askbar__text" data-d3-askbar-text>Ask about business verification</span>
-    <span class="d3-askbar__send" aria-hidden="true">
-      <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 13V3m0 0L4.5 6.5M8 3l3.5 3.5"/></svg>
-    </span>
-  </button>
+  <!-- TruAI panel + askbar: mounted by components/ai-panel/ai-panel.js -->
+  <div data-d3-ai-panel-mount></div>
 
   <main class="d1-main" data-d1-drawer="closed">
     <div class="d1-slot">
@@ -1436,6 +1272,15 @@ No evidence of active trading, clients, or revenue.</p>
 
 </div>
 
+<script src="components/ai-panel/parts/util.js?v=1"></script>
+<script src="components/ai-panel/parts/icons.js?v=4"></script>
+<script src="components/ai-panel/parts/icon-btn.js?v=1"></script>
+<script src="components/ai-panel/parts/prompt-card.js?v=1"></script>
+<script src="components/ai-panel/parts/composer.js?v=1"></script>
+<script src="components/ai-panel/parts/header.js?v=2"></script>
+<script src="components/ai-panel/parts/askbar.js?v=1"></script>
+<script src="components/ai-panel/parts/size.js?v=1"></script>
+<script src="components/ai-panel/ai-panel.js?v=4"></script>
 <script src="js/loader-mark.js"></script>
 <script src="js/auth-gate.js?v=1"></script>
 <script src="composer/prompt.js?v=3"></script>
@@ -1448,20 +1293,20 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js?v=39"></script>
 <script src="js/d3-kyb-ubo-graph.js?v=6"></script>
 <script src="js/d3-kyb-result-tabs.js?v=6"></script>
-<script src="js/d3-kyb-resume.js?v=38"></script>
+<script src="js/d3-kyb-resume.js?v=39"></script>
 <script src="js/d3-kyb-report-reveal.js?v=31"></script>
 <script src="js/d3-kyb-map-search.js?v=45"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
 <script src="js/d3-kyb-agent.js?v=21"></script>
 <script src="js/d3-motion.js?v=2"></script>
 <script src="js/d3-labs.js?v=10"></script>
-<script src="js/d3-nav.js?v=34"></script>
+<script src="js/d3-nav.js?v=35"></script>
 <script src="js/d3-transactions.js?v=8"></script>
 <script src="js/d3-org.js?v=5"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/d3-tx-agent.js?v=3"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
-<script src="js/d3-chat-bridge.js?v=8"></script>
+<script src="js/d3-chat-bridge.js?v=9"></script>
 <script src="js/d3-home-placeholder.js?v=3"></script>
 </body>
 </html>

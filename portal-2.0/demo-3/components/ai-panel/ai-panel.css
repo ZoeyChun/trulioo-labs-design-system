@@ -1,0 +1,331 @@
+/* Demo 3 — TruAI chat panel shell
+   Figma: AgentHub 1274:17557, Recurring User KYB 1274:15652
+   Part styles live under ./parts/ */
+
+@import url("./parts/header.css");
+@import url("./parts/prompt-card.css");
+@import url("./parts/composer.css");
+@import url("./parts/askbar.css");
+
+.d3-chat-pane {
+  --d3-chat-pane-w: 478px;
+  display: none;
+  position: relative;
+  /* Figma TruAIPanel 1274:13332 — default 478px with mint glow; width freely resizable */
+  flex: 0 0 var(--d3-chat-pane-w);
+  width: var(--d3-chat-pane-w);
+  min-width: 360px;
+  max-width: none;
+  min-height: 0;
+  flex-direction: column;
+  gap: 0;
+  margin: 8px;
+  /* 16px content + 4px gutter so .d1-prompt ring/outline isn't clipped */
+  padding: 24px 20px 20px;
+  background: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  box-shadow: 0 3px 27.3px 0 #c4f1e2;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.d1-shell[data-d3-chat="open"] .d3-chat-pane {
+  display: flex;
+}
+
+/* Drag affordance between panel and main workspace */
+.d3-chat-pane__resize {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 6;
+  width: 8px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.d3-chat-pane__resize::after {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  right: 2px;
+  width: 2px;
+  border-radius: 1px;
+  background: transparent;
+  transition: background-color 140ms ease;
+}
+
+.d3-chat-pane__resize:hover::after,
+.d3-chat-pane__resize:focus-visible::after,
+.d3-chat-pane__resize.is-active::after {
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 55%, transparent);
+}
+
+.d3-chat-pane__resize:focus-visible {
+  outline: none;
+}
+
+html.d3-chat-pane-resizing,
+html.d3-chat-pane-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+/* Full-canvas: panel fills .d3-canvas; workspace column hides */
+.d1-shell[data-d3-chat="open"][data-d3-chat-size="full"] .d3-chat-pane {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+}
+
+.d1-shell[data-d3-chat="open"][data-d3-chat-size="full"] .d3-chat-pane__resize {
+  display: none;
+}
+
+.d1-shell[data-d3-chat="open"][data-d3-chat-size="full"] .d1-main {
+  display: none !important;
+}
+
+.d3-chat-pane__body {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  /* Gutter for composer box-shadow (4px) + focus outline; scroll lives on
+     empty/thread so overflow here must not clip the prompt ring. */
+  padding: 4px;
+  margin: 0 -4px;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.d3-chat-pane__empty {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 0;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.d3-chat-pane__hello {
+  margin: 0;
+  font-family: var(--font-family-display, "Tobias", Georgia, serif);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 31px;
+  color: var(--text-default);
+  text-align: center;
+}
+
+.d3-chat-pane__sub {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-description);
+  text-align: center;
+}
+
+.d3-chat-pane.d3-motion-pane-in .d3-chat-pane__hello,
+.d3-chat-pane.d3-motion-pane-in .d3-chat-pane__sub {
+  animation: v2-rise var(--d3-dur-page, 380ms) var(--d3-ease-spring, cubic-bezier(0.22, 0.75, 0.3, 1)) both;
+}
+
+.d3-chat-pane.d3-motion-pane-in .d3-chat-pane__hello { animation-delay: 90ms; }
+.d3-chat-pane.d3-motion-pane-in .d3-chat-pane__sub { animation-delay: 110ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-chat-pane.d3-motion-pane-in .d3-chat-pane__hello,
+  .d3-chat-pane.d3-motion-pane-in .d3-chat-pane__sub {
+    animation: none;
+  }
+}
+
+.d3-chat-pane__thread {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-16);
+  display: none;
+  /* Feather the top of the scrollport so messages ease under the header. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 36px,
+    #000 calc(100% - 12px),
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 36px,
+    #000 calc(100% - 12px),
+    #000 100%
+  );
+}
+
+.d3-chat-pane__thread .d1-thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+}
+
+/* Follow-ups + report next actions inside the left chat pane. */
+.d3-chat-pane .d1-follow.is-on {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: var(--spacing-4);
+  width: 100%;
+  margin: var(--spacing-8) 0 var(--spacing-16);
+}
+
+.d3-kyb-next {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.d3-kyb-next__label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--text-caption, #617269);
+}
+
+.d3-kyb-next__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.d3-kyb-next__btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 12px;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.d3-kyb-next__btn:hover {
+  border-color: color-mix(in srgb, var(--interactive-default, #0e8a78) 35%, var(--border-subtle, #dde2de));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.d3-kyb-next__btn:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
+
+.d3-kyb-next__text {
+  flex: 1 1 auto;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--text-default);
+}
+
+.d3-kyb-next__arrow {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint, #8a9690);
+}
+
+.d3-kyb-next__arrow svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-kyb-next__btn {
+    transition: none;
+  }
+
+  .d3-kyb-next__btn:hover {
+    transform: none;
+  }
+}
+
+/* [hidden] must beat display:flex on these components. */
+.d3-chat-pane__empty[hidden],
+.d3-chat-pane__thread[hidden] {
+  display: none !important;
+}
+
+/* Active conversation: show thread, hide empty + idle form. */
+.d3-chat-pane.is-active .d3-chat-pane__empty {
+  display: none !important;
+}
+
+.d3-chat-pane.is-active .d3-chat-pane__thread {
+  display: block;
+}
+
+/* When left chat is open on home stage, hide in-slot home chrome
+   (composer is parked into the pane). */
+.d1-shell[data-d3-chat="open"][data-d3-view="home"] .d1-home .d1-composer,
+.d1-shell[data-d3-chat="open"][data-d3-view="chat"] .d1-home {
+  display: none !important;
+}
+
+/* Mobile: TruAI collapses to ask bar only; workspace + drawer go full width. */
+@media (max-width: 720px) {
+  .d1-shell[data-d3-chat="open"] .d3-chat-pane {
+    display: none !important;
+  }
+
+  .d3-chat-pane__expand,
+  .d3-chat-pane__resize {
+    display: none !important;
+  }
+
+  .d1-shell[data-d3-chat-size="full"] .d1-main {
+    display: flex !important;
+  }
+
+  .d1-shell:not([data-d3-view="home"]):not([data-d3-view="org"]):not([data-d3-view="agents"]) .d1-main {
+    padding: 16px 12px 72px;
+  }
+
+  .d1-shell[data-d3-view="transactions"] .d1-main,
+  .d1-shell[data-d3-chat-mode="kyb"]:not([data-d3-view="home"]) .d1-main {
+    padding: 0 0 72px !important;
+  }
+
+  .d1-shell[data-d3-view="org"] .d1-main,
+  .d1-shell[data-d3-view="agents"] .d1-main {
+    padding: 0 !important;
+  }
+}

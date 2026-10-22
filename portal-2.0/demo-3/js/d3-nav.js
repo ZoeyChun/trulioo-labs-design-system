@@ -2,18 +2,33 @@
    Dev Dashboard (+ left chat pane). Close → floating ask bar (demo-2). */
 (function () {
   var shell = document.querySelector(".d1-shell");
-  var chatPane = document.querySelector("[data-d3-chat-pane]");
   if (!shell) return;
 
   var homeBtn = document.querySelector("[data-d3-nav='home']");
   var kybBtn = document.querySelector("[data-d3-nav='kyb']");
   var labsBtn = document.querySelector("[data-d3-nav='labs']");
   var transactionsBtn = document.querySelector("[data-d3-nav='transactions']");
-  var closeChat = document.querySelector("[data-d3-chat-close]");
-  var askbar = document.querySelector("[data-d3-askbar]");
-  var askbarText = document.querySelector("[data-d3-askbar-text]");
-  var emptyHello = document.querySelector("[data-d3-chat-hello]");
-  var emptySub = document.querySelector("[data-d3-chat-sub]");
+
+  /* Panel chrome is mounted by D3AiPanel — always re-query so bind order
+     cannot leave close / askbar / prompts with null listeners. */
+  function getChatPane() {
+    return document.querySelector("[data-d3-chat-pane]");
+  }
+  function getCloseChat() {
+    return document.querySelector("[data-d3-chat-close]");
+  }
+  function getAskbar() {
+    return document.querySelector("[data-d3-askbar]");
+  }
+  function getAskbarText() {
+    return document.querySelector("[data-d3-askbar-text]");
+  }
+  function getEmptyHello() {
+    return document.querySelector("[data-d3-chat-hello]");
+  }
+  function getEmptySub() {
+    return document.querySelector("[data-d3-chat-sub]");
+  }
 
   var CHAT_META = {
     hub: {
@@ -65,6 +80,8 @@
 
   function updateAskbar(mode) {
     var meta = CHAT_META[mode] || CHAT_META.hub;
+    var askbarText = getAskbarText();
+    var askbar = getAskbar();
     if (askbarText) askbarText.textContent = meta.placeholder;
     if (!askbar) return;
     var open = shell.getAttribute("data-d3-chat") === "open";
@@ -77,6 +94,10 @@
     mode = mode || shell.getAttribute("data-d3-chat-mode") || "hub";
     shell.setAttribute("data-d3-chat", open ? "open" : "closed");
     var meta = CHAT_META[mode] || CHAT_META.hub;
+    var emptyHello = getEmptyHello();
+    var emptySub = getEmptySub();
+    var closeChat = getCloseChat();
+    var pane = getChatPane();
     if (emptyHello) emptyHello.textContent = meta.hello;
     if (emptySub) {
       emptySub.textContent = meta.sub || "";
@@ -89,7 +110,7 @@
     var paneInput = document.querySelector("[data-d3-pane-input]");
     if (paneInput) paneInput.placeholder = meta.placeholder;
     if (closeChat) closeChat.setAttribute("aria-expanded", String(!!open));
-    if (chatPane) chatPane.setAttribute("aria-hidden", open ? "false" : "true");
+    if (pane) pane.setAttribute("aria-hidden", open ? "false" : "true");
     updateAskbar(mode);
     relayoutDrawer();
   }
@@ -106,6 +127,7 @@
     /* Stay on the current workspace; show the floating ask bar (demo-2). */
     setChatOpen(false, mode);
     document.dispatchEvent(new CustomEvent("d3-chat:close", { detail: { minimized: true } }));
+    var askbar = getAskbar();
     if (askbar) {
       window.setTimeout(function () {
         try {
@@ -119,6 +141,7 @@
     var mode = shell.getAttribute("data-d3-chat-mode") || "hub";
     setChatOpen(true, mode);
     document.dispatchEvent(new CustomEvent("d3-chat:open", { detail: { mode: mode } }));
+    var closeChat = getCloseChat();
     if (closeChat) {
       window.setTimeout(function () {
         try {
@@ -134,7 +157,8 @@
     setActiveNav("home");
     var stage = document.querySelector("[data-d1-stage]");
     if (stage) stage.setAttribute("data-d1-stage", "home");
-    if (chatPane) chatPane.classList.remove("is-active");
+    var pane = getChatPane();
+    if (pane) pane.classList.remove("is-active");
     document.dispatchEvent(new CustomEvent("d3-view:home"));
   }
 
@@ -156,7 +180,8 @@
     shell.setAttribute("data-d3-view", "agents");
     setChatOpen(false, "hub");
     setActiveNav("labs");
-    if (chatPane) chatPane.classList.remove("is-active");
+    var pane = getChatPane();
+    if (pane) pane.classList.remove("is-active");
     document.dispatchEvent(new CustomEvent("d3-view:agents"));
   }
 
@@ -174,8 +199,9 @@
     shell.setAttribute("data-d3-view", "chat");
     setChatOpen(true, "kyb");
     setActiveNav("kyb");
-    if (chatPane && opts.resume && !opts.forceActive) {
-      chatPane.classList.remove("is-active");
+    var pane = getChatPane();
+    if (pane && opts.resume && !opts.forceActive) {
+      pane.classList.remove("is-active");
     }
     document.dispatchEvent(new CustomEvent("d3-view:kyb", { detail: opts }));
   }
@@ -185,10 +211,64 @@
     shell.setAttribute("data-d3-view", "chat");
     setChatOpen(true, "kyc");
     setActiveNav("labs");
-    if (chatPane && !opts.forceActive) {
-      chatPane.classList.remove("is-active");
+    var pane = getChatPane();
+    if (pane && !opts.forceActive) {
+      pane.classList.remove("is-active");
     }
     document.dispatchEvent(new CustomEvent("d3-view:kyc", { detail: opts }));
+  }
+
+  function handlePromptClick(btn) {
+    var prompt = btn.getAttribute("data-d3-prompt") || "";
+    var agent = btn.getAttribute("data-agent") || "kyb";
+    var onTx = shell.getAttribute("data-d3-view") === "transactions";
+    var onOrg = shell.getAttribute("data-d3-view") === "org";
+    var mode = shell.getAttribute("data-d3-chat-mode") || "hub";
+    var onKyb = mode === "kyb";
+    var onKyc = mode === "kyc";
+
+    /* Transaction Agent prompts stay on the transactions page. */
+    if (onTx || agent === "tx") {
+      if (prompt) {
+        document.dispatchEvent(new CustomEvent("d3-chat:send", {
+          detail: { text: prompt, agent: "tx" },
+          cancelable: true
+        }));
+      }
+      return;
+    }
+
+    if (onOrg || agent === "org") {
+      /* Org Admin is workspace-only — no TruAI panel. */
+      if (!onOrg) goOrg();
+      return;
+    }
+
+    if (agent === "kyb" && !onKyb) {
+      /* Search landing is the default KYB entry; map only for find/search/verify cues. */
+      var wantsMap = /^(find|search|verify)\b/i.test(prompt);
+      if (wantsMap && window.D3KybResume && window.D3KybResume.openMapExperience) {
+        window.D3KybResume.openMapExperience();
+      } else if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
+        window.D3KybResume.openResumeExperience();
+      } else {
+        openKybChat({ map: wantsMap, resume: !wantsMap });
+      }
+      return;
+    }
+
+    if (agent === "kyc" && !onKyc) {
+      openKycChat();
+      return;
+    }
+
+    /* Already in the agent — real follow-up prompts still go to chat. */
+    if (prompt) {
+      document.dispatchEvent(new CustomEvent("d3-chat:send", {
+        detail: { text: prompt, agent: agent },
+        cancelable: true
+      }));
+    }
   }
 
   window.D3Nav = {
@@ -205,10 +285,12 @@
     openChatPanel: openChatPanel,
     setActiveNav: setActiveNav,
     markChatActive: function () {
-      if (chatPane) chatPane.classList.add("is-active");
+      var pane = getChatPane();
+      if (pane) pane.classList.add("is-active");
     },
     markChatIdle: function () {
-      if (chatPane) chatPane.classList.remove("is-active");
+      var pane = getChatPane();
+      if (pane) pane.classList.remove("is-active");
     }
   };
 
@@ -224,17 +306,21 @@
     });
   });
 
-  if (closeChat) {
-    closeChat.addEventListener("click", function () {
+  /* Event delegation — works even if D3AiPanel mounts after this script. */
+  document.addEventListener("click", function (event) {
+    var t = event.target;
+    if (!t || !t.closest) return;
+    if (t.closest("[data-d3-chat-close]")) {
       closeChatPanel();
-    });
-  }
-
-  if (askbar) {
-    askbar.addEventListener("click", function () {
+      return;
+    }
+    if (t.closest("[data-d3-askbar]")) {
       openChatPanel();
-    });
-  }
+      return;
+    }
+    var promptBtn = t.closest("[data-d3-prompt]");
+    if (promptBtn) handlePromptClick(promptBtn);
+  });
 
   document.addEventListener("keydown", function (event) {
     if (event.key !== "Escape") return;
@@ -244,61 +330,6 @@
       return;
     }
     closeChatPanel();
-  });
-
-  document.querySelectorAll("[data-d3-prompt]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var prompt = btn.getAttribute("data-d3-prompt") || "";
-      var agent = btn.getAttribute("data-agent") || "kyb";
-      var onTx = shell.getAttribute("data-d3-view") === "transactions";
-      var onOrg = shell.getAttribute("data-d3-view") === "org";
-      var mode = shell.getAttribute("data-d3-chat-mode") || "hub";
-      var onKyb = mode === "kyb";
-      var onKyc = mode === "kyc";
-
-      /* Transaction Agent prompts stay on the transactions page. */
-      if (onTx || agent === "tx") {
-        if (prompt) {
-          document.dispatchEvent(new CustomEvent("d3-chat:send", {
-            detail: { text: prompt, agent: "tx" },
-            cancelable: true
-          }));
-        }
-        return;
-      }
-
-      if (onOrg || agent === "org") {
-        /* Org Admin is workspace-only — no TruAI panel. */
-        if (!onOrg) goOrg();
-        return;
-      }
-
-      if (agent === "kyb" && !onKyb) {
-        /* Search landing is the default KYB entry; map only for find/search/verify cues. */
-        var wantsMap = /^(find|search|verify)\b/i.test(prompt);
-        if (wantsMap && window.D3KybResume && window.D3KybResume.openMapExperience) {
-          window.D3KybResume.openMapExperience();
-        } else if (window.D3KybResume && window.D3KybResume.openResumeExperience) {
-          window.D3KybResume.openResumeExperience();
-        } else {
-          openKybChat({ map: wantsMap, resume: !wantsMap });
-        }
-        return;
-      }
-
-      if (agent === "kyc" && !onKyc) {
-        openKycChat();
-        return;
-      }
-
-      /* Already in the agent — real follow-up prompts still go to chat. */
-      if (prompt) {
-        document.dispatchEvent(new CustomEvent("d3-chat:send", {
-          detail: { text: prompt, agent: agent },
-          cancelable: true
-        }));
-      }
-    });
   });
 
   /* Homepage logo / back → home */

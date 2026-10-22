@@ -1,17 +1,41 @@
 /* Bridge Demo 1 chat.js into the Demo 3 left chat pane. */
 (function () {
   var shell = document.querySelector(".d1-shell");
-  var pane = document.querySelector("[data-d3-chat-pane]");
-  var paneThread = document.querySelector("[data-d3-chat-thread]");
-  var paneComposer = document.querySelector("[data-d3-chat-composer]");
-  var idleForm = document.querySelector("[data-d3-pane-form]");
   var stage = document.querySelector("[data-d1-stage]");
   var sourceThread = document.querySelector("[data-d1-thread]");
   var sourceComposer = document.querySelector("[data-d1-composer]");
   var sourceFollow = document.querySelector("[data-d1-follow]");
-  if (!shell || !pane || !paneThread || !paneComposer || !sourceThread || !sourceComposer) return;
+  /* Pane is mounted by D3AiPanel — resolve lazily so a deferred mount
+     cannot permanently disable this bridge. */
+  function getPane() {
+    return document.querySelector("[data-d3-chat-pane]");
+  }
+  function getPaneThread() {
+    return document.querySelector("[data-d3-chat-thread]");
+  }
+  function getPaneComposer() {
+    return document.querySelector("[data-d3-chat-composer]");
+  }
+  function getIdleForm() {
+    return document.querySelector("[data-d3-pane-form]");
+  }
+  var pane = getPane();
+  var paneThread = getPaneThread();
+  var paneComposer = getPaneComposer();
+  var idleForm = getIdleForm();
+  if (!shell || !sourceThread || !sourceComposer) return;
+
+  function refreshPaneRefs() {
+    pane = getPane();
+    paneThread = getPaneThread();
+    paneComposer = getPaneComposer();
+    idleForm = getIdleForm();
+    return !!(pane && paneThread && paneComposer);
+  }
+  refreshPaneRefs();
 
   var parked = false;
+  var idleFormBound = false;
   var homeMount = sourceComposer.parentNode;
   var threadMount = sourceThread.parentNode;
   var followMount = sourceFollow ? sourceFollow.parentNode : null;
@@ -23,6 +47,7 @@
 
   function parkIntoPane() {
     if (parked) return;
+    if (!refreshPaneRefs()) return;
     if (idleForm) idleForm.hidden = true;
     paneThread.appendChild(sourceThread);
     if (sourceFollow) paneThread.appendChild(sourceFollow);
@@ -319,7 +344,11 @@
     if (window.D3Nav) window.D3Nav.markChatIdle();
   });
 
-  if (idleForm) {
+  function bindIdleForm() {
+    refreshPaneRefs();
+    if (idleFormBound || !idleForm) return;
+    idleFormBound = true;
+
     function submitIdleForm() {
       var input = idleForm.querySelector("[data-d3-pane-input]");
       var text = input && input.value ? input.value.trim() : "";
@@ -369,6 +398,14 @@
       });
       window.requestAnimationFrame(autosizeIdleInput);
     }
+  }
+
+  bindIdleForm();
+  if (!idleFormBound) {
+    document.addEventListener("d3-ai-panel:mounted", function onMounted() {
+      document.removeEventListener("d3-ai-panel:mounted", onMounted);
+      bindIdleForm();
+    });
   }
 
   document.addEventListener("d3-view:transactions", function () {

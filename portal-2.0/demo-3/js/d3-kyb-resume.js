@@ -476,12 +476,12 @@
   workspace.querySelectorAll("[data-d3-kyb-start-new]").forEach(function (btn) {
     btn.addEventListener("click", startNew);
   });
-  var chatBackBtn = document.querySelector("[data-d3-chat-back]");
-  if (chatBackBtn) {
-    chatBackBtn.addEventListener("click", function () {
-      leaveReport();
-    });
-  }
+  /* Delegated — panel back button is mounted by D3AiPanel. */
+  document.addEventListener("click", function (event) {
+    var t = event.target;
+    if (!t || !t.closest) return;
+    if (t.closest("[data-d3-chat-back]")) leaveReport();
+  });
 
   workspace.querySelectorAll("[data-d3-kyb-recent-card]").forEach(function (card) {
     card.addEventListener("click", function () {
