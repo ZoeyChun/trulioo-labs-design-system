@@ -15,17 +15,13 @@
   display: grid;
 }
 
-/* Rotating home placeholder — slide + fade so the swap is obvious. */
-.d1-home[data-d1-stage="home"] .d1-prompt__field {
-  position: relative;
-}
-
+/* Rotating home placeholder — same cell as the input, never under the tag. */
 .d1-home[data-d1-stage="home"] .d1-prompt__ph {
-  position: absolute;
-  inset: 0 auto 0 0;
+  z-index: 0;
   display: flex;
   align-items: center;
-  max-width: 100%;
+  width: 100%;
+  min-width: 0;
   overflow: hidden;
   pointer-events: none;
   color: var(--text-label, #8a9a90);

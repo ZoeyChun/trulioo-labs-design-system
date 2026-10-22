@@ -175,14 +175,47 @@
 .d1-prompt__field {
   display: flex;
   flex: 0 0 24px;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--spacing-8);
   width: 100%;
   height: 24px;
 }
 
-.d1-prompt__input {
+.d1-prompt__ctx {
+  flex-shrink: 0;
+  color: var(--text-default);
+}
+
+.d1-prompt__ctx .tds-tag__leading-visual {
+  color: var(--icon-faint);
+}
+
+.d1-prompt__ctx .tds-tag__leading-visual .fa-regular {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.d1-prompt__entry {
+  display: grid;
   flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  height: 22px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 22px;
+}
+
+.d1-prompt__entry > .d1-visually-hidden {
+  grid-area: 1 / 1;
+}
+
+.d1-prompt__entry > .d1-prompt__input,
+.d1-prompt__entry > .d1-prompt__ph {
+  grid-area: 1 / 1;
+}
+
+.d1-prompt__input {
+  z-index: 1;
   width: 100%;
   height: 22px;
   margin: 0;
