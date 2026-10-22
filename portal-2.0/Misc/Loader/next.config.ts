@@ -9,6 +9,8 @@ const appRoot = path.dirname(fileURLToPath(import.meta.url));
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
+  // Dev: allow both localhost and 127.0.0.1 so client hydration/HMR isn't blocked.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
   },

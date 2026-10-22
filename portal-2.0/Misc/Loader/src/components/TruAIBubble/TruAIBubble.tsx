@@ -336,7 +336,11 @@ export function TruAIBubble({
           filter: "none",
         }}
       >
-        <TruAIOrb state={visualState} reducedMotion={reduceMotion} />
+        <TruAIOrb
+          state={visualState}
+          actingKey={state === "acting" ? actingLabel?.trim() || "" : undefined}
+          reducedMotion={reduceMotion}
+        />
       </div>
 
       <motion.div

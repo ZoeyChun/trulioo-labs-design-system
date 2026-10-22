@@ -30,12 +30,13 @@ export function TruAIBubbleDemo() {
           </p>
           <h1 className="mt-2 text-2xl font-medium">TruAI collapsed bubble</h1>
           <p className="mt-2 max-w-xl text-[14px] leading-6 text-[#526660]">
-            React component with layered mesh-orb motion. Switch states below —
-            completed returns to idle after the hold.
+            On Thinking the logo wraps around the sphere surface — foreshortens
+            with the curvature, disappears behind, then reappears on the other
+            side. Completed returns to idle after the hold.
           </p>
         </header>
 
-        <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-[#dde2de] bg-white px-8 py-16">
+        <div className="relative isolate flex min-h-[220px] items-center justify-center overflow-hidden rounded-2xl border border-[#dde2de] bg-white px-8 py-16">
           <TruAIBubble
             state={state}
             actingLabel={actingMode === "search" ? "Checking registry" : "Generating report"}
@@ -51,14 +52,14 @@ export function TruAIBubbleDemo() {
           />
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="relative z-10 flex flex-wrap gap-2">
           {STATES.map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => setState(item.id)}
               className={cn(
-                "cursor-pointer rounded-lg border px-3 py-2 text-[13px] transition-colors",
+                "relative z-10 cursor-pointer rounded-lg border px-3 py-2 text-[13px] transition-colors",
                 state === item.id
                   ? "border-[#172d2d] bg-[#172d2d] text-white"
                   : "border-[#dde2de] bg-white text-[#172d2d] hover:bg-[#f0f3f1]",
