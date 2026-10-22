@@ -3743,7 +3743,13 @@
       var score = parseFloat(el.getAttribute("data-score") || "0");
       var tier = kybRiskFromScore(score);
       el.setAttribute("data-risk", tier.risk);
-      el.setAttribute("data-label", tier.label);
+      // The summary hero already states the tier in its own heading, so its
+      // gauge drops the badge. Every other gauge keeps it.
+      if (el.classList.contains("kyb-summary-hero__gauge")) {
+        el.removeAttribute("data-label");
+      } else {
+        el.setAttribute("data-label", tier.label);
+      }
       el.setAttribute("data-show-percent", "false");
     });
   }
