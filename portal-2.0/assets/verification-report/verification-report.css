@@ -1,6 +1,6 @@
 /* ============================================================
    Verification Report Module — host wrapper only.
-   Demo 3 report CSS must be linked by the host page (see preview/).
+   Report vendor CSS (vendor/css/) must be linked by the host page (see preview/).
 
    Narrow hosts sit inside a wide page, so viewport @media never fires.
    Use container queries on .vrm-host instead.
@@ -25,8 +25,7 @@
 
 /* Scoped dialogs overlay only this host (same as Demo 3 workspace) */
 .vrm-host .vrm-dialog.tds-dialog,
-.vrm-host .d3-kyb-raw-dialog.tds-dialog,
-.vrm-host .d3-kyb-details-dialog.tds-dialog {
+.vrm-host .d3-kyb-raw-dialog.tds-dialog {
   position: absolute;
   inset: 0;
   z-index: 40;
@@ -63,9 +62,6 @@
   padding: var(--vrm-pad-y) var(--vrm-pad-x) var(--spacing-24, 24px);
   -webkit-overflow-scrolling: touch;
 }
-
-/* Country / Transaction ID / Date belong in the Details dialog only
-   (Demo 3: .d3-workspace__meta[data-d3-kyb-meta-inline] { display: none }). */
 
 /* ---- Compact host (~chat pane / 360px preview) --------------- */
 @container vrm (max-width: 520px) {

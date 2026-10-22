@@ -7,7 +7,7 @@ export interface LabsTreeNode {
   details?: {
     status?: string;
     statusTone?: string;
-    fields?: Array<{ label: string; value: string }>;
+    fields?: Array<{ label: string; value: string; flag?: string; flagSrc?: string }>;
     truai?: string;
     prompt?: string;
     findings?: string[];

@@ -16,14 +16,15 @@
   <link rel="stylesheet" href="../../../../Components/data-table/data-table.css">
   <link rel="stylesheet" href="../../../../Components/accordion/accordion.css">
   <link rel="stylesheet" href="../../../../Components/segmented-control/segmented-control.css">
-  <link rel="stylesheet" href="../../../demo-3/css/d3-fa.css">
-  <link rel="stylesheet" href="../../../demo-3/css/messages.css">
-  <link rel="stylesheet" href="../../../demo-3/css/d3-workspace.css">
-  <link rel="stylesheet" href="../../../demo-3/css/d3-kyb-result-tabs.css">
-  <link rel="stylesheet" href="../../../demo-3/css/d3-kyb-ubo-graph.css">
-  <link rel="stylesheet" href="../../../demo-3/css/d3-kyb-agent.css">
-  <link rel="stylesheet" href="../../../demo-3/transactions/kyb-results/ubo-graph-dist/kyb-ubo-graph-react.css">
+  <link rel="stylesheet" href="../vendor/css/d3-fa.css">
+  <link rel="stylesheet" href="../vendor/css/messages.css">
+  <link rel="stylesheet" href="../vendor/css/d3-workspace.css">
+  <link rel="stylesheet" href="../vendor/css/d3-kyb-result-tabs.css">
+  <link rel="stylesheet" href="../vendor/css/d3-kyb-ubo-graph.css">
+  <link rel="stylesheet" href="../vendor/css/d3-kyb-agent.css">
+  <link rel="stylesheet" href="../vendor/js/kyb-ubo-graph-react.css">
   <link rel="stylesheet" href="../verification-report.css">
+  <link rel="stylesheet" href="../products/kyb/kyb-report.css">
 
   <style>
     body {
@@ -86,8 +87,7 @@
       <h1>Your flow chrome</h1>
       <p>
         Mount the Demo 3 report card into <code>#verification-report-slot</code>.
-        Include Demo 3 CSS + <code>d3-kyb-result-tabs.js</code> + <code>d3-kyb-ubo-graph.js</code>
-        so every tab has full content.
+        Include report <code>vendor/</code> CSS + JS so every tab has full content.
       </p>
       <button type="button" id="btn-verify">Simulate verify → mount report</button>
       <button type="button" id="btn-clear">Clear report</button>
@@ -97,9 +97,10 @@
   </div>
 
   <script src="../../../../Components/dialog/dialog.js"></script>
-  <script src="../../../demo-3/transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js"></script>
-  <script src="../../../demo-3/js/d3-kyb-result-tabs.js"></script>
-  <script src="../../../demo-3/js/d3-kyb-ubo-graph.js"></script>
+  <script src="../products/kyb/data/kyb-sample-data.js"></script>
+  <script src="../vendor/js/ubo-graph.bundle.js"></script>
+  <script src="../vendor/js/d3-kyb-result-tabs.js"></script>
+  <script src="../vendor/js/d3-kyb-ubo-graph.js"></script>
   <script src="../verification-report.js"></script>
   <script src="../products/kyb/kyb-report.js"></script>
   <script>
@@ -112,7 +113,6 @@
           product: "kyb",
           data: VerificationReport.products.kyb.sampleData(),
           activeTab: "overview",
-          demo3AssetBase: "../../../demo-3/assets/kyb-resume/",
           onAction: function (e) {
             status.textContent = "Report action: " + e.id;
           }

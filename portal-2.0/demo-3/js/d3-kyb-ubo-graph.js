@@ -6,23 +6,26 @@
     tree: {
       id: "root",
       type: "business",
-      name: "Meridian Holdings Inc.",
+      name: "Meridian Holdings Ltd.",
       subtitle: "Root Business",
       risk: "high",
       details: {
         status: "Active",
         statusTone: "positive",
         fields: [
-          { label: "Country", value: "United States" },
+          { label: "Country", value: "United States", flag: "US" },
           { label: "Jurisdiction", value: "Texas" },
-          { label: "Business Number", value: "11876542" },
-          { label: "Tax ID", value: "19498172498" }
+          { label: "Business number", value: "11876542" },
+          { label: "Tax ID", value: "19498172498" },
+          { label: "Ownership percentage", value: "50%" },
+          { label: "Degree of separation", value: "1st" },
+          { label: "Business entity type", value: "Business" }
         ],
         truai:
-          "Meridian Holdings Inc. is a Texas-registered entity linked to 3 connected entities. Both shareholders use a registered-agent address, and neither has a verified national ID on file.",
+          "Meridian Holdings Ltd. is a Texas-registered entity linked to 3 connected entities. Both shareholders use a formations-agent address, and neither has a verified national ID on file.",
         prompt: "Is this a shell company?",
         findings: [
-          "Both shareholders share a registered-agent address",
+          "Both shareholders share a formations-agent address",
           "Walter Decosta linked to 2 unscreened entities",
           "No verifiable national ID for either officer"
         ],
@@ -210,7 +213,7 @@
       rich.tree.name = biz.name;
       if (rich.tree.details && rich.tree.details.truai) {
         rich.tree.details.truai = rich.tree.details.truai.replace(
-          /Meridian Holdings Inc\./g,
+          /Meridian Holdings (Inc|Ltd)\./g,
           biz.name
         );
       }

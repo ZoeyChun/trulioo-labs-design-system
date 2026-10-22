@@ -1,0 +1,684 @@
+/* ============================================================
+   Demo 1 — chat message types
+   Figma section 1117:77188
+   ============================================================ */
+
+.d1-turn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  width: 100%;
+}
+
+.d1-turn:not(:has(*)) {
+  display: none;
+}
+
+.d1-ai,
+.d1-summary p,
+.d1-table-note,
+.d1-activity__detail p {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-lg);
+}
+
+.d1-ai__ask {
+  margin-top: var(--spacing-8);
+}
+
+.d1-user {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.d1-user p {
+  max-width: 100%;
+  margin: 0;
+  padding: var(--spacing-16);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-02);
+  box-shadow: var(--elevation-sm);
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.d1-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  width: 100%;
+}
+
+.d1-progress__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  margin-bottom: var(--spacing-8);
+  color: var(--text-default);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+}
+
+.d1-progress__row span:first-child {
+  flex: 1 1 auto;
+}
+
+.d1-progress__pct {
+  color: var(--text-description);
+  font-weight: var(--font-weight-medium);
+}
+
+.d1-progress__track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--border-subtle);
+}
+
+.d1-progress__fill {
+  width: 0;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--interactive-default);
+  transition: width 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.d1-progress__fill--done {
+  background: var(--icon-positive);
+}
+
+.d1-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.d1-activity {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Collapsed steps still need a connector, or the checks float apart. */
+.d1-activity:not(:last-child):has(.d1-activity__body[hidden])::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: -2px;
+  left: 8px;
+  width: 1px;
+  background: var(--border-subtle);
+}
+
+.d1-activity__toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-8);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-placeholder);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.d1-activity__toggle--current {
+  color: var(--text-default);
+}
+
+.d1-activity__toggle [data-d1-activity-label] {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.d1-activity__toggle > .d1-chev-down,
+.d1-activity__toggle > .d1-chev-up {
+  margin-left: auto;
+  margin-top: 1px;
+}
+
+.d1-activity__toggle img {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* FA sets display on .fa-*; beat that so run/done marks can truly hide. */
+.d1-activity__toggle [hidden],
+.d1-activity__mark [hidden] {
+  display: none !important;
+}
+
+.d1-activity__mark {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.d1-activity__mark img,
+.d1-activity__mark .fa-solid,
+.d1-activity__mark .fa-regular,
+.d1-activity__toggle > img {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.d1-activity__toggle[aria-expanded="false"] .d1-chev-up,
+.d1-activity__toggle[aria-expanded="true"] .d1-chev-down {
+  display: none;
+}
+
+.d1-activity__body {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-8);
+}
+
+.d1-activity__body[hidden] {
+  display: none;
+}
+
+.d1-activity__rail {
+  position: relative;
+  flex-shrink: 0;
+  width: 18px;
+}
+
+/* The divider SVG has its own height. Keep the line in the rail so it
+   cannot open a gap between the check and the lines under it. */
+.d1-activity__rail img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  height: auto;
+  transform: translateX(-50%);
+}
+
+.d1-activity.is-bare .d1-chev-down,
+.d1-activity.is-bare .d1-chev-up {
+  display: none;
+}
+
+.d1-activity.is-bare .d1-activity__toggle {
+  cursor: default;
+}
+
+.d1-activity__detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: 0 0 var(--spacing-8);
+}
+
+.d1-activity__detail p {
+  margin: 0;
+  color: var(--text-placeholder);
+}
+
+.d1-activity__hit {
+  color: var(--ai-accent);
+}
+
+.d1-spin {
+  animation: d1-spin 1s linear infinite;
+}
+
+@keyframes d1-spin {
+  to { transform: rotate(360deg); }
+}
+
+.d1-report__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  margin: 0 0 var(--spacing-8);
+  color: var(--text-default);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.75rem;
+}
+
+.d1-block > div > .d1-tag,
+.d1-report__title + .d1-tag {
+  margin: 0 0 var(--spacing-16);
+}
+
+.d1-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-4) var(--padding-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+  white-space: nowrap;
+}
+
+.d1-tag--positive {
+  border: 1px solid var(--border-positive);
+  background: var(--surface-positive);
+  color: var(--text-positive);
+}
+
+.d1-tag--review {
+  border: 1px solid var(--border-intermediate);
+  background: var(--surface-intermediate);
+  color: var(--text-intermediate);
+}
+
+.d1-tag--negative {
+  border: 1px solid var(--border-negative);
+  background: var(--surface-negative);
+  color: var(--text-negative);
+}
+
+.d1-report__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+.d1-alert {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  min-height: 52px;
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--spacing-16);
+  border: 1px solid var(--border-interactive, #004c45);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-positive, #e8f5ef) 55%, var(--surface-neutral-01, #fff));
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-sm);
+  box-sizing: border-box;
+}
+
+.d1-alert img {
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.d1-alert span {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.d1-alert__view,
+.d1-alert__export {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.d1-alert__view:not(.tds-btn) {
+  padding: var(--padding-sm) var(--padding-md);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--interactive-default);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-sm);
+  cursor: pointer;
+}
+
+.d1-summary h3 {
+  margin: 0 0 var(--spacing-8);
+  color: var(--text-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-md);
+}
+
+.d1-summary p + p {
+  margin-top: var(--spacing-12);
+}
+
+.d1-actions {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.d1-actions .tds-icon-btn__icon img {
+  width: 16px;
+  height: 16px;
+}
+
+.d1-table-lead,
+.d1-table-note {
+  margin: 0;
+}
+
+.d1-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-01);
+}
+
+.d1-table {
+  border-collapse: collapse;
+  min-width: 1202px;
+  width: 100%;
+}
+
+.d1-table th,
+.d1-table td {
+  height: 40px;
+  padding: var(--spacing-4) var(--spacing-8);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-sm);
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.d1-table th {
+  height: 27px;
+  background: var(--surface-neutral-02);
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.d1-table th img {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: var(--spacing-4);
+  vertical-align: middle;
+}
+
+.d1-table td:first-child {
+  border-right: 1px solid var(--border-subtle);
+  font-weight: var(--font-weight-medium);
+}
+
+.d1-table .d1-muted {
+  color: var(--text-placeholder);
+}
+
+.d1-score {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4) var(--padding-sm) var(--spacing-4) var(--spacing-4);
+  border-radius: var(--radius-full);
+  color: var(--text-negative);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+}
+
+.d1-score b {
+  padding: 0 var(--spacing-4);
+  border-radius: var(--radius-full);
+  background: var(--surface-negative);
+  font-weight: var(--font-weight-medium);
+}
+
+.d1-follow {
+  display: none;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.d1-follow h2 {
+  margin: 0;
+  color: var(--text-caption);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-md);
+}
+
+.d1-suggest-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-8) 0;
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-default);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-lg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.d1-suggest-row:last-child {
+  border-bottom: 0;
+}
+
+.d1-suggest-row span {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* viewBox-only SVGs otherwise inflate to ~300×150 and blow up the chat pane. */
+.d1-suggest-row > svg,
+.d1-suggest-row .d3-fa-line {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.d1-suggest-row:hover span {
+  color: var(--interactive-default);
+}
+
+.d1-home[data-d1-stage="chat"] .d1-thread {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-16);
+  margin-bottom: var(--spacing-32);
+  overflow: auto;
+}
+
+.d1-home[data-d1-stage="chat"] .d1-follow.is-on {
+  display: flex;
+  flex-shrink: 0;
+  margin-bottom: var(--spacing-16);
+}
+
+/* ------------------------------------------------------------------
+   Confirm card  (tds-announcement + tds-btn)
+   ------------------------------------------------------------------ */
+
+.d1-confirm.tds-announcement--success .tds-announcement__icon {
+  color: var(--icon-positive);
+}
+
+.d1-confirm__result {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  line-height: var(--line-height-sm);
+}
+
+.d1-confirm__result--done {
+  color: var(--text-positive);
+}
+
+.d1-confirm__result--cancelled {
+  color: var(--text-description);
+}
+
+.d1-confirm__result img {
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------
+   Toast  (tds-announcement--inline, fixed position)
+   ------------------------------------------------------------------ */
+
+.d1-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  width: auto;
+  pointer-events: none;
+  animation: d1-toast-in 0.3s ease, d1-toast-out 0.3s 2.7s ease forwards;
+}
+
+@keyframes d1-toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes d1-toast-out {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to   { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d1-toast { animation: none; }
+}
+
+/* ------------------------------------------------------------------
+   Analysis / Guide shared card wrapper
+   ------------------------------------------------------------------ */
+
+.d1-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  padding: var(--spacing-16);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-neutral-02);
+}
+
+.d1-card__title {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-md);
+}
+
+.d1-card__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.d1-card__body .tds-data-field {
+  padding: var(--spacing-8) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.d1-card__body .tds-data-field:first-child {
+  border-top: 0;
+}
+
+.d1-card__body .tds-stat-card {
+  margin-top: var(--spacing-4);
+}
+
+/* Color variants for data-field values inside analysis cards */
+
+.d1-val--positive .tds-data-field__value { color: var(--text-positive); }
+.d1-val--negative .tds-data-field__value { color: var(--text-negative); }
+.d1-val--warn .tds-data-field__value { color: var(--text-intermediate); }
+
+/* ------------------------------------------------------------------
+   Compare table overrides  (tds-data-table)
+   ------------------------------------------------------------------ */
+
+.d1-compare-table .tds-data-table {
+  min-width: 0;
+}
+
+.d1-compare-table .tds-data-table td.d1-cell--negative {
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-negative);
+}
+
+.d1-compare-table .tds-data-table td.d1-cell--positive {
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-positive);
+}
+
+/* ------------------------------------------------------------------
+   Guide checklist  (tds-checkbox)
+   ------------------------------------------------------------------ */
+
+.d1-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+  padding: var(--spacing-8) 0;
+  border-top: 1px solid var(--border-subtle);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.d1-check-row:first-child {
+  border-top: 0;
+}
+
+.d1-check-row:hover {
+  opacity: 0.85;
+}
+
+.d1-check-row .tds-checkbox {
+  margin-top: 1px;
+}
+
+.d1-check-row__text {
+  flex: 1 1 auto;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+}
+
+.d1-check-row .tds-checkbox:checked ~ .d1-check-row__text {
+  color: var(--text-description);
+  text-decoration: line-through;
+}

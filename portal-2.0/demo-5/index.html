@@ -1,0 +1,172 @@
+<!-- Demo 5 — page shell + left TruAI chat (Demo 3 pane).
+     Figma PageShell 1280:20394 — rail | TruAI 478 | main.
+     Empty host in .d1-slot: “add KYB verification module here” -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal — Demo 5</title>
+
+  <link rel="preload" href="../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../Components/button/button.css">
+  <link rel="stylesheet" href="../../Components/dialog/dialog.css">
+  <link rel="stylesheet" href="../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../Components/accordion/accordion.css">
+  <link rel="stylesheet" href="../../Components/segmented-control/segmented-control.css">
+  <link rel="stylesheet" href="../Demo%201/css/shell.css">
+  <link rel="stylesheet" href="../demo-3/css/d3-fa.css">
+  <link rel="stylesheet" href="../demo-3/css/d3-shell.css">
+  <link rel="stylesheet" href="../demo-3/css/d3-chat-pane.css">
+  <link rel="stylesheet" href="../demo-3/composer/prompt.css">
+  <link rel="stylesheet" href="../demo-3/css/messages.css">
+  <link rel="stylesheet" href="../assets/verification-report/vendor/css/d3-workspace.css">
+  <link rel="stylesheet" href="../assets/verification-report/vendor/css/d3-kyb-result-tabs.css">
+  <link rel="stylesheet" href="../assets/verification-report/vendor/css/d3-kyb-ubo-graph.css">
+  <link rel="stylesheet" href="../assets/verification-report/vendor/css/d3-kyb-agent.css">
+  <link rel="stylesheet" href="../assets/verification-report/vendor/js/kyb-ubo-graph-react.css">
+  <link rel="stylesheet" href="../assets/verification-report/verification-report.css">
+  <link rel="stylesheet" href="../assets/verification-report/products/kyb/kyb-report.css">
+  <link rel="stylesheet" href="css/page.css">
+</head>
+<body>
+
+<div class="d1-shell" data-d3-view="workspace" data-d3-chat="open">
+
+  <aside class="d1-rail" aria-label="Primary">
+    <div class="d1-rail__header">
+      <button type="button" class="d1-logo" aria-label="Trulioo home">
+        <img src="../Demo%201/assets/logo-mark.svg" alt="" width="30" height="25">
+      </button>
+    </div>
+
+    <nav class="d1-rail__nav">
+      <div class="d1-fly">
+        <button type="button" class="d1-nav-btn" data-d5-chat-open aria-label="Messages" aria-controls="d5-chat-pane" aria-expanded="true">
+          <svg width="20" height="20" viewBox="0 0 512 512" aria-hidden="true">
+            <path fill="currentColor" fill-rule="evenodd" d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124-.2.2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V416H64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0h384c35.3 0 64 28.7 64 64v288c0 35.3-28.7 64-64 64H309.3L208 492z"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <div class="d1-rail__tools">
+      <button type="button" class="d1-tool-btn" aria-label="Settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="d1-rail__account">
+      <div class="d1-fly d1-fly--account">
+        <button type="button" class="d1-account" aria-label="Jane Doe, janedoe@trulioo.com" aria-haspopup="true" aria-controls="d5-account-menu">
+          <span class="d1-account__avatar" aria-hidden="true">JD</span>
+        </button>
+        <div class="d1-fly__panel d1-account-menu" id="d5-account-menu" role="menu" aria-label="Account">
+          <div class="d1-org">
+            <span class="d1-org__mark"><img src="../Demo%201/assets/icons/mountain.svg" alt="" width="16" height="16"></span>
+            <span class="d1-org__name">Pacific Ridge Financial</span>
+          </div>
+          <hr class="d1-fly__rule">
+          <button type="button" class="d1-menu-item" role="menuitem"><img src="../Demo%201/assets/icons/nav-help.svg" alt="" width="24" height="24">Help &amp; Support</button>
+          <button type="button" class="d1-menu-item" role="menuitem"><img src="../Demo%201/assets/icons/nav-privacy.svg" alt="" width="24" height="24">Privacy Policies</button>
+          <button type="button" class="d1-menu-item" role="menuitem"><img src="../Demo%201/assets/icons/nav-signout.svg" alt="" width="24" height="24">Sign Out</button>
+          <hr class="d1-fly__rule">
+          <div class="d1-who">
+            <p class="d1-who__name">Jane Doe <img src="../Demo%201/assets/icons/chevron-up.svg" alt="" width="12" height="12"></p>
+            <p class="d1-who__mail">janedoe@trulioo.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="d3-canvas">
+    <aside class="d3-chat-pane" id="d5-chat-pane" data-d3-chat-pane aria-label="TruAI chat">
+      <div class="d3-chat-pane__head">
+        <p class="d3-chat-pane__brand">TruAI</p>
+        <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible d3-chat-pane__close" data-d5-chat-close aria-label="Minimize chat">
+          <span class="tds-icon-btn__icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m4 4 8 8M12 4l-8 8"/></svg></span>
+        </button>
+      </div>
+      <div class="d3-chat-pane__body">
+        <div class="d3-chat-pane__empty">
+          <div>
+            <p class="d3-chat-pane__hello">What would you like to accomplish?</p>
+          </div>
+          <div class="d3-chat-pane__prompts">
+            <button type="button" class="d3-prompt-card" data-d5-prompt="Verify Meridian Apex Consulting Ltd.">
+              <span class="d3-prompt-card__text">
+                <span class="d3-prompt-card__title">Verify a business</span>
+                <span class="d3-prompt-card__desc">Run KYB on Meridian Apex Consulting Ltd.</span>
+              </span>
+              <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
+            </button>
+            <button type="button" class="d3-prompt-card" data-d5-prompt="Help me investigate ownership">
+              <span class="d3-prompt-card__text">
+                <span class="d3-prompt-card__title">Investigate ownership</span>
+                <span class="d3-prompt-card__desc">Dig into UBOs and related entities</span>
+              </span>
+              <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
+            </button>
+            <button type="button" class="d3-prompt-card" data-d5-prompt="What does a KYB report include?">
+              <span class="d3-prompt-card__text">
+                <span class="d3-prompt-card__title">What’s in a KYB report?</span>
+                <span class="d3-prompt-card__desc">Overview of tabs and evidence</span>
+              </span>
+              <span class="d3-prompt-card__arrow" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>
+            </button>
+          </div>
+        </div>
+        <div class="d3-chat-pane__thread" data-d5-chat-thread hidden></div>
+        <div class="d3-chat-pane__composer">
+          <form class="d1-prompt d3-pane-idle-form" data-d5-chat-form action="#" method="post">
+            <div class="d1-prompt__field">
+              <textarea id="d5-pane-prompt" class="d1-prompt__input" data-d5-chat-input rows="1" placeholder="Describe your task or ask about an agent" aria-label="Describe your task or ask about an agent"></textarea>
+            </div>
+            <div class="d1-prompt__bar">
+              <div class="d1-prompt__actions">
+                <button type="submit" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--secondary tds-icon-btn--circular" aria-label="Send">
+                  <span class="tds-icon-btn__icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 13V3m0 0L4.5 6.5M8 3l3.5 3.5"/></svg></span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </aside>
+
+    <button type="button" class="d3-askbar" data-d5-askbar aria-controls="d5-chat-pane" aria-expanded="true">
+      <span class="d3-askbar__text">Ask about business verification</span>
+      <span class="d3-askbar__send" aria-hidden="true">
+        <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 13V3m0 0L4.5 6.5M8 3l3.5 3.5"/></svg>
+      </span>
+    </button>
+
+    <main class="d1-main">
+      <div class="d1-slot">
+        <div id="kyb-verification-host" class="d5-report-host" data-d5-kyb-host aria-label="KYB verification report"></div>
+      </div>
+    </main>
+  </div>
+
+</div>
+
+<script src="../../Components/dialog/dialog.js"></script>
+<script src="../assets/verification-report/products/kyb/data/kyb-sample-data.js"></script>
+<script src="../assets/verification-report/vendor/js/ubo-graph.bundle.js"></script>
+<script src="../assets/verification-report/vendor/js/d3-kyb-result-tabs.js"></script>
+<script src="../assets/verification-report/vendor/js/d3-kyb-ubo-graph.js"></script>
+<script src="../assets/verification-report/verification-report.js"></script>
+<script src="../assets/verification-report/products/kyb/kyb-report.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/kyb-report.js"></script>
+</body>
+</html>

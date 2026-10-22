@@ -133,24 +133,6 @@
 
   function dialogsHtml(ids) {
     return (
-      '<div class="tds-dialog tds-dialog--center tds-dialog--md tds-dialog--scoped d3-kyb-details-dialog vrm-dialog" id="' +
-      esc(ids.details) +
-      '" hidden>' +
-      '<div class="tds-dialog__backdrop">' +
-      '<div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="' +
-      esc(ids.detailsTitle) +
-      '" tabindex="-1">' +
-      '<header class="tds-dialog__header"><div class="tds-dialog__header-row">' +
-      '<h2 class="tds-dialog__title" id="' +
-      esc(ids.detailsTitle) +
-      '">Details</h2>' +
-      '<button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">' +
-      '<span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>' +
-      "</button></div>" +
-      '<div class="tds-dialog__divider" role="presentation"></div></header>' +
-      '<div class="tds-dialog__body">' +
-      '<dl class="d3-kyb-details-meta" data-vrm-details-meta></dl>' +
-      "</div></div></div></div>" +
       '<div class="tds-dialog tds-dialog--center tds-dialog--lg tds-dialog--scoped d3-kyb-raw-dialog vrm-dialog" id="' +
       esc(ids.raw) +
       '" hidden>' +
@@ -180,11 +162,10 @@
 
   function shellHtml(view, ids) {
     var tags = (view.tags || []).map(tagHtml).join("");
+    var meta = metaHtml(view.meta);
     return (
       '<div class="vrm-host d3-workspace" data-d3-kyb-surface="report" data-vrm-product="' +
       esc(view.product) +
-      '" data-vrm-details-id="' +
-      esc(ids.details) +
       '" data-vrm-raw-id="' +
       esc(ids.raw) +
       '">' +
@@ -200,7 +181,7 @@
       "</div>" +
       actionsHtml(view.actions) +
       "</div>" +
-      metaHtml(view.meta) +
+      meta +
       "</div>" +
       '<div class="d3-kyb-tabs" role="tablist" aria-label="Verification sections" data-vrm-tabs></div>' +
       '<div class="vrm-panels" data-vrm-panels></div>' +
@@ -220,33 +201,6 @@
     if (!dialog) return;
     dialog.hidden = false;
     dialog.classList.add("tds-dialog--open");
-  }
-
-  function fillDetailsDialog(root, view) {
-    var meta = root.querySelector("[data-vrm-details-meta]");
-    if (!meta) return;
-    var fields = view.meta || [];
-    meta.innerHTML = fields
-      .map(function (field) {
-        /* Details dialog prefers full values (e.g. complete transaction ID). */
-        var display = field.title || field.value || "";
-        var flag = field.flagSrc
-          ? '<img class="d3-workspace__flag" src="' +
-            esc(field.flagSrc) +
-            '" alt="" width="18" height="12">'
-          : "";
-        return (
-          "<div><dt>" +
-          esc(field.label || "") +
-          '</dt><dd title="' +
-          esc(display) +
-          '">' +
-          esc(display) +
-          flag +
-          "</dd></div>"
-        );
-      })
-      .join("");
   }
 
   function fillRawDialog(root, adapter, data) {
@@ -367,10 +321,7 @@
       var actionBtn = event.target.closest("[data-vrm-action]");
       if (actionBtn && root.contains(actionBtn)) {
         var actionId = actionBtn.getAttribute("data-vrm-action");
-        if (actionId === "details") {
-          fillDetailsDialog(root, state.view || {});
-          openDialog(state.dialogIds && state.dialogIds.details);
-        } else if (actionId === "raw") {
+        if (actionId === "raw") {
           fillRawDialog(root, state.adapter, state.data);
           openDialog(state.dialogIds && state.dialogIds.raw);
         }
@@ -430,8 +381,6 @@
 
     var uid = nextUid();
     var dialogIds = {
-      details: uid + "-details",
-      detailsTitle: uid + "-details-title",
       raw: uid + "-raw",
       rawTitle: uid + "-raw-title"
     };
@@ -464,7 +413,6 @@
     renderTabs(root, tabs, activeTab);
     renderPanels(root, tabs, activeTab, adapter, data, ctx);
     setActiveTab(state, activeTab);
-    fillDetailsDialog(root, view);
     fillRawDialog(root, adapter, data);
 
     if (typeof adapter.afterMount === "function") {

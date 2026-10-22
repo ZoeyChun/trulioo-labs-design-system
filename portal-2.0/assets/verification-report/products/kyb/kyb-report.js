@@ -1,6 +1,7 @@
 /* Verification Report Module — KYB adapter
- * Prefers Demo 3 renderers (D3KybResultTabs / D3KybUboGraph) when loaded so
- * tab content matches Demo 3 exactly. Falls back to local markup otherwise.
+ * Prefers vendored renderers (D3KybResultTabs / D3KybUboGraph) when loaded.
+ * Sample payload: products/kyb/data/kyb-sample-data.js
+ * Media: assets/kyb/  ·  Scripts/CSS: vendor/
  */
 (function (global) {
   "use strict";
@@ -11,8 +12,6 @@
     '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" d="M3.5 2.5h2l1 3-1.25.75a6.5 6.5 0 0 0 3 3L8.5 8l3 1v2a1 1 0 0 1-1 1A10.5 10.5 0 0 1 2.5 3.5a1 1 0 0 1 1-1z"/></svg>';
   var ICON_MAIL =
     '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.5" y="4" width="11" height="8" rx="1.25" stroke="currentColor" stroke-width="1.25"/><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" d="m3.5 5.25 4.5 3.25L12.5 5.25"/></svg>';
-  var ICON_LIST =
-    '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11"/></svg>';
   var ICON_EXPORT =
     '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 3v7m0 0 2.75-2.75M8 10 5.25 7.25M3 11.5V12a1.5 1.5 0 0 0 1.5 1.5h7A1.5 1.5 0 0 0 13 12v-.5"/></svg>';
   var ICON_RAW =
@@ -28,83 +27,42 @@
           .replace(/"/g, "&quot;");
   }
 
+  /* Resolve module root from this script URL → …/verification-report/ */
+  var MODULE_BASE = (function () {
+    var scripts = document.getElementsByTagName("script");
+    var i;
+    for (i = scripts.length - 1; i >= 0; i--) {
+      var src = scripts[i].src || "";
+      var m = src.match(/^(.*\/verification-report\/)products\/kyb\/kyb-report\.js(?:\?.*)?$/);
+      if (m) return m[1];
+    }
+    return "";
+  })();
+
+  function assetBase(ctx) {
+    var opts = (ctx && ctx.options) || {};
+    return (
+      opts.assetBase ||
+      opts.demo3AssetBase ||
+      (MODULE_BASE ? MODULE_BASE + "assets/kyb/" : "./assets/kyb/")
+    );
+  }
+
   function demoAsset(ctx, file) {
-    var base =
-      (ctx && ctx.options && ctx.options.demo3AssetBase) ||
-      "../../../demo-3/assets/kyb-resume/";
-    return String(base).replace(/\/?$/, "/") + file;
+    return String(assetBase(ctx)).replace(/\/?$/, "/") + file;
   }
 
   function sampleData() {
+    var pack = global.VerificationReportKybData;
+    if (pack && pack.sample) {
+      return JSON.parse(JSON.stringify(pack.sample));
+    }
     return {
       name: "Meridian Apex Consulting Ltd.",
       country: "United States",
       cc: "US",
-      city: "Wilmington, Delaware",
-      addr: "Suite 400, 1 King Street, London EC2V 8AU",
-      transactionId: "8c2f4e7a-19bd-4f02-a6c1-77de42915b3a",
-      transactionIdShort: "8c2f4e7a-19bd-4f0...",
-      date: "17 Jun 2026, 2:14 PM",
       verified: true,
-      riskLevel: "low",
-      riskLabel: "Verified",
-      overview: {
-        regNumber: "BRN 11876542",
-        taxId: "GB341209876",
-        status: "Active",
-        sizing: "0 employees; $1 authorised / $1 paid-up capital.",
-        legalForm: "Private company limited by shares",
-        address:
-          "Suite 400, 1 King Street, London EC2V 8AU - virtual office at a formations-agent suite; no operational premises.",
-        industry: "Registered under SIC 70229",
-        industryNote:
-          "(management consultancy activities), a catch-all code.\nNo evidence of active trading, clients, or revenue.",
-        regDate: "Incorporated 1 Feb 2019 (England & Wales)",
-        phone: "+1 280 794 0000",
-        email: "info@meridianapexconsulting.co.uk",
-        alerts: [
-          "Adverse Media: None found",
-          "Sanctions: None found",
-          "Litigation: None found",
-          "Positive Press: None found"
-        ]
-      },
-      ownership: [
-        {
-          name: "James Morton",
-          role: "Shareholder",
-          pct: "65%",
-          address: "71 Stevenson St, San Francisco",
-          type: "person"
-        },
-        {
-          name: "Walter Decosta",
-          role: "Shareholder",
-          pct: "35%",
-          address: "71 Stevenson St, San Francisco",
-          type: "person",
-          flagged: true,
-          screeningLabel: "2 more entities connected"
-        }
-      ],
-      officer: {
-        givenName: "MARK",
-        surname: "WILLIAMSON",
-        fullName: "MARK WILLIAMSON",
-        nationalId: "123415",
-        dob: "1976-02-12",
-        position: "CHIEF OPERATING OFFICER",
-        designation: "Not provided",
-        type: "Individual",
-        status: "Active",
-        beginDate: "2017-07-18",
-        endDate: "2020-01-12",
-        address1: "1 SW Bow Street, Portland, OR 97005-6453"
-      },
-      report: {
-        email: "info@meridianapexconsulting.co.uk",
-        legalForm: "Private company limited by shares"
-      }
+      riskLabel: "Verified"
     };
   }
 
@@ -133,7 +91,8 @@
         data.report || {}
       ),
       matchSignals: data.matchSignals || null,
-      ownershipGraph: data.ownershipGraph || null
+      ownershipGraph: data.ownershipGraph || null,
+      ownershipTableRows: data.ownershipTableRows || null
     };
   }
 
@@ -149,24 +108,46 @@
           icon: ICON_CHECK + " "
         }
       ],
-      meta: [
-        {
-          label: "Country / Jurisdiction",
-          value: data.country || "—",
-          flagSrc: data.flagSrc || demoAsset(ctx, "flag-us.svg")
-        },
-        {
-          label: "Transaction ID",
-          value: data.transactionIdShort || data.transactionId || "—",
-          title: data.transactionId || ""
-        },
-        { label: "Date", value: data.date || "—" }
-      ],
+      /* Country / Transaction ID / Date render in Overview “Details” section. */
+      meta: [],
       actions: [
-        { id: "details", label: "Details", icon: ICON_LIST },
+        { id: "raw", label: "Raw Data", icon: ICON_RAW },
         { id: "export", label: "Export", icon: ICON_EXPORT }
       ]
     };
+  }
+
+  function detailsSectionHtml(data, ctx) {
+    var flagSrc = data.flagSrc || demoAsset(ctx, "flag-us.svg");
+    var txId = data.transactionId || data.transactionIdShort || "—";
+    return (
+      '<section class="d3-kyb-details" aria-label="Details">' +
+      '<h3 class="d3-kyb-overview__title">Details</h3>' +
+      '<dl class="d3-kyb-details__fields">' +
+      "<div>" +
+      "<dt>Country / Jurisdiction</dt>" +
+      '<dd title="' +
+      esc(data.country || "") +
+      '">' +
+      esc(data.country || "—") +
+      '<img class="d3-workspace__flag" src="' +
+      esc(flagSrc) +
+      '" alt="" width="18" height="12">' +
+      "</dd></div>" +
+      "<div>" +
+      "<dt>Transaction ID</dt>" +
+      '<dd title="' +
+      esc(txId) +
+      '">' +
+      esc(txId) +
+      "</dd></div>" +
+      "<div>" +
+      "<dt>Date</dt>" +
+      "<dd>" +
+      esc(data.date || "—") +
+      "</dd></div>" +
+      "</dl></section>"
+    );
   }
 
   function getTabs() {
@@ -255,13 +236,10 @@
       esc(photoSrc) +
       '" alt="" width="238" height="158">' +
       "</div>" +
+      detailsSectionHtml(data, ctx) +
       '<div class="d3-kyb-overview">' +
       '<div class="d3-kyb-overview__head">' +
       '<h3 class="d3-kyb-overview__title">Company Overview:</h3>' +
-      '<button type="button" class="tds-btn tds-btn--primary tds-btn--sm d3-kyb-view-raw" data-vrm-action="raw">' +
-      '<span class="tds-btn__leading-icon" aria-hidden="true">' +
-      ICON_RAW +
-      "</span>View Raw Data</button>" +
       "</div>" +
       '<div class="d3-kyb-overview__rows">' +
       '<div class="d3-kyb-overview__row">' +
@@ -363,7 +341,7 @@
 
     /* Fallback if Demo 3 scripts were not loaded */
     panel.innerHTML =
-      '<p class="d3-workspace__hint">Load Demo 3 <code>d3-kyb-result-tabs.js</code> and <code>d3-kyb-ubo-graph.js</code> (see preview) for full “' +
+      '<p class="d3-workspace__hint">Load report <code>vendor/js/d3-kyb-result-tabs.js</code> and <code>d3-kyb-ubo-graph.js</code> (see preview) for full “' +
       esc(tabId) +
       '” content.</p>';
   }

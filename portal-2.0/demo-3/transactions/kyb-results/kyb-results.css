@@ -3267,6 +3267,14 @@
   color: var(--text-caption);
 }
 
+.kyb-ubo-drawer__field-value-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
 .kyb-ubo-drawer__field-value {
   margin: 0;
   font-size: var(--font-size-sm);
@@ -3275,6 +3283,15 @@
   font-variation-settings: var(--font-variation-figma-medium);
   color: var(--text-default);
   text-align: right;
+}
+
+.kyb-ubo-drawer__flag {
+  display: block;
+  flex-shrink: 0;
+  width: 18px;
+  height: 12px;
+  border-radius: 1px;
+  object-fit: cover;
 }
 
 .kyb-ubo-drawer__divider {

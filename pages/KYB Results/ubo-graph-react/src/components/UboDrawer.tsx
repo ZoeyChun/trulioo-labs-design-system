@@ -1,13 +1,37 @@
 import React, { useState } from "react";
 import type { LabsTreeNode } from "../ubo/types";
-import { ChevronDownIcon, graphIcon, SparkleIcon, WarningIcon } from "./icons";
+import { ChevronDownIcon, graphIcon, WarningIcon } from "./icons";
 
 type ConnectedEntity = NonNullable<NonNullable<LabsTreeNode["details"]>["connected"]>[number];
+type DetailField = NonNullable<NonNullable<LabsTreeNode["details"]>["fields"]>[number];
 
 interface UboDrawerProps {
   node: LabsTreeNode;
   connected: ConnectedEntity[];
   onConnectedSelect: (nodeId: string) => void;
+}
+
+function UsFlagIcon() {
+  return (
+    <svg className="kyb-ubo-drawer__flag" viewBox="0 0 18 12" width="18" height="12" aria-hidden="true">
+      <rect width="18" height="12" fill="#B22234" />
+      <path
+        fill="#fff"
+        d="M0 1.33h18v1.34H0zm0 2.67h18v1.33H0zm0 2.67h18V8H0zm0 2.66h18v1.34H0z"
+      />
+      <rect width="7.2" height="6.4" fill="#3C3B6E" />
+    </svg>
+  );
+}
+
+function FieldFlag({ field }: { field: DetailField }) {
+  if (field.flagSrc) {
+    return <img className="kyb-ubo-drawer__flag" src={field.flagSrc} alt="" width="18" height="12" />;
+  }
+  if (field.flag && /^us$/i.test(field.flag)) {
+    return <UsFlagIcon />;
+  }
+  return null;
 }
 
 function DrawerAccordion({
@@ -52,16 +76,15 @@ export function UboDrawer({ node, connected, onConnectedSelect }: UboDrawerProps
   const details = node.details || {
     fields: [
       { label: "Relationship", value: node.subtitle || "—" },
-      { label: "Entity type", value: node.type === "person" ? "Person" : "Business" },
+      { label: "Business entity type", value: node.type === "person" ? "Person" : "Business" },
     ],
   };
 
   const statusTone = details.statusTone || "positive";
   const findings = details.findings || [];
 
-  const findingsList = findings.length > 0 ? (
-    <div className="kyb-ubo-drawer__findings-section">
-      <h4 className="kyb-tab-summary__findings-title">Key Findings</h4>
+  const findingsList =
+    findings.length > 0 ? (
       <ul className="kyb-ubo-drawer__findings">
         {findings.map((finding, i) => (
           <React.Fragment key={finding}>
@@ -75,43 +98,7 @@ export function UboDrawer({ node, connected, onConnectedSelect }: UboDrawerProps
           </React.Fragment>
         ))}
       </ul>
-    </div>
-  ) : null;
-
-  const summaryContent = details.truai || findings.length > 0 ? (
-    <div className="kyb-ubo-drawer__summary-slot">
-      {details.truai && (
-        <div className="kyb-truai-summary-card">
-          <div className="kyb-truai-summary-card__block">
-            <div className="kyb-truai-summary-card__label-row">
-              <span className="kyb-truai-summary-card__sparkle" aria-hidden="true">
-                <SparkleIcon />
-              </span>
-              <span className="kyb-truai-summary-card__label">TruAI:</span>
-            </div>
-            <p className="kyb-truai-summary-card__text">{details.truai}</p>
-          </div>
-          {details.prompt && (
-            <div className="kyb-truai-summary-card__prompt">
-              <p className="kyb-truai-summary-card__prompt-label">Ask TruAI:</p>
-              <button
-                type="button"
-                className="tds-ai-tag tds-ai-tag--sm kyb-truai-prompt-chip"
-                data-truai-toggle
-                data-truai-prompt={details.prompt}
-              >
-                <span className="tds-ai-tag__icon" aria-hidden="true">
-                  <SparkleIcon />
-                </span>
-                <span className="tds-ai-tag__label">{details.prompt}</span>
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-      {findingsList}
-    </div>
-  ) : null;
+    ) : null;
 
   return (
     <aside className="kyb-ubo-drawer" aria-label="Selected entity details">
@@ -132,7 +119,10 @@ export function UboDrawer({ node, connected, onConnectedSelect }: UboDrawerProps
               {index > 0 && <hr className="kyb-ubo-drawer__divider" />}
               <div className="kyb-ubo-drawer__field">
                 <p className="kyb-ubo-drawer__field-label">{field.label}</p>
-                <p className="kyb-ubo-drawer__field-value">{field.value}</p>
+                <div className="kyb-ubo-drawer__field-value-row">
+                  <p className="kyb-ubo-drawer__field-value">{field.value}</p>
+                  <FieldFlag field={field} />
+                </div>
               </div>
             </React.Fragment>
           ))}
@@ -140,24 +130,15 @@ export function UboDrawer({ node, connected, onConnectedSelect }: UboDrawerProps
       ) : null}
 
       <div className="kyb-ubo-drawer__accordions">
-        {summaryContent && (
-          <DrawerAccordion
-            title="Summary"
-            trailing={
-              <span className="tds-ai-tag tds-ai-tag--sm">
-                <span className="tds-ai-tag__icon" aria-hidden="true">
-                  <SparkleIcon />
-                </span>
-                <span className="tds-ai-tag__label">TruAI</span>
-              </span>
-            }
-          >
-            {summaryContent}
+        {findingsList && (
+          <DrawerAccordion title="Key Findings" defaultExpanded>
+            {findingsList}
           </DrawerAccordion>
         )}
         {connected.length > 0 && (
           <DrawerAccordion
             title="Connected Entities"
+            defaultExpanded={false}
             trailing={
               <span className="tds-counter tds-counter--secondary tds-counter--sm">{connected.length}</span>
             }
@@ -172,7 +153,9 @@ export function UboDrawer({ node, connected, onConnectedSelect }: UboDrawerProps
                 >
                   <div className="kyb-ubo-drawer__connected-head">
                     <span className="tds-tag tds-tag--sm tds-tag--default kyb-ubo-drawer__role-tag">
-                      <span className="kyb-ubo-drawer__role-icon" aria-hidden="true">{graphIcon(item.type)}</span>
+                      <span className="kyb-ubo-drawer__role-icon" aria-hidden="true">
+                        {graphIcon(item.type)}
+                      </span>
                       {item.role}
                     </span>
                     {item.pct && <span className="kyb-ubo-drawer__field-value">{item.pct}</span>}
