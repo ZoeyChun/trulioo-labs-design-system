@@ -118,10 +118,29 @@ body.d3-ai-panel-lab .d3-lab-gallery {
   box-sizing: border-box;
 }
 
+/* Cards that already have their own chrome — don't double-box them. */
+.d3-lab-gallery__section--bare .d3-lab-gallery__frame {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
 .d3-lab-gallery__frame,
 .d3-lab-gallery__frame * {
   pointer-events: none;
   user-select: none;
+}
+
+/* Same as pane: icon-btn display must not revive [hidden] controls. */
+.d3-lab-gallery__frame [hidden] {
+  display: none !important;
+}
+
+/* Specimens that expect pane/thread ancestors get a width-matched context. */
+.d3-lab-gallery__pane-ctx {
+  width: 100%;
+  max-width: 444px;
 }
 
 .d3-lab-gallery__stack {

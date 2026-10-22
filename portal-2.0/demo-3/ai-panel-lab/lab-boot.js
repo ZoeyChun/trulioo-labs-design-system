@@ -111,9 +111,11 @@
           el.removeAttribute(name);
         }
       });
+      /* Don't set aria-disabled — TDS styles that as a muted/disabled button
+         and makes Confirm / Export look broken vs the live panel. Clicks are
+         already blocked by .d3-lab-gallery__frame { pointer-events: none }. */
       if (el.tagName === "BUTTON" || el.tagName === "A") {
         el.setAttribute("tabindex", "-1");
-        el.setAttribute("aria-disabled", "true");
       }
       if (el.tagName === "TEXTAREA" || el.tagName === "INPUT") {
         el.setAttribute("tabindex", "-1");
@@ -275,22 +277,45 @@
     });
 
     var confirmHtml = cloneTpl("confirm", function (root) {
-      setText(root, "[data-d1-confirm-action]", "Confirm this business?");
       setText(
         root,
-        "[data-d1-confirm-detail]",
-        "Meridian Capital LLC · United States · Active"
+        "[data-d1-confirm-action]",
+        "Run a KYB check on Meridian Industrial Holdings LLC?"
       );
+      var detail = root.querySelector("[data-d1-confirm-detail]");
+      if (detail) {
+        detail.innerHTML =
+          "United States · IL SOS 04581276<br>233 S Wacker Drive, Chicago, IL 60606";
+      }
     });
 
     var analysisHtml = cloneTpl("analysis", function (root) {
       setText(root, "[data-d1-analysis-title]", "Match signals");
       var rows = root.querySelector("[data-d1-analysis-rows]");
       if (rows) {
-        rows.innerHTML =
-          "<p><strong>Name</strong> — Strong match</p>" +
-          "<p><strong>Address</strong> — Partial match</p>" +
-          "<p><strong>Registration</strong> — Verified</p>";
+        /* Mirror d3-kyb-agent playAnalysis row markup (data-field + stat). */
+        rows.innerHTML = [
+          { label: "Name", value: "Strong match", status: "positive" },
+          { label: "Address", value: "Partial match", status: "review" },
+          { label: "Registration", value: "Verified", status: "positive" }
+        ]
+          .map(function (r) {
+            return (
+              '<div class="tds-data-field tds-data-field--horizontal' +
+              (r.status ? " d1-val--" + r.status : "") +
+              '">' +
+              '<div class="tds-data-field__label-row">' +
+              '<p class="tds-data-field__label">' +
+              r.label +
+              "</p></div>" +
+              '<div class="tds-data-field__content">' +
+              '<div class="tds-data-field__value-row">' +
+              '<p class="tds-data-field__value">' +
+              r.value +
+              "</p></div></div></div>"
+            );
+          })
+          .join("");
       }
     });
 
@@ -308,6 +333,22 @@
       return section(label, body, "d3-lab-gallery__section--wide");
     }
 
+    function bare(label, body) {
+      return section(
+        label,
+        '<div class="d3-lab-gallery__pane-ctx">' + body + "</div>",
+        "d3-lab-gallery__section--bare"
+      );
+    }
+
+    function bareWide(label, body) {
+      return section(
+        label,
+        '<div class="d3-lab-gallery__pane-ctx">' + body + "</div>",
+        "d3-lab-gallery__section--wide d3-lab-gallery__section--bare"
+      );
+    }
+
     host.innerHTML =
       '<div class="d3-lab-gallery__intro">' +
       '<p class="d3-lab-gallery__title">Component overview</p>' +
@@ -318,14 +359,14 @@
       (iconRow ? section("Icon buttons", iconRow) : "") +
       (cardsHtml ? section("Prompt cards", cardsHtml) : "") +
       (composerHtml ? section("Composer (idle)", composerHtml) : "") +
-      (userHtml ? section("User message", userHtml) : "") +
-      (aiHtml ? section("AI response", aiHtml) : "") +
-      (thinkingHtml ? section("Thinking / loader", thinkingHtml) : "") +
-      (progressHtml ? section("Progress", progressHtml) : "") +
-      (activityHtml ? section("Activity step", activityHtml) : "") +
-      (confirmHtml ? section("Confirm", confirmHtml) : "") +
-      (analysisHtml ? section("Analysis card", analysisHtml) : "") +
-      (reportHtml ? wide("Report card", reportHtml) : "") +
+      (userHtml ? bare("User message", userHtml) : "") +
+      (aiHtml ? bare("AI response", aiHtml) : "") +
+      (thinkingHtml ? bare("Thinking / loader", thinkingHtml) : "") +
+      (progressHtml ? bare("Progress", progressHtml) : "") +
+      (activityHtml ? bare("Activity step", activityHtml) : "") +
+      (confirmHtml ? bare("Confirm", confirmHtml) : "") +
+      (analysisHtml ? bare("Analysis card", analysisHtml) : "") +
+      (reportHtml ? bareWide("Report card", reportHtml) : "") +
       (askbarHtml ? wide("Askbar", askbarHtml) : "") +
       "</div>";
 

@@ -751,25 +751,32 @@
     candState.pending = biz;
     focusCandOnMap(biz);
     var addr = biz.addr || biz.city || "";
+    var detail =
+      esc(bizCountry(biz)) +
+      " · " +
+      esc(biz.reg) +
+      (addr ? "<br>" + esc(addr) : "");
+    /* Same chrome as data-d1-tpl="confirm" — mint announcement + sparkle icon. */
     candState.root.innerHTML =
       '<p class="ai-said">' +
       esc(biz.name) +
       "</p>" +
-      '<div class="ai-reply">' +
-      '<p class="ai-reply__lead">Run a KYB check on ' +
+      '<div class="tds-announcement tds-announcement--info d1-confirm" data-d1-confirm-card>' +
+      '<span class="tds-announcement__icon" data-d1-confirm-icon aria-hidden="true">' +
+      '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+      '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m3 13 6.5-6.5M10.5 3l.7 1.8L13 5.5l-1.8.7L10.5 8l-.7-1.8L8 5.5l1.8-.7L10.5 3ZM4 4.5l.4 1 .9.4-.9.4L4 7.5l-.4-1-.9-.4.9-.4L4 4.5Z"/>' +
+      "</svg></span>" +
+      '<div class="tds-announcement__content">' +
+      '<p class="tds-announcement__title" data-d1-confirm-action>Run a KYB check on ' +
       esc(biz.name) +
       "?</p>" +
-      '<p class="ai-reply__sub">' +
-      esc(bizCountry(biz)) +
-      " · " +
-      esc(biz.reg) +
-      (addr ? "<br>" + esc(addr) : "") +
+      '<p class="tds-announcement__message" data-d1-confirm-detail>' +
+      detail +
       "</p>" +
-      "</div>" +
-      '<div class="ai-confirm">' +
-      '<button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d3-kyb-confirm="yes">Confirm</button>' +
-      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-d3-kyb-confirm="no">Cancel</button>' +
-      "</div>";
+      '<div class="tds-announcement__actions" data-d1-confirm-buttons>' +
+      '<button type="button" class="tds-btn tds-btn--sm tds-btn--primary" data-d3-kyb-confirm="yes">Confirm</button>' +
+      '<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" data-d3-kyb-confirm="no">Cancel</button>' +
+      "</div></div></div>";
     stick();
   }
 

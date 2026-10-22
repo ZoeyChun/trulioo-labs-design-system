@@ -93,6 +93,12 @@
   display: none !important;
 }
 
+/* .tds-icon-btn { display: inline-flex } beats the UA [hidden] rule — force hide. */
+.d3-pane-idle-form .tds-icon-btn[hidden],
+.d3-chat-pane .tds-icon-btn[hidden] {
+  display: none !important;
+}
+
 .d3-chat-pane.is-active .d3-pane-idle-form {
   display: none !important;
 }
