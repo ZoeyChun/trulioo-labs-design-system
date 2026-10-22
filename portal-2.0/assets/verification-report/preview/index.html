@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verification Report Module — Preview</title>
+
+  <link rel="preload" href="../../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../../Components/button/button.css">
+  <link rel="stylesheet" href="../../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../../Components/dialog/dialog.css">
+  <link rel="stylesheet" href="../../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../../../Components/accordion/accordion.css">
+  <link rel="stylesheet" href="../../../../Components/segmented-control/segmented-control.css">
+  <!-- Demo 3 report CSS (exact same stack as Demo 3 report view) -->
+  <link rel="stylesheet" href="../../../demo-3/css/d3-fa.css">
+  <link rel="stylesheet" href="../../../demo-3/css/messages.css">
+  <link rel="stylesheet" href="../../../demo-3/css/d3-workspace.css">
+  <link rel="stylesheet" href="../../../demo-3/css/d3-kyb-result-tabs.css">
+  <link rel="stylesheet" href="../../../demo-3/css/d3-kyb-ubo-graph.css">
+  <link rel="stylesheet" href="../../../demo-3/css/d3-kyb-agent.css">
+  <link rel="stylesheet" href="../../../demo-3/transactions/kyb-results/ubo-graph-dist/kyb-ubo-graph-react.css">
+  <link rel="stylesheet" href="../verification-report.css">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #e8ece9;
+      font-family: var(--font-family, Inter, system-ui, sans-serif);
+      color: var(--text-default, #172d2d);
+    }
+    .preview-page {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 24px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .preview-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 20px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid #dde2de;
+    }
+    .preview-bar h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 24px;
+      flex: 1 1 auto;
+    }
+    .preview-bar label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #526660;
+    }
+    .preview-bar select,
+    .preview-bar button {
+      font: inherit;
+      font-size: 14px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #c5cec8;
+      background: #fff;
+      cursor: pointer;
+    }
+    .preview-hosts {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+      gap: 24px;
+      align-items: stretch;
+      min-height: 720px;
+    }
+    .preview-host {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 640px;
+      max-height: 85vh;
+    }
+    .preview-host__label {
+      margin: 0 0 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: #617269;
+    }
+    .preview-host__frame {
+      flex: 1 1 auto;
+      min-height: 0;
+      min-width: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      background: transparent;
+    }
+    .preview-host--narrow .preview-host__frame {
+      width: 100%;
+      max-width: 360px;
+    }
+    @media (max-width: 960px) {
+      .preview-hosts { grid-template-columns: 1fr; }
+      .preview-host--narrow .preview-host__frame { max-width: none; }
+    }
+    .preview-log {
+      margin: 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: #172d2d;
+      color: #eaf7f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      line-height: 18px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-page">
+    <div class="preview-bar">
+      <h1>Verification Report Module</h1>
+      <label>
+        Product
+        <select id="product-select" aria-label="Product">
+          <option value="kyb" selected>KYB</option>
+          <option value="docv">Doc V (stub)</option>
+          <option value="bankv">Bank V (stub)</option>
+          <option value="device">Device (stub)</option>
+        </select>
+      </label>
+      <button type="button" id="remount-btn">Remount</button>
+      <button type="button" id="destroy-btn">Destroy</button>
+    </div>
+    <p class="preview-log" id="action-log">Ready.</p>
+    <div class="preview-hosts">
+      <div class="preview-host preview-host--wide">
+        <p class="preview-host__label">Wide host</p>
+        <div class="preview-host__frame" id="host-wide"></div>
+      </div>
+      <div class="preview-host preview-host--narrow">
+        <p class="preview-host__label">Narrow host (~360px)</p>
+        <div class="preview-host__frame" id="host-narrow"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../../../Components/dialog/dialog.js"></script>
+  <!-- Demo 3 report renderers (full tab content + UBO graph) -->
+  <script src="../../../demo-3/transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js"></script>
+  <script src="../../../demo-3/js/d3-kyb-result-tabs.js"></script>
+  <script src="../../../demo-3/js/d3-kyb-ubo-graph.js"></script>
+
+  <script src="../verification-report.js"></script>
+  <script src="../products/kyb/kyb-report.js"></script>
+  <script src="../products/docv/docv-report.js"></script>
+  <script src="../products/bankv/bankv-report.js"></script>
+  <script src="../products/device/device-report.js"></script>
+  <script>
+    (function () {
+      var logEl = document.getElementById("action-log");
+      var select = document.getElementById("product-select");
+      var wide = document.getElementById("host-wide");
+      var narrow = document.getElementById("host-narrow");
+
+      function log(msg) {
+        logEl.textContent = msg;
+      }
+
+      function optionsFor(product) {
+        return {
+          product: product,
+          data: product === "kyb" ? VerificationReport.products.kyb.sampleData() : { title: product.toUpperCase() + " report" },
+          activeTab: product === "kyb" ? "overview" : "summary",
+          demo3AssetBase: "../../../demo-3/assets/kyb-resume/",
+          onAction: function (event) {
+            log("onAction → " + event.product + " / " + event.id);
+          }
+        };
+      }
+
+      function mountBoth() {
+        var product = select.value;
+        VerificationReport.mount(wide, optionsFor(product));
+        VerificationReport.mount(narrow, optionsFor(product));
+        log(
+          "Mounted “" +
+            product +
+            "”. Tabs use Demo 3 renderers: result-tabs=" +
+            !!window.D3KybResultTabs +
+            " ubo=" +
+            !!window.D3KybUboGraph
+        );
+      }
+
+      select.addEventListener("change", mountBoth);
+      document.getElementById("remount-btn").addEventListener("click", mountBoth);
+      document.getElementById("destroy-btn").addEventListener("click", function () {
+        VerificationReport.destroy(wide);
+        VerificationReport.destroy(narrow);
+        log("Destroyed both hosts.");
+      });
+
+      mountBoth();
+    })();
+  </script>
+</body>
+</html>

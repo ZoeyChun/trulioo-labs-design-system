@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verification Report — flow integration example</title>
+
+  <link rel="preload" href="../../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../../Components/button/button.css">
+  <link rel="stylesheet" href="../../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../../Components/dialog/dialog.css">
+  <link rel="stylesheet" href="../../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../../../Components/data-field/data-field.css">
+  <link rel="stylesheet" href="../../../../Components/data-table/data-table.css">
+  <link rel="stylesheet" href="../../../../Components/accordion/accordion.css">
+  <link rel="stylesheet" href="../../../../Components/segmented-control/segmented-control.css">
+  <link rel="stylesheet" href="../../../demo-3/css/d3-fa.css">
+  <link rel="stylesheet" href="../../../demo-3/css/messages.css">
+  <link rel="stylesheet" href="../../../demo-3/css/d3-workspace.css">
+  <link rel="stylesheet" href="../../../demo-3/css/d3-kyb-result-tabs.css">
+  <link rel="stylesheet" href="../../../demo-3/css/d3-kyb-ubo-graph.css">
+  <link rel="stylesheet" href="../../../demo-3/css/d3-kyb-agent.css">
+  <link rel="stylesheet" href="../../../demo-3/transactions/kyb-results/ubo-graph-dist/kyb-ubo-graph-react.css">
+  <link rel="stylesheet" href="../verification-report.css">
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f4f6f4;
+      font-family: var(--font-family, Inter, system-ui, sans-serif);
+      color: var(--text-default, #172d2d);
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: 16px;
+      height: 100vh;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .flow__chat {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid #dde2de;
+      min-height: 0;
+    }
+    .flow__chat h1 { margin: 0; font-size: 16px; font-weight: 600; }
+    .flow__chat p { margin: 0; font-size: 13px; line-height: 18px; color: #526660; }
+    .flow__chat code {
+      font-size: 12px;
+      background: #f4f6f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .flow__chat button {
+      align-self: flex-start;
+      font: inherit;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #c5cec8;
+      background: #fff;
+      cursor: pointer;
+    }
+    .flow__report {
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+    }
+    @media (max-width: 900px) {
+      .flow { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
+      .flow__report { min-height: 70vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="flow">
+    <aside class="flow__chat">
+      <h1>Your flow chrome</h1>
+      <p>
+        Mount the Demo 3 report card into <code>#verification-report-slot</code>.
+        Include Demo 3 CSS + <code>d3-kyb-result-tabs.js</code> + <code>d3-kyb-ubo-graph.js</code>
+        so every tab has full content.
+      </p>
+      <button type="button" id="btn-verify">Simulate verify → mount report</button>
+      <button type="button" id="btn-clear">Clear report</button>
+      <p id="status" style="margin-top:auto">Host empty until verify.</p>
+    </aside>
+    <div class="flow__report" id="verification-report-slot" aria-label="Verification report"></div>
+  </div>
+
+  <script src="../../../../Components/dialog/dialog.js"></script>
+  <script src="../../../demo-3/transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js"></script>
+  <script src="../../../demo-3/js/d3-kyb-result-tabs.js"></script>
+  <script src="../../../demo-3/js/d3-kyb-ubo-graph.js"></script>
+  <script src="../verification-report.js"></script>
+  <script src="../products/kyb/kyb-report.js"></script>
+  <script>
+    (function () {
+      var slot = document.getElementById("verification-report-slot");
+      var status = document.getElementById("status");
+
+      function mountReport() {
+        VerificationReport.mount(slot, {
+          product: "kyb",
+          data: VerificationReport.products.kyb.sampleData(),
+          activeTab: "overview",
+          demo3AssetBase: "../../../demo-3/assets/kyb-resume/",
+          onAction: function (e) {
+            status.textContent = "Report action: " + e.id;
+          }
+        });
+        status.textContent =
+          "Mounted. D3KybResultTabs=" +
+          !!window.D3KybResultTabs +
+          " D3KybUboGraph=" +
+          !!window.D3KybUboGraph;
+      }
+
+      document.getElementById("btn-verify").addEventListener("click", mountReport);
+      document.getElementById("btn-clear").addEventListener("click", function () {
+        VerificationReport.destroy(slot);
+        status.textContent = "Host empty until verify.";
+      });
+
+      mountReport();
+    })();
+  </script>
+</body>
+</html>
