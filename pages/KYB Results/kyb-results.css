@@ -3940,9 +3940,9 @@
   margin-top: -26px;
 }
 
-/* Score-only (no badge): center on the arc midpoint (CY = 121.53) */
+/* Score-only (no badge): arc midpoint (CY = 121.53), nudged 10px up */
 .kyb-summary-hero__gauge .score-gauge__center {
-  top: 121.53px;
+  top: calc(121.53px - 10px);
   transform: translateY(-50%);
 }
 
