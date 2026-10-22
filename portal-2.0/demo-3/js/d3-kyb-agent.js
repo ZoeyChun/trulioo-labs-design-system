@@ -660,7 +660,11 @@
       "</div>";
     stick();
 
-    var input = document.querySelector("[data-d1-input]") || document.querySelector("[data-d3-pane-input]");
+    /* Prefer pane idle / parked chat input — never leave a native placeholder
+       on the home composer (it overlaps the rotating .d1-prompt__ph). */
+    var input =
+      document.querySelector(".d3-chat-pane [data-d1-input]") ||
+      document.querySelector("[data-d3-pane-input]");
     if (input) {
       input.placeholder = "Country of registration, e.g. United States";
       try {

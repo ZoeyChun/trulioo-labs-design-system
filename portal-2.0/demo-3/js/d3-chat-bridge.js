@@ -48,6 +48,18 @@
     else homeMount.appendChild(sourceComposer);
   }
 
+  /* Home uses a rotating fake-placeholder span; KYB may have set a real
+     input.placeholder (e.g. country ask) — clear it or both paint on top. */
+  function resetHomeComposerPrompt() {
+    var input = sourceComposer.querySelector("[data-d1-input]");
+    if (!input) return;
+    input.placeholder = "";
+    input.value = "";
+    input.style.height = "";
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    document.dispatchEvent(new CustomEvent("d3-home:composer-reset"));
+  }
+
   function restoreFromPane() {
     if (!parked) return;
     if (threadMount) threadMount.appendChild(sourceThread);
@@ -57,6 +69,7 @@
     if (idleForm) idleForm.hidden = false;
     parked = false;
     if (window.D3Nav) window.D3Nav.markChatIdle();
+    resetHomeComposerPrompt();
   }
 
   function openLeftChat(mode) {
@@ -247,6 +260,8 @@
   document.addEventListener("d3-view:home", function () {
     restoreFromPane();
     if (stage) stage.setAttribute("data-d1-stage", "home");
+    /* Even if composer was never parked, wipe KYB placeholders on Home. */
+    resetHomeComposerPrompt();
   });
   document.addEventListener("d3-chat:close", function (event) {
     var detail = (event && event.detail) || {};

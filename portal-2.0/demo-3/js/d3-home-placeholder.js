@@ -54,6 +54,8 @@
       showRotator(false);
       return;
     }
+    /* Home paints prompts via the rotator span only. */
+    input.placeholder = "";
     showRotator(true);
     timer = window.setTimeout(advance, HOLD_MS);
   }
@@ -119,6 +121,12 @@
       obs.observe(shell, { attributes: true, attributeFilter: ["data-d3-view"] });
     }
   }
+
+  document.addEventListener("d3-home:composer-reset", function () {
+    index = 0;
+    setPhrase(PHRASES[0]);
+    schedule();
+  });
 
   schedule();
 })();
