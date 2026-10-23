@@ -14,7 +14,12 @@
       sessionStorage.removeItem("d3-signed-in");
       sessionStorage.removeItem("d3-from-signin");
     } catch (e) {}
-    window.location.replace(SIGN_IN_HREF);
+    var signIn = new URL(SIGN_IN_HREF);
+    try {
+      var home = new URLSearchParams(window.location.search).get("home");
+      if (home === "light" || home === "dark") signIn.searchParams.set("home", home);
+    } catch (e) {}
+    window.location.replace(signIn.href);
   }
 
   var stored = false;

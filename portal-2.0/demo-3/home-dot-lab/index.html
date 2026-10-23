@@ -1,0 +1,84 @@
+<!-- Demo 3 — dark-hero TruDotField lab (config panel).
+     Dots are clipped inside the green hero only (overflow: hidden).
+     No card section. Tune here → Copy config → paste into
+     portal-2.0/demo-3/js/d3-home-dots.js → DARK_CONFIG. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo 3 — Home dot lab</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+  <!-- Orb internals (blob / strip) — scoped home rules are unused here. -->
+  <link rel="stylesheet" href="../css/d3-home.css">
+  <link rel="stylesheet" href="css/lab.css">
+  <link rel="stylesheet" href="css/dot-controls.css">
+</head>
+<body class="lab-page">
+
+  <header class="lab-bar">
+    <p class="lab-bar__title">Demo 3 · Home dot lab</p>
+    <nav class="lab-bar__links" aria-label="Related">
+      <a href="../index.html">Demo 3 main</a>
+      <a href="../../demo-2/home-layout-01/index.html">Demo 2 panel reference</a>
+    </nav>
+  </header>
+
+  <section class="lab-hero" aria-labelledby="lab-greeting">
+    <canvas class="lab-dots" id="lab-dots" aria-hidden="true"></canvas>
+
+    <div class="lab-welcome">
+      <button type="button" class="lab-orb d3-home-orb" data-d3-home-orb aria-label="Ask TruAI"></button>
+      <h1 class="lab-hello" id="lab-greeting">Welcome back, Jane.</h1>
+    </div>
+
+    <div class="lab-composer">
+      <form class="lab-prompt" action="#" onsubmit="return false;">
+        <label class="visually-hidden" for="lab-ask">Ask TruAI</label>
+        <input class="lab-prompt__input" id="lab-ask" type="text" autocomplete="off"
+               placeholder="Ask questions or tell me what you’d like to do">
+        <button class="lab-prompt__send" type="submit" aria-label="Send" tabindex="-1">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11.47 4.47a.75.75 0 0 1 1.06 0l6 6a.75.75 0 1 1-1.06 1.06l-4.72-4.72V19.5a.75.75 0 0 1-1.5 0V6.81l-4.72 4.72a.75.75 0 0 1-1.06-1.06l6-6Z" fill="currentColor"/></svg>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <p class="lab-note">
+    Dots stay inside the hero (<code>overflow: hidden</code>). Use the panel →
+    <strong>Copy config</strong> → paste into <code>js/d3-home-dots.js</code>
+    (<code>DARK_CONFIG</code>) to merge back into Demo 3 main home.
+  </p>
+
+  <style>
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+
+  <script src="../../demo-2/home-layout-01/js/dot-field.js"></script>
+  <script src="js/dot-controls.js"></script>
+  <script src="../js/d3-home-orb.js"></script>
+  <script>
+    (function () {
+      var canvas = document.getElementById('lab-dots');
+      var saved = window.TruDotControls ? window.TruDotControls.load() : null;
+      var start = saved || (window.TruDotControls && window.TruDotControls.LAB_DEFAULTS) || null;
+      var field = window.TruDotField.mount(canvas, start);
+      if (window.TruDotControls) window.TruDotControls.init(field);
+    })();
+  </script>
+
+</body>
+</html>

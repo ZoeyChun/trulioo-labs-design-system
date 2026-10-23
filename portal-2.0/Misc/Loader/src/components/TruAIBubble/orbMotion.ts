@@ -271,10 +271,23 @@ export type OrbMotionTargets = {
   swirl: number;
 };
 
+/**
+ * Homepage landing orb: original Figma palette only (no acting accents),
+ * logo parked, no size pulse — mesh drifts a step livelier than idle.
+ */
+export const HOME_LANDING_TARGETS: OrbMotionTargets = {
+  speed: 2.2,
+  amplitude: 1.55,
+  logoOrbit: 0,
+  logoSpin: 0,
+  swirl: 0,
+};
+
 export function targetsForState(state: TruAIState): OrbMotionTargets {
   switch (state) {
     case "thinking":
-      return { speed: 3, amplitude: 1.6, logoOrbit: 1, logoSpin: 1, swirl: 0.12 };
+      // logoSpin 1.35 → ~1.9s/rev (LOGO_ORBIT_PERIOD_S / 1.35)
+      return { speed: 3, amplitude: 1.6, logoOrbit: 1, logoSpin: 1.35, swirl: 0.12 };
     case "acting":
       // Color wash + pulse breathe: logo parked front (no orbit/spin).
       // Swirl gates accent chroma; field rotation is nearly killed in stepOrb.
@@ -290,6 +303,11 @@ export function targetsForState(state: TruAIState): OrbMotionTargets {
       // Logo parked front; mesh breathes. Occasional yaw is stepped separately.
       return { speed: 1, amplitude: 1, logoOrbit: 0, logoSpin: 0, swirl: 0 };
   }
+}
+
+export function targetsForOrb(state: TruAIState, landing = false): OrbMotionTargets {
+  if (landing) return HOME_LANDING_TARGETS;
+  return targetsForState(state);
 }
 
 function idleYawGapMs() {
@@ -320,6 +338,8 @@ export type OrbFrameState = {
   logoPhase: number;
   /** Current TruAI visual state — drives idle yaw vs orbit. */
   motionState: TruAIState;
+  /** Homepage landing: livelier original-palette mesh, no accents / size pulse. */
+  landing: boolean;
   speed: number;
   amplitude: number;
   logoOrbit: number;
@@ -348,17 +368,22 @@ export type OrbFrameState = {
   atRest: boolean;
 };
 
-export function createOrbFrameState(state: TruAIState): OrbFrameState {
-  const t = targetsForState(state);
+export function createOrbFrameState(
+  state: TruAIState,
+  opts?: { landing?: boolean },
+): OrbFrameState {
+  const landing = opts?.landing ?? false;
+  const t = targetsForOrb(state, landing);
   const now = typeof performance !== "undefined" ? performance.now() : 0;
   return {
     phase: 0,
     logoPhase:
-      state === "idle" || state === "completed" || state === "needs-attention"
+      landing || state === "idle" || state === "completed" || state === "needs-attention"
         ? 0
         : LOGO_PHASE_LEFT,
-    motionState: state,
-    speed: state === "completed" ? 0 : t.speed,
+    motionState: landing ? "idle" : state,
+    landing,
+    speed: state === "completed" && !landing ? 0 : t.speed,
     amplitude: t.amplitude,
     logoOrbit: t.logoOrbit,
     logoSpin: t.logoSpin,
@@ -374,8 +399,8 @@ export function createOrbFrameState(state: TruAIState): OrbFrameState {
     // First nudge soon so idle “alive” cue is easy to notice in the demo.
     idleYawNextAt: now + 900,
     idleYaw: 0,
-    actingNod: state === "acting" ? { start: now } : null,
-    attentionShake: state === "needs-attention" ? { start: now } : null,
+    actingNod: !landing && state === "acting" ? { start: now } : null,
+    attentionShake: !landing && state === "needs-attention" ? { start: now } : null,
     logoScale: 1,
     orbScale: 1,
     atRest: state === "completed",
@@ -388,17 +413,25 @@ export function triggerActingNod(frame: OrbFrameState, now: number) {
   frame.atRest = false;
 }
 
-export function retargetOrb(frame: OrbFrameState, state: TruAIState, now: number) {
-  const t = targetsForState(state);
-  frame.motionState = state;
+export function retargetOrb(
+  frame: OrbFrameState,
+  state: TruAIState,
+  now: number,
+  opts?: { landing?: boolean; /** Multiplies logoSpin target. */ orbitRate?: number },
+) {
+  const landing = opts?.landing ?? false;
+  const orbitRate = opts?.orbitRate ?? 1;
+  const t = targetsForOrb(state, landing);
+  frame.landing = landing;
+  frame.motionState = landing ? "idle" : state;
   frame.targetAmplitude = t.amplitude;
   frame.targetLogoOrbit = t.logoOrbit;
-  frame.targetLogoSpin = t.logoSpin;
+  frame.targetLogoSpin = t.logoSpin * orbitRate;
   frame.targetSwirl = t.swirl;
   frame.atRest = false;
 
   // Leave idle yaw when switching away.
-  if (state !== "idle") {
+  if (frame.motionState !== "idle") {
     frame.idleYawNudge = null;
     frame.idleYaw = 0;
   } else {
@@ -407,7 +440,7 @@ export function retargetOrb(frame: OrbFrameState, state: TruAIState, now: number
     frame.idleYawNextAt = now + idleYawGapMs() * 0.5;
   }
 
-  if (state === "acting") {
+  if (!landing && state === "acting") {
     // Kill residual thinking orbit velocity immediately — orbit amp alone
     // blends the mark to front; continuing logoSpin reads as a mad enter spin.
     frame.logoSpin = 0;
@@ -418,18 +451,18 @@ export function retargetOrb(frame: OrbFrameState, state: TruAIState, now: number
     if (!frame.pop) frame.logoScale = 1;
   }
 
-  if (state === "needs-attention") {
+  if (!landing && state === "needs-attention") {
     frame.attentionShake = { start: now };
   } else {
     frame.attentionShake = null;
   }
 
   // Thinking from a parked pose: cue left → behind (hidden) → right.
-  if (state === "thinking" && frame.logoOrbit < 0.35) {
+  if (!landing && state === "thinking" && frame.logoOrbit < 0.35) {
     frame.logoPhase = LOGO_PHASE_LEFT;
   }
 
-  if (state === "completed") {
+  if (!landing && state === "completed") {
     // Mesh hard-stop + logo front landing (scale pop). Orbit/swirl already targeted 0.
     frame.speedTween = {
       from: frame.speed,

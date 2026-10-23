@@ -1,0 +1,189 @@
+/* ============================================================
+   Dot-field control panel — review tool, NOT part of the design.
+   ============================================================
+   Deliberately styled as an overlay rather than as a portal surface,
+   so there is never any doubt about what belongs to the Figma node
+   and what is scaffolding. Remove this file, js/dot-controls.js and
+   their two references in index.html to ship the page clean.
+   ------------------------------------------------------------------ */
+
+.dotctl {
+  position: fixed;
+  right: var(--spacing-24);
+  bottom: var(--spacing-24);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-8);
+  font-family: var(--font-family);
+}
+
+.dotctl__toggle {
+  display: inline-flex;
+  gap: var(--spacing-8);
+  align-items: center;
+  padding: var(--spacing-8) var(--spacing-12);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+  background: var(--surface-neutral-01);
+  box-shadow: var(--elevation-md);
+  cursor: pointer;
+}
+
+.dotctl__toggle svg { width: 14px; height: 14px; color: var(--icon-faint); }
+.dotctl__toggle:hover { border-color: var(--border-strong); }
+
+.dotctl__panel {
+  width: 272px;
+  max-height: calc(100vh - 140px);
+  padding: var(--spacing-16);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-01);
+  box-shadow: var(--elevation-xl);
+  overflow-y: auto;
+}
+
+.dotctl[data-open="false"] .dotctl__panel { display: none; }
+
+/* Panel sits above the toggle, so put the toggle last visually. */
+.dotctl { flex-direction: column-reverse; }
+
+/* Section heading. Eighteen controls need grouping to stay readable;
+   these are the only dividers in the panel. */
+.dotctl__section {
+  margin: var(--spacing-16) 0 var(--spacing-8);
+  padding-top: var(--spacing-12);
+  border-top: 1px solid var(--border-divider);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-default);
+}
+
+.dotctl__section:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.dotctl__row {
+  display: block;
+  margin-bottom: var(--spacing-12);
+}
+
+.dotctl__row[hidden] { display: none; }
+.dotctl__row:last-of-type { margin-bottom: 0; }
+
+.dotctl__labelrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.dotctl__label {
+  display: block;
+  margin-bottom: var(--spacing-4);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+.dotctl__value {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-description);
+}
+
+.dotctl__select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  color: var(--text-default);
+  background: var(--surface-neutral-01);
+}
+
+.dotctl__colorwrap {
+  display: flex;
+  gap: var(--spacing-8);
+  align-items: center;
+}
+
+.dotctl__swatch {
+  flex: 0 0 auto;
+  width: 30px; height: 28px;
+  padding: 2px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-neutral-01);
+  cursor: pointer;
+}
+
+.dotctl__range {
+  width: 100%;
+  accent-color: var(--interactive-default);
+}
+
+.dotctl__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+}
+
+.dotctl__chip {
+  padding: 4px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+  background: var(--surface-neutral-01);
+  cursor: pointer;
+}
+
+.dotctl__chip:hover {
+  border-color: var(--border-selected);
+  background: var(--interactive-subtle);
+}
+
+.dotctl__actions {
+  display: flex;
+  gap: var(--spacing-8);
+  margin-top: var(--spacing-16);
+  padding-top: var(--spacing-12);
+  border-top: 1px solid var(--border-divider);
+}
+
+.dotctl__btn {
+  flex: 1 1 0;
+  padding: 7px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-button);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+  background: var(--surface-neutral-01);
+  cursor: pointer;
+}
+
+.dotctl__btn--primary {
+  color: var(--text-inverse);
+  border-color: var(--interactive-default);
+  background: var(--interactive-default);
+}
+
+.dotctl__btn:hover { border-color: var(--border-strong); }
+.dotctl__btn--primary:hover { background: var(--interactive-hover); border-color: var(--interactive-hover); }

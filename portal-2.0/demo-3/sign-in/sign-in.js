@@ -8,9 +8,13 @@
 
   var email = form.querySelector("[name='email']");
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var portalHref = new URL("../index.html", window.location.href).href;
-
   var params = new URLSearchParams(window.location.search);
+  var portalUrl = new URL("../index.html", window.location.href);
+  if (params.get("home") === "light" || params.get("home") === "dark") {
+    portalUrl.searchParams.set("home", params.get("home"));
+  }
+  var portalHref = portalUrl.href;
+
   var forceSignIn = params.has("fresh") || params.has("signin");
   try {
     if (forceSignIn) {

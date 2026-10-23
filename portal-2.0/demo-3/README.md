@@ -63,7 +63,8 @@ Session keys: `d3-signed-in`, `d3-from-signin` (Demo 3 only). Demo 1 keeps its o
 
 | Label | Where | Notes |
 |-------|--------|--------|
-| Portal Home | This shell, Home rail | Returning-customer composer |
+| Portal Home (dark) | This shell, Home rail | Figma `1609:50255` — dark green hero + inverted dots |
+| Portal Home (light) | [`home-light/`](home-light/) or `?home=light` | Prior light orb + teal dots experiment |
 | Labs | Labs rail → `labs.html?embed=1` | Catalog; not “Agent hub” |
 | Labs catalog Home | `pages/…/labs.html` sidenav | Experimental nav only |
 

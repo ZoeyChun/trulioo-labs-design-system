@@ -1,0 +1,198 @@
+/* Demo 3 — dark-hero dot lab (config panel). Not the shipped home. */
+
+.lab-page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  margin: 0;
+  padding: 64px clamp(24px, 4vw, 49px) 48px;
+  font-family: var(--font-family, "Inter", system-ui, sans-serif);
+  color: var(--text-default, #172d2d);
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.lab-page *,
+.lab-page *::before,
+.lab-page *::after {
+  box-sizing: border-box;
+}
+
+.lab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 24px;
+  max-width: 1214px;
+  margin: 0 auto 24px;
+}
+
+.lab-bar__title {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-secondary, #3d524f);
+}
+
+.lab-bar__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.lab-bar__links a {
+  color: var(--text-link, #006b5c);
+  text-decoration: none;
+}
+
+.lab-bar__links a:hover {
+  text-decoration: underline;
+}
+
+/* Hero — same clipping contract as demo-3 dark home: dots stay inside. */
+.lab-hero {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-48, 48px);
+  width: min(1214px, 100%);
+  margin: 0 auto;
+  padding: 96px 24px;
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--interactive-default, #004c45);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.lab-dots {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.lab-welcome {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-16, 16px);
+  width: 100%;
+  margin: 0;
+  text-align: center;
+}
+
+.lab-orb {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+  line-height: 0;
+}
+
+.lab-orb:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.lab-orb .d3-home-orb__stage {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  overflow: visible;
+}
+
+.lab-orb .d3-home-orb__root {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  border-radius: 50%;
+  clip-path: circle(50%);
+  transform: translate(-50%, -50%) scale(0.4444);
+  transform-origin: 50% 50%;
+}
+
+.lab-hello {
+  margin: 0;
+  color: var(--text-inverse, #f4f6f4);
+  font-size: var(--font-size-display-md, 2.5rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 3.125rem;
+}
+
+.lab-composer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.lab-prompt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(760px, 100%);
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 4px solid rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-xl, 12px);
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: none;
+}
+
+.lab-prompt__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: var(--font-size-md, 1rem);
+  color: var(--text-default, #172d2d);
+  background: transparent;
+  outline: none;
+}
+
+.lab-prompt__input::placeholder {
+  color: var(--text-placeholder, #7a8f8b);
+}
+
+.lab-prompt__send {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--interactive-default, #004c45);
+  color: #fff;
+  cursor: default;
+  line-height: 0;
+}
+
+.lab-prompt__send svg {
+  width: 16px;
+  height: 16px;
+}
+
+.lab-note {
+  max-width: 1214px;
+  margin: 24px auto 0;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #3d524f);
+  line-height: 1.5;
+}

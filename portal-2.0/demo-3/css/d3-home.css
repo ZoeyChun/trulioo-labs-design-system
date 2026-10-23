@@ -1,4 +1,6 @@
-/* Demo 3 — returning customer home only (Figma 1274:15403) */
+/* Demo 3 — returning customer home
+   Dark (default): Figma 1609:50255 — interactive-default hero + inverted dots
+   Light (?home=light): prior orb + teal dots on white — see home-light/ */
 
 .d1-hello__new,
 .d1-hello p,
@@ -8,6 +10,282 @@
 
 .d1-hello__back {
   display: block !important;
+  font-size: var(--font-size-display-md);
+  line-height: 3.125rem;
+}
+
+/* Kill prompt glow — replaced by TruDotField. */
+.d1-home[data-d1-stage="home"] .d1-glow,
+.d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-glow {
+  display: none !important;
+}
+
+.d1-home[data-d1-stage="home"] .d1-composer::before,
+.d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-composer::before {
+  content: none !important;
+  display: none !important;
+}
+
+.d1-home[data-d1-stage="home"] {
+  position: relative;
+  isolation: isolate;
+}
+
+.d3-home-hero {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+}
+
+.d3-home-dots {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: none;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.d1-home[data-d1-stage="home"] .d3-home-dots {
+  display: block;
+}
+
+.d1-home[data-d1-stage="home"] .d1-welcome,
+.d1-home[data-d1-stage="home"] .d1-composer,
+.d1-home[data-d1-stage="home"] .d1-brief {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Dark skin (main) — Figma Recurring User KYB 1609:50255 ---- */
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
+  justify-content: flex-start;
+  align-items: center;
+  padding: var(--spacing-64, 64px) clamp(24px, 4vw, 49px) var(--spacing-48, 48px);
+  gap: 0;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-48, 48px);
+  width: 100%;
+  /* Extra vertical air — 64 looked unchanged locally; 96 reads clearly taller. */
+  padding-top: 96px !important;
+  padding-bottom: 96px !important;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--interactive-default, #004c45);
+  overflow: hidden;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-welcome {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-16, 16px);
+  width: 100%;
+  margin: 0;
+  text-align: center;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d1-hello {
+  margin: 0;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d1-hello__back {
+  color: var(--text-inverse, #f4f6f4);
+  font-size: var(--font-size-display-md);
+  line-height: 3.125rem;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-orb {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 0;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-orb__stage {
+  width: 64px;
+  height: 64px;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-orb__root {
+  /* JS renders at 144px; scale to 64px (Figma LogoIcon). */
+  transform: translate(-50%, -50%) scale(0.4444);
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero > .d1-composer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero > .d1-composer > .d1-prompt {
+  width: min(760px, 100%);
+  border: 4px solid rgba(0, 0, 0, 0.04);
+  box-shadow: none;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+  width: min(1214px, 100%);
+  margin-top: var(--spacing-80, 80px);
+}
+
+/* ---- Light skin (alternate) — full-bleed dots, no dark panel ---- */
+
+.d1-home[data-d3-home-skin="light"][data-d1-stage="home"] .d3-home-hero {
+  display: contents;
+}
+
+.d1-home[data-d3-home-skin="light"][data-d1-stage="home"] .d3-home-dots {
+  position: absolute;
+  inset: 0;
+}
+
+/* Home hero orb — above welcome, centered (Loader TruAIOrb Home mode). */
+.d3-home-orb {
+  display: none;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.d1-home[data-d1-stage="home"] .d3-home-orb {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--spacing-16, 16px);
+}
+
+.d3-home-orb:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.d3-home-orb__stage {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  overflow: visible;
+}
+
+.d3-home-orb__root {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  border-radius: 50%;
+  clip-path: circle(50%);
+  /* JS renders at 144px; scale to 72px display for crisp orbit strips. */
+  transform: translate(-50%, -50%) scale(0.5);
+  transform-origin: 50% 50%;
+  isolation: isolate;
+  pointer-events: none;
+}
+
+.d3-home-orb__blur {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  transform: scale(1.15);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.d3-home-orb__blob {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.d3-home-orb__logo {
+  position: absolute;
+  inset: 0;
+  perspective-origin: 50% 50%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.d3-home-orb__pivot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.d3-home-orb__flat {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%) translateZ(0.5px);
+  pointer-events: none;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
+  z-index: 1;
+}
+
+.d3-home-orb__strips {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.d3-home-orb__strip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  pointer-events: none;
+}
+
+.d3-home-orb__slice {
+  display: block;
+  pointer-events: none;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+.d1-home[data-d1-stage="chat"] .d3-home-orb {
+  display: none;
 }
 
 /* Only on the home stage — never while stage=chat (composer may be parked). */

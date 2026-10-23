@@ -36,13 +36,9 @@
 
   var parked = false;
   var idleFormBound = false;
-  var homeMount = sourceComposer.parentNode;
+  var homeMount = document.querySelector(".d1-home") || sourceComposer.closest(".d1-home");
   var threadMount = sourceThread.parentNode;
   var followMount = sourceFollow ? sourceFollow.parentNode : null;
-  /* Brief lives in the same chat__col; remember sibling so restore
-     keeps greeting → composer → cards order (appendChild would put
-     the composer after the brief). */
-  var composerBefore = sourceComposer.nextSibling;
   var sending = false;
 
   function parkIntoPane() {
@@ -63,14 +59,18 @@
   }
 
   function restoreComposer() {
-    if (!homeMount) return;
-    if (composerBefore && composerBefore.parentNode === homeMount) {
-      homeMount.insertBefore(sourceComposer, composerBefore);
+    var home = document.querySelector(".d1-home") || homeMount;
+    if (!home) return;
+    var hero = home.querySelector(".d3-home-hero");
+    var skin = home.getAttribute("data-d3-home-skin") || "dark";
+    /* Dark home: composer lives inside the green hero panel. */
+    if (skin !== "light" && hero) {
+      hero.appendChild(sourceComposer);
       return;
     }
-    var brief = homeMount.querySelector(".d1-brief");
-    if (brief) homeMount.insertBefore(sourceComposer, brief);
-    else homeMount.appendChild(sourceComposer);
+    var brief = home.querySelector(".d1-brief");
+    if (brief) home.insertBefore(sourceComposer, brief);
+    else home.appendChild(sourceComposer);
   }
 
   /* Home uses a rotating fake-placeholder span; KYB may have set a real

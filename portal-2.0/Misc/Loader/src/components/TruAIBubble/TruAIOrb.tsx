@@ -34,6 +34,13 @@ type TruAIOrbProps = {
   state: TruAIState;
   /** When this changes while acting, replay the logo nod. */
   actingKey?: string;
+  /**
+   * Homepage landing preview: original palette mesh a step livelier than idle,
+   * logo parked, no size pulse, no acting accent colors.
+   */
+  landing?: boolean;
+  /** Multiplies logo orbit spin (e.g. Home Thinking slightly faster). Default 1. */
+  orbitRate?: number;
   reducedMotion?: boolean;
   className?: string;
 };
@@ -49,6 +56,8 @@ const FLAT_SLICE_W = LOGO_DESIGN_W / LOGO_STRIPS;
 export function TruAIOrb({
   state,
   actingKey,
+  landing = false,
+  orbitRate = 1,
   reducedMotion = false,
   className,
 }: TruAIOrbProps) {
@@ -61,9 +70,11 @@ export function TruAIOrb({
   const stripRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sliceRefs = useRef<(HTMLDivElement | null)[]>([]);
   const layerRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const frameRef = useRef(createOrbFrameState(state));
+  const frameRef = useRef(createOrbFrameState(state, { landing }));
   const offsetsRef = useRef(randomLayerOffsets());
   const stateRef = useRef(state);
+  const landingRef = useRef(landing);
+  const orbitRateRef = useRef(orbitRate);
   const actingKeyRef = useRef(actingKey);
   const reducedRef = useRef(reducedMotion);
   const rafRef = useRef(0);
@@ -92,12 +103,16 @@ export function TruAIOrb({
   }, [reducedMotion]);
 
   useEffect(() => {
-    const prev = stateRef.current;
+    const prevState = stateRef.current;
+    const prevLanding = landingRef.current;
+    const prevRate = orbitRateRef.current;
     stateRef.current = state;
-    if (prev !== state) {
-      retargetOrb(frameRef.current, state, performance.now());
+    landingRef.current = landing;
+    orbitRateRef.current = orbitRate;
+    if (prevState !== state || prevLanding !== landing || prevRate !== orbitRate) {
+      retargetOrb(frameRef.current, state, performance.now(), { landing, orbitRate });
     }
-  }, [state]);
+  }, [state, landing, orbitRate]);
 
   useEffect(() => {
     const prev = actingKeyRef.current;

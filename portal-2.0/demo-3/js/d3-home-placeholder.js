@@ -1,6 +1,7 @@
 /* Home composer — rotate Trulioo-context placeholder prompts when idle. */
 (function () {
   var PHRASES = [
+    "Ask questions or tell me what you’d like to do",
     "Verify a business by name or registration number",
     "Why did KYB failures increase yesterday?",
     "Review identity verifications that need attention",
