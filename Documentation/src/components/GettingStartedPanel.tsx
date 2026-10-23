@@ -1,10 +1,20 @@
+import { useState } from "react";
 import { ChapterHeader } from "./ChapterHeader";
 import { OVERVIEW_PRINCIPLES } from "../data/navigation";
+import { ComponentThumbnailGrid } from "./ComponentThumbnailGrid";
 
 type GettingStartedPanelProps = {
   active: boolean;
   onExplore: () => void;
+  onSelectComponent: (componentId: string) => void;
 };
+
+type OverviewTabId = "components" | "strategy";
+
+const OVERVIEW_TABS: { id: OverviewTabId; label: string }[] = [
+  { id: "components", label: "Components" },
+  { id: "strategy", label: "Strategy" },
+];
 
 const MD = {
   brush:
@@ -290,104 +300,172 @@ function AfterDiagram() {
   );
 }
 
-export function GettingStartedPanel({ active, onExplore }: GettingStartedPanelProps) {
+export function GettingStartedPanel({
+  active,
+  onExplore,
+  onSelectComponent,
+}: GettingStartedPanelProps) {
+  const [activeTab, setActiveTab] = useState<OverviewTabId>("components");
+
   if (!active) return null;
 
+  const selectTab = (id: OverviewTabId) => {
+    setActiveTab(id);
+    const main = document.querySelector(".tds-preview__main");
+    if (main) main.scrollTop = 0;
+  };
+
   return (
-    <div className="tds-preview__panel is-active" role="tabpanel">
+    <div className="tds-preview__panel is-active">
       <ChapterHeader
         eyebrow="Getting Started"
         title="Overview"
         desc="The Trulioo Design System (TDS) is a design-to-code ecosystem that bridges Figma and production. Designers own the full lifecycle: they design components in Figma, code them as CSS, and ship to a shared Git repository that every product team consumes."
       />
 
+      <div className="tds-preview__doc-tabs-wrap">
+        <div className="tds-tabs tds-preview__doc-tabs">
+          <div className="tds-tabs__row">
+            <div className="tds-tabs__list" role="tablist" aria-label="Overview sections">
+              {OVERVIEW_TABS.map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    role="tab"
+                    id={`overview-tab-${tab.id}`}
+                    className={`tds-tab-item${isActive ? " tds-tab-item--active" : ""}`}
+                    aria-selected={isActive}
+                    aria-controls={`overview-panel-${tab.id}`}
+                    onClick={() => selectTab(tab.id)}
+                  >
+                    <span className="tds-tab-item__content">{tab.label}</span>
+                    <span className="tds-tab-item__indicator" aria-hidden="true" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="tds-tabs__divider" aria-hidden="true" />
+        </div>
+      </div>
+
       <div className="tds-preview__getting-started">
-        {/* Before / After comparison */}
-        <section className="tds-preview__gs-section">
-          <h2>Why we built this</h2>
-          <p>
-            Building consistent products at scale requires a single shared component language.
-            Here is how our workflow changed.
-          </p>
-
-          <div className="tds-preview__gs-comparison">
-            <div className="tds-preview__gs-comparison-panel tds-preview__gs-comparison-panel--before">
-              <div className="tds-preview__gs-comparison-label tds-preview__gs-comparison-label--before">Before</div>
-              <p className="tds-preview__gs-comparison-desc">
-                The design system lived only in Figma. For every new project, developers interpreted designs
-                and rebuilt components from scratch. Each team made different decisions, leading to inconsistent
-                UI, duplicated effort, and Figma-to-code drift that compounded over time.
+        {activeTab === "components" ? (
+          <div
+            id="overview-panel-components"
+            role="tabpanel"
+            aria-labelledby="overview-tab-components"
+          >
+            <section className="tds-preview__gs-section">
+              <p>
+                Browse every TDS component with a live preview. Open a card to jump to anatomy,
+                variants, guidance, and code.
               </p>
-              <div className="tds-preview__gs-diagram-wrap">
-                <BeforeDiagram />
-              </div>
-            </div>
-
-            <div className="tds-preview__gs-comparison-panel tds-preview__gs-comparison-panel--after">
-              <div className="tds-preview__gs-comparison-label tds-preview__gs-comparison-label--after">After</div>
-              <p className="tds-preview__gs-comparison-desc">
-                Designers now own the full component lifecycle. They design in Figma, code the CSS themselves,
-                and push to a shared Git repository. Dev teams import prebuilt, production-ready components
-                directly into their codebases -- no more rebuilding, no more guessing.
+              <ComponentThumbnailGrid onSelect={onSelectComponent} />
+            </section>
+          </div>
+        ) : (
+          <div
+            id="overview-panel-strategy"
+            role="tabpanel"
+            aria-labelledby="overview-tab-strategy"
+            className="tds-preview__gs-strategy"
+          >
+            <section className="tds-preview__gs-section">
+              <h2>Why we built this</h2>
+              <p>
+                Building consistent products at scale requires a single shared component language.
+                Here is how our workflow changed.
               </p>
-              <div className="tds-preview__gs-diagram-wrap">
-                <AfterDiagram />
+
+              <div className="tds-preview__gs-comparison">
+                <div className="tds-preview__gs-comparison-panel tds-preview__gs-comparison-panel--before">
+                  <div className="tds-preview__gs-comparison-label tds-preview__gs-comparison-label--before">
+                    Before
+                  </div>
+                  <p className="tds-preview__gs-comparison-desc">
+                    The design system lived only in Figma. For every new project, developers
+                    interpreted designs and rebuilt components from scratch. Each team made
+                    different decisions, leading to inconsistent UI, duplicated effort, and
+                    Figma-to-code drift that compounded over time.
+                  </p>
+                  <div className="tds-preview__gs-diagram-wrap">
+                    <BeforeDiagram />
+                  </div>
+                </div>
+
+                <div className="tds-preview__gs-comparison-panel tds-preview__gs-comparison-panel--after">
+                  <div className="tds-preview__gs-comparison-label tds-preview__gs-comparison-label--after">
+                    After
+                  </div>
+                  <p className="tds-preview__gs-comparison-desc">
+                    Designers now own the full component lifecycle. They design in Figma, code the
+                    CSS themselves, and push to a shared Git repository. Dev teams import prebuilt,
+                    production-ready components directly into their codebases -- no more rebuilding,
+                    no more guessing.
+                  </p>
+                  <div className="tds-preview__gs-diagram-wrap">
+                    <AfterDiagram />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </section>
+            </section>
 
-        {/* Principles */}
-        <section className="tds-preview__gs-section">
-          <h2>Principles</h2>
-          <div className="tds-preview__hero-grid tds-preview__hero-grid--compact">
-            {OVERVIEW_PRINCIPLES.map((feature) => (
-              <article key={feature.title} className="tds-preview__gs-principle-card">
-                <strong>{feature.title}</strong>
-                <span>{feature.body}</span>
-              </article>
-            ))}
-          </div>
-        </section>
+            <section className="tds-preview__gs-section">
+              <h2>Principles</h2>
+              <div className="tds-preview__hero-grid tds-preview__hero-grid--compact">
+                {OVERVIEW_PRINCIPLES.map((feature) => (
+                  <article key={feature.title} className="tds-preview__gs-principle-card">
+                    <strong>{feature.title}</strong>
+                    <span>{feature.body}</span>
+                  </article>
+                ))}
+              </div>
+            </section>
 
-        {/* Site organization */}
-        <section className="tds-preview__gs-section">
-          <h2>How this site is organized</h2>
-          <div className="tds-preview__gs-grid tds-preview__gs-grid--four">
-            <article className="tds-preview__gs-principle-card">
-              <strong>Getting Started</strong>
-              <span>Overview and component tracker for build status and adoption.</span>
-            </article>
-            <article className="tds-preview__gs-principle-card">
-              <strong>Foundations</strong>
-              <span>Typography and design tokens, the primitives every component builds on.</span>
-            </article>
-            <article className="tds-preview__gs-principle-card">
-              <strong>Components</strong>
-              <span>Individual components grouped by category: Button, TextInput, SideNav, and more.</span>
-            </article>
-            <article className="tds-preview__gs-principle-card">
-              <strong>Content</strong>
-              <span>Writing guidelines, vocabulary, and voice for product copy.</span>
-            </article>
-          </div>
-        </section>
+            <section className="tds-preview__gs-section">
+              <h2>How this site is organized</h2>
+              <div className="tds-preview__gs-grid tds-preview__gs-grid--four">
+                <article className="tds-preview__gs-principle-card">
+                  <strong>Getting Started</strong>
+                  <span>Overview and component tracker for build status and adoption.</span>
+                </article>
+                <article className="tds-preview__gs-principle-card">
+                  <strong>Foundations</strong>
+                  <span>Typography and design tokens, the primitives every component builds on.</span>
+                </article>
+                <article className="tds-preview__gs-principle-card">
+                  <strong>Components</strong>
+                  <span>
+                    Individual components grouped by category: Button, TextInput, SideNav, and more.
+                  </span>
+                </article>
+                <article className="tds-preview__gs-principle-card">
+                  <strong>Content</strong>
+                  <span>Writing guidelines, vocabulary, and voice for product copy.</span>
+                </article>
+              </div>
+            </section>
 
-        <section className="tds-preview__gs-section">
-          <button type="button" className="tds-preview__hero-cta" onClick={onExplore}>
-            Browse components
-            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-              <path
-                d="M3 8h10M9 4l4 4-4 4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </section>
+            <section className="tds-preview__gs-section">
+              <button type="button" className="tds-preview__hero-cta" onClick={onExplore}>
+                Browse components
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                  <path
+                    d="M3 8h10M9 4l4 4-4 4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </section>
+          </div>
+        )}
       </div>
     </div>
   );

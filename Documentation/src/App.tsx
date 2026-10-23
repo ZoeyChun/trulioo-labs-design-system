@@ -232,6 +232,9 @@ export default function App() {
                   <GettingStartedPanel
                     active
                     onExplore={() => activatePage("components", "button")}
+                    onSelectComponent={(componentId) =>
+                      activatePage("components", componentId)
+                    }
                   />
                 )}
                 {route.type === "page" && route.pageId === "tracker" && <TrackerPanel />}

@@ -39,6 +39,7 @@ import "../../../Components/select/select.css";
 import "../../../Components/side-nav/side-nav.css";
 import "../../../Components/spinner/spinner.css";
 import "../../../Components/stat-card/stat-card.css";
+import "../../../Components/stepper/stepper.css";
 import "../../../Components/switch/switch.css";
 import "../../../Components/tabs/tabs.css";
 import "../../../Components/tap-indicator/tap-indicator.css";
