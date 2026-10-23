@@ -1228,6 +1228,34 @@
     });
   }
 
+  /* Frame the map on a set of businesses (e.g. a city filter in the chat panel). */
+  function focusBusinesses(items, opts) {
+    opts = opts || {};
+    var pts = (items || [])
+      .filter(function (b) {
+        return b && typeof b.lat === "number" && typeof b.lon === "number";
+      })
+      .map(function (b) {
+        return [b.lat, b.lon];
+      });
+    if (!pts.length) return false;
+    var m = ensureMap();
+    if (!m) return false;
+    try {
+      m.invalidateSize({ animate: false });
+    } catch (e) {}
+    var maxZoom = opts.maxZoom != null ? opts.maxZoom : 12;
+    if (pts.length === 1) {
+      if (reducedMotion) m.setView(pts[0], maxZoom);
+      else m.flyTo(pts[0], maxZoom, { duration: 1.05, easeLinearity: 0.25 });
+    } else if (reducedMotion) {
+      m.fitBounds(pts, { padding: [64, 64], maxZoom: maxZoom });
+    } else {
+      m.flyToBounds(pts, { padding: [64, 64], maxZoom: maxZoom, duration: 1.05, easeLinearity: 0.25 });
+    }
+    return true;
+  }
+
   function selectBusiness(biz, opts) {
     opts = opts || {};
     if (!biz) return;
@@ -1350,6 +1378,7 @@
     showHomeLocation: showHomeLocation,
     selectBusiness: selectBusiness,
     focusBusiness: focusBusiness,
+    focusBusinesses: focusBusinesses,
     highlightMarker: highlightMarker,
     findBusinesses: findBusinesses,
     findByName: findByName,

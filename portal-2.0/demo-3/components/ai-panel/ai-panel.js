@@ -44,19 +44,19 @@
         prompt: "What information do I need?",
         agent: "kyb",
         title: "What information do I need?",
-        desc: "Fields and documents required to start a check",
+        desc: "Run KYB or KYC on a new entity",
       },
       {
         prompt: "Which countries are supported?",
         agent: "kyb",
-        title: "Which countries are supported?",
-        desc: "Jurisdictions available for business verification",
+        title: "Which countries are supported",
+        desc: "Find past checks by name or ID",
       },
       {
         prompt: "How does verification work?",
         agent: "kyb",
         title: "How does verification work?",
-        desc: "Steps from search to a verified report",
+        desc: "Dig into ownership, alerts, and evidence",
       },
     ],
     tx: [

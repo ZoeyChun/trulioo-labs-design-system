@@ -38,8 +38,8 @@
     },
     kyb: {
       hello: "Hi, I’m your KYB Agent.",
-      sub: "Type a business name and country to get started — for example, “Acme Inc, United States”.",
-      placeholder: "Business name and country"
+      sub: "Let’s find your business.",
+      placeholder: "Ask about business verification"
     },
     tx: {
       hello: "What would you like to investigate?",

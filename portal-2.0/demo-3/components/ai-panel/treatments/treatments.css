@@ -1,0 +1,541 @@
+/* Demo 3 — TruAI panel treatments (KYB agent).
+   Selected from the AI panel lab: Large orb landing · Header orb on verify ·
+   City selector for business select · Loading bar while investigating · List
+   for the report follow-ups. Scoped to data-d3-chat-mode="kyb"; state comes
+   from data-d3-ai-* attributes set by treatments.js. */
+
+/* User prompt — Figma Prompt 1585:158833. */
+
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-user p {
+  max-width: max-content;
+  padding: var(--spacing-16, 16px);
+  border: 0;
+  border-radius: var(--radius-3xl, 24px);
+  background: var(--color-teal-20, #c2ede4);
+  box-shadow: none;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-sm, 1.125rem);
+  overflow: hidden;
+}
+
+/* The agent's echo of the picked business is a user-side bubble too. */
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d3-kyb-cand-panel .ai-said {
+  max-width: max-content;
+  padding: var(--spacing-16, 16px);
+  border: 0;
+  border-radius: var(--radius-3xl, 24px);
+  background: var(--color-teal-20, #c2ede4);
+  box-shadow: none;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-sm, 1.125rem);
+}
+
+/* Entity confirmation box: neutral surface (info and done states). */
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-confirm.tds-announcement {
+  background-color: var(--surface-neutral-02, #f4f6f4);
+}
+
+/* Investigating: loading bar without the percentage, step text at xs. */
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-progress__pct {
+  display: none;
+}
+
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-activity__toggle,
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-activity__detail p {
+  font-size: var(--font-size-xs, 0.75rem);
+  line-height: var(--line-height-xs, 1rem);
+}
+
+/* Report-ready card title: size s. The investigation evidence (progress block)
+   stays in the thread once the report lands. */
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-report-ready__title {
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: var(--line-height-sm, 1.125rem);
+}
+
+/* —— Orb placement —— */
+
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane__brand {
+  display: none;
+}
+
+.d3-ai-hero,
+.d3-ai-ident {
+  display: none;
+}
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="hero"] .d3-ai-hero {
+  display: flex;
+  justify-content: center;
+}
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] .d3-ai-ident {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+  /* Let the header orb breathe past its 40px slot while animating. */
+  overflow: visible;
+}
+
+.d3-ai-hero .truai-panel__text,
+.d3-ai-ident__orb .truai-panel__text {
+  display: none;
+}
+
+.d3-ai-ident__orb {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  /* Acting/thinking scales the orb past 1.0 — do not clip. */
+  overflow: visible;
+  z-index: 2;
+}
+
+.d3-ai-ident__orb-scale {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 64px;
+  height: 64px;
+  transform: translate(-50%, -50%) scale(0.625);
+  transform-origin: center center;
+}
+
+/* Header tools stay above the thread feather; keep head from clipping the orb. */
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] .d3-chat-pane__head {
+  overflow: visible;
+}
+
+/* Pane overflow:hidden clips the header orb breathe (~1.11×). Clip the thread instead. */
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] .d3-chat-pane {
+  overflow: visible;
+}
+
+/* Not the body: it must stay overflow:visible so the composer's ring + shadow
+   aren't clipped into square corners (see ai-panel.css .d3-chat-pane__body). */
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] [data-d3-chat-thread] {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.d3-ai-ident__copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.d3-ai-ident__title {
+  overflow: hidden;
+  color: var(--text-default, #172d2d);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.d3-ai-ident__status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-description, #526660);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.d3-ai-ident__status-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  color: var(--icon-faint, #617269);
+}
+
+.d3-ai-ident__status-icon[hidden],
+.d3-ai-ident__status-icon.is-empty {
+  display: none;
+}
+
+.d3-ai-ident__status-icon svg {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 12px;
+  max-height: 12px;
+}
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="hero"] .d3-chat-pane__close,
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] .d3-chat-pane__close {
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 999px;
+  background: var(--surface-neutral-01, #fff);
+}
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="landing"] .d3-chat-pane__empty {
+  gap: 32px;
+}
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="landing"] .d3-chat-pane__sub {
+  margin-top: 4px;
+  color: var(--text-default, #172d2d);
+  line-height: 22px;
+}
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-landing="large"] .d3-prompt-card {
+  align-items: center;
+  min-height: 0;
+  padding: 12px;
+  border-color: transparent;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-landing="large"] .d3-prompt-card__title {
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-landing="large"] .d3-chat-pane__prompts {
+  gap: 12px;
+  padding-top: 0;
+}
+
+/* Author display:flex beats the hidden attribute, so the match list stays up. */
+
+.d1-shell[data-d3-chat-mode="kyb"] .d3-kyb-cand-panel[hidden],
+.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-follow[hidden] {
+  display: none !important;
+}
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="investigating"] .d1-thinking {
+  display: none !important;
+}
+
+/* Report step: next-step cards vs list (Figma 1585:159473 / 1585:159608). */
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="report"] .d1-follow,
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="report"] [data-d3-kyb-next] {
+  display: none !important;
+}
+
+.d1-shell[data-d3-chat-mode="kyb"]:not([data-d3-ai-step="report"]) [data-d3-ai-next],
+.d1-shell[data-d3-chat-mode="kyb"]:not([data-d3-ai-step="report"]) .d1-block:has([data-d1-co]),
+.d1-shell[data-d3-chat-mode="kyb"]:not([data-d3-ai-step="report"]) .d1-block:has(.d1-report__title) {
+  display: none !important;
+}
+
+.d3-ai-next {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.d3-ai-next--list {
+  gap: 4px;
+}
+
+.d3-ai-next__label {
+  margin: 0;
+  color: var(--text-caption, #617269);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.d3-ai-next__list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.d3-ai-next--cards .d3-ai-next__list {
+  gap: 8px;
+}
+
+.d3-ai-next__btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.d3-ai-next__btn:focus-visible {
+  outline: 2px solid var(--interactive-default, #004c45);
+  outline-offset: 2px;
+}
+
+.d3-ai-next--cards .d3-ai-next__btn {
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d3-ai-next--cards .d3-ai-next__btn:hover {
+  background: color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 80%, #172d2d);
+}
+
+.d3-ai-next--cards .d3-ai-next__text {
+  flex: 1 1 auto;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.d3-ai-next--cards .d3-ai-next__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--icon-faint, #617269);
+}
+
+.d3-ai-next--list .d3-ai-next__btn {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+}
+
+.d3-ai-next--list .d3-ai-next__btn:last-child {
+  border-bottom: 0;
+}
+
+.d3-ai-next--list .d3-ai-next__btn:hover .d3-ai-next__text {
+  color: var(--interactive-default, #004c45);
+}
+
+.d3-ai-next--list .d3-ai-next__text {
+  flex: 1 1 auto;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.d3-ai-next--list .d3-ai-next__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  color: var(--icon-faint, #617269);
+}
+
+.d3-ai-next__arrow svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+/* Verify step: city selector in place of the match cards. */
+
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-verify="selector"] .d3-kyb-cand-panel:has([data-d3-ai-selector]) > .ai-reply,
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-verify="selector"] .d3-kyb-cand-panel:has([data-d3-ai-selector]) > .ai-chips,
+.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-verify="selector"] .d3-kyb-cand-panel:has([data-d3-ai-selector]) > .ai-cands {
+  display: none !important;
+}
+
+.d3-ai-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius-3xl, 24px);
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d3-ai-selector__title {
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  line-height: var(--line-height-sm, 1.125rem);
+}
+
+.d3-ai-selector__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.d3-ai-selector__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.d3-ai-selector__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-description, #526660);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  cursor: pointer;
+}
+
+.d3-ai-selector__chip.is-on {
+  border-color: var(--interactive-default, #004c45);
+  background: var(--surface-interactive-subtle, #e7f6f2);
+  color: var(--interactive-default, #004c45);
+}
+
+.d3-ai-selector__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-neutral-03, #e8ede8);
+  color: var(--text-default, #172d2d);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.d3-ai-selector__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.d3-ai-selector__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 12px;
+  border: 0;
+  border-radius: var(--radius-xl, 12px);
+  background: var(--surface-neutral-01, #fff);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.d3-ai-selector__row:hover {
+  background: color-mix(in srgb, var(--surface-neutral-01, #fff) 82%, var(--surface-neutral-03, #e8ede8));
+}
+
+.d3-ai-selector__mark {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-lg, 8px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--icon-faint, #617269);
+  font-size: 32px;
+}
+
+.d3-ai-selector__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.d3-ai-selector .ai-cand__name {
+  color: var(--text-default, #172d2d);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.d3-ai-selector__addr,
+.d3-ai-selector__reg {
+  color: var(--text-description, #526660);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.d3-ai-selector__reg {
+  color: var(--text-placeholder, #8a9a90);
+}
+
+.d3-ai-selector__empty {
+  margin: 0;
+  color: var(--text-description, #526660);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.d3-ai-selector__pager {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--text-description, #526660);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.d3-ai-selector__pager > span:first-child {
+  flex: 1 1 auto;
+}
+
+.d3-ai-selector__pages {
+  display: flex;
+  gap: 4px;
+}
+
+.d3-ai-selector__page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-neutral-01, #fff);
+  color: var(--icon-faint, #617269);
+  cursor: pointer;
+}
+
+.d3-ai-selector__page svg {
+  display: block;
+}
+
+.d3-ai-selector__page:disabled {
+  border-color: transparent;
+  background: var(--surface-neutral-03, #e8ede8);
+  cursor: default;
+}

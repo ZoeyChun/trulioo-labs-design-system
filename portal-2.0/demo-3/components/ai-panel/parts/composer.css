@@ -65,6 +65,14 @@
   min-height: 28px;
 }
 
+/* The wrapper around the textarea must follow its (JS-set) height, otherwise
+   long drafts spill out of the box. Scrolls past max-height on the input. */
+.d3-chat-pane .d1-prompt__entry {
+  height: auto;
+  min-height: 22px;
+  grid-template-rows: auto;
+}
+
 .d3-pane-idle-form .d1-prompt__input,
 .d3-chat-pane .d1-prompt__input {
   box-sizing: border-box;

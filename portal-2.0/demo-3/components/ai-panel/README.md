@@ -89,3 +89,20 @@ landing, verify, and investigating treatments.
 
 Message templates (`data-d1-tpl`), KYB flow UI, and agent logic stay in
 `index.html` / `js/` (lab page copies the templates it needs).
+
+## KYB treatments (from the AI panel lab)
+
+`treatments/treatments.{js,css}` apply the options chosen in `ai-panel-lab/` to the
+live KYB panel (only when `data-d3-chat-mode="kyb"`; other agents are unchanged):
+
+| Step | Treatment |
+|------|-----------|
+| Landing | Large orb (hero orb, no header title on the empty state) |
+| Verify business | Header orb + “Verify Meridian in UK” title/status; City selector for matches |
+| Investigating | Loading bar (live progress block) with activity status in the header |
+| Report | List for “Continue your investigation” |
+
+The step is inferred from the thread (no flow control). State lives in
+`data-d3-ai-*` attributes on `.d1-shell`. Orb scripts are copies of the lab's:
+`orb/truai-float.js`, `orb/truai-orb-motion.js` (plus `demo-4` TruAIBubble).
+To try other options, use the lab picker; this module is fixed to the chosen set.
