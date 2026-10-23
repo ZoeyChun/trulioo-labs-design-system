@@ -18,7 +18,8 @@ No sign-in, same as `ai-panel-lab/` — this is a layout lab.
 ## Status
 
 - **Home** — deliberately unchanged from the parent page.
-- **KYB Verification landing** — on the 600px sheet, otherwise unchanged.
+- **KYB Verification landing** — on the 600px sheet, with four layout options
+  to choose between. See [Landing layouts](#landing-layouts).
 - **Waiting for country** — redesigned, with two country-selector treatments
   to choose between. See [Waiting for country](#waiting-for-country).
 - **Map view, report, matches** — render on the canvas already (nothing in
@@ -46,8 +47,10 @@ kyb-workspace/
   index.html                 # the fork
   css/workspace-canvas.css   # stage, dot ground, the sheet (width + height), docked panel
   css/country-step.css       # waiting-for-country step
+  css/landing-layouts.css    # KYB landing — the four layout options
   js/workspace-canvas.js     # dot field mount, docked-panel guard
   js/country-step.js         # country data + the two selector treatments
+  js/landing-layouts.js      # landing layout switch + the quick-start chips
 ```
 
 `css/` and `js/` under `demo-3/` are **shared, not copied**. The page carries
@@ -158,6 +161,50 @@ Grid is **18px**, dot radius 1.2px at 40% — tightened twice, since the dots no
 show across the whole stage around a 600px sheet rather than in a thin gutter.
 
 To retune, use `../home-dot-lab/` and paste the result into `CANVAS_DOTS`.
+
+## Landing layouts
+
+`index.html` → `[data-kw-landing]`, `css/landing-layouts.css`,
+`js/landing-layouts.js`.
+
+Four arrangements of the same three things — the title, the search, and recent
+transactions. They differ in **which job they favour**: starting a new check, or
+re-entering an old one. Both are always on screen; what changes is which one you
+fall into first.
+
+| | Layout | Favours | Trade |
+|--|--|--|--|
+| A | **Search hero** *(default)* | Starting a new check | Search is the subject; recents sit below a rule and read as history. Closest to the page today. |
+| B | **Work queue** | Re-entering an old check | Title shrinks to a page label, search becomes a toolbar, the list is most of the screen. For accounts where most sessions continue work. |
+| C | **Quick start** | Re-running a known entity | Recents collapse to one row of one-click chips under the input. Fast for the three names you keep returning to; no help at all for the fourth. |
+| D | **Split** | Neither, explicitly | Two labelled modules — a tinted "Start a verification" panel and a plain recents section. Least opinionated about why you came. |
+
+The segmented switch is a **lab control**, tagged `LAB`. Pick one and delete it.
+
+### One DOM, four layouts
+
+All four are CSS over **one** set of nodes, switched by the `data-kw-landing`
+attribute. This is not a stylistic choice: the search is the `vb-lookup`
+composite that `js/d3-kyb-manual-search.js` wires **by id**, and the recent
+cards are bound by `js/d3-kyb-resume.js`. A per-layout copy of the markup would
+mean a per-layout copy of that wiring, or four elements fighting over `#vb-q`.
+
+Two consequences worth knowing:
+
+- **`.kw-landing-row`** carries the row treatment for the layouts that want a
+  list. The upstream card is a 168px-tall column built for a three-across grid;
+  one-per-row at 600px that is a lot of height for four short facts, so the same
+  nodes are re-flowed into a name/status row plus a meta line. The meta line
+  needs a zero-height `::after` to force the break — at 600px all five spans fit
+  on one line otherwise, and the status tag lands mid-row instead of at the edge.
+- **`.kw-landing__panel`** is an inert wrapper, `display: contents` everywhere
+  but Split, which needs the label and the search inside one panel while the
+  title stays outside it.
+
+The quick-start chips are built from the recent cards rather than a second data
+list, and a chip clicks its card — so "open a recent check" stays one code path
+however it is presented. **View all** goes to the Transactions rail item, which
+is where the full history already lives.
 
 ## Waiting for country
 

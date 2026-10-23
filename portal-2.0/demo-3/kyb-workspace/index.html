@@ -119,6 +119,7 @@
   <!-- Last in the cascade so it beats the hero-critical block above. -->
   <link rel="stylesheet" href="kyb-workspace/css/workspace-canvas.css?v=11">
   <link rel="stylesheet" href="kyb-workspace/css/country-step.css?v=5">
+  <link rel="stylesheet" href="kyb-workspace/css/landing-layouts.css?v=4">
 </head>
 <body>
 
@@ -448,9 +449,39 @@
           <nav class="d3-workspace__crumb" data-d3-kyb-crumb aria-label="Breadcrumb" hidden></nav>
         </div>
 
-        <div class="d3-workspace__landing" data-d3-kyb-landing>
+        <!-- Landing layout comparison (LAB).
+             Four arrangements of the same three things — title, search,
+             recent transactions — differing in which job they favour:
+             starting a new check, or re-entering an old one.
+
+             All four are CSS over ONE set of nodes. The search is the
+             vb-lookup composite wired by js/d3-kyb-manual-search.js by id,
+             and the recent cards are bound by js/d3-kyb-resume.js, so
+             duplicating markup per layout would mean duplicating (or
+             breaking) that wiring. Layouts are styled by the
+             data-kw-landing attribute instead. -->
+        <div class="kw-layouts" data-kw-layouts-bar>
+          <span class="kw-variants__tag" title="Layout comparison — pick one and delete the switch">Lab</span>
+          <div class="tds-segmented-control tds-segmented-control--sm" role="group" aria-label="Landing layout" data-kw-layouts>
+            <button type="button" class="tds-segmented-control__item tds-segmented-control__item--selected" aria-pressed="true" data-kw-layout-btn="hero"><span class="tds-segmented-control__label">Search hero</span></button>
+            <button type="button" class="tds-segmented-control__item" aria-pressed="false" data-kw-layout-btn="queue"><span class="tds-segmented-control__label">Work queue</span></button>
+            <button type="button" class="tds-segmented-control__item" aria-pressed="false" data-kw-layout-btn="quick"><span class="tds-segmented-control__label">Quick start</span></button>
+            <button type="button" class="tds-segmented-control__item" aria-pressed="false" data-kw-layout-btn="split"><span class="tds-segmented-control__label">Split</span></button>
+          </div>
+        </div>
+
+        <div class="d3-workspace__landing" data-d3-kyb-landing data-kw-landing="hero">
         <div class="d3-workspace__hero">
         <h1 class="d3-workspace__title">KYB Verification</h1>
+        <!-- Shown by the layouts that want a line of orientation under the
+             title; the others leave it out of flow. -->
+        <p class="kw-landing__sub">Search a business to start a new check, or pick up a recent one.</p>
+        <!-- Inert wrapper: `display: contents` for every layout but Split,
+             which needs the label and the search inside one panel while the
+             title stays outside it. Descendant selectors and the vb-* ids
+             are unaffected. -->
+        <div class="kw-landing__panel">
+        <p class="kw-landing__search-label">Start a verification</p>
         <!-- Manual search — synced from demo-2/verify-business -->
         <div class="d3-workspace__search" aria-labelledby="d3-kyb-search-h">
           <span class="d1-visually-hidden" id="d3-kyb-search-h">Search for a business</span>
@@ -596,11 +627,20 @@
             </div>
           </div>
         </div>
+        </div><!-- /.kw-landing__panel -->
+        <!-- One-click re-entry row. Filled by js/landing-layouts.js from the
+             recent cards below, and a chip clicks its card — same action,
+             no second copy of the wiring. -->
+        <div class="kw-chips" data-kw-chips aria-label="Recent checks"></div>
         </div>
 
         <section class="d3-kyb-recent" data-d3-kyb-recent aria-labelledby="d3-kyb-recent-h">
           <div class="d3-kyb-recent__head">
             <h2 class="d3-kyb-recent__title" id="d3-kyb-recent-h">Recent transactions</h2>
+            <button type="button" class="kw-landing__viewall" data-kw-view-all>
+              View all
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6 4l4 4-4 4"/></svg>
+            </button>
           </div>
           <div class="d3-kyb-recent__grid">
             <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Apex Nordic Logistics AB" data-status="Verified" data-country="Sweden" data-txid="a7bc12e4-91f0-4c2d-8e55-3b1d9a0f6c28" data-date="12 Mar 2026, 09:00">
@@ -1465,7 +1505,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-kyb-result-tabs.js?v=6"></script>
 <script src="js/d3-kyb-resume.js?v=40"></script>
 <script src="js/d3-kyb-report-reveal.js?v=31"></script>
-<script src="js/d3-kyb-map-search.js?v=45"></script>
+<script src="js/d3-kyb-map-search.js?v=46"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
 <script src="js/d3-kyb-agent.js?v=23"></script>
 <script src="js/d3-motion.js?v=3"></script>
@@ -1487,5 +1527,6 @@ No evidence of active trading, clients, or revenue.</p>
      Last so it can observe the shell after every shared script has bound. -->
 <script src="kyb-workspace/js/workspace-canvas.js?v=4"></script>
 <script src="kyb-workspace/js/country-step.js?v=3"></script>
+<script src="kyb-workspace/js/landing-layouts.js?v=1"></script>
 </body>
 </html>

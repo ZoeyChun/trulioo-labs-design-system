@@ -1013,8 +1013,11 @@
       workspace.setAttribute("data-d3-kyb-surface", "map");
     }
     window.setTimeout(function () {
-      ensureMap();
-      map.invalidateSize();
+      /* ensureMap() returns null when the host has no dimensions yet and
+         re-schedules itself — dereferencing `map` here threw in that
+         case. It sizes itself on the retry, so there is nothing to do. */
+      var m = ensureMap();
+      if (m) m.invalidateSize();
     }, 40);
   }
 

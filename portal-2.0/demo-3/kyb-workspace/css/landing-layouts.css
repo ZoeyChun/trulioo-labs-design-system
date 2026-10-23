@@ -1,0 +1,421 @@
+/* ============================================================
+   Demo 3 — KYB Verification landing: layout options
+   ============================================================
+   Four arrangements of the same three things — the title, the search,
+   and recent transactions — switched by `data-kw-landing` on
+   .d3-workspace__landing. Markup: index.html. Switch: js/landing-layouts.js.
+
+   All four are CSS over ONE set of nodes. The search is the vb-lookup
+   composite, wired by js/d3-kyb-manual-search.js *by id*, and the
+   recent cards are bound by js/d3-kyb-resume.js — so a per-layout copy
+   of the markup would mean a per-layout copy of that wiring, or four
+   elements fighting over one id. Nothing here duplicates a control.
+
+   The options differ in which job they favour. Both jobs are always on
+   screen; what changes is which one you fall into first.
+
+     hero   Start a new check.     Search is the subject, recents read as history.
+     queue  Re-enter an old check. Recents dominate; search is a toolbar.
+     quick  Re-run a known entity. One-click chips replace the list.
+     split  Either, explicitly.    Two labelled modules, no implied order.
+   ------------------------------------------------------------------ */
+
+/* ------------------------------------------------------------------
+   The lab switch
+   ------------------------------------------------------------------ */
+
+.kw-layouts {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 20px 0;
+}
+
+/* Resume is the only surface with a landing to lay out. */
+.kw-shell .d3-workspace[data-d3-kyb-surface="resume"] .kw-layouts {
+  display: flex;
+}
+
+/* ------------------------------------------------------------------
+   Shared — things every layout needs inside a 600px sheet
+   ------------------------------------------------------------------ */
+
+/* Three cards across 600px is ~170px each, which clips every business
+   name. Columns are a per-layout decision from here. */
+.kw-shell .kw-stage__body .d3-kyb-recent__grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+.kw-shell .kw-stage__body .d3-kyb-recent__head {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Out of flow unless a layout asks for them. */
+.kw-landing__sub,
+.kw-landing__search-label,
+.kw-landing__viewall,
+.kw-chips {
+  display: none;
+}
+
+/* The panel wrapper is a Split-only box. Everywhere else it has to be
+   invisible to layout, or it becomes a flex item between the title and
+   the search and eats the hero's alignment. */
+.kw-landing__panel {
+  display: contents;
+}
+
+.kw-landing__sub {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 20px;
+  color: var(--text-description, #617269);
+}
+
+.kw-landing__search-label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 16px;
+  color: var(--text-caption, #617269);
+  text-transform: uppercase;
+}
+
+.kw-landing__viewall {
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--interactive-default, #0e8a78);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.kw-landing__viewall:hover { text-decoration: underline; }
+.kw-landing__viewall svg { width: 13px; height: 13px; }
+
+/* ------------------------------------------------------------------
+   The recent card as a row
+
+   Used by hero, queue and split. The upstream card is a 168px-tall
+   column built for a three-across grid; stacked one-per-row at 600px
+   that is a lot of height for four short facts. Same nodes, re-flowed.
+   ------------------------------------------------------------------ */
+
+.kw-landing-row .d3-kyb-recent__card {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  min-height: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+
+/* Row 1: name grows, status tag pinned to the far edge. */
+.kw-landing-row .d3-kyb-recent__name {
+  flex: 1 1 auto;
+  order: 1;
+  margin: 0;
+  min-width: 0;
+  -webkit-line-clamp: 1;
+  font-size: 14px;
+}
+
+.kw-landing-row .d3-kyb-recent__card .d1-tag {
+  order: 2;
+  margin: 0;
+}
+
+/* The line break. Relying on the meta spans to wrap on their own does
+   not work — at 600px all five fit on one line, and the status tag ends
+   up mid-row instead of at the edge. A zero-height full-width item
+   between them forces the split at a fixed place. */
+.kw-landing-row .d3-kyb-recent__card::after {
+  content: "";
+  order: 3;
+  flex-basis: 100%;
+  height: 0;
+}
+
+/* Row 2: product · role · date. */
+.kw-landing-row .d3-kyb-recent__product,
+.kw-landing-row .d3-kyb-recent__role,
+.kw-landing-row .d3-kyb-recent__date {
+  order: 4;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-caption, #8a9690);
+}
+
+.kw-landing-row .d3-kyb-recent__product {
+  border: 0;
+  background: transparent;
+  font-weight: 500;
+}
+
+/* Hairline separators between the three meta facts. */
+.kw-landing-row .d3-kyb-recent__role::before,
+.kw-landing-row .d3-kyb-recent__date::before {
+  content: "·";
+  margin-right: 10px;
+  color: var(--border-subtle, #dde2de);
+}
+
+.kw-landing-row .d3-kyb-recent__role,
+.kw-landing-row .d3-kyb-recent__date {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ------------------------------------------------------------------
+   A · Search hero — start a new check
+
+   The arrangement this page already had, fixed for the sheet. Search is
+   the subject of the screen; recents sit below a clear break and read
+   as history rather than as a queue.
+   ------------------------------------------------------------------ */
+
+[data-kw-landing="hero"] .kw-landing__sub {
+  display: block;
+  max-width: 44ch;
+  text-align: center;
+}
+
+[data-kw-landing="hero"] .d3-kyb-recent {
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle, #dde2de);
+}
+
+[data-kw-landing="hero"] .kw-landing__viewall {
+  display: inline-flex;
+}
+
+/* ------------------------------------------------------------------
+   B · Work queue — re-enter an old check
+
+   Inverts the emphasis. The title shrinks to a page label, the search
+   becomes a toolbar at the top, and the list is what the screen is
+   mostly made of. For accounts where most sessions continue work
+   rather than start it.
+   ------------------------------------------------------------------ */
+
+[data-kw-landing="queue"] .d3-workspace__hero {
+  align-items: stretch;
+  margin-top: 4px;
+  text-align: left;
+}
+
+[data-kw-landing="queue"] .d3-workspace__title {
+  font-size: 22px;
+  line-height: 29px;
+  text-align: left;
+}
+
+[data-kw-landing="queue"] .kw-landing__sub {
+  display: block;
+}
+
+[data-kw-landing="queue"] .kw-landing__viewall {
+  display: inline-flex;
+}
+
+/* The gap upstream is sized for a hero with air around it. */
+[data-kw-landing="queue"].d3-workspace__landing {
+  gap: 24px;
+}
+
+[data-kw-landing="queue"] .d3-kyb-recent {
+  gap: 10px;
+}
+
+/* ------------------------------------------------------------------
+   C · Quick start — re-run a known entity
+
+   The leanest option. Recents collapse to a single row of one-click
+   chips directly under the input, so re-running is one target rather
+   than a list to scan. The full list is a click away via View all —
+   which is the trade: fast for the three names you keep coming back
+   to, no help at all for the fourth.
+   ------------------------------------------------------------------ */
+
+[data-kw-landing="quick"] .kw-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+[data-kw-landing="quick"] .d3-kyb-recent__grid {
+  display: none;
+}
+
+[data-kw-landing="quick"] .d3-kyb-recent__head {
+  justify-content: center;
+  gap: 8px;
+}
+
+[data-kw-landing="quick"] .d3-kyb-recent__title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-caption, #8a9690);
+}
+
+[data-kw-landing="quick"] .kw-landing__viewall {
+  display: inline-flex;
+  font-size: 12.5px;
+}
+
+[data-kw-landing="quick"].d3-workspace__landing {
+  gap: 20px;
+}
+
+.kw-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  margin: 0;
+  padding: 6px 12px 6px 9px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 999px;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #16211b);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 17px;
+  cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.kw-chip:hover {
+  border-color: color-mix(in srgb, var(--interactive-default, #0e8a78) 40%, var(--border-subtle, #dde2de));
+  box-shadow: 0 2px 8px rgba(22, 33, 27, 0.06);
+}
+
+.kw-chip:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
+
+.kw-chip__dot {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border-subtle, #dde2de);
+}
+
+.kw-chip__dot--verified {
+  background: var(--interactive-default, #0e8a78);
+}
+
+.kw-chip__dot--unverified {
+  background: var(--text-negative, #ba151d);
+}
+
+.kw-chip__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------
+   D · Split — two labelled modules
+
+   Neither job gets the hero. The search sits in its own tinted panel
+   under a label, recents in a plain section beneath. Most explicit of
+   the four, and the least opinionated about what you came to do.
+   ------------------------------------------------------------------ */
+
+[data-kw-landing="split"] .d3-workspace__hero {
+  align-items: stretch;
+  gap: 14px;
+  margin-top: 4px;
+  text-align: left;
+}
+
+[data-kw-landing="split"] .d3-workspace__title {
+  font-size: 22px;
+  line-height: 29px;
+  text-align: left;
+}
+
+/* The title belongs to the page; only the label and the search go in
+   the panel. Hence the wrapper — see its comment in index.html. */
+[data-kw-landing="split"] .kw-landing__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 14px;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+[data-kw-landing="split"].d3-workspace__landing {
+  gap: 20px;
+}
+
+[data-kw-landing="split"] .kw-landing__search-label {
+  display: block;
+}
+
+[data-kw-landing="split"] .kw-landing__viewall {
+  display: inline-flex;
+}
+
+/* Two across — the row treatment is for the layouts that want a list,
+   this one wants cards. Specificity has to clear the shared one-column
+   rule in workspace-canvas.css, which carries .kw-shell .kw-stage__body. */
+.kw-shell .kw-stage__body [data-kw-landing="split"] .d3-kyb-recent__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+[data-kw-landing="split"] .d3-kyb-recent__card {
+  min-height: 0;
+  padding: 14px;
+  background: var(--surface-neutral-01, #fff);
+  border-radius: 12px;
+}
+
+[data-kw-landing="split"] .d3-kyb-recent__date {
+  padding-top: 4px;
+}
+
+/* ------------------------------------------------------------------
+   Narrow
+   ------------------------------------------------------------------ */
+
+@media (max-width: 720px) {
+  .kw-layouts {
+    justify-content: flex-start;
+    padding: 12px 12px 0;
+    flex-wrap: wrap;
+  }
+
+  [data-kw-landing="split"] .d3-kyb-recent__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kw-chip { transition: none; }
+}
