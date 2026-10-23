@@ -17,7 +17,7 @@
     var signIn = new URL(SIGN_IN_HREF);
     try {
       var home = new URLSearchParams(window.location.search).get("home");
-      if (home === "light" || home === "dark") signIn.searchParams.set("home", home);
+      if (/^(light|dark|\d+)$/.test(home || "")) signIn.searchParams.set("home", home);
     } catch (e) {}
     window.location.replace(signIn.href);
   }

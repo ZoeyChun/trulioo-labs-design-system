@@ -10,7 +10,7 @@
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var params = new URLSearchParams(window.location.search);
   var portalUrl = new URL("../index.html", window.location.href);
-  if (params.get("home") === "light" || params.get("home") === "dark") {
+  if (/^(light|dark|\d+)$/.test(params.get("home") || "")) {
     portalUrl.searchParams.set("home", params.get("home"));
   }
   var portalHref = portalUrl.href;

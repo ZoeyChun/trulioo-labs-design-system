@@ -1,0 +1,216 @@
+/* Demo 3 — home 5 (?home=5)
+   Figma Recurring User – KYB 1626:93274 (updated): vertical-gradient hero,
+   welcome + briefing line on the left, wide composer on the right, dot globe
+   sitting on the right edge, two briefing cards below. Globe: js/d3-home-4.js
+   (side mode); copy block: js/d3-home-5.js. */
+
+html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
+  padding: 0 0 64px !important;
+  gap: 0;
+}
+
+html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
+  align-self: stretch;
+  width: 100% !important;
+  height: 470px !important;
+  min-height: 470px !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  background: linear-gradient(180deg, var(--surface-inverse, #172d2d) 20%, var(--interactive-default, #004c45) 100%) !important;
+}
+
+html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 64px !important;
+  height: 100% !important;
+  min-height: 470px !important;
+  padding: 64px 48px !important;
+}
+
+html[data-d3-home-layout="5"] .d3-home-dots,
+html[data-d3-home-layout="5"] .d1-home[data-d1-stage="home"] .d3-home-orb {
+  display: none !important;
+}
+
+/* Left column — 441px */
+html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-welcome {
+  flex: 0 1 441px;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+  width: 441px;
+  max-width: 441px;
+  text-align: left;
+}
+
+html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d1-hello__back {
+  color: #90eac0;
+  font-size: 48px;
+  line-height: 56px;
+  white-space: nowrap;
+}
+
+.d3-home-5__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 390px;
+  max-width: 100%;
+}
+
+.d3-home-5__sub {
+  margin: 0;
+  color: var(--text-inverse, #f4f6f4);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 26px;
+}
+
+.d3-home-5__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-inverse, #f4f6f4);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.d3-home-5__link:hover {
+  text-decoration: underline;
+}
+
+.d3-home-5__link .d3-fa-line {
+  width: 16px;
+  height: 16px;
+}
+
+/* Right column — composer 662 × 156 */
+html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body > .d1-composer {
+  flex: 0 1 662px;
+  width: 662px;
+  max-width: 662px;
+}
+
+html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body > .d1-composer > .d1-prompt {
+  width: 100%;
+  min-height: 156px;
+}
+
+/* Tag on its own row, text below; text wraps downward. */
+html[data-d3-home-layout="5"] .d1-home[data-d1-stage="home"] .d1-prompt__field {
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  height: auto;
+}
+
+html[data-d3-home-layout="5"] .d1-home[data-d1-stage="home"] .d1-prompt__entry {
+  align-items: start;
+  width: 100%;
+  height: auto;
+  grid-template-rows: auto;
+}
+
+html[data-d3-home-layout="5"] .d1-home[data-d1-stage="home"] .d1-prompt__input {
+  display: block;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+html[data-d3-home-layout="5"] .d1-home[data-d1-stage="home"] .d1-prompt__ph {
+  align-self: start;
+  height: 22px;
+}
+
+/* Briefing — two cards, 1176 wide; the alert card moved into the hero. */
+html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  width: calc(100% - 96px) !important;
+  max-width: 1176px !important;
+  margin: 64px auto 0 !important;
+  padding: 0;
+  align-items: stretch;
+}
+
+html[data-d3-home-layout="5"] .d1-brief__card--alert {
+  display: none !important;
+}
+
+/* Globe canvas (drawn by js/d3-home-4.js) — behind the hero content. */
+.d3-home-globe {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.d3-home-5__link,
+.d3-home-5__link:hover,
+.d3-home-5__link .d3-fa-line,
+.d3-home-5__link svg {
+  color: var(--text-inverse, #f4f6f4) !important;
+}
+
+.d3-home-5__link svg path {
+  fill: var(--text-inverse, #f4f6f4) !important;
+}
+
+/* Narrow slots: stack copy above the composer. */
+@media (max-width: 1100px) {
+  html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
+    height: auto !important;
+  }
+
+  html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body {
+    flex-direction: column !important;
+    gap: 32px !important;
+    height: auto !important;
+    padding: 48px 24px !important;
+  }
+
+  html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-welcome,
+  html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body > .d1-composer {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 662px;
+  }
+
+  html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Full-bleed to the right edge: don't reserve a scrollbar gutter (white strip). */
+html[data-d3-home-layout="5"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main {
+  scrollbar-gutter: auto !important;
+}
+
+/* No right-hand strip: the (closed) drawer's 2px borders and the scrollbar
+   would otherwise sit between the hero and the window edge. Scrolling still works. */
+html[data-d3-home-layout="5"] .d1-shell[data-d3-view="home"] .d1-main .d1-drawer {
+  display: none !important;
+}
+
+html[data-d3-home-layout="5"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main {
+  scrollbar-width: none;
+}
+
+html[data-d3-home-layout="5"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main::-webkit-scrollbar {
+  display: none;
+}

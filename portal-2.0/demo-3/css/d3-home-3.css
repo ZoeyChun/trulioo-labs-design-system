@@ -1,0 +1,52 @@
+/* Demo 3 — home 3 (full-bleed) (?home=3)
+   Figma Recurring User KYB 1626:93274 — hero spans the full slot width,
+   flush to top/left/right, no radius; cards sit 64px below with 48px gutters.
+   Loaded by js/d3-home-skin.js only for this option. Uses the dark skin
+   attributes, so index.html's critical styles are overridden here. */
+
+html[data-d3-home-layout="3"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
+  padding: 0 0 64px !important;
+  gap: 0;
+}
+
+html[data-d3-home-layout="3"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
+  align-self: stretch;
+  width: 100% !important;
+  height: 470px !important;
+  min-height: 470px !important;
+  border-radius: 0 !important;
+}
+
+html[data-d3-home-layout="3"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body {
+  justify-content: center !important;
+  height: 100% !important;
+  min-height: 470px !important;
+  padding: 64px 24px !important;
+}
+
+html[data-d3-home-layout="3"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  margin-top: 64px !important;
+  padding: 0 48px;
+}
+
+/* Full-bleed to the right edge: don't reserve a scrollbar gutter (white strip). */
+html[data-d3-home-layout="3"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main {
+  scrollbar-gutter: auto !important;
+}
+
+/* No right-hand strip: the (closed) drawer's 2px borders and the scrollbar
+   would otherwise sit between the hero and the window edge. Scrolling still works. */
+html[data-d3-home-layout="3"] .d1-shell[data-d3-view="home"] .d1-main .d1-drawer {
+  display: none !important;
+}
+
+html[data-d3-home-layout="3"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main {
+  scrollbar-width: none;
+}
+
+html[data-d3-home-layout="3"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main::-webkit-scrollbar {
+  display: none;
+}

@@ -1,0 +1,126 @@
+/* Demo 3 — home 4 (?home=4): rotating dot globe behind a blurred solid veil.
+   Same full-bleed geometry as home 3, taller hero; globe canvas is drawn by
+   js/d3-home-4.js. Header + composer sit on .d3-home-4-veil so no dots show
+   through them. */
+
+html[data-d3-home-layout="4"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
+  padding: 0 0 64px !important;
+  gap: 0;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
+  align-self: stretch;
+  width: 100% !important;
+  height: 420px !important;
+  min-height: 420px !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body {
+  justify-content: center !important;
+  height: 100% !important;
+  min-height: 420px !important;
+  padding: 48px 24px !important;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  margin-top: 64px !important;
+  padding: 0 48px;
+}
+
+/* The flat dot field from home 1 is replaced by the globe. */
+html[data-d3-home-layout="4"] .d3-home-dots {
+  display: none !important;
+}
+
+.d3-home-globe {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Solid hero-colour plate, blurred + feathered so the globe fades out
+   behind the header and composer instead of hard-clipping. */
+.d3-home-4-veil {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: min(760px, 96%);
+  height: 330px;
+  transform: translate(-50%, -50%);
+  background: var(--surface-inverse, #172d2d);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 80%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 80%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Home 4 drops the logo orb above the welcome line. */
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d3-home-orb {
+  display: none !important;
+}
+
+/* Home 4 sits on --surface-inverse instead of the brand green. */
+html[data-d3-home-layout="4"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
+  background: var(--surface-inverse, #172d2d) !important;
+}
+
+/* Narrower composer so more of the globe shows above and below it. */
+html[data-d3-home-layout="4"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body > .d1-composer > .d1-prompt,
+html[data-d3-home-layout="4"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero > .d1-composer > .d1-prompt {
+  width: min(520px, 100%);
+}
+
+/* Composer text wraps downward instead of clipping to one line. */
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d1-prompt__field {
+  flex: 0 0 auto;
+  align-items: flex-start;
+  height: auto;
+  min-height: 24px;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d1-prompt__entry {
+  align-items: start;
+  height: auto;
+  grid-template-rows: auto;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d1-prompt__input {
+  display: block;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d1-prompt__ph {
+  align-self: start;
+  height: 22px;
+}
+
+/* Full-bleed to the right edge: don't reserve a scrollbar gutter (white strip). */
+html[data-d3-home-layout="4"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main {
+  scrollbar-gutter: auto !important;
+}
+
+/* No right-hand strip: the (closed) drawer's 2px borders and the scrollbar
+   would otherwise sit between the hero and the window edge. Scrolling still works. */
+html[data-d3-home-layout="4"] .d1-shell[data-d3-view="home"] .d1-main .d1-drawer {
+  display: none !important;
+}
+
+html[data-d3-home-layout="4"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main {
+  scrollbar-width: none;
+}
+
+html[data-d3-home-layout="4"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main::-webkit-scrollbar {
+  display: none;
+}
