@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Trulioo Design System (Components, Tokens, Scripts, Data, Documentation) are documented here.
+All notable changes to the Trulioo Design System (Components, Tokens, Scripts, Data) are documented here.
 This file tracks DS deliverables only — portal demos, pages, and assets are not versioned.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
@@ -72,7 +72,3 @@ Initial baseline of all DS components, tokens, and scripts on the repository.
 ### Data
 
 - Component tracker registry (`data/component-tracker.yaml`) — DS source of truth for adoption tracking
-
-### Documentation
-
-- Documentation site (`Documentation/`) — component showcase and reference

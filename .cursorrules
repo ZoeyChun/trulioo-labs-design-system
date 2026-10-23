@@ -67,8 +67,8 @@ Direction: **DS repo → KYB app** (not the other way around).
 
 Scoped git tags: `ds/v1.0.0`, `ds/v1.1.0`, etc. See `CHANGELOG.md` for release history.
 
-**What's versioned:** `Components/`, `tokens/`, `scripts/`, `data/`, `Documentation/`.
-Portal demos, pages, and assets are not tracked in DS versions.
+**What's versioned:** `Components/`, `tokens/`, `scripts/`, `data/`.
+Portal demos, pages, Documentation site, and assets are not tracked in DS versions.
 
 **Version bumps:** patch for fixes, minor for new components/non-breaking changes, major for breaking changes (renamed classes, removed components, renamed tokens).
 
