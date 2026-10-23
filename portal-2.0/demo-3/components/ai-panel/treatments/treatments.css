@@ -1,12 +1,13 @@
-/* Demo 3 — TruAI panel treatments (KYB agent).
+/* Demo 3 — TruAI panel treatments (KYB + Transactions agents).
    Selected from the AI panel lab: Large orb landing · Header orb on verify ·
    City selector for business select · Loading bar while investigating · List
-   for the report follow-ups. Scoped to data-d3-chat-mode="kyb"; state comes
+   for the report follow-ups. Scoped to data-d3-chat-mode="kyb" and "tx" (KYB-only
+   parts simply have no elements in the Transactions panel); state comes
    from data-d3-ai-* attributes set by treatments.js. */
 
 /* User prompt — Figma Prompt 1585:158833. */
 
-.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-user p {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane .d1-user p {
   max-width: max-content;
   padding: var(--spacing-16, 16px);
   border: 0;
@@ -21,7 +22,7 @@
 }
 
 /* The agent's echo of the picked business is a user-side bubble too. */
-.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d3-kyb-cand-panel .ai-said {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane .d3-kyb-cand-panel .ai-said {
   max-width: max-content;
   padding: var(--spacing-16, 16px);
   border: 0;
@@ -35,31 +36,31 @@
 }
 
 /* Entity confirmation box: neutral surface (info and done states). */
-.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-confirm.tds-announcement {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane .d1-confirm.tds-announcement {
   background-color: var(--surface-neutral-02, #f4f6f4);
 }
 
 /* Investigating: loading bar without the percentage, step text at xs. */
-.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-progress__pct {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane .d1-progress__pct {
   display: none;
 }
 
-.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-activity__toggle,
-.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-activity__detail p {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane .d1-activity__toggle,
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane .d1-activity__detail p {
   font-size: var(--font-size-xs, 0.75rem);
   line-height: var(--line-height-xs, 1rem);
 }
 
 /* Report-ready card title: size s. The investigation evidence (progress block)
    stays in the thread once the report lands. */
-.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-report-ready__title {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane .d1-report-ready__title {
   font-size: var(--font-size-sm, 0.875rem);
   line-height: var(--line-height-sm, 1.125rem);
 }
 
 /* —— Orb placement —— */
 
-.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane__brand {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane__brand {
   display: none;
 }
 
@@ -68,12 +69,12 @@
   display: none;
 }
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="hero"] .d3-ai-hero {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-orb="hero"] .d3-ai-hero {
   display: flex;
   justify-content: center;
 }
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] .d3-ai-ident {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-orb="header"] .d3-ai-ident {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -110,19 +111,19 @@
 
 /* Header tools stay above the thread feather; keep head from clipping the orb. */
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] .d3-chat-pane__head {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-orb="header"] .d3-chat-pane__head {
   overflow: visible;
 }
 
 /* Pane overflow:hidden clips the header orb breathe (~1.11×). Clip the thread instead. */
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] .d3-chat-pane {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-orb="header"] .d3-chat-pane {
   overflow: visible;
 }
 
 /* Not the body: it must stay overflow:visible so the composer's ring + shadow
    aren't clipped into square corners (see ai-panel.css .d3-chat-pane__body). */
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] [data-d3-chat-thread] {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-orb="header"] [data-d3-chat-thread] {
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -175,24 +176,24 @@
   max-height: 12px;
 }
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="hero"] .d3-chat-pane__close,
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-orb="header"] .d3-chat-pane__close {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-orb="hero"] .d3-chat-pane__close,
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-orb="header"] .d3-chat-pane__close {
   border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 999px;
   background: var(--surface-neutral-01, #fff);
 }
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="landing"] .d3-chat-pane__empty {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-step="landing"] .d3-chat-pane__empty {
   gap: 32px;
 }
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="landing"] .d3-chat-pane__sub {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-step="landing"] .d3-chat-pane__sub {
   margin-top: 4px;
   color: var(--text-default, #172d2d);
   line-height: 22px;
 }
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-landing="large"] .d3-prompt-card {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-landing="large"] .d3-prompt-card {
   align-items: center;
   min-height: 0;
   padding: 12px;
@@ -200,37 +201,37 @@
   background: var(--surface-neutral-02, #f4f6f4);
 }
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-landing="large"] .d3-prompt-card__title {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-landing="large"] .d3-prompt-card__title {
   font-weight: 500;
   line-height: 18px;
 }
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-landing="large"] .d3-chat-pane__prompts {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-landing="large"] .d3-chat-pane__prompts {
   gap: 12px;
   padding-top: 0;
 }
 
 /* Author display:flex beats the hidden attribute, so the match list stays up. */
 
-.d1-shell[data-d3-chat-mode="kyb"] .d3-kyb-cand-panel[hidden],
-.d1-shell[data-d3-chat-mode="kyb"] .d3-chat-pane .d1-follow[hidden] {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-kyb-cand-panel[hidden],
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane .d1-follow[hidden] {
   display: none !important;
 }
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="investigating"] .d1-thinking {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-step="investigating"] .d1-thinking {
   display: none !important;
 }
 
 /* Report step: next-step cards vs list (Figma 1585:159473 / 1585:159608). */
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="report"] .d1-follow,
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-step="report"] [data-d3-kyb-next] {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-step="report"] .d1-follow,
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-step="report"] [data-d3-kyb-next] {
   display: none !important;
 }
 
-.d1-shell[data-d3-chat-mode="kyb"]:not([data-d3-ai-step="report"]) [data-d3-ai-next],
-.d1-shell[data-d3-chat-mode="kyb"]:not([data-d3-ai-step="report"]) .d1-block:has([data-d1-co]),
-.d1-shell[data-d3-chat-mode="kyb"]:not([data-d3-ai-step="report"]) .d1-block:has(.d1-report__title) {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]):not([data-d3-ai-step="report"]) [data-d3-ai-next],
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]):not([data-d3-ai-step="report"]) .d1-block:has([data-d1-co]),
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]):not([data-d3-ai-step="report"]) .d1-block:has(.d1-report__title) {
   display: none !important;
 }
 
@@ -350,9 +351,9 @@
 
 /* Verify step: city selector in place of the match cards. */
 
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-verify="selector"] .d3-kyb-cand-panel:has([data-d3-ai-selector]) > .ai-reply,
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-verify="selector"] .d3-kyb-cand-panel:has([data-d3-ai-selector]) > .ai-chips,
-.d1-shell[data-d3-chat-mode="kyb"][data-d3-ai-verify="selector"] .d3-kyb-cand-panel:has([data-d3-ai-selector]) > .ai-cands {
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-verify="selector"] .d3-kyb-cand-panel:has([data-d3-ai-selector]) > .ai-reply,
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-verify="selector"] .d3-kyb-cand-panel:has([data-d3-ai-selector]) > .ai-chips,
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"])[data-d3-ai-verify="selector"] .d3-kyb-cand-panel:has([data-d3-ai-selector]) > .ai-cands {
   display: none !important;
 }
 

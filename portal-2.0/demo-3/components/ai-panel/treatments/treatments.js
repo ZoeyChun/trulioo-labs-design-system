@@ -28,9 +28,20 @@
   var nextQuestions = REPORT_NEXT.slice();
   var lastPlace = { country: "United Kingdom", cc: "GB" };
 
-  function isKyb() {
-    return shell.getAttribute("data-d3-chat-mode") === "kyb";
+  /* Panel modes that get these treatments. */
+  function mode() {
+    return shell.getAttribute("data-d3-chat-mode");
   }
+
+  function isKyb() {
+    return mode() === "kyb";
+  }
+
+  function isTreated() {
+    return mode() === "kyb" || mode() === "tx";
+  }
+
+  var TX_TITLE = "Transaction Agent";
 
   function chatPaneActive() {
     var el = document.querySelector(".d3-chat-pane");
@@ -239,6 +250,8 @@
   }
 
   function setPlaceholders(text) {
+    /* Transactions use one fixed placeholder (the parked composer was left blank). */
+    if (!isKyb()) text = "Ask about transactions";
     document.querySelectorAll(".d3-chat-pane [data-d1-input], .d3-chat-pane [data-d3-pane-input]").forEach(function (input) {
       if (input.getAttribute("placeholder") !== text) input.setAttribute("placeholder", text);
     });
@@ -255,14 +268,14 @@
   }
 
   function applyChoice() {
-    if (!isKyb()) return;
+    if (!isTreated()) return;
     var wanted = inferStep();
     if (wanted === "landing" && step !== "landing") {
       investigating = false;
       selectorCity = "";
       selectorPage = 0;
       selectorKey = "";
-      setTitle("Verify Meridian");
+      setTitle(isKyb() ? "Verify Meridian" : TX_TITLE);
     }
     step = wanted;
     setAttr("data-d3-ai-step", step);
@@ -285,7 +298,7 @@
     } else {
       setPlaceholders("Ask about business verification");
     }
-    if (step !== "landing") setTitle(verifyTitle());
+    if (step !== "landing") setTitle(isKyb() ? verifyTitle() : TX_TITLE);
     syncReportView();
     syncHeaderChrome();
     syncBack();
@@ -601,7 +614,7 @@
     var seenUsers = 0;
     var syncing = false;
     var observer = new MutationObserver(function () {
-      if (syncing || !isKyb()) return;
+      if (syncing || !isTreated()) return;
       syncing = true;
       try {
         var users = t.querySelectorAll(".d1-user p");
