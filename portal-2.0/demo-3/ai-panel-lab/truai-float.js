@@ -416,6 +416,7 @@
     options = options || {};
     host.innerHTML =
       '<div class="truai-bubble" data-state="idle">' +
+      '<div class="truai-bubble__measure" aria-hidden="true"></div>' +
       '<div class="truai-bubble__orb-wrap" data-truai-float-orb></div>' +
       '<div class="truai-bubble__pill">' +
       '<p class="truai-bubble__title">TruAI</p>' +
@@ -424,6 +425,8 @@
     var root = host.querySelector(".truai-bubble");
     var slot = host.querySelector("[data-truai-float-orb]");
     var subSlot = host.querySelector(".truai-bubble__subslot");
+    var measureEl = host.querySelector(".truai-bubble__measure");
+    var pillEl = host.querySelector(".truai-bubble__pill");
     var orb = mountOrb(slot, options.ringSrc || RING);
     if (orb && orb.root) orb.root.style.pointerEvents = "auto";
     var mode = "idle";
@@ -432,12 +435,54 @@
     var completedTimer = null;
     var HOLD_MS = options.completedHoldMs || 1500;
 
+    /* Sub row is position:absolute, so it cannot widen the pill — measure in-flow. */
+    function sizePill(sub) {
+      if (!measureEl || !pillEl) return;
+      measureEl.textContent = "";
+      var slotEl = document.createElement("div");
+      slotEl.className = "truai-bubble__measure-slot";
+      var title = document.createElement("p");
+      title.className = "truai-bubble__title";
+      title.textContent = "TruAI";
+      slotEl.appendChild(title);
+      if (sub && sub.label) {
+        var row = document.createElement("div");
+        row.style.display = "flex";
+        row.style.alignItems = "center";
+        row.style.justifyContent = "center";
+        row.style.gap = "4px";
+        if (sub.iconHtml) {
+          var iconWrap = document.createElement("span");
+          iconWrap.className = "truai-bubble__icon";
+          iconWrap.innerHTML = sub.iconHtml;
+          row.appendChild(iconWrap);
+        }
+        var label = document.createElement("p");
+        label.className = "truai-bubble__label";
+        label.textContent = sub.label;
+        row.appendChild(label);
+        if (sub.showDot) {
+          var dot = document.createElement("span");
+          dot.className = "truai-bubble__dot";
+          dot.style.animation = "none";
+          row.appendChild(dot);
+        }
+        slotEl.appendChild(row);
+      }
+      measureEl.appendChild(slotEl);
+      var w = slotEl.offsetWidth;
+      var h = slotEl.offsetHeight;
+      if (w) pillEl.style.width = w + "px";
+      if (h) pillEl.style.height = h + "px";
+    }
+
     function paintSub() {
       if (!subSlot) return;
       var sub = subForState(mode, actingLabel, actingIconHtml);
       if (!sub || !sub.label) {
         subSlot.classList.remove("is-open");
         subSlot.innerHTML = "";
+        sizePill(null);
         return;
       }
       subSlot.classList.add("is-open");
@@ -453,7 +498,10 @@
         "</p>" +
         (sub.showDot ? '<span class="truai-bubble__dot" aria-hidden="true"></span>' : "") +
         "</div>";
+      sizePill(sub);
     }
+
+    sizePill(null);
 
     function applyOrb(state) {
       if (!orb) return;

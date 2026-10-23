@@ -356,6 +356,7 @@
   async function playInvestigation(biz, data, token) {
     var thread = document.querySelector("[data-d1-thread]");
     if (!thread) return;
+    if (token !== revealToken) return;
 
     var tools = cloneTpl("tools");
     if (!tools) return;
@@ -365,6 +366,7 @@
     var check = tools.querySelector("[data-d1-tools-check]");
     var steps = tools.querySelector("[data-d1-steps]");
     label.textContent = "Investigating";
+    if (token !== revealToken) return;
     thread.appendChild(tools);
     thread.scrollTop = thread.scrollHeight;
 
@@ -477,6 +479,7 @@
       }
     }
 
+    if (token !== revealToken) return;
     appendReportCard(biz, data);
   }
 
@@ -953,6 +956,7 @@
     showHeroMap(biz);
 
     await playInvestigation(biz, data, token);
+    if (token !== revealToken) return;
     document.dispatchEvent(
       new CustomEvent("d3-kyb:report-ready", { detail: { biz: biz } })
     );

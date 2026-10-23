@@ -65,6 +65,7 @@
   var SHAPES = [
     { id: 'full',    label: 'Full bleed (Figma default)' },
     { id: 'circle',  label: 'Single circle' },
+    { id: 'square',  label: 'Square' },
     { id: 'cluster', label: 'Three circles' },
     { id: 'pair',    label: 'Two circles' },
     { id: 'blob',    label: 'Blob' },
@@ -218,6 +219,11 @@
     switch (cfg.shape) {
       case 'circle':
         return disc(0, 0, 0.92);
+
+      case 'square':
+        /* Soft axis-aligned square via Chebyshev distance (max of |x|, |y|). */
+        d = Math.max(Math.abs(px), Math.abs(py));
+        return 1 - smoothstep(R * (1 - f), R, d);
 
       case 'cluster':
         /* Three discs on a trefoil — the reference layout. Centres sit

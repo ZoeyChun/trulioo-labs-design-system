@@ -26,10 +26,12 @@
   ];
   var floatHandle = null;
   var headerOrb = null;
+  var heroOrb = null;
   var selectorCity = "";
   var selectorPage = 0;
   var selectorKey = "";
   var lastBizName = "";
+  var navToken = 0;
 
   var STEPS = [
     {
@@ -185,71 +187,97 @@
   }
 
   var ICON_SEARCH =
-    '<svg viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.25" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m10.25 10.25 3 3"/></svg>';
+    '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M7.90625 4.46875C7.90625 2.57812 6.35938 1.03125 4.46875 1.03125C2.57812 1.03125 1.03125 2.57812 1.03125 4.46875C1.03125 6.35938 2.57812 7.90625 4.46875 7.90625C6.35938 7.90625 7.90625 6.35938 7.90625 4.46875ZM7.24023 7.9707C6.48828 8.57227 5.52148 8.9375 4.46875 8.9375C1.99805 8.9375 0 6.93945 0 4.46875C0 1.99805 1.99805 0 4.46875 0C6.93945 0 8.9375 1.99805 8.9375 4.46875C8.9375 5.52148 8.57227 6.48828 7.9707 7.24023L10.8496 10.1191C11.043 10.3125 11.043 10.6562 10.8496 10.8496C10.6562 11.043 10.3125 11.043 10.1191 10.8496L7.24023 7.9707Z" fill="currentColor"/></svg>';
   var ICON_FILE =
-    '<svg viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M4.5 2.5h5l2 2V13.5h-7z"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M9.5 2.5V5h2.5"/></svg>';
+    '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1.375 1.03125C1.18164 1.03125 1.03125 1.18164 1.03125 1.375V9.625C1.03125 9.81836 1.18164 9.96875 1.375 9.96875H6.875C7.06836 9.96875 7.21875 9.81836 7.21875 9.625V4.46875H5.32812C4.46875 4.46875 3.78125 3.78125 3.78125 2.92188V1.03125H1.375ZM4.8125 1.46094V2.92188C4.8125 3.20117 5.04883 3.4375 5.32812 3.4375H6.78906L4.8125 1.46094ZM1.375 0H4.25391C4.61914 0 4.96289 0.150391 5.2207 0.408203L7.8418 3.0293C8.09961 3.28711 8.25 3.65234 8.25 4.01758V9.625C8.25 10.377 7.62695 11 6.875 11H1.375C0.623047 11 0 10.377 0 9.625V1.375C0 0.623047 0.623047 0 1.375 0ZM2.57812 5.5H5.67188C5.95117 5.5 6.1875 5.73633 6.1875 6.01562C6.1875 6.29492 5.95117 6.53125 5.67188 6.53125H2.57812C2.29883 6.53125 2.0625 6.29492 2.0625 6.01562C2.0625 5.73633 2.29883 5.5 2.57812 5.5ZM2.57812 7.5625H5.67188C5.95117 7.5625 6.1875 7.79883 6.1875 8.07812C6.1875 8.35742 5.95117 8.59375 5.67188 8.59375H2.57812C2.29883 8.59375 2.0625 8.35742 2.0625 8.07812C2.0625 7.79883 2.29883 7.5625 2.57812 7.5625Z" fill="currentColor"/></svg>';
 
   function activityFromLabel(text) {
     var raw = String(text || "").replace(/[.…]+$/g, "").trim();
-    if (/pulling business registry|checking registry|business registry/i.test(raw)) {
+    if (/matched registry|pulling business registry|checking registry|business registry/i.test(raw)) {
       return {
         label: "Checking registry",
-        icon: "fa-magnifying-glass",
         busy: true,
         bubble: "acting",
         actingLabel: "Checking registry",
-        actingIconHtml: ICON_SEARCH
+        actingIconHtml: ICON_SEARCH,
+        iconHtml: ICON_SEARCH
       };
     }
-    if (/parsing incorporation|reading ownership|ownership/i.test(raw)) {
+    if (
+      /incorporation and ownership parsed|parsing incorporation|incorporation documents|reading ownership|ownership/i.test(
+        raw
+      )
+    ) {
       return {
         label: "Reading ownership",
-        icon: "fa-magnifying-glass",
         busy: true,
         bubble: "acting",
         actingLabel: "Reading ownership",
-        actingIconHtml: ICON_SEARCH
+        actingIconHtml: ICON_SEARCH,
+        iconHtml: ICON_SEARCH
       };
     }
-    if (/screening directors|sanctions/i.test(raw)) {
+    if (/no sanctions|screening directors|cross-referencing|sanctions|ofac/i.test(raw)) {
       return {
         label: "Screening sanctions",
-        icon: "fa-magnifying-glass",
         busy: true,
         bubble: "acting",
         actingLabel: "Screening sanctions",
-        actingIconHtml: ICON_SEARCH
+        actingIconHtml: ICON_SEARCH,
+        iconHtml: ICON_SEARCH
       };
     }
-    if (/generating report/i.test(raw)) {
+    if (/generating report|writing report/i.test(raw)) {
       return {
         label: "Generating report",
-        icon: "fa-file-lines",
         busy: true,
         bubble: "acting",
         actingLabel: "Generating report",
-        actingIconHtml: ICON_FILE
+        actingIconHtml: ICON_FILE,
+        iconHtml: ICON_FILE
       };
     }
     if (raw) {
       return {
         label: raw,
-        icon: "fa-magnifying-glass",
         busy: true,
-        bubble: "thinking"
+        bubble: "thinking",
+        iconHtml: ICON_SEARCH
       };
     }
     return null;
+  }
+
+  function currentActivityLabel(block) {
+    if (!block) return "";
+    var current = block.querySelector(".d1-activity__toggle--current [data-d1-activity-label]");
+    if (current && current.textContent.trim()) return current.textContent.trim();
+    var labels = block.querySelectorAll("[data-d1-activity-label]");
+    if (!labels.length) return "";
+    return (labels[labels.length - 1].textContent || "").trim();
   }
 
   function readPanelActivity() {
     var thread = document.querySelector("[data-d1-thread]");
     var report = thread && thread.querySelector(".d1-report__title, [data-d1-co]");
     var block = realProgressBlock();
+    if (!block && choice.step === "investigating" && choice.investigate === "bar") {
+      block = document.querySelector("[data-d3-lab-bar]");
+    }
     var toolsLabel = block && block.querySelector("[data-d1-tools-label]");
     var toolsText = toolsLabel ? toolsLabel.textContent.trim() : "";
-    var current = block && block.querySelector(".d1-activity__toggle--current [data-d1-activity-label]");
-    var currentText = current ? current.textContent.trim() : "";
+    if (
+      choice.step === "investigating" &&
+      choice.investigate === "bar" &&
+      !barDone &&
+      typeof barStep === "number" &&
+      typeof barCalls === "function"
+    ) {
+      var barCall = barCalls()[Math.min(Math.max(barStep, 0), barCalls().length - 1)];
+      var fromBarStep = activityFromLabel(barCall && barCall.label);
+      if (fromBarStep) return fromBarStep;
+    }
+    var currentText = currentActivityLabel(block);
     if (currentText && !/complete/i.test(toolsText)) {
       var mapped = activityFromLabel(currentText);
       if (mapped) return mapped;
@@ -261,103 +289,124 @@
       choice.step === "investigating" &&
       choice.investigate === "dots"
     ) {
-      var cap = dotsHost.querySelector("[data-d3-lab-dots-caption]");
-      var fromDots = activityFromLabel(cap && cap.textContent);
+      var currentDot =
+        dotsHost.querySelector("[data-d3-lab-dots-step][data-state='current'] [data-d3-lab-dots-label]") ||
+        dotsHost.querySelector("[data-d3-lab-dots-caption]");
+      var fromDots = activityFromLabel(currentDot && currentDot.textContent);
       if (fromDots) return fromDots;
     }
     if (/complete/i.test(toolsText) && !report) {
       return {
         label: "Generating report",
-        icon: "fa-file-lines",
         busy: true,
         bubble: "acting",
         actingLabel: "Generating report",
-        actingIconHtml: ICON_FILE
+        actingIconHtml: ICON_FILE,
+        iconHtml: ICON_FILE
       };
     }
-    if (choice.step === "report" || (report && choice.step !== "investigating")) {
+    if (choice.step === "report" && report) {
       var tag = thread && thread.querySelector("[data-d1-report-tag]");
       var review = !!(tag && /review|needs/i.test(tag.textContent || ""));
       return {
         label: review ? "Review findings" : "Report ready",
-        icon: review ? "fa-triangle-exclamation" : "fa-circle-check",
         busy: false,
         done: true,
         attention: review,
-        bubble: review ? "needs-attention" : "completed"
+        bubble: review ? "needs-attention" : "completed",
+        iconHtml: review ? "" : ICON_FILE
       };
     }
-    if (choice.step === "investigating" && dotDone && !report) {
+    if (choice.step === "investigating" && (dotDone || barDone) && !report) {
       return {
         label: "Generating report",
-        icon: "fa-file-lines",
         busy: true,
         bubble: "acting",
         actingLabel: "Generating report",
-        actingIconHtml: ICON_FILE
+        actingIconHtml: ICON_FILE,
+        iconHtml: ICON_FILE
       };
     }
     if (thread && thread.querySelector(".d1-thinking, [data-d3-kyb-starting]")) {
       if (choice.step === "investigating") {
         return {
           label: "Checking registry",
-          icon: "fa-magnifying-glass",
           busy: true,
           bubble: "acting",
           actingLabel: "Checking registry",
-          actingIconHtml: ICON_SEARCH
+          actingIconHtml: ICON_SEARCH,
+          iconHtml: ICON_SEARCH
         };
       }
       return {
         label: "Thinking",
-        icon: "fa-magnifying-glass",
         busy: true,
-        bubble: "thinking"
+        bubble: "thinking",
+        iconHtml: ICON_SEARCH
       };
     }
     if (choice.step === "investigating") {
       return {
         label: "Checking registry",
-        icon: "fa-magnifying-glass",
         busy: true,
         bubble: "acting",
         actingLabel: "Checking registry",
-        actingIconHtml: ICON_SEARCH
+        actingIconHtml: ICON_SEARCH,
+        iconHtml: ICON_SEARCH
       };
     }
     return {
       label: "Awaiting input",
-      icon: "fa-clock",
       busy: false,
-      bubble: "idle"
+      bubble: "idle",
+      iconHtml: ""
     };
   }
 
   function syncHeaderChrome() {
     var activity = readPanelActivity();
-    setStatus(activity.label, activity.icon);
+    setStatus(activity.label, activity.iconHtml || activity.actingIconHtml || "");
     var bubble = {
       state: activity.bubble || "idle",
       actingLabel: activity.actingLabel || "",
-      actingIconHtml: activity.actingIconHtml || ""
+      actingIconHtml: activity.actingIconHtml || activity.iconHtml || ""
     };
-    if (headerOrb && typeof headerOrb.setMode === "function") {
-      headerOrb.setMode(bubble.state);
+    if (headerOrb) {
+      if (typeof headerOrb.setMode === "function") headerOrb.setMode(bubble.state);
+      else if (typeof headerOrb.set === "function") headerOrb.set(bubble);
     }
     if (floatHandle && typeof floatHandle.setMode === "function") {
       floatHandle.setMode(bubble);
     }
+    if (heroOrb) {
+      if (typeof heroOrb.set === "function") heroOrb.set(bubble);
+      else if (typeof heroOrb.setMode === "function") heroOrb.setMode(bubble.state);
+    }
   }
 
-  function setStatus(label, icon) {
+  function setStatus(label, iconHtml) {
     var el = document.querySelector("[data-d3-lab-status]");
     var mark = document.querySelector("[data-d3-lab-status-icon]");
     if (el) el.textContent = label;
-    if (mark) mark.className = "fa-regular " + icon;
+    if (!mark) return;
+    var html = iconHtml || "";
+    mark.innerHTML = html;
+    mark.hidden = !html;
+    mark.classList.toggle("is-empty", !html);
+  }
+
+  function chatPaneActive() {
+    var pane = document.querySelector(".d3-chat-pane");
+    return !!(pane && pane.classList.contains("is-active"));
   }
 
   function orbForStep() {
-    if (choice.step === "landing") return choice.landing === "float" ? "float" : "hero";
+    if (choice.step === "landing") {
+      if (choice.landing === "float") return "float";
+      /* Large orb is empty-state only. Once the chat continues, use the Verify header. */
+      if (chatPaneActive()) return choice.verifyOrb === "float" ? "float" : "header";
+      return "hero";
+    }
     return choice.verifyOrb === "float" ? "float" : "header";
   }
 
@@ -397,19 +446,26 @@
       hideMatchList();
       ensureDots();
       ensureBar();
-      if (choice.investigate === "dots") playDots();
-      else stopDots();
+      if (choice.investigate === "dots") {
+        stopBar();
+        playDots();
+      } else {
+        stopDots();
+        playBar();
+      }
       document.querySelectorAll(".d3-chat-pane [data-d1-input], .d3-chat-pane [data-d3-pane-input]").forEach(function (input) {
         input.setAttribute("placeholder", "Verification in progress…");
       });
     } else if (choice.step === "report") {
       stopDots();
+      stopBar();
       hideMatchList();
       document.querySelectorAll(".d3-chat-pane [data-d1-input], .d3-chat-pane [data-d3-pane-input]").forEach(function (input) {
         input.setAttribute("placeholder", "Ask about this verification");
       });
     } else {
       stopDots();
+      stopBar();
     }
     syncReportView();
     syncHeaderChrome();
@@ -421,7 +477,9 @@
 
   function syncBack() {
     var back = document.querySelector(".d3-chat-pane [data-d3-chat-back]");
-    if (back) back.hidden = choice.step === "landing";
+    if (!back) return;
+    /* Hide only on the empty landing. Continued large-orb chat uses the Verify header + back. */
+    back.hidden = choice.step === "landing" && !chatPaneActive();
   }
 
   function showMatchList() {
@@ -471,7 +529,9 @@
         leaveInvestigation();
         return;
       }
-      if (choice.step === "verify") resetLanding();
+      if (choice.step === "verify" || (choice.step === "landing" && chatPaneActive())) {
+        resetLanding();
+      }
     });
   }
 
@@ -485,17 +545,16 @@
     paintLandingCopy();
   }
 
-  function restartExperience() {
+  function abortLabFlow() {
+    navToken += 1;
     if (window.D3KybReport && typeof window.D3KybReport.abort === "function") {
       window.D3KybReport.abort();
     }
     stopDots();
-    dotDone = false;
-    dotStep = 0;
-    selectorCity = "";
-    selectorPage = 0;
-    selectorKey = "";
-    lastBizName = "";
+    stopBar();
+  }
+
+  function clearThreadChrome() {
     var thread = document.querySelector("[data-d1-thread]");
     if (thread) thread.innerHTML = "";
     document.querySelectorAll(".d1-thinking").forEach(function (node) {
@@ -509,15 +568,20 @@
     document.querySelectorAll("[data-d3-lab-next], [data-d3-kyb-next]").forEach(function (el) {
       if (el.parentNode) el.parentNode.removeChild(el);
     });
-    resetLanding();
+  }
+
+  function idleOrbs() {
     if (floatHandle && typeof floatHandle.setMode === "function") {
       floatHandle.setMode({ state: "idle" });
     }
-    if (headerOrb && typeof headerOrb.setMode === "function") {
-      headerOrb.setMode("idle");
+    if (headerOrb) {
+      if (typeof headerOrb.setMode === "function") headerOrb.setMode("idle");
+      else if (typeof headerOrb.set === "function") headerOrb.set({ state: "idle" });
     }
-    seedLandingCards();
-    focusPaneInput();
+    if (heroOrb) {
+      if (typeof heroOrb.set === "function") heroOrb.set({ state: "idle" });
+      else if (typeof heroOrb.setMode === "function") heroOrb.setMode("idle");
+    }
   }
 
   function goVerify(text) {
@@ -577,6 +641,10 @@
     setTitle("Verify Meridian in UK");
     activateThread();
     hideMatchList();
+    dotDone = false;
+    dotStep = 0;
+    barDone = false;
+    barStep = 0;
     goInvestigate();
   }
 
@@ -708,19 +776,40 @@
     activateThread();
     hideMatchList();
     stopDots();
-    if (window.D3KybReport && typeof window.D3KybReport.abort === "function") {
-      /* Keep a finished report when one exists; abort only stops an in-flight reveal. */
-    }
     choice.step = "report";
     applyChoice();
   }
 
-  function enterStep(step) {
+  function enterStep(step, opts) {
+    opts = opts || {};
+    var fresh = !!opts.fresh;
+    abortLabFlow();
+    if (fresh) {
+      clearThreadChrome();
+      selectorCity = "";
+      selectorPage = 0;
+      selectorKey = "";
+      lastBizName = "";
+      dotDone = false;
+      dotStep = 0;
+      barDone = false;
+      barStep = 0;
+      idleOrbs();
+    }
     if (step === "landing") {
-      resetLanding();
+      if (fresh) {
+        resetLanding();
+        seedLandingCards();
+        focusPaneInput();
+      } else {
+        resetLanding();
+      }
       return;
     }
     if (step === "verify") {
+      if (fresh) {
+        /* Seed a clean match list after clearing the thread. */
+      }
       enterVerify();
       return;
     }
@@ -737,14 +826,14 @@
       formation: "grid",
       spacing: 11,
       size: 1.7,
-      sizeVary: 0.4,
+      sizeVary: 0.15,
       color: "#c5cec8",
       opacity: 0.85,
-      shape: "blobs",
-      shapeScale: 0.9,
+      shape: "square",
+      shapeScale: 0.92,
       shapeX: 0.5,
-      shapeY: 0.48,
-      feather: 0.42,
+      shapeY: 0.5,
+      feather: 0.12,
       clear: 0,
       clearSize: 0,
       fade: 1,
@@ -758,24 +847,79 @@
   var dotToken = 0;
   var dotStep = 0;
   var dotDone = false;
-  var DOT_STEPS = [
-    { label: "Pulling business registry records…", ms: 1100 },
-    { label: "Parsing incorporation and ownership…", ms: 1200 },
-    { label: "Screening directors against OFAC, UN, and EU…", ms: 1300 }
-  ];
+
+  function dotSteps() {
+    var name = businessName();
+    return [
+      {
+        label: "Pulling business registry records for " + name + "...",
+        match: /pulling business registry|checking registry|business registry|matched registry/i,
+        ms: 1100
+      },
+      {
+        label: "Parsing incorporation documents and ownership structure...",
+        match: /parsing incorporation|ownership|incorporation/i,
+        ms: 1200
+      },
+      {
+        label:
+          "Cross-referencing 3 listed directors against OFAC, UN, and EU sanctions lists...",
+        match: /screening directors|cross-referencing|sanctions/i,
+        ms: 1300
+      }
+    ];
+  }
 
   function stopDots() {
     dotToken += 1;
   }
 
-  function setDotCaption(text) {
-    var cap = document.querySelector("[data-d3-lab-dots-caption]");
-    if (!cap || cap.textContent === text) return;
-    cap.textContent = text;
-    cap.classList.remove("is-blink");
-    void cap.offsetWidth;
-    cap.classList.add("is-blink");
+  function paintDotSteps(activeIndex) {
+    var host = document.querySelector("[data-d3-lab-dots]");
+    if (!host) return;
+    var steps = dotSteps();
+    var list = host.querySelector("[data-d3-lab-dots-steps]");
+    if (!list) return;
+    var idx = Math.max(0, Math.min(activeIndex, steps.length - 1));
+    var html = "";
+    for (var i = 0; i < steps.length; i += 1) {
+      var state = i < idx ? "done" : i === idx ? "current" : "pending";
+      if (dotDone && i <= idx) state = "done";
+      var mark =
+        state === "done"
+          ? '<i class="fa-solid fa-check" aria-hidden="true"></i>'
+          : state === "current"
+            ? '<span class="d3-lab-dots__spinner" aria-hidden="true"></span>'
+            : '<span class="d3-lab-dots__pending" aria-hidden="true"></span>';
+      html +=
+        '<li class="d3-lab-dots__step" data-d3-lab-dots-step data-state="' +
+        state +
+        '">' +
+        '<span class="d3-lab-dots__mark">' +
+        mark +
+        "</span>" +
+        '<span class="d3-lab-dots__label" data-d3-lab-dots-label>' +
+        esc(steps[i].label) +
+        "</span></li>";
+    }
+    list.innerHTML = html;
+    var pctEl = host.querySelector("[data-d3-lab-dots-pct]");
+    if (pctEl) {
+      var pct =
+        !steps.length || dotDone || activeIndex >= steps.length
+          ? 100
+          : Math.round((idx / steps.length) * 100);
+      pctEl.textContent = pct + "%";
+    }
     syncHeaderChrome();
+  }
+
+  function stepIndexFromLabel(text) {
+    var steps = dotSteps();
+    for (var i = 0; i < steps.length; i += 1) {
+      if (steps[i].match.test(String(text || ""))) return i;
+    }
+    return -1;
   }
 
   function realProgressBlock() {
@@ -807,11 +951,8 @@
       return;
     }
     var token = ++dotToken;
-    if (host) {
-      host.hidden = false;
-      var cap = host.querySelector("[data-d3-lab-dots-caption]");
-      if (cap) cap.classList.add("is-blink");
-    }
+    if (host) host.hidden = false;
+    paintDotSteps(dotStep);
 
     function alive() {
       return token === dotToken && choice.step === "investigating" && choice.investigate === "dots";
@@ -819,6 +960,7 @@
 
     function hide() {
       dotDone = true;
+      paintDotSteps(dotSteps().length);
       var node = document.querySelector("[data-d3-lab-dots]");
       if (node) node.hidden = true;
     }
@@ -835,11 +977,13 @@
         }
         var current = block.querySelector(".d1-activity__toggle--current [data-d1-activity-label]");
         var label = current && current.textContent.trim();
-        setDotCaption(label || DOT_STEPS[Math.min(dotStep, DOT_STEPS.length - 1)].label);
+        var mapped = stepIndexFromLabel(label);
+        if (mapped >= 0) dotStep = mapped;
+        paintDotSteps(dotStep);
         window.setTimeout(frame, 200);
         return;
       }
-      if (dotStep >= DOT_STEPS.length) {
+      if (dotStep >= dotSteps().length) {
         if (investigationPending()) {
           window.setTimeout(frame, 200);
           return;
@@ -847,8 +991,8 @@
         hide();
         return;
       }
-      setDotCaption(DOT_STEPS[dotStep].label);
-      var wait = DOT_STEPS[dotStep].ms;
+      paintDotSteps(dotStep);
+      var wait = dotSteps()[dotStep].ms;
       window.setTimeout(function () {
         if (token !== dotToken) return;
         dotStep += 1;
@@ -862,10 +1006,10 @@
   function businessName() {
     if (lastBizName) return lastBizName;
     var thread = document.querySelector("[data-d1-thread]");
-    if (!thread) return "this business";
+    if (!thread) return "Meridian Apex Consulting Ltd.";
     var card = thread.querySelector(".ai-cand__name");
     if (card && card.textContent.trim()) return card.textContent.trim();
-    return "this business";
+    return "Meridian Apex Consulting Ltd.";
   }
 
   function ensureDots() {
@@ -878,9 +1022,26 @@
       host.className = "d3-lab-dots";
       host.setAttribute("data-d3-lab-dots", "");
       host.innerHTML =
-        '<p class="d3-lab-dots__caption" data-d3-lab-dots-caption></p>' +
-        '<canvas class="d3-lab-dots__canvas" width="240" height="240" aria-hidden="true"></canvas>';
+        '<canvas class="d3-lab-dots__canvas" width="240" height="240" aria-hidden="true"></canvas>' +
+        '<p class="d3-lab-dots__pct" data-d3-lab-dots-pct aria-live="polite">0%</p>' +
+        '<ul class="d3-lab-dots__steps" data-d3-lab-dots-steps role="list"></ul>';
       thread.appendChild(host);
+    } else if (!host.querySelector("[data-d3-lab-dots-steps]")) {
+      host.innerHTML =
+        '<canvas class="d3-lab-dots__canvas" width="240" height="240" aria-hidden="true"></canvas>' +
+        '<p class="d3-lab-dots__pct" data-d3-lab-dots-pct aria-live="polite">0%</p>' +
+        '<ul class="d3-lab-dots__steps" data-d3-lab-dots-steps role="list"></ul>';
+      if (dotField && typeof dotField.destroy === "function") dotField.destroy();
+      dotField = null;
+    } else if (!host.querySelector("[data-d3-lab-dots-pct]")) {
+      var stepsList = host.querySelector("[data-d3-lab-dots-steps]");
+      var pctNode = document.createElement("p");
+      pctNode.className = "d3-lab-dots__pct";
+      pctNode.setAttribute("data-d3-lab-dots-pct", "");
+      pctNode.setAttribute("aria-live", "polite");
+      pctNode.textContent = "0%";
+      if (stepsList) host.insertBefore(pctNode, stepsList);
+      else host.appendChild(pctNode);
     }
     var tools = thread.querySelector(".d1-progress");
     var block = tools && tools.closest("section, .d1-block");
@@ -895,40 +1056,238 @@
       return;
     }
     if (dotField && typeof dotField.set === "function") {
-      dotField.set({ style: "twinkle", intensity: 1, speed: 1.1 });
+      dotField.set(dotConfig());
     }
+  }
+
+  var barToken = 0;
+  var barStep = 0;
+  var barDone = false;
+  var barRunning = false;
+
+  function stopBar() {
+    barToken += 1;
+    barRunning = false;
+  }
+
+  function barCalls() {
+    var name = businessName();
+    return [
+      {
+        label: "Pulling business registry records…",
+        done: "Matched registry records",
+        detail: [name, "Companies House — status Active"],
+        ms: 1100
+      },
+      {
+        label: "Parsing incorporation and ownership…",
+        done: "Incorporation and ownership parsed",
+        detail: ["Legal form confirmed", "Ownership structure mapped"],
+        ms: 1200
+      },
+      {
+        label: "Screening directors against OFAC, UN, and EU…",
+        done: "No sanctions matches found",
+        detail: ["OFAC — clear", "UN / EU — clear"],
+        ms: 1300
+      }
+    ];
   }
 
   function ensureBar() {
     if (choice.investigate !== "bar" || choice.step !== "investigating") return;
     var thread = document.querySelector("[data-d1-thread]");
     if (!thread) return;
+
+    /* Prefer a live investigation block when one is already running. */
+    var live = null;
+    var blocks = thread.querySelectorAll(".d1-block");
+    for (var i = 0; i < blocks.length; i += 1) {
+      if (blocks[i].hasAttribute("data-d3-lab-bar")) continue;
+      if (blocks[i].querySelector(".d1-progress")) {
+        live = blocks[i];
+        break;
+      }
+    }
     var preview = thread.querySelector("[data-d3-lab-bar]");
-    var progress = thread.querySelector(".d1-progress");
-    if (progress && (!preview || !preview.contains(progress))) {
+    if (live) {
       if (preview && preview.parentNode) preview.parentNode.removeChild(preview);
+      barRunning = false;
       return;
     }
-    if (progress) return;
-    var toolsTpl = document.querySelector('[data-d1-tpl="tools"]');
-    if (!toolsTpl || !toolsTpl.content.firstElementChild) return;
-    var tools = toolsTpl.content.firstElementChild.cloneNode(true);
-    tools.setAttribute("data-d3-lab-bar", "");
-    var pct = tools.querySelector(".d1-progress__pct");
-    var fill = tools.querySelector(".d1-progress__fill");
-    if (pct) pct.textContent = "33%";
-    if (fill) fill.style.width = "33%";
-    var steps = tools.querySelector("[data-d1-steps]");
-    var activityTpl = document.querySelector('[data-d1-tpl="activity"]');
-    if (steps && activityTpl && activityTpl.content.firstElementChild) {
-      var row = activityTpl.content.firstElementChild.cloneNode(true);
-      var label = row.querySelector("[data-d1-activity-label]");
-      var detail = row.querySelector("[data-d1-activity-detail]");
-      if (label) label.textContent = "Business registry";
-      if (detail) detail.textContent = "Pulling records for " + businessName();
-      steps.appendChild(row);
+
+    var created = false;
+    if (!preview) {
+      var toolsTpl = document.querySelector('[data-d1-tpl="tools"]');
+      if (!toolsTpl || !toolsTpl.content.firstElementChild) return;
+      preview = toolsTpl.content.firstElementChild.cloneNode(true);
+      preview.setAttribute("data-d3-lab-bar", "");
+      thread.appendChild(preview);
+      created = true;
     }
-    thread.appendChild(tools);
+
+    /* Only seed zero-state when mounting or before playBar has started. */
+    if (created || (!barRunning && !barDone)) {
+      var check = preview.querySelector("[data-d1-tools-check]");
+      if (check) check.hidden = true;
+      var pct = preview.querySelector(".d1-progress__pct");
+      var fill = preview.querySelector(".d1-progress__fill");
+      var label = preview.querySelector("[data-d1-tools-label]");
+      if (label) label.textContent = "Investigating";
+      if (pct) pct.textContent = "0%";
+      if (fill) {
+        fill.style.width = "0%";
+        fill.classList.add("d1-progress__fill--active");
+        fill.classList.remove("d1-progress__fill--done");
+      }
+    }
+  }
+
+  function playBar() {
+    if (choice.investigate !== "bar" || choice.step !== "investigating") return;
+    var thread = document.querySelector("[data-d1-thread]");
+    if (!thread) return;
+
+    /* Live investigation owns the progress UI — don't fight it. */
+    if (realProgressBlock()) return;
+
+    ensureBar();
+    var host = thread.querySelector("[data-d3-lab-bar]");
+    if (!host) return;
+    var stepsHost = host.querySelector("[data-d1-steps]");
+    var activityTpl = document.querySelector('[data-d1-tpl="activity"]');
+    if (!stepsHost || !activityTpl || !activityTpl.content.firstElementChild) return;
+
+    /* Finished preview stays put; mid-run must not restart (applyChoice re-enters). */
+    if (barDone && stepsHost.children.length) return;
+    if (barRunning) return;
+
+    var token = ++barToken;
+    barRunning = true;
+    barDone = false;
+    barStep = 0;
+    stepsHost.innerHTML = "";
+    var calls = barCalls();
+    var rows = [];
+    var pct = host.querySelector(".d1-progress__pct");
+    var fill = host.querySelector(".d1-progress__fill");
+    var label = host.querySelector("[data-d1-tools-label]");
+    var check = host.querySelector("[data-d1-tools-check]");
+    if (check) check.hidden = true;
+    if (label) label.textContent = "Investigating";
+    if (pct) pct.textContent = "0%";
+    if (fill) {
+      fill.style.width = "0%";
+      fill.classList.add("d1-progress__fill--active");
+      fill.classList.remove("d1-progress__fill--done");
+    }
+
+    function alive() {
+      return (
+        token === barToken &&
+        choice.step === "investigating" &&
+        choice.investigate === "bar"
+      );
+    }
+
+    function finish() {
+      if (!alive()) return;
+      barRunning = false;
+      barDone = true;
+      if (label) label.textContent = "Investigation complete";
+      if (pct) pct.textContent = "100%";
+      if (fill) {
+        fill.style.width = "100%";
+        fill.classList.remove("d1-progress__fill--active");
+        fill.classList.add("d1-progress__fill--done");
+      }
+      if (check) check.hidden = false;
+      rows.forEach(function (prev) {
+        prev.toggle.classList.remove("d1-activity__toggle--current");
+        prev.toggle.setAttribute("aria-expanded", "false");
+        prev.body.hidden = true;
+      });
+      syncHeaderChrome();
+    }
+
+    function runStep(index) {
+      if (!alive()) {
+        barRunning = false;
+        return;
+      }
+      if (index >= calls.length) {
+        if (investigationPending() && realProgressBlock()) {
+          window.setTimeout(function () {
+            if (alive()) finish();
+            else barRunning = false;
+          }, 200);
+          return;
+        }
+        finish();
+        return;
+      }
+      barStep = index;
+      var call = calls[index];
+      rows.forEach(function (prev) {
+        prev.toggle.classList.remove("d1-activity__toggle--current");
+        prev.toggle.setAttribute("aria-expanded", "false");
+        prev.body.hidden = true;
+        var run = prev.row.querySelector('[data-d1-mark="run"]');
+        var done = prev.row.querySelector('[data-d1-mark="done"]');
+        if (run) run.hidden = true;
+        if (done) done.hidden = false;
+      });
+
+      var row = activityTpl.content.firstElementChild.cloneNode(true);
+      var toggle = row.querySelector(".d1-activity__toggle");
+      var body = row.querySelector(".d1-activity__body");
+      var detailEl = row.querySelector("[data-d1-activity-detail]");
+      var actLabel = row.querySelector("[data-d1-activity-label]");
+      if (actLabel) actLabel.textContent = call.label;
+      if (!call.detail || !call.detail.length) {
+        row.classList.add("is-bare");
+        if (body) body.hidden = true;
+      }
+      stepsHost.appendChild(row);
+      rows.push({ row: row, toggle: toggle, body: body });
+      if (pct) pct.textContent = Math.round((index / calls.length) * 100) + "%";
+      if (fill) fill.style.width = Math.round((index / calls.length) * 100) + "%";
+      syncHeaderChrome();
+
+      var lines = call.detail || [];
+      var slice = lines.length ? call.ms / (lines.length + 1) : call.ms;
+      var line = 0;
+
+      function nextLine() {
+        if (!alive()) return;
+        if (line < lines.length) {
+          var p = document.createElement("p");
+          p.textContent = lines[line];
+          if (detailEl) detailEl.appendChild(p);
+          line += 1;
+          window.setTimeout(nextLine, slice);
+          return;
+        }
+        window.setTimeout(function () {
+          if (!alive()) return;
+          var running = row.querySelector('[data-d1-mark="run"]');
+          var finished = row.querySelector('[data-d1-mark="done"]');
+          if (running) running.hidden = true;
+          if (finished) finished.hidden = false;
+          if (call.done && actLabel) actLabel.textContent = call.done;
+          if (pct) pct.textContent = Math.round(((index + 1) / calls.length) * 100) + "%";
+          if (fill) fill.style.width = Math.round(((index + 1) / calls.length) * 100) + "%";
+          syncHeaderChrome();
+          window.setTimeout(function () {
+            runStep(index + 1);
+          }, 180);
+        }, slice);
+      }
+
+      window.setTimeout(nextLine, slice);
+    }
+
+    runStep(0);
   }
 
   function ensureChrome() {
@@ -949,7 +1308,7 @@
       '<span class="d3-lab-ident__copy">' +
       '<span class="d3-lab-ident__title" data-d3-lab-title>Verify Meridian</span>' +
       '<span class="d3-lab-ident__status">' +
-      '<i class="fa-regular fa-clock" data-d3-lab-status-icon aria-hidden="true"></i>' +
+      '<span class="d3-lab-ident__status-icon is-empty" data-d3-lab-status-icon aria-hidden="true" hidden></span>' +
       '<span data-d3-lab-status>Awaiting input</span>' +
       "</span></span>";
 
@@ -978,9 +1337,11 @@
       }
     }
     if (window.TruAIBubble) {
-      window.TruAIBubble.mountPanel(hero, { state: "idle" });
+      heroOrb = window.TruAIBubble.mountPanel(hero, { state: "idle" });
       if (!headerOrb) {
-        window.TruAIBubble.mountPanel(ident.querySelector("[data-d3-lab-ident-orb]"), { state: "idle" });
+        headerOrb = window.TruAIBubble.mountPanel(ident.querySelector("[data-d3-lab-ident-orb]"), {
+          state: "idle"
+        });
       }
     }
   }
@@ -1152,10 +1513,9 @@
       '<p class="d3-lab-picker__title">Panel variations</p>' +
       '<div class="d3-lab-picker__actions">' +
       '<a class="d3-lab-picker__link" href="https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/Misc/Loader/experiments/truai-bubble/" target="_blank" rel="noopener noreferrer">Bubble animation <svg class="d3-lab-picker__ext" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 0.75C9 0.34375 9.34375 0 9.75 0H15.25C15.6562 0 16 0.34375 16 0.75V6.25C16 6.65625 15.6562 7 15.25 7C14.8438 7 14.5 6.65625 14.5 6.25V2.5625L7.28125 9.78125C7 10.0625 6.53125 10.0625 6.21875 9.78125C5.9375 9.5 5.9375 9 6.21875 8.71875L13.4375 1.5H9.75C9.34375 1.5 9 1.15625 9 0.75ZM2.5 3H5.25C5.65625 3 6 3.34375 6 3.75C6 4.15625 5.65625 4.5 5.25 4.5H2.5C1.9375 4.5 1.5 4.9375 1.5 5.5V13.5C1.5 14.0625 1.9375 14.5 2.5 14.5H10.5C11.0625 14.5 11.5 14.0625 11.5 13.5V10.75C11.5 10.3438 11.8438 10 12.25 10C12.6562 10 13 10.3438 13 10.75V13.5C13 14.875 11.875 16 10.5 16H2.5C1.125 16 0 14.875 0 13.5V5.5C0 4.125 1.125 3 2.5 3Z" fill="currentColor"/></svg></a>' +
-      '<button type="button" class="d3-lab-picker__restart" data-lab-restart>Restart</button>' +
       "</div>" +
       "</div>" +
-      '<p class="d3-lab-picker__hint">Pick treatments for each step, then use Go to this step to open that view. Settings stay selected when you move around.</p>';
+      '<p class="d3-lab-picker__hint">Pick treatments for each step, then use Go to this step to open that view. Per-step Restart clears the chat first (keeps settings), then opens that step.</p>';
 
     STEPS.forEach(function (step, index) {
       html +=
@@ -1168,9 +1528,14 @@
         " · " +
         step.label +
         "</h3>" +
+        '<div class="d3-lab-picker__step-actions">' +
+        '<button type="button" class="d3-lab-picker__restart d3-lab-picker__restart--step" data-lab-restart-goto="' +
+        step.id +
+        '">Restart</button>' +
         '<button type="button" class="d3-lab-picker__goto" data-lab-goto="' +
         step.id +
         '">Go to this step</button>' +
+        "</div>" +
         "</div>" +
         '<p class="d3-lab-picker__note">' +
         step.hint +
@@ -1204,14 +1569,15 @@
     host.innerHTML = html;
 
     host.addEventListener("click", function (event) {
-      var restart = event.target.closest("[data-lab-restart]");
-      if (restart && host.contains(restart)) {
-        restartExperience();
+      var restartGoto = event.target.closest("[data-lab-restart-goto]");
+      if (restartGoto && host.contains(restartGoto)) {
+        var stepId = restartGoto.getAttribute("data-lab-restart-goto") || "landing";
+        enterStep(stepId, { fresh: true });
         return;
       }
       var jump = event.target.closest("[data-lab-goto]");
       if (jump && host.contains(jump)) {
-        enterStep(jump.getAttribute("data-lab-goto"));
+        enterStep(jump.getAttribute("data-lab-goto"), { fresh: false });
         return;
       }
       var btn = event.target.closest("[data-lab-pick]");
@@ -1222,6 +1588,13 @@
       if (key === "investigate" && value === "dots" && choice.investigate !== "dots") {
         dotDone = false;
         dotStep = 0;
+      }
+      if (key === "investigate" && value === "bar" && choice.investigate !== "bar") {
+        stopBar();
+        barDone = false;
+        barStep = 0;
+        var staleBar = document.querySelector("[data-d3-lab-bar] [data-d1-steps]");
+        if (staleBar) staleBar.innerHTML = "";
       }
       choice[key] = value;
       if (key === "landing" && value === "float") choice.verifyOrb = "float";
@@ -1258,6 +1631,11 @@
         }
         if (!users.length) seenUsers = 0;
         if (choice.step === "investigating") ensureDots();
+        /* Large-orb landing → active chat: swap plain brand for the Verify header. */
+        if (choice.step === "landing" && choice.landing === "large") {
+          var wantOrb = orbForStep();
+          if (shell.getAttribute("data-lab-orb") !== wantOrb) applyChoice();
+        }
         syncMatchView();
         syncHeaderChrome();
       } finally {
@@ -1267,8 +1645,21 @@
     observer.observe(thread, { childList: true, subtree: true });
   }
 
+  function watchPaneActive() {
+    var pane = document.querySelector(".d3-chat-pane");
+    if (!pane || typeof MutationObserver === "undefined") return;
+    var obs = new MutationObserver(function () {
+      if (choice.step !== "landing" || choice.landing !== "large") return;
+      var wantOrb = orbForStep();
+      if (shell.getAttribute("data-lab-orb") !== wantOrb) applyChoice();
+    });
+    obs.observe(pane, { attributes: true, attributeFilter: ["class"] });
+  }
+
   function watchFlow() {
     document.addEventListener("d3-kyb:report-ready", function () {
+      /* Only auto-advance when a live investigation is underway. */
+      if (choice.step !== "investigating") return;
       choice.step = "report";
       applyChoice();
     });
@@ -1292,6 +1683,12 @@
     document.addEventListener(
       "click",
       function (event) {
+        var reportView = event.target.closest("[data-d1-report-action] .tds-btn");
+        if (reportView) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
         var cityBtn = event.target.closest("[data-d3-lab-city]");
         if (cityBtn) {
           event.preventDefault();
@@ -1340,6 +1737,7 @@
   bindBack();
   buildPicker();
   watchThread();
+  watchPaneActive();
   watchFlow();
   openLabKyb();
   seedLandingCards();

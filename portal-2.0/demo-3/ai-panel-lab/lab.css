@@ -440,6 +440,17 @@ body.d3-ai-panel-lab .d3-lab-workspace .d3-workspace__detail {
   color: var(--interactive-default, #004c45);
 }
 
+.d3-lab-picker__step-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.d3-lab-picker__restart--step {
+  padding: 4px 10px;
+}
+
 .d3-lab-picker__goto {
   flex-shrink: 0;
   margin: 0;
@@ -544,11 +555,6 @@ body.d3-ai-panel-lab .d3-chat-pane__brand {
   display: none;
 }
 
-/* FAQ replies leave the landing empty state, so the header name comes back. */
-body.d3-ai-panel-lab .d1-shell[data-lab-orb="hero"] .d3-chat-pane.is-active .d3-chat-pane__brand {
-  display: block;
-}
-
 .d3-lab-hero,
 .d3-lab-float,
 .d3-lab-ident {
@@ -556,7 +562,6 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="hero"] .d3-chat-pane.is-active .d3-
 }
 
 .d1-shell[data-lab-orb="hero"] .d3-lab-hero,
-.d1-shell[data-lab-step="landing"][data-lab-landing="large"] .d3-lab-hero,
 .d1-shell[data-lab-orb="float"] .d3-lab-float {
   display: flex;
   justify-content: center;
@@ -568,6 +573,8 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="hero"] .d3-chat-pane.is-active .d3-
   gap: 12px;
   flex: 1 1 auto;
   min-width: 0;
+  /* Let the header orb breathe past its 40px slot while animating. */
+  overflow: visible;
 }
 
 .d3-lab-hero .truai-panel__text,
@@ -580,14 +587,35 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="hero"] .d3-chat-pane.is-active .d3-
   width: 40px;
   height: 40px;
   flex-shrink: 0;
-  overflow: hidden;
+  /* Acting/thinking scales the orb past 1.0 — do not clip. */
+  overflow: visible;
+  z-index: 2;
 }
 
 .d3-lab-ident__orb-scale {
+  position: absolute;
+  left: 50%;
+  top: 50%;
   width: 64px;
   height: 64px;
-  transform: scale(0.625);
-  transform-origin: top left;
+  transform: translate(-50%, -50%) scale(0.625);
+  transform-origin: center center;
+}
+
+/* Header tools stay above the thread feather; keep head from clipping the orb. */
+.d1-shell[data-lab-orb="header"] .d3-chat-pane__head {
+  overflow: visible;
+}
+
+/* Pane overflow:hidden clips the header orb breathe (~1.11×). Clip the thread instead. */
+body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] .d3-chat-pane {
+  overflow: visible;
+}
+
+body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] .d3-chat-pane__body,
+body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] [data-d3-chat-thread] {
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .d3-lab-ident__copy {
@@ -615,13 +643,34 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="hero"] .d3-chat-pane.is-active .d3-
   line-height: 18px;
 }
 
-.d3-lab-ident__status .fa-regular {
-  font-size: 11px;
+.d3-lab-ident__status-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  color: var(--icon-faint, #617269);
+}
+
+.d3-lab-ident__status-icon[hidden],
+.d3-lab-ident__status-icon.is-empty {
+  display: none;
+}
+
+.d3-lab-ident__status-icon svg {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 12px;
+  max-height: 12px;
 }
 
 .d1-shell[data-lab-orb="float"] .d3-chat-pane__head {
-  min-height: 92px;
+  /* Orb (64) + pill with acting subtext (~52) − overlap; keep subtext unclipped. */
+  min-height: 120px;
   align-items: flex-start;
+  overflow: visible;
 }
 
 .d3-chat-pane__head > .d3-lab-float {
@@ -630,6 +679,7 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="hero"] .d3-chat-pane.is-active .d3-
   top: 0;
   transform: translateX(-50%);
   pointer-events: none;
+  z-index: 2;
 }
 
 .d3-lab-float [data-truai-float-orb] {
@@ -678,35 +728,14 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="hero"] .d3-chat-pane.is-active .d3-
   padding-top: 0;
 }
 
-/* Investigating: dots field vs the existing progress block. */
+/* Investigating: dots field + checklist (Figma 1585:159312). */
 
 .d3-lab-dots {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
-}
-
-.d3-lab-dots__caption {
-  margin: 0;
-  color: var(--text-description, #526660);
-  font-size: 14px;
-  line-height: 22px;
-}
-
-.d3-lab-dots__caption.is-blink {
-  animation: d3-lab-dots-blink 0.9s ease-in-out infinite;
-}
-
-@keyframes d3-lab-dots-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.28; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .d3-lab-dots__caption.is-blink {
-    animation: none;
-  }
+  width: 100%;
 }
 
 .d3-lab-dots[hidden] {
@@ -718,6 +747,94 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="hero"] .d3-chat-pane.is-active .d3-
   width: 240px;
   height: 240px;
   border-radius: 24px;
+  overflow: hidden;
+}
+
+/* Figma 1585:159312 — progress % under the field, above the checklist. */
+.d3-lab-dots__pct {
+  margin: 0;
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--text-description, #526660);
+}
+
+.d3-lab-dots__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.d3-lab-dots__step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.d3-lab-dots__step[data-state="pending"] {
+  color: var(--text-placeholder, #8a9a90);
+}
+
+.d3-lab-dots__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  color: var(--icon-default, #172d2d);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.d3-lab-dots__step[data-state="pending"] .d3-lab-dots__mark {
+  color: var(--icon-faint, #617269);
+}
+
+.d3-lab-dots__label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.d3-lab-dots__spinner {
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border-subtle, #dde2de);
+  border-top-color: var(--icon-default, #172d2d);
+  border-radius: 50%;
+  animation: d3-lab-dots-spin 0.7s linear infinite;
+}
+
+.d3-lab-dots__pending {
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border-subtle, #dde2de);
+  border-radius: 50%;
+}
+
+@keyframes d3-lab-dots-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-lab-dots__spinner {
+    animation: none;
+    border-top-color: var(--border-subtle, #dde2de);
+    background: var(--surface-neutral-03, #e8ede8);
+  }
 }
 
 .d1-shell[data-lab-investigate="bar"] .d3-lab-dots,

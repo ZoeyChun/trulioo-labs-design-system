@@ -20,11 +20,11 @@ chat stays on the left; the right rail picks a look for each step.
 
 ## How to move through the steps
 
-Use **Go to this step** to open a step. Option chips only change the selected treatment — they do not navigate. **Restart** clears the chat and returns to landing; picker selections stay as they are.
+Use **Go to this step** to open a step. Option chips only change the selected treatment — they do not navigate. Per-step **Restart** clears the chat (keeps selections) then opens that step.
 
-1. **Landing** — large orb or floating orb. **Large orb** hides the title/status header (expand + close stay). **Floating orb** also stays on for verify and investigating.
+1. **Landing** — large orb or floating orb. **Large orb** hides the title/status header on the empty state (expand + close stay); once the chat continues it uses the same header as Verify. **Floating orb** also stays on for verify and investigating.
 2. **Verify business** — **Orb** (floating or header) and **Business select** (cards or city selector). Typing `verify meridian` still starts the live country question. User messages use the mint prompt bubble.
-3. **Investigating** — **Dots** blinks through the same lines as the loading bar, then hides when the check finishes. **Loading bar** keeps the progress checklist. Choosing a business in the match list also starts it.
+3. **Investigating** — **Dots** shows the square field plus the same three progress steps as the loader (checkmarks + spinner). **Loading bar** keeps the progress checklist. Choosing a business in the match list also starts it.
 4. **Report** — report-ready card (business row + View), then **Clickable cards** or **List** for “Continue your investigation”. The header back chevron returns from report to investigating, from investigating to the confirm card, and from verify to the landing.
 
 ## Panel controls (same as portal)
