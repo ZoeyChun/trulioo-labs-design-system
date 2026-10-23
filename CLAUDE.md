@@ -30,9 +30,11 @@ Components/         — One folder per public component (Carbon-style)
   text-input/       — Composite entry CSS @imports from _shared/
   tabs/tab-item/    — Nested sub-parts imported by parent
 tokens/             — Design tokens (CSS custom properties) + fonts
+data/               — Component tracker YAML (DS adoption source of truth)
+Documentation/      — Documentation site (component showcase and reference)
+scripts/            — Build/utility scripts (build-preview.mjs, check-component-duplicates.py)
 pages/              — HTML demo/preview pages (GitHub Pages)
 assets/             — Logos, flag icons, brand assets
-scripts/            — Build/utility scripts (build-preview.mjs, check-component-duplicates.py)
 ```
 
 ### Components organization
@@ -49,12 +51,28 @@ scripts/            — Build/utility scripts (build-preview.mjs, check-componen
 - Components here mirror Figma component names with `tds-` prefix
 - Token variables in `tokens/tokens.css` map to Figma variable collections
 
-## How components are exported
+## How components flow
 
-Components are authored in the KYB project (`~/unified-kyb-experience/src/lib/components/`) and exported here via:
+This repo is the **source of truth** for DS components. Components are authored directly here in `Components/`.
+
+The KYB project (`~/unified-kyb-experience`) **consumes** this repo via:
 ```bash
-cd ~/unified-kyb-experience && node scripts/export-preview-to-labs-ds.mjs
+cd ~/unified-kyb-experience && npm run sync:tds
 ```
+That runs `scripts/sync-tds-css.mjs`, which copies `Components/` and `tokens/` into `src/lib/tds/`.
+
+Direction: **DS repo → KYB app** (not the other way around).
+
+## Versioning
+
+Scoped git tags: `ds/v1.0.0`, `ds/v1.1.0`, etc. See `CHANGELOG.md` for release history.
+
+**What's versioned:** `Components/`, `tokens/`, `scripts/`, `data/`, `Documentation/`.
+Portal demos, pages, and assets are not tracked in DS versions.
+
+**Version bumps:** patch for fixes, minor for new components/non-breaking changes, major for breaking changes (renamed classes, removed components, renamed tokens).
+
+**Rollback:** Use `git revert` on specific DS commits — never `git reset --hard` to a tag.
 
 ## Commands
 
