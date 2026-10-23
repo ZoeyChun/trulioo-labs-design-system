@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Trulioo Design System (Components, Tokens, Scripts) are documented here.
+All notable changes to the Trulioo Design System (Components, Tokens, Scripts, Documentation) are documented here.
 This file tracks DS deliverables only — portal demos, pages, and assets are not versioned.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
@@ -68,3 +68,7 @@ Initial baseline of all DS components, tokens, and scripts on the repository.
 - `scripts/build-shared-atoms-bundle.mjs`
 - `scripts/build-preview.mjs`
 - `scripts/check-component-duplicates.py`
+
+### Documentation
+
+- Documentation site (`Documentation/`) — component showcase and reference
