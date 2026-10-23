@@ -1,47 +1,96 @@
 /* ============================================================
    Demo 3 — KYB Verification landing: layout switch
    ============================================================
-   Flips `data-kw-landing` on .d3-workspace__landing between the four
-   options in css/landing-layouts.css, and builds the one-click chip
-   row the "quick" option uses.
+   Drives four independent attributes on .d3-workspace__landing —
+   header, search, recent, sep — plus four presets that set a whole
+   combination at once. The styling for each option is in
+   css/landing-layouts.css.
 
-   Everything else is CSS over the existing nodes — see the header of
-   landing-layouts.css for why the layouts can't own their own markup.
+   Also builds the one-click chip row the "chips" recent option uses.
+   Everything else is CSS over the existing nodes; see the header of
+   landing-layouts.css for why the options can't own their own markup.
    ------------------------------------------------------------------ */
 (function () {
   "use strict";
 
-  var landing = document.querySelector("[data-kw-landing]");
+  var landing = document.querySelector("[data-kw-header]");
   if (!landing) return;
 
-  var LAYOUTS = ["hero", "list", "quick", "split"];
+  /* axis name → attribute, and the options each one accepts. */
+  var AXES = {
+    header: { attr: "data-kw-header", options: ["centred", "left", "compact", "none"] },
+    search: { attr: "data-kw-search", options: ["bare", "form", "card"] },
+    recent: { attr: "data-kw-recent", options: ["rows", "list", "tiles", "chips"] },
+    sep: { attr: "data-kw-sep", options: ["inline", "rule", "band"] }
+  };
 
-  /* Only hero re-flows the recent card into a bordered row with a meta
-     line. "list" has its own treatment (the Figma divider list) and
-     split keeps the card, so the class hangs off this one layout. */
-  var ROW_LAYOUTS = { hero: true };
+  /* Shorthand for whole combinations. Each one answers the same two
+     questions — new check or old one, form or field — a different way. */
+  var PRESETS = {
+    hero: { header: "centred", search: "bare", recent: "rows", sep: "rule" },
+    list: { header: "left", search: "bare", recent: "list", sep: "inline" },
+    quick: { header: "centred", search: "bare", recent: "chips", sep: "inline" },
+    split: { header: "left", search: "form", recent: "tiles", sep: "band" }
+  };
 
-  function showLayout(name) {
-    if (LAYOUTS.indexOf(name) === -1) return;
-    landing.setAttribute("data-kw-landing", name);
-    landing.classList.toggle("kw-landing-row", !!ROW_LAYOUTS[name]);
+  function setAxis(axis, option) {
+    var spec = AXES[axis];
+    if (!spec || spec.options.indexOf(option) === -1) return;
+    landing.setAttribute(spec.attr, option);
 
+    var group = document.querySelector('[data-kw-axis="' + axis + '"]');
+    if (!group) return;
+    Array.prototype.forEach.call(group.querySelectorAll("[data-kw-opt]"), function (btn) {
+      var on = btn.getAttribute("data-kw-opt") === option;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", String(on));
+    });
+  }
+
+  /* A preset stays lit only while the landing still matches it, so
+     changing any one axis afterwards clears it rather than leaving a
+     label that no longer describes what is on screen. */
+  function syncPresets() {
     Array.prototype.forEach.call(
-      document.querySelectorAll("[data-kw-layout-btn]"),
+      document.querySelectorAll("[data-kw-preset]"),
       function (btn) {
-        var on = btn.getAttribute("data-kw-layout-btn") === name;
-        btn.classList.toggle("tds-segmented-control__item--selected", on);
-        btn.setAttribute("aria-pressed", String(on));
+        var preset = PRESETS[btn.getAttribute("data-kw-preset")];
+        var match =
+          !!preset &&
+          Object.keys(preset).every(function (axis) {
+            return landing.getAttribute(AXES[axis].attr) === preset[axis];
+          });
+        btn.classList.toggle("is-active", match);
       }
     );
   }
 
-  function bindSwitch() {
-    var bar = document.querySelector("[data-kw-layouts]");
-    if (!bar) return;
-    bar.addEventListener("click", function (event) {
-      var btn = event.target.closest("[data-kw-layout-btn]");
-      if (btn) showLayout(btn.getAttribute("data-kw-layout-btn"));
+  function applyPreset(name) {
+    var preset = PRESETS[name];
+    if (!preset) return;
+    Object.keys(preset).forEach(function (axis) {
+      setAxis(axis, preset[axis]);
+    });
+    syncPresets();
+  }
+
+  function bindLab() {
+    var lab = document.querySelector("[data-kw-lab]");
+    if (!lab) return;
+
+    lab.addEventListener("click", function (event) {
+      var preset = event.target.closest("[data-kw-preset]");
+      if (preset) {
+        applyPreset(preset.getAttribute("data-kw-preset"));
+        return;
+      }
+
+      var opt = event.target.closest("[data-kw-opt]");
+      if (!opt) return;
+      var group = opt.closest("[data-kw-axis]");
+      if (!group) return;
+      setAxis(group.getAttribute("data-kw-axis"), opt.getAttribute("data-kw-opt"));
+      syncPresets();
     });
   }
 
@@ -83,22 +132,31 @@
     });
   }
 
-  /* View all → the Transactions rail item, which is where the full
-     history already lives. */
+  /* View all → the full history. The Transactions rail item is gone in
+     this fork, so ask the agent for it instead of dead-ending. */
   function bindViewAll() {
     var btn = document.querySelector("[data-kw-view-all]");
     if (!btn) return;
     btn.addEventListener("click", function () {
       var nav = document.querySelector('[data-d3-nav="transactions"]');
-      if (nav) nav.click();
+      if (nav) {
+        nav.click();
+        return;
+      }
+      document.dispatchEvent(
+        new CustomEvent("d3-chat:send", {
+          detail: { text: "Show all recent transactions", agent: "kyb" },
+          cancelable: true
+        })
+      );
     });
   }
 
   function boot() {
     buildChips();
-    bindSwitch();
+    bindLab();
     bindViewAll();
-    showLayout(landing.getAttribute("data-kw-landing") || "hero");
+    syncPresets();
   }
 
   if (document.readyState === "loading") {

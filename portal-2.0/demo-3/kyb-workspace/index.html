@@ -119,7 +119,7 @@
   <!-- Last in the cascade so it beats the hero-critical block above. -->
   <link rel="stylesheet" href="kyb-workspace/css/workspace-canvas.css?v=12">
   <link rel="stylesheet" href="kyb-workspace/css/country-step.css?v=5">
-  <link rel="stylesheet" href="kyb-workspace/css/landing-layouts.css?v=6">
+  <link rel="stylesheet" href="kyb-workspace/css/landing-layouts.css?v=9">
 </head>
 <body>
 
@@ -128,10 +128,16 @@
   <p class="d1-loader__text" data-d1-loader-text role="status">Signing you in</p>
 </div>
 
-<!-- Shell attributes are the parent page's, unchanged: home opens with no
-     chat panel. The TruAI column is permanent chrome on the KYB screens
-     only — workspace-canvas.js holds it open there and lets home close it. -->
-<div class="d1-shell kw-shell" data-d3-view="home" data-d3-chat="closed" data-d3-home-skin="dark">
+<!-- data-d3-lab is d3-nav.js's own escape hatch: without it the nav forces
+     every page to the home view on load. With it the page owns its initial
+     view, so this one opens straight into KYB Verification — which is the
+     only thing it is for. kyb-boot.js calls the resume surface once the
+     agent scripts have bound.
+
+     data-d3-home-skin stays only because the home markup is still in the
+     document for its chat templates (see kyb-boot.js); home is never shown. -->
+<div class="d1-shell kw-shell" data-d3-lab data-d3-view="chat" data-d3-chat="open"
+     data-d3-chat-mode="kyb" data-d3-home-skin="dark">
 
   <aside class="d1-rail" aria-label="Primary">
     <div class="d1-rail__header">
@@ -142,73 +148,14 @@
 
     <nav class="d1-rail__nav" aria-label="Primary">
       <div class="d1-rail__nav-top">
-        <button type="button" class="d1-nav-btn is-active" data-d3-nav="home" aria-label="Home" aria-current="page">
-          <!-- Same house silhouette for line + solid (no FA chimney roof). -->
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-5.5h-5V21H4a1 1 0 0 1-1-1v-9.5Z"/>
-          </svg>
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="currentColor" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-5.5h-5V21H4a1 1 0 0 1-1-1v-9.5Z"/>
-          </svg>
-          <span class="d1-nav-tip" aria-hidden="true">Home</span>
-        </button>
+        <!-- KYB only. Home, Transactions, Labs, Dev Dashboard and Chats are
+             removed in this fork: it exists to work on the KYB screens, and a
+             rail full of destinations that lead out of them is noise. -->
         <button type="button" class="d1-nav-btn" data-d3-nav="kyb" aria-label="KYB Verification">
           <i class="fa-regular fa-building d1-nav-btn__icon d1-nav-btn__icon--line" aria-hidden="true"></i>
           <i class="fa-solid fa-building d1-nav-btn__icon d1-nav-btn__icon--fill" aria-hidden="true"></i>
           <span class="d1-nav-tip" aria-hidden="true">KYB Verification</span>
         </button>
-        <button type="button" class="d1-nav-btn" data-d3-nav="transactions" aria-label="Transactions">
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.5"/>
-            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 7.5V12l3.25 2"/>
-          </svg>
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="currentColor" d="M12 2.25a9.75 9.75 0 1 1 0 19.5 9.75 9.75 0 0 1 0-19.5Zm-.75 5.25a.75.75 0 0 0-1.5 0v5c0 .3.18.57.46.69l4.25 1.75a.75.75 0 1 0 .56-1.4L11.25 11.7V7.5Z"/>
-          </svg>
-          <span class="d1-nav-tip" aria-hidden="true">Transactions</span>
-        </button>
-        <button type="button" class="d1-nav-btn" data-d3-nav="labs" aria-label="Labs">
-          <!-- Labs flask — same mark as unified-intelligence-home Labs brand -->
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
-          </svg>
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
-          </svg>
-          <span class="d1-nav-tip" aria-hidden="true">Labs</span>
-        </button>
-        <!-- Placeholder only — no view / route yet. -->
-        <button type="button" class="d1-nav-btn d1-nav-btn--placeholder" data-d3-nav-placeholder="dev-dashboard" aria-label="Dev Dashboard">
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="3.75" y="5.25" width="16.5" height="11.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
-            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 20.25h8M12 16.75v3.5"/>
-            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m9.25 9.5 1.75 1.75L9.25 13M14.75 9.5 13 11.25l1.75 1.75"/>
-          </svg>
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="currentColor" d="M5.25 4.5A1.5 1.5 0 0 0 3.75 6v9.5c0 .83.67 1.5 1.5 1.5h6v1.75H8a.75.75 0 0 0 0 1.5h8a.75.75 0 0 0 0-1.5h-3.25V17H18.75c.83 0 1.5-.67 1.5-1.5V6A1.5 1.5 0 0 0 18.75 4.5H5.25Zm4.35 4.65a.75.75 0 0 1 0 1.06L8.31 11.5l1.29 1.29a.75.75 0 1 1-1.06 1.06l-1.82-1.82a.75.75 0 0 1 0-1.06l1.82-1.82a.75.75 0 0 1 1.06 0Zm5.06 0a.75.75 0 0 1 1.06 0l1.82 1.82a.75.75 0 0 1 0 1.06l-1.82 1.82a.75.75 0 1 1-1.06-1.06l1.29-1.29-1.29-1.29a.75.75 0 0 1 0-1.06Z"/>
-          </svg>
-          <span class="d1-nav-tip" aria-hidden="true">Dev Dashboard</span>
-        </button>
-      </div>
-      <div class="d1-rail__nav-bottom">
-        <div class="d1-fly d1-fly--chats">
-          <button type="button" class="d1-nav-btn d1-nav-btn--lg" data-d3-nav="messages" aria-label="Chats" aria-haspopup="true" aria-controls="d1-chat-menu">
-            <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h10.5A2.25 2.25 0 0 1 19.5 6.75v7.5a2.25 2.25 0 0 1-2.25 2.25H9.3L5.4 19.6a.75.75 0 0 1-1.2-.6v-2.5A2.25 2.25 0 0 1 4.5 14.25v-7.5Z"/>
-            </svg>
-            <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M6.75 3.75A2.25 2.25 0 0 0 4.5 6v8.25c0 .6.24 1.17.66 1.59L4.5 18.9a.75.75 0 0 0 1.2.6l3.3-2.48h7.95A2.25 2.25 0 0 0 19.2 14.77V6A2.25 2.25 0 0 0 16.95 3.75H6.75Z"/>
-            </svg>
-            <span class="d1-nav-tip" aria-hidden="true">Chats</span>
-          </button>
-          <div class="d1-fly__panel d1-chats" id="d1-chat-menu" role="menu" aria-label="Chats">
-            <button type="button" class="d1-new-chat" data-d1-new-chat>
-              <span class="d1-new-chat__plus" aria-hidden="true">+</span>
-              New chat
-            </button>
-            <div class="d1-chats__recent" data-d1-chat-list></div>
-          </div>
-        </div>
       </div>
     </nav>
 
@@ -264,37 +211,80 @@
   <div class="kw-stage" data-kw-stage>
     <canvas class="kw-stage__dots" id="kw-stage-dots" aria-hidden="true"></canvas>
 
+    <!-- Landing layout lab.
+         Sits on the dot ground rather than inside the sheet, so the
+         controls are never mistaken for part of the design they drive.
+         Only shown on the KYB landing (see landing-layouts.css).
+
+         Three independent axes — header, search, recent — plus a toggle
+         for whether recents read as a separated secondary section. The
+         presets are shorthand that set all four at once.
+
+         Every option is CSS over ONE set of nodes. The search is the
+         vb-lookup composite wired by js/d3-kyb-manual-search.js by id,
+         and the recent cards are bound by js/d3-kyb-resume.js, so
+         per-option markup would mean per-option wiring. -->
+    <details class="kw-lab" data-kw-lab open>
+      <summary class="kw-lab__toggle" title="Design exploration — pick a combination and delete this panel">
+        <span class="kw-variants__tag">Lab</span>
+        <span class="kw-lab__toggle-text">Layout</span>
+      </summary>
+
+      <div class="kw-lab__row kw-lab__row--presets">
+        <div class="kw-lab__presets" role="group" aria-label="Presets" data-kw-presets>
+          <button type="button" class="kw-lab__preset is-active" data-kw-preset="hero">Search hero</button>
+          <button type="button" class="kw-lab__preset" data-kw-preset="list">List</button>
+          <button type="button" class="kw-lab__preset" data-kw-preset="quick">Quick start</button>
+          <button type="button" class="kw-lab__preset" data-kw-preset="split">Split form</button>
+        </div>
+      </div>
+
+      <div class="kw-lab__row">
+        <span class="kw-lab__label">Header</span>
+        <div class="kw-lab__opts" role="group" aria-label="Header treatment" data-kw-axis="header">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="centred">Centred</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="left">Left</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="compact">Label</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="none">None</button>
+        </div>
+      </div>
+
+      <div class="kw-lab__row">
+        <span class="kw-lab__label">Search</span>
+        <div class="kw-lab__opts" role="group" aria-label="Search treatment" data-kw-axis="search">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="bare">Bare</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="form">In form</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="card">Raised form</button>
+        </div>
+      </div>
+
+      <div class="kw-lab__row">
+        <span class="kw-lab__label">Recent</span>
+        <div class="kw-lab__opts" role="group" aria-label="Recent transactions treatment" data-kw-axis="recent">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="rows">Rows</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="list">List</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="tiles">Tiles</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="chips">Chips</button>
+        </div>
+      </div>
+
+      <div class="kw-lab__row">
+        <span class="kw-lab__label">Section</span>
+        <div class="kw-lab__opts" role="group" aria-label="Recent section framing" data-kw-axis="sep">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="inline">Inline</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="rule">Ruled</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="band">Banded</button>
+        </div>
+      </div>
+    </details>
+
     <div class="kw-stage__body">
   <main class="d1-main" data-d1-drawer="closed">
     <div class="d1-slot">
-      <section class="d3-labs" data-d3-labs aria-label="Trulioo Labs">
-        <iframe
-          class="d3-labs__frame"
-          data-d3-labs-frame
-          title="Trulioo Labs"
-          loading="lazy"
-          referrerpolicy="no-referrer"
-        ></iframe>
-      </section>
-      <!-- Agent hub retired — Labs catalog + TruAI prompts are the entry. -->
-      <section class="d3-tx" data-d3-tx aria-label="Transactions">
-        <iframe
-          class="d3-tx__frame"
-          data-d3-tx-frame
-          title="Transactions"
-          loading="lazy"
-          referrerpolicy="no-referrer"
-        ></iframe>
-      </section>
-      <section class="d3-org" data-d3-org aria-label="Organization admin">
-        <iframe
-          class="d3-org__frame"
-          data-d3-org-frame
-          title="Organization admin"
-          loading="lazy"
-          referrerpolicy="no-referrer"
-        ></iframe>
-      </section>
+      <!-- Labs, Transactions and Organization admin iframes removed — this
+           fork is KYB only. Their scripts (d3-labs.js, d3-transactions.js,
+           d3-org.js and the tx/org agents) all guard on their frame being
+           present and no-op without it, so they stay loaded and inert. -->
       <section class="d3-workspace" data-d3-workspace data-d3-kyb-surface="map" aria-label="KYB Verification">
         <div class="d3-kyb-submit-loader" data-d3-kyb-submit-loader hidden role="status" aria-live="polite" aria-busy="false">
           <div class="d1-thinking d3-kyb-submit-loader__thinking">
@@ -449,28 +439,9 @@
           <nav class="d3-workspace__crumb" data-d3-kyb-crumb aria-label="Breadcrumb" hidden></nav>
         </div>
 
-        <!-- Landing layout comparison (LAB).
-             Four arrangements of the same three things — title, search,
-             recent transactions — differing in which job they favour:
-             starting a new check, or re-entering an old one.
 
-             All four are CSS over ONE set of nodes. The search is the
-             vb-lookup composite wired by js/d3-kyb-manual-search.js by id,
-             and the recent cards are bound by js/d3-kyb-resume.js, so
-             duplicating markup per layout would mean duplicating (or
-             breaking) that wiring. Layouts are styled by the
-             data-kw-landing attribute instead. -->
-        <div class="kw-layouts" data-kw-layouts-bar>
-          <span class="kw-variants__tag" title="Layout comparison — pick one and delete the switch">Lab</span>
-          <div class="tds-segmented-control tds-segmented-control--sm" role="group" aria-label="Landing layout" data-kw-layouts>
-            <button type="button" class="tds-segmented-control__item tds-segmented-control__item--selected" aria-pressed="true" data-kw-layout-btn="hero"><span class="tds-segmented-control__label">Search hero</span></button>
-            <button type="button" class="tds-segmented-control__item" aria-pressed="false" data-kw-layout-btn="list"><span class="tds-segmented-control__label">List</span></button>
-            <button type="button" class="tds-segmented-control__item" aria-pressed="false" data-kw-layout-btn="quick"><span class="tds-segmented-control__label">Quick start</span></button>
-            <button type="button" class="tds-segmented-control__item" aria-pressed="false" data-kw-layout-btn="split"><span class="tds-segmented-control__label">Split</span></button>
-          </div>
-        </div>
-
-        <div class="d3-workspace__landing" data-d3-kyb-landing data-kw-landing="hero">
+        <div class="d3-workspace__landing" data-d3-kyb-landing
+             data-kw-header="centred" data-kw-search="bare" data-kw-recent="rows" data-kw-sep="rule">
         <div class="d3-workspace__hero">
         <h1 class="d3-workspace__title">KYB Verification</h1>
         <!-- Shown by the layouts that want a line of orientation under the
@@ -1527,6 +1498,7 @@ No evidence of active trading, clients, or revenue.</p>
      Last so it can observe the shell after every shared script has bound. -->
 <script src="kyb-workspace/js/workspace-canvas.js?v=4"></script>
 <script src="kyb-workspace/js/country-step.js?v=3"></script>
-<script src="kyb-workspace/js/landing-layouts.js?v=2"></script>
+<script src="kyb-workspace/js/landing-layouts.js?v=5"></script>
+<script src="kyb-workspace/js/kyb-boot.js?v=1"></script>
 </body>
 </html>

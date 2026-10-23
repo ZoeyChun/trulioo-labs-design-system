@@ -32,11 +32,12 @@ Meridian KYB conversation (verify → progress → results) still runs in the pa
 
 ## KYB workspace canvas
 
-Fork that re-casts the **KYB verification screens** as a two-column workspace:
+Fork reduced to **KYB Verification only**, re-cast as a two-column workspace:
 TruAI docked on the left, a `surface-neutral-02` dot canvas on the right with
-the content on a centred 600px white sheet. **Home is untouched** — it renders
-exactly as it does here. The KYB landing and waiting-for-country are done; the
-map and report surfaces render but haven't had a design pass. No sign-in.
+the content on a centred 600px white sheet. Opens straight on KYB Verification;
+Home, Transactions, Labs and Chats are gone from its rail. The landing and
+waiting-for-country are done, each with a lab panel of design options; the map
+and report surfaces render but haven't had a design pass. No sign-in.
 
 | | URL |
 |--|--|

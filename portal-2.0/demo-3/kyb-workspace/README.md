@@ -1,12 +1,12 @@
 # Demo 3 — KYB workspace canvas
 
-Fork of `../index.html` that re-casts the **KYB verification screens** as a
+Fork of `../index.html` reduced to **KYB Verification only**, re-cast as a
 two-column workspace: TruAI docked on the left, a dotted canvas on the right
 with the content on a 600px white sheet, centred.
 
-**Home is untouched.** It renders exactly as it does in the parent page — full
-width, no dot ground, no sheet, no docked panel. Every canvas rule is scoped
-behind `:not([data-d3-view="home"])`.
+The page opens straight on KYB Verification. Home, Transactions, Labs, Dev
+Dashboard and Chats are gone from the rail — this fork exists to work on the
+KYB screens, and a rail full of destinations that lead out of them is noise.
 
 | | URL |
 |--|--|
@@ -17,9 +17,8 @@ No sign-in, same as `ai-panel-lab/` — this is a layout lab.
 
 ## Status
 
-- **Home** — deliberately unchanged from the parent page.
-- **KYB Verification landing** — on the 600px sheet, with four layout options
-  to choose between. See [Landing layouts](#landing-layouts).
+- **KYB Verification landing** — on the 600px sheet, with four independent
+  layout axes. See [Landing layouts](#landing-layouts).
 - **Waiting for country** — redesigned, with two country-selector treatments
   to choose between. See [Waiting for country](#waiting-for-country).
 - **Map view, report, matches** — render on the canvas already (nothing in
@@ -30,11 +29,11 @@ No sign-in, same as `ai-panel-lab/` — this is a layout lab.
 
 | | Parent `demo-3/index.html` | Here |
 |--|--|--|
-| TruAI panel | Collapses to the floating ask bar | Permanent column on the KYB screens; close control + askbar removed there. Home keeps the parent behaviour. |
-| Right side (KYB only) | White `.d1-main`, flush to the shell | `surface-neutral-02` canvas with a dot field; content on one white sheet with a shadow |
+| Scope | Home, KYB, Transactions, Labs, Org | **KYB only.** Rail trimmed to KYB + Settings; opens on KYB Verification |
+| TruAI panel | Collapses to the floating ask bar | Permanent column; close control + askbar removed |
+| Right side | White `.d1-main`, flush to the shell | `surface-neutral-02` canvas with a dot field; content on one white sheet with a shadow |
 | Content width | Full bleed | Sheet capped at 600px, centred horizontally **and vertically** (map and report excepted) |
 | Sheet height | Full height of the shell | Hugs its content; scrolls inside only when taller than the stage |
-| Home | — | **Unchanged.** |
 | Waiting for country | Status card — pulse, title, three-dot rail | Working step: the question, a step tracker, and the country picker |
 
 Everything else — rail, KYB agent, map, report, drawer, motion — is the parent's,
@@ -47,10 +46,11 @@ kyb-workspace/
   index.html                 # the fork
   css/workspace-canvas.css   # stage, dot ground, the sheet (width + height), docked panel
   css/country-step.css       # waiting-for-country step
-  css/landing-layouts.css    # KYB landing — the four layout options
+  css/landing-layouts.css    # KYB landing — the four layout axes + lab panel
   js/workspace-canvas.js     # dot field mount, docked-panel guard
+  js/kyb-boot.js             # KYB-only boot (initial view, brand-mark re-point)
   js/country-step.js         # country data + the two selector treatments
-  js/landing-layouts.js      # landing layout switch + the quick-start chips
+  js/landing-layouts.js      # landing layout axes, presets, chips
 ```
 
 `css/` and `js/` under `demo-3/` are **shared, not copied**. The page carries
@@ -75,11 +75,6 @@ not `<base>`, so it is **not** loaded here. An inline shim adds the
       .kw-stage__body        the white sheet — 600px, centred on the dots
         .d1-main             untouched, transparent
 ```
-
-`.kw-stage` has to exist on every view — it wraps `.d1-main`, and the markup is
-one document. On home it is an **inert pass-through**: no ground, no dots, no
-sheet, nothing between `.d3-canvas` and `.d1-main` but two transparent boxes.
-§4 of `workspace-canvas.css` is what keeps it that way.
 
 `.kw-stage` **wraps** `.d1-main` rather than reaching into it. That is the whole
 reason the other KYB surfaces can move over without being rebuilt.
@@ -162,63 +157,102 @@ show across the whole stage around a 600px sheet rather than in a thin gutter.
 
 To retune, use `../home-dot-lab/` and paste the result into `CANVAS_DOTS`.
 
+## KYB only
+
+The rail keeps KYB Verification and Settings; Home, Transactions, Labs, Dev
+Dashboard and Chats are removed, along with the Labs / Transactions / Org
+iframe sections. Those view scripts all guard on their frame being present and
+no-op without it, so they stay loaded and inert.
+
+The shell carries **`data-d3-lab`** — `d3-nav.js`'s own escape hatch. Without
+it the nav forces `data-d3-view="home"` on load; with it the page picks its own
+initial view, and `js/kyb-boot.js` opens the KYB resume surface once
+`d3-kyb-resume.js` has set its demo session up.
+
+Two things that are deliberately still here:
+
+- **The home markup.** `.d1-work` inside `.d1-home` holds the `data-d1-tpl`
+  message templates that `chat.js`, `d3-kyb-agent.js` and
+  `d3-kyb-report-reveal.js` all look up by name. Removing `.d1-home` would take
+  the templates with it. It is never shown.
+- **The brand mark**, which `d3-nav.js` binds to `goHome()`. Home has no nav
+  entry now, so `kyb-boot.js` re-points it at KYB with a capture-phase listener
+  that stops the event before the upstream one sees it.
+
 ## Landing layouts
 
-`index.html` → `[data-kw-landing]`, `css/landing-layouts.css`,
+`index.html` → `[data-kw-header]`, `css/landing-layouts.css`,
 `js/landing-layouts.js`.
 
-Four arrangements of the same three things — the title, the search, and recent
-transactions. They differ in **which job they favour**: starting a new check, or
-re-entering an old one. Both are always on screen; what changes is which one you
-fall into first.
+The landing holds three things — the title, the search, and recent
+transactions — and each is switched **independently**:
 
-| | Layout | Favours | Trade |
-|--|--|--|--|
-| A | **Search hero** *(default)* | Starting a new check | Search is the subject; recents sit below a rule and read as history. Closest to the page today. |
-| B | **List** | Re-entering an old check | [Figma `1476:49733`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=1476-49733) — divider rows of timestamp · title · tag · arrow. Title shrinks to a page label, search becomes a toolbar, the list is most of the screen. |
-| C | **Quick start** | Re-running a known entity | Recents collapse to one row of one-click chips under the input. Fast for the three names you keep returning to; no help at all for the fourth. |
-| D | **Split** | Neither, explicitly | Two labelled modules — a tinted "Start a verification" panel, and recents as one row that scrolls past the sheet edge. Least opinionated about why you came. |
+| Axis | Attribute | Options |
+|--|--|--|
+| Header | `data-kw-header` | `centred` · `left` · `compact` (label) · `none` |
+| Search | `data-kw-search` | `bare` · `form` (tinted panel) · `card` (raised panel) |
+| Recent | `data-kw-recent` | `rows` · `list` · `tiles` (scroller) · `chips` |
+| Section | `data-kw-sep` | `inline` · `rule` · `band` |
 
-The segmented switch is a **lab control**, tagged `LAB`. Pick one and delete it.
+Axes are independent on purpose. The interesting questions on this screen —
+*does the search want a form around it?*, *do recents read as part of the task
+or as history you could ignore?* — are separable, and a fixed set of whole-page
+layouts answers them only in the combinations someone happened to draw.
 
-### One DOM, four layouts
+**Presets** are shorthand for a whole combination, and stay lit only while the
+landing still matches: change any one axis and the preset clears rather than
+leaving a label that no longer describes the screen.
 
-All four are CSS over **one** set of nodes, switched by the `data-kw-landing`
-attribute. This is not a stylistic choice: the search is the `vb-lookup`
+| Preset | Header | Search | Recent | Section |
+|--|--|--|--|--|
+| Search hero | centred | bare | rows | rule |
+| List | left | bare | list | inline |
+| Quick start | centred | bare | chips | inline |
+| Split form | left | form | tiles | band |
+
+### Notable options
+
+- **Search · in form / raised form** puts the label and the field inside a
+  panel, which is what makes "recents outside the form" mean anything. The
+  panel is the `.kw-landing__panel` wrapper — `display: contents` for `bare`,
+  so it is invisible to layout there.
+- **Section · band** moves recents onto their own ground, bleeding to the sheet
+  edges via `--kw-landing-inset`. The strongest reading of a separated
+  secondary section: the search is the page, this is a shelf underneath it.
+- **Recent · list** is [Figma `1476:49733`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=1476-49733) —
+  divider rows of timestamp · title · tag · arrow. The node carries exactly one
+  tag per row, so product and role sit it out; status is the more
+  decision-relevant of the two we hold. The arrow is a CSS mask rather than an
+  appended element, which keeps the extra node out of the other options.
+- **Recent · tiles** scrolls horizontally rather than wrapping: three cards at
+  a readable width do not fit across 600px, and a 2×2 leaves a hole where the
+  fourth would be.
+
+### One DOM, every option
+
+All of it is CSS over **one** set of nodes. The search is the `vb-lookup`
 composite that `js/d3-kyb-manual-search.js` wires **by id**, and the recent
-cards are bound by `js/d3-kyb-resume.js`. A per-layout copy of the markup would
-mean a per-layout copy of that wiring, or four elements fighting over `#vb-q`.
+cards are bound by `js/d3-kyb-resume.js`. A per-option copy of the markup would
+mean a per-option copy of that wiring, or several elements fighting over
+`#vb-q`.
 
-Two consequences worth knowing:
+The chips are built from the recent cards and a chip clicks its card, so "open
+a recent check" stays one code path however it is presented.
 
-- **`.kw-landing-row`** carries Search hero's row treatment. The upstream card
-  is a 168px-tall column built for a three-across grid; one-per-row at 600px
-  that is a lot of height for four short facts, so the same nodes are re-flowed
-  into a name/status row plus a meta line. The meta line needs a zero-height
-  `::after` to force the break — at 600px all five spans fit on one line
-  otherwise, and the status tag lands mid-row instead of at the edge.
-- **List** re-flows the same card again, into the Figma row: timestamp, title,
-  one tag, arrow, with the card's border, fill and radius off and the divider
-  carrying the separation. The node has exactly one tag per row, so product and
-  role sit this layout out — status is the more decision-relevant of the two we
-  hold. The trailing arrow is a CSS mask rather than an appended element, which
-  keeps the extra node out of the other three layouts.
-- **Split's** recents are one horizontal scroller, not a wrapping grid: three
-  cards at a readable width do not fit across 600px, and a 2×2 leaves a hole
-  where the fourth would be. It bleeds past the sheet's inset via
-  `--kw-landing-inset` so the next card is clipped by the sheet edge — that
-  overhang is the only thing telling you the row scrolls.
-- **Specificity.** The shared `.kw-shell .kw-stage__body .d3-kyb-recent__grid`
-  rule is three classes deep, so any per-layout override of the grid needs the
-  same prefix. Two layouts have been caught by this already.
-- **`.kw-landing__panel`** is an inert wrapper, `display: contents` everywhere
-  but Split, which needs the label and the search inside one panel while the
-  title stays outside it.
+**Specificity.** The shared `.kw-shell .kw-stage__body .d3-kyb-recent__grid`
+rule is three classes deep, so any per-option override of the grid needs the
+same prefix. Two options have been caught by this already.
 
-The quick-start chips are built from the recent cards rather than a second data
-list, and a chip clicks its card — so "open a recent check" stays one code path
-however it is presented. **View all** goes to the Transactions rail item, which
-is where the full history already lives.
+### The lab panel
+
+Floats on the dot ground at the stage's top-left, never inside the sheet — the
+controls drive the design, they are not part of it. It is a `<details>` that
+closes to a pill: the gutter between the TruAI column and a centred 600px sheet
+is ~170px at 1512, narrower than any usable panel, so one that reserved space
+would either overlap the sheet or be unreadable.
+
+Pick a combination, then delete the panel, `css/landing-layouts.css`'s lab
+section, and the `kw-lab` markup.
 
 ## Waiting for country
 
@@ -277,7 +311,8 @@ show two things at once.
 
 ## Next
 
-1. Pick one country-selector treatment and delete the lab switch.
+1. Pick a combination on the landing and a country-selector treatment, then
+   delete both lab panels.
 2. Give the map surface the same once-over the country step got — it still
    fills the sheet edge to edge, and it is the one screen that breaks both the
    600px cap and the height hug.
