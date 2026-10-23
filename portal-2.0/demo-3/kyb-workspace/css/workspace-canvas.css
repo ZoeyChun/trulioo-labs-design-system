@@ -11,10 +11,16 @@
      .d1-shell
        .d1-rail            72px, unchanged
        .d3-canvas          flex row
-         .d3-chat-pane     TruAI — permanent column, never collapses
+         .d3-chat-pane     TruAI — docked on the KYB screens
          .kw-stage         NEW — the canvas
            .kw-stage__dots   dot field, painted on neutral-02
            .kw-stage__body   the white sheet; holds .d1-main untouched
+
+   SCOPE — every rule here is behind :not([data-d3-view="home"]).
+   The canvas is a KYB-screen treatment only: home renders exactly as
+   it does in ../index.html — full width, no dot ground, no sheet, and
+   no docked chat panel. .kw-stage is an inert pass-through there, and
+   §4 is what keeps it that way.
 
    Nothing reaches inside .d1-main. Every KYB surface that already
    lives there (slot, drawer, map, report) keeps the layout it has
@@ -35,13 +41,19 @@
   min-width: 0;
   min-height: 0;
 
-  /* One measure for every canvas screen — and it is the white container
-     itself that takes it, not just the content inside. The container is
-     a sheet sitting on the dot ground, not the ground's full width. */
+  /* One measure for every canvas screen — and it is the white sheet
+     itself that takes it, not just the content inside. The sheet sits
+     on the dot ground; it is not the ground's full width. */
   --kw-content-max: 600px;
+}
 
-  /* The canvas ground. Everything above it is either the dot field or
-     content that floats on top. */
+/* The canvas ground. Everything above it is either the dot field or
+   content that floats on top. */
+.kw-shell:not([data-d3-view="home"]) .kw-stage {
+  /* Centres the sheet vertically; the padding is the minimum inset it
+     keeps when the content is tall enough to use the whole stage. */
+  justify-content: center;
+  padding: 20px;
   background: var(--surface-neutral-02, #f4f6f4);
 }
 
@@ -55,11 +67,10 @@
   pointer-events: none;
 }
 
-/* The foreground container: one white sheet with a shadow, inset far
-   enough that the dot ground reads as the surface it floats on. Every
-   screen's content lives inside it, so the canvas edge is drawn once
-   here instead of by each surface. */
-.kw-stage__body {
+/* The foreground sheet: white, capped, centred on the dot ground. Every
+   KYB screen's content lives inside it, so the canvas edge is drawn
+   once here instead of by each surface. */
+.kw-shell:not([data-d3-view="home"]) .kw-stage__body {
   position: relative;
   z-index: 1;
   display: flex;
@@ -70,11 +81,9 @@
      is taller, never stretch to fill it. A short screen in a sheet the
      full height of the window is mostly empty white. */
   flex: 0 1 auto;
-  /* A sheet on the dot ground: capped and centred, so the dots are the
-     page the content sits on rather than a hairline around its edge. */
   width: 100%;
   max-width: var(--kw-content-max, 600px);
-  margin: 20px auto;
+  margin: 0 auto;
   background: var(--surface-neutral-01, #fff);
   border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 16px;
@@ -84,10 +93,10 @@
   overflow: hidden;
 }
 
-/* .d1-main no longer draws its own card — the container above is the card.
+/* .d1-main no longer draws its own card — the sheet above is the card.
    Without this it would be a white sheet with elevation inside a white
    sheet with elevation. */
-.kw-shell .kw-stage__body .d1-main {
+.kw-shell:not([data-d3-view="home"]) .kw-stage__body .d1-main {
   flex: 1 1 auto;
   min-width: 0;
   background: transparent;
@@ -98,10 +107,10 @@
 /* ------------------------------------------------------------------
    1b · Map and report keep the full stage
 
-   The container cap is right for every screen that is a document — a
-   question, a landing, a briefing. The map and the report are not
-   documents; they are canvases, and a 600px letterbox of either is
-   useless. They take the stage width instead.
+   The sheet's cap is right for every screen that is a document — a
+   question, a landing. The map and the report are not documents; they
+   are canvases, and a 600px letterbox of either is useless. They take
+   the stage width, and its height.
 
    This does mean the sheet widens on the way into the map. The jump is
    the price of the cap; dropping this rule makes everything 600px if
@@ -112,12 +121,6 @@
    it — so keying on the surface alone would widen the one screen this
    cap exists for. The await panel's own [hidden] is what separates
    "the map" from "the question drawn over the map".
-
-   The [data-d3-view="chat"] prefix matters too. .d3-workspace is always
-   in the DOM — hidden, but carrying data-d3-kyb-surface="map" from the
-   markup — so :has() alone matches on home as well and un-caps the one
-   screen nobody asked to widen. The view attribute is what says the
-   workspace is actually on screen.
    ------------------------------------------------------------------ */
 .kw-shell[data-d3-view="chat"] .kw-stage__body:has([data-d3-kyb-surface="map"]):not(:has([data-d3-kyb-map-await]:not([hidden]))),
 .kw-shell[data-d3-view="chat"] .kw-stage__body:has([data-d3-kyb-surface="report"]) {
@@ -125,7 +128,6 @@
      nothing to be as tall as. */
   flex: 1 1 auto;
   max-width: none;
-  margin-inline: 20px;
 }
 
 /* Waiting-for-country sits on the map surface, so .d3-kyb-map is what
@@ -139,8 +141,6 @@
    surfaces. Without the surface in the selector, `display: block` here
    beats that and the country step reappears above the KYB landing. */
 .kw-shell .d3-workspace[data-d3-kyb-surface="map"] .d3-kyb-map.is-awaiting-country {
-  /* d3-workspace.css pins .d3-kyb-map absolutely inside .d3-workspace.
-     Out of flow it contributes no height, so the sheet measured 2px. */
   position: static;
   inset: auto;
   display: block;
@@ -158,123 +158,101 @@
 }
 
 /* The landing hero sits clamp(56px, 14vh, 140px) from the top for a
-   full-bleed page. In a 720px column that reads as a hole. */
-.kw-shell .kw-stage__body .d3-workspace__landing {
+   full-bleed page. In a 600px sheet that reads as a hole. */
+.kw-shell:not([data-d3-view="home"]) .kw-stage__body .d3-workspace__landing {
   gap: 36px;
 }
 
-.kw-shell .kw-stage__body .d3-workspace__hero {
+.kw-shell:not([data-d3-view="home"]) .kw-stage__body .d3-workspace__hero {
   margin-top: clamp(24px, 6vh, 56px);
 }
 
 /* ------------------------------------------------------------------
-   2 · Permanent TruAI column
+   2 · Docked TruAI column
 
-   The panel is chrome here, so the close control is removed rather
-   than left as a button whose effect workspace-canvas.js undoes a
-   frame later. Resize and full-canvas stay — those are still useful.
+   On the KYB screens the panel is chrome, so the close control is
+   removed rather than left as a button whose effect
+   workspace-canvas.js undoes a frame later. Resize and full-canvas
+   stay — those are still useful.
+
+   Home keeps the parent behaviour: no panel until something opens one.
    ------------------------------------------------------------------ */
 
-.kw-shell .d3-chat-pane__close,
-.kw-shell [data-d3-chat-close],
-.kw-shell [data-d3-askbar] {
+.kw-shell:not([data-d3-view="home"]) .d3-chat-pane__close,
+.kw-shell:not([data-d3-view="home"]) [data-d3-chat-close],
+.kw-shell:not([data-d3-view="home"]) [data-d3-askbar] {
   display: none !important;
 }
 
 /* The pane keeps its 8px inset; drop the right margin so it reads as
    one column butted against the canvas rather than floating in it. */
-.kw-shell[data-d3-chat="open"] .d3-chat-pane {
+.kw-shell:not([data-d3-view="home"])[data-d3-chat="open"] .d3-chat-pane {
   margin-right: 0;
 }
 
 /* ------------------------------------------------------------------
-   3 · Home on the sheet
-
-   Decision: the dark hero stays, as a card on the dot ground, with the
-   briefing cards beneath it. The inline hero-critical block in
-   index.html already sizes and rounds the hero — these rules only
-   undo the parts of it that assumed a white, full-bleed main.
+   3 · Full canvas
    ------------------------------------------------------------------ */
 
-.kw-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main {
-  /* Padding moves to .d1-home so the scrollbar sits at the canvas edge. */
-  padding: 0 !important;
-  background: transparent !important;
-}
-
-.kw-shell .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
-  /* Tighter than the parent page's clamp(24px, 4vw, 49px): the white
-     container already holds the content away from the canvas edge. */
-  padding: 20px 20px 24px !important;
-}
-
-/* Hero height is fixed at 406px upstream for a full-width main. Beside a
-   478px TruAI column the hero is much narrower, so let it give back some
-   height rather than forcing a tall letterbox of empty green. */
-@media (max-width: 1500px) {
-  .kw-shell[data-d3-chat="open"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
-    height: 340px !important;
-    min-height: 340px !important;
-  }
-
-  .kw-shell[data-d3-chat="open"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body {
-    min-height: 340px !important;
-    padding: 40px 24px !important;
-    gap: 32px !important;
-  }
-}
-
-/* briefing.css picks its column count off the *viewport* — three cards
-   above 1180px, two below. Inside a 600px sheet that is the wrong
-   trigger entirely: the sheet is 600px however wide the window is, and
-   even two cards across it truncates every entity name in the
-   transactions table. One column, unconditionally. */
-.kw-shell .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
-  grid-template-columns: minmax(0, 1fr);
-  /* briefing.css insets by 64px for a full-bleed page; inside the sheet
-     that is width spent twice. */
-  width: 100%;
-  margin-top: 20px !important;
-}
-
-/* ------------------------------------------------------------------
-   4 · Full-canvas + narrow viewports
-   ------------------------------------------------------------------ */
-
-/* TruAI full-canvas hides .d1-main upstream; hide the whole stage so the
-   dot ground and the tab strip go with it. */
+/* TruAI full-canvas hides .d1-main upstream; hide the whole stage so
+   the dot ground goes with it. */
 .kw-shell[data-d3-chat="open"][data-d3-chat-size="full"] .kw-stage {
   display: none !important;
 }
 
-/* The mirror of that: canvas expand drops the TruAI column instead.
-   The docked-open guard only watches data-d3-chat, so the panel stays
-   "open" throughout and comes back in the width it was left at. */
-.kw-shell[data-kw-canvas-size="full"] .d3-chat-pane {
-  display: none !important;
+/* ------------------------------------------------------------------
+   4 · Home is the parent page
+
+   .kw-stage has to exist on every view — it wraps .d1-main, and the
+   markup is one document. On home it is an inert pass-through: no
+   ground, no dots, no sheet, nothing between .d3-canvas and .d1-main
+   but two transparent boxes. Everything above is scoped away from
+   home; these rules neutralise the structure that is left.
+   ------------------------------------------------------------------ */
+
+.kw-shell[data-d3-view="home"] .kw-stage {
+  padding: 0;
+  background: transparent;
 }
 
+.kw-shell[data-d3-view="home"] .kw-stage__dots {
+  display: none;
+}
+
+.kw-shell[data-d3-view="home"] .kw-stage__body {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  /* .d1-main owns the scrollport on home (hero-critical block). */
+  overflow: visible;
+}
+
+/* ------------------------------------------------------------------
+   5 · Narrow viewports
+   ------------------------------------------------------------------ */
+
 @media (max-width: 720px) {
-  /* Panel collapses on mobile upstream, and the askbar is hidden here, so
-     the canvas is all there is — give it the full width without the bar. */
-  .kw-bar {
-    padding: 8px 12px 0;
-    min-height: 40px;
+  .kw-shell:not([data-d3-view="home"]) .kw-stage {
+    padding: 10px;
   }
 
-  .kw-stage__body {
-    margin: 8px 10px 10px;
+  .kw-shell:not([data-d3-view="home"]) .kw-stage__body {
     border-radius: 12px;
-  }
-
-  .kw-shell .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
-    padding: 14px 12px 20px !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .kw-tab,
-  .kw-bar__tool {
+  .d3-canvas {
     transition: none;
   }
 }

@@ -62,6 +62,9 @@
      programmatic close, never for something the user asked for.
      ---------------------------------------------------------------- */
   function keepChatDocked() {
+    /* Home is the parent page: it owns the full-width composer and opens
+       no panel. The dock applies to the KYB screens only. */
+    if (shell.getAttribute("data-d3-view") === "home") return;
     if (shell.getAttribute("data-d3-chat") === "open") return;
     shell.setAttribute("data-d3-chat", "open");
     var pane = document.querySelector("[data-d3-chat-pane]");
@@ -70,9 +73,11 @@
 
   function watchChat() {
     keepChatDocked();
+    /* Both attributes: leaving home has to re-assert the dock, and the
+       view change is what tells us we have left. */
     new MutationObserver(keepChatDocked).observe(shell, {
       attributes: true,
-      attributeFilter: ["data-d3-chat"]
+      attributeFilter: ["data-d3-chat", "data-d3-view"]
     });
   }
 

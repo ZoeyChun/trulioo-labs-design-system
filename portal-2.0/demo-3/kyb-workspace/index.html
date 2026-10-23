@@ -117,7 +117,7 @@
   </style>
 
   <!-- Last in the cascade so it beats the hero-critical block above. -->
-  <link rel="stylesheet" href="kyb-workspace/css/workspace-canvas.css?v=10">
+  <link rel="stylesheet" href="kyb-workspace/css/workspace-canvas.css?v=11">
   <link rel="stylesheet" href="kyb-workspace/css/country-step.css?v=5">
 </head>
 <body>
@@ -127,10 +127,10 @@
   <p class="d1-loader__text" data-d1-loader-text role="status">Signing you in</p>
 </div>
 
-<!-- data-d3-chat starts "open": in the workspace format the TruAI column is
-     permanent chrome, not something home opens on demand. kw-workspace.js
-     holds it open if a shared script (goHome) tries to collapse it. -->
-<div class="d1-shell kw-shell" data-d3-view="home" data-d3-chat="open" data-d3-home-skin="dark">
+<!-- Shell attributes are the parent page's, unchanged: home opens with no
+     chat panel. The TruAI column is permanent chrome on the KYB screens
+     only — workspace-canvas.js holds it open there and lets home close it. -->
+<div class="d1-shell kw-shell" data-d3-view="home" data-d3-chat="closed" data-d3-home-skin="dark">
 
   <aside class="d1-rail" aria-label="Primary">
     <div class="d1-rail__header">
@@ -1485,7 +1485,7 @@ No evidence of active trading, clients, or revenue.</p>
 
 <!-- Workspace canvas: dot ground, tab strip, docked-panel guard.
      Last so it can observe the shell after every shared script has bound. -->
-<script src="kyb-workspace/js/workspace-canvas.js?v=3"></script>
+<script src="kyb-workspace/js/workspace-canvas.js?v=4"></script>
 <script src="kyb-workspace/js/country-step.js?v=3"></script>
 </body>
 </html>

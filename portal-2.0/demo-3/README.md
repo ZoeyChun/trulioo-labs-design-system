@@ -32,10 +32,11 @@ Meridian KYB conversation (verify → progress → results) still runs in the pa
 
 ## KYB workspace canvas
 
-Fork of the portal shell as a two-column workspace: TruAI docked permanently on
-the left, a `surface-neutral-02` dot canvas on the right with the content on a
-600px white sheet. **Home, the KYB landing and waiting-for-country** are done;
-the map and report surfaces render but haven't had a design pass. No sign-in.
+Fork that re-casts the **KYB verification screens** as a two-column workspace:
+TruAI docked on the left, a `surface-neutral-02` dot canvas on the right with
+the content on a centred 600px white sheet. **Home is untouched** — it renders
+exactly as it does here. The KYB landing and waiting-for-country are done; the
+map and report surfaces render but haven't had a design pass. No sign-in.
 
 | | URL |
 |--|--|

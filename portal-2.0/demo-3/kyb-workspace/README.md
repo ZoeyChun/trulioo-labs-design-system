@@ -1,8 +1,12 @@
 # Demo 3 — KYB workspace canvas
 
-Fork of `../index.html` that re-casts the portal as a **two-column workspace**:
-TruAI permanently docked on the left, a dotted canvas on the right with the
-content on a 600px white sheet.
+Fork of `../index.html` that re-casts the **KYB verification screens** as a
+two-column workspace: TruAI docked on the left, a dotted canvas on the right
+with the content on a 600px white sheet, centred.
+
+**Home is untouched.** It renders exactly as it does in the parent page — full
+width, no dot ground, no sheet, no docked panel. Every canvas rule is scoped
+behind `:not([data-d3-view="home"])`.
 
 | | URL |
 |--|--|
@@ -13,7 +17,7 @@ No sign-in, same as `ai-panel-lab/` — this is a layout lab.
 
 ## Status
 
-- **Home** — done.
+- **Home** — deliberately unchanged from the parent page.
 - **KYB Verification landing** — on the 600px sheet, otherwise unchanged.
 - **Waiting for country** — redesigned, with two country-selector treatments
   to choose between. See [Waiting for country](#waiting-for-country).
@@ -25,11 +29,11 @@ No sign-in, same as `ai-panel-lab/` — this is a layout lab.
 
 | | Parent `demo-3/index.html` | Here |
 |--|--|--|
-| TruAI panel | Collapses to the floating ask bar; home opens closed | Permanent column; close control + askbar removed |
-| Right side | White `.d1-main`, flush to the shell | `surface-neutral-02` canvas with a dot field; content in one white container with a shadow on top of it |
-| Content width | Full bleed | White container capped at 600px and centred on the dots (map and report excepted) |
+| TruAI panel | Collapses to the floating ask bar | Permanent column on the KYB screens; close control + askbar removed there. Home keeps the parent behaviour. |
+| Right side (KYB only) | White `.d1-main`, flush to the shell | `surface-neutral-02` canvas with a dot field; content on one white sheet with a shadow |
+| Content width | Full bleed | Sheet capped at 600px, centred horizontally **and vertically** (map and report excepted) |
 | Sheet height | Full height of the shell | Hugs its content; scrolls inside only when taller than the stage |
-| Home hero | Dark green hero on white | Same hero, 340px tall beside the TruAI column |
+| Home | — | **Unchanged.** |
 | Waiting for country | Status card — pulse, title, three-dot rail | Working step: the question, a step tracker, and the country picker |
 
 Everything else — rail, KYB agent, map, report, drawer, motion — is the parent's,
@@ -68,6 +72,11 @@ not `<base>`, so it is **not** loaded here. An inline shim adds the
       .kw-stage__body        the white sheet — 600px, centred on the dots
         .d1-main             untouched, transparent
 ```
+
+`.kw-stage` has to exist on every view — it wraps `.d1-main`, and the markup is
+one document. On home it is an **inert pass-through**: no ground, no dots, no
+sheet, nothing between `.d3-canvas` and `.d1-main` but two transparent boxes.
+§4 of `workspace-canvas.css` is what keeps it that way.
 
 `.kw-stage` **wraps** `.d1-main` rather than reaching into it. That is the whole
 reason the other KYB surfaces can move over without being rebuilt.
@@ -112,6 +121,10 @@ stage when the content is taller, but never stretches to fill it. A short screen
 in a sheet the full height of the window is mostly empty white. `.d1-main` keeps
 the scrollport, so a tall screen scrolls inside the sheet.
 
+The stage is `justify-content: center`, so the sheet sits in the middle of the
+canvas vertically as well as horizontally; the stage's 20px padding is the
+minimum inset it keeps once the content is tall enough to use the whole height.
+
 Waiting-for-country needed one fix for this: it lives on the map surface, and
 `.d3-kyb-map` is pinned `position: absolute; inset: 0` by `d3-workspace.css`.
 Out of flow it contributes no height, so the sheet first measured **2px**. The
@@ -121,14 +134,14 @@ the step and would otherwise re-show the question above the KYB landing.
 
 ### Re-pointed upstream rules
 
-Both key off the **viewport** where the sheet is a fixed **width**:
+One, and it keys off the **viewport** where the sheet is a fixed **width**:
+`d3-workspace.css` sits the KYB landing hero `clamp(56px, 14vh, 140px)` from the
+top, which reads as a hole in a narrow sheet; reduced to
+`clamp(24px, 6vh, 56px)`.
 
-- `briefing.css` picks its column count off the viewport — three cards above
-  1180px, two below. Home takes **one** column unconditionally here; even two
-  across 600px truncates every entity name in the transactions table.
-- `d3-workspace.css` sits the KYB landing hero `clamp(56px, 14vh, 140px)` from
-  the top, which reads as a hole in a narrow sheet; reduced to
-  `clamp(24px, 6vh, 56px)`.
+A `briefing.css` override lived here too — home's cards forced to one column,
+since `briefing.css` also picks its count off the viewport. Gone with the rest
+of the home changes.
 
 ## Dot ground
 
