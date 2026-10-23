@@ -89,8 +89,11 @@
   /* Do not lock to 100% — that + main overflow:hidden was squashing the hero. */
   height: auto;
   min-height: 100%;
-  /* Slot inset — Figma Slot child Frame at y:40 / x:49 */
-  padding: 40px clamp(24px, 4vw, 49px) var(--spacing-48, 48px) !important;
+  /* Slot inset — top 40 / sides ≤49 / bottom 48 */
+  padding-top: 40px !important;
+  padding-right: clamp(24px, 4vw, 49px) !important;
+  padding-bottom: 48px !important;
+  padding-left: clamp(24px, 4vw, 49px) !important;
   gap: 0;
   box-sizing: border-box;
   overflow: visible;
@@ -192,8 +195,8 @@
 
 .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
   width: min(1214px, 100%);
-  /* Figma: hero ends ~446, cards at 494 → 48px */
-  margin-top: var(--spacing-48, 48px);
+  /* Beats briefing.css clamp(56px, 9vh, 120px). */
+  margin-top: 48px !important;
 }
 
 /* ---- Light skin (alternate) — full-bleed dots, no dark panel ---- */
@@ -343,6 +346,11 @@
 /* Only on the home stage — never while stage=chat (composer may be parked). */
 .d1-home[data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
   display: grid;
+}
+
+/* KYB context tag — home composer only. */
+.d1-home[data-d1-stage="home"] .d1-prompt__ctx {
+  display: inline-flex;
 }
 
 /* Rotating home placeholder — same cell as the input, never under the tag. */

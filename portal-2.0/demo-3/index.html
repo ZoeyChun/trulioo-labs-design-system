@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="css/shell.css">
   <link rel="stylesheet" href="css/home.css">
-  <link rel="stylesheet" href="composer/prompt.css?v=5">
+  <link rel="stylesheet" href="composer/prompt.css?v=6">
   <link rel="stylesheet" href="css/messages.css?v=3">
   <link rel="stylesheet" href="css/motion.css?v=7">
   <link rel="stylesheet" href="css/d3-thinking.css?v=4">
@@ -54,7 +54,7 @@
   <link rel="stylesheet" href="css/d3-rail.css?v=18">
   <link rel="stylesheet" href="components/ai-panel/ai-panel.css?v=7">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
-  <link rel="stylesheet" href="css/d3-home.css?v=3">
+  <link rel="stylesheet" href="css/d3-home.css?v=5">
   <link rel="stylesheet" href="css/d3-workspace.css?v=32">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
@@ -72,7 +72,13 @@
     }
     .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
       height: auto !important; min-height: 100% !important;
-      padding: 40px clamp(24px, 4vw, 49px) 48px !important;
+      padding-top: 40px !important;
+      padding-right: clamp(24px, 4vw, 49px) !important;
+      padding-bottom: 48px !important;
+      padding-left: clamp(24px, 4vw, 49px) !important;
+    }
+    .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+      margin-top: 48px !important;
     }
     .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
       flex: 0 0 auto !important;
@@ -780,7 +786,7 @@ No evidence of active trading, clients, or revenue.</p>
         </div>
       </section>
       <div class="d1-home" data-d1-stage="home" data-d1-repeat="true" data-d3-home-skin="dark">
-        <div class="d3-home-hero" data-d3-home-build="pad-v3">
+        <div class="d3-home-hero" data-d3-home-build="pad-v4">
           <canvas class="d3-home-dots" id="d3-home-dots" aria-hidden="true"></canvas>
           <div class="d3-home-hero__body">
           <section class="d1-welcome" aria-label="Welcome">
