@@ -106,23 +106,8 @@
   animation: v2-fade 360ms ease both;
 }
 
-/* Home landing — demo-2 delays (40 / 90 / 140). */
-.d1-home .d1-hello {
-  animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
-  animation-delay: 40ms;
-}
-
-.d1-home .d1-composer {
-  animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
-  animation-delay: 90ms;
-}
-
-.d1-home.d3-motion-enter .d1-hello { animation-delay: 40ms; }
-.d1-home.d3-motion-enter .d1-composer { animation-delay: 90ms; }
-.d1-home.d3-motion-enter .d1-brief {
-  animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
-  animation-delay: 140ms;
-}
+/* Home: no section enter here. d3-home.css forces animation:none;
+   d3-motion.js skips playEnter for view=home. */
 
 .d1-chip {
   animation: v2-rise var(--d3-dur-page) var(--d3-ease-spring) both;
@@ -337,6 +322,8 @@
   .d1-home .d1-hello,
   .d1-home .d1-composer,
   .d1-home .d1-brief,
+  .d1-home[data-d1-stage="home"] .d3-home-hero,
+  .d1-home.d3-motion-enter .d3-home-hero,
   .d3-motion-enter .d1-hello,
   .d3-motion-enter .d1-composer,
   .d3-motion-enter .d1-brief,

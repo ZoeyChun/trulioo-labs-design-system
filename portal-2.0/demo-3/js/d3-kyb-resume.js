@@ -312,7 +312,11 @@
     updateMapNudge();
     clearThread();
     document.dispatchEvent(new CustomEvent("d3-kyb:restore-idle"));
-    if (paneInput) {
+    if (window.D3KybAgent && window.D3KybAgent.setComposerPlaceholder) {
+      window.D3KybAgent.setComposerPlaceholder(
+        window.D3KybAgent.PLACEHOLDER.search
+      );
+    } else if (paneInput) {
       paneInput.placeholder = "Business name and country";
     }
     document.dispatchEvent(new CustomEvent("d3-kyb:map-ready"));
@@ -331,7 +335,11 @@
     setSurface("resume");
     setResumeVisible(false);
     clearThread();
-    if (paneInput) {
+    if (window.D3KybAgent && window.D3KybAgent.setComposerPlaceholder) {
+      window.D3KybAgent.setComposerPlaceholder(
+        window.D3KybAgent.PLACEHOLDER.search
+      );
+    } else if (paneInput) {
       paneInput.placeholder = "Business name and country";
     }
     document.dispatchEvent(new CustomEvent("d3-kyb:restore-idle"));
@@ -439,10 +447,14 @@
     }
     setSurface("map");
     document.dispatchEvent(new CustomEvent("d3-kyb:restore-idle"));
-    if (paneInput) {
+    if (window.D3KybAgent && window.D3KybAgent.setComposerPlaceholder) {
+      window.D3KybAgent.setComposerPlaceholder(
+        window.D3KybAgent.PLACEHOLDER.search
+      );
+    } else if (paneInput) {
       paneInput.placeholder = "Business name and country";
-      paneInput.focus();
     }
+    if (paneInput) paneInput.focus();
   }
 
   document.addEventListener("DOMContentLoaded", ensureDemoSession);

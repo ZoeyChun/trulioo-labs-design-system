@@ -18,7 +18,9 @@
 }
 
 .d3-composer--pane .d1-suggest,
-.d3-composer--pane .d1-prompt__ph {
+.d3-composer--pane .d1-prompt__ph,
+.d3-composer--pane .tds-tag.d1-prompt__ctx,
+.d3-chat-pane .tds-tag.d1-prompt__ctx {
   display: none !important;
 }
 

@@ -40,6 +40,45 @@
     { q: "Has this entity ever traded?" }
   ];
 
+  /* Pane / parked composer copy — keep in sync with the active KYB step. */
+  var PLACEHOLDER = {
+    search: "Business name and country",
+    country: "Country of registration, e.g. United States",
+    list: "Select a match or refine your search",
+    confirm: "Confirm above, or ask a follow-up",
+    running: "Verification in progress…",
+    report: "Ask about this verification"
+  };
+
+  function composerInputs() {
+    var pane = document.querySelector(".d3-chat-pane");
+    var found = [];
+    var seen = typeof WeakSet !== "undefined" ? new WeakSet() : null;
+    function add(el) {
+      if (!el || (seen && seen.has(el))) return;
+      if (seen) seen.add(el);
+      found.push(el);
+    }
+    if (pane) {
+      pane.querySelectorAll("[data-d1-input], [data-d3-pane-input]").forEach(add);
+    }
+    if (!found.length) add(document.querySelector("[data-d3-pane-input]"));
+    return found;
+  }
+
+  function setComposerPlaceholder(text) {
+    var next = text || PLACEHOLDER.search;
+    composerInputs().forEach(function (input) {
+      input.placeholder = next;
+      input.setAttribute("aria-label", next);
+    });
+    var rotator = document.querySelector(".d3-chat-pane [data-d1-ph-rotator]");
+    if (rotator) {
+      rotator.hidden = true;
+      rotator.classList.add("is-hidden");
+    }
+  }
+
   var CAND_GO_SVG =
     '<svg viewBox="0 0 24 24" fill="none"><path d="M13.47 4.72a.75.75 0 0 1 1.06 0l6.75 6.75a.75.75 0 0 1 0 1.06l-6.75 6.75a.75.75 0 1 1-1.06-1.06l5.47-5.47H3.75a.75.75 0 0 1 0-1.5h15.19l-5.47-5.47a.75.75 0 0 1 0-1.06Z" fill="currentColor"/></svg>';
 
@@ -550,6 +589,7 @@
     if (!candState.root) return;
     candState.mode = "list";
     candState.pending = null;
+    setComposerPlaceholder(PLACEHOLDER.list);
     var filters = buildCandFilters(candState.list);
     var list = visibleCandidates();
     var countries = {};
@@ -660,13 +700,9 @@
       "</div>";
     stick();
 
-    /* Prefer pane idle / parked chat input — never leave a native placeholder
-       on the home composer (it overlaps the rotating .d1-prompt__ph). */
-    var input =
-      document.querySelector(".d3-chat-pane [data-d1-input]") ||
-      document.querySelector("[data-d3-pane-input]");
+    setComposerPlaceholder(PLACEHOLDER.country);
+    var input = composerInputs()[0];
     if (input) {
-      input.placeholder = "Country of registration, e.g. United States";
       try {
         input.focus();
       } catch (e) {}
@@ -727,6 +763,7 @@
       );
       candState.mode = "country";
       showAwaitingCountry(candState.queryLabel);
+      setComposerPlaceholder(PLACEHOLDER.country);
       setSuggestions(SUGGEST_SEARCH);
       return true;
     }
@@ -749,6 +786,7 @@
     }
     candState.mode = "confirm";
     candState.pending = biz;
+    setComposerPlaceholder(PLACEHOLDER.confirm);
     focusCandOnMap(biz);
     var addr = biz.addr || biz.city || "";
     var detail =
@@ -832,6 +870,7 @@
     var name = (biz && biz.name) || "this business";
     var copy = "Start verification for <strong>" + esc(name) + "</strong>";
     showChatBack();
+    setComposerPlaceholder(PLACEHOLDER.running);
     var node = clone("typing");
     if (!node) {
       playHtml("<p>" + copy + "</p>");
@@ -1545,6 +1584,7 @@
 
   document.addEventListener("d3-kyb:report-ready", function () {
     if (!onKyb()) return;
+    setComposerPlaceholder(PLACEHOLDER.report);
     setSuggestions(SUGGEST_AFTER);
     stick();
   });
@@ -1614,6 +1654,7 @@
   );
 
   document.addEventListener("d3-view:kyb", function () {
+    setComposerPlaceholder(PLACEHOLDER.search);
     setSuggestions(SUGGEST_SEARCH);
   });
 
@@ -1626,6 +1667,8 @@
     selected: selected,
     confirmSelect: confirmSelect,
     showMatches: playCandidateResults,
-    askCountry: playCountryAsk
+    askCountry: playCountryAsk,
+    setComposerPlaceholder: setComposerPlaceholder,
+    PLACEHOLDER: PLACEHOLDER
   };
 })();

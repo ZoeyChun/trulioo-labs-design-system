@@ -181,7 +181,9 @@
   height: 24px;
 }
 
-.d1-prompt__ctx {
+/* Beat .tds-tag { display: inline-flex } — home stage re-enables in d3-home.css. */
+.tds-tag.d1-prompt__ctx {
+  display: none;
   flex-shrink: 0;
   color: var(--text-default);
 }

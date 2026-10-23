@@ -392,13 +392,18 @@
       setThinking(homeIntro || homeHover);
     }
 
+    var introPlayed = false;
+
     function startIntro() {
       window.clearTimeout(introTimer);
-      if (reduced || !isHomeView(shell, stage)) {
+      /* One intro on first mount only — replaying the orbit on every
+         Home nav felt like a goofy L→R slide in the hero. */
+      if (introPlayed || reduced || !isHomeView(shell, stage)) {
         homeIntro = false;
         syncMode();
         return;
       }
+      introPlayed = true;
       homeIntro = true;
       homeHover = false;
       syncMode();
@@ -455,8 +460,7 @@
 
     if (shell) {
       var obs = new MutationObserver(function () {
-        if (isHomeView(shell, stage)) startIntro();
-        else {
+        if (!isHomeView(shell, stage)) {
           window.clearTimeout(introTimer);
           homeIntro = false;
           homeHover = false;
@@ -464,12 +468,6 @@
         }
       });
       obs.observe(shell, { attributes: true, attributeFilter: ["data-d3-view"] });
-    }
-    if (stage) {
-      var stageObs = new MutationObserver(function () {
-        if (isHomeView(shell, stage)) startIntro();
-      });
-      stageObs.observe(stage, { attributes: true, attributeFilter: ["data-d1-stage"] });
     }
 
     apply(step(frame, offsets, 0, reduced));

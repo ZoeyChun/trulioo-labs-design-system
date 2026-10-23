@@ -37,6 +37,25 @@
   width: 100%;
 }
 
+/* No enter motion on home — side-nav return must paint in place.
+   (Previous soft-in / v2-rise still read as a horizontal slide.) */
+.d1-home[data-d1-stage="home"] .d3-home-hero,
+.d1-home.d3-motion-enter .d3-home-hero,
+.d1-home[data-d1-stage="home"] .d1-hello,
+.d1-home[data-d1-stage="home"] .d1-composer,
+.d1-home[data-d1-stage="home"] .d1-brief,
+.d1-home.d3-motion-enter .d1-hello,
+.d1-home.d3-motion-enter .d1-composer,
+.d1-home.d3-motion-enter .d1-brief,
+.d1-home .d1-hello,
+.d1-home .d1-composer,
+.d1-home .d1-brief {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  translate: none !important;
+}
+
 .d3-home-dots {
   position: absolute;
   inset: 0;
@@ -81,6 +100,14 @@
 
 .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-slot {
   overflow: visible;
+}
+
+/* Drawer shell tweens slot width (420ms L→R). Home must snap full-bleed. */
+.d1-shell[data-d3-view="home"] .d1-main:has(.d1-drawer) .d1-slot {
+  transition: none !important;
+  width: 100% !important;
+  max-width: none !important;
+  flex: 1 1 auto !important;
 }
 
 .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
@@ -349,7 +376,7 @@
 }
 
 /* KYB context tag — home composer only. */
-.d1-home[data-d1-stage="home"] .d1-prompt__ctx {
+.d1-home[data-d1-stage="home"] .tds-tag.d1-prompt__ctx {
   display: inline-flex;
 }
 

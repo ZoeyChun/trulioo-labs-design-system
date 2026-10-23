@@ -54,6 +54,12 @@
   }
 
   function onViewChange(view) {
+    /* Home must not re-run enter motion on every side-nav return —
+       staggered section rises read as a L→R slide across the page. */
+    if (view === "home") {
+      clearEnter(surfaceForView("home"));
+      return;
+    }
     playEnter(surfaceForView(view));
   }
 

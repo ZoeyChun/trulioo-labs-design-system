@@ -152,13 +152,25 @@
   }
 
   function goHome() {
-    shell.setAttribute("data-d3-view", "home");
+    /* Close TruAI + snap drawer shut before home paints — otherwise the
+       slot/pane width tween reads as home sections sliding L→R. */
+    var pane = getChatPane();
+    if (pane) {
+      pane.classList.remove("is-active", "d3-motion-pane-in");
+    }
     setChatOpen(false, "hub");
+    var main = document.querySelector(".d1-main");
+    if (main) {
+      main.setAttribute("data-d1-drawer", "closed");
+      main.style.setProperty("--d1-slot-w", "100%");
+      main.style.setProperty("--d1-drawer-w", "0px");
+      main.style.setProperty("--d1-drawer-surface-w", "0px");
+    }
+    document.dispatchEvent(new CustomEvent("d1-drawer:close"));
+    shell.setAttribute("data-d3-view", "home");
     setActiveNav("home");
     var stage = document.querySelector("[data-d1-stage]");
     if (stage) stage.setAttribute("data-d1-stage", "home");
-    var pane = getChatPane();
-    if (pane) pane.classList.remove("is-active");
     document.dispatchEvent(new CustomEvent("d3-view:home"));
   }
 
