@@ -15,10 +15,16 @@
    screen; what changes is which one you fall into first.
 
      hero   Start a new check.     Search is the subject, recents read as history.
-     queue  Re-enter an old check. Recents dominate; search is a toolbar.
+     list   Re-enter an old check. Divider rows (Figma 1476:49733) dominate.
      quick  Re-run a known entity. One-click chips replace the list.
      split  Either, explicitly.    Two labelled modules, no implied order.
    ------------------------------------------------------------------ */
+
+:root {
+  /* arrow-right, 16px. Used as a mask so it takes currentColor-style
+     tinting from background-color. */
+  --kw-arrow-right: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'><path d='M3 8h10M9 4l4 4-4 4' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
 
 /* ------------------------------------------------------------------
    The lab switch
@@ -108,7 +114,7 @@
 /* ------------------------------------------------------------------
    The recent card as a row
 
-   Used by hero, queue and split. The upstream card is a 168px-tall
+   Used by hero only. The upstream card is a 168px-tall
    column built for a three-across grid; stacked one-per-row at 600px
    that is a lot of height for four short facts. Same nodes, re-flowed.
    ------------------------------------------------------------------ */
@@ -205,41 +211,138 @@
 }
 
 /* ------------------------------------------------------------------
-   B · Work queue — re-enter an old check
+   B · List — re-enter an old check
 
-   Inverts the emphasis. The title shrinks to a page label, the search
-   becomes a toolbar at the top, and the list is what the screen is
-   mostly made of. For accounts where most sessions continue work
-   rather than start it.
+   Figma Portal-2.0-Design---2026 node 1476:49733.
+
+   Divider-separated rows rather than cards: timestamp, title, one tag,
+   arrow. The title shrinks to a page label and the search becomes a
+   toolbar, so the list is what the screen is mostly made of — for
+   accounts where most sessions continue work rather than start it.
+
+   Row spec from the node: flex, 24px gap, centre-aligned;
+   timestamp 14/18 medium text-caption; title 14/20 semibold, flex 1;
+   tag neutral-02 on border-subtle, 2px/8px, 12/16 medium; arrow 16px
+   icon-interactive. 24px above and below each divider.
    ------------------------------------------------------------------ */
 
-[data-kw-landing="queue"] .d3-workspace__hero {
+[data-kw-landing="list"] .d3-workspace__hero {
   align-items: stretch;
   margin-top: 4px;
   text-align: left;
 }
 
-[data-kw-landing="queue"] .d3-workspace__title {
+[data-kw-landing="list"] .d3-workspace__title {
   font-size: 22px;
   line-height: 29px;
   text-align: left;
 }
 
-[data-kw-landing="queue"] .kw-landing__sub {
+[data-kw-landing="list"] .kw-landing__sub {
   display: block;
 }
 
-[data-kw-landing="queue"] .kw-landing__viewall {
+[data-kw-landing="list"] .kw-landing__viewall {
   display: inline-flex;
 }
 
-/* The gap upstream is sized for a hero with air around it. */
-[data-kw-landing="queue"].d3-workspace__landing {
+[data-kw-landing="list"].d3-workspace__landing {
   gap: 24px;
 }
 
-[data-kw-landing="queue"] .d3-kyb-recent {
-  gap: 10px;
+[data-kw-landing="list"] .d3-kyb-recent {
+  gap: 4px;
+}
+
+/* Rows, not cards: the divider carries the separation, so the card's
+   own border, fill and radius all come off. */
+/* Specificity has to clear the shared grid rule in this file, which
+   carries .kw-shell .kw-stage__body. */
+.kw-shell .kw-stage__body [data-kw-landing="list"] .d3-kyb-recent__grid {
+  gap: 0;
+}
+
+[data-kw-landing="list"] .d3-kyb-recent__card {
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  min-height: 0;
+  margin: 0;
+  padding: 18px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-kw-landing="list"] .d3-kyb-recent__card + .d3-kyb-recent__card {
+  border-top: 1px solid var(--border-subtle, #dde2de);
+}
+
+/* Timestamp leads the row. */
+[data-kw-landing="list"] .d3-kyb-recent__date {
+  order: 1;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--text-caption, #617269);
+  white-space: nowrap;
+}
+
+[data-kw-landing="list"] .d3-kyb-recent__name {
+  order: 2;
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  -webkit-line-clamp: 1;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+/* The node carries exactly one tag per row. Status is the more
+   decision-relevant of the two we hold, so product and role sit this
+   layout out rather than crowding a 600px row with three pills. */
+[data-kw-landing="list"] .d3-kyb-recent__card .d1-tag {
+  order: 3;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+[data-kw-landing="list"] .d3-kyb-recent__product,
+[data-kw-landing="list"] .d3-kyb-recent__role {
+  display: none;
+}
+
+/* The trailing arrow. A mask rather than an appended element: the card
+   markup is shared with three other layouts, and this keeps the extra
+   node out of all of them. */
+[data-kw-landing="list"] .d3-kyb-recent__card::after {
+  content: "";
+  order: 4;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  background-color: var(--icon-interactive, #004c45);
+  -webkit-mask: var(--kw-arrow-right) center / 16px 16px no-repeat;
+  mask: var(--kw-arrow-right) center / 16px 16px no-repeat;
+  transition: transform 150ms ease;
+}
+
+[data-kw-landing="list"] .d3-kyb-recent__card:hover::after {
+  transform: translateX(2px);
+}
+
+/* The row has no fill of its own, so hover needs one — pulled out past
+   the text so it reads as a row rather than a highlight behind words. */
+[data-kw-landing="list"] .d3-kyb-recent__card:hover {
+  margin-inline: -10px;
+  padding-inline: 10px;
+  border-radius: 8px;
+  background: var(--surface-neutral-02, #f4f6f4);
 }
 
 /* ------------------------------------------------------------------
@@ -382,18 +485,33 @@
   display: inline-flex;
 }
 
-/* Two across — the row treatment is for the layouts that want a list,
-   this one wants cards. Specificity has to clear the shared one-column
-   rule in workspace-canvas.css, which carries .kw-shell .kw-stage__body. */
+/* One row that scrolls, not a wrapping grid. Three cards at a readable
+   width do not fit across 600px, and a 2×2 leaves a hole where the
+   fourth would be — a scroller carries any number of them at one size.
+   Specificity has to clear the shared one-column rule in
+   workspace-canvas.css, which carries .kw-shell .kw-stage__body. */
 .kw-shell .kw-stage__body [data-kw-landing="split"] .d3-kyb-recent__grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  /* Bleed past the sheet's inset so the next card is clipped by the
+     sheet edge rather than stopping short of it — that overhang is the
+     only thing telling you the row scrolls. */
+  margin-right: calc(var(--kw-landing-inset, 24px) * -1);
+  padding-right: var(--kw-landing-inset, 24px);
+  /* Room for the card's hover lift and focus ring. */
+  padding-bottom: 4px;
+  scrollbar-width: thin;
 }
 
 [data-kw-landing="split"] .d3-kyb-recent__card {
+  flex: 0 0 210px;
   min-height: 0;
   padding: 14px;
   background: var(--surface-neutral-01, #fff);
   border-radius: 12px;
+  scroll-snap-align: start;
 }
 
 [data-kw-landing="split"] .d3-kyb-recent__date {

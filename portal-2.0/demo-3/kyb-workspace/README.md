@@ -175,9 +175,9 @@ fall into first.
 | | Layout | Favours | Trade |
 |--|--|--|--|
 | A | **Search hero** *(default)* | Starting a new check | Search is the subject; recents sit below a rule and read as history. Closest to the page today. |
-| B | **Work queue** | Re-entering an old check | Title shrinks to a page label, search becomes a toolbar, the list is most of the screen. For accounts where most sessions continue work. |
+| B | **List** | Re-entering an old check | [Figma `1476:49733`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=1476-49733) — divider rows of timestamp · title · tag · arrow. Title shrinks to a page label, search becomes a toolbar, the list is most of the screen. |
 | C | **Quick start** | Re-running a known entity | Recents collapse to one row of one-click chips under the input. Fast for the three names you keep returning to; no help at all for the fourth. |
-| D | **Split** | Neither, explicitly | Two labelled modules — a tinted "Start a verification" panel and a plain recents section. Least opinionated about why you came. |
+| D | **Split** | Neither, explicitly | Two labelled modules — a tinted "Start a verification" panel, and recents as one row that scrolls past the sheet edge. Least opinionated about why you came. |
 
 The segmented switch is a **lab control**, tagged `LAB`. Pick one and delete it.
 
@@ -191,12 +191,26 @@ mean a per-layout copy of that wiring, or four elements fighting over `#vb-q`.
 
 Two consequences worth knowing:
 
-- **`.kw-landing-row`** carries the row treatment for the layouts that want a
-  list. The upstream card is a 168px-tall column built for a three-across grid;
-  one-per-row at 600px that is a lot of height for four short facts, so the same
-  nodes are re-flowed into a name/status row plus a meta line. The meta line
-  needs a zero-height `::after` to force the break — at 600px all five spans fit
-  on one line otherwise, and the status tag lands mid-row instead of at the edge.
+- **`.kw-landing-row`** carries Search hero's row treatment. The upstream card
+  is a 168px-tall column built for a three-across grid; one-per-row at 600px
+  that is a lot of height for four short facts, so the same nodes are re-flowed
+  into a name/status row plus a meta line. The meta line needs a zero-height
+  `::after` to force the break — at 600px all five spans fit on one line
+  otherwise, and the status tag lands mid-row instead of at the edge.
+- **List** re-flows the same card again, into the Figma row: timestamp, title,
+  one tag, arrow, with the card's border, fill and radius off and the divider
+  carrying the separation. The node has exactly one tag per row, so product and
+  role sit this layout out — status is the more decision-relevant of the two we
+  hold. The trailing arrow is a CSS mask rather than an appended element, which
+  keeps the extra node out of the other three layouts.
+- **Split's** recents are one horizontal scroller, not a wrapping grid: three
+  cards at a readable width do not fit across 600px, and a 2×2 leaves a hole
+  where the fourth would be. It bleeds past the sheet's inset via
+  `--kw-landing-inset` so the next card is clipped by the sheet edge — that
+  overhang is the only thing telling you the row scrolls.
+- **Specificity.** The shared `.kw-shell .kw-stage__body .d3-kyb-recent__grid`
+  rule is three classes deep, so any per-layout override of the grid needs the
+  same prefix. Two layouts have been caught by this already.
 - **`.kw-landing__panel`** is an inert wrapper, `display: contents` everywhere
   but Split, which needs the label and the search inside one panel while the
   title stays outside it.

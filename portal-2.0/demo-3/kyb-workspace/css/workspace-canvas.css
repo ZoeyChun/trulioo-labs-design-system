@@ -161,6 +161,10 @@
    full-bleed page. In a 600px sheet that reads as a hole. */
 .kw-shell:not([data-d3-view="home"]) .kw-stage__body .d3-workspace__landing {
   gap: 36px;
+  /* Published so the Split scroller can bleed back out to the sheet
+     edge — see landing-layouts.css. Matches the padding-inline on
+     .d3-workspace__detail for the resume surface. */
+  --kw-landing-inset: 24px;
 }
 
 .kw-shell:not([data-d3-view="home"]) .kw-stage__body .d3-workspace__hero {

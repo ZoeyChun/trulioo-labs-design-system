@@ -14,12 +14,12 @@
   var landing = document.querySelector("[data-kw-landing]");
   if (!landing) return;
 
-  var LAYOUTS = ["hero", "queue", "quick", "split"];
+  var LAYOUTS = ["hero", "list", "quick", "split"];
 
-  /* hero, queue and split show the recents as rows; split wants cards.
-     The class is what the row treatment hangs off, rather than four
-     copies of the same selector list in the stylesheet. */
-  var ROW_LAYOUTS = { hero: true, queue: true };
+  /* Only hero re-flows the recent card into a bordered row with a meta
+     line. "list" has its own treatment (the Figma divider list) and
+     split keeps the card, so the class hangs off this one layout. */
+  var ROW_LAYOUTS = { hero: true };
 
   function showLayout(name) {
     if (LAYOUTS.indexOf(name) === -1) return;
