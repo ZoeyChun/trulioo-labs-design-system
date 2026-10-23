@@ -31,6 +31,8 @@
   var selectorPage = 0;
   var selectorKey = "";
   var lastBizName = "";
+  var lastBizId = "";
+  var lastPlace = { country: "United Kingdom", cc: "GB" };
   var navToken = 0;
 
   var STEPS = [
@@ -169,14 +171,48 @@
     return s.replace(/^in\s+/i, "").trim();
   }
 
+  function rememberPlace(input) {
+    if (!input) return;
+    var place = null;
+    if (typeof input === "object" && (input.country || input.cc)) {
+      place = input;
+    } else {
+      var map = window.D3KybMapSearch;
+      if (map && typeof map.parsePlaceQuery === "function") {
+        place = map.parsePlaceQuery(String(input));
+      }
+      if (!place || !(place.country || place.cc)) {
+        var short = shortPlace(input);
+        if (short === "US") place = { country: "United States", cc: "US" };
+        else if (short === "UK") place = { country: "United Kingdom", cc: "GB" };
+      }
+    }
+    if (place && (place.country || place.cc)) {
+      lastPlace = {
+        country: place.country || lastPlace.country,
+        cc: place.cc || lastPlace.cc
+      };
+    }
+  }
+
+  function placeShort() {
+    return shortPlace(lastPlace.country || lastPlace.cc || "UK") || "UK";
+  }
+
+  function verifyTitle() {
+    return "Verify Meridian in " + placeShort();
+  }
+
   function titleFromText(text) {
+    rememberPlace(text);
     var place = shortPlace(text);
-    if (!place || /meridian/i.test(place) && place.length < 24) {
+    if (!place || (/meridian/i.test(place) && place.length < 24)) {
       var named = String(text || "").match(
         /\b(?:in|from)\s+([A-Za-z][A-Za-z .'-]{1,40})/
       );
       place = named ? shortPlace(named[1]) : shortPlace(text);
     }
+    if (lastPlace.country || lastPlace.cc) return verifyTitle();
     if (!place || /meridian/i.test(place)) return "Verify Meridian";
     return "Verify Meridian in " + place;
   }
@@ -289,10 +325,16 @@
       choice.step === "investigating" &&
       choice.investigate === "dots"
     ) {
-      var currentDot =
-        dotsHost.querySelector("[data-d3-lab-dots-step][data-state='current'] [data-d3-lab-dots-label]") ||
-        dotsHost.querySelector("[data-d3-lab-dots-caption]");
-      var fromDots = activityFromLabel(currentDot && currentDot.textContent);
+      if (
+        !dotDone &&
+        typeof dotStep === "number" &&
+        typeof investigateCalls === "function"
+      ) {
+        var dotCall = investigateCalls()[Math.min(Math.max(dotStep, 0), investigateCalls().length - 1)];
+        var fromDotStep = activityFromLabel(dotCall && dotCall.label);
+        if (fromDotStep) return fromDotStep;
+      }
+      var fromDots = activityFromLabel(currentActivityLabel(dotsHost));
       if (fromDots) return fromDots;
     }
     if (/complete/i.test(toolsText) && !report) {
@@ -364,23 +406,27 @@
   }
 
   function syncHeaderChrome() {
-    var activity = readPanelActivity();
-    setStatus(activity.label, activity.iconHtml || activity.actingIconHtml || "");
-    var bubble = {
-      state: activity.bubble || "idle",
-      actingLabel: activity.actingLabel || "",
-      actingIconHtml: activity.actingIconHtml || activity.iconHtml || ""
-    };
-    if (headerOrb) {
-      if (typeof headerOrb.setMode === "function") headerOrb.setMode(bubble.state);
-      else if (typeof headerOrb.set === "function") headerOrb.set(bubble);
-    }
-    if (floatHandle && typeof floatHandle.setMode === "function") {
-      floatHandle.setMode(bubble);
-    }
-    if (heroOrb) {
-      if (typeof heroOrb.set === "function") heroOrb.set(bubble);
-      else if (typeof heroOrb.setMode === "function") heroOrb.setMode(bubble.state);
+    try {
+      var activity = readPanelActivity();
+      setStatus(activity.label, activity.iconHtml || activity.actingIconHtml || "");
+      var bubble = {
+        state: activity.bubble || "idle",
+        actingLabel: activity.actingLabel || "",
+        actingIconHtml: activity.actingIconHtml || activity.iconHtml || ""
+      };
+      if (headerOrb) {
+        if (typeof headerOrb.setMode === "function") headerOrb.setMode(bubble.state);
+        else if (typeof headerOrb.set === "function") headerOrb.set(bubble);
+      }
+      if (floatHandle && typeof floatHandle.setMode === "function") {
+        floatHandle.setMode(bubble);
+      }
+      if (heroOrb) {
+        if (typeof heroOrb.set === "function") heroOrb.set(bubble);
+        else if (typeof heroOrb.setMode === "function") heroOrb.setMode(bubble.state);
+      }
+    } catch (err) {
+      /* Keep investigate timers alive if chrome sync throws. */
     }
   }
 
@@ -592,6 +638,7 @@
 
   function goInvestigate() {
     choice.step = "investigating";
+    setTitle(verifyTitle());
     applyChoice();
   }
 
@@ -608,10 +655,14 @@
     if (!map || !agent || typeof map.findBusinesses !== "function" || typeof agent.showMatches !== "function") {
       return false;
     }
-    var matches = map.findBusinesses("Meridian", { country: "United Kingdom", cc: "GB" });
+    var filter = {
+      country: lastPlace.country || "United Kingdom",
+      cc: lastPlace.cc || "GB"
+    };
+    var matches = map.findBusinesses("Meridian", filter);
     if (!matches || !matches.length) return false;
     activateThread();
-    agent.showMatches(matches, "Meridian", { country: "United Kingdom", cc: "GB" });
+    agent.showMatches(matches, "Meridian", filter);
     return true;
   }
 
@@ -623,7 +674,7 @@
       showMatchList();
     }
     choice.step = "verify";
-    setTitle("Verify Meridian in UK");
+    setTitle(verifyTitle());
     applyChoice();
     syncMatchView();
     document.querySelectorAll(".d3-chat-pane [data-d1-input], .d3-chat-pane [data-d3-pane-input]").forEach(function (input) {
@@ -638,20 +689,40 @@
   }
 
   function enterInvestigate() {
-    setTitle("Verify Meridian in UK");
-    activateThread();
+    setTitle(verifyTitle());
+    /* Set step before activating the pane so large-orb landing watchers
+       don't applyChoice() while still on landing and kill the new run. */
+    choice.step = "investigating";
     hideMatchList();
     dotDone = false;
     dotStep = 0;
+    dotPct = 0;
     barDone = false;
     barStep = 0;
-    goInvestigate();
+    barRunning = false;
+    activateThread();
+    applyChoice();
   }
 
   function reportBiz() {
+    var agent = window.D3KybAgent;
+    if (agent && typeof agent.selected === "function") {
+      var sel = agent.selected();
+      if (sel) return sel;
+    }
     var map = window.D3KybMapSearch;
-    if (map && typeof map.findById === "function") {
-      return map.findById("uk-apex") || null;
+    if (!map) return null;
+    if (lastBizId && typeof map.findById === "function") {
+      var byId = map.findById(lastBizId);
+      if (byId) return byId;
+    }
+    if (lastBizName && typeof map.findByName === "function") {
+      var byName = map.findByName(lastBizName);
+      if (byName) return byName;
+    }
+    if (typeof map.findById === "function") {
+      var fallbackId = lastPlace && lastPlace.cc === "US" ? "us-cap" : "uk-apex";
+      return map.findById(fallbackId) || map.findById("uk-apex") || null;
     }
     return null;
   }
@@ -693,7 +764,10 @@
       riskLevel: "high",
       addr: "Suite 400, 1 King Street, London EC2V 8AU",
       reg: "Companies House 08842190",
-      risks: [{ label: "Virtual office footprint" }]
+      risks: [{ label: "Virtual office footprint" }],
+      report: {
+        sumA: "Meridian Apex Consulting is a real, active UK company, but I wouldn’t onboard it yet."
+      }
     };
     var node = tpl.content.firstElementChild.cloneNode(true);
     var title = node.querySelector("[data-d1-co]");
@@ -706,14 +780,23 @@
     }
     var sumA = node.querySelector("[data-d1-sum-a]");
     if (sumA) {
-      sumA.textContent =
-        "Meridian Apex Consulting is a real, active UK company, but I wouldn’t onboard it yet.";
+      var summary =
+        (biz.report && biz.report.sumA) ||
+        (biz.country === "United States" || biz.cc === "US"
+          ? biz.name + " matched an active US filing with clear sanctions and adverse-media screens."
+          : "Meridian Apex Consulting is a real, active UK company, but I wouldn’t onboard it yet.");
+      sumA.textContent = summary;
     }
     var sumB = node.querySelector("[data-d1-sum-b]");
     if (sumB) {
-      sumB.hidden = false;
-      sumB.textContent =
-        "It has 0 employees, £1 in capital, and a virtual office address. I also found 3 connections to your other transactions that change the picture.";
+      if (biz.country === "United States" || biz.cc === "US") {
+        sumB.hidden = true;
+        sumB.textContent = "";
+      } else {
+        sumB.hidden = false;
+        sumB.textContent =
+          "It has 0 employees, £1 in capital, and a virtual office address. I also found 3 connections to your other transactions that change the picture.";
+      }
     }
     fillReportReady(node, biz);
     thread.appendChild(node);
@@ -772,7 +855,7 @@
   }
 
   function enterReport() {
-    setTitle("Verify Meridian in UK");
+    setTitle(verifyTitle());
     activateThread();
     hideMatchList();
     stopDots();
@@ -790,8 +873,11 @@
       selectorPage = 0;
       selectorKey = "";
       lastBizName = "";
+      lastBizId = "";
+      lastPlace = { country: "United Kingdom", cc: "GB" };
       dotDone = false;
       dotStep = 0;
+      dotPct = 0;
       barDone = false;
       barStep = 0;
       idleOrbs();
@@ -820,102 +906,39 @@
     if (step === "report") enterReport();
   }
 
-  function dotConfig() {
-    return {
-      style: "twinkle",
-      formation: "grid",
-      spacing: 11,
-      size: 1.7,
-      sizeVary: 0.15,
-      color: "#c5cec8",
-      opacity: 0.85,
-      shape: "square",
-      shapeScale: 0.92,
-      shapeX: 0.5,
-      shapeY: 0.5,
-      feather: 0.12,
-      clear: 0,
-      clearSize: 0,
-      fade: 1,
-      intensity: 1,
-      speed: 1.1,
-      angle: 20
-    };
-  }
-
-  var dotField = null;
-  var dotToken = 0;
-  var dotStep = 0;
-  var dotDone = false;
-
-  function dotSteps() {
-    var name = businessName();
+  function investigateCalls() {
+    var name = String(businessName() || "").replace(/\.+$/, "");
     return [
       {
         label: "Pulling business registry records for " + name + "...",
+        done: "Matched registry records",
+        detail: [name, "Companies House — status Active"],
         match: /pulling business registry|checking registry|business registry|matched registry/i,
         ms: 1100
       },
       {
         label: "Parsing incorporation documents and ownership structure...",
+        done: "Incorporation and ownership parsed",
+        detail: ["Legal form confirmed", "Ownership structure mapped"],
         match: /parsing incorporation|ownership|incorporation/i,
         ms: 1200
       },
       {
-        label:
-          "Cross-referencing 3 listed directors against OFAC, UN, and EU sanctions lists...",
+        label: "Cross-referencing listed directors against OFAC, UN, and EU sanctions lists...",
+        done: "No sanctions matches found",
+        detail: ["OFAC — clear", "UN / EU — clear"],
         match: /screening directors|cross-referencing|sanctions/i,
         ms: 1300
       }
     ];
   }
 
-  function stopDots() {
-    dotToken += 1;
-  }
-
-  function paintDotSteps(activeIndex) {
-    var host = document.querySelector("[data-d3-lab-dots]");
-    if (!host) return;
-    var steps = dotSteps();
-    var list = host.querySelector("[data-d3-lab-dots-steps]");
-    if (!list) return;
-    var idx = Math.max(0, Math.min(activeIndex, steps.length - 1));
-    var html = "";
-    for (var i = 0; i < steps.length; i += 1) {
-      var state = i < idx ? "done" : i === idx ? "current" : "pending";
-      if (dotDone && i <= idx) state = "done";
-      var mark =
-        state === "done"
-          ? '<i class="fa-solid fa-check" aria-hidden="true"></i>'
-          : state === "current"
-            ? '<span class="d3-lab-dots__spinner" aria-hidden="true"></span>'
-            : '<span class="d3-lab-dots__pending" aria-hidden="true"></span>';
-      html +=
-        '<li class="d3-lab-dots__step" data-d3-lab-dots-step data-state="' +
-        state +
-        '">' +
-        '<span class="d3-lab-dots__mark">' +
-        mark +
-        "</span>" +
-        '<span class="d3-lab-dots__label" data-d3-lab-dots-label>' +
-        esc(steps[i].label) +
-        "</span></li>";
-    }
-    list.innerHTML = html;
-    var pctEl = host.querySelector("[data-d3-lab-dots-pct]");
-    if (pctEl) {
-      var pct =
-        !steps.length || dotDone || activeIndex >= steps.length
-          ? 100
-          : Math.round((idx / steps.length) * 100);
-      pctEl.textContent = pct + "%";
-    }
-    syncHeaderChrome();
+  function barCalls() {
+    return investigateCalls();
   }
 
   function stepIndexFromLabel(text) {
-    var steps = dotSteps();
+    var steps = investigateCalls();
     for (var i = 0; i < steps.length; i += 1) {
       if (steps[i].match.test(String(text || ""))) return i;
     }
@@ -944,67 +967,10 @@
     );
   }
 
-  function playDots() {
-    var host = document.querySelector("[data-d3-lab-dots]");
-    if (dotDone) {
-      if (host) host.hidden = true;
-      return;
-    }
-    var token = ++dotToken;
-    if (host) host.hidden = false;
-    paintDotSteps(dotStep);
-
-    function alive() {
-      return token === dotToken && choice.step === "investigating" && choice.investigate === "dots";
-    }
-
-    function hide() {
-      dotDone = true;
-      paintDotSteps(dotSteps().length);
-      var node = document.querySelector("[data-d3-lab-dots]");
-      if (node) node.hidden = true;
-    }
-
-    function frame() {
-      if (!alive()) return;
-      var block = realProgressBlock();
-      if (block) {
-        var toolsLabel = block.querySelector("[data-d1-tools-label]");
-        var done = toolsLabel && /complete/i.test(toolsLabel.textContent || "");
-        if (done) {
-          hide();
-          return;
-        }
-        var current = block.querySelector(".d1-activity__toggle--current [data-d1-activity-label]");
-        var label = current && current.textContent.trim();
-        var mapped = stepIndexFromLabel(label);
-        if (mapped >= 0) dotStep = mapped;
-        paintDotSteps(dotStep);
-        window.setTimeout(frame, 200);
-        return;
-      }
-      if (dotStep >= dotSteps().length) {
-        if (investigationPending()) {
-          window.setTimeout(frame, 200);
-          return;
-        }
-        hide();
-        return;
-      }
-      paintDotSteps(dotStep);
-      var wait = dotSteps()[dotStep].ms;
-      window.setTimeout(function () {
-        if (token !== dotToken) return;
-        dotStep += 1;
-        frame();
-      }, wait);
-    }
-
-    frame();
-  }
-
   function businessName() {
     if (lastBizName) return lastBizName;
+    var biz = reportBiz();
+    if (biz && biz.name) return biz.name;
     var thread = document.querySelector("[data-d1-thread]");
     if (!thread) return "Meridian Apex Consulting Ltd.";
     var card = thread.querySelector(".ai-cand__name");
@@ -1012,52 +978,279 @@
     return "Meridian Apex Consulting Ltd.";
   }
 
+  function dotConfig(progressPct) {
+    var t = Math.max(0, Math.min(100, Number(progressPct) || 0)) / 100;
+    return {
+      style: "twinkle",
+      formation: "grid",
+      spacing: 11,
+      size: 1.7,
+      sizeVary: 0.15,
+      color: "#c5cec8",
+      opacity: 0.85,
+      shape: "square",
+      /* Expand the cloud as investigation advances (Figma loading feel). */
+      shapeScale: 0.58 + t * 0.42,
+      shapeX: 0.5,
+      shapeY: 0.5,
+      feather: 0.12,
+      clear: 0,
+      clearSize: 0,
+      fade: 1,
+      intensity: 0.85 + t * 0.25,
+      speed: 1.1,
+      angle: 20
+    };
+  }
+
+  var dotField = null;
+  var dotToken = 0;
+  var dotStep = 0;
+  var dotDone = false;
+  var dotRunning = false;
+  var dotPct = 0;
+
+  function stopDots() {
+    dotToken += 1;
+    dotRunning = false;
+  }
+
+  function setDotProgress(pct) {
+    dotPct = Math.max(0, Math.min(100, Math.round(pct)));
+    var host = document.querySelector("[data-d3-lab-dots]");
+    if (!host) return;
+    var pctEl = host.querySelector("[data-d3-lab-dots-pct]");
+    if (pctEl) pctEl.textContent = dotPct + "%";
+    var canvas = host.querySelector("canvas");
+    if (canvas && window.TruDotField) {
+      if (!canvas.getAttribute("data-mounted")) {
+        dotField = window.TruDotField.mount(canvas, dotConfig(dotPct));
+        canvas.setAttribute("data-mounted", "1");
+      } else if (dotField && typeof dotField.set === "function") {
+        dotField.set(dotConfig(dotPct));
+      }
+    }
+    syncHeaderChrome();
+  }
+
+  function dotsMarkup() {
+    return (
+      '<div class="d3-lab-dots__head">' +
+      '<div class="d3-lab-dots__steps" data-d3-lab-dots-steps></div>' +
+      '<span class="d3-lab-dots__pct" data-d3-lab-dots-pct aria-live="polite">0%</span>' +
+      "</div>" +
+      '<canvas class="d3-lab-dots__canvas" width="240" height="240" aria-hidden="true"></canvas>'
+    );
+  }
+
   function ensureDots() {
     if (choice.investigate !== "dots" || choice.step !== "investigating") return;
     var thread = document.querySelector("[data-d1-thread]");
     if (!thread) return;
     var host = thread.querySelector("[data-d3-lab-dots]");
+    var needsRebuild = false;
     if (!host) {
       host = document.createElement("div");
       host.className = "d3-lab-dots";
       host.setAttribute("data-d3-lab-dots", "");
-      host.innerHTML =
-        '<canvas class="d3-lab-dots__canvas" width="240" height="240" aria-hidden="true"></canvas>' +
-        '<p class="d3-lab-dots__pct" data-d3-lab-dots-pct aria-live="polite">0%</p>' +
-        '<ul class="d3-lab-dots__steps" data-d3-lab-dots-steps role="list"></ul>';
+      host.innerHTML = dotsMarkup();
       thread.appendChild(host);
-    } else if (!host.querySelector("[data-d3-lab-dots-steps]")) {
-      host.innerHTML =
-        '<canvas class="d3-lab-dots__canvas" width="240" height="240" aria-hidden="true"></canvas>' +
-        '<p class="d3-lab-dots__pct" data-d3-lab-dots-pct aria-live="polite">0%</p>' +
-        '<ul class="d3-lab-dots__steps" data-d3-lab-dots-steps role="list"></ul>';
+      needsRebuild = true;
+    } else if (
+      !host.querySelector("[data-d3-lab-dots-steps]") ||
+      !host.querySelector(".d3-lab-dots__head") ||
+      !host.querySelector("canvas")
+    ) {
+      host.innerHTML = dotsMarkup();
       if (dotField && typeof dotField.destroy === "function") dotField.destroy();
       dotField = null;
-    } else if (!host.querySelector("[data-d3-lab-dots-pct]")) {
-      var stepsList = host.querySelector("[data-d3-lab-dots-steps]");
-      var pctNode = document.createElement("p");
-      pctNode.className = "d3-lab-dots__pct";
-      pctNode.setAttribute("data-d3-lab-dots-pct", "");
-      pctNode.setAttribute("aria-live", "polite");
-      pctNode.textContent = "0%";
-      if (stepsList) host.insertBefore(pctNode, stepsList);
-      else host.appendChild(pctNode);
+      needsRebuild = true;
     }
     var tools = thread.querySelector(".d1-progress");
     var block = tools && tools.closest("section, .d1-block");
     if (block && block.parentNode && host.nextSibling !== block) {
       block.parentNode.insertBefore(host, block);
     }
-    var canvas = host.querySelector("canvas");
-    if (!canvas || !window.TruDotField) return;
-    if (!canvas.getAttribute("data-mounted")) {
-      dotField = window.TruDotField.mount(canvas, dotConfig());
-      canvas.setAttribute("data-mounted", "1");
+    host.hidden = false;
+    if (needsRebuild || !host.querySelector("canvas[data-mounted]")) {
+      setDotProgress(dotDone ? 100 : dotPct);
+    }
+  }
+
+  function playDots() {
+    if (choice.investigate !== "dots" || choice.step !== "investigating") return;
+    ensureDots();
+    var host = document.querySelector("[data-d3-lab-dots]");
+    if (!host) return;
+    if (dotDone) {
+      host.hidden = true;
+      dotRunning = false;
       return;
     }
-    if (dotField && typeof dotField.set === "function") {
-      dotField.set(dotConfig());
+    if (dotRunning) return;
+
+    var stepsHost = host.querySelector("[data-d3-lab-dots-steps]");
+    var activityTpl = document.querySelector('[data-d1-tpl="activity"]');
+    if (!stepsHost || !activityTpl || !activityTpl.content.firstElementChild) return;
+
+    var token = ++dotToken;
+    dotRunning = true;
+    host.hidden = false;
+    stepsHost.innerHTML = "";
+    var calls = investigateCalls();
+    var rows = [];
+    dotStep = 0;
+    setDotProgress(0);
+
+    function alive() {
+      return token === dotToken && choice.step === "investigating" && choice.investigate === "dots";
     }
+
+    function collapseRows(except) {
+      rows.forEach(function (prev) {
+        if (except && prev === except) return;
+        if (prev.toggle) {
+          prev.toggle.classList.remove("d1-activity__toggle--current");
+          prev.toggle.setAttribute("aria-expanded", "false");
+        }
+        if (prev.body) prev.body.hidden = true;
+        var run = prev.row && prev.row.querySelector('[data-d1-mark="run"]');
+        var done = prev.row && prev.row.querySelector('[data-d1-mark="done"]');
+        if (run) run.hidden = true;
+        if (done) done.hidden = false;
+      });
+    }
+
+    function hide() {
+      if (!alive()) {
+        dotRunning = false;
+        return;
+      }
+      dotDone = true;
+      dotRunning = false;
+      setDotProgress(100);
+      collapseRows(null);
+      var node = document.querySelector("[data-d3-lab-dots]");
+      if (node) node.hidden = true;
+      syncHeaderChrome();
+    }
+
+    function liveComplete() {
+      var block = realProgressBlock();
+      if (!block) return false;
+      var toolsLabel = block.querySelector("[data-d1-tools-label]");
+      return !!(toolsLabel && /complete/i.test(toolsLabel.textContent || ""));
+    }
+
+    function syncLiveLabel() {
+      var block = realProgressBlock();
+      if (!block) return;
+      var livePct = block.querySelector(".d1-progress__pct");
+      var pctNum = livePct
+        ? parseInt(String(livePct.textContent || "").replace(/\D/g, ""), 10)
+        : NaN;
+      if (!isNaN(pctNum)) setDotProgress(pctNum);
+      var label = currentActivityLabel(block);
+      if (!label) return;
+      var mapped = stepIndexFromLabel(label);
+      if (mapped >= 0) dotStep = mapped;
+      var current = stepsHost.querySelector(
+        ".d1-activity__toggle--current [data-d1-activity-label]"
+      );
+      if (current) current.textContent = label;
+    }
+
+    function runStep(index) {
+      if (!alive()) {
+        dotRunning = false;
+        return;
+      }
+      if (liveComplete()) {
+        hide();
+        return;
+      }
+      if (index >= calls.length) {
+        if (investigationPending()) {
+          syncLiveLabel();
+          window.setTimeout(function () {
+            if (alive()) runStep(index);
+          }, 200);
+          return;
+        }
+        hide();
+        return;
+      }
+
+      dotStep = index;
+      var call = calls[index];
+      collapseRows(null);
+
+      var row = activityTpl.content.firstElementChild.cloneNode(true);
+      var toggle = row.querySelector(".d1-activity__toggle");
+      var body = row.querySelector(".d1-activity__body");
+      var detailEl = row.querySelector("[data-d1-activity-detail]");
+      var actLabel = row.querySelector("[data-d1-activity-label]");
+      if (actLabel) actLabel.textContent = call.label;
+      if (!call.detail || !call.detail.length) {
+        row.classList.add("is-bare");
+        if (body) body.hidden = true;
+      } else if (toggle) {
+        toggle.setAttribute("aria-expanded", "true");
+        if (body) body.hidden = false;
+      }
+      stepsHost.appendChild(row);
+      rows.push({ row: row, toggle: toggle, body: body });
+      setDotProgress(Math.round((index / calls.length) * 100));
+      syncLiveLabel();
+
+      var lines = call.detail || [];
+      var slice = lines.length ? call.ms / (lines.length + 1) : call.ms;
+      var line = 0;
+
+      function nextLine() {
+        if (!alive()) {
+          dotRunning = false;
+          return;
+        }
+        if (liveComplete()) {
+          hide();
+          return;
+        }
+        syncLiveLabel();
+        if (line < lines.length) {
+          var p = document.createElement("p");
+          p.textContent = lines[line];
+          if (detailEl) detailEl.appendChild(p);
+          line += 1;
+          window.setTimeout(nextLine, slice);
+          return;
+        }
+        window.setTimeout(function () {
+          if (!alive()) {
+            dotRunning = false;
+            return;
+          }
+          var running = row.querySelector('[data-d1-mark="run"]');
+          var finished = row.querySelector('[data-d1-mark="done"]');
+          if (running) running.hidden = true;
+          if (finished) finished.hidden = false;
+          if (call.done && actLabel) actLabel.textContent = call.done;
+          if (toggle) {
+            toggle.classList.remove("d1-activity__toggle--current");
+            toggle.setAttribute("aria-expanded", "false");
+          }
+          if (body) body.hidden = true;
+          setDotProgress(Math.round(((index + 1) / calls.length) * 100));
+          window.setTimeout(function () {
+            runStep(index + 1);
+          }, 180);
+        }, slice);
+      }
+
+      window.setTimeout(nextLine, slice);
+    }
+
+    runStep(0);
   }
 
   var barToken = 0;
@@ -1070,28 +1263,20 @@
     barRunning = false;
   }
 
-  function barCalls() {
-    var name = businessName();
-    return [
-      {
-        label: "Pulling business registry records…",
-        done: "Matched registry records",
-        detail: [name, "Companies House — status Active"],
-        ms: 1100
-      },
-      {
-        label: "Parsing incorporation and ownership…",
-        done: "Incorporation and ownership parsed",
-        detail: ["Legal form confirmed", "Ownership structure mapped"],
-        ms: 1200
-      },
-      {
-        label: "Screening directors against OFAC, UN, and EU…",
-        done: "No sanctions matches found",
-        detail: ["OFAC — clear", "UN / EU — clear"],
-        ms: 1300
-      }
-    ];
+  function removeLabBarPreview() {
+    var preview = document.querySelector("[data-d3-lab-bar]");
+    if (preview && preview.parentNode) preview.parentNode.removeChild(preview);
+  }
+
+  /* Live Meridian investigation and the lab preview both clone tools — keep one. */
+  function reconcileProgressBars() {
+    if (choice.step !== "investigating" || choice.investigate !== "bar") return;
+    var live = realProgressBlock();
+    if (!live) return;
+    if (document.querySelector("[data-d3-lab-bar]")) {
+      stopBar();
+      removeLabBarPreview();
+    }
   }
 
   function ensureBar() {
@@ -1099,23 +1284,21 @@
     var thread = document.querySelector("[data-d1-thread]");
     if (!thread) return;
 
-    /* Prefer a live investigation block when one is already running. */
-    var live = null;
-    var blocks = thread.querySelectorAll(".d1-block");
-    for (var i = 0; i < blocks.length; i += 1) {
-      if (blocks[i].hasAttribute("data-d3-lab-bar")) continue;
-      if (blocks[i].querySelector(".d1-progress")) {
-        live = blocks[i];
-        break;
-      }
-    }
-    var preview = thread.querySelector("[data-d3-lab-bar]");
-    if (live) {
-      if (preview && preview.parentNode) preview.parentNode.removeChild(preview);
-      barRunning = false;
+    reconcileProgressBars();
+    if (realProgressBlock()) return;
+
+    /* Confirm / starting live flow will append its own tools block — don't seed a duplicate. */
+    if (
+      thread.querySelector("[data-d1-confirm-card]") ||
+      thread.querySelector("[data-d3-kyb-starting]") ||
+      thread.querySelector("[data-d3-kyb-confirm='yes']")
+    ) {
+      stopBar();
+      removeLabBarPreview();
       return;
     }
 
+    var preview = thread.querySelector("[data-d3-lab-bar]");
     var created = false;
     if (!preview) {
       var toolsTpl = document.querySelector('[data-d1-tpl="tools"]');
@@ -1148,8 +1331,16 @@
     var thread = document.querySelector("[data-d1-thread]");
     if (!thread) return;
 
+    reconcileProgressBars();
     /* Live investigation owns the progress UI — don't fight it. */
     if (realProgressBlock()) return;
+    if (
+      thread.querySelector("[data-d1-confirm-card]") ||
+      thread.querySelector("[data-d3-kyb-starting]") ||
+      thread.querySelector("[data-d3-kyb-confirm='yes']")
+    ) {
+      return;
+    }
 
     ensureBar();
     var host = thread.querySelector("[data-d3-lab-bar]");
@@ -1191,7 +1382,10 @@
     }
 
     function finish() {
-      if (!alive()) return;
+      if (!alive()) {
+        barRunning = false;
+        return;
+      }
       barRunning = false;
       barDone = true;
       if (label) label.textContent = "Investigation complete";
@@ -1203,9 +1397,11 @@
       }
       if (check) check.hidden = false;
       rows.forEach(function (prev) {
-        prev.toggle.classList.remove("d1-activity__toggle--current");
-        prev.toggle.setAttribute("aria-expanded", "false");
-        prev.body.hidden = true;
+        if (prev.toggle) {
+          prev.toggle.classList.remove("d1-activity__toggle--current");
+          prev.toggle.setAttribute("aria-expanded", "false");
+        }
+        if (prev.body) prev.body.hidden = true;
       });
       syncHeaderChrome();
     }
@@ -1229,11 +1425,13 @@
       barStep = index;
       var call = calls[index];
       rows.forEach(function (prev) {
-        prev.toggle.classList.remove("d1-activity__toggle--current");
-        prev.toggle.setAttribute("aria-expanded", "false");
-        prev.body.hidden = true;
-        var run = prev.row.querySelector('[data-d1-mark="run"]');
-        var done = prev.row.querySelector('[data-d1-mark="done"]');
+        if (prev.toggle) {
+          prev.toggle.classList.remove("d1-activity__toggle--current");
+          prev.toggle.setAttribute("aria-expanded", "false");
+        }
+        if (prev.body) prev.body.hidden = true;
+        var run = prev.row && prev.row.querySelector('[data-d1-mark="run"]');
+        var done = prev.row && prev.row.querySelector('[data-d1-mark="done"]');
         if (run) run.hidden = true;
         if (done) done.hidden = false;
       });
@@ -1259,7 +1457,10 @@
       var line = 0;
 
       function nextLine() {
-        if (!alive()) return;
+        if (!alive()) {
+          barRunning = false;
+          return;
+        }
         if (line < lines.length) {
           var p = document.createElement("p");
           p.textContent = lines[line];
@@ -1269,7 +1470,10 @@
           return;
         }
         window.setTimeout(function () {
-          if (!alive()) return;
+          if (!alive()) {
+            barRunning = false;
+            return;
+          }
           var running = row.querySelector('[data-d1-mark="run"]');
           var finished = row.querySelector('[data-d1-mark="done"]');
           if (running) running.hidden = true;
@@ -1586,8 +1790,12 @@
       var value = btn.getAttribute("data-lab-value");
       if (!choice.hasOwnProperty(key)) return;
       if (key === "investigate" && value === "dots" && choice.investigate !== "dots") {
+        stopDots();
         dotDone = false;
         dotStep = 0;
+        dotPct = 0;
+        var staleDots = document.querySelector("[data-d3-lab-dots-steps]");
+        if (staleDots) staleDots.innerHTML = "";
       }
       if (key === "investigate" && value === "bar" && choice.investigate !== "bar") {
         stopBar();
@@ -1605,13 +1813,17 @@
 
   function onUserText(text) {
     text = text || "";
+    rememberPlace(text);
     if (/verify\s+meridian\b/i.test(text)) {
       goVerify(text);
       return;
     }
+    if (choice.step === "landing" && /meridian/i.test(text)) {
+      goVerify(text);
+      return;
+    }
     if (choice.step !== "verify" && choice.step !== "investigating") return;
-    var place = shortPlace(text);
-    if (place && place !== text.trim()) setTitle("Verify Meridian in " + place);
+    if (lastPlace.country || lastPlace.cc) setTitle(verifyTitle());
   }
 
   function watchThread() {
@@ -1630,7 +1842,10 @@
           onUserText(text);
         }
         if (!users.length) seenUsers = 0;
-        if (choice.step === "investigating") ensureDots();
+        if (choice.step === "investigating") {
+          ensureDots();
+          reconcileProgressBars();
+        }
         /* Large-orb landing → active chat: swap plain brand for the Verify header. */
         if (choice.step === "landing" && choice.landing === "large") {
           var wantOrb = orbForStep();
@@ -1660,7 +1875,14 @@
     document.addEventListener("d3-kyb:report-ready", function () {
       /* Only auto-advance when a live investigation is underway. */
       if (choice.step !== "investigating") return;
+      var biz = reportBiz();
+      if (biz) {
+        if (biz.name) lastBizName = biz.name;
+        if (biz.id) lastBizId = biz.id;
+        rememberPlace({ country: biz.country, cc: biz.cc });
+      }
       choice.step = "report";
+      setTitle(verifyTitle());
       applyChoice();
     });
     document.addEventListener(
@@ -1683,6 +1905,17 @@
     document.addEventListener(
       "click",
       function (event) {
+        var activityToggle = event.target.closest("[data-d1-activity]");
+        if (activityToggle) {
+          var activity = activityToggle.closest(".d1-activity");
+          if (activity && !activity.classList.contains("is-bare")) {
+            var body = activity.querySelector(".d1-activity__body");
+            var open = activityToggle.getAttribute("aria-expanded") === "true";
+            activityToggle.setAttribute("aria-expanded", open ? "false" : "true");
+            if (body) body.hidden = open;
+          }
+          return;
+        }
         var reportView = event.target.closest("[data-d1-report-action] .tds-btn");
         if (reportView) {
           event.preventDefault();
@@ -1712,7 +1945,10 @@
         var country = event.target.closest("[data-d3-kyb-country-pick]");
         if (country) {
           var label = country.getAttribute("data-d3-kyb-country-label") || "";
-          if (label) setTitle("Verify Meridian in " + shortPlace(label));
+          if (label) {
+            rememberPlace(label);
+            setTitle(verifyTitle());
+          }
         }
 
         if (event.target.closest("[data-d3-kyb-confirm='yes']")) {
@@ -1721,8 +1957,22 @@
         }
         var cand = event.target.closest("[data-d3-kyb-cand], .ai-cand, [data-d3-kyb-select]");
         if (!cand) return;
+        var candId =
+          cand.getAttribute("data-d3-kyb-cand") || cand.getAttribute("data-id") || "";
+        if (candId) lastBizId = candId;
         var nameEl = cand.querySelector(".ai-cand__name");
         if (nameEl && nameEl.textContent.trim()) lastBizName = nameEl.textContent.trim();
+        var map = window.D3KybMapSearch;
+        if (map && lastBizId && typeof map.findById === "function") {
+          var picked = map.findById(lastBizId);
+          if (picked) rememberPlace({ country: picked.country, cc: picked.cc });
+        } else if (lastBizName && map && typeof map.findByName === "function") {
+          var named = map.findByName(lastBizName);
+          if (named) {
+            lastBizId = named.id || lastBizId;
+            rememberPlace({ country: named.country, cc: named.cc });
+          }
+        }
         goInvestigate();
         window.setTimeout(function () {
           var yes = document.querySelector("[data-d3-kyb-confirm='yes']");

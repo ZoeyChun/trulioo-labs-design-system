@@ -110,6 +110,13 @@ html.d3-chat-pane-resizing * {
   box-sizing: border-box;
 }
 
+/* Full-canvas: keep header edge-to-edge; column the thread + composer. */
+.d1-shell[data-d3-chat="open"][data-d3-chat-size="full"] .d3-chat-pane__body {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .d3-chat-pane__empty {
   flex: 1 1 auto;
   display: flex;

@@ -728,7 +728,7 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] [data-d3-chat-thread] {
   padding-top: 0;
 }
 
-/* Investigating: dots field + checklist (Figma 1585:159312). */
+/* Investigating: expand/collapse progress + dots field (Figma 1585:159312). */
 
 .d3-lab-dots {
   display: flex;
@@ -742,6 +742,34 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] [data-d3-chat-thread] {
   display: none !important;
 }
 
+.d3-lab-dots__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.d3-lab-dots__steps {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+/* Figma 1585:159312 — % sits on the activity row, top-right. */
+.d3-lab-dots__pct {
+  flex-shrink: 0;
+  margin: 0;
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  color: var(--text-body, #172d2d);
+  text-align: right;
+  white-space: nowrap;
+}
+
 .d3-lab-dots__canvas {
   display: block;
   width: 240px;
@@ -750,91 +778,26 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] [data-d3-chat-thread] {
   overflow: hidden;
 }
 
-/* Figma 1585:159312 — progress % under the field, above the checklist. */
-.d3-lab-dots__pct {
-  margin: 0;
-  font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: normal;
+.d3-lab-dots .d1-activity__toggle {
+  align-items: flex-start;
+  width: 100%;
+  color: var(--text-description, #526660);
+  font-weight: 400;
+  line-height: 22px;
+  text-align: left;
+}
+
+.d3-lab-dots .d1-activity__toggle--current {
   color: var(--text-description, #526660);
 }
 
-.d3-lab-dots__steps {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.d3-lab-dots__step {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin: 0;
-  color: var(--text-default, #172d2d);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 22px;
-}
-
-.d3-lab-dots__step[data-state="pending"] {
-  color: var(--text-placeholder, #8a9a90);
-}
-
-.d3-lab-dots__mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
+.d3-lab-dots .d1-activity__mark {
   margin-top: 3px;
-  color: var(--icon-default, #172d2d);
-  font-size: 14px;
-  line-height: 1;
 }
 
-.d3-lab-dots__step[data-state="pending"] .d3-lab-dots__mark {
-  color: var(--icon-faint, #617269);
-}
-
-.d3-lab-dots__label {
+.d3-lab-dots [data-d1-activity-label] {
   flex: 1 1 auto;
   min-width: 0;
-}
-
-.d3-lab-dots__spinner {
-  box-sizing: border-box;
-  width: 14px;
-  height: 14px;
-  border: 1.5px solid var(--border-subtle, #dde2de);
-  border-top-color: var(--icon-default, #172d2d);
-  border-radius: 50%;
-  animation: d3-lab-dots-spin 0.7s linear infinite;
-}
-
-.d3-lab-dots__pending {
-  box-sizing: border-box;
-  width: 14px;
-  height: 14px;
-  border: 1.5px solid var(--border-subtle, #dde2de);
-  border-radius: 50%;
-}
-
-@keyframes d3-lab-dots-spin {
-  to { transform: rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .d3-lab-dots__spinner {
-    animation: none;
-    border-top-color: var(--border-subtle, #dde2de);
-    background: var(--surface-neutral-03, #e8ede8);
-  }
 }
 
 .d1-shell[data-lab-investigate="bar"] .d3-lab-dots,
@@ -843,6 +806,13 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] [data-d3-chat-thread] {
 }
 
 .d1-shell[data-lab-step="investigating"][data-lab-investigate="dots"] .d1-block:has(.d1-progress) {
+  display: none !important;
+}
+
+/* Live KYB tools block wins — hide the lab preview if both landed in the thread. */
+body.d3-ai-panel-lab
+  .d1-thread:has(.d1-block:not([data-d3-lab-bar]) .d1-progress)
+  [data-d3-lab-bar] {
   display: none !important;
 }
 
