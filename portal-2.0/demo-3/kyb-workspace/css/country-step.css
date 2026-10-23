@@ -1,0 +1,424 @@
+/* ============================================================
+   Demo 3 — Waiting-for-country step
+   ============================================================
+   Styles the panel that replaces .d3-kyb-setup in the kyb-workspace
+   fork. Markup: index.html → [data-d3-kyb-map-await].
+   Behaviour: js/country-step.js.
+
+   One decision lives on this screen, so it carries three things and
+   nothing else: the question, a step tracker, and the picker. An
+   earlier pass added a rationale paragraph, per-treatment notes and a
+   context aside; all cut — they read as clutter around the one control
+   that matters.
+
+   Width comes from --kw-content-max in workspace-canvas.css, shared
+   with every other canvas screen.
+   ------------------------------------------------------------------ */
+
+/* The white container on .kw-stage__body is the surface now, so the
+   overlay's own neutral-02 fill would paint over it. */
+.kw-shell .d3-kyb-map__await {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0;
+  background: var(--surface-neutral-01, #fff);
+}
+
+/* Width comes from the sheet (.kw-stage__body, capped at
+   --kw-content-max); this only owns the inset. */
+.kw-country {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  padding: 40px 28px 32px;
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------------
+   Question
+   ------------------------------------------------------------------ */
+
+.kw-country__title {
+  margin: 0;
+  font-family: var(--font-family-display, "Tobias", Georgia, serif);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 36px;
+  color: var(--text-default, #16211b);
+}
+
+.kw-country__title strong {
+  font-weight: 400;
+  color: var(--interactive-default, #0e8a78);
+}
+
+/* ------------------------------------------------------------------
+   Step tracker
+
+   Labels only — no per-step description. In a 720px column the hints
+   were what pushed this from a tracker into a second block of reading.
+   ------------------------------------------------------------------ */
+
+/* Flex, not a four-column grid.
+
+   The grid version drew the connector as an absolutely positioned bar
+   spanning the whole cell, which ran straight across the label text.
+   Here the connector is a real flex item that comes *after* the label,
+   so it can only ever occupy the space between one step and the next.
+
+   Even columns would not have fixed it either: with cells of equal
+   width and labels of unequal width, the leftover gap differs per step.
+   Every item is `flex: 1 1 auto` instead, which hands out the free
+   space in equal shares — each label hugs its text and every connector
+   ends up the same length. */
+.kw-steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kw-steps__item {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Nothing follows the last step, so it has no share to claim. */
+.kw-steps__item:last-child {
+  flex: 0 0 auto;
+}
+
+.kw-steps__item:not(:last-child)::after {
+  content: "";
+  flex: 1 1 auto;
+  min-width: 14px;
+  height: 1px;
+  background: var(--border-subtle, #dde2de);
+}
+
+.kw-steps__item.is-done:not(:last-child)::after {
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 45%, var(--border-subtle, #dde2de));
+}
+
+.kw-steps__mark {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-subtle, #dde2de);
+  background: var(--surface-neutral-01, #fff);
+  color: #fff;
+}
+
+.kw-steps__mark svg {
+  width: 10px;
+  height: 10px;
+}
+
+.kw-steps__item.is-done .kw-steps__mark {
+  border-color: var(--interactive-default, #0e8a78);
+  background: var(--interactive-default, #0e8a78);
+}
+
+.kw-steps__item.is-current .kw-steps__mark {
+  border-color: var(--interactive-default, #0e8a78);
+  border-width: 2px;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--interactive-default, #0e8a78) 12%, transparent);
+}
+
+.kw-steps__item.is-current .kw-steps__mark::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--interactive-default, #0e8a78);
+}
+
+/* Labels hug their text now — the connectors absorb the slack — so a
+   single line is the right target and overflow is a last resort. */
+.kw-steps__label {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--text-description, #617269);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kw-steps__item.is-current .kw-steps__label {
+  font-weight: 600;
+  color: var(--text-default, #16211b);
+}
+
+.kw-steps__item.is-todo .kw-steps__label {
+  color: var(--text-caption, #8a9690);
+}
+
+/* ------------------------------------------------------------------
+   Picker
+   ------------------------------------------------------------------ */
+
+.kw-country__pick {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 14px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: 0 1px 2px rgba(22, 33, 27, 0.04);
+}
+
+.kw-country__pick-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.kw-country__pick-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-default, #16211b);
+}
+
+/* The treatment switch is a lab affordance — tagged so nobody reads it
+   as part of the design. */
+.kw-variants {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kw-variants__tag {
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--surface-neutral-03, #e8ede8);
+  color: var(--text-caption, #617269);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 14px;
+  text-transform: uppercase;
+  cursor: help;
+}
+
+.kw-variant {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kw-variant[hidden] {
+  display: none !important;
+}
+
+.kw-variant__more {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--interactive-default, #0e8a78);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.kw-variant__more:hover { text-decoration: underline; }
+.kw-variant__more svg { width: 13px; height: 13px; }
+
+/* ------------------------------------------------------------------
+   A · Dropdown
+   ------------------------------------------------------------------ */
+
+.kw-select { width: 100%; }
+.kw-select .tds-select__trigger { width: 100%; }
+
+/* No country yet means no flag to show — the empty slot otherwise reads
+   as a broken image. The TDS select script fills it on change. */
+.kw-select .tds-select__trigger:has(.tds-select__placeholder) .tds-select__country-flag {
+  display: none;
+}
+
+.kw-select__menu {
+  max-height: 290px;
+  overflow-y: auto;
+}
+
+.kw-option .tds-action-list-item__label { flex: 1 1 auto; }
+
+/* ------------------------------------------------------------------
+   B · Quick picks
+   ------------------------------------------------------------------ */
+
+/* 190px floor rather than 150: three across a 600px sheet truncates
+   "United Kingdom", and a quick pick you have to read twice is not one. */
+.kw-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+}
+
+.kw-tile {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 10px;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #16211b);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.kw-tile:hover {
+  border-color: color-mix(in srgb, var(--interactive-default, #0e8a78) 40%, var(--border-subtle, #dde2de));
+  box-shadow: 0 3px 10px rgba(22, 33, 27, 0.06);
+  transform: translateY(-1px);
+}
+
+.kw-tile:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
+
+.kw-tile.is-selected {
+  border-color: var(--interactive-default, #0e8a78);
+  box-shadow: 0 0 0 1px var(--interactive-default, #0e8a78);
+}
+
+.kw-tile__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kw-tile__cc {
+  flex: 0 0 auto;
+  color: var(--text-caption, #8a9690);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.kw-flag {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 15px;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(22, 33, 27, 0.08);
+}
+
+.kw-flag .fi {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.kw-demo-tag {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 10%, #fff);
+  color: var(--interactive-default, #0e8a78);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 15px;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------
+   Foot
+   ------------------------------------------------------------------ */
+
+.kw-country__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 2px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle, #dde2de);
+}
+
+.kw-country__or {
+  font-size: 12px;
+  color: var(--text-caption, #8a9690);
+}
+
+/* ------------------------------------------------------------------
+   Narrow
+   ------------------------------------------------------------------ */
+
+@media (max-width: 720px) {
+  .kw-country {
+    gap: 22px;
+    padding: 28px 20px 32px;
+  }
+
+  .kw-country__title {
+    font-size: 23px;
+    line-height: 30px;
+  }
+
+  /* Four labels do not survive a phone-width row. Stacked, the
+     connector would have to run vertically from each mark — not worth
+     the absolute positioning, so the steps just list. */
+  .kw-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .kw-steps__item,
+  .kw-steps__item:last-child {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .kw-steps__item:not(:last-child)::after {
+    display: none;
+  }
+
+  .kw-country__pick-head { align-items: flex-start; }
+  .kw-variants { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kw-tile { transition: none; }
+  .kw-tile:hover { transform: none; }
+}

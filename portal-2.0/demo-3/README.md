@@ -30,6 +30,22 @@ Meridian KYB conversation (verify → progress → results) still runs in the pa
 
 `data-d1-tpl` message templates are copied into `ai-panel-lab/index.html` from the portal — keep them in sync when portal templates change.
 
+## KYB workspace canvas
+
+Fork of the portal shell as a two-column workspace: TruAI docked permanently on
+the left, a `surface-neutral-02` dot canvas on the right with the content on a
+600px white sheet. **Home, the KYB landing and waiting-for-country** are done;
+the map and report surfaces render but haven't had a design pass. No sign-in.
+
+| | URL |
+|--|--|
+| GitHub Pages | [demo-3/kyb-workspace/](https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/kyb-workspace/) |
+| Local | http://127.0.0.1:8765/portal-2.0/demo-3/kyb-workspace/index.html |
+
+See [`kyb-workspace/README.md`](kyb-workspace/README.md). It shares `css/` and
+`js/` with this page via `<base href="../">` — nothing was duplicated, so portal
+changes land there too.
+
 ## Auth file map
 
 ```
