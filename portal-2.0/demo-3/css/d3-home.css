@@ -63,26 +63,42 @@
 .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
   justify-content: flex-start;
   align-items: center;
-  padding: var(--spacing-64, 64px) clamp(24px, 4vw, 49px) var(--spacing-48, 48px);
+  /* Slot inset — Figma Slot child Frame at y:40 / x:49 */
+  padding: 40px clamp(24px, 4vw, 49px) var(--spacing-48, 48px);
   gap: 0;
 }
 
+/*
+  Hero chrome only. Vertical padding lives on __body so welcome.css /
+  briefing.css / flex grow cannot collapse it (the earlier “padding not
+  applying” bug). Figma Frame 2147230285 = 1270×406, content inset 64.
+*/
 .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
+  flex: 0 0 auto;
+  align-self: stretch;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--interactive-default, #004c45);
+  overflow: hidden;
+}
+
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body {
+  position: relative;
+  z-index: 1;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--spacing-48, 48px);
   width: 100%;
-  /* Extra vertical air — 64 looked unchanged locally; 96 reads clearly taller. */
-  padding-top: 96px !important;
-  padding-bottom: 96px !important;
-  padding-left: 24px;
-  padding-right: 24px;
-  border-radius: var(--radius-2xl, 16px);
-  background: var(--interactive-default, #004c45);
-  overflow: hidden;
+  min-height: 406px;
+  margin: 0;
+  padding: 64px 24px;
 }
 
 .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-welcome {
@@ -123,8 +139,10 @@
   transform: translate(-50%, -50%) scale(0.4444);
 }
 
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body > .d1-composer,
 .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero > .d1-composer {
   display: flex;
+  flex: 0 0 auto;
   justify-content: center;
   width: 100%;
   margin: 0;
@@ -133,6 +151,7 @@
   border-radius: 0;
 }
 
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body > .d1-composer > .d1-prompt,
 .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero > .d1-composer > .d1-prompt {
   width: min(760px, 100%);
   border: 4px solid rgba(0, 0, 0, 0.04);
@@ -141,7 +160,8 @@
 
 .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
   width: min(1214px, 100%);
-  margin-top: var(--spacing-80, 80px);
+  /* Figma: hero ends ~446, cards at 494 → 48px */
+  margin-top: var(--spacing-48, 48px);
 }
 
 /* ---- Light skin (alternate) — full-bleed dots, no dark panel ---- */

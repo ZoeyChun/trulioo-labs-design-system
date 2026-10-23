@@ -60,7 +60,8 @@
   gap: var(--spacing-48, 48px);
   width: min(1214px, 100%);
   margin: 0 auto;
-  padding: 96px 24px;
+  padding: 64px 24px;
+  min-height: 406px;
   border-radius: var(--radius-2xl, 16px);
   background: var(--interactive-default, #004c45);
   overflow: hidden;

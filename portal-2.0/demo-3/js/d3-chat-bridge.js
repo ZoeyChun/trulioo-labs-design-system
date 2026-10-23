@@ -62,10 +62,11 @@
     var home = document.querySelector(".d1-home") || homeMount;
     if (!home) return;
     var hero = home.querySelector(".d3-home-hero");
+    var body = hero && hero.querySelector(".d3-home-hero__body");
     var skin = home.getAttribute("data-d3-home-skin") || "dark";
-    /* Dark home: composer lives inside the green hero panel. */
-    if (skin !== "light" && hero) {
-      hero.appendChild(sourceComposer);
+    /* Dark home: composer lives inside the padded hero body. */
+    if (skin !== "light" && (body || hero)) {
+      (body || hero).appendChild(sourceComposer);
       return;
     }
     var brief = home.querySelector(".d1-brief");

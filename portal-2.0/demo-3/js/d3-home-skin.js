@@ -14,10 +14,12 @@
   function placeComposer(skin) {
     var home = document.querySelector(".d1-home");
     var hero = document.querySelector(".d3-home-hero");
+    var body = hero && hero.querySelector(".d3-home-hero__body");
     var composer = document.querySelector("[data-d1-composer]");
     if (!home || !composer) return;
-    if (skin === "dark" && hero) {
-      hero.appendChild(composer);
+    /* Dark: composer sits in the padded body (not on the chrome shell). */
+    if (skin === "dark" && (body || hero)) {
+      (body || hero).appendChild(composer);
       return;
     }
     var brief = home.querySelector(".d1-brief");
@@ -25,27 +27,17 @@
     else home.appendChild(composer);
   }
 
-  function applyHeroPad(skin) {
-    var hero = document.querySelector(".d3-home-hero");
-    if (!hero) return;
-    if (skin === "dark") {
-      /* Inline — survives file:// (query-string CSS often fails there). */
-      hero.style.cssText =
-        "box-sizing:border-box;padding:96px 24px;background:#004c45;border-radius:16px";
-    } else {
-      hero.style.cssText = "";
-    }
-  }
-
   function apply() {
     var skin = resolveSkin();
     var shell = document.querySelector(".d1-shell");
     var home = document.querySelector(".d1-home");
+    var hero = document.querySelector(".d3-home-hero");
     if (shell) shell.setAttribute("data-d3-home-skin", skin);
     if (home) home.setAttribute("data-d3-home-skin", skin);
     document.documentElement.setAttribute("data-d3-home-skin", skin);
+    /* Clear any legacy inline pad from older builds. */
+    if (hero) hero.style.cssText = "";
     placeComposer(skin);
-    applyHeroPad(skin);
   }
 
   apply();
