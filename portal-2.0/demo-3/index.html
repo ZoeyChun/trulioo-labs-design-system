@@ -54,7 +54,7 @@
   <link rel="stylesheet" href="css/d3-rail.css?v=18">
   <link rel="stylesheet" href="components/ai-panel/ai-panel.css?v=7">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
-  <link rel="stylesheet" href="css/d3-home.css?v=2">
+  <link rel="stylesheet" href="css/d3-home.css?v=3">
   <link rel="stylesheet" href="css/d3-workspace.css?v=32">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
@@ -64,10 +64,20 @@
   <link rel="stylesheet" href="transactions/kyb-results/ubo-graph-dist/kyb-ubo-graph-react.css?v=4">
   <link rel="stylesheet" href="css/d3-kyb-ubo-graph.css?v=6">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <!-- Critical hero pad — on __body so flex/other rules cannot collapse it. -->
+  <!-- Critical hero geometry — beats shell.css .d1-main overflow/padding. -->
   <style id="d3-home-hero-critical">
+    .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] { padding: 0 !important; gap: 0 !important; }
+    .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main {
+      padding: 0 !important; overflow: auto !important; box-shadow: none !important; border-radius: 0 !important;
+    }
+    .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
+      height: auto !important; min-height: 100% !important;
+      padding: 40px clamp(24px, 4vw, 49px) 48px !important;
+    }
     .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
       flex: 0 0 auto !important;
+      height: 406px !important;
+      min-height: 406px !important;
       margin: 0 !important;
       padding: 0 !important;
       background: #004c45 !important;
@@ -81,6 +91,7 @@
       align-items: center !important;
       gap: 48px !important;
       width: 100% !important;
+      height: 100% !important;
       min-height: 406px !important;
       padding: 64px 24px !important;
     }
@@ -769,7 +780,7 @@ No evidence of active trading, clients, or revenue.</p>
         </div>
       </section>
       <div class="d1-home" data-d1-stage="home" data-d1-repeat="true" data-d3-home-skin="dark">
-        <div class="d3-home-hero">
+        <div class="d3-home-hero" data-d3-home-build="pad-v3">
           <canvas class="d3-home-dots" id="d3-home-dots" aria-hidden="true"></canvas>
           <div class="d3-home-hero__body">
           <section class="d1-welcome" aria-label="Welcome">
