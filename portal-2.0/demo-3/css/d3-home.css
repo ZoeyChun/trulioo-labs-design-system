@@ -93,6 +93,8 @@
   padding: 0 !important;
   gap: 0 !important;
   overflow: auto !important;
+  /* Keep gutter reserved — load/fonts briefly tip overflow and jerk width. */
+  scrollbar-gutter: stable;
   border-radius: 0 !important;
   box-shadow: none !important;
   background: transparent !important;

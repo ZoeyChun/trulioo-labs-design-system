@@ -39,6 +39,12 @@
 
 body {
   background: var(--surface-neutral-01, #fff);
+  /* Shell owns scroll; never let the document bar appear/disappear. */
+  overflow: hidden;
+}
+
+html {
+  scrollbar-gutter: stable;
 }
 
 .d1-shell:not([data-d3-view="home"]) .d3-canvas {

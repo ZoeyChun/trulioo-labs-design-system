@@ -39,9 +39,11 @@ body.d1-app-ready .d1-shell {
   animation: d1-arrive 0.65s ease forwards;
 }
 
+/* Opacity only — translateY on a 100dvh shell overflows and flashes a
+   scrollbar, which shifts home content sideways on load. */
 @keyframes d1-arrive {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .d1-loader canvas {
