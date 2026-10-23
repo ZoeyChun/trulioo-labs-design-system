@@ -1,0 +1,846 @@
+/* Demo 3 — dot playground. Sandbox chrome, not a shipped surface. */
+
+.pg {
+  --pg-bar-h: 56px;
+  --pg-panel-w: 332px;
+
+  box-sizing: border-box;
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-family, "Inter", system-ui, sans-serif);
+  color: var(--text-default, #172d2d);
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.pg *,
+.pg *::before,
+.pg *::after {
+  box-sizing: border-box;
+}
+
+/* ── Top bar ─────────────────────────────────────────────────── */
+
+.pg-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: var(--pg-bar-h);
+  padding: 0 16px;
+  background: var(--surface-neutral-01, #fff);
+  border-bottom: 1px solid var(--border-subtle, #dde3e0);
+}
+
+.pg-bar__id {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.pg-bar__dot {
+  align-self: center;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--interactive-default, #004c45);
+  box-shadow: 0 0 0 4px rgba(0, 76, 69, 0.12);
+}
+
+.pg-bar__title {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pg-bar__sub {
+  margin: 0;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #3d524f);
+  white-space: nowrap;
+}
+
+.pg-bar__links {
+  display: flex;
+  gap: 16px;
+  margin-right: auto;
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.pg-bar__links a {
+  color: var(--text-link, #006b5c);
+  text-decoration: none;
+}
+
+.pg-bar__links a:hover {
+  text-decoration: underline;
+}
+
+/* The actions never give ground — the title ellipsizes instead. */
+.pg-bar__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.pg-btn {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: var(--radius-md, 6px);
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.pg-btn:hover {
+  background: var(--surface-neutral-02, #f4f6f4);
+  border-color: var(--border-strong, #9fb0aa);
+}
+
+.pg-btn--primary {
+  background: var(--interactive-default, #004c45);
+  border-color: var(--interactive-default, #004c45);
+  color: #fff;
+}
+
+.pg-btn--primary:hover {
+  background: #00635a;
+  border-color: #00635a;
+}
+
+.pg-btn--icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  padding: 0;
+}
+
+.pg-btn--icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pg-btn:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 2px;
+}
+
+/* ── Layout ──────────────────────────────────────────────────── */
+
+.pg-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--pg-panel-w);
+  align-items: start;
+  min-height: calc(100vh - var(--pg-bar-h));
+}
+
+.pg--no-panel .pg-main {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.pg--no-panel .pg-panel {
+  display: none;
+}
+
+.pg-stage {
+  padding: 32px clamp(16px, 3vw, 40px) 48px;
+}
+
+/* ── Hero (the thing being designed) ─────────────────────────── */
+
+.pg-hero {
+  --pg-veil-bg: #172d2d;
+  --pg-composer: 520px;
+
+  position: relative;
+  z-index: 0;
+  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px clamp(24px, 4vw, 56px);
+  min-height: 420px;
+  border-radius: 0;
+  background: var(--surface-inverse, #172d2d);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* home 1 keeps the hero inside the content column; home 3–5 run it to
+   the edges of the slot. */
+.pg-hero[data-width="contained"] {
+  width: min(1214px, 100%);
+}
+
+.pg-hero__dots {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── Backdrops ───────────────────────────────────────────────
+   Painted as pseudo-elements so they cost nothing per frame.
+   ::before sits under the dot canvas (it comes first in tree
+   order at the same z-index); ::after sits over it, which is
+   what a rim light and a vignette both want.
+   ------------------------------------------------------------ */
+
+.pg-hero[data-backdrop="planet"]::before,
+.pg-hero[data-backdrop="planet"]::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  z-index: 0;
+  width: min(124%, 1600px);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* The sphere itself — barely there, lit from the upper left. */
+.pg-hero[data-backdrop="planet"]::before {
+  background: radial-gradient(circle at 42% 34%,
+    rgba(255, 255, 255, 0.055),
+    rgba(255, 255, 255, 0.022) 52%,
+    rgba(255, 255, 255, 0) 71%);
+}
+
+/* The rim: a hairline ring, masked so it only catches along the top
+   right — a full even ring reads as a drawn circle, not as light. */
+.pg-hero[data-backdrop="planet"]::after {
+  background: radial-gradient(circle,
+    rgba(255, 255, 255, 0) 69.3%,
+    rgba(255, 255, 255, 0.14) 70%,
+    rgba(255, 255, 255, 0) 71.6%);
+  -webkit-mask-image: linear-gradient(205deg, #000 6%, rgba(0, 0, 0, 0.2) 46%, transparent 68%);
+  mask-image: linear-gradient(205deg, #000 6%, rgba(0, 0, 0, 0.2) 46%, transparent 68%);
+}
+
+.pg-hero[data-backdrop="halo"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(58% 55% at 50% 42%,
+    rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 70%);
+}
+
+.pg-hero[data-backdrop="vignette"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(78% 72% at 50% 50%,
+    rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* ── Veil ────────────────────────────────────────────────────
+   home 4's .d3-home-4-veil, same geometry and mask. Its colour
+   tracks the hero background through --pg-veil-bg, because a
+   plate that doesn't match the surface reads as a panel.
+   ------------------------------------------------------------ */
+
+.pg-hero__veil {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  display: none;
+  width: min(760px, 96%);
+  height: 330px;
+  transform: translate(-50%, -50%);
+  background: var(--pg-veil-bg, #172d2d);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 80%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 80%, transparent 100%);
+  pointer-events: none;
+}
+
+.pg-hero.is-veiled .pg-hero__veil {
+  display: block;
+}
+
+.pg-hero__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-48, 48px);
+  width: 100%;
+}
+
+.pg-hero.is-bare .pg-hero__content {
+  visibility: hidden;
+}
+
+/* Layout variants — the hero half of the playground. */
+
+.pg-hero[data-layout="center"] {
+  align-items: center;
+  justify-content: center;
+}
+
+.pg-hero[data-layout="center"] .pg-hero__content,
+.pg-hero[data-layout="center"] .pg-hero__welcome {
+  align-items: center;
+  text-align: center;
+}
+
+.pg-hero[data-layout="left"] {
+  align-items: center;
+}
+
+.pg-hero[data-layout="left"] .pg-hero__content {
+  align-items: flex-start;
+  max-width: 760px;
+}
+
+.pg-hero[data-layout="low"] {
+  align-items: flex-end;
+}
+
+.pg-hero[data-layout="low"] .pg-hero__content {
+  align-items: flex-start;
+  gap: var(--spacing-24, 24px);
+}
+
+/* Split is home 5: a 441px copy column on the left, composer on the
+   right, mint headline (css/d3-home-5.css). */
+.pg-hero[data-layout="split"] {
+  align-items: center;
+}
+
+.pg-hero[data-layout="split"] .pg-hero__content {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
+}
+
+.pg-hero[data-layout="split"] .pg-hero__welcome {
+  flex: 0 1 441px;
+  align-items: flex-start;
+  gap: var(--spacing-16, 16px);
+  max-width: 441px;
+  text-align: left;
+}
+
+.pg-hero[data-layout="split"][data-tone="dark"] .pg-hero__hello {
+  color: #90eac0;
+  font-size: 48px;
+  line-height: 56px;
+}
+
+.pg-hero[data-layout="split"] .d1-composer {
+  flex: 0 1 auto;
+  width: min(var(--pg-composer, 520px), 48%);
+}
+
+.pg-hero__welcome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16, 16px);
+}
+
+.pg-orb {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+  line-height: 0;
+}
+
+.pg-orb:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.pg-orb .d3-home-orb__stage {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  overflow: visible;
+}
+
+.pg-orb .d3-home-orb__root {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  border-radius: 50%;
+  clip-path: circle(50%);
+  transform: translate(-50%, -50%) scale(0.4444);
+  transform-origin: 50% 50%;
+}
+
+/* Type is the shipped rule, not an approximation: Tobias at
+   display-md / 400, from css/welcome.css + css/d3-home.css. */
+.pg-hero__hello {
+  margin: 0;
+  color: var(--text-inverse, #f4f6f4);
+  font-family: var(--font-family-display, "Tobias", Georgia, serif);
+  font-size: var(--font-size-display-md, 2.625rem);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 3.125rem;
+}
+
+.pg-hero[data-tone="light"] .pg-hero__hello {
+  color: var(--text-default, #172d2d);
+}
+
+.pg-hero.is-no-orb .pg-orb {
+  display: none;
+}
+
+/* ── Composer ────────────────────────────────────────────────
+   The card itself comes from ../composer/prompt.css. What follows
+   is the handful of rules d3-home.css applies on the dark home
+   stage, re-scoped from `.d1-home[data-d1-stage="home"]…` to the
+   playground hero — the selectors are the only thing that changes.
+   ------------------------------------------------------------ */
+
+.pg-hero .d1-composer {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.pg-hero .d1-composer > .d1-prompt {
+  width: min(var(--pg-composer, 520px), 100%);
+  border: 4px solid rgba(0, 0, 0, 0.04);
+  box-shadow: none;
+}
+
+/* home 4 lets the composer grow downward as the text wraps instead of
+   clipping it to one line (css/d3-home-4.css). */
+.pg-hero .d1-prompt__field {
+  flex: 0 0 auto;
+  align-items: flex-start;
+  height: auto;
+  min-height: 24px;
+}
+
+.pg-hero .d1-prompt__entry {
+  align-items: start;
+  height: auto;
+  grid-template-rows: auto;
+}
+
+.pg-hero .d1-prompt__input {
+  display: block;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* The KYB context tag is home-stage only. */
+.pg-hero .tds-tag.d1-prompt__ctx {
+  display: inline-flex;
+}
+
+/* Static here — prompt.js owns the rotation on the real hero, and the
+   playground doesn't load it. Resting appearance is identical. */
+.pg-hero .d1-prompt__ph {
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--text-label, #8a9a90);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-lg, 1.5rem);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ── Stage meta ──────────────────────────────────────────────── */
+
+.pg-stage__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  width: min(1214px, 100%);
+  margin: 14px auto 0;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #3d524f);
+}
+
+.pg-stage__meta [data-stat] {
+  padding: 3px 8px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde3e0);
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-stage__hint {
+  margin-left: auto;
+  opacity: 0.8;
+}
+
+.pg-stage__hint kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.6875rem;
+}
+
+/* ── Panel ───────────────────────────────────────────────────── */
+
+.pg-panel {
+  position: sticky;
+  top: var(--pg-bar-h);
+  max-height: calc(100vh - var(--pg-bar-h));
+  overflow-y: auto;
+  padding: 16px 16px 32px;
+  background: var(--surface-neutral-01, #fff);
+  border-left: 1px solid var(--border-subtle, #dde3e0);
+}
+
+.pg-presets {
+  margin-bottom: 16px;
+}
+
+.pg-presets__label,
+.pg-group__name {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #3d524f);
+}
+
+.pg-presets__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.pg-preset {
+  padding: 5px 10px;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: 999px;
+  background: var(--surface-neutral-01, #fff);
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--text-default, #172d2d);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.pg-preset:hover {
+  border-color: var(--interactive-default, #004c45);
+  background: rgba(0, 76, 69, 0.05);
+}
+
+.pg-preset.is-on {
+  background: var(--interactive-default, #004c45);
+  border-color: var(--interactive-default, #004c45);
+  color: #fff;
+}
+
+.pg-group {
+  border-top: 1px solid var(--border-subtle, #dde3e0);
+}
+
+.pg-group__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.pg-group__caret {
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid var(--text-secondary, #3d524f);
+  border-bottom: 1.5px solid var(--text-secondary, #3d524f);
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform 150ms ease;
+}
+
+.pg-group.is-closed .pg-group__caret {
+  transform: rotate(-45deg) translate(-1px, 1px);
+}
+
+.pg-group.is-closed .pg-group__body {
+  display: none;
+}
+
+.pg-group__body {
+  padding-bottom: 12px;
+}
+
+.pg-group__hint {
+  margin: 0 0 12px;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #3d524f);
+}
+
+/* ── Rows ────────────────────────────────────────────────────── */
+
+.pg-row {
+  margin-bottom: 12px;
+}
+
+.pg-row.is-hidden {
+  display: none;
+}
+
+.pg-row__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.pg-row__label {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.pg-row__value {
+  font-size: 0.6875rem;
+  color: var(--text-secondary, #3d524f);
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-select {
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: var(--radius-md, 6px);
+  background: var(--surface-neutral-01, #fff);
+  font: inherit;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-default, #172d2d);
+}
+
+.pg-range {
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  appearance: none;
+  background: none;
+  cursor: pointer;
+}
+
+.pg-range::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border-default, #c8d2ce);
+}
+
+.pg-range::-moz-range-track {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border-default, #c8d2ce);
+}
+
+.pg-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5.5px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--interactive-default, #004c45);
+}
+
+.pg-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--interactive-default, #004c45);
+}
+
+.pg-range:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Colour */
+
+.pg-color {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pg-color__input {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: var(--radius-md, 6px);
+  background: none;
+  cursor: pointer;
+}
+
+.pg-color__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pg-swatch {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.pg-swatch.is-on {
+  box-shadow: 0 0 0 2px var(--surface-neutral-01, #fff), 0 0 0 3.5px var(--interactive-default, #004c45);
+}
+
+/* Toggle */
+
+.pg-toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--border-default, #c8d2ce);
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+
+.pg-toggle.is-on {
+  background: var(--interactive-default, #004c45);
+}
+
+.pg-toggle__knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 140ms ease;
+}
+
+.pg-toggle.is-on .pg-toggle__knob {
+  transform: translateX(16px);
+}
+
+.pg-panel__foot {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle, #dde3e0);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #3d524f);
+}
+
+.pg-panel__foot code {
+  font-size: 0.6875rem;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+/* ── Toast ───────────────────────────────────────────────────── */
+
+.pg-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 40;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #172d2d;
+  color: #fff;
+  font-size: var(--font-size-xs, 0.75rem);
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.pg-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ── Narrow ──────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .pg-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pg-panel {
+    position: static;
+    max-height: none;
+    border-left: 0;
+    border-top: 1px solid var(--border-subtle, #dde3e0);
+  }
+
+  /* The links carry the auto margin that pushes the actions right, so
+     hiding them means the id block has to take it over. */
+  .pg-bar__links,
+  .pg-bar__sub {
+    display: none;
+  }
+
+  .pg-bar__id {
+    margin-right: auto;
+  }
+
+  .pg-bar {
+    gap: 12px;
+  }
+}

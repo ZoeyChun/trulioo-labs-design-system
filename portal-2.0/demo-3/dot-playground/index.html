@@ -1,0 +1,134 @@
+<!-- Demo 3 — dot background playground.
+     The hero from portal-2.0/demo-3/index.html, rebuilt as a sandbox:
+     presets, formations, glyphs, regions, motions, pointer response,
+     plus the hero's own layout. Tune → Copy config → paste into
+     portal-2.0/demo-3/js/d3-home-dots.js.
+
+     Standalone: nothing here is imported by the shipped demo. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo 3 — Dot playground</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Same chain the shipped hero uses, so the headline and the composer
+       are the real ones rather than a lookalike. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../composer/prompt.css">
+  <link rel="stylesheet" href="../css/d3-fa.css">
+  <!-- Orb internals (blob / strip); the scoped home rules go unused here. -->
+  <link rel="stylesheet" href="../css/d3-home.css">
+  <link rel="stylesheet" href="css/playground.css">
+</head>
+<body class="pg">
+
+  <header class="pg-bar">
+    <div class="pg-bar__id">
+      <span class="pg-bar__dot" aria-hidden="true"></span>
+      <p class="pg-bar__title">Dot playground</p>
+      <p class="pg-bar__sub">Demo 3 hero background</p>
+    </div>
+    <nav class="pg-bar__links" aria-label="Related pages">
+      <a href="../index.html">Demo 3 main</a>
+      <a href="../home-dot-lab/index.html">Original dot lab</a>
+    </nav>
+    <div class="pg-bar__actions">
+      <button type="button" class="pg-btn" data-act="shuffle">Surprise me</button>
+      <button type="button" class="pg-btn" data-act="reset">Reset</button>
+      <button type="button" class="pg-btn pg-btn--primary" data-act="copy">Copy config</button>
+      <button type="button" class="pg-btn pg-btn--icon" data-act="panel" aria-label="Hide panel" title="Hide panel (P)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4V5Zm10 1.5v11h4.5v-11H14Z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="pg-main">
+
+    <!-- ── Stage ──────────────────────────────────────────────── -->
+    <section class="pg-stage" aria-label="Preview">
+      <div class="pg-hero" id="pg-hero" data-layout="center" data-width="bleed">
+        <canvas class="pg-hero__dots" id="pg-dots" aria-hidden="true"></canvas>
+        <!-- home 4's .d3-home-4-veil: a blurred, feathered plate of the
+             hero colour, so the globe fades out behind the copy instead
+             of hard-clipping against it. -->
+        <div class="pg-hero__veil" aria-hidden="true"></div>
+
+        <div class="pg-hero__content">
+          <div class="pg-hero__welcome">
+            <button type="button" class="pg-orb d3-home-orb" data-d3-home-orb aria-label="Ask TruAI"></button>
+            <h1 class="pg-hero__hello">Welcome back, Jane.</h1>
+          </div>
+
+          <!-- The shipped composer, markup and all (portal-2.0/demo-3/index.html).
+               Inert here: no prompt.js, so the placeholder sits still and the
+               send button stays in its disabled empty state — which is exactly
+               how the real hero looks before you type. -->
+          <div class="d1-composer">
+            <form class="d1-prompt" action="#" onsubmit="return false;">
+              <ul class="d1-prompt__files"></ul>
+
+              <div class="d1-prompt__field">
+                <span class="tds-tag tds-tag--md tds-tag--default d1-prompt__ctx" aria-hidden="true">
+                  <span class="tds-tag__leading-visual">
+                    <i class="fa-regular fa-building" aria-hidden="true"></i>
+                  </span>
+                  KYB Verification
+                </span>
+                <div class="d1-prompt__entry">
+                  <label class="d1-visually-hidden" for="pg-ask">Message</label>
+                  <textarea id="pg-ask" class="d1-prompt__input" rows="1" placeholder=""
+                            aria-label="Verify a business by name or registration number"></textarea>
+                  <span class="d1-prompt__ph" aria-hidden="true">Ask questions or tell me what you’d like to do</span>
+                </div>
+              </div>
+
+              <div class="d1-prompt__bar">
+                <div class="d1-prompt__actions">
+                  <div class="d1-prompt__send-wrap">
+                    <button type="submit" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--circular d1-prompt__send" aria-label="Send" disabled>
+                      <span class="tds-icon-btn__icon">
+                        <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 13V3m0 0L4.5 6.5M8 3l3.5 3.5"/></svg>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <p class="pg-stage__meta">
+        <span data-stat="dots">0 dots</span>
+        <span data-stat="fps">— fps</span>
+        <span class="pg-stage__hint">Move the cursor over the hero to see pointer response · <kbd>P</kbd> toggles the panel</span>
+      </p>
+    </section>
+
+    <!-- ── Panel ──────────────────────────────────────────────── -->
+    <aside class="pg-panel" id="pg-panel" aria-label="Controls">
+      <div class="pg-presets" id="pg-presets" role="group" aria-label="Presets"></div>
+      <div class="pg-groups" id="pg-groups"></div>
+      <p class="pg-panel__foot">
+        Settings persist in <code>localStorage</code>. <strong>Copy config</strong>
+        gives you the field object to paste into
+        <code>js/d3-home-dots.js</code>.
+      </p>
+    </aside>
+
+  </main>
+
+  <div class="pg-toast" id="pg-toast" role="status" aria-live="polite"></div>
+
+  <script src="js/tru-dot-lab.js"></script>
+  <script src="../js/d3-home-orb.js"></script>
+  <script src="js/playground.js"></script>
+</body>
+</html>
