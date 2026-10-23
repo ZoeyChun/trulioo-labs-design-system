@@ -757,15 +757,15 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] [data-d3-chat-thread] {
   min-width: 0;
 }
 
-/* Figma 1585:159312 — % sits on the activity row, top-right. */
+/* Figma 1585:159312 — compact % on the activity row, top-right. */
 .d3-lab-dots__pct {
   flex-shrink: 0;
   margin: 0;
   font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 22px;
-  color: var(--text-body, #172d2d);
+  color: var(--text-description, #526660);
   text-align: right;
   white-space: nowrap;
 }
@@ -778,10 +778,14 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] [data-d3-chat-thread] {
   overflow: hidden;
 }
 
+/* One main line: arrow + label. Spinner/check stay hidden; details under arrow. */
 .d3-lab-dots .d1-activity__toggle {
+  display: flex;
   align-items: flex-start;
+  gap: 12px;
   width: 100%;
   color: var(--text-description, #526660);
+  font-size: 14px;
   font-weight: 400;
   line-height: 22px;
   text-align: left;
@@ -792,12 +796,35 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] [data-d3-chat-thread] {
 }
 
 .d3-lab-dots .d1-activity__mark {
+  display: none;
+}
+
+.d3-lab-dots .d1-chev-down,
+.d3-lab-dots .d1-chev-up {
+  flex-shrink: 0;
+  order: -1;
+  width: 16px;
+  height: 16px;
   margin-top: 3px;
+  color: var(--icon-default, #172d2d);
+}
+
+/* Collapsed = chevron-right (Figma); expanded = chevron-up. */
+.d3-lab-dots .d1-activity__toggle[aria-expanded="false"] .d1-chev-down {
+  transform: rotate(-90deg);
 }
 
 .d3-lab-dots [data-d1-activity-label] {
   flex: 1 1 auto;
   min-width: 0;
+}
+
+.d3-lab-dots .d1-activity__body {
+  padding-left: 28px;
+}
+
+.d3-lab-dots .d1-activity__rail {
+  display: none;
 }
 
 .d1-shell[data-lab-investigate="bar"] .d3-lab-dots,

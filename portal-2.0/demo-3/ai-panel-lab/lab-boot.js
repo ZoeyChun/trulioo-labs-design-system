@@ -1098,27 +1098,33 @@
     host.hidden = false;
     stepsHost.innerHTML = "";
     var calls = investigateCalls();
-    var rows = [];
     dotStep = 0;
     setDotProgress(0);
+
+    /* One main indicator — step details stay collapsed under the arrow. */
+    var row = activityTpl.content.firstElementChild.cloneNode(true);
+    var toggle = row.querySelector(".d1-activity__toggle");
+    var body = row.querySelector(".d1-activity__body");
+    var detailEl = row.querySelector("[data-d1-activity-detail]");
+    var actLabel = row.querySelector("[data-d1-activity-label]");
+    var runMark = row.querySelector('[data-d1-mark="run"]');
+    var doneMark = row.querySelector('[data-d1-mark="done"]');
+    if (runMark) runMark.hidden = true;
+    if (doneMark) doneMark.hidden = true;
+    if (toggle) {
+      toggle.classList.add("d1-activity__toggle--current");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+    if (body) body.hidden = true;
+    if (detailEl) detailEl.innerHTML = "";
+    stepsHost.appendChild(row);
 
     function alive() {
       return token === dotToken && choice.step === "investigating" && choice.investigate === "dots";
     }
 
-    function collapseRows(except) {
-      rows.forEach(function (prev) {
-        if (except && prev === except) return;
-        if (prev.toggle) {
-          prev.toggle.classList.remove("d1-activity__toggle--current");
-          prev.toggle.setAttribute("aria-expanded", "false");
-        }
-        if (prev.body) prev.body.hidden = true;
-        var run = prev.row && prev.row.querySelector('[data-d1-mark="run"]');
-        var done = prev.row && prev.row.querySelector('[data-d1-mark="done"]');
-        if (run) run.hidden = true;
-        if (done) done.hidden = false;
-      });
+    function userExpanded() {
+      return toggle && toggle.getAttribute("aria-expanded") === "true";
     }
 
     function hide() {
@@ -1129,7 +1135,6 @@
       dotDone = true;
       dotRunning = false;
       setDotProgress(100);
-      collapseRows(null);
       var node = document.querySelector("[data-d3-lab-dots]");
       if (node) node.hidden = true;
       syncHeaderChrome();
@@ -1154,10 +1159,7 @@
       if (!label) return;
       var mapped = stepIndexFromLabel(label);
       if (mapped >= 0) dotStep = mapped;
-      var current = stepsHost.querySelector(
-        ".d1-activity__toggle--current [data-d1-activity-label]"
-      );
-      if (current) current.textContent = label;
+      if (actLabel) actLabel.textContent = label;
     }
 
     function runStep(index) {
@@ -1183,25 +1185,14 @@
 
       dotStep = index;
       var call = calls[index];
-      collapseRows(null);
-
-      var row = activityTpl.content.firstElementChild.cloneNode(true);
-      var toggle = row.querySelector(".d1-activity__toggle");
-      var body = row.querySelector(".d1-activity__body");
-      var detailEl = row.querySelector("[data-d1-activity-detail]");
-      var actLabel = row.querySelector("[data-d1-activity-label]");
       if (actLabel) actLabel.textContent = call.label;
-      if (!call.detail || !call.detail.length) {
-        row.classList.add("is-bare");
-        if (body) body.hidden = true;
-      } else if (toggle) {
-        toggle.setAttribute("aria-expanded", "true");
-        if (body) body.hidden = false;
-      }
-      stepsHost.appendChild(row);
-      rows.push({ row: row, toggle: toggle, body: body });
       setDotProgress(Math.round((index / calls.length) * 100));
       syncLiveLabel();
+      /* Keep collapsed unless the user opened the arrow. */
+      if (!userExpanded()) {
+        if (toggle) toggle.setAttribute("aria-expanded", "false");
+        if (body) body.hidden = true;
+      }
 
       var lines = call.detail || [];
       var slice = lines.length ? call.ms / (lines.length + 1) : call.ms;
@@ -1230,16 +1221,11 @@
             dotRunning = false;
             return;
           }
-          var running = row.querySelector('[data-d1-mark="run"]');
-          var finished = row.querySelector('[data-d1-mark="done"]');
-          if (running) running.hidden = true;
-          if (finished) finished.hidden = false;
-          if (call.done && actLabel) actLabel.textContent = call.done;
-          if (toggle) {
-            toggle.classList.remove("d1-activity__toggle--current");
-            toggle.setAttribute("aria-expanded", "false");
+          if (call.done && detailEl) {
+            var doneLine = document.createElement("p");
+            doneLine.textContent = call.done;
+            detailEl.appendChild(doneLine);
           }
-          if (body) body.hidden = true;
           setDotProgress(Math.round(((index + 1) / calls.length) * 100));
           window.setTimeout(function () {
             runStep(index + 1);
