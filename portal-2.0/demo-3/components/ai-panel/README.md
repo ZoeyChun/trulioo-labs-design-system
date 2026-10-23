@@ -82,8 +82,8 @@ Standalone page (no portal shell / no sign-in) for UI experiments:
 `../ai-panel-lab/index.html` — GitHub Pages:
 `…/portal-2.0/demo-3/ai-panel-lab/`
 
-Live Meridian panel on the left; labeled component gallery on the right
-(renders via `D3AiPanel.parts.*` + chat template clones).
+Live Meridian panel on the left; a step picker on the right compares
+landing, verify, and investigating treatments.
 
 ## Not in this component (yet)
 

@@ -1241,9 +1241,9 @@
     });
     await playGuide("Beneficial owners", steps);
     playSuggestedAction({
-      label: "Verification report is ready",
-      cta: "Export",
-      action: "export"
+      label: "Business Verification Report is ready",
+      cta: "View",
+      action: "view"
     });
     setSuggestions(SUGGEST_AFTER);
   }
@@ -1293,9 +1293,9 @@
     });
     await playAnalysis("Why " + biz.name + " is flagged", rows);
     playSuggestedAction({
-      label: "Verification report is ready",
-      cta: "Export",
-      action: "export"
+      label: "Business Verification Report is ready",
+      cta: "View",
+      action: "view"
     });
     setSuggestions(SUGGEST_AFTER);
   }
@@ -1352,9 +1352,9 @@
       }
     ]);
     playSuggestedAction({
-      label: "Verification report is ready",
-      cta: "Export",
-      action: "export"
+      label: "Business Verification Report is ready",
+      cta: "View",
+      action: "view"
     });
     setSuggestions(SUGGEST_AFTER);
   }
@@ -1409,26 +1409,47 @@
         "</p>"
     );
     playSuggestedAction({
-      label: "Verification report is ready",
-      cta: "Export",
-      action: "export"
+      label: "Business Verification Report is ready",
+      cta: "View",
+      action: "view"
     });
     setSuggestions(SUGGEST_AFTER);
   }
 
   function playSuggestedAction(opts) {
     opts = opts || {};
+    var biz = opts.biz || selected() || {};
+    var regRaw = String(biz.reg || (biz.report && biz.report.regNumber) || "").trim();
+    var regDigits = regRaw.match(/(\d[\d\s-]*\d|\d+)/);
+    var regLabel = regDigits
+      ? "Reg. " + regDigits[1].replace(/\s+/g, "")
+      : regRaw;
+    var addr = biz.addr || (biz.report && biz.report.address) || "";
     var html =
-      '<div class="d1-alert d3-kyb-agent__action" data-d1-report-action>' +
-      '<i class="fa-regular fa-file-lines" aria-hidden="true"></i>' +
-      "<span>" +
-      esc(opts.label || "Verification report is ready") +
-      "</span>" +
-      '<button type="button" class="tds-btn tds-btn--primary tds-btn--md d1-alert__export" data-d3-kyb-action="' +
-      esc(opts.action || "export") +
-      '">' +
-      esc(opts.cta || "Export") +
-      "</button></div>";
+      '<div class="d1-report-ready d3-kyb-agent__action" data-d1-report-action>' +
+      '<p class="d1-report-ready__title">' +
+      esc(opts.label || "Business Verification Report is ready") +
+      "</p>" +
+      '<div class="d1-report-ready__card">' +
+      '<span class="d1-report-ready__icon" aria-hidden="true"><i class="fa-regular fa-file-lines"></i></span>' +
+      '<div class="d1-report-ready__meta">' +
+      '<p class="d1-report-ready__name" data-d1-report-ready-name>' +
+      esc(biz.name || "Verification report") +
+      "</p>" +
+      (addr
+        ? '<p class="d1-report-ready__addr" data-d1-report-ready-addr>' +
+          esc(addr) +
+          "</p>"
+        : "") +
+      (regLabel
+        ? '<p class="d1-report-ready__reg" data-d1-report-ready-reg>' +
+          esc(regLabel) +
+          "</p>"
+        : "") +
+      "</div>" +
+      '<button type="button" class="tds-btn tds-btn--primary tds-btn--md">' +
+      esc(opts.cta || "View") +
+      "</button></div></div>";
     return playHtml(html);
   }
 

@@ -538,18 +538,22 @@
       }
     }
 
-    var exportBtn = node.querySelector("[data-d1-report-export], .d1-alert__export");
-    if (exportBtn) {
-      exportBtn.addEventListener("click", function () {
-        var pageExport = document.querySelector("[data-d3-kyb-export]");
-        if (pageExport && !pageExport.hidden) {
-          pageExport.click();
-          return;
-        }
-        document.dispatchEvent(
-          new CustomEvent("d3-kyb:export", { detail: { biz: biz } })
-        );
-      });
+    var readyName = node.querySelector("[data-d1-report-ready-name]");
+    var readyAddr = node.querySelector("[data-d1-report-ready-addr]");
+    var readyReg = node.querySelector("[data-d1-report-ready-reg]");
+    if (readyName) readyName.textContent = biz.name || "";
+    if (readyAddr) {
+      readyAddr.textContent =
+        biz.addr || (biz.report && biz.report.address) || "";
+    }
+    if (readyReg) {
+      var regRaw = String(
+        biz.reg || (biz.report && biz.report.regNumber) || ""
+      ).trim();
+      var regDigits = regRaw.match(/(\d[\d\s-]*\d|\d+)/);
+      readyReg.textContent = regDigits
+        ? "Reg. " + regDigits[1].replace(/\s+/g, "")
+        : regRaw;
     }
 
     thread.appendChild(node);

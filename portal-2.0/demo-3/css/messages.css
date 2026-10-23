@@ -300,6 +300,100 @@
   gap: var(--spacing-24);
 }
 
+.d1-report-ready {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: var(--spacing-16, 16px);
+  border: 0;
+  border-radius: var(--radius-3xl, 24px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  box-sizing: border-box;
+}
+
+.d1-report-ready__title {
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-md, 24px);
+}
+
+.d1-report-ready__card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: var(--spacing-12, 12px);
+  border-radius: var(--radius-xl, 12px);
+  background: var(--surface-neutral-01, #fff);
+  box-sizing: border-box;
+}
+
+.d1-report-ready__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-lg, 8px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--icon-faint, #617269);
+  font-size: 32px;
+  line-height: 1;
+}
+
+.d1-report-ready__icon .fa-regular,
+.d1-report-ready__icon .d3-fa-line {
+  font-size: 32px;
+  line-height: 1;
+  width: auto;
+  height: auto;
+}
+
+.d1-report-ready__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.d1-report-ready__name,
+.d1-report-ready__addr,
+.d1-report-ready__reg {
+  margin: 0;
+  min-width: 0;
+}
+
+.d1-report-ready__name {
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 18px;
+}
+
+.d1-report-ready__addr {
+  color: var(--text-description, #526660);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 18px;
+}
+
+.d1-report-ready__reg {
+  color: var(--text-placeholder, #8a9a90);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 18px;
+}
+
+.d1-report-ready .tds-btn {
+  flex-shrink: 0;
+  margin: 0;
+}
+
 .d1-alert {
   display: flex;
   align-items: center;

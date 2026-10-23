@@ -12,6 +12,7 @@
 }
 
 .d3-kyb-agent-wrap .d1-alert,
+.d3-kyb-agent-wrap .d1-report-ready,
 .d3-kyb-agent__action {
   margin-top: 4px;
   width: 100%;

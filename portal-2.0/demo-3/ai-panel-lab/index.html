@@ -23,18 +23,19 @@
   <link rel="stylesheet" href="../../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../css/shell.css">
   <link rel="stylesheet" href="../composer/prompt.css?v=5">
-  <link rel="stylesheet" href="../css/messages.css?v=3">
+  <link rel="stylesheet" href="../css/messages.css?v=5">
   <link rel="stylesheet" href="../css/motion.css?v=7">
   <link rel="stylesheet" href="../css/d3-thinking.css?v=4">
   <link rel="stylesheet" href="../css/loader.css?v=1">
   <link rel="stylesheet" href="../css/d3-fa.css?v=3">
   <link rel="stylesheet" href="../css/d3-shell.css?v=35">
   <link rel="stylesheet" href="../components/ai-panel/ai-panel.css?v=7">
+  <link rel="stylesheet" href="../../demo-4/css/truai-bubble.css?v=1">
   <link rel="stylesheet" href="../css/d3-workspace.css?v=32">
   <link rel="stylesheet" href="../css/d3-kyb-search.css?v=2">
   <link rel="stylesheet" href="../css/d3-kyb-agent.css?v=8">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <link rel="stylesheet" href="lab.css?v=5">
+  <link rel="stylesheet" href="lab.css?v=26">
 </head>
 <body class="d3-ai-panel-lab d1-app-ready">
 
@@ -47,8 +48,8 @@
       <div data-d3-ai-panel-mount></div>
     </div>
 
-    <!-- Labeled component specimens — filled by lab-boot.js via D3AiPanel.parts + templates -->
-    <aside class="d3-lab-gallery" data-d3-lab-gallery aria-label="AI panel component gallery"></aside>
+    <!-- Step + treatment picker. Filled by lab-boot.js -->
+    <aside class="d3-lab-gallery" data-d3-lab-gallery aria-label="Panel variations"></aside>
 
     <!-- Off-layout KYB stubs (map/report) for agent init — hidden via lab.css. -->
     <main class="d1-main" data-d1-drawer="closed" aria-hidden="true">
@@ -271,10 +272,19 @@
                       <p data-d1-sum-a></p>
                       <p data-d1-sum-b hidden></p>
                     </div>
-                    <div class="d1-alert" data-d1-report-action>
-                      <i class="fa-regular fa-file-lines" aria-hidden="true"></i>
-                      <span>Verification report is ready</span>
-                      <button type="button" class="tds-btn tds-btn--primary tds-btn--md d1-alert__export" data-d1-report-export>Export</button>
+                    <div class="d1-report-ready" data-d1-report-action>
+                      <p class="d1-report-ready__title">Business Verification Report is ready</p>
+                      <div class="d1-report-ready__card">
+                        <span class="d1-report-ready__icon" aria-hidden="true">
+                          <i class="fa-regular fa-file-lines"></i>
+                        </span>
+                        <div class="d1-report-ready__meta">
+                          <p class="d1-report-ready__name" data-d1-report-ready-name>Meridian Apex Consulting Ltd.</p>
+                          <p class="d1-report-ready__addr" data-d1-report-ready-addr>Suite 400, 1 King Street, London EC2V 8AU</p>
+                          <p class="d1-report-ready__reg" data-d1-report-ready-reg>Reg. 08842190</p>
+                        </div>
+                        <button type="button" class="tds-btn tds-btn--primary tds-btn--md">View</button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -359,6 +369,10 @@
 <script src="../js/d3-kyb-agent.js?v=22"></script>
 <script src="../js/d3-nav.js?v=36"></script>
 <script src="../js/d3-chat-bridge.js?v=10"></script>
-<script src="lab-boot.js?v=7"></script>
+<script src="../../demo-4/js/truai-bubble.js?v=1"></script>
+<script src="truai-orb-motion.js?v=1"></script>
+<script src="truai-float.js?v=4"></script>
+<script src="../../demo-2/home-layout-01/js/dot-field.js?v=1"></script>
+<script src="lab-boot.js?v=41"></script>
 </body>
 </html>
