@@ -111,10 +111,29 @@ html.d3-chat-pane-resizing * {
 }
 
 /* Full-canvas: keep header edge-to-edge; column the thread + composer. */
+/* Full-canvas: the scroll area spans the whole width (scrollbar at the screen
+   edge); only the reading column and composer are capped and centred. */
 .d1-shell[data-d3-chat="open"][data-d3-chat-size="full"] .d3-chat-pane__body {
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
+}
+
+/* Symmetric scrollbar gutter keeps the column centred on the composer. */
+.d1-shell[data-d3-chat="open"][data-d3-chat-size="full"] .d3-chat-pane__thread {
+  scrollbar-gutter: stable both-edges;
+}
+
+.d1-shell[data-d3-chat="open"][data-d3-chat-size="full"] .d3-chat-pane__thread > * {
+  width: 100%;
+  max-width: 792px;
+  margin-inline: auto;
+}
+
+.d1-shell[data-d3-chat="open"][data-d3-chat-size="full"] .d3-chat-pane__composer {
+  width: 100%;
+  max-width: 792px;
+  margin-inline: auto;
 }
 
 .d3-chat-pane__empty {
