@@ -1,50 +1,52 @@
 /* ============================================================
-   Demo 3 — KYB Verification landing: layout options
+   Demo 3 — KYB Verification landing
    ============================================================
-   The landing holds three things — the title, the search, and recent
-   transactions — and each is switched independently:
+   FOUNDATION — Figma Portal-2.0-Design---2026 node 1665:20500.
 
-     data-kw-header   centred | left | compact | none
-     data-kw-search   bare | form | card
-     data-kw-recent   rows | list | tiles | chips
-     data-kw-sep      inline | rule | band      (how recents are framed)
+     title            Tobias 36/44, centred, on the page ground
+     prompt input     white, 4px translucent ring, radius 16, elevation/xl,
+                      country selector inside it, circular send at the right
+     suggestion chips Verify Business · Verify Person · Check Risk Signals
+     recents header   Inter 24/32 semibold + View all link, on the ground
+     recents list     divider rows inside a radius-24 container, 24px pad
+
+   Two axes vary it:
+
+     data-kw-group    open | all | cards | flat     (what sits in a container)
+     data-kw-recent   list | rows | tiles | chips | table
 
    Markup: index.html. Switch: js/landing-layouts.js, which also keeps
-   four named presets as shorthand for a whole combination.
+   presets as shorthand for a whole combination.
 
    Every option is CSS over ONE set of nodes. The search is the
    vb-lookup composite, wired by js/d3-kyb-manual-search.js *by id*,
    and the recent cards are bound by js/d3-kyb-resume.js — so a
    per-option copy of the markup would mean a per-option copy of that
-   wiring, or several elements fighting over one id. Nothing here
-   duplicates a control.
-
-   Axes are independent on purpose: the interesting questions on this
-   screen ("does the search want a form around it?", "do recents read
-   as part of the task or as history?") are separable, and a fixed set
-   of whole-page layouts answers them only in the combinations someone
-   happened to draw.
+   wiring, or several elements fighting over one id.
    ------------------------------------------------------------------ */
 
 :root {
   /* arrow-right, 16px. Used as a mask so it takes its colour from
      background-color. */
   --kw-arrow-right: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'><path d='M3 8h10M9 4l4 4-4 4' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+
+  /* elevation/xl from the node. */
+  --kw-elevation-xl:
+    0 6px 10px -2px rgba(0, 0, 0, 0.06),
+    0 16px 32px -6px rgba(0, 0, 0, 0.12);
+  /* The list container's softer, greener drop shadow. */
+  --kw-elevation-card: 0 12px 24px rgba(138, 154, 144, 0.22);
 }
 
 /* ------------------------------------------------------------------
    The lab panel
 
-   On the dot ground beside the sheet, never inside it — these controls
-   drive the design, they are not part of it.
+   Collapsible, floating over the dots rather than laid out beside the
+   sheet — the gutter beside a centred 600px sheet is ~170px at 1512,
+   narrower than any usable panel. These controls drive the design;
+   they are not part of it.
    ------------------------------------------------------------------ */
 
-/* Collapsible, and floating over the dots rather than laid out beside
-   the sheet. The gutter between the TruAI column and a centred 600px
-   sheet is ~170px at 1512 — narrower than any usable control panel —
-   so a panel that reserved space would either overlap the sheet or be
-   unreadable. A <details> closes to a pill instead, and the overlap
-   while open is the user's choice. */
 .kw-lab {
   display: none;
   position: absolute;
@@ -64,10 +66,7 @@
   display: block;
 }
 
-/* Closed, it is only the pill. */
-.kw-lab:not([open]) {
-  width: auto;
-}
+.kw-lab:not([open]) { width: auto; }
 
 .kw-lab__toggle {
   display: flex;
@@ -79,9 +78,7 @@
   user-select: none;
 }
 
-.kw-lab__toggle::-webkit-details-marker {
-  display: none;
-}
+.kw-lab__toggle::-webkit-details-marker { display: none; }
 
 .kw-lab__toggle-text {
   font-size: 11px;
@@ -101,17 +98,9 @@
   padding: 0 12px;
 }
 
-.kw-lab__row:first-of-type {
-  padding-top: 10px;
-}
-
-.kw-lab__row:last-of-type {
-  padding-bottom: 12px;
-}
-
-.kw-lab__row + .kw-lab__row {
-  margin-top: 8px;
-}
+.kw-lab__row:first-of-type { padding-top: 10px; }
+.kw-lab__row:last-of-type { padding-bottom: 12px; }
+.kw-lab__row + .kw-lab__row { margin-top: 8px; }
 
 .kw-lab__row--presets {
   padding-bottom: 10px;
@@ -127,9 +116,9 @@
   text-transform: uppercase;
 }
 
-/* Wrapping pills, not a segmented control: four equal segments across
-   a 218px panel truncate every label to "Ce…", and an option you
-   cannot read is not an option. */
+/* Wrapping pills, not a segmented control: equal segments across a
+   218px panel truncate every label to "Ce…", and an option you cannot
+   read is not an option. */
 .kw-lab__opts,
 .kw-lab__presets {
   display: flex;
@@ -171,15 +160,180 @@
   outline-offset: 2px;
 }
 
+/* ==================================================================
+   FOUNDATION
+   ================================================================== */
+
+.kw-shell .kw-stage__body .d3-workspace__landing {
+  gap: 40px;
+}
+
+.kw-shell .kw-stage__body .d3-workspace__hero {
+  gap: 24px;
+}
+
+/* Title — display/sm. */
+.kw-shell .kw-stage__body .d3-workspace__title {
+  font-family: var(--font-family-display, "Tobias", Georgia, serif);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 40px;
+  letter-spacing: 0;
+  color: var(--text-default, #172d2d);
+  text-align: center;
+}
+
 /* ------------------------------------------------------------------
-   Shared — things every combination needs inside a 600px sheet
+   Prompt input
+
+   The node draws a single rounded field with a circular send button.
+   Ours has to carry the country selector too — a KYB search without a
+   jurisdiction is the thing the next step has to stop and ask for — so
+   the selector lives inside the same field, to the left of the input.
    ------------------------------------------------------------------ */
 
-/* Three cards across 600px is ~170px each, which clips every business
-   name. Columns are a per-option decision from here. */
-.kw-shell .kw-stage__body .d3-kyb-recent__grid {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
+.kw-shell .kw-stage__body .d3-workspace__search .vb-lookup {
+  width: 100%;
+  max-width: none;
+}
+
+.kw-shell .kw-stage__body .vb-search-field {
+  gap: 0;
+  padding: 7px 7px 7px 10px;
+  border: 4px solid rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--kw-elevation-xl);
+}
+
+/* The select is chrome inside the field, not a control beside it. */
+.kw-shell .kw-stage__body .vb-search-country .tds-select__trigger {
+  height: 34px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.kw-shell .kw-stage__body .vb-search-country .tds-select__trigger:hover {
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+/* The upstream divider is a 1px rule the full height of the field; at
+   this padding it reads as a seam. Shortened and softened. */
+.kw-shell .kw-stage__body .vb-search-field__divider {
+  align-self: center;
+  height: 20px;
+  margin: 0 6px;
+  background: var(--border-subtle, #dde2de);
+}
+
+.kw-shell .kw-stage__body .vb-combobox__field {
+  height: 34px;
+  padding-left: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.kw-shell .kw-stage__body .vb-combobox__field:focus-within {
+  border: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Send: the node's circular IconButton on surface-neutral-03, filled
+   once there is something to send. */
+.kw-send {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface-neutral-03, #e8ede8);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.kw-send:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
+
+.kw-send__icon {
+  width: 16px;
+  height: 16px;
+  background-color: var(--icon-faint, #617269);
+  -webkit-mask: var(--kw-arrow-right) center / 16px 16px no-repeat;
+  mask: var(--kw-arrow-right) center / 16px 16px no-repeat;
+  transform: rotate(-90deg);
+  transition: background-color 150ms ease;
+}
+
+.kw-send.is-ready {
+  background: var(--interactive-default, #0e8a78);
+}
+
+.kw-send.is-ready .kw-send__icon {
+  background-color: #fff;
+}
+
+/* ------------------------------------------------------------------
+   Suggestion chips (node 1665:20431)
+   ------------------------------------------------------------------ */
+
+.kw-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.kw-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 20px;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.kw-action:hover {
+  border-color: color-mix(in srgb, var(--interactive-default, #0e8a78) 40%, var(--border-subtle, #dde2de));
+  box-shadow: 0 2px 8px rgba(22, 33, 27, 0.06);
+}
+
+.kw-action:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
+
+.kw-action i {
+  font-size: 12px;
+  color: var(--icon-faint, #617269);
+}
+
+/* ------------------------------------------------------------------
+   Recents header (node 1665:20420) — heading/xl + a link, on the ground
+   ------------------------------------------------------------------ */
+
+.kw-shell .kw-stage__body .d3-kyb-recent {
+  gap: 16px;
 }
 
 .kw-shell .kw-stage__body .d3-kyb-recent__head {
@@ -189,256 +343,135 @@
   gap: 12px;
 }
 
-/* Out of flow unless an option asks for them. */
-.kw-landing__sub,
-.kw-landing__search-label,
-.kw-landing__viewall,
-.kw-chips {
-  display: none;
-}
-
-/* View all suits every recent treatment; only the chips row and the
-   search label are option-specific. */
-[data-kw-recent] .kw-landing__viewall {
-  display: inline-flex;
-}
-
-/* The panel wrapper is for the form search treatments. Everywhere else
-   it has to be invisible to layout, or it becomes a flex item between
-   the title and the search and eats the hero's alignment. */
-.kw-landing__panel {
-  display: contents;
-}
-
-.kw-landing__sub {
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 20px;
-  color: var(--text-description, #617269);
-}
-
-.kw-landing__search-label {
-  margin: 0;
-  font-size: 12px;
+.kw-shell .kw-stage__body .d3-kyb-recent__title {
+  font-size: 22px;
   font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 16px;
-  color: var(--text-caption, #617269);
-  text-transform: uppercase;
+  line-height: 30px;
+  color: var(--text-default, #172d2d);
 }
 
 .kw-landing__viewall {
+  display: inline-flex;
   align-items: center;
   gap: 4px;
   margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--interactive-default, #0e8a78);
+  color: var(--text-link, #006b5c);
   font: inherit;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
   cursor: pointer;
 }
 
 .kw-landing__viewall:hover { text-decoration: underline; }
-.kw-landing__viewall svg { width: 13px; height: 13px; }
+.kw-landing__viewall svg { display: none; }
 
-/* ==================================================================
-   AXIS 1 · Header
-   ================================================================== */
-
-/* A · Centred — the arrangement the page already had. The title is the
-   subject; right when starting a new check is the common path. */
-[data-kw-header="centred"] .d3-workspace__title {
-  text-align: center;
-}
-
-[data-kw-header="centred"] .kw-landing__sub {
-  display: block;
-  max-width: 44ch;
-  margin-inline: auto;
-  text-align: center;
-}
-
-/* B · Left — same information, no ceremony. Reads as a page you work
-   on rather than a screen you arrive at. */
-[data-kw-header="left"] .d3-workspace__hero {
-  align-items: stretch;
-  margin-top: 4px;
-  text-align: left;
-}
-
-[data-kw-header="left"] .d3-workspace__title {
-  font-size: 22px;
-  line-height: 29px;
-  text-align: left;
-}
-
-[data-kw-header="left"] .kw-landing__sub {
-  display: block;
-}
-
-/* C · Label — the title demoted to a section marker. The rail already
-   says where you are, so the heading only has to anchor the form. */
-[data-kw-header="compact"] .d3-workspace__hero {
-  align-items: stretch;
-  gap: 12px;
-  margin-top: 4px;
-  text-align: left;
-}
-
-[data-kw-header="compact"] .d3-workspace__title {
-  font-family: var(--font-family, Inter, sans-serif);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  line-height: 15px;
-  color: var(--text-caption, #8a9690);
-  text-align: left;
-  text-transform: uppercase;
-}
-
-/* D · None — no heading at all. The field's own placeholder is the
-   only instruction; the most minimal the screen can get. */
-[data-kw-header="none"] .d3-workspace__hero {
-  align-items: stretch;
-  gap: 0;
-  margin-top: 8px;
-  text-align: left;
-}
-
-[data-kw-header="none"] .d3-workspace__title {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+/* The panel wrapper is only a box for the grouping options that need
+   one; everywhere else it must be invisible to layout. */
+.kw-landing__panel {
+  display: contents;
 }
 
 /* ==================================================================
-   AXIS 2 · Search
+   AXIS 1 · Grouping — what sits in a container
+
+   The question: does the page read as a surface you act on, or as a
+   stack of cards? The Figma foundation is "open" — only the list is
+   boxed. The rest answer it differently.
    ================================================================== */
 
-/* A · Bare — the field sits on the sheet with nothing around it. */
+/* A · Open (the foundation). Title, input and chips on the ground; the
+   recents list in a radius-24 container of its own. */
+.kw-shell .kw-stage__body [data-kw-group="open"] .d3-kyb-recent__grid {
+  padding: 24px;
+  border-radius: 24px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--kw-elevation-card);
+}
 
-/* B · In form — label plus field inside a tinted panel, so the search
-   reads as a form you fill rather than a box you type in. This is what
-   makes "outside the form" mean anything for the recents below. */
-[data-kw-search="form"] .kw-landing__panel,
-[data-kw-search="card"] .kw-landing__panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px;
+/* B · One container — everything in a single card, the recents list
+   sharing it. Fewer edges, one object on the page; the cost is that
+   nothing is visibly primary. */
+[data-kw-group="all"] {
+  padding: 28px 24px;
   border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: 14px;
+  border-radius: 20px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--kw-elevation-card);
 }
 
-[data-kw-search="form"] .kw-landing__panel {
+/* The sheet is already a white card, so a white card inside it needs a
+   ground change to read at all. */
+.kw-shell .kw-stage__body [data-kw-group="all"] {
+  background: var(--surface-neutral-01, #fff);
+}
+
+.kw-shell:not([data-d3-view="home"]) .kw-stage__body:has([data-kw-group="all"]),
+.kw-shell:not([data-d3-view="home"]) .kw-stage__body:has([data-kw-group="cards"]),
+.kw-shell:not([data-d3-view="home"]) .kw-stage__body:has([data-kw-group="flat"]) {
   background: var(--surface-neutral-02, #f4f6f4);
 }
 
-/* C · Raised form — the same panel lifted off the sheet instead of
-   inset into it. Reads as the primary action, not as one field. */
-[data-kw-search="card"] .kw-landing__panel {
+/* C · Two panels — the search in its own card and the list in another,
+   with the recents heading between them on the ground. Says "two jobs"
+   more plainly than anything else here. */
+[data-kw-group="cards"] .kw-landing__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 20px;
   background: var(--surface-neutral-01, #fff);
-  box-shadow:
-    0 1px 2px rgba(22, 33, 27, 0.05),
-    0 6px 18px rgba(22, 33, 27, 0.07);
+  box-shadow: var(--kw-elevation-card);
 }
 
-[data-kw-search="form"] .kw-landing__search-label,
-[data-kw-search="card"] .kw-landing__search-label {
-  display: block;
+.kw-shell .kw-stage__body [data-kw-group="cards"] .d3-kyb-recent__grid {
+  padding: 20px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 20px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--kw-elevation-card);
 }
 
-/* A panel needs the hero to stop centring its children. */
-[data-kw-search="form"] .d3-workspace__hero,
-[data-kw-search="card"] .d3-workspace__hero {
-  align-items: stretch;
+/* The field already carries elevation/xl; inside a card that is two
+   shadows deep. */
+[data-kw-group="cards"] .vb-search-field {
+  border-width: 1px;
+  border-color: var(--border-subtle, #dde2de);
+  box-shadow: none;
+}
+
+/* D · Flat — no containers anywhere. The list rows sit straight on the
+   ground, separated only by their dividers. The least furniture the
+   screen can carry. */
+[data-kw-group="flat"] .vb-search-field {
+  border-width: 1px;
+  border-color: var(--border-subtle, #dde2de);
+  box-shadow: none;
+}
+
+.kw-shell .kw-stage__body [data-kw-group="flat"] .d3-kyb-recent__grid {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 /* ==================================================================
-   AXIS 3 · Recent transactions
+   AXIS 2 · Recent transactions
    ================================================================== */
 
-/* A · Rows — the upstream card re-flowed. It is a 168px-tall column
-   built for a three-across grid; one-per-row at 600px that is a lot of
-   height for four short facts. */
-[data-kw-recent="rows"] .d3-kyb-recent__card {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 10px;
-  min-height: 0;
-  padding: 12px 14px;
-  border-radius: 10px;
-}
-
-[data-kw-recent="rows"] .d3-kyb-recent__name {
-  flex: 1 1 auto;
-  order: 1;
-  margin: 0;
-  min-width: 0;
-  -webkit-line-clamp: 1;
-  font-size: 14px;
-}
-
-[data-kw-recent="rows"] .d3-kyb-recent__card .d1-tag {
-  order: 2;
-  margin: 0;
-}
-
-/* The line break. Relying on the meta spans to wrap on their own does
-   not work — at 600px all five fit on one line, and the status tag ends
-   up mid-row instead of at the edge. A zero-height full-width item
-   between them forces the split at a fixed place. */
-[data-kw-recent="rows"] .d3-kyb-recent__card::after {
-  content: "";
-  order: 3;
-  flex-basis: 100%;
-  height: 0;
-}
-
-[data-kw-recent="rows"] .d3-kyb-recent__product,
-[data-kw-recent="rows"] .d3-kyb-recent__role,
-[data-kw-recent="rows"] .d3-kyb-recent__date {
-  order: 4;
-  margin: 0;
-  padding: 0;
-  font-size: 12px;
-  line-height: 16px;
-  color: var(--text-caption, #8a9690);
-}
-
-[data-kw-recent="rows"] .d3-kyb-recent__product {
-  border: 0;
-  background: transparent;
-  font-weight: 500;
-}
-
-[data-kw-recent="rows"] .d3-kyb-recent__role::before,
-[data-kw-recent="rows"] .d3-kyb-recent__date::before {
-  content: "·";
-  margin-right: 10px;
-  color: var(--border-subtle, #dde2de);
-}
-
-[data-kw-recent="rows"] .d3-kyb-recent__role,
-[data-kw-recent="rows"] .d3-kyb-recent__date {
-  display: inline-flex;
-  align-items: center;
-}
-
-/* B · List — Figma Portal-2.0-Design---2026 node 1476:49733.
-   Divider-separated rows: timestamp, title, one tag, arrow. Row spec
-   from the node: flex, 24px gap, centre-aligned; timestamp 14/18
-   medium text-caption; title 14/20 semibold, flex 1; tag neutral-02 on
+/* A · List (the foundation) — Figma node 1476:49733 / 1665:20378.
+   Divider rows: timestamp, title, one tag, arrow. Row spec from the
+   node: flex, 24px gap, centre-aligned; timestamp 14/18 medium
+   text-caption; title 14/20 semibold flex-1; tag neutral-02 on
    border-subtle; arrow 16px icon-interactive. */
 .kw-shell .kw-stage__body [data-kw-recent="list"] .d3-kyb-recent__grid {
+  display: flex;
+  flex-direction: column;
   gap: 0;
 }
 
@@ -497,8 +530,7 @@
 }
 
 /* The trailing arrow. A mask rather than an appended element: the card
-   markup is shared with the other options, and this keeps the extra
-   node out of all of them. */
+   markup is shared with the other options. */
 [data-kw-recent="list"] .d3-kyb-recent__card::after {
   content: "";
   order: 4;
@@ -515,13 +547,84 @@
   transform: translateX(2px);
 }
 
-/* The row has no fill of its own, so hover needs one — pulled out past
-   the text so it reads as a row rather than a highlight behind words. */
 [data-kw-recent="list"] .d3-kyb-recent__card:hover {
   margin-inline: -10px;
   padding-inline: 10px;
   border-radius: 8px;
   background: var(--surface-neutral-02, #f4f6f4);
+}
+
+/* B · Rows — the upstream card re-flowed. Two lines: name and status,
+   then product · role · date. More context per entry than the list,
+   at roughly twice the height. */
+.kw-shell .kw-stage__body [data-kw-recent="rows"] .d3-kyb-recent__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+[data-kw-recent="rows"] .d3-kyb-recent__card {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  min-height: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+
+[data-kw-recent="rows"] .d3-kyb-recent__name {
+  flex: 1 1 auto;
+  order: 1;
+  margin: 0;
+  min-width: 0;
+  -webkit-line-clamp: 1;
+  font-size: 14px;
+}
+
+[data-kw-recent="rows"] .d3-kyb-recent__card .d1-tag {
+  order: 2;
+  margin: 0;
+}
+
+/* The line break. Relying on the meta spans to wrap on their own does
+   not work — at 600px all five fit on one line, and the status tag ends
+   up mid-row instead of at the edge. */
+[data-kw-recent="rows"] .d3-kyb-recent__card::after {
+  content: "";
+  order: 3;
+  flex-basis: 100%;
+  height: 0;
+}
+
+[data-kw-recent="rows"] .d3-kyb-recent__product,
+[data-kw-recent="rows"] .d3-kyb-recent__role,
+[data-kw-recent="rows"] .d3-kyb-recent__date {
+  order: 4;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-caption, #8a9690);
+}
+
+[data-kw-recent="rows"] .d3-kyb-recent__product {
+  border: 0;
+  background: transparent;
+  font-weight: 500;
+}
+
+[data-kw-recent="rows"] .d3-kyb-recent__role::before,
+[data-kw-recent="rows"] .d3-kyb-recent__date::before {
+  content: "·";
+  margin-right: 10px;
+  color: var(--border-subtle, #dde2de);
+}
+
+[data-kw-recent="rows"] .d3-kyb-recent__role,
+[data-kw-recent="rows"] .d3-kyb-recent__date {
+  display: inline-flex;
+  align-items: center;
 }
 
 /* C · Tiles — one row that scrolls. Three cards at a readable width do
@@ -532,12 +635,10 @@
   gap: 10px;
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  /* Bleed past the sheet's inset so the next card is clipped by the
-     sheet edge rather than stopping short of it — that overhang is the
-     only thing telling you the row scrolls. */
-  margin-right: calc(var(--kw-landing-inset, 24px) * -1);
-  padding-right: var(--kw-landing-inset, 24px);
-  padding-bottom: 4px;
+  /* Bleed past the container inset so the next card is clipped by its
+     edge rather than stopping short — that overhang is the only thing
+     telling you the row scrolls. */
+  padding-right: 0;
   scrollbar-width: thin;
 }
 
@@ -546,37 +647,87 @@
   min-height: 0;
   padding: 14px;
   border-radius: 12px;
+  background: var(--surface-neutral-02, #f4f6f4);
   scroll-snap-align: start;
 }
 
 /* D · Chips — one row of one-click targets instead of a list. Fast for
-   the handful of names you keep returning to; no help at all for the
-   rest, which is what View all is for. */
+   the handful of names you keep returning to; no help for the rest,
+   which is what View all is for. */
 [data-kw-recent="chips"] .kw-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   width: 100%;
-  margin-top: 4px;
 }
 
-[data-kw-header="centred"][data-kw-recent="chips"] .kw-chips {
-  justify-content: center;
-}
-
-[data-kw-recent="chips"] .d3-kyb-recent__grid {
+.kw-shell .kw-stage__body [data-kw-recent="chips"] .d3-kyb-recent__grid {
   display: none;
 }
 
 [data-kw-recent="chips"] .d3-kyb-recent__title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-caption, #8a9690);
+  font-size: 16px;
+  line-height: 22px;
 }
 
-[data-kw-recent="chips"] .kw-landing__viewall {
-  font-size: 12.5px;
+/* E · Table — the densest option. Column headings are implied by
+   position rather than drawn, so it stays light while lining every
+   entry up for comparison. */
+.kw-shell .kw-stage__body [data-kw-recent="table"] .d3-kyb-recent__grid {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  column-gap: 20px;
+  row-gap: 0;
 }
+
+[data-kw-recent="table"] .d3-kyb-recent__card {
+  display: contents;
+}
+
+[data-kw-recent="table"] .d3-kyb-recent__product,
+[data-kw-recent="table"] .d3-kyb-recent__role {
+  display: none;
+}
+
+[data-kw-recent="table"] .d3-kyb-recent__name,
+[data-kw-recent="table"] .d3-kyb-recent__card .d1-tag,
+[data-kw-recent="table"] .d3-kyb-recent__date {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  padding: 11px 0;
+  border-top: 1px solid var(--border-subtle, #dde2de);
+  background: transparent;
+}
+
+[data-kw-recent="table"] .d3-kyb-recent__card:first-child .d3-kyb-recent__name,
+[data-kw-recent="table"] .d3-kyb-recent__card:first-child .d1-tag,
+[data-kw-recent="table"] .d3-kyb-recent__card:first-child .d3-kyb-recent__date {
+  border-top: 0;
+}
+
+[data-kw-recent="table"] .d3-kyb-recent__name {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-kw-recent="table"] .d3-kyb-recent__date {
+  justify-content: flex-end;
+  font-size: 12px;
+  color: var(--text-caption, #8a9690);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------
+   Recent chips (shared by the chips option)
+   ------------------------------------------------------------------ */
+
+.kw-chips { display: none; }
 
 .kw-chip {
   display: inline-flex;
@@ -625,50 +776,16 @@
   white-space: nowrap;
 }
 
-/* ==================================================================
-   AXIS 4 · How the recents section is framed
-
-   The question this axis answers: do recent transactions read as part
-   of the task, or as a separate secondary section you could ignore?
-   ================================================================== */
-
-/* A · Inline — no framing. Recents are just the next thing down the
-   page, which is right when they continue the same job. */
-
-/* B · Ruled — a hairline and real space above. Cheapest way to say
-   "different section" without changing the ground. */
-[data-kw-sep="rule"] .d3-kyb-recent {
-  padding-top: 24px;
-  border-top: 1px solid var(--border-subtle, #dde2de);
-}
-
-/* C · Banded — recents move onto their own ground, bleeding to the
-   sheet edges. The strongest reading of "outside the form": the search
-   is the page, this is a shelf underneath it. */
-[data-kw-sep="band"] .d3-kyb-recent {
-  margin-inline: calc(var(--kw-landing-inset, 24px) * -1);
-  margin-bottom: calc(var(--kw-landing-inset, 24px) * -1.5);
-  padding: 20px var(--kw-landing-inset, 24px) 24px;
-  border-top: 1px solid var(--border-subtle, #dde2de);
-  background: var(--surface-neutral-02, #f4f6f4);
-}
-
-/* Tiles are cards, so they need a ground they can sit on: neutral-02
-   against the white sheet, white against the band. */
-[data-kw-sep="inline"][data-kw-recent="tiles"] .d3-kyb-recent__card,
-[data-kw-sep="rule"][data-kw-recent="tiles"] .d3-kyb-recent__card {
-  background: var(--surface-neutral-02, #f4f6f4);
-}
-
-[data-kw-sep="band"][data-kw-recent="tiles"] .d3-kyb-recent__card {
-  background: var(--surface-neutral-01, #fff);
-}
-
 /* ------------------------------------------------------------------
    Narrow
    ------------------------------------------------------------------ */
 
 @media (max-width: 720px) {
+  .kw-shell .kw-stage__body .d3-workspace__title {
+    font-size: 26px;
+    line-height: 34px;
+  }
+
   [data-kw-recent="list"] .d3-kyb-recent__card {
     flex-wrap: wrap;
     gap: 12px;
@@ -677,6 +794,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .kw-chip,
+  .kw-action,
   [data-kw-recent="list"] .d3-kyb-recent__card::after {
     transition: none;
   }

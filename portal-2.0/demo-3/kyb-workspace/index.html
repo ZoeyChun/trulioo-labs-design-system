@@ -119,7 +119,7 @@
   <!-- Last in the cascade so it beats the hero-critical block above. -->
   <link rel="stylesheet" href="kyb-workspace/css/workspace-canvas.css?v=12">
   <link rel="stylesheet" href="kyb-workspace/css/country-step.css?v=5">
-  <link rel="stylesheet" href="kyb-workspace/css/landing-layouts.css?v=9">
+  <link rel="stylesheet" href="kyb-workspace/css/landing-layouts.css?v=12">
 </head>
 <body>
 
@@ -232,48 +232,31 @@
 
       <div class="kw-lab__row kw-lab__row--presets">
         <div class="kw-lab__presets" role="group" aria-label="Presets" data-kw-presets>
-          <button type="button" class="kw-lab__preset is-active" data-kw-preset="hero">Search hero</button>
-          <button type="button" class="kw-lab__preset" data-kw-preset="list">List</button>
-          <button type="button" class="kw-lab__preset" data-kw-preset="quick">Quick start</button>
-          <button type="button" class="kw-lab__preset" data-kw-preset="split">Split form</button>
+          <button type="button" class="kw-lab__preset is-active" data-kw-preset="figma">Figma</button>
+          <button type="button" class="kw-lab__preset" data-kw-preset="boxed">Boxed</button>
+          <button type="button" class="kw-lab__preset" data-kw-preset="panels">Panels</button>
+          <button type="button" class="kw-lab__preset" data-kw-preset="flat">Flat</button>
         </div>
       </div>
 
       <div class="kw-lab__row">
-        <span class="kw-lab__label">Header</span>
-        <div class="kw-lab__opts" role="group" aria-label="Header treatment" data-kw-axis="header">
-          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="centred">Centred</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="left">Left</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="compact">Label</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="none">None</button>
-        </div>
-      </div>
-
-      <div class="kw-lab__row">
-        <span class="kw-lab__label">Search</span>
-        <div class="kw-lab__opts" role="group" aria-label="Search treatment" data-kw-axis="search">
-          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="bare">Bare</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="form">In form</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="card">Raised form</button>
+        <span class="kw-lab__label">Grouping</span>
+        <div class="kw-lab__opts" role="group" aria-label="Container grouping" data-kw-axis="group">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="open">Open</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="all">One container</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="cards">Two panels</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="flat">Flat</button>
         </div>
       </div>
 
       <div class="kw-lab__row">
         <span class="kw-lab__label">Recent</span>
         <div class="kw-lab__opts" role="group" aria-label="Recent transactions treatment" data-kw-axis="recent">
-          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="rows">Rows</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="list">List</button>
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="list">List</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="rows">Rows</button>
           <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="tiles">Tiles</button>
           <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="chips">Chips</button>
-        </div>
-      </div>
-
-      <div class="kw-lab__row">
-        <span class="kw-lab__label">Section</span>
-        <div class="kw-lab__opts" role="group" aria-label="Recent section framing" data-kw-axis="sep">
-          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="inline">Inline</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="rule">Ruled</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="band">Banded</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="table">Table</button>
         </div>
       </div>
     </details>
@@ -440,19 +423,18 @@
         </div>
 
 
+        <!-- Foundation: Figma Portal-2.0-Design---2026 node 1665:20500.
+             Title and prompt input sit on the page ground; only the recent
+             transactions list is in a container. data-kw-group varies that
+             grouping, data-kw-recent varies the list treatment. -->
         <div class="d3-workspace__landing" data-d3-kyb-landing
-             data-kw-header="centred" data-kw-search="bare" data-kw-recent="rows" data-kw-sep="rule">
+             data-kw-group="open" data-kw-recent="list">
         <div class="d3-workspace__hero">
         <h1 class="d3-workspace__title">KYB Verification</h1>
-        <!-- Shown by the layouts that want a line of orientation under the
-             title; the others leave it out of flow. -->
-        <p class="kw-landing__sub">Search a business to start a new check, or pick up a recent one.</p>
-        <!-- Inert wrapper: `display: contents` for every layout but Split,
-             which needs the label and the search inside one panel while the
-             title stays outside it. Descendant selectors and the vb-* ids
-             are unaffected. -->
+        <!-- Inert wrapper: `display: contents` unless a grouping option
+             needs the search boxed on its own. Descendant selectors and the
+             vb-* ids are unaffected. -->
         <div class="kw-landing__panel">
-        <p class="kw-landing__search-label">Start a verification</p>
         <!-- Manual search — synced from demo-2/verify-business -->
         <div class="d3-workspace__search" aria-labelledby="d3-kyb-search-h">
           <span class="d1-visually-hidden" id="d3-kyb-search-h">Search for a business</span>
@@ -523,6 +505,15 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Send (node 1665:20430). The upstream Submit button lives in
+                   the prefill panel, not the field, so the design's circular
+                   send has no existing equivalent — this one hands the typed
+                   name and the selected country to the agent, which is the
+                   same path the composer uses. -->
+              <button type="button" class="kw-send" data-kw-send aria-label="Search">
+                <span class="kw-send__icon" aria-hidden="true"></span>
+              </button>
             </div>
 
             <p class="vb-search-hint" id="vb-search-hint">Enter at least 3 characters to search for a business.</p>
@@ -599,10 +590,21 @@
           </div>
         </div>
         </div><!-- /.kw-landing__panel -->
-        <!-- One-click re-entry row. Filled by js/landing-layouts.js from the
-             recent cards below, and a chip clicks its card — same action,
-             no second copy of the wiring. -->
-        <div class="kw-chips" data-kw-chips aria-label="Recent checks"></div>
+
+        <!-- Suggestion chips (node 1665:20431). Each one hands the agent the
+             sentence a user would otherwise type, so they run the same path
+             as the composer rather than a second entry point. -->
+        <div class="kw-actions" role="group" aria-label="Quick actions">
+          <button type="button" class="kw-action" data-kw-action="Verify a business">
+            <i class="fa-regular fa-building" aria-hidden="true"></i>Verify Business
+          </button>
+          <button type="button" class="kw-action" data-kw-action="Verify a person">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>Verify Person
+          </button>
+          <button type="button" class="kw-action" data-kw-action="Check risk signals">
+            <i class="fa-regular fa-triangle-exclamation" aria-hidden="true"></i>Check Risk Signals
+          </button>
+        </div>
         </div>
 
         <section class="d3-kyb-recent" data-d3-kyb-recent aria-labelledby="d3-kyb-recent-h">
@@ -613,6 +615,11 @@
               <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6 4l4 4-4 4"/></svg>
             </button>
           </div>
+          <!-- One-click re-entry row for the "chips" recent option. Filled by
+               js/landing-layouts.js from the cards below, and a chip clicks
+               its card — same action, no second copy of the wiring. It sits
+               inside the section so it falls under the heading it belongs to. -->
+          <div class="kw-chips" data-kw-chips aria-label="Recent checks"></div>
           <div class="d3-kyb-recent__grid">
             <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Apex Nordic Logistics AB" data-status="Verified" data-country="Sweden" data-txid="a7bc12e4-91f0-4c2d-8e55-3b1d9a0f6c28" data-date="12 Mar 2026, 09:00">
               <span class="d3-kyb-recent__product">Business Insights</span>
@@ -1498,7 +1505,7 @@ No evidence of active trading, clients, or revenue.</p>
      Last so it can observe the shell after every shared script has bound. -->
 <script src="kyb-workspace/js/workspace-canvas.js?v=4"></script>
 <script src="kyb-workspace/js/country-step.js?v=3"></script>
-<script src="kyb-workspace/js/landing-layouts.js?v=5"></script>
+<script src="kyb-workspace/js/landing-layouts.js?v=7"></script>
 <script src="kyb-workspace/js/kyb-boot.js?v=1"></script>
 </body>
 </html>

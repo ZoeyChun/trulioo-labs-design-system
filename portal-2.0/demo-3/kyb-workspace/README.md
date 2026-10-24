@@ -17,7 +17,7 @@ No sign-in, same as `ai-panel-lab/` — this is a layout lab.
 
 ## Status
 
-- **KYB Verification landing** — on the 600px sheet, with four independent
+- **KYB Verification landing** — rebuilt on Figma `1665:20500`, with two
   layout axes. See [Landing layouts](#landing-layouts).
 - **Waiting for country** — redesigned, with two country-selector treatments
   to choose between. See [Waiting for country](#waiting-for-country).
@@ -181,52 +181,69 @@ Two things that are deliberately still here:
 
 ## Landing layouts
 
-`index.html` → `[data-kw-header]`, `css/landing-layouts.css`,
+`index.html` → `[data-kw-group]`, `css/landing-layouts.css`,
 `js/landing-layouts.js`.
 
-The landing holds three things — the title, the search, and recent
-transactions — and each is switched **independently**:
+### Foundation
+
+[Figma `1665:20500`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=1665-20500).
+Title and prompt input sit on the page ground; only the recent transactions
+list is in a container.
+
+| Part | Spec from the node |
+|--|--|
+| Title | Tobias 36/44 (32/40 here), centred, `--text-body` |
+| Prompt input | White, 4px translucent ring, radius 16, `elevation/xl` |
+| Send | 28px circular button on `--surface-neutral-03`, arrow 16px |
+| Suggestion chips | Verify Business · Verify Person · Check Risk Signals |
+| Recents header | Inter 24/32 semibold + a `--text-link` View all, on the ground |
+| List container | Radius 24, 24px padding, soft green drop shadow |
+| Row | Timestamp · title · one tag · arrow, divider-separated |
+
+**The country selector lives inside the field**, left of the input. The node
+draws a single prompt box; ours has to carry the jurisdiction too, because a
+KYB search without one is exactly what the next step stops to ask for. Send
+hands the agent `"<name>, <country>"` — the same path the composer uses — so
+the selector actually scopes the search rather than decorating the field.
+
+The send button is new markup: upstream's Submit lives in the prefill panel,
+not in the field, so there was no existing equivalent to restyle.
+
+### Axes
 
 | Axis | Attribute | Options |
 |--|--|--|
-| Header | `data-kw-header` | `centred` · `left` · `compact` (label) · `none` |
-| Search | `data-kw-search` | `bare` · `form` (tinted panel) · `card` (raised panel) |
-| Recent | `data-kw-recent` | `rows` · `list` · `tiles` (scroller) · `chips` |
-| Section | `data-kw-sep` | `inline` · `rule` · `band` |
+| Grouping | `data-kw-group` | `open` · `all` · `cards` · `flat` |
+| Recent | `data-kw-recent` | `list` · `rows` · `tiles` · `chips` · `table` |
 
-Axes are independent on purpose. The interesting questions on this screen —
-*does the search want a form around it?*, *do recents read as part of the task
-or as history you could ignore?* — are separable, and a fixed set of whole-page
-layouts answers them only in the combinations someone happened to draw.
+**Grouping** answers: does the page read as a surface you act on, or a stack of
+cards?
 
-**Presets** are shorthand for a whole combination, and stay lit only while the
-landing still matches: change any one axis and the preset clears rather than
-leaving a label that no longer describes the screen.
+- **Open** *(the foundation)* — title, input and chips on the ground; only the
+  list boxed.
+- **One container** — everything in a single card. Fewest edges; the cost is
+  that nothing is visibly primary.
+- **Two panels** — search in one card, list in another, heading between them.
+  Says "two jobs" more plainly than anything else here.
+- **Flat** — no containers at all; rows separated only by their dividers.
 
-| Preset | Header | Search | Recent | Section |
-|--|--|--|--|--|
-| Search hero | centred | bare | rows | rule |
-| List | left | bare | list | inline |
-| Quick start | centred | bare | chips | inline |
-| Split form | left | form | tiles | band |
+The three non-`open` options put the sheet on `surface-neutral-02`, because a
+white card on a white sheet has nothing to read against.
 
-### Notable options
+**Recent** varies the list treatment:
 
-- **Search · in form / raised form** puts the label and the field inside a
-  panel, which is what makes "recents outside the form" mean anything. The
-  panel is the `.kw-landing__panel` wrapper — `display: contents` for `bare`,
-  so it is invisible to layout there.
-- **Section · band** moves recents onto their own ground, bleeding to the sheet
-  edges via `--kw-landing-inset`. The strongest reading of a separated
-  secondary section: the search is the page, this is a shelf underneath it.
-- **Recent · list** is [Figma `1476:49733`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=1476-49733) —
-  divider rows of timestamp · title · tag · arrow. The node carries exactly one
-  tag per row, so product and role sit it out; status is the more
-  decision-relevant of the two we hold. The arrow is a CSS mask rather than an
-  appended element, which keeps the extra node out of the other options.
-- **Recent · tiles** scrolls horizontally rather than wrapping: three cards at
-  a readable width do not fit across 600px, and a 2×2 leaves a hole where the
-  fourth would be.
+- **List** *(the foundation)* — the Figma divider rows.
+- **Rows** — two lines per entry: name + status, then product · role · date.
+  More context, roughly twice the height.
+- **Tiles** — one row that scrolls. Three cards at a readable width don't fit
+  across 600px, and a 2×2 leaves a hole where the fourth would be.
+- **Chips** — one-click targets instead of a list. Fast for the handful of
+  names you keep returning to; `View all` covers the rest.
+- **Table** — the densest. Columns implied by position rather than drawn.
+
+**Presets** (Figma · Boxed · Panels · Flat) are shorthand for a whole
+combination, and stay lit only while the landing still matches — change one
+axis and the preset clears rather than mislabelling the screen.
 
 ### One DOM, every option
 
@@ -237,22 +254,20 @@ mean a per-option copy of that wiring, or several elements fighting over
 `#vb-q`.
 
 The chips are built from the recent cards and a chip clicks its card, so "open
-a recent check" stays one code path however it is presented.
+a recent check" stays one code path. The suggestion chips hand the agent the
+sentence a user would otherwise type, for the same reason.
 
-**Specificity.** The shared `.kw-shell .kw-stage__body .d3-kyb-recent__grid`
-rule is three classes deep, so any per-option override of the grid needs the
-same prefix. Two options have been caught by this already.
+**Specificity.** The shared `.kw-shell .kw-stage__body` rules are three classes
+deep, so any per-option override of the grid or the search needs that prefix.
 
 ### The lab panel
 
-Floats on the dot ground at the stage's top-left, never inside the sheet — the
-controls drive the design, they are not part of it. It is a `<details>` that
-closes to a pill: the gutter between the TruAI column and a centred 600px sheet
-is ~170px at 1512, narrower than any usable panel, so one that reserved space
-would either overlap the sheet or be unreadable.
+Floats on the dot ground at the stage's top-left, never inside the sheet. It is
+a `<details>` that closes to a pill: the gutter beside a centred 600px sheet is
+~170px at 1512, narrower than any usable panel.
 
-Pick a combination, then delete the panel, `css/landing-layouts.css`'s lab
-section, and the `kw-lab` markup.
+Pick a combination, then delete the panel, the lab section of
+`css/landing-layouts.css`, and the `kw-lab` markup.
 
 ## Waiting for country
 

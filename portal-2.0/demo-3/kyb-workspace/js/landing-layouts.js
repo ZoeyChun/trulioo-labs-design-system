@@ -13,24 +13,22 @@
 (function () {
   "use strict";
 
-  var landing = document.querySelector("[data-kw-header]");
+  var landing = document.querySelector("[data-kw-group]");
   if (!landing) return;
 
   /* axis name → attribute, and the options each one accepts. */
   var AXES = {
-    header: { attr: "data-kw-header", options: ["centred", "left", "compact", "none"] },
-    search: { attr: "data-kw-search", options: ["bare", "form", "card"] },
-    recent: { attr: "data-kw-recent", options: ["rows", "list", "tiles", "chips"] },
-    sep: { attr: "data-kw-sep", options: ["inline", "rule", "band"] }
+    group: { attr: "data-kw-group", options: ["open", "all", "cards", "flat"] },
+    recent: { attr: "data-kw-recent", options: ["list", "rows", "tiles", "chips", "table"] }
   };
 
-  /* Shorthand for whole combinations. Each one answers the same two
-     questions — new check or old one, form or field — a different way. */
+  /* Shorthand for whole combinations. "figma" is the foundation —
+     Portal-2.0-Design---2026 node 1665:20500. */
   var PRESETS = {
-    hero: { header: "centred", search: "bare", recent: "rows", sep: "rule" },
-    list: { header: "left", search: "bare", recent: "list", sep: "inline" },
-    quick: { header: "centred", search: "bare", recent: "chips", sep: "inline" },
-    split: { header: "left", search: "form", recent: "tiles", sep: "band" }
+    figma: { group: "open", recent: "list" },
+    boxed: { group: "all", recent: "rows" },
+    panels: { group: "cards", recent: "tiles" },
+    flat: { group: "flat", recent: "table" }
   };
 
   function setAxis(axis, option) {
@@ -132,6 +130,68 @@
     });
   }
 
+  /* ----------------------------------------------------------------
+     Send
+
+     The node's circular send has no upstream equivalent — Submit lives
+     in the prefill panel, not the field. This one hands the typed name
+     plus the selected country to the agent, which is the same path the
+     composer uses, so the country selector in the field actually
+     scopes the search instead of being decoration.
+     ---------------------------------------------------------------- */
+  function searchInput() {
+    return document.getElementById("vb-q");
+  }
+
+  function selectedCountry() {
+    var el = document.querySelector("#vb-country-select .vb-search-country__value");
+    return el ? el.textContent.trim() : "";
+  }
+
+  function bindSend() {
+    var btn = document.querySelector("[data-kw-send]");
+    var input = searchInput();
+    if (!btn || !input) return;
+
+    function sync() {
+      btn.classList.toggle("is-ready", input.value.trim().length >= 3);
+    }
+
+    function send() {
+      var name = input.value.trim();
+      if (!name) {
+        input.focus();
+        return;
+      }
+      var country = selectedCountry();
+      document.dispatchEvent(
+        new CustomEvent("d3-chat:send", {
+          detail: { text: country ? name + ", " + country : name, agent: "kyb" },
+          cancelable: true
+        })
+      );
+    }
+
+    input.addEventListener("input", sync);
+    btn.addEventListener("click", send);
+    sync();
+  }
+
+  /* Quick actions hand the agent the sentence a user would otherwise
+     type, so they run the composer's path rather than a second one. */
+  function bindActions() {
+    document.querySelectorAll("[data-kw-action]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.dispatchEvent(
+          new CustomEvent("d3-chat:send", {
+            detail: { text: btn.getAttribute("data-kw-action"), agent: "kyb" },
+            cancelable: true
+          })
+        );
+      });
+    });
+  }
+
   /* View all → the full history. The Transactions rail item is gone in
      this fork, so ask the agent for it instead of dead-ending. */
   function bindViewAll() {
@@ -155,6 +215,8 @@
   function boot() {
     buildChips();
     bindLab();
+    bindActions();
+    bindSend();
     bindViewAll();
     syncPresets();
   }
