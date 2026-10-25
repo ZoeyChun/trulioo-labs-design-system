@@ -420,6 +420,22 @@
     });
   }
 
+  /* Node names are cut with an ellipsis when they exceed the fixed card width, so
+     keep the full name on the title attribute. The graph re-renders on filter /
+     zoom / expand, hence the observer. */
+  function keepNodeTitles(container) {
+    function apply() {
+      container.querySelectorAll(".kyb-ubo-node__name").forEach(function (el) {
+        var text = el.textContent || "";
+        if (el.getAttribute("title") !== text) el.setAttribute("title", text);
+      });
+    }
+    apply();
+    if (typeof MutationObserver === "undefined" || container.__d3NodeTitles) return;
+    container.__d3NodeTitles = new MutationObserver(apply);
+    container.__d3NodeTitles.observe(container, { childList: true, subtree: true, characterData: true });
+  }
+
   function mountGraphOnly(panel, biz) {
     var graph = graphFromBiz(biz);
     if (!graph || !graph.tree) {
@@ -433,6 +449,7 @@
       tree: graph.tree,
       riskFilter: graph.riskFilter
     });
+    keepNodeTitles(container);
     return true;
   }
 

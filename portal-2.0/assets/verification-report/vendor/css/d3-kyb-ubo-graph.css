@@ -709,6 +709,11 @@
   font-variation-settings: var(--font-variation-figma-medium);
   color: var(--text-default);
   white-space: nowrap;
+  /* Cards are a fixed 288px (= UBO_CANVAS.nodeWidth in the bundle). A name that
+     still doesn't fit is cut with an ellipsis instead of spilling out of the card;
+     the full name is on the title attribute (see d3-kyb-ubo-graph.js). */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kyb-ubo-node__meta {
