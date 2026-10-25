@@ -105,14 +105,12 @@
 
     var flat = document.createElement("div");
     flat.style.cssText =
-      "position:absolute;left:0;top:0;pointer-events:none;background:#004C45;z-index:1;" +
+      "position:absolute;left:0;top:0;pointer-events:none;z-index:1;" +
       "width:" + LOGO_DESIGN_W + "px;height:" + LOGO_DESIGN_H + "px;" +
       "transform:translate(-50%, -50%) translateZ(0.5px);" +
-      "-webkit-mask-image:url(" + ringSrc + ");mask-image:url(" + ringSrc + ");" +
-      "-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;" +
-      "-webkit-mask-size:" + LOGO_DESIGN_W + "px " + LOGO_DESIGN_H + "px;" +
-      "mask-size:" + LOGO_DESIGN_W + "px " + LOGO_DESIGN_H + "px;" +
-      "-webkit-mask-position:0 0;mask-position:0 0;";
+        /* background-image, not mask-image: masks are blocked on file:// (the SVG is already #004C45). */
+        "background-image:url(" + ringSrc + ");background-repeat:no-repeat;" +
+        "background-size:" + LOGO_DESIGN_W + "px " + LOGO_DESIGN_H + "px;background-position:0 0;";
 
     var stripsHost = document.createElement("div");
     stripsHost.style.cssText =
@@ -129,14 +127,12 @@
         "transform:translateX(" + (-LOGO_DESIGN_W / 2 + (strip.i + 0.5) * FLAT_STRIP_W).toFixed(2) + "px) translate(-50%, -50%);";
       var sliceEl = document.createElement("div");
       sliceEl.style.cssText =
-        "pointer-events:none;background:#004C45;" +
+        "pointer-events:none;" +
         "width:" + LOGO_DESIGN_W + "px;height:" + LOGO_DESIGN_H + "px;" +
         "margin-left:" + (-strip.i * FLAT_SLICE_W) + "px;" +
-        "-webkit-mask-image:url(" + ringSrc + ");mask-image:url(" + ringSrc + ");" +
-        "-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;" +
-        "-webkit-mask-size:" + LOGO_DESIGN_W + "px " + LOGO_DESIGN_H + "px;" +
-        "mask-size:" + LOGO_DESIGN_W + "px " + LOGO_DESIGN_H + "px;" +
-        "-webkit-mask-position:0 0;mask-position:0 0;";
+        /* background-image, not mask-image: masks are blocked on file:// (the SVG is already #004C45). */
+        "background-image:url(" + ringSrc + ");background-repeat:no-repeat;" +
+        "background-size:" + LOGO_DESIGN_W + "px " + LOGO_DESIGN_H + "px;background-position:0 0;";
       stripEl.appendChild(sliceEl);
       stripsHost.appendChild(stripEl);
       stripEls.push(stripEl);
@@ -208,8 +204,8 @@
         sliceEls[n].style.width = markW + "px";
         sliceEls[n].style.height = markH + "px";
         sliceEls[n].style.marginLeft = (-n * sliceW).toFixed(2) + "px";
-        sliceEls[n].style.webkitMaskSize = markW + "px " + markH + "px";
-        sliceEls[n].style.maskSize = markW + "px " + markH + "px";
+        /* Logo size follows the animation; backgroundSize replaces the old maskSize. */
+        sliceEls[n].style.backgroundSize = markW + "px " + markH + "px";
       }
     }
 

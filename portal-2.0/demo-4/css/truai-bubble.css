@@ -50,15 +50,10 @@
   right: 20.33%;
   bottom: 25.66%;
   left: 19.53%;
-  background: #004c45;
-  -webkit-mask-image: url("../assets/truai-bubble-orb-ring.svg");
-  mask-image: url("../assets/truai-bubble-orb-ring.svg");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  /* Plain background image (not mask-image): masks with url() are blocked when the
+     page is opened from file://, which made the orb logo disappear. The SVG is
+     already filled #004c45. */
+  background: url("../assets/truai-bubble-orb-ring.svg") center / 100% 100% no-repeat;
 }
 
 .truai-bubble__pill {
@@ -313,15 +308,10 @@
   right: 20.33%;
   bottom: 25.66%;
   left: 19.53%;
-  background: #004c45;
-  -webkit-mask-image: url("../assets/truai-bubble-orb-ring.svg");
-  mask-image: url("../assets/truai-bubble-orb-ring.svg");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  /* Plain background image (not mask-image): masks with url() are blocked when the
+     page is opened from file://, which made the orb logo disappear. The SVG is
+     already filled #004c45. */
+  background: url("../assets/truai-bubble-orb-ring.svg") center / 100% 100% no-repeat;
 }
 
 .truai-panel__text {
