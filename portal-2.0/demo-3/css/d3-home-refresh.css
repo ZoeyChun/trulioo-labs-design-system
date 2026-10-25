@@ -63,11 +63,14 @@ html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-brief__card--a
 html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-brief__card--alert h2 {
   margin: 0;
   font-family: "Founders Grotesk", "Inter", system-ui, sans-serif;
-  max-width: 320px; /* narrower measure than the card */
-  font-size: var(--font-size-3xl, 1.75rem);
+  /* Measure scales with the type: 13em keeps "Business verification successes"
+     on line 1 and "increased by 60% yesterday." on line 2; narrower cards
+     simply wrap earlier (max-width never exceeds the card). */
+  max-width: min(13em, 100%);
+  /* Fluid size: 3xl (28px) on wide screens, easing down on narrower ones. */
+  font-size: clamp(1.375rem, 1.1rem + 0.9vw, var(--font-size-3xl, 1.75rem));
   font-weight: 400;
-  line-height: var(--line-height-3xl, 1.875rem);
-  text-wrap: balance;
+  line-height: 1.2;
 }
 
 /* Headline only: the supporting paragraph is dropped. */
