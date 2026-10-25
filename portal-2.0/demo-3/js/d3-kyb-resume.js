@@ -285,7 +285,7 @@
   function prepareDetailChrome() {
     if (resumeCard) resumeCard.classList.remove("is-live");
     if (!detail) return;
-    var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
+    var detailsBtn = detail.querySelector("[data-d3-kyb-raw-action]");
     if (detailsBtn) detailsBtn.hidden = true;
     var exportBtn = detail.querySelector("[data-d3-kyb-export]");
     if (exportBtn) exportBtn.hidden = true;
@@ -358,7 +358,7 @@
     if (resumeCard) resumeCard.classList.add("is-live");
 
     if (detail) {
-      var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
+      var detailsBtn = detail.querySelector("[data-d3-kyb-raw-action]");
       if (detailsBtn) detailsBtn.hidden = false;
       var exportBtn = detail.querySelector("[data-d3-kyb-export]");
       if (exportBtn) exportBtn.hidden = false;
@@ -433,7 +433,7 @@
     priorSurface = "map";
     if (resumeCard) resumeCard.classList.remove("is-live");
     if (detail) {
-      var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
+      var detailsBtn = detail.querySelector("[data-d3-kyb-raw-action]");
       if (detailsBtn) detailsBtn.hidden = true;
       var exportBtn = detail.querySelector("[data-d3-kyb-export]");
       if (exportBtn) exportBtn.hidden = true;

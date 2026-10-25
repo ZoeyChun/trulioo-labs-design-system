@@ -274,7 +274,7 @@
     if (pageTitle) pageTitle.hidden = true;
     if (bizName) bizName.textContent = biz.name;
     setBizTag("Verifying…", "review");
-    var detailsBtn = detail.querySelector("[data-d3-kyb-details]");
+    var detailsBtn = detail.querySelector("[data-d3-kyb-raw-action]");
     if (detailsBtn) detailsBtn.hidden = false;
     var exportBtn = detail.querySelector("[data-d3-kyb-export]");
     if (exportBtn) exportBtn.hidden = false;
@@ -968,13 +968,12 @@
   var rawDialog = document.getElementById("d3-kyb-raw-dialog");
   if (rawDialog) bindRawCopy(rawDialog);
 
-  var viewRawBtn = resumeCard.querySelector("[data-d3-kyb-view-raw]");
-  if (viewRawBtn) {
+  Array.prototype.forEach.call(resumeCard.querySelectorAll("[data-d3-kyb-view-raw]"), function (viewRawBtn) {
     viewRawBtn.addEventListener("click", function () {
       /* Fill JSON; data-dialog-open opens #d3-kyb-raw-dialog. */
       renderRawPanel(currentBiz || resolveBiz());
     });
-  }
+  });
 
   window.D3KybReport = {
     reveal: reveal,

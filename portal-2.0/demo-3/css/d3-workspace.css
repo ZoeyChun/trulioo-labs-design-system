@@ -463,18 +463,18 @@
   white-space: nowrap;
 }
 
-/* Details + Export only on the live verification result — never on resume/search landing.
+/* Raw Data + Export only on the live verification result — never on resume/search landing.
    Button styles use display:inline-flex and can beat the HTML [hidden] attribute. */
-.d3-kyb-details,
-.d3-kyb-details[hidden],
+.d3-kyb-raw-action,
+.d3-kyb-raw-action[hidden],
 .d3-kyb-export,
 .d3-kyb-export[hidden],
-.d3-workspace:not([data-d3-kyb-surface="report"]) .d3-kyb-details,
+.d3-workspace:not([data-d3-kyb-surface="report"]) .d3-kyb-raw-action,
 .d3-workspace:not([data-d3-kyb-surface="report"]) .d3-kyb-export {
   display: none !important;
 }
 
-.d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-details:not([hidden]),
+.d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-raw-action:not([hidden]),
 .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-export:not([hidden]) {
   display: inline-flex !important;
 }
