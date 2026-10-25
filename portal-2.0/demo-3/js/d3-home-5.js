@@ -24,4 +24,19 @@
   }
 
   welcome.appendChild(copy);
+
+  /* Recent Transactions: a mix of outcomes instead of three "Verified" rows. */
+  var OUTCOMES = [
+    null,
+    { cls: "tds-tag--negative", label: "Not Verified" },
+    { cls: "tds-tag--intermediate", label: "Review" }
+  ];
+  var rows = document.querySelectorAll(".d1-brief__tx-table tbody tr");
+  OUTCOMES.forEach(function (outcome, i) {
+    var tag = outcome && rows[i] && rows[i].querySelector(".tds-tag");
+    if (!tag) return;
+    tag.classList.remove("tds-tag--positive");
+    tag.classList.add(outcome.cls);
+    tag.textContent = outcome.label;
+  });
 })();

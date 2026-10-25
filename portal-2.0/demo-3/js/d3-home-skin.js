@@ -12,7 +12,7 @@
   /* Layout options built on the dark skin: ?home=3 (full-bleed), 4 (globe),
      5 (globe at side). Each loads css/d3-home-N.css plus the listed js/d3-home-X.js
      files, in order (home 5 reuses the home 4 globe). */
-  var ASSET_VERSION = "30";
+  var ASSET_VERSION = "34";
   /* Main home when no ?home= is given. Explicit ?home=1|dark|2|light|3|5 still wins. */
   var DEFAULT_HOME = "4";
   var LAYOUTS = { "3": { js: [] }, "4": { js: ["4"] }, "5": { js: ["4", "5"] } };

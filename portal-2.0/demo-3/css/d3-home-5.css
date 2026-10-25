@@ -140,7 +140,7 @@ html[data-d3-home-layout="5"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="
   gap: 16px;
   width: calc(100% - 96px) !important;
   max-width: 1176px !important;
-  margin: 64px auto 0 !important;
+  margin: 48px auto 0 !important;
   padding: 0;
   align-items: stretch;
 }
@@ -213,4 +213,38 @@ html[data-d3-home-layout="5"] .d1-shell[data-d3-view="home"][data-d3-home-skin="
 
 html[data-d3-home-layout="5"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main::-webkit-scrollbar {
   display: none;
+}
+
+/* ---- Home 5: side nav ---- */
+
+/* Logo symbol without the green tile: dark mark as a plain background image
+   (mask-image is blocked when the page is opened from file://). */
+html[data-d3-home-layout="5"] .d1-logo {
+  background: url("../assets/logo-mark-dark.svg") center / 30px 24.6px no-repeat;
+  overflow: visible;
+}
+
+html[data-d3-home-layout="5"] .d1-logo img {
+  visibility: hidden;
+}
+
+/* Profile "JD": neutral surface, dark text. */
+html[data-d3-home-layout="5"] .d1-account__avatar {
+  background: var(--surface-neutral-03, #e8ede8);
+  color: var(--text-description, #526660);
+}
+
+/* ---- Home 5: Recent Transactions ---- */
+
+/* The last row keeps its divider above "View all transactions". */
+html[data-d3-home-layout="5"] .d1-brief__tx-table tr:last-child td {
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+  padding-bottom: var(--spacing-16, 16px);
+}
+
+/* Card action buttons ("Investigate…", "View all transactions"): label-sm. */
+html[data-d3-home-layout="5"] .d1-brief__card .d1-brief__go {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-xs, 1rem);
 }
