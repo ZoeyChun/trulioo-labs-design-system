@@ -1,0 +1,76 @@
+/* Demo 3 — shared refresh for Home 4 (main) and Home 5.
+   Side nav (logo without tile, neutral JD avatar), Recent Transactions card
+   (divider under the last row) and card action buttons at label-sm.
+   Briefing alert card: headline only, neutral surface, Founders Grotesk.
+   Loaded by js/d3-home-skin.js for ?home=4 and ?home=5 only. */
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../../pages/unified-intelligence-home/fonts/FoundersGrotesk-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../../../pages/unified-intelligence-home/fonts/FoundersGrotesk-Medium.otf") format("opentype");
+}
+
+/* ---- Side nav ---- */
+
+/* Logo symbol without the green tile: dark mark as a plain background image
+   (mask-image is blocked when the page is opened from file://). */
+html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-logo {
+  background: url("../assets/logo-mark-dark.svg") center / 30px 24.6px no-repeat;
+  overflow: visible;
+}
+
+html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-logo img {
+  visibility: hidden;
+}
+
+/* Profile "JD": neutral surface, dark text. */
+html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-account__avatar {
+  background: var(--surface-neutral-03, #e8ede8);
+  color: var(--text-description, #526660);
+}
+
+/* ---- Recent Transactions ---- */
+
+/* The last row keeps its divider above "View all transactions". */
+html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-brief__tx-table tr:last-child td {
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+  padding-bottom: var(--spacing-16, 16px);
+}
+
+/* Card action buttons ("Investigate…", "View all transactions"): label-sm. */
+html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-brief__card .d1-brief__go {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-xs, 1rem);
+}
+
+/* ---- Briefing alert card (left card below the hero) ---- */
+
+html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-brief__card--alert {
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-brief__card--alert h2 {
+  margin: 0;
+  font-family: "Founders Grotesk", "Inter", system-ui, sans-serif;
+  max-width: 320px; /* narrower measure than the card */
+  font-size: var(--font-size-3xl, 1.75rem);
+  font-weight: 400;
+  line-height: var(--line-height-3xl, 1.875rem);
+  text-wrap: balance;
+}
+
+/* Headline only: the supporting paragraph is dropped. */
+html:is([data-d3-home-layout="4"], [data-d3-home-layout="5"]) .d1-brief__card--alert p {
+  display: none;
+}
