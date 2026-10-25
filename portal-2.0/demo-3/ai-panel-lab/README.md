@@ -18,6 +18,17 @@ chat stays on the left; the right rail picks a look for each step.
 | **Right** | Variation picker: Landing (large orb / floating orb), Verify business (orb: floating or header; business select: cards or city selector), Investigating (dots / loading bar), Report (clickable cards / list). |
 | *(hidden)* | KYB map/report stubs off-layout for agent init. |
 
+## Parity with the main portal panel
+
+The panel opens with the same options the main Demo 3 portal uses: **Large orb · Header orb · City selector · Loading bar · List**
+(selected by default in the picker). Behaviour matches too: picking a business shows the
+**confirm card** (the investigation starts on Confirm), the investigation evidence stays after the
+report, the city chips frame the map, and **View** on the report card leaves full screen.
+The picker can still switch to the other variants for comparison — those are lab-only.
+
+Shared panel CSS/JS (`components/ai-panel/`, `css/messages.css`, `js/d3-kyb-*.js`) are the same files as the
+portal; keep the `?v=` cache numbers in `index.html` in step with the portal's `index.html`.
+
 ## How to move through the steps
 
 Use **Go to this step** to open a step. Option chips only change the selected treatment — they do not navigate. Per-step **Restart** clears the chat (keeps selections) then opens that step.

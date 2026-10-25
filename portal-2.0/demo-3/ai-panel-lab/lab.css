@@ -612,7 +612,7 @@ body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] .d3-chat-pane {
   overflow: visible;
 }
 
-body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] .d3-chat-pane__body,
+/* Not the body: it stays overflow:visible so the composer's ring + shadow aren't clipped. */
 body.d3-ai-panel-lab .d1-shell[data-lab-orb="header"] [data-d3-chat-thread] {
   overflow-x: hidden;
   overflow-y: auto;
@@ -849,10 +849,6 @@ body.d3-ai-panel-lab .d3-chat-pane .d1-follow[hidden] {
   display: none !important;
 }
 
-body.d3-ai-panel-lab .d1-shell:not([data-lab-step="investigating"]) .d1-block:has(.d1-progress) {
-  display: none !important;
-}
-
 body.d3-ai-panel-lab .d1-shell[data-lab-step="investigating"] .d1-thinking {
   display: none !important;
 }
@@ -1006,9 +1002,9 @@ body.d3-ai-panel-lab .d1-shell:not([data-lab-step="report"]) .d1-block:has(.d1-r
 .d3-lab-selector__title {
   margin: 0;
   color: var(--text-default, #172d2d);
-  font-size: 16px;
+  font-size: var(--font-size-sm, 0.875rem);
   font-weight: 600;
-  line-height: 24px;
+  line-height: var(--line-height-sm, 1.125rem);
 }
 
 .d3-lab-selector__body {
@@ -1174,4 +1170,42 @@ body.d3-ai-panel-lab .d1-shell:not([data-lab-step="report"]) .d1-block:has(.d1-r
   border-color: transparent;
   background: var(--surface-neutral-03, #e8ede8);
   cursor: default;
+}
+
+/* ---- Parity with the main portal panel ---- */
+
+/* The agent's echo of the picked business is a user-side bubble too. */
+body.d3-ai-panel-lab .d3-chat-pane .d3-kyb-cand-panel .ai-said {
+  max-width: max-content;
+  padding: var(--spacing-16, 16px);
+  border: 0;
+  border-radius: var(--radius-3xl, 24px);
+  background: var(--color-teal-20, #c2ede4);
+  box-shadow: none;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-sm, 1.125rem);
+}
+
+/* Entity confirmation box: neutral surface. */
+body.d3-ai-panel-lab .d3-chat-pane .d1-confirm.tds-announcement {
+  background-color: var(--surface-neutral-02, #f4f6f4);
+}
+
+/* Investigating: loading bar without the percentage, step text at xs. */
+body.d3-ai-panel-lab .d3-chat-pane .d1-progress__pct {
+  display: none;
+}
+
+body.d3-ai-panel-lab .d3-chat-pane .d1-activity__toggle,
+body.d3-ai-panel-lab .d3-chat-pane .d1-activity__detail p {
+  font-size: var(--font-size-xs, 0.75rem);
+  line-height: var(--line-height-xs, 1rem);
+}
+
+/* Report-ready card title at size s. */
+body.d3-ai-panel-lab .d3-chat-pane .d1-report-ready__title {
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: var(--line-height-sm, 1.125rem);
 }

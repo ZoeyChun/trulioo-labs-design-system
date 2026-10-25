@@ -10,13 +10,15 @@
   var shell = document.querySelector(".d1-shell");
   if (!shell) return;
 
+  /* Defaults match the main portal panel: Large orb · Header orb · City selector ·
+     Loading bar · List. The picker can still compare the other variants. */
   var choice = {
     step: "landing",
     landing: "large",
     verifyOrb: "header",
-    verify: "cards",
-    investigate: "dots",
-    report: "cards"
+    verify: "selector",
+    investigate: "bar",
+    report: "list"
   };
 
   var REPORT_NEXT = [
@@ -1694,6 +1696,23 @@
     });
   }
 
+  /* City chip → frame the map on that city's matches (all matches when cleared). */
+  function focusCityOnMap() {
+    var map = window.D3KybMapSearch;
+    var host = document.querySelector("[data-d3-lab-selector]");
+    var panel = host && host.closest(".d3-kyb-cand-panel");
+    if (!map || typeof map.focusBusinesses !== "function" || !panel) return;
+    var list = readMatches(panel)
+      .filter(function (match) {
+        return !selectorCity || cityLabel(match.city) === selectorCity;
+      })
+      .map(function (match) {
+        return typeof map.findById === "function" ? map.findById(match.id) : null;
+      })
+      .filter(Boolean);
+    map.focusBusinesses(list, { maxZoom: selectorCity ? 12 : 6 });
+  }
+
   function buildPicker() {
     var host = document.querySelector("[data-d3-lab-gallery]");
     if (!host) return;
@@ -1906,6 +1925,10 @@
         if (reportView) {
           event.preventDefault();
           event.stopPropagation();
+          var sizeApi = window.D3AiPanel;
+          if (shell.getAttribute("data-d3-chat-size") === "full" && sizeApi && typeof sizeApi.setChatFull === "function") {
+            sizeApi.setChatFull(false);
+          }
           return;
         }
         var cityBtn = event.target.closest("[data-d3-lab-city]");
@@ -1916,6 +1939,7 @@
           selectorCity = selectorCity === label ? "" : label;
           selectorPage = 0;
           syncMatchView();
+          focusCityOnMap();
           return;
         }
         var pageBtn = event.target.closest("[data-d3-lab-page]");
@@ -1959,11 +1983,9 @@
             rememberPlace({ country: named.country, cc: named.cc });
           }
         }
-        goInvestigate();
-        window.setTimeout(function () {
-          var yes = document.querySelector("[data-d3-kyb-confirm='yes']");
-          if (yes) yes.click();
-        }, 0);
+        /* Same as the portal: picking a business shows the confirm card; the
+           investigation starts when the user confirms (handled above). */
+        syncHeaderChrome();
       },
       false
     );
