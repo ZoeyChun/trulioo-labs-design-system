@@ -378,85 +378,56 @@
 /* ==================================================================
    AXIS 1 · Grouping — what sits in a container
 
-   The question: does the page read as a surface you act on, or as a
-   stack of cards? The Figma foundation is "open" — only the list is
-   boxed. The rest answer it differently.
+   The sheet itself is gone on this screen: the landing's content sits
+   straight on the dot ground, and the only containers are the ones an
+   option draws. That is what the axis now varies.
    ================================================================== */
 
-/* A · Open (the foundation). Title, input and chips on the ground; the
-   recents list in a radius-24 container of its own. */
-.kw-shell .kw-stage__body [data-kw-group="open"] .d3-kyb-recent__grid {
-  padding: 24px;
+/* The sheet (.kw-stage__body) is chrome for the other KYB surfaces.
+   On the landing it would be a container around every grouping option,
+   which is the thing this axis is supposed to be able to remove. */
+.kw-shell[data-d3-view="chat"] .kw-stage__body:has(.d3-workspace[data-d3-kyb-surface="resume"]) {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* A · Open (the foundation). Title, input and chips on the dots; the
+   recents list in a container of its own.
+
+   Not for tiles — they are already discrete cards, and boxing cards
+   inside a card is an edge that buys nothing. Not for chips either,
+   which have no grid to box. */
+.kw-shell .kw-stage__body [data-kw-group="open"]:not([data-kw-recent="tiles"]):not([data-kw-recent="chips"]) .d3-kyb-recent__grid {
+  /* Only the grouping that draws the container pays for its inset. In
+     "flat" there is nothing to inset from, and in "one container" the
+     outer card already supplies it — in both, padding here would push
+     the rows out of line with the heading above them. */
+  padding: var(--kw-grid-pad-y, 24px) 24px;
   border-radius: 24px;
   background: var(--surface-neutral-01, #fff);
   box-shadow: var(--kw-elevation-card);
 }
 
 /* B · One container — everything in a single card, the recents list
-   sharing it. Fewer edges, one object on the page; the cost is that
-   nothing is visibly primary. */
+   sharing it. Fewest edges; the cost is that nothing is visibly
+   primary. */
 [data-kw-group="all"] {
   padding: 28px 24px;
-  border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: 20px;
+  border-radius: 24px;
   background: var(--surface-neutral-01, #fff);
   box-shadow: var(--kw-elevation-card);
 }
 
-/* The sheet is already a white card, so a white card inside it needs a
-   ground change to read at all. */
-.kw-shell .kw-stage__body [data-kw-group="all"] {
-  background: var(--surface-neutral-01, #fff);
-}
-
-.kw-shell:not([data-d3-view="home"]) .kw-stage__body:has([data-kw-group="all"]),
-.kw-shell:not([data-d3-view="home"]) .kw-stage__body:has([data-kw-group="cards"]),
-.kw-shell:not([data-d3-view="home"]) .kw-stage__body:has([data-kw-group="flat"]) {
-  background: var(--surface-neutral-02, #f4f6f4);
-}
-
-/* C · Two panels — the search in its own card and the list in another,
-   with the recents heading between them on the ground. Says "two jobs"
-   more plainly than anything else here. */
-[data-kw-group="cards"] .kw-landing__panel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 20px;
-  border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: 20px;
-  background: var(--surface-neutral-01, #fff);
-  box-shadow: var(--kw-elevation-card);
-}
-
-.kw-shell .kw-stage__body [data-kw-group="cards"] .d3-kyb-recent__grid {
-  padding: 20px;
-  border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: 20px;
-  background: var(--surface-neutral-01, #fff);
-  box-shadow: var(--kw-elevation-card);
-}
-
-/* The field already carries elevation/xl; inside a card that is two
-   shadows deep. */
-[data-kw-group="cards"] .vb-search-field {
+/* C · Flat — no containers anywhere. Rows sit straight on the dots,
+   separated only by their dividers. The least furniture the screen can
+   carry, and the only option where the ground is visible behind the
+   content rather than only around it. */
+[data-kw-group="flat"] .vb-search-field,
+[data-kw-group="all"] .vb-search-field {
   border-width: 1px;
   border-color: var(--border-subtle, #dde2de);
-  box-shadow: none;
-}
-
-/* D · Flat — no containers anywhere. The list rows sit straight on the
-   ground, separated only by their dividers. The least furniture the
-   screen can carry. */
-[data-kw-group="flat"] .vb-search-field {
-  border-width: 1px;
-  border-color: var(--border-subtle, #dde2de);
-  box-shadow: none;
-}
-
-.kw-shell .kw-stage__body [data-kw-group="flat"] .d3-kyb-recent__grid {
-  padding: 0;
-  background: transparent;
   box-shadow: none;
 }
 
@@ -473,6 +444,10 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  /* What the container's vertical padding has to be so that, added to
+     the row's own, it matches the 24px horizontal inset. The rows are
+     borderless, so their padding reads as the container's. */
+  --kw-grid-pad-y: 6px;
 }
 
 [data-kw-recent="list"] .d3-kyb-recent__card {
@@ -547,13 +522,6 @@
   transform: translateX(2px);
 }
 
-[data-kw-recent="list"] .d3-kyb-recent__card:hover {
-  margin-inline: -10px;
-  padding-inline: 10px;
-  border-radius: 8px;
-  background: var(--surface-neutral-02, #f4f6f4);
-}
-
 /* B · Rows — the upstream card re-flowed. Two lines: name and status,
    then product · role · date. More context per entry than the list,
    at roughly twice the height. */
@@ -561,6 +529,9 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* The cards draw their own edges, so none of their padding reads as
+     the container's. */
+  --kw-grid-pad-y: 24px;
 }
 
 [data-kw-recent="rows"] .d3-kyb-recent__card {
@@ -627,27 +598,46 @@
   align-items: center;
 }
 
-/* C · Tiles — one row that scrolls. Three cards at a readable width do
-   not fit across 600px, and a 2×2 leaves a hole where the fourth would
-   be; a scroller carries any number of them at one size. */
+/* C · Tiles — three cards side by side.
+
+   Cropping only makes sense when something is there to crop against:
+   inside the "one container" grouping the container edge masks the
+   overflow and the clipped fourth card is the cue that the row
+   scrolls. With no container (open, flat) there is no edge to clip to,
+   so the three share the width and sit centred instead. */
 .kw-shell .kw-stage__body [data-kw-recent="tiles"] .d3-kyb-recent__grid {
   display: flex;
+  justify-content: center;
   gap: 10px;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  /* Bleed past the container inset so the next card is clipped by its
-     edge rather than stopping short — that overhang is the only thing
-     telling you the row scrolls. */
-  padding-right: 0;
-  scrollbar-width: thin;
+  padding: 0;
 }
 
 [data-kw-recent="tiles"] .d3-kyb-recent__card {
-  flex: 0 0 210px;
+  flex: 1 1 0;
+  min-width: 0;
   min-height: 0;
   padding: 14px;
   border-radius: 12px;
   background: var(--surface-neutral-02, #f4f6f4);
+}
+
+/* Inside a container: fixed width, scrolling, clipped by its edge. */
+.kw-shell .kw-stage__body [data-kw-group="all"][data-kw-recent="tiles"] .d3-kyb-recent__grid {
+  justify-content: flex-start;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  /* Bleed to the container edge so the next card is masked by it
+     rather than stopping short. */
+  margin-right: -24px;
+  padding-right: 24px;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.kw-shell .kw-stage__body [data-kw-group="all"][data-kw-recent="tiles"] .d3-kyb-recent__card {
+  flex: 0 0 210px;
+  background: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
   scroll-snap-align: start;
 }
 
@@ -670,18 +660,32 @@
   line-height: 22px;
 }
 
-/* E · Table — the densest option. Column headings are implied by
-   position rather than drawn, so it stays light while lining every
-   entry up for comparison. */
+/* E · Table — the densest option. Columns are fixed widths on a flex
+   row rather than a grid of `display: contents` cards: contents
+   promotes the tag to a grid item, and a status pill stretched to fill
+   a table cell stops looking like a pill. */
 .kw-shell .kw-stage__body [data-kw-recent="table"] .d3-kyb-recent__grid {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  column-gap: 20px;
-  row-gap: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  --kw-grid-pad-y: 13px;
 }
 
 [data-kw-recent="table"] .d3-kyb-recent__card {
-  display: contents;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  min-height: 0;
+  margin: 0;
+  padding: 11px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-kw-recent="table"] .d3-kyb-recent__card + .d3-kyb-recent__card {
+  border-top: 1px solid var(--border-subtle, #dde2de);
 }
 
 [data-kw-recent="table"] .d3-kyb-recent__product,
@@ -689,26 +693,13 @@
   display: none;
 }
 
-[data-kw-recent="table"] .d3-kyb-recent__name,
-[data-kw-recent="table"] .d3-kyb-recent__card .d1-tag,
-[data-kw-recent="table"] .d3-kyb-recent__date {
-  display: flex;
-  align-items: center;
+[data-kw-recent="table"] .d3-kyb-recent__name {
+  order: 1;
+  flex: 1 1 0;
   min-width: 0;
   margin: 0;
-  padding: 11px 0;
-  border-top: 1px solid var(--border-subtle, #dde2de);
-  background: transparent;
-}
-
-[data-kw-recent="table"] .d3-kyb-recent__card:first-child .d3-kyb-recent__name,
-[data-kw-recent="table"] .d3-kyb-recent__card:first-child .d1-tag,
-[data-kw-recent="table"] .d3-kyb-recent__card:first-child .d3-kyb-recent__date {
-  border-top: 0;
-}
-
-[data-kw-recent="table"] .d3-kyb-recent__name {
   overflow: hidden;
+  -webkit-line-clamp: 1;
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
@@ -716,10 +707,23 @@
   white-space: nowrap;
 }
 
+/* Fixed column, but the tag keeps its own box inside it. */
+[data-kw-recent="table"] .d3-kyb-recent__card .d1-tag {
+  order: 2;
+  flex: 0 0 92px;
+  justify-content: center;
+  margin: 0;
+}
+
 [data-kw-recent="table"] .d3-kyb-recent__date {
-  justify-content: flex-end;
+  order: 3;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
   font-size: 12px;
+  line-height: 16px;
   color: var(--text-caption, #8a9690);
+  text-align: right;
   white-space: nowrap;
 }
 

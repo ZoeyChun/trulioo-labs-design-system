@@ -213,35 +213,48 @@ not in the field, so there was no existing equivalent to restyle.
 
 | Axis | Attribute | Options |
 |--|--|--|
-| Grouping | `data-kw-group` | `open` · `all` · `cards` · `flat` |
+| Grouping | `data-kw-group` | `open` · `all` · `flat` |
 | Recent | `data-kw-recent` | `list` · `rows` · `tiles` · `chips` · `table` |
 
 **Grouping** answers: does the page read as a surface you act on, or a stack of
 cards?
 
-- **Open** *(the foundation)* — title, input and chips on the ground; only the
-  list boxed.
+- **Open** *(the foundation)* — title, input and chips on the dots; only the
+  recents list boxed.
 - **One container** — everything in a single card. Fewest edges; the cost is
   that nothing is visibly primary.
-- **Two panels** — search in one card, list in another, heading between them.
-  Says "two jobs" more plainly than anything else here.
 - **Flat** — no containers at all; rows separated only by their dividers.
 
-The three non-`open` options put the sheet on `surface-neutral-02`, because a
-white card on a white sheet has nothing to read against.
+**The sheet is removed on this screen.** `.kw-stage__body` is the white card
+every other KYB surface sits on, but on the landing it would be a container
+around every grouping option — including the ones whose whole point is not
+having one. Content sits straight on the dot ground, and the only containers
+are the ones an option draws.
+
+Container padding lives on the **grouping** rule, not the recent treatment:
+only `open` draws a container, so only `open` pays for an inset. Each recent
+option publishes `--kw-grid-pad-y` — the vertical padding that, added to its
+own row padding, comes to the same 24px as the horizontal. List rows are
+borderless so theirs reads as the container's (6 + 18); `rows` draws its own
+card edges so none of it does (24 + 0).
 
 **Recent** varies the list treatment:
 
 - **List** *(the foundation)* — the Figma divider rows.
 - **Rows** — two lines per entry: name + status, then product · role · date.
   More context, roughly twice the height.
-- **Tiles** — one row that scrolls. Three cards at a readable width don't fit
-  across 600px, and a 2×2 leaves a hole where the fourth would be.
+- **Tiles** — three cards side by side. Cropping needs an edge to crop
+  against, so only inside **One container** do they take a fixed width and
+  scroll, masked by the container. With no container they share the width and
+  sit centred. `open` draws no box around them either — boxing cards inside a
+  card is an edge that buys nothing.
 - **Chips** — one-click targets instead of a list. Fast for the handful of
   names you keep returning to; `View all` covers the rest.
-- **Table** — the densest. Columns implied by position rather than drawn.
+- **Table** — the densest. Fixed-width columns on a flex row, *not* a grid of
+  `display: contents` cards: contents promotes the status tag to a grid item,
+  and a pill stretched to fill a table cell stops looking like a pill.
 
-**Presets** (Figma · Boxed · Panels · Flat) are shorthand for a whole
+**Presets** (Figma · Boxed · Tiles · Flat) are shorthand for a whole
 combination, and stay lit only while the landing still matches — change one
 axis and the preset clears rather than mislabelling the screen.
 

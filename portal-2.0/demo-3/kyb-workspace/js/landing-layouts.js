@@ -18,7 +18,7 @@
 
   /* axis name → attribute, and the options each one accepts. */
   var AXES = {
-    group: { attr: "data-kw-group", options: ["open", "all", "cards", "flat"] },
+    group: { attr: "data-kw-group", options: ["open", "all", "flat"] },
     recent: { attr: "data-kw-recent", options: ["list", "rows", "tiles", "chips", "table"] }
   };
 
@@ -26,9 +26,9 @@
      Portal-2.0-Design---2026 node 1665:20500. */
   var PRESETS = {
     figma: { group: "open", recent: "list" },
-    boxed: { group: "all", recent: "rows" },
-    panels: { group: "cards", recent: "tiles" },
-    flat: { group: "flat", recent: "table" }
+    boxed: { group: "all", recent: "list" },
+    tiles: { group: "open", recent: "tiles" },
+    flat: { group: "flat", recent: "rows" }
   };
 
   function setAxis(axis, option) {
