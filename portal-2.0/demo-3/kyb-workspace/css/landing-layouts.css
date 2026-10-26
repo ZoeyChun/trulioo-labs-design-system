@@ -61,8 +61,11 @@
   backdrop-filter: blur(6px);
 }
 
-/* Only the landing has a layout to switch. */
-.kw-shell[data-d3-view="chat"] .kw-stage:has(.d3-workspace[data-d3-kyb-surface="resume"]) .kw-lab {
+/* Each lab panel shows only on the screen it drives. The country step
+   lives on the *map* surface with the await panel drawn over it, so
+   that panel's own [hidden] is what distinguishes the two. */
+.kw-shell[data-d3-view="chat"] .kw-stage:has(.d3-workspace[data-d3-kyb-surface="resume"]) .kw-lab--landing,
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-d3-kyb-map-await]:not([hidden])) .kw-lab--country {
   display: block;
 }
 
@@ -242,92 +245,6 @@
   outline: none;
 }
 
-/* Send: the node's circular IconButton on surface-neutral-03, filled
-   once there is something to send. */
-.kw-send {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-self: center;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: var(--surface-neutral-03, #e8ede8);
-  cursor: pointer;
-  transition: background-color 150ms ease;
-}
-
-.kw-send:focus-visible {
-  outline: 2px solid var(--border-focus, #004c45);
-  outline-offset: 2px;
-}
-
-.kw-send__icon {
-  width: 16px;
-  height: 16px;
-  background-color: var(--icon-faint, #617269);
-  -webkit-mask: var(--kw-arrow-right) center / 16px 16px no-repeat;
-  mask: var(--kw-arrow-right) center / 16px 16px no-repeat;
-  transform: rotate(-90deg);
-  transition: background-color 150ms ease;
-}
-
-.kw-send.is-ready {
-  background: var(--interactive-default, #0e8a78);
-}
-
-.kw-send.is-ready .kw-send__icon {
-  background-color: #fff;
-}
-
-/* ------------------------------------------------------------------
-   Suggestion chips (node 1665:20431)
-   ------------------------------------------------------------------ */
-
-.kw-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-}
-
-.kw-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 8px 12px;
-  border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: 20px;
-  background: var(--surface-neutral-01, #fff);
-  color: var(--text-default, #172d2d);
-  font: inherit;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  cursor: pointer;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
-}
-
-.kw-action:hover {
-  border-color: color-mix(in srgb, var(--interactive-default, #0e8a78) 40%, var(--border-subtle, #dde2de));
-  box-shadow: 0 2px 8px rgba(22, 33, 27, 0.06);
-}
-
-.kw-action:focus-visible {
-  outline: 2px solid var(--border-focus, #004c45);
-  outline-offset: 2px;
-}
-
-.kw-action i {
-  font-size: 12px;
-  color: var(--icon-faint, #617269);
-}
-
 /* ------------------------------------------------------------------
    Recents header (node 1665:20420) — heading/xl + a link, on the ground
    ------------------------------------------------------------------ */
@@ -384,9 +301,11 @@
    ================================================================== */
 
 /* The sheet (.kw-stage__body) is chrome for the other KYB surfaces.
-   On the landing it would be a container around every grouping option,
-   which is the thing this axis is supposed to be able to remove. */
-.kw-shell[data-d3-view="chat"] .kw-stage__body:has(.d3-workspace[data-d3-kyb-surface="resume"]) {
+   On the landing — and on the country step, which carries the same
+   grouping axis — it would be a container around every option, which
+   is the thing those axes are supposed to be able to remove. */
+.kw-shell[data-d3-view="chat"] .kw-stage__body:has(.d3-workspace[data-d3-kyb-surface="resume"]),
+.kw-shell[data-d3-view="chat"] .kw-stage__body:has([data-d3-kyb-map-await]:not([hidden])) {
   background: transparent;
   border: 0;
   box-shadow: none;
@@ -443,7 +362,8 @@
    "One container" needs none of it — its card already covers the
    content.
    ------------------------------------------------------------------ */
-.kw-shell[data-d3-view="chat"] .kw-stage:has(.d3-workspace[data-d3-kyb-surface="resume"]):has([data-kw-group="open"]) .kw-stage__dots {
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-kw-group="open"]):has(.d3-workspace[data-d3-kyb-surface="resume"]) .kw-stage__dots,
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-kw-country][data-kw-group="open"]):has([data-d3-kyb-map-await]:not([hidden])) .kw-stage__dots {
   -webkit-mask-image: radial-gradient(
     circle 440px at 50% 48%,
     transparent 0,
@@ -830,7 +750,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .kw-chip,
-  .kw-action,
   [data-kw-recent="list"] .d3-kyb-recent__card::after {
     transition: none;
   }

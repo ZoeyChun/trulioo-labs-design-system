@@ -118,8 +118,8 @@
 
   <!-- Last in the cascade so it beats the hero-critical block above. -->
   <link rel="stylesheet" href="kyb-workspace/css/workspace-canvas.css?v=12">
-  <link rel="stylesheet" href="kyb-workspace/css/country-step.css?v=5">
-  <link rel="stylesheet" href="kyb-workspace/css/landing-layouts.css?v=15">
+  <link rel="stylesheet" href="kyb-workspace/css/country-step.css?v=7">
+  <link rel="stylesheet" href="kyb-workspace/css/landing-layouts.css?v=17">
 </head>
 <body>
 
@@ -224,7 +224,7 @@
          vb-lookup composite wired by js/d3-kyb-manual-search.js by id,
          and the recent cards are bound by js/d3-kyb-resume.js, so
          per-option markup would mean per-option wiring. -->
-    <details class="kw-lab" data-kw-lab open>
+    <details class="kw-lab kw-lab--landing" data-kw-lab open>
       <summary class="kw-lab__toggle" title="Design exploration — pick a combination and delete this panel">
         <span class="kw-variants__tag">Lab</span>
         <span class="kw-lab__toggle-text">Layout</span>
@@ -255,6 +255,31 @@
           <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="tiles">Tiles</button>
           <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="chips">Chips</button>
           <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="table">Table</button>
+        </div>
+      </div>
+    </details>
+
+    <!-- Waiting-for-country layout lab. Same two-axis idea as the landing's,
+         and shown only while that step is on screen. -->
+    <details class="kw-lab kw-lab--country" data-kw-country-lab open>
+      <summary class="kw-lab__toggle" title="Design exploration — pick a combination and delete this panel">
+        <span class="kw-variants__tag">Lab</span>
+        <span class="kw-lab__toggle-text">Country step</span>
+      </summary>
+
+      <div class="kw-lab__row">
+        <span class="kw-lab__label">Grouping</span>
+        <div class="kw-lab__opts" role="group" aria-label="Container grouping" data-kw-caxis="group">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-copt="open">Open</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-copt="all">One container</button>
+        </div>
+      </div>
+
+      <div class="kw-lab__row">
+        <span class="kw-lab__label">Step tracker</span>
+        <div class="kw-lab__opts" role="group" aria-label="Step tracker treatment" data-kw-caxis="steps">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-copt="cards">Cards</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-copt="timeline">Timeline</button>
         </div>
       </div>
     </details>
@@ -331,81 +356,61 @@
                The segmented switch is a LAB control: dropdown and quick picks
                are two candidates to choose between, not two controls meant to
                ship together. Options and wiring: js/country-step.js. -->
-          <div class="d3-kyb-map__await" data-d3-kyb-map-await hidden>
-            <div class="kw-country" data-kw-country>
+          <!-- Waiting for country.
 
-              <h2 class="kw-country__title">
-                Which country is <strong data-d3-kyb-map-await-query>this business</strong> registered in?
-              </h2>
+               A status screen, not a form: the user answers in chat, so
+               there is nothing to pick here. It carries the five things the
+               step has to say — that it is waiting, what it is waiting on,
+               what it has already got, what comes after, and what a valid
+               answer looks like.
+
+               Two axes, matching the landing's: data-kw-group boxes the
+               content or leaves it on the dots, and data-kw-steps draws the
+               tracker as a row of cards or as a vertical timeline. -->
+          <div class="d3-kyb-map__await" data-d3-kyb-map-await hidden>
+            <div class="kw-country" data-kw-country data-kw-group="open" data-kw-steps="cards">
+
+              <span class="kw-country__eyebrow" role="status">
+                <span class="kw-country__pulse" aria-hidden="true"></span>
+                Waiting for country
+              </span>
+
+              <h2 class="kw-country__title">Search in progress</h2>
+
+              <p class="kw-country__lead">
+                Looking up <strong data-d3-kyb-map-await-query>this business</strong>.
+                Reply with the country of registration in chat to continue.
+              </p>
 
               <ol class="kw-steps" aria-label="Verification progress">
                 <li class="kw-steps__item is-done">
                   <span class="kw-steps__mark" aria-hidden="true">
                     <svg viewBox="0 0 12 12" fill="none"><path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m2.5 6.2 2.3 2.3L9.5 3.8"/></svg>
                   </span>
-                  <span class="kw-steps__label">Business name</span>
+                  <span class="kw-steps__text">
+                    <b class="kw-steps__label">Name set</b>
+                    <em class="kw-steps__note" data-kw-step-name>—</em>
+                  </span>
                 </li>
                 <li class="kw-steps__item is-current" aria-current="step">
                   <span class="kw-steps__mark" aria-hidden="true"></span>
-                  <span class="kw-steps__label">Country</span>
+                  <span class="kw-steps__text">
+                    <b class="kw-steps__label">Country needed</b>
+                    <em class="kw-steps__note">Reply in chat to continue</em>
+                  </span>
                 </li>
                 <li class="kw-steps__item is-todo">
                   <span class="kw-steps__mark" aria-hidden="true"></span>
-                  <span class="kw-steps__label">Matching entity</span>
-                </li>
-                <li class="kw-steps__item is-todo">
-                  <span class="kw-steps__mark" aria-hidden="true"></span>
-                  <span class="kw-steps__label">Verification</span>
+                  <span class="kw-steps__text">
+                    <b class="kw-steps__label">Business matches</b>
+                    <em class="kw-steps__note">Pick the right entity</em>
+                  </span>
                 </li>
               </ol>
 
-              <section class="kw-country__pick" aria-labelledby="kw-country-pick-h">
-                <div class="kw-country__pick-head">
-                  <h3 class="kw-country__pick-title" id="kw-country-pick-h">Country of registration</h3>
-                  <div class="kw-variants">
-                    <span class="kw-variants__tag" title="Treatment comparison — not two controls meant to ship together">Lab</span>
-                    <div class="tds-segmented-control tds-segmented-control--sm" role="group" aria-label="Country selector treatment" data-kw-variants>
-                      <button type="button" class="tds-segmented-control__item tds-segmented-control__item--selected" aria-pressed="true" data-kw-variant-btn="tiles"><span class="tds-segmented-control__label">Quick picks</span></button>
-                      <button type="button" class="tds-segmented-control__item" aria-pressed="false" data-kw-variant-btn="dropdown"><span class="tds-segmented-control__label">Dropdown</span></button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- A · Dropdown — the TDS flag select, options injected by JS. -->
-                <div class="kw-variant" data-kw-variant="dropdown" hidden>
-                  <div class="tds-select tds-select--interactive kw-select" id="kw-country-select" data-menu-type="flag" data-kw-select>
-                    <button type="button" class="tds-select__trigger tds-select__trigger--lg" aria-haspopup="listbox" aria-expanded="false" aria-label="Country of registration">
-                      <span class="tds-select__country-flag" aria-hidden="true"><span class="fi fi-xx"></span></span>
-                      <span class="tds-select__value tds-select__placeholder" data-kw-select-value>Choose a country</span>
-                      <span class="tds-select__trailing-group">
-                        <span class="tds-caret tds-caret--default" aria-hidden="true">
-                          <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
-                        </span>
-                      </span>
-                    </button>
-                    <div class="tds-select__menu" role="listbox" aria-label="Country of registration" hidden>
-                      <div class="tds-dropdown-panel kw-select__menu" data-kw-select-menu></div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- B · Quick picks — the jurisdictions this demo has data for.
-                     The default treatment. -->
-                <div class="kw-variant" data-kw-variant="tiles">
-                  <div class="kw-tiles" role="group" aria-label="Common countries" data-kw-tiles></div>
-                  <button type="button" class="kw-variant__more" data-kw-goto-variant="dropdown">
-                    Search all jurisdictions
-                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6 4l4 4-4 4"/></svg>
-                  </button>
-                </div>
-
-                <footer class="kw-country__foot">
-                  <button type="button" class="tds-btn tds-btn--primary tds-btn--lg" data-kw-continue disabled>
-                    Search registries
-                  </button>
-                  <span class="kw-country__or">or reply with the country in chat</span>
-                </footer>
-              </section>
+              <p class="kw-country__hint">
+                Example: <span>United States</span> or <span>United Kingdom</span>
+              </p>
 
             </div>
           </div>
@@ -504,14 +509,6 @@
                 </div>
               </div>
 
-              <!-- Send (node 1665:20430). The upstream Submit button lives in
-                   the prefill panel, not the field, so the design's circular
-                   send has no existing equivalent — this one hands the typed
-                   name and the selected country to the agent, which is the
-                   same path the composer uses. -->
-              <button type="button" class="kw-send" data-kw-send aria-label="Search">
-                <span class="kw-send__icon" aria-hidden="true"></span>
-              </button>
             </div>
 
             <p class="vb-search-hint" id="vb-search-hint">Enter at least 3 characters to search for a business.</p>
@@ -589,20 +586,6 @@
         </div>
         </div><!-- /.kw-landing__panel -->
 
-        <!-- Suggestion chips (node 1665:20431). Each one hands the agent the
-             sentence a user would otherwise type, so they run the same path
-             as the composer rather than a second entry point. -->
-        <div class="kw-actions" role="group" aria-label="Quick actions">
-          <button type="button" class="kw-action" data-kw-action="Verify a business">
-            <i class="fa-regular fa-building" aria-hidden="true"></i>Verify Business
-          </button>
-          <button type="button" class="kw-action" data-kw-action="Verify a person">
-            <i class="fa-regular fa-user" aria-hidden="true"></i>Verify Person
-          </button>
-          <button type="button" class="kw-action" data-kw-action="Check risk signals">
-            <i class="fa-regular fa-triangle-exclamation" aria-hidden="true"></i>Check Risk Signals
-          </button>
-        </div>
         </div>
 
         <section class="d3-kyb-recent" data-d3-kyb-recent aria-labelledby="d3-kyb-recent-h">
@@ -1502,8 +1485,8 @@ No evidence of active trading, clients, or revenue.</p>
 <!-- Workspace canvas: dot ground, tab strip, docked-panel guard.
      Last so it can observe the shell after every shared script has bound. -->
 <script src="kyb-workspace/js/workspace-canvas.js?v=4"></script>
-<script src="kyb-workspace/js/country-step.js?v=3"></script>
-<script src="kyb-workspace/js/landing-layouts.js?v=9"></script>
+<script src="kyb-workspace/js/country-step.js?v=4"></script>
+<script src="kyb-workspace/js/landing-layouts.js?v=10"></script>
 <script src="kyb-workspace/js/kyb-boot.js?v=1"></script>
 </body>
 </html>

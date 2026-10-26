@@ -19,8 +19,8 @@ No sign-in, same as `ai-panel-lab/` — this is a layout lab.
 
 - **KYB Verification landing** — rebuilt on Figma `1665:20500`, with two
   layout axes. See [Landing layouts](#landing-layouts).
-- **Waiting for country** — redesigned, with two country-selector treatments
-  to choose between. See [Waiting for country](#waiting-for-country).
+- **Waiting for country** — a status screen, with two step-tracker
+  treatments. See [Waiting for country](#waiting-for-country).
 - **Map view, report, matches** — render on the canvas already (nothing in
   `.d1-main` was touched), but they break out of both the width cap and the
   height hug and haven't had a design pass.
@@ -194,20 +194,18 @@ list is in a container.
 |--|--|
 | Title | Tobias 36/44 (32/40 here), centred, `--text-body` |
 | Prompt input | White, 4px translucent ring, radius 16, `elevation/xl` |
-| Send | 28px circular button on `--surface-neutral-03`, arrow 16px |
-| Suggestion chips | Verify Business · Verify Person · Check Risk Signals |
 | Recents header | Inter 24/32 semibold + a `--text-link` View all, on the ground |
 | List container | Radius 24, 24px padding, soft green drop shadow |
 | Row | Timestamp · title · one tag · arrow, divider-separated |
 
 **The country selector lives inside the field**, left of the input. The node
 draws a single prompt box; ours has to carry the jurisdiction too, because a
-KYB search without one is exactly what the next step stops to ask for. Send
-hands the agent `"<name>, <country>"` — the same path the composer uses — so
-the selector actually scopes the search rather than decorating the field.
+KYB search without one is exactly what the next step stops to ask for.
 
-The send button is new markup: upstream's Submit lives in the prefill panel,
-not in the field, so there was no existing equivalent to restyle.
+The node's circular send button and its row of suggestion chips (Verify
+Business · Verify Person · Check Risk Signals) were both built and then cut —
+the composer already sends, and the chips duplicated prompts the TruAI panel
+offers. They are in git history.
 
 ### Axes
 
@@ -296,47 +294,51 @@ Pick a combination, then delete the panel, the lab section of
 `index.html` → `[data-d3-kyb-map-await]`, `css/country-step.css`,
 `js/country-step.js`.
 
-The parent page shows a status card here — pulse, title, three-dot rail. It
-reports; it doesn't ask. The user's only way forward is to go back to chat and
-type. This version asks on the canvas, and carries **three things only**:
+A **status screen, not a form**. The user answers in chat, so there is nothing
+to pick here. It carries five things: that it is waiting, what it is waiting
+on, what it already has, what comes next, and what a valid answer looks like.
 
-1. The question.
-2. A step tracker — name ✓ → country (current) → matching entity →
-   verification — so one answer visibly unblocks the rest.
-3. The country picker.
+An earlier pass made this an interactive country picker — a dropdown, a
+quick-pick grid, a Continue button that handed the answer to the agent. All
+removed: the conversation already owns that input, and a second one on the
+canvas meant two places to answer the same question. It is in git history.
 
-An earlier pass also had a rationale paragraph ("registries are national…"),
-per-treatment notes, and an aside with run context and next steps. All cut: this
-is a one-decision screen, and everything else read as clutter around the one
-control that matters. Same reason the step tracker is labels only — the per-step
-hints turned it into a second block of reading.
+### Axes
 
-### Selector treatments
+Both mirror the landing's, so the two screens stay in step.
 
-| | Treatment | Argument for it |
+| Axis | Attribute | Options |
 |--|--|--|
-| A | **Quick picks** — flag tiles · *default* | Fastest for the common case; needs the "search all jurisdictions" escape hatch for the long tail. |
-| B | **Dropdown** — TDS flag select, all 24 | One control, every jurisdiction. Safest when the user knows the answer. |
+| Grouping | `data-kw-group` | `open` · `all` |
+| Step tracker | `data-kw-steps` | `cards` · `timeline` |
 
-The segmented switch above them is a **lab control**, tagged `LAB` — two
-candidates, not two controls meant to ship together. Pick one and delete the
-switch. Selection is shared, so switching mid-flow keeps the answer.
+**Step tracker** — three steps only: Name set ✓ → Country needed → Business
+matches.
 
-A by-region list and a type-ahead were also built and then cut — a lab switch
-with dead options on it is just a longer switch. They're in git history if
-either is worth revisiting.
+- **Cards** — three cells across a tinted band, the current one lifted onto
+  white. Reads as "you are here, of three". The per-step notes are hidden
+  here: at a third of 600px there is no room for a second line, and a
+  truncated hint is worse than none.
+- **Timeline** — stacked, marks joined by a rule. Vertical space is the one
+  thing this screen has spare, and it buys room for the note under each label,
+  so each step says what it *is* as well as where it sits.
 
-Countries live in `COUNTRIES` in `js/country-step.js`. The six with
-`demo: true` mirror `DEMO_JURISDICTIONS` in `js/d3-kyb-agent.js` — the only ones
-with fixture businesses behind them — and are tagged **Demo data** in every
-list, so a pick that leads nowhere doesn't read as a bug.
+**Grouping** — `open` puts the content on the dot ground (and gets the same
+canvas mask the landing uses, clearing the pattern behind the text); `all`
+boxes it in one card. Under `all` the tracker's tinted band becomes an outline
+instead, so the card does not stack two greys.
 
-### How the answer gets back
+### Clearing the way for it
 
-`applyCountryPick()` isn't exported from `js/d3-kyb-agent.js`, and the chat
-bridge already accepts `d3-chat:send`. So Continue sends the sentence the user
-would otherwise have typed — `"<business>, <country>"` — which runs the exact
-path chat runs, with no fork of the agent.
+The sheet removal and the `.d3-kyb-map` fill both had to be dealt with before
+`open` could show any dots at all:
+
+- `.kw-stage__body` is the white card the other KYB surfaces sit on. Its
+  removal is keyed off the resume surface **and** the await panel, because
+  this step lives on the *map* surface with the panel drawn over it.
+- `d3-workspace.css` fills `.d3-kyb-map` white for the Leaflet pane. With the
+  sheet gone that fill became the thing covering the dots, so it is cleared
+  while `is-awaiting-country` is set.
 
 ## Removed: the tab strip
 
