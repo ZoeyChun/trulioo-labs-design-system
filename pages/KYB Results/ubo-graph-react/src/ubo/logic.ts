@@ -46,7 +46,10 @@ export const UBO_CANVAS = {
      the framing stable when a pruned tree would otherwise collapse the canvas. */
   width: 1010,
   height: 662,
-  nodeWidth: 242,
+  /* Must match the CSS card width (.kyb-ubo-node / --button in kyb-results.css and
+     demo-3 d3-kyb-ubo-graph.css). If they differ, sibling cards overlap and wires
+     miss the card centres. */
+  nodeWidth: 288,
   nodeHeight: 64,
   wireRadius: 8,
   /** Horizontal gap between adjacent sibling subtrees. */

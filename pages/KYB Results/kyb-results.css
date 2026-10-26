@@ -2872,7 +2872,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-12);
-  width: min(100%, 242px);
+  width: min(100%, 288px);
   padding: var(--spacing-12);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -2943,7 +2943,7 @@
 }
 
 .kyb-ubo-node--button {
-  width: 242px;
+  width: 288px;
   margin: 0;
   font: inherit;
   text-align: left;
@@ -3010,7 +3010,7 @@
 
 .kyb-ubo-tree__level--grandchildren--single {
   grid-template-columns: minmax(0, 1fr);
-  max-width: 242px;
+  max-width: 288px;
 }
 
 .kyb-ubo-tree__more-btn {
