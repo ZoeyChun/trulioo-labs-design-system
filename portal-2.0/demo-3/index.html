@@ -58,6 +58,7 @@
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=13">
   <link rel="stylesheet" href="css/d3-workspace.css?v=33">
+  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=2">
   <link rel="stylesheet" href="css/d3-kyb-details.css?v=1">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
@@ -265,6 +266,7 @@
         ></iframe>
       </section>
       <section class="d3-workspace" data-d3-workspace data-d3-kyb-surface="map" aria-label="KYB Verification">
+        <canvas class="d3-kyb-dots" id="d3-kyb-dots" aria-hidden="true"></canvas>
         <div class="d3-kyb-submit-loader" data-d3-kyb-submit-loader hidden role="status" aria-live="polite" aria-busy="false">
           <div class="d1-thinking d3-kyb-submit-loader__thinking">
             <span class="d1-thinking__orb" aria-hidden="true">
@@ -316,30 +318,41 @@
         <div class="d3-kyb-map" data-d3-kyb-map aria-hidden="false">
           <div class="d3-kyb-map__leaflet" data-d3-kyb-leaflet role="application" aria-label="Business search map"></div>
           <div class="d3-kyb-map__await" data-d3-kyb-map-await hidden>
-            <div class="d3-kyb-setup">
-              <div class="d3-kyb-setup__status" role="status">
-                <span class="d3-kyb-setup__pulse" aria-hidden="true"></span>
+            <div class="d3-kyb-country">
+              <span class="d3-kyb-country__eyebrow" role="status">
+                <span class="d3-kyb-country__pulse" aria-hidden="true"></span>
                 Waiting for country
-              </div>
-              <h2 class="d3-kyb-setup__title">Search in progress</h2>
-              <p class="d3-kyb-setup__lead">
+              </span>
+              <h2 class="d3-kyb-country__title">Search in progress</h2>
+              <p class="d3-kyb-country__lead">
                 Looking up <strong data-d3-kyb-map-await-query>—</strong>. Reply with the country of registration in chat to continue.
               </p>
-              <div class="d3-kyb-setup__rail" aria-label="Search progress">
-                <div class="d3-kyb-setup__rail-item is-done">
-                  <span class="d3-kyb-setup__rail-dot" aria-hidden="true"></span>
-                  <span class="d3-kyb-setup__rail-text">Name set</span>
-                </div>
-                <div class="d3-kyb-setup__rail-item is-current">
-                  <span class="d3-kyb-setup__rail-dot" aria-hidden="true"></span>
-                  <span class="d3-kyb-setup__rail-text">Country needed</span>
-                </div>
-                <div class="d3-kyb-setup__rail-item is-todo">
-                  <span class="d3-kyb-setup__rail-dot" aria-hidden="true"></span>
-                  <span class="d3-kyb-setup__rail-text">Business matches</span>
-                </div>
-              </div>
-              <p class="d3-kyb-setup__hint">Example: <span>United States</span> or <span>United Kingdom</span></p>
+              <ol class="d3-kyb-steps" aria-label="Verification progress">
+                <li class="d3-kyb-steps__item is-done">
+                  <span class="d3-kyb-steps__mark" aria-hidden="true">
+                    <svg viewBox="0 0 12 12" fill="none"><path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m2.5 6.2 2.3 2.3L9.5 3.8"/></svg>
+                  </span>
+                  <span class="d3-kyb-steps__text">
+                    <b class="d3-kyb-steps__label">Name set</b>
+                    <em class="d3-kyb-steps__note" data-d3-kyb-step-name>—</em>
+                  </span>
+                </li>
+                <li class="d3-kyb-steps__item is-current" aria-current="step">
+                  <span class="d3-kyb-steps__mark" aria-hidden="true"></span>
+                  <span class="d3-kyb-steps__text">
+                    <b class="d3-kyb-steps__label">Country needed</b>
+                    <em class="d3-kyb-steps__note">Reply in chat to continue</em>
+                  </span>
+                </li>
+                <li class="d3-kyb-steps__item is-todo">
+                  <span class="d3-kyb-steps__mark" aria-hidden="true"></span>
+                  <span class="d3-kyb-steps__text">
+                    <b class="d3-kyb-steps__label">Business matches</b>
+                    <em class="d3-kyb-steps__note">Pick the right entity</em>
+                  </span>
+                </li>
+              </ol>
+              <p class="d3-kyb-country__hint">Example: <span>United States</span> or <span>United Kingdom</span></p>
             </div>
           </div>
           <div class="d3-kyb-map__overlay">
@@ -506,6 +519,7 @@
         <section class="d3-kyb-recent" data-d3-kyb-recent aria-labelledby="d3-kyb-recent-h">
           <div class="d3-kyb-recent__head">
             <h2 class="d3-kyb-recent__title" id="d3-kyb-recent-h">Recent transactions</h2>
+            <button type="button" class="d3-kyb-recent__viewall" data-d3-kyb-view-all>View all</button>
           </div>
           <div class="d3-kyb-recent__grid">
             <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Apex Nordic Logistics AB" data-status="Verified" data-country="Sweden" data-txid="a7bc12e4-91f0-4c2d-8e55-3b1d9a0f6c28" data-date="12 Mar 2026, 09:00">
@@ -1357,6 +1371,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-home-placeholder.js?v=3"></script>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>
 <script src="js/d3-home-dots.js"></script>
+<script src="js/d3-kyb-canvas.js?v=1"></script>
 <script src="js/d3-home-orb.js?v=5"></script>
 </body>
 </html>

@@ -1,0 +1,469 @@
+/* ============================================================
+   Demo 3 — KYB right-panel canvas
+   ============================================================
+   Right-panel look ported from kyb-workspace/: a dotted ground, a
+   600px content column, the KYB landing rebuilt on it (title, search
+   card, "Recent transactions" list) and the "Search in progress" step
+   timeline.
+
+   Scope is deliberately narrow:
+     L = KYB landing   (surface "resume", landing visible)
+     A = waiting for country (surface "map", await panel visible)
+   The map, the report, the AI panel, the rail and home are untouched.
+
+   No drop shadows on the manual search field or the recent list —
+   those were removed on purpose. The "Search in progress" card keeps
+   its elevation, as in the workspace.
+   ------------------------------------------------------------------ */
+
+.d3-kyb-dots {
+  display: none;
+}
+
+/* ------------------------------------------------------------------
+   Ground
+   ------------------------------------------------------------------ */
+
+.d1-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="resume"]:has([data-d3-kyb-landing]:not([hidden])),
+.d1-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="map"]:has([data-d3-kyb-map-await]:not([hidden])) {
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d1-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="resume"]:has([data-d3-kyb-landing]:not([hidden])) > .d3-kyb-dots,
+.d1-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="map"]:has([data-d3-kyb-map-await]:not([hidden])) > .d3-kyb-dots {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Clear the pattern behind the content column: a soft circle, so
+     there is no hard edge to notice. */
+  -webkit-mask-image: radial-gradient(circle 440px at 50% 48%, transparent 0, transparent 38%, #000 100%);
+  mask-image: radial-gradient(circle 440px at 50% 48%, transparent 0, transparent 38%, #000 100%);
+}
+
+/* ------------------------------------------------------------------
+   L · Landing
+   ------------------------------------------------------------------ */
+
+.d3-workspace[data-d3-kyb-surface="resume"] .d3-workspace__detail:has([data-d3-kyb-landing]:not([hidden])) {
+  position: relative;
+  z-index: 1;
+  align-items: center;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing]:not([hidden]) {
+  flex: 0 0 auto;
+  gap: 40px;
+  max-width: 600px;
+  /* auto block margins centre it vertically without clipping the top
+     when the list grows taller than the pane. */
+  margin: auto;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-workspace__hero {
+  gap: 24px;
+  margin-top: clamp(24px, 6vh, 56px);
+}
+
+/* Title — display/sm. */
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-workspace__title {
+  font-family: var(--font-family-display, "Tobias", Georgia, serif);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 40px;
+  letter-spacing: 0;
+  color: var(--text-default, #172d2d);
+  text-align: center;
+}
+
+/* Search card — one rounded field, country selector inside it. */
+.d3-workspace[data-d3-kyb-surface="resume"] .d3-workspace__search .vb-lookup {
+  width: 100%;
+  max-width: none;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .vb-search-field {
+  gap: 0;
+  padding: 7px 7px 7px 10px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 16px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: none;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .vb-search-country .tds-select__trigger {
+  height: 34px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .vb-search-country .tds-select__trigger:hover {
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .vb-search-field__divider {
+  align-self: center;
+  height: 20px;
+  margin: 0 6px;
+  background: var(--border-subtle, #dde2de);
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .vb-combobox__field {
+  height: 34px;
+  padding-left: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] .vb-combobox__field:focus-within {
+  border: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Recents header — heading/xl + a link, on the ground. */
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent {
+  gap: 16px;
+  max-width: none;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__head {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__title {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 30px;
+  color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-recent__viewall {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-link, #006b5c);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.d3-kyb-recent__viewall:hover { text-decoration: underline; }
+.d3-kyb-recent__viewall:focus-visible {
+  outline: 2px solid var(--border-interactive, #004c45);
+  outline-offset: 2px;
+}
+
+/* Recent list — one white container, divider rows. No shadow. */
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 6px 24px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 24px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: none;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__card {
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  min-height: 0;
+  margin: 0;
+  padding: 18px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__card + .d3-kyb-recent__card {
+  border-top: 1px solid var(--border-subtle, #dde2de);
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__card:hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__date {
+  order: 1;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--text-caption, #617269);
+  white-space: nowrap;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__name {
+  order: 2;
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  -webkit-line-clamp: 1;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__card .d1-tag {
+  order: 3;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__product,
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__role {
+  display: none;
+}
+
+/* Trailing arrow — a mask so it takes its colour from background-color. */
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__card::after {
+  content: "";
+  order: 4;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  background-color: var(--icon-interactive, #004c45);
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'><path d='M3 8h10M9 4l4 4-4 4' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 16px 16px no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'><path d='M3 8h10M9 4l4 4-4 4' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 16px 16px no-repeat;
+  transition: transform 150ms ease;
+}
+
+.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__card:hover::after {
+  transform: translateX(2px);
+}
+
+/* ------------------------------------------------------------------
+   A · Waiting for country
+   ------------------------------------------------------------------ */
+
+.d3-workspace[data-d3-kyb-surface="map"] .d3-kyb-map.is-awaiting-country {
+  background: transparent;
+  overflow: visible;
+}
+
+.d3-workspace[data-d3-kyb-surface="map"] .d3-kyb-map.is-awaiting-country .d3-kyb-map__await {
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: transparent;
+}
+
+.d3-kyb-country {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: min(600px, 100%);
+  margin: auto;
+  padding: 28px 24px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 24px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: 0 12px 24px rgba(138, 154, 144, 0.22);
+}
+
+.d3-kyb-country__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 9%, #fff);
+  color: var(--interactive-default, #0e8a78);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.d3-kyb-country__pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: currentColor;
+  animation: d3-kyb-country-pulse 1.8s ease-out infinite;
+}
+
+@keyframes d3-kyb-country-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--interactive-default, #0e8a78) 45%, transparent); }
+  70%  { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.d3-kyb-country__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-country__lead {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text-description, #526660);
+}
+
+.d3-kyb-country__lead strong {
+  font-weight: 600;
+  color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-country__hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-caption, #617269);
+}
+
+.d3-kyb-country__hint span {
+  font-weight: 600;
+  color: var(--text-default, #172d2d);
+}
+
+/* Step timeline — vertical, marks joined by a rule. */
+.d3-kyb-steps {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.d3-kyb-steps__item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 18px;
+}
+
+.d3-kyb-steps__item:last-child {
+  padding-bottom: 0;
+}
+
+.d3-kyb-steps__item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 24px;
+  bottom: 2px;
+  left: 10.5px;
+  width: 1px;
+  background: var(--border-subtle, #dde2de);
+}
+
+.d3-kyb-steps__item.is-done::before {
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 45%, var(--border-subtle, #dde2de));
+}
+
+.d3-kyb-steps__mark {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-subtle, #dde2de);
+  background: var(--surface-neutral-01, #fff);
+  color: #fff;
+}
+
+.d3-kyb-steps__mark svg { width: 11px; height: 11px; }
+
+.d3-kyb-steps__item.is-done .d3-kyb-steps__mark {
+  border-color: var(--interactive-default, #0e8a78);
+  background: var(--interactive-default, #0e8a78);
+}
+
+.d3-kyb-steps__item.is-current .d3-kyb-steps__mark {
+  border-color: var(--interactive-default, #0e8a78);
+  border-width: 2px;
+}
+
+.d3-kyb-steps__item.is-current .d3-kyb-steps__mark::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--interactive-default, #0e8a78);
+}
+
+.d3-kyb-steps__item.is-todo .d3-kyb-steps__mark {
+  background: var(--surface-neutral-03, #e8ede8);
+}
+
+.d3-kyb-steps__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.d3-kyb-steps__label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-steps__item.is-todo .d3-kyb-steps__label {
+  color: var(--text-caption, #8a9690);
+}
+
+.d3-kyb-steps__note {
+  overflow: hidden;
+  font-size: 12px;
+  font-style: normal;
+  line-height: 16px;
+  color: var(--text-caption, #8a9690);
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 720px) {
+  .d3-kyb-country {
+    gap: 14px;
+    padding: 28px 20px;
+  }
+
+  .d3-kyb-country__title {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__card {
+    gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-kyb-country__pulse { animation: none; }
+}
