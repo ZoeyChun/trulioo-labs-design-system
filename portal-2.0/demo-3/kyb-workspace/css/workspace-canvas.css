@@ -105,12 +105,12 @@
 }
 
 /* ------------------------------------------------------------------
-   1b · Map and report keep the full stage
+   1b · Map keeps the full stage
 
    The sheet's cap is right for every screen that is a document — a
-   question, a landing. The map and the report are not documents; they
-   are canvases, and a 600px letterbox of either is useless. They take
-   the stage width, and its height.
+   question, a landing. The map is not a document; it is a canvas, and
+   a 600px letterbox of it is useless. It takes the stage width, and
+   its height.
 
    This does mean the sheet widens on the way into the map. The jump is
    the price of the cap; dropping this rule makes everything 600px if
@@ -122,12 +122,60 @@
    cap exists for. The await panel's own [hidden] is what separates
    "the map" from "the question drawn over the map".
    ------------------------------------------------------------------ */
-.kw-shell[data-d3-view="chat"] .kw-stage__body:has([data-d3-kyb-surface="map"]):not(:has([data-d3-kyb-map-await]:not([hidden]))),
-.kw-shell[data-d3-view="chat"] .kw-stage__body:has([data-d3-kyb-surface="report"]) {
+.kw-shell[data-d3-view="chat"] .kw-stage__body:has([data-d3-kyb-surface="map"]):not(:has([data-d3-kyb-map-await]:not([hidden]))) {
   /* Full height as well as full width — hugging a Leaflet pane gives it
      nothing to be as tall as. */
   flex: 1 1 auto;
   max-width: none;
+}
+
+/* ------------------------------------------------------------------
+   1c · Report — crumb on the ground, card carries the shadow
+
+   The sheet would be a second container around a report that already
+   is one. Drop it. The breadcrumb ("KYB Verification / Meridian
+   Analytics Inc.") stays in the detail header, which now paints
+   straight on the stage ground, and the live report card takes the
+   shadow the sheet used to own.
+
+   The dot field comes off on this step. It sits under that crumb, and
+   an 18px grid of dots through the type is the thing being avoided.
+
+   The stage's 20px padding existed to inset that sheet from the canvas
+   edge. With the sheet gone it is just an empty frame, so the report
+   step drops it. The detail keeps its own 20px, which is the gap the
+   breadcrumb and the card's shadow sit in.
+   ------------------------------------------------------------------ */
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-d3-kyb-surface="report"]) {
+  padding: 0;
+}
+
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-d3-kyb-surface="report"]) .kw-stage__dots {
+  display: none;
+}
+
+.kw-shell[data-d3-view="chat"] .kw-stage__body:has([data-d3-kyb-surface="report"]) {
+  flex: 1 1 auto;
+  max-width: none;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* The report body still scrolls inside the card. These ancestors were
+   clipping the card's shadow at the padding edge. */
+.kw-shell[data-d3-view="chat"] .kw-stage__body:has([data-d3-kyb-surface="report"]) .d1-main,
+.kw-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="report"],
+.kw-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="report"] .d3-workspace__detail {
+  overflow: visible;
+}
+
+.kw-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-resume.is-live {
+  box-shadow:
+    0 1px 2px rgba(22, 33, 27, 0.05),
+    0 14px 36px rgba(22, 33, 27, 0.08);
 }
 
 /* Waiting-for-country sits on the map surface, so .d3-kyb-map is what
