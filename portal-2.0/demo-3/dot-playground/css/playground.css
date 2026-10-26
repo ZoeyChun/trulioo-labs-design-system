@@ -177,8 +177,8 @@
   isolation: isolate;
 }
 
-/* home 1 keeps the hero inside the content column; home 3–5 run it to
-   the edges of the slot. */
+/* The older hero sat inside the content column; the shipped one runs
+   to the edges of the slot. */
 .pg-hero[data-width="contained"] {
   width: min(1214px, 100%);
 }
@@ -232,6 +232,22 @@
   mask-image: linear-gradient(205deg, #000 6%, rgba(0, 0, 0, 0.2) 46%, transparent 68%);
 }
 
+/* On a pale hero the same two layers have to be shade, not light —
+   white on white is nothing at all. */
+.pg-hero[data-tone="light"][data-backdrop="planet"]::before {
+  background: radial-gradient(circle at 42% 34%,
+    rgba(23, 45, 45, 0.05),
+    rgba(23, 45, 45, 0.022) 52%,
+    rgba(23, 45, 45, 0) 71%);
+}
+
+.pg-hero[data-tone="light"][data-backdrop="planet"]::after {
+  background: radial-gradient(circle,
+    rgba(23, 45, 45, 0) 69.3%,
+    rgba(23, 45, 45, 0.16) 70%,
+    rgba(23, 45, 45, 0) 71.6%);
+}
+
 .pg-hero[data-backdrop="halo"]::before {
   content: '';
   position: absolute;
@@ -240,6 +256,11 @@
   pointer-events: none;
   background: radial-gradient(58% 55% at 50% 42%,
     rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 70%);
+}
+
+.pg-hero[data-tone="light"][data-backdrop="halo"]::before {
+  background: radial-gradient(58% 55% at 50% 42%,
+    rgba(23, 45, 45, 0.07), rgba(23, 45, 45, 0) 70%);
 }
 
 .pg-hero[data-backdrop="vignette"]::after {
@@ -252,8 +273,26 @@
     rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, 0.55) 100%);
 }
 
+.pg-hero[data-tone="light"][data-backdrop="vignette"]::after {
+  background: radial-gradient(78% 72% at 50% 50%,
+    rgba(23, 45, 45, 0) 42%, rgba(23, 45, 45, 0.16) 100%);
+}
+
+/* The composer is a white card; on a pale hero it needs an edge to sit
+   against, and the split layout's mint headline loses all contrast. */
+.pg-hero[data-tone="light"] .d1-composer > .d1-prompt {
+  border-color: rgba(23, 45, 45, 0.08);
+}
+
+.pg-hero[data-layout="split"][data-tone="light"] .pg-hero__hello {
+  color: var(--text-default, #172d2d);
+  font-size: 48px;
+  line-height: 56px;
+}
+
 /* ── Veil ────────────────────────────────────────────────────
-   home 4's .d3-home-4-veil, same geometry and mask. Its colour
+   The .d3-home-4-veil of css/d3-home-4.css, same geometry and
+   mask. Its colour
    tracks the hero background through --pg-veil-bg, because a
    plate that doesn't match the surface reads as a panel.
    ------------------------------------------------------------ */
@@ -323,8 +362,8 @@
   gap: var(--spacing-24, 24px);
 }
 
-/* Split is home 5: a 441px copy column on the left, composer on the
-   right, mint headline (css/d3-home-5.css). */
+/* The split arrangement from css/d3-home-5.css: a 441px copy column
+   on the left, composer on the right, mint headline. */
 .pg-hero[data-layout="split"] {
   align-items: center;
 }
@@ -439,8 +478,8 @@
   box-shadow: none;
 }
 
-/* home 4 lets the composer grow downward as the text wraps instead of
-   clipping it to one line (css/d3-home-4.css). */
+/* The shipped hero lets the composer grow downward as the text wraps
+   instead of clipping it to one line (css/d3-home-4.css). */
 .pg-hero .d1-prompt__field {
   flex: 0 0 auto;
   align-items: flex-start;
@@ -521,22 +560,75 @@
 
 /* ── Panel ───────────────────────────────────────────────────── */
 
+/* Strip stays, body scrolls — so the group you want is always one
+   click away however far down a group you have scrolled. */
 .pg-panel {
   position: sticky;
   top: var(--pg-bar-h);
-  max-height: calc(100vh - var(--pg-bar-h));
-  overflow-y: auto;
-  padding: 16px 16px 32px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--pg-bar-h));
+  overflow: hidden;
   background: var(--surface-neutral-01, #fff);
   border-left: 1px solid var(--border-subtle, #dde3e0);
+}
+
+.pg-panel__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px 16px 32px;
+}
+
+.pg-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+  gap: 4px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-subtle, #dde3e0);
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.pg-tab__btn {
+  padding: 4px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #3d524f);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.pg-tab__btn:hover {
+  background: rgba(0, 76, 69, 0.07);
+  color: var(--text-default, #172d2d);
+}
+
+.pg-tab__btn.is-on {
+  background: var(--interactive-default, #004c45);
+  border-color: var(--interactive-default, #004c45);
+  color: #fff;
+}
+
+.pg-tab__btn:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 1px;
+}
+
+.pg-tab[hidden] {
+  display: none;
 }
 
 .pg-presets {
   margin-bottom: 16px;
 }
 
-.pg-presets__label,
-.pg-group__name {
+.pg-presets__label {
   margin: 0;
   font-size: 0.6875rem;
   font-weight: var(--font-weight-semibold, 600);
@@ -575,45 +667,199 @@
   color: #fff;
 }
 
-.pg-group {
+/* ── Saved templates ─────────────────────────────────────────── */
+
+.pg-templates {
+  margin-bottom: 16px;
+  padding-top: 14px;
   border-top: 1px solid var(--border-subtle, #dde3e0);
 }
 
-.pg-group__head {
+.pg-templates__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 12px 0;
-  border: 0;
-  background: none;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.pg-templates__add {
+  padding: 4px 10px;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: var(--radius-md, 6px);
+  background: var(--surface-neutral-01, #fff);
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-default, #172d2d);
   cursor: pointer;
-  text-align: left;
 }
 
-.pg-group__caret {
-  width: 8px;
-  height: 8px;
-  border-right: 1.5px solid var(--text-secondary, #3d524f);
-  border-bottom: 1.5px solid var(--text-secondary, #3d524f);
-  transform: rotate(45deg) translate(-2px, -2px);
-  transition: transform 150ms ease;
+.pg-templates__add:hover {
+  border-color: var(--interactive-default, #004c45);
+  background: rgba(0, 76, 69, 0.05);
 }
 
-.pg-group.is-closed .pg-group__caret {
-  transform: rotate(-45deg) translate(-1px, 1px);
+.pg-templates__empty {
+  margin: 0;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #3d524f);
 }
 
-.pg-group.is-closed .pg-group__body {
+/* Chip is a pair of buttons sharing one pill, so the name and the
+   delete target never overlap. */
+.pg-tpl {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pg-tpl__use,
+.pg-tpl__del {
+  border: 0;
+  background: var(--surface-neutral-01, #fff);
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--text-default, #172d2d);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.pg-tpl__use {
+  padding: 5px 8px 5px 10px;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pg-tpl__use:hover {
+  background: rgba(0, 76, 69, 0.06);
+}
+
+.pg-tpl__use.is-on {
+  background: var(--interactive-default, #004c45);
+  color: #fff;
+}
+
+.pg-tpl__del {
+  padding: 5px 9px 5px 6px;
+  color: var(--text-secondary, #3d524f);
+  line-height: 1.2;
+}
+
+.pg-tpl__del:hover {
+  background: #b3261e;
+  color: #fff;
+}
+
+/* Armed for the confirming second click. */
+.pg-tpl.is-arming {
+  border-color: #b3261e;
+}
+
+.pg-tpl.is-arming .pg-tpl__del {
+  background: #b3261e;
+  color: #fff;
+  font-size: 0.6875rem;
+}
+
+.pg-tpl__use:focus-visible,
+.pg-tpl__del:focus-visible,
+.pg-templates__add:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: -2px;
+}
+
+.pg-tplform {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: var(--radius-md, 6px);
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.pg-tplform[hidden] {
   display: none;
 }
 
-.pg-group__body {
-  padding-bottom: 12px;
+.pg-tplform__name {
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: var(--radius-sm, 4px);
+  background: var(--surface-neutral-01, #fff);
+  font: inherit;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-default, #172d2d);
 }
 
+.pg-tplform__name:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 1px;
+}
+
+.pg-tplform__opt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.6875rem;
+  color: var(--text-secondary, #3d524f);
+  cursor: pointer;
+}
+
+.pg-tplform__opt input {
+  margin: 0;
+  accent-color: var(--interactive-default, #004c45);
+}
+
+.pg-tplform__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.pg-tplform__actions .pg-btn {
+  height: 28px;
+  flex: 1;
+}
+
+/* Splits a tab that covers two distinct things. */
+.pg-section {
+  margin: 0 0 10px;
+  padding-top: 4px;
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-caption, #5f716d);
+}
+
+.pg-section + .pg-row {
+  margin-top: 0;
+}
+
+/* Hidden along with everything it covers. */
+.pg-section.is-hidden {
+  display: none;
+}
+
+/* Everything after the first one gets a rule above it. */
+.pg-row + .pg-section {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle, #dde3e0);
+}
+
+/* The lead-in at the top of a tab. */
 .pg-group__hint {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   font-size: 0.6875rem;
   line-height: 1.5;
   color: var(--text-secondary, #3d524f);
@@ -643,9 +889,100 @@
 }
 
 .pg-row__value {
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 0.6875rem;
   color: var(--text-secondary, #3d524f);
   font-variant-numeric: tabular-nums;
+}
+
+/* What the control does, in one line, under the control. */
+.pg-row__note {
+  margin: 5px 0 0;
+  font-size: 0.6563rem;
+  line-height: 1.45;
+  color: var(--text-caption, #5f716d);
+}
+
+/* Which way is which on a slider. */
+.pg-row__ends {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 1px;
+  font-size: 0.625rem;
+  line-height: 1.3;
+  color: var(--text-caption, #5f716d);
+}
+
+/* ── Thumbnail pickers ───────────────────────────────────────
+   Formation, mark and silhouette are chosen from samples drawn
+   by the engine itself, so the picture cannot drift from what
+   the option does.
+   ------------------------------------------------------------ */
+
+.pg-thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.pg-thumb {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  padding: 3px 3px 4px;
+  border: 1px solid var(--border-subtle, #dde3e0);
+  border-radius: var(--radius-md, 6px);
+  background: var(--surface-neutral-01, #fff);
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.pg-thumb:hover {
+  border-color: var(--border-strong, #9fb0aa);
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.pg-thumb__art {
+  display: block;
+  width: 100%;
+  height: 38px;
+  border-radius: 3px;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.pg-thumb__label {
+  overflow: hidden;
+  font-size: 0.5938rem;
+  line-height: 1.25;
+  text-align: center;
+  color: var(--text-secondary, #3d524f);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pg-thumb.is-on {
+  border-color: var(--interactive-default, #004c45);
+  background: rgba(0, 76, 69, 0.06);
+}
+
+.pg-thumb.is-on .pg-thumb__art {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(0, 76, 69, 0.25);
+}
+
+.pg-thumb.is-on .pg-thumb__label {
+  color: var(--interactive-default, #004c45);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.pg-thumb:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 1px;
 }
 
 .pg-select {
@@ -710,7 +1047,7 @@
 .pg-color {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .pg-color__input {
@@ -724,10 +1061,38 @@
   cursor: pointer;
 }
 
+.pg-color__hex {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: var(--radius-md, 6px);
+  background: var(--surface-neutral-01, #fff);
+  font: inherit;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--text-default, #172d2d);
+  text-transform: uppercase;
+}
+
+.pg-color__hex:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 1px;
+}
+
+/* Half-typed, not yet a colour — flagged rather than applied. */
+.pg-color__hex.is-bad {
+  border-color: #b3261e;
+  color: #b3261e;
+}
+
 .pg-color__swatches {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+  margin-top: 7px;
 }
 
 .pg-swatch {
@@ -822,11 +1187,24 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* Stacked under the stage: the panel grows with its content and the
+     page scrolls, rather than holding its own scrollport. */
   .pg-panel {
     position: static;
-    max-height: none;
+    height: auto;
+    overflow: visible;
     border-left: 0;
     border-top: 1px solid var(--border-subtle, #dde3e0);
+  }
+
+  .pg-panel__body {
+    overflow: visible;
+  }
+
+  .pg-tabs {
+    position: sticky;
+    top: var(--pg-bar-h);
+    z-index: 10;
   }
 
   /* The links carry the auto margin that pushes the actions right, so

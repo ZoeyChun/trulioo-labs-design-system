@@ -13,30 +13,29 @@ standalone page with its own engine.
 
 ## It tracks the live hero
 
-Demo 3 now has five home layouts, picked by `?home=` in
-`js/d3-home-skin.js`. **With no parameter you get home 4**, so that is
-what the playground opens on: full bleed, 420px, `--surface-inverse`,
-no orb, a 520px composer, the blurred veil plate, and a rotating
-Fibonacci dot globe instead of the old flat field.
+Demo 3 has several hero layouts, selected by the `?home=` parameter in
+`js/d3-home-skin.js`. **With no parameter you get the globe hero**, so
+that is what the playground opens on: full bleed, 420px,
+`--surface-inverse`, no orb, a 520px composer, the blurred veil plate,
+and a rotating Fibonacci dot globe in place of the older flat field.
 
-| Preset | Shipped as | Background |
-|--|--|--|
-| **Home 4 (shipped)** | default, `?home=4` | rotating dot globe, centred |
-| **Home 5 (side globe)** | `?home=5` | the same globe moved to the right edge |
-| **Home 1 (flat dots)** | `?home=1`, `?home=dark` | the flat `TruDotField` — its shipped `DARK_CONFIG`, unaltered |
+| Preset | Background |
+|--|--|
+| **Shipped hero** | the rotating dot globe, centred — what the hero is today |
+| **Globe at the edge** | the same globe moved to the right edge |
+| **Flat dot field** | the flat `TruDotField` — its shipped `DARK_CONFIG`, unaltered |
 
-These three carry the shipped *dot* configs. Their shipped hero chrome
-(home 1's contained frame and orb, home 5's split copy and gradient)
-is in the Hero group rather than the preset — see below. Home 2 is the
-light skin and home 3 is home 1 full-bleed, both a Hero-group change
-away.
+These three carry the shipped *dot* configs. The surface each one
+originally sat on — the contained frame and orb of the older hero, the
+split copy and gradient of the edge-globe one — lives in the Hero and
+Colour groups rather than in the preset; see below.
 
 The hero chrome around the dots is real, not a lookalike. The headline
 is the shipped type rule (Tobias, `--font-size-display-md`, weight 400)
 and the chat bar is the shipped composer — same markup as
 `portal-2.0/demo-3/index.html`, styled by the same `composer/prompt.css`,
 `tag.css` and `icon-button.css`. The playground only re-scopes the
-dark-home overrides from `css/d3-home.css` and `css/d3-home-4.css` onto
+dark-hero overrides from `css/d3-home.css` and `css/d3-home-4.css` onto
 its own hero. `prompt.js` isn't loaded, so the placeholder doesn't
 rotate and the send button stays disabled — the real hero's resting
 state.
@@ -45,19 +44,52 @@ state.
 
 | Group | Knobs |
 |--|--|
-| **Pattern** | 12 formations. The **dot globe** (shipped) with dot count, radius, axis tilt, perspective, spin and limb glow; a **globe graticule** of meridians and parallels; and 10 flat lattices — grid, staggered, hex, triangular, diagonal shear, brick, concentric rings, phyllotaxis spiral, radial spokes, wave rows — with spacing and scatter |
+| **Pattern** | 12 formations. The **dot globe** (shipped) with dot count, radius, axis tilt, perspective, spin and limb glow; a **globe graticule** of meridians and parallels; and 10 flat lattices — grid, staggered, hex, triangular, diagonal shear, brick, concentric rings, phyllotaxis spiral, radial spokes, wave rows — with spacing and scatter. **Links** joins neighbouring dots into a mesh, which is what draws the graticule's wireframe |
 | **Dot** | 10 glyphs (circle, square, diamond, plus, cross, sparkle, triangle, heart, outline ring, dash), size, spread, tilt, rotation, opacity |
-| **Colour** | one colour, a two-colour gradient across X / Y / radius / per dot, or the shipped four-stop globe ramp — plus additive compositing |
+| **Colour** | **Surface** — dark / light theme, thirteen backgrounds or **Custom…** for any colour, optionally fading to a second. **Dots** — one colour, a two-colour gradient across X / Y / radius / per dot, or the shipped four-stop globe ramp, plus additive compositing. Every colour takes a swatch, a picker or a typed hex |
 | **Region** | 15 silhouettes to cut the pattern to, each positionable and scalable, with an invert switch. On the globe these also move and size the sphere |
 | **Clear & fade** | the soft hole under the hero text, and which way the field fades out |
-| **Links** | lines between neighbouring dots — this is what draws the graticule's wireframe |
 | **Motion** | 15 animations — brightness (shimmer, twinkle, breathe, ripple, sharp pulse rings, scan, cascade, flicker) and displacement (drift, orbit, wave, swirl, jitter). On the globe these ride on top of the spin |
 | **Pointer** | spotlight, shadow, magnify, repel, attract, with radius and strength |
-| **Hero** | background, full-bleed vs contained, layout, backdrop, height, corner radius, chat width, content / orb / veil toggles |
+| **Hero** | the shape of the surface — full-bleed vs contained, layout, backdrop, height, corner radius, chat width, content / orb / veil toggles |
 
 `Surprise me` shuffles within sane ranges. `P` hides the panel. The
 readout under the hero shows live dot count, link count and frame
 rate — the numbers that tell you whether a look is affordable.
+
+### Getting around the panel
+
+The controls are split across tabs — **Looks** (presets and your saved
+templates) plus one per group — and the strip stays pinned while the
+body scrolls, so any group is one click away from anywhere. The tab
+you were last on is remembered.
+
+Stacked in one column the controls run to about 4,500px; the tallest
+single tab is under 1,000px and most need no scrolling at all at a
+normal window height.
+
+A tab that covers two distinct things splits them under a rule —
+Colour into **Surface** and **Dots**, Pattern into the lattice and
+**Links**. A heading disappears along with its controls, so Links is
+simply absent on the dot globe, which has no mesh.
+
+### Reading the panel
+
+Formation, mark and silhouette are picked from **drawn samples**, not
+a dropdown of names — "Phyllotaxis spiral" and "Corner wedge" mean
+nothing until you have seen one. Each sample is a real
+`TruDotLab.sketch()` of that one option with everything else held
+flat, so a thumbnail cannot drift away from what the option does; it
+runs the same `buildLattice`, `applyMasks` and `drawGlyph` as the
+hero. Only the per-formation density differs, because a lattice tuned
+for a 420px hero is unreadable at 38px.
+
+Every slider is captioned at both ends (*dense → sparse*, *hard cut →
+dissolved*) and the ones whose effect isn't obvious from the name
+carry a one-line note. The dropdowns that can't be drawn — animation,
+blend, pointer, backdrop, layout — describe the **currently selected**
+option underneath, so the explanation is always about the thing in
+front of you.
 
 ### Presets change the dots, not the page
 
@@ -71,9 +103,66 @@ The single exception is the **backdrop**, which overlays the hero
 rather than replacing it, and is the whole point of Planet. Every
 preset declares one, so moving off Planet clears it again.
 
-To see home 1's or home 5's real chrome, set it yourself in the Hero
-group — home 1 is width **Contained** + corner **16** + orb **on**;
-home 5 is layout **Split** + the **Gradient (home 5)** background.
+### Saving your own
+
+**Your templates** → **Save current** snapshots whatever is on screen
+as a named chip next to the presets. Click a chip to restore it, `×`
+to delete (twice — the first click arms it, so a stray hit on a small
+target doesn't lose saved work).
+
+Saving asks one question: **include the hero surface?**
+
+- **On** — the snapshot carries the background, theme, layout, height,
+  corner, chat width and the orb / veil / content toggles. Restoring
+  it puts the whole hero back.
+- **Off** — dots only, like the built-in presets. Restoring it drops
+  the new field onto whatever hero you are currently looking at, which
+  is what you want when comparing several fields on one surface.
+
+A template is a literal snapshot, so unlike a built-in preset it has
+no second palette — switching theme moves the surface and leaves a
+template's saved colours exactly as they were.
+
+Templates live under their own `localStorage` key
+(`d3-dot-playground-templates-v1`), separate from the working session,
+so **Reset** never takes them with it. They are per-browser: this is a
+scratchpad, not a shared library. To hand a look to someone else, use
+**Copy config**.
+
+### Colour by hand
+
+Every colour control — the two dot colours and the custom hero
+background — takes input three ways: click a swatch, open the native
+picker, or type a hex into the field beside it. The hex box accepts
+`38c6a6`, `#38C6A6` or the `#3ca` shorthand, applies live as soon as
+what you have typed parses, and flags anything half-finished in red
+rather than snapping the field to black.
+
+Colour → Background → **Custom…** opens the same controls for the
+surface, with an optional fade to a second colour.
+
+### Light theme
+
+Colour → **Theme** switches the whole surface between dark and light.
+Theme and Background stay in sync in both directions: flipping the
+theme moves the background, and picking any pale background flips the
+theme. A custom background reports its own tone from the colour's
+brightness, so typing a pale hex darkens the headline and flips the
+backdrops without you having to say so.
+
+Every preset carries a second palette for the light surface, because
+dots tuned to glow on #172d2d vanish on #f4f6f4 — the globe drops its
+gold-to-mint ramp for teal-to-forest, additive compositing goes off
+(it only ever brightens, so on a pale hero it erases), and the
+backdrops switch from white light to grey shade. Switching theme
+re-reads the preset you are looking at; if you have been turning knobs
+by hand there is no preset to re-read, so your colours are left alone
+and the swatches are right there.
+
+To put back the surface either of the older heroes sat on, set it
+yourself: the contained one is Hero → width **Contained** + corner
+**16** + orb **on**; the edge-globe one is Hero → layout **Split**
+with Colour → **Teal gradient**.
 
 ### From the hero references
 
@@ -104,7 +193,7 @@ do that `d3-home-4.js` has no knob for yet (radius, limb, opacity,
 glyph, centre, ramp), and the full lab config underneath.
 
 **On a flat field** it hands back a `DARK_CONFIG` block for
-`js/d3-home-dots.js` (the home 1 / home 3 hero). If the look uses
+`js/d3-home-dots.js`, which drives the flat-field hero. If the look uses
 anything the shipped `TruDotField` doesn't have — a new formation, any
 glyph but circle, gradients, links, invert, scatter, rotation, pointer
 response, additive, upward fade — the header comment names exactly
@@ -117,10 +206,10 @@ the one feature you need back into `dot-field.js`.
 
 ## Relationship to the other lab
 
-`portal-2.0/demo-3/home-dot-lab/` is the original panel: the home 1
+`portal-2.0/demo-3/home-dot-lab/` is the original panel: the flat-field
 hero driven by the shipped `TruDotField`, so whatever it produces
 always pastes straight back. Use it for a guaranteed-shippable tweak to
-home 1; use this one to find out what's possible.
+that hero; use this one to find out what's possible.
 
 Settings persist under `localStorage` key `d3-dot-playground-v2`.
 

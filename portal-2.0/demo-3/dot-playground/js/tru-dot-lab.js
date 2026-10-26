@@ -4,10 +4,10 @@
 
    Covers both background systems Demo 3 ships:
 
-     sphere   the rotating Fibonacci dot globe of home 4 / home 5
-              (js/d3-home-4.js), the current default hero
-     the rest a superset of the flat TruDotField of home 1 / home 3
-              (demo-2 js/dot-field.js)
+     sphere   the rotating Fibonacci dot globe that Demo 3 now
+              ships as its default hero (js/d3-home-4.js)
+     the rest a superset of the flat TruDotField behind the older
+              hero (demo-2 js/dot-field.js)
 
    Kept as its own file so the playground can grow without touching
    either shipped engine.
@@ -141,7 +141,7 @@
     [90, 199, 202]
   ];
 
-  /* The three-stop ramp home 5 uses for the side globe. */
+  /* The three-stop ramp the edge-mounted globe uses. */
   var GLOBE_STOPS_SIDE = [
     [181, 205, 146],
     [144, 234, 192],
@@ -235,28 +235,31 @@
      Planet clears it again.
 
      Dot colours are therefore all chosen to read on --surface-inverse
-     (#172d2d). To see home 1's or home 5's real chrome, use the Hero
-     group: width Contained + corner 16 + orb on for home 1; layout
-     Split + the home-5 gradient for home 5. */
+     (#172d2d). The older contained hero and the edge-globe hero set
+     their own chrome, which lives in the Hero group rather than in
+     a preset: Contained width + corner 16 + orb on for the first,
+     Split layout + the teal gradient for the second. */
   var PRESETS = [
     {
-      id: 'home4', label: 'Home 4 (shipped)',
+      id: 'shipped', label: 'Shipped hero',
       cfg: {},
+      light: { blend: 'y', color: '#0e8a78', color2: '#004c45', opacity: 0.85, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
-      id: 'home5', label: 'Home 5 (side globe)',
+      id: 'edgeglobe', label: 'Globe at the edge',
       cfg: {
         formation: 'sphere', count: 1100, orbScale: 1.35, shapeX: 0.88, shapeY: 0.49,
         blend: 'globe', color: '#90eac0', size: 1.25, opacity: 1, additive: 1,
         style: 'twinkle', intensity: 0.33, speed: 0.16, spin: 0.0048
       },
+      light: { blend: 'y', color: '#0e8a78', color2: '#004c45', opacity: 0.85, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
       /* The shipped DARK_CONFIG of js/d3-home-dots.js, unaltered — this
          is the preset that round-trips through Copy config. */
-      id: 'home1', label: 'Home 1 (flat dots)',
+      id: 'flatfield', label: 'Flat dot field',
       cfg: {
         formation: 'rings', spacing: 22, glyph: 'circle', size: 2.4, sizeVary: 1,
         color: '#0e8a78', blend: 'none', opacity: 0.45, additive: 0,
@@ -264,6 +267,7 @@
         clear: 0, clearSize: 0.81, clearY: 0.52, fade: 0.82, fadeDir: 'down',
         style: 'ripple', intensity: 0.6, speed: 0.6, angle: 35
       },
+      light: { color: '#0e8a78', opacity: 0.55, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -274,6 +278,7 @@
         shape: 'full', clear: 0, fade: 1, fadeDir: 'none',
         style: 'static', links: 0, jitter: 0, pointer: 'off'
       },
+      light: { color: '#6f8077', opacity: 0.6, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
 
@@ -289,6 +294,7 @@
         fade: 1, fadeDir: 'none', links: 0,
         style: 'twinkle', intensity: 1, speed: 0.08
       },
+      light: { color: '#3d524f', opacity: 0.26, additive: 0 },
       hero: { heroBackdrop: 'planet' }
     },
     {
@@ -302,6 +308,7 @@
         shapeX: 0.79, shapeY: 0.5, feather: 0.02, clear: 0,
         fade: 1, fadeDir: 'none', links: 0, style: 'static'
       },
+      light: { color: '#04245c', opacity: 0.9, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -315,6 +322,7 @@
         fade: 1, fadeDir: 'none', shapeX: 0.74, shapeY: 0.52,
         links: 0.2, linkWidth: 1, style: 'static'
       },
+      light: { color: '#0e8a78', opacity: 0.9, links: 0.22, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -330,6 +338,7 @@
         fade: 1, fadeDir: 'none', links: 0, style: 'twinkle',
         intensity: 0.7, speed: 0.1
       },
+      light: { color: '#c3c7d0', color2: '#9aa1ad', opacity: 0.75, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
 
@@ -344,6 +353,7 @@
         links: 0.12, linkWidth: 1, style: 'twinkle', intensity: 0.9,
         speed: 0.25, pointer: 'glow', pointerR: 200, pointerS: 1
       },
+      light: { color: '#617269', color2: '#0e8a78', opacity: 0.6, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -355,6 +365,7 @@
         feather: 0.8, clear: 0, fade: 1, fadeDir: 'none',
         style: 'shimmer', intensity: 1, speed: 0.18, angle: 28
       },
+      light: { color: '#0e8a78', color2: '#004c45', opacity: 0.6, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -366,6 +377,7 @@
         feather: 0.6, clear: 0, fade: 1, fadeDir: 'none',
         style: 'pulse', intensity: 0.8, speed: 0.22
       },
+      light: { color: '#0e8a78', opacity: 0.5, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -374,9 +386,10 @@
         formation: 'grid', spacing: 34, glyph: 'square', size: 1.6,
         sizeVary: 0, color: '#38c6a6', blend: 'none', opacity: 0.45,
         additive: 0, shape: 'full', clear: 0.6, clearSize: 0.42, clearY: 0.45,
-        fade: 0.95, fadeDir: 'down', links: 0.1, linkWidth: 1,
+        fade: 1, fadeDir: 'none', links: 0.1, linkWidth: 1,
         style: 'cascade', intensity: 1, speed: 0.35, pointer: 'glow', pointerR: 180
       },
+      light: { color: '#0e8a78', opacity: 0.55, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -388,6 +401,7 @@
         clear: 0.45, clearSize: 0.4, fade: 1, fadeDir: 'none',
         style: 'drift', intensity: 0.8, speed: 0.12
       },
+      light: { color: '#8a9a90', opacity: 0.5, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -399,6 +413,7 @@
         clearSize: 0.38, clearY: 0.42, fade: 1, fadeDir: 'none',
         style: 'swirl', intensity: 0.5, speed: 0.08
       },
+      light: { color: '#0e8a78', opacity: 0.45, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -410,6 +425,7 @@
         clearSize: 0.45, clearY: 0.45, fade: 1, fadeDir: 'none',
         style: 'cascade', intensity: 1, speed: 0.5, angle: 90
       },
+      light: { color: '#0e8a78', color2: '#004c45', opacity: 0.5, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -421,6 +437,7 @@
         feather: 0.7, clear: 0.4, clearSize: 0.3, fade: 1, fadeDir: 'none',
         style: 'orbit', intensity: 0.7, speed: 0.1
       },
+      light: { color: '#0e8a78', color2: '#004c45', opacity: 0.6, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -432,6 +449,7 @@
         feather: 0.75, clear: 0.5, clearSize: 0.33, clearY: 0.45,
         fade: 1, fadeDir: 'none', style: 'ripple', intensity: 0.7, speed: 0.3
       },
+      light: { color: '#0e8a78', opacity: 0.45, additive: 0 },
       hero: { heroBackdrop: 'none' }
     },
     {
@@ -440,9 +458,10 @@
         formation: 'grid', spacing: 28, glyph: 'plus', size: 3,
         sizeVary: 0, color: '#38c6a6', blend: 'none', opacity: 0.35,
         additive: 0, shape: 'full', clear: 0.65, clearSize: 0.44, clearY: 0.45,
-        fade: 0.9, fadeDir: 'down', style: 'breathe', intensity: 0.9, speed: 0.2,
+        fade: 1, fadeDir: 'none', style: 'breathe', intensity: 0.9, speed: 0.2,
         pointer: 'grow', pointerR: 170, pointerS: 1
       },
+      light: { color: '#0e8a78', opacity: 0.5, additive: 0 },
       hero: { heroBackdrop: 'none' }
     }
   ];
@@ -844,22 +863,37 @@
       byKey[p.c + ':' + p.r] = i;
     }
     var pairs = [];
+    /* The weaker end of each pair, cached here because it is baked:
+       the draw loop buckets on it to fade the mesh out with the dots
+       instead of cutting it off at a threshold. */
+    var mins = [];
     var ringOnly = cfg.formation === 'rings' || cfg.formation === 'radial' ||
                    cfg.formation === 'spiral';
     var wraps = cfg.formation === 'globe';
+
+    function join(a, b) {
+      pairs.push(a, b);
+      mins.push(Math.min(pts[a].m, pts[b].m));
+    }
+
     for (i = 0; i < pts.length; i++) {
       p = pts[i];
       var right = byKey[(p.c + 1) + ':' + p.r];
       /* The last meridian closes onto the first. */
       if (right == null && wraps) right = byKey['0:' + p.r];
-      if (right != null && right !== i) pairs.push(i, right);
+      if (right != null && right !== i) join(i, right);
       if (!ringOnly) {
         var down = byKey[p.c + ':' + (p.r + 1)];
-        if (down != null) pairs.push(i, down);
+        if (down != null) join(i, down);
       }
     }
+    pairs.mins = mins;
     return pairs;
   }
+
+  /* How many alpha steps the link mesh fades through. Each step is one
+     batched stroke, so this is the whole cost of the gradient. */
+  var LINK_BUCKETS = 7;
 
   /* ----------------------------------------------------------------
      Modulation
@@ -1012,6 +1046,145 @@
     ctx.restore();
   }
 
+  /* A 64-entry colour lookup. The alternative — composing an "rgb(…)"
+     string per dot per frame — is thousands of throwaway strings a
+     second for a gradient that never moves. */
+  function makeRamp(cfg) {
+    var c1 = hexToRgb(cfg.color);
+    var c2 = hexToRgb(cfg.color2);
+    var out = {
+      flat: 'rgb(' + c1.r + ',' + c1.g + ',' + c1.b + ')',
+      ramp: []
+    };
+    if (cfg.blend === 'none') return out;
+
+    var stops = cfg.blend === 'globe' ? GLOBE_STOPS : null;
+    for (var i = 0; i < 64; i++) {
+      var u = i / 63;
+      var r, g, b;
+      if (stops) {
+        /* Multi-stop ramp: find the span u falls in and lerp inside it. */
+        var f = u * (stops.length - 1);
+        var si = Math.min(Math.floor(f), stops.length - 2);
+        var kk = f - si;
+        var sa = stops[si], sb = stops[si + 1];
+        r = sa[0] + (sb[0] - sa[0]) * kk;
+        g = sa[1] + (sb[1] - sa[1]) * kk;
+        b = sa[2] + (sb[2] - sa[2]) * kk;
+      } else {
+        r = c1.r + (c2.r - c1.r) * u;
+        g = c1.g + (c2.g - c1.g) * u;
+        b = c1.b + (c2.b - c1.b) * u;
+      }
+      out.ramp.push('rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')');
+    }
+    return out;
+  }
+
+  /* ----------------------------------------------------------------
+     sketch — one static frame, no loop, no listeners.
+
+     This exists so the control panel can show what an option looks
+     like instead of naming it. It runs the real buildLattice,
+     applyMasks and drawGlyph, so a thumbnail cannot drift away from
+     what the option actually does; only motion and pointer response
+     are left out, which is what a still wants anyway.
+     ---------------------------------------------------------------- */
+  function sketch(canvas, options) {
+    var ctx = canvas.getContext('2d');
+    var cfg = {};
+    var k;
+    for (k in DEFAULTS) if (DEFAULTS.hasOwnProperty(k)) cfg[k] = DEFAULTS[k];
+    if (options) {
+      for (k in options) {
+        if (options.hasOwnProperty(k) && options[k] != null && DEFAULTS.hasOwnProperty(k)) {
+          cfg[k] = options[k];
+        }
+      }
+    }
+
+    var rect = canvas.getBoundingClientRect();
+    var w = Math.round(rect.width) || 56;
+    var h = Math.round(rect.height) || 40;
+    var dpr = Math.min(global.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    var pal = makeRamp(cfg);
+    var solid = cfg.blend === 'none';
+    var rot = cfg.rotate * Math.PI / 180;
+    var sphere = is3d(cfg.formation);
+
+    var pts = applyMasks(buildLattice(w, h, cfg), w, h, cfg);
+    var links = buildLinks(pts, cfg);
+    var mk = sphere ? maskSetup(w, h, cfg) : null;
+
+    var gb = null;
+    if (sphere) {
+      var tr = cfg.tilt * Math.PI / 180;
+      gb = {
+        ct: Math.cos(tr), st: Math.sin(tr),
+        R: Math.min(w * 0.46, h * 0.85) * clamp(cfg.orbScale, 0.1, 4),
+        cx: w * cfg.shapeX, cy: h * cfg.shapeY,
+        P: Math.max(1.05, cfg.perspective),
+        limb: clamp(cfg.limb, 0, 1)
+      };
+    }
+
+    ctx.globalCompositeOperation = cfg.additive ? 'lighter' : 'source-over';
+
+    var i;
+    if (cfg.links && links.length) {
+      ctx.strokeStyle = pal.flat;
+      ctx.lineWidth = cfg.linkWidth;
+      ctx.globalAlpha = cfg.links;
+      ctx.beginPath();
+      for (i = 0; i < links.length; i += 2) {
+        ctx.moveTo(pts[links[i]].x, pts[links[i]].y);
+        ctx.lineTo(pts[links[i + 1]].x, pts[links[i + 1]].y);
+      }
+      ctx.stroke();
+    }
+
+    if (solid) ctx.fillStyle = pal.flat;
+
+    for (i = 0; i < pts.length; i++) {
+      var p = pts[i];
+      var a = cfg.opacity;
+      var x = p.x, y = p.y;
+      var rScale = 1;
+
+      if (sphere) {
+        var y2 = p.Y * gb.ct - p.Z * gb.st;
+        var z2 = p.Y * gb.st + p.Z * gb.ct;
+        var persp = gb.P / (gb.P - z2);
+        x = gb.cx + p.X * gb.R * persp;
+        y = gb.cy + y2 * gb.R * persp;
+        var rim = Math.pow(Math.min(1, Math.hypot(p.X, y2)), 0.64);
+        a *= (1 - gb.limb + gb.limb * (0.02 + 0.98 * rim)) * (0.6 + 0.4 * ((z2 + 1) / 2));
+        rScale = persp * (1 - gb.limb + gb.limb * (0.6 + 1.3 * rim));
+        p.m = maskAt(x, y, cfg, mk);
+      }
+
+      a *= p.m;
+      if (a <= 0.004) continue;
+
+      var r = cfg.size;
+      if (cfg.sizeVary) r *= 1 + cfg.sizeVary * (p.v - 0.5) * 1.2;
+      if (cfg.sizeTilt) r *= 1 + cfg.sizeTilt * ((y / h) - 0.5) * 1.4;
+      r = Math.max(0.2, r * rScale);
+
+      ctx.globalAlpha = a > 1 ? 1 : a;
+      if (!solid) ctx.fillStyle = pal.ramp[(p.u * 63) | 0] || pal.flat;
+      drawGlyph(ctx, cfg.glyph, x, y, r, rot);
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
   /* ----------------------------------------------------------------
      mount
      ---------------------------------------------------------------- */
@@ -1051,39 +1224,11 @@
              (is3d(cfg.formation) && cfg.spin !== 0);
     }
 
-    /* A 64-entry colour lookup, rebuilt only when the colours change.
-       The alternative — composing an "rgb(…)" string per dot per frame
-       — is thousands of throwaway strings a second for a gradient that
-       never moves. */
+    /* Rebuilt only when the colours change. */
     function buildRamp() {
-      var c1 = hexToRgb(cfg.color);
-      var c2 = hexToRgb(cfg.color2);
-      flat = 'rgb(' + c1.r + ',' + c1.g + ',' + c1.b + ')';
-      ramp = [];
-      if (cfg.blend === 'none') return;
-
-      var stops = null;
-      if (cfg.blend === 'globe') stops = GLOBE_STOPS;
-
-      for (var i = 0; i < 64; i++) {
-        var u = i / 63;
-        var r, g, b;
-        if (stops) {
-          /* Multi-stop ramp: find the span u falls in and lerp inside it. */
-          var f = u * (stops.length - 1);
-          var si = Math.min(Math.floor(f), stops.length - 2);
-          var kk = f - si;
-          var sa = stops[si], sb = stops[si + 1];
-          r = sa[0] + (sb[0] - sa[0]) * kk;
-          g = sa[1] + (sb[1] - sa[1]) * kk;
-          b = sa[2] + (sb[2] - sa[2]) * kk;
-        } else {
-          r = c1.r + (c2.r - c1.r) * u;
-          g = c1.g + (c2.g - c1.g) * u;
-          b = c1.b + (c2.b - c1.b) * u;
-        }
-        ramp.push('rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')');
-      }
+      var pal = makeRamp(cfg);
+      flat = pal.flat;
+      ramp = pal.ramp;
     }
 
     function resize() {
@@ -1159,15 +1304,29 @@
       if (cfg.links && links.length) {
         ctx.strokeStyle = flat;
         ctx.lineWidth = cfg.linkWidth;
-        ctx.globalAlpha = cfg.links;
-        ctx.beginPath();
-        for (i = 0; i < links.length; i += 2) {
-          var a1 = pts[links[i]], b1 = pts[links[i + 1]];
-          if (Math.min(a1.m, b1.m) < 0.25) continue;
-          ctx.moveTo(a1.x, a1.y);
-          ctx.lineTo(b1.x, b1.y);
+        /* Stroked in alpha bands rather than as one batch. A single
+           batch has to pick one opacity, which means a threshold —
+           and a threshold puts a straight edge across the hero
+           wherever the mask dips below it, while the dots carry on
+           fading. Seven bands cost seven strokes and the mesh dies
+           out with the field. */
+        var mins = links.mins || [];
+        for (var lb = 0; lb < LINK_BUCKETS; lb++) {
+          var lo = lb / LINK_BUCKETS;
+          var hi = (lb + 1) / LINK_BUCKETS;
+          var drew = false;
+          ctx.globalAlpha = cfg.links * ((lb + 0.5) / LINK_BUCKETS);
+          ctx.beginPath();
+          for (i = 0; i < links.length; i += 2) {
+            var lm = mins[i >> 1];
+            if (lm < lo || lm >= hi) continue;
+            var a1 = pts[links[i]], b1 = pts[links[i + 1]];
+            ctx.moveTo(a1.x, a1.y);
+            ctx.lineTo(b1.x, b1.y);
+            drew = true;
+          }
+          if (drew) ctx.stroke();
         }
-        ctx.stroke();
       }
 
       if (solid) ctx.fillStyle = flat;
@@ -1449,6 +1608,7 @@
 
   global.TruDotLab = {
     mount: mount,
+    sketch: sketch,
     FORMATIONS: FORMATIONS,
     GLYPHS: GLYPHS,
     SHAPES: SHAPES,

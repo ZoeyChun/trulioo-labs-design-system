@@ -55,9 +55,9 @@
     <section class="pg-stage" aria-label="Preview">
       <div class="pg-hero" id="pg-hero" data-layout="center" data-width="bleed">
         <canvas class="pg-hero__dots" id="pg-dots" aria-hidden="true"></canvas>
-        <!-- home 4's .d3-home-4-veil: a blurred, feathered plate of the
-             hero colour, so the globe fades out behind the copy instead
-             of hard-clipping against it. -->
+        <!-- The .d3-home-4-veil of the shipped hero: a blurred, feathered
+             plate of the hero colour, so the globe fades out behind the
+             copy instead of hard-clipping against it. -->
         <div class="pg-hero__veil" aria-hidden="true"></div>
 
         <div class="pg-hero__content">
@@ -114,13 +114,21 @@
 
     <!-- ── Panel ──────────────────────────────────────────────── -->
     <aside class="pg-panel" id="pg-panel" aria-label="Controls">
-      <div class="pg-presets" id="pg-presets" role="group" aria-label="Presets"></div>
-      <div class="pg-groups" id="pg-groups"></div>
-      <p class="pg-panel__foot">
-        Settings persist in <code>localStorage</code>. <strong>Copy config</strong>
-        gives you the field object to paste into
-        <code>js/d3-home-dots.js</code>.
-      </p>
+      <!-- One group at a time: the full set of knobs is far too long
+           to scroll through as a single column. -->
+      <div class="pg-tabs" id="pg-tabs" role="tablist" aria-label="Control groups"></div>
+
+      <div class="pg-panel__body">
+        <section class="pg-tab" id="pg-tab-looks" role="tabpanel" aria-labelledby="pg-tabbtn-looks">
+          <div class="pg-presets" id="pg-presets" role="group" aria-label="Presets"></div>
+          <div class="pg-templates" id="pg-templates" role="group" aria-label="Saved templates"></div>
+        </section>
+        <div class="pg-groups" id="pg-groups"></div>
+        <p class="pg-panel__foot">
+          Settings persist in <code>localStorage</code>. <strong>Copy config</strong>
+          gives you the field object to paste back into Demo 3.
+        </p>
+      </div>
     </aside>
 
   </main>
