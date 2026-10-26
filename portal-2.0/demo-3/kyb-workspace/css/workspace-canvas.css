@@ -172,10 +172,17 @@
   overflow: visible;
 }
 
+/* Same shadow as the landing's recent-list container — one layer, no
+   negative spread. overflow stays on the body, not the card: clipping
+   the card itself masks the shadow into a tighter corner. */
 .kw-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-resume.is-live {
-  box-shadow:
-    0 1px 2px rgba(22, 33, 27, 0.05),
-    0 14px 36px rgba(22, 33, 27, 0.08);
+  overflow: visible;
+  border: 1px solid var(--border-subtle, #dde2de);
+  box-shadow: var(--kw-elevation-card, 0 12px 24px rgba(138, 154, 144, 0.22));
+}
+
+.kw-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-resume.is-live .d3-kyb-resume__body {
+  border-radius: 15px;
 }
 
 /* Waiting-for-country sits on the map surface, so .d3-kyb-map is what

@@ -26,6 +26,10 @@
    the overlay carries its own neutral-02. */
 .kw-shell .d3-workspace[data-d3-kyb-surface="map"] .d3-kyb-map.is-awaiting-country {
   background: transparent;
+  /* The one-container shadow has to paint past this pane. Hidden
+     overflow here clips it to a square, which reads as a tighter
+     corner under the card. */
+  overflow: visible;
 }
 
 .kw-shell .d3-kyb-map__await {
@@ -33,6 +37,14 @@
   justify-content: flex-start;
   padding: 0;
   background: transparent;
+  overflow: visible;
+}
+
+/* The card's shadow has to leave the column. These ancestors clip,
+   and a clipped shadow reads as a tighter, darker corner. */
+.kw-shell[data-d3-view="chat"] .kw-stage__body:has([data-d3-kyb-map-await]:not([hidden])) .d1-main,
+.kw-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="map"]:has([data-d3-kyb-map-await]:not([hidden])) {
+  overflow: visible;
 }
 
 .kw-country {
@@ -569,8 +581,12 @@
 /* B · One container — the whole step in one card. */
 [data-kw-group="all"].kw-country {
   padding: 28px 24px;
+  border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 24px;
   background: var(--surface-neutral-01, #fff);
+  /* One shadow, the recent-list one. A second tighter shadow, or
+     overflow clipping this one, reads as a darker corner underneath. */
+  overflow: visible;
   box-shadow: var(--kw-elevation-card, 0 12px 24px rgba(138, 154, 144, 0.22));
 }
 

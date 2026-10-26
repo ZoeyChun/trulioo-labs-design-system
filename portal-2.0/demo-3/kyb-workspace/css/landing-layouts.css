@@ -61,13 +61,9 @@
   backdrop-filter: blur(6px);
 }
 
-/* Each lab panel shows only on the screen it drives. The country step
-   lives on the *map* surface with the await panel drawn over it, so
-   that panel's own [hidden] is what distinguishes the two. */
-.kw-shell[data-d3-view="chat"] .kw-stage:has(.d3-workspace[data-d3-kyb-surface="resume"]) .kw-lab--landing,
-.kw-shell[data-d3-view="chat"] .kw-stage:has([data-d3-kyb-map-await]:not([hidden])) .kw-lab--country {
-  display: block;
-}
+/* Hidden. The landing is open + list, and the country step is one
+   container + timeline — those are the defaults now, not options.
+   The markup stays so a pass can bring the panel back. */
 
 .kw-lab:not([open]) { width: auto; }
 
@@ -203,10 +199,13 @@
 .kw-shell .kw-stage__body .vb-search-field {
   gap: 0;
   padding: 7px 7px 7px 10px;
-  border: 4px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 16px;
   background: var(--surface-neutral-01, #fff);
-  box-shadow: var(--kw-elevation-xl);
+  /* One shadow, matching the recent-list container. The previous
+     elevation used a negative spread, which drew a tighter curve
+     under the corners. */
+  box-shadow: var(--kw-elevation-card);
 }
 
 /* The select is chrome inside the field, not a control beside it. */
@@ -330,6 +329,7 @@
      outer card already supplies it — in both, padding here would push
      the rows out of line with the heading above them. */
   padding: var(--kw-grid-pad-y, 24px) 24px;
+  border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 24px;
   background: var(--surface-neutral-01, #fff);
   box-shadow: var(--kw-elevation-card);
@@ -340,6 +340,7 @@
    primary. */
 [data-d3-kyb-landing][data-kw-group="all"] {
   padding: 28px 24px;
+  border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 24px;
   background: var(--surface-neutral-01, #fff);
   box-shadow: var(--kw-elevation-card);
