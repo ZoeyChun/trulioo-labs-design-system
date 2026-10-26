@@ -18,7 +18,7 @@
 
   /* axis name → attribute, and the options each one accepts. */
   var AXES = {
-    group: { attr: "data-kw-group", options: ["open", "all", "flat"] },
+    group: { attr: "data-kw-group", options: ["open", "all"] },
     recent: { attr: "data-kw-recent", options: ["list", "rows", "tiles", "chips", "table"] }
   };
 
@@ -28,7 +28,7 @@
     figma: { group: "open", recent: "list" },
     boxed: { group: "all", recent: "list" },
     tiles: { group: "open", recent: "tiles" },
-    flat: { group: "flat", recent: "rows" }
+    rows: { group: "open", recent: "rows" }
   };
 
   function setAxis(axis, option) {

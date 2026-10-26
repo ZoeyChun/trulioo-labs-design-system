@@ -213,7 +213,7 @@ not in the field, so there was no existing equivalent to restyle.
 
 | Axis | Attribute | Options |
 |--|--|--|
-| Grouping | `data-kw-group` | `open` · `all` · `flat` |
+| Grouping | `data-kw-group` | `open` · `all` |
 | Recent | `data-kw-recent` | `list` · `rows` · `tiles` · `chips` · `table` |
 
 **Grouping** answers: does the page read as a surface you act on, or a stack of
@@ -223,13 +223,21 @@ cards?
   recents list boxed.
 - **One container** — everything in a single card. Fewest edges; the cost is
   that nothing is visibly primary.
-- **Flat** — no containers at all; rows separated only by their dividers.
 
 **The sheet is removed on this screen.** `.kw-stage__body` is the white card
 every other KYB surface sits on, but on the landing it would be a container
 around every grouping option — including the ones whose whole point is not
 having one. Content sits straight on the dot ground, and the only containers
 are the ones an option draws.
+
+**Open clears the ground under its content.** Title, chips and the recents
+heading sit directly on the dot field, and text over an 18px grid of dots is
+hard to read, so a radial mask on the canvas fades the dots out behind the
+content column — a soft-edged circle, no visible boundary. It is a CSS mask
+rather than the dot engine's own `clear` option: that one is an ellipse scaled
+off the canvas width and height *independently*, so it goes oval on a wide
+stage, where a CSS `circle` stays round. **One container** needs none of it —
+its card already covers the content.
 
 Container padding lives on the **grouping** rule, not the recent treatment:
 only `open` draws a container, so only `open` pays for an inset. Each recent
@@ -247,14 +255,15 @@ card edges so none of it does (24 + 0).
   against, so only inside **One container** do they take a fixed width and
   scroll, masked by the container. With no container they share the width and
   sit centred. `open` draws no box around them either — boxing cards inside a
-  card is an edge that buys nothing.
+  card is an edge that buys nothing — and they go **white** there, since with
+  nothing behind them they have to be what stands out from the dot ground.
 - **Chips** — one-click targets instead of a list. Fast for the handful of
   names you keep returning to; `View all` covers the rest.
 - **Table** — the densest. Fixed-width columns on a flex row, *not* a grid of
   `display: contents` cards: contents promotes the status tag to a grid item,
   and a pill stretched to fill a table cell stops looking like a pill.
 
-**Presets** (Figma · Boxed · Tiles · Flat) are shorthand for a whole
+**Presets** (Figma · Boxed · Tiles · Rows) are shorthand for a whole
 combination, and stay lit only while the landing still matches — change one
 axis and the preset clears rather than mislabelling the screen.
 
