@@ -295,6 +295,12 @@
 /* ==================================================================
    AXIS 1 · Grouping — what sits in a container
 
+   Selectors carry [data-d3-kyb-landing]. The country step uses the
+   same data-kw-group attribute name, and its panel sits EARLIER in the
+   document, so an unqualified [data-kw-group="…"] matches it too — and
+   document.querySelector("[data-kw-group]") returns it rather than the
+   landing.
+
    The sheet itself is gone on this screen: the landing's content sits
    straight on the dot ground, and the only containers are the ones an
    option draws. That is what the axis now varies.
@@ -318,7 +324,7 @@
    Not for tiles — they are already discrete cards, and boxing cards
    inside a card is an edge that buys nothing. Not for chips either,
    which have no grid to box. */
-.kw-shell .kw-stage__body [data-kw-group="open"]:not([data-kw-recent="tiles"]):not([data-kw-recent="chips"]) .d3-kyb-recent__grid {
+.kw-shell .kw-stage__body [data-d3-kyb-landing][data-kw-group="open"]:not([data-kw-recent="tiles"]):not([data-kw-recent="chips"]) .d3-kyb-recent__grid {
   /* Only the grouping that draws the container pays for its inset. In
      "flat" there is nothing to inset from, and in "one container" the
      outer card already supplies it — in both, padding here would push
@@ -332,14 +338,14 @@
 /* B · One container — everything in a single card, the recents list
    sharing it. Fewest edges; the cost is that nothing is visibly
    primary. */
-[data-kw-group="all"] {
+[data-d3-kyb-landing][data-kw-group="all"] {
   padding: 28px 24px;
   border-radius: 24px;
   background: var(--surface-neutral-01, #fff);
   box-shadow: var(--kw-elevation-card);
 }
 
-[data-kw-group="all"] .vb-search-field {
+[data-d3-kyb-landing][data-kw-group="all"] .vb-search-field {
   border-width: 1px;
   border-color: var(--border-subtle, #dde2de);
   box-shadow: none;
@@ -362,7 +368,7 @@
    "One container" needs none of it — its card already covers the
    content.
    ------------------------------------------------------------------ */
-.kw-shell[data-d3-view="chat"] .kw-stage:has([data-kw-group="open"]):has(.d3-workspace[data-d3-kyb-surface="resume"]) .kw-stage__dots,
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-d3-kyb-landing][data-kw-group="open"]):has(.d3-workspace[data-d3-kyb-surface="resume"]) .kw-stage__dots,
 .kw-shell[data-d3-view="chat"] .kw-stage:has([data-kw-country][data-kw-group="open"]):has([data-d3-kyb-map-await]:not([hidden])) .kw-stage__dots {
   -webkit-mask-image: radial-gradient(
     circle 440px at 50% 48%,
@@ -574,7 +580,7 @@
 }
 
 /* Inside a container: fixed width, scrolling, clipped by its edge. */
-.kw-shell .kw-stage__body [data-kw-group="all"][data-kw-recent="tiles"] .d3-kyb-recent__grid {
+.kw-shell .kw-stage__body [data-d3-kyb-landing][data-kw-group="all"][data-kw-recent="tiles"] .d3-kyb-recent__grid {
   justify-content: flex-start;
   overflow-x: auto;
   scroll-snap-type: x proximity;
@@ -586,7 +592,7 @@
   scrollbar-width: thin;
 }
 
-.kw-shell .kw-stage__body [data-kw-group="all"][data-kw-recent="tiles"] .d3-kyb-recent__card {
+.kw-shell .kw-stage__body [data-d3-kyb-landing][data-kw-group="all"][data-kw-recent="tiles"] .d3-kyb-recent__card {
   flex: 0 0 210px;
   background: var(--surface-neutral-01, #fff);
   border: 1px solid var(--border-subtle, #dde2de);

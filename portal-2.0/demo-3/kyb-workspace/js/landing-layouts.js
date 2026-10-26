@@ -13,7 +13,11 @@
 (function () {
   "use strict";
 
-  var landing = document.querySelector("[data-kw-group]");
+  /* [data-d3-kyb-landing], not [data-kw-group]: the country step carries
+     the same attribute name and its panel comes first in the document,
+     so the bare selector returns that one and the lab drives the wrong
+     screen. */
+  var landing = document.querySelector("[data-d3-kyb-landing][data-kw-group]");
   if (!landing) return;
 
   /* axis name → attribute, and the options each one accepts. */
