@@ -19,7 +19,10 @@
 
   var AXES = {
     group: { attr: "data-kw-group", options: ["open", "all"] },
-    steps: { attr: "data-kw-steps", options: ["cards", "timeline"] }
+    steps: {
+      attr: "data-kw-steps",
+      options: ["timeline", "cards", "rail", "numbered", "chevrons", "inline"]
+    }
   };
 
   function setAxis(axis, option) {

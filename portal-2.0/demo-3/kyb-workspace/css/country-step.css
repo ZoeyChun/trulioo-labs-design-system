@@ -188,14 +188,77 @@
 
 /* ==================================================================
    AXIS · Step tracker
-   ================================================================== */
 
-/* A · Cards — three cells across a tinted band, the current one lifted
-   onto white. Reads as "you are here, of three", and the band keeps it
-   from competing with the title above.
+   Six treatments over one <ol>. They trade on two things: whether the
+   steps run down the page or across it, and how much each step is
+   allowed to say. Vertical has room for the note under each label;
+   horizontal gets ~180px a step at this width, so the notes come off
+   and the label has to carry it alone.
 
-   Notes are hidden: at a third of 600px there is no room for a second
-   line under each label, and a truncated hint is worse than none. */
+   Step numbering is a CSS counter rather than markup, so the numbered
+   and inline treatments stay in step if a step is ever added.
+   ------------------------------------------------------------------ */
+
+.kw-steps {
+  counter-reset: kw-step;
+}
+
+.kw-steps__item {
+  counter-increment: kw-step;
+}
+
+/* ------------------------------------------------------------------
+   A · Timeline (default) — vertical, marks joined by a rule.
+
+   The default because vertical space is the one thing this screen has
+   spare, and it is the only arrangement that fits the note under every
+   label: each step says what it *is*, not just where it sits.
+   ------------------------------------------------------------------ */
+
+[data-kw-steps="timeline"] .kw-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+[data-kw-steps="timeline"] .kw-steps__item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 18px;
+}
+
+[data-kw-steps="timeline"] .kw-steps__item:last-child {
+  padding-bottom: 0;
+}
+
+/* Runs from under one mark to the next, so it stops at the last step
+   instead of trailing off the end. */
+[data-kw-steps="timeline"] .kw-steps__item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 24px;
+  bottom: 2px;
+  left: 10.5px;
+  width: 1px;
+  background: var(--border-subtle, #dde2de);
+}
+
+[data-kw-steps="timeline"] .kw-steps__item.is-done::before {
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 45%, var(--border-subtle, #dde2de));
+}
+
+[data-kw-steps="timeline"] .kw-steps__text {
+  padding-top: 1px;
+}
+
+/* ------------------------------------------------------------------
+   B · Cards — three cells across a tinted band, current lifted onto
+   white. Figma's treatment. Reads as "you are here, of three".
+   ------------------------------------------------------------------ */
+
 [data-kw-steps="cards"] .kw-steps {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -226,58 +289,273 @@
   align-items: center;
 }
 
-[data-kw-steps="cards"] .kw-steps__note {
+/* ------------------------------------------------------------------
+   C · Rail — marks threaded on a single horizontal line, labels under.
+
+   The lightest horizontal option: one continuous line reads as one
+   process, where the card cells read as three separate things. The
+   rail's geometry assumes three equal columns, so the mark centres sit
+   at 1/6, 3/6 and 5/6 of the width — hence the 16.67%/83.33% ends.
+   ------------------------------------------------------------------ */
+
+[data-kw-steps="rail"] .kw-steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  padding: 4px 0 0;
+}
+
+[data-kw-steps="rail"] .kw-steps::before,
+[data-kw-steps="rail"] .kw-steps::after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 16.67%;
+  height: 2px;
+  border-radius: 2px;
+}
+
+[data-kw-steps="rail"] .kw-steps::before {
+  right: 16.67%;
+  background: var(--border-subtle, #dde2de);
+}
+
+/* Filled as far as the current step — the second of three. */
+[data-kw-steps="rail"] .kw-steps::after {
+  width: 33.33%;
+  background: var(--interactive-default, #0e8a78);
+}
+
+[data-kw-steps="rail"] .kw-steps__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  text-align: center;
+}
+
+[data-kw-steps="rail"] .kw-steps__text {
+  align-items: center;
+}
+
+/* ------------------------------------------------------------------
+   D · Numbered — vertical, counters instead of state marks.
+
+   Reads as instructions rather than progress: "these are the three
+   things, you are on the second". Keeps the notes, like the timeline,
+   but drops the connector so the steps feel enumerable rather than
+   sequential.
+   ------------------------------------------------------------------ */
+
+[data-kw-steps="numbered"] .kw-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+[data-kw-steps="numbered"] .kw-steps__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+[data-kw-steps="numbered"] .kw-steps__mark {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+[data-kw-steps="numbered"] .kw-steps__mark svg {
   display: none;
 }
 
-[data-kw-steps="cards"] .kw-steps__label {
+[data-kw-steps="numbered"] .kw-steps__mark::before {
+  content: counter(kw-step);
+}
+
+[data-kw-steps="numbered"] .kw-steps__item.is-current .kw-steps__mark::after {
+  content: none;
+}
+
+[data-kw-steps="numbered"] .kw-steps__item.is-current .kw-steps__mark {
+  background: var(--interactive-default, #0e8a78);
+  color: #fff;
+}
+
+[data-kw-steps="numbered"] .kw-steps__item.is-todo .kw-steps__mark {
+  color: var(--text-caption, #8a9690);
+}
+
+[data-kw-steps="numbered"] .kw-steps__text {
+  padding-top: 3px;
+}
+
+/* ------------------------------------------------------------------
+   E · Chevrons — segments pointing right.
+
+   The most explicitly directional: each segment is cut into the next,
+   so the order is in the shape rather than in a line behind it. The
+   notch is 10px, and each segment pulls 10px left to close the gap it
+   leaves.
+   ------------------------------------------------------------------ */
+
+[data-kw-steps="chevrons"] .kw-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+[data-kw-steps="chevrons"] .kw-steps__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px 10px 12px 18px;
+  background: var(--surface-neutral-02, #f4f6f4);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%, 10px 50%);
+}
+
+[data-kw-steps="chevrons"] .kw-steps__item + .kw-steps__item {
+  margin-left: -10px;
+}
+
+[data-kw-steps="chevrons"] .kw-steps__item.is-done {
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 12%, #fff);
+}
+
+[data-kw-steps="chevrons"] .kw-steps__item.is-current {
+  background: var(--interactive-default, #0e8a78);
+}
+
+[data-kw-steps="chevrons"] .kw-steps__item.is-current .kw-steps__label {
+  color: #fff;
+}
+
+[data-kw-steps="chevrons"] .kw-steps__item.is-current .kw-steps__mark {
+  border-color: #fff;
+  background: transparent;
+}
+
+[data-kw-steps="chevrons"] .kw-steps__item.is-current .kw-steps__mark::after {
+  background: #fff;
+}
+
+[data-kw-steps="chevrons"] .kw-steps__mark {
+  width: 18px;
+  height: 18px;
+}
+
+[data-kw-steps="chevrons"] .kw-steps__mark svg {
+  width: 9px;
+  height: 9px;
+}
+
+/* ------------------------------------------------------------------
+   F · Inline — one line and a progress rule.
+
+   The least furniture a tracker can have: the position in words, the
+   current step's label, and a rule showing how far along that is. For
+   when the tracker is orientation rather than the subject of the
+   screen. The other steps are dropped, not hidden off-screen — there
+   is nothing here for a reader to miss.
+   ------------------------------------------------------------------ */
+
+[data-kw-steps="inline"] .kw-steps {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+[data-kw-steps="inline"] .kw-steps__item:not(.is-current) {
+  display: none;
+}
+
+[data-kw-steps="inline"] .kw-steps__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-kw-steps="inline"] .kw-steps__mark {
+  width: 16px;
+  height: 16px;
+}
+
+[data-kw-steps="inline"] .kw-steps__item.is-current .kw-steps__mark::after {
+  width: 6px;
+  height: 6px;
+}
+
+[data-kw-steps="inline"] .kw-steps__text {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
+}
+
+/* "Step 2 of 3 ·" — the number from the counter, the total hardcoded,
+   since this screen is specified as exactly three steps. */
+[data-kw-steps="inline"] .kw-steps__label::before {
+  content: "Step " counter(kw-step) " of 3 · ";
+  font-weight: 500;
+  color: var(--text-caption, #8a9690);
+}
+
+[data-kw-steps="inline"] .kw-steps__note {
+  font-size: 12.5px;
+}
+
+[data-kw-steps="inline"] .kw-steps__note::before {
+  content: "— ";
+}
+
+[data-kw-steps="inline"] .kw-steps::before,
+[data-kw-steps="inline"] .kw-steps::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+}
+
+[data-kw-steps="inline"] .kw-steps::before {
+  right: 0;
+  background: var(--border-subtle, #dde2de);
+}
+
+[data-kw-steps="inline"] .kw-steps::after {
+  width: 66.66%;
+  background: var(--interactive-default, #0e8a78);
+}
+
+/* ------------------------------------------------------------------
+   Horizontal treatments have no room for the note
+   ------------------------------------------------------------------ */
+
+[data-kw-steps="cards"] .kw-steps__note,
+[data-kw-steps="rail"] .kw-steps__note,
+[data-kw-steps="chevrons"] .kw-steps__note {
+  display: none;
+}
+
+[data-kw-steps="cards"] .kw-steps__label,
+[data-kw-steps="rail"] .kw-steps__label,
+[data-kw-steps="chevrons"] .kw-steps__label {
   overflow: hidden;
   font-size: 12.5px;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-/* B · Timeline — stacked, marks joined by a rule. Vertical space is
-   the one thing this screen has spare, and it buys room for the note
-   under each label, so each step says what it is as well as where it
-   sits. */
-[data-kw-steps="timeline"] .kw-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  width: 100%;
-}
-
-[data-kw-steps="timeline"] .kw-steps__item {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding-bottom: 18px;
-}
-
-[data-kw-steps="timeline"] .kw-steps__item:last-child {
-  padding-bottom: 0;
-}
-
-/* The connector runs from under one mark to the next, so it stops at
-   the last step instead of trailing off the end. */
-[data-kw-steps="timeline"] .kw-steps__item:not(:last-child)::before {
-  content: "";
-  position: absolute;
-  top: 24px;
-  bottom: 2px;
-  left: 10.5px;
-  width: 1px;
-  background: var(--border-subtle, #dde2de);
-}
-
-[data-kw-steps="timeline"] .kw-steps__item.is-done::before {
-  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 45%, var(--border-subtle, #dde2de));
-}
-
-[data-kw-steps="timeline"] .kw-steps__text {
-  padding-top: 1px;
 }
 
 /* ==================================================================

@@ -118,7 +118,7 @@
 
   <!-- Last in the cascade so it beats the hero-critical block above. -->
   <link rel="stylesheet" href="kyb-workspace/css/workspace-canvas.css?v=12">
-  <link rel="stylesheet" href="kyb-workspace/css/country-step.css?v=7">
+  <link rel="stylesheet" href="kyb-workspace/css/country-step.css?v=8">
   <link rel="stylesheet" href="kyb-workspace/css/landing-layouts.css?v=18">
 </head>
 <body>
@@ -278,8 +278,12 @@
       <div class="kw-lab__row">
         <span class="kw-lab__label">Step tracker</span>
         <div class="kw-lab__opts" role="group" aria-label="Step tracker treatment" data-kw-caxis="steps">
-          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-copt="cards">Cards</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-copt="timeline">Timeline</button>
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-copt="timeline">Timeline</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-copt="cards">Cards</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-copt="rail">Rail</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-copt="numbered">Numbered</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-copt="chevrons">Chevrons</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-copt="inline">Inline</button>
         </div>
       </div>
     </details>
@@ -368,7 +372,7 @@
                content or leaves it on the dots, and data-kw-steps draws the
                tracker as a row of cards or as a vertical timeline. -->
           <div class="d3-kyb-map__await" data-d3-kyb-map-await hidden>
-            <div class="kw-country" data-kw-country data-kw-group="open" data-kw-steps="cards">
+            <div class="kw-country" data-kw-country data-kw-group="open" data-kw-steps="timeline">
 
               <span class="kw-country__eyebrow" role="status">
                 <span class="kw-country__pulse" aria-hidden="true"></span>
@@ -1485,7 +1489,7 @@ No evidence of active trading, clients, or revenue.</p>
 <!-- Workspace canvas: dot ground, tab strip, docked-panel guard.
      Last so it can observe the shell after every shared script has bound. -->
 <script src="kyb-workspace/js/workspace-canvas.js?v=4"></script>
-<script src="kyb-workspace/js/country-step.js?v=4"></script>
+<script src="kyb-workspace/js/country-step.js?v=5"></script>
 <script src="kyb-workspace/js/landing-layouts.js?v=11"></script>
 <script src="kyb-workspace/js/kyb-boot.js?v=1"></script>
 </body>
