@@ -26,7 +26,8 @@
   var selectorKey = "";
   var investigating = false;
   var nextQuestions = REPORT_NEXT.slice();
-  var lastPlace = { country: "United Kingdom", cc: "GB" };
+  /* Empty until the user names a jurisdiction — never assume one. */
+  var lastPlace = { country: "", cc: "" };
 
   /* Panel modes that get these treatments. */
   function mode() {
@@ -103,7 +104,32 @@
   }
 
   function verifyTitle() {
-    return "Verify Meridian in " + (shortPlace(lastPlace.country || lastPlace.cc || "UK") || "UK");
+    var place = lastPlace.country || lastPlace.cc;
+    var short = place ? shortPlace(place) : "";
+    return short ? "Verify Meridian in " + short : "Verify Meridian";
+  }
+
+  /* The header names the conversation. A verification (search / confirm /
+     report) is "Verify X in Y"; plain Q&A takes its first question, so a stale
+     verification title never sits over an unrelated chat. */
+  var VERIFY_SELECTOR = "[data-d1-confirm-card], .d3-kyb-cand-panel, .ai-cand, [data-d3-kyb-confirm]";
+
+  function inVerifyFlow() {
+    var ws = document.querySelector("[data-d3-workspace]");
+    if (ws && ws.getAttribute("data-d3-kyb-surface") === "report") return true;
+    var awaitEl = document.querySelector("[data-d3-kyb-map-await]");
+    if (awaitEl && !awaitEl.hidden) return true;
+    var t = thread();
+    return !!(t && t.querySelector(VERIFY_SELECTOR));
+  }
+
+  function kybTitle() {
+    if (inVerifyFlow()) return verifyTitle();
+    var t = thread();
+    var p = t && t.querySelector(".d1-user p");
+    var q = p ? p.textContent.trim() : "";
+    if (!q) return "KYB Agent";
+    return q.length > 40 ? q.slice(0, 37) + "…" : q;
   }
 
   function setTitle(text) {
@@ -275,6 +301,7 @@
       selectorCity = "";
       selectorPage = 0;
       selectorKey = "";
+      lastPlace = { country: "", cc: "" };
       setTitle(isKyb() ? "Verify Meridian" : TX_TITLE);
     }
     step = wanted;
@@ -298,7 +325,7 @@
     } else {
       setPlaceholders("Ask about business verification");
     }
-    if (step !== "landing") setTitle(isKyb() ? verifyTitle() : TX_TITLE);
+    if (step !== "landing") setTitle(isKyb() ? kybTitle() : TX_TITLE);
     syncReportView();
     syncHeaderChrome();
     syncBack();
@@ -605,7 +632,7 @@
 
   function onUserText(text) {
     rememberPlace(text || "");
-    if (step !== "landing" && (lastPlace.country || lastPlace.cc)) setTitle(verifyTitle());
+    if (step !== "landing" && (lastPlace.country || lastPlace.cc)) setTitle(isKyb() ? kybTitle() : verifyTitle());
   }
 
   function watchThread() {
@@ -704,7 +731,7 @@
           var place = country.getAttribute("data-d3-kyb-country-label") || "";
           if (place) {
             rememberPlace(place);
-            setTitle(verifyTitle());
+            setTitle(kybTitle());
           }
         }
 

@@ -50,7 +50,7 @@
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/loader.css?v=2">
   <link rel="stylesheet" href="css/d3-fa.css?v=3">
-  <link rel="stylesheet" href="css/d3-shell.css?v=36">
+  <link rel="stylesheet" href="css/d3-shell.css?v=38">
   <link rel="stylesheet" href="css/d3-rail.css?v=18">
   <link rel="stylesheet" href="components/ai-panel/ai-panel.css?v=21">
   <link rel="stylesheet" href="../demo-4/css/truai-bubble.css?v=4">
@@ -107,6 +107,25 @@
       padding: 64px 24px !important;
     }
   </style>
+  <!-- Home layout stylesheets, loaded here (render-blocking) so the chosen layout
+       is in place at first paint. Loading them from js/d3-home-skin.js at the end
+       of <body> let the base (home 3) hero flash before the layout arrived.
+       Keep in step with LAYOUTS / DEFAULT_HOME / ASSET_VERSION in that file. -->
+  <script>
+    (function () {
+      var n = null;
+      try { n = new URLSearchParams(window.location.search).get("home"); } catch (e) {}
+      n = n || "4";
+      var css = { "3": ["3"], "4": ["4", "refresh"], "5": ["5", "refresh"], "6": ["6", "refresh"] }[n];
+      if (!css) return;
+      var root = document.documentElement;
+      root.setAttribute("data-d3-home-layout", n);
+      root.setAttribute("data-d3-home-css", "1");
+      css.forEach(function (name) {
+        document.write('<link rel="stylesheet" href="css/d3-home-' + name + '.css?v=48">');
+      });
+    })();
+  </script>
 </head>
 <body>
 
@@ -186,6 +205,7 @@
             <span class="d1-nav-tip" aria-hidden="true">Chats</span>
           </button>
           <div class="d1-fly__panel d1-chats" id="d1-chat-menu" role="menu" aria-label="Chats">
+            <div class="d1-chats__recent d3-chats__pages" data-d3-chat-history></div>
             <div class="d1-chats__recent" data-d1-chat-list></div>
           </div>
         </div>
@@ -1349,25 +1369,26 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-kyb-report-reveal.js?v=34"></script>
 <script src="js/d3-kyb-map-search.js?v=47"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
-<script src="js/d3-kyb-agent.js?v=25"></script>
+<script src="js/d3-kyb-agent.js?v=26"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=40"></script>
 <script src="js/d3-transactions.js?v=9"></script>
 <script src="js/d3-org.js?v=5"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
-<script src="js/d3-tx-agent.js?v=4"></script>
+<script src="js/d3-tx-agent.js?v=5"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
 <script src="js/d3-chat-bridge.js?v=12"></script>
 <script src="../demo-4/js/truai-bubble.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-orb-motion.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-float.js?v=10"></script>
-<script src="components/ai-panel/treatments/treatments.js?v=9"></script>
-<script src="js/d3-home-skin.js?v=20"></script>
+<script src="components/ai-panel/treatments/treatments.js?v=11"></script>
+<script src="js/d3-home-skin.js?v=21"></script>
 <script src="js/d3-home-placeholder.js?v=3"></script>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>
 <script src="js/d3-home-dots.js"></script>
 <script src="js/d3-kyb-canvas.js?v=1"></script>
+<script src="js/d3-chat-history.js?v=7"></script>
 <script src="js/d3-home-orb.js?v=5"></script>
 </body>
 </html>

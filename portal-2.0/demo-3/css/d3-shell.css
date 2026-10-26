@@ -137,3 +137,41 @@ html {
     transition: none;
   }
 }
+
+/* Chats menu — page chats (KYB / Transactions) stored by js/d3-chat-history.js,
+   listed above chat.js's own home chats. */
+.d3-chats__pages:empty {
+  display: none;
+}
+
+.d3-chats__pages:empty::before {
+  content: none;
+}
+
+/* One "Recent" label, one empty state, across both lists. */
+.d3-chats__pages:not(:empty) ~ .d1-chats__recent .d1-fly__label {
+  display: none;
+}
+
+.d3-chats__pages:not(:empty) ~ .d1-chats__recent:empty::before {
+  display: none;
+}
+
+.d3-chat-row {
+  justify-content: space-between;
+  gap: var(--spacing-16, 16px);
+  height: auto;
+  min-height: 29px;
+}
+
+.d3-chat-row__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.d3-chat-row__tag {
+  flex-shrink: 0;
+  color: var(--text-caption, #617269);
+  font-size: 11px;
+  line-height: 16px;
+}

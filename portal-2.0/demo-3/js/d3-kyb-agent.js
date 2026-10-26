@@ -1690,6 +1690,31 @@
     showMatches: playCandidateResults,
     askCountry: playCountryAsk,
     setComposerPlaceholder: setComposerPlaceholder,
-    PLACEHOLDER: PLACEHOLDER
+    PLACEHOLDER: PLACEHOLDER,
+    /* Chat history (js/d3-chat-history.js): serialise / re-attach the candidate
+       panel state so a restored thread's Confirm / filter chips still work. */
+    getState: function () {
+      return {
+        mode: candState.mode,
+        queryLabel: candState.queryLabel,
+        filterIds: (candState.filterIds || []).slice(),
+        listIds: (candState.list || []).map(function (b) { return b.id; }),
+        pendingId: candState.pending ? candState.pending.id : null,
+        turns: historyTurns.slice(-12)
+      };
+    },
+    restoreState: function (st) {
+      if (!st) return;
+      var find = window.D3KybMapSearch && window.D3KybMapSearch.findById;
+      var panels = thread.querySelectorAll(".d3-kyb-cand-panel");
+      candState.root = panels.length ? panels[panels.length - 1] : null;
+      candState.list = (st.listIds || []).map(function (id) { return find ? find(id) : null; }).filter(Boolean);
+      candState.filterIds = (st.filterIds || []).slice();
+      candState.queryLabel = st.queryLabel || "Meridian";
+      candState.mode = st.mode || "list";
+      candState.pending = st.pendingId && find ? find(st.pendingId) : null;
+      historyTurns = (st.turns || []).slice();
+      busy = false;
+    }
   };
 })();

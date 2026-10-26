@@ -12,7 +12,7 @@
   /* Layout options built on the dark skin: ?home=3 (full-bleed), 4 (globe),
      5 (globe at side). Each loads css/d3-home-N.css plus the listed js/d3-home-X.js
      files, in order (home 5 reuses the home 4 globe). */
-  var ASSET_VERSION = "47";
+  var ASSET_VERSION = "48";
   /* Main home when no ?home= is given. Explicit ?home=1|dark|2|light|3|5 still wins. */
   var DEFAULT_HOME = "4";
   var LAYOUTS = {
@@ -27,16 +27,20 @@
     var cfg = LAYOUTS[n];
     if (!cfg) return;
     document.documentElement.setAttribute("data-d3-home-layout", n);
-    var link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "css/d3-home-" + n + ".css?v=" + ASSET_VERSION;
-    document.head.appendChild(link);
-    (cfg.css || []).forEach(function (name) {
-      var extra = document.createElement("link");
-      extra.rel = "stylesheet";
-      extra.href = "css/d3-home-" + name + ".css?v=" + ASSET_VERSION;
-      document.head.appendChild(extra);
-    });
+    /* index.html's <head> already loaded the stylesheets (no first-paint flash);
+       only add them here if that did not run (e.g. another host page). */
+    if (!document.documentElement.hasAttribute("data-d3-home-css")) {
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "css/d3-home-" + n + ".css?v=" + ASSET_VERSION;
+      document.head.appendChild(link);
+      (cfg.css || []).forEach(function (name) {
+        var extra = document.createElement("link");
+        extra.rel = "stylesheet";
+        extra.href = "css/d3-home-" + name + ".css?v=" + ASSET_VERSION;
+        document.head.appendChild(extra);
+      });
+    }
     cfg.js.forEach(function (name) {
       var script = document.createElement("script");
       script.src = "js/d3-home-" + name + ".js?v=" + ASSET_VERSION;

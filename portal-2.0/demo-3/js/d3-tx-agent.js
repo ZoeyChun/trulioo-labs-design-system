@@ -13,6 +13,7 @@
   var historyTurns = [];
   var lastMatches = [];
   var lastIntent = null;
+  var lastSpec = null;
 
   var SUGGEST_FILTER = [
     { q: "Show declined transactions", intent: "declined" },
@@ -138,6 +139,7 @@
   });
 
   async function applySpec(spec) {
+    lastSpec = spec && spec.clear && !spec.predicate && Object.keys(spec).length <= 2 ? null : spec;
     try {
       var res = await sendCmd("applySpec", { spec: spec });
       return res.result;
@@ -937,6 +939,18 @@
   });
 
   window.D3TxAgent = {
+    /* Chat history (js/d3-chat-history.js). */
+    getContext: function () {
+      return { spec: lastSpec, intent: lastIntent, turns: historyTurns.slice(-12) };
+    },
+    restoreContext: function (ctx) {
+      ctx = ctx || {};
+      lastSpec = ctx.spec || null;
+      lastIntent = ctx.intent || null;
+      historyTurns = (ctx.turns || []).slice();
+      lastMatches = [];
+      setBusy(false);
+    },
     respond: respond,
     parseQuery: parseQuery,
     lastMatches: function () {
