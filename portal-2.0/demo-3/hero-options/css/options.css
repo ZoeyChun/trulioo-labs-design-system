@@ -2,10 +2,16 @@
    styled by ../dot-playground/css/playground.css so the three match
    what was tuned there. */
 
+/* No horizontal padding here — the heroes need the full width. The
+   text inside gets its column back from .opt-wrap. */
 .opt-main {
+  padding: 28px 0 64px;
+}
+
+.opt-wrap {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 28px clamp(16px, 3vw, 40px) 64px;
+  padding: 0 clamp(16px, 3vw, 40px);
 }
 
 .opt-lede {

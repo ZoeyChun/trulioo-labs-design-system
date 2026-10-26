@@ -37,6 +37,10 @@ The hero chrome comes from `../dot-playground/css/playground.css`, so
 these heroes stay identical to the ones the configs were tuned in. The
 field engine is `../dot-playground/js/tru-dot-lab.js`.
 
+The heroes run **full bleed**, edge to edge of the window, the way the
+hero actually ships — a surface judged inside a padded column is a
+different surface. Only the text around them sits in a column.
+
 **Hide the copy** (top right) blanks the headline and chat bar without
 resizing anything, so you can judge the fields on their own and the
 comparison doesn't shift under you. Hover any hero for its pointer

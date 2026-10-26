@@ -40,24 +40,29 @@
     </div>
   </header>
 
+  <!-- The heroes run edge to edge; only the text sits in a column. -->
   <main class="opt-main">
-    <p class="opt-lede">
-      One dot field, three surfaces. Same 60px grid, same teal 1.6px dots
-      at 45%, same cascade at 0.08/s, same clear hole, same mesh at 0.10,
-      same spotlight on hover. <strong>The background is the only thing
-      that differs.</strong> Hover a hero for the pointer response; hide
-      the copy to judge the field on its own.
-    </p>
+    <div class="opt-wrap">
+      <p class="opt-lede">
+        One dot field, three surfaces. Same 60px grid, same teal 1.6px dots
+        at 45%, same cascade at 0.08/s, same clear hole, same mesh at 0.10,
+        same spotlight on hover. <strong>The background is the only thing
+        that differs.</strong> Hover a hero for the pointer response; hide
+        the copy to judge the field on its own.
+      </p>
+    </div>
 
     <div class="opt-list" id="opt-list"></div>
 
-    <p class="opt-foot">
-      All three need <code>js/tru-dot-lab.js</code> — the shipped
-      <code>TruDotField</code> has no cascade, no link mesh and no pointer
-      response. To ship one, point the home at that engine instead of
-      <code>dot-field.js</code> (the <code>mount</code> signature is
-      identical), or port those three features across.
-    </p>
+    <div class="opt-wrap">
+      <p class="opt-foot">
+        All three need <code>js/tru-dot-lab.js</code> — the shipped
+        <code>TruDotField</code> has no cascade, no link mesh and no pointer
+        response. To ship one, point the home at that engine instead of
+        <code>dot-field.js</code> (the <code>mount</code> signature is
+        identical), or port those three features across.
+      </p>
+    </div>
   </main>
 
   <div class="opt-toast" id="opt-toast" role="status" aria-live="polite"></div>

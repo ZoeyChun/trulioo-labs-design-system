@@ -171,6 +171,13 @@
   function build() {
     var host = document.getElementById('opt-list');
 
+    /* Head and note go in a column; the hero between them does not. */
+    function wrap(child) {
+      var w = el('div', 'opt-wrap');
+      w.appendChild(child);
+      return w;
+    }
+
     SURFACES.forEach(function (surface) {
       var card = el('section', 'opt-card');
 
@@ -189,7 +196,7 @@
       btn.type = 'button';
       btn.addEventListener('click', function () { copy(surface); });
       head.appendChild(btn);
-      card.appendChild(head);
+      card.appendChild(wrap(head));
 
       var hero = el('div', 'pg-hero');
       hero.dataset.layout = 'center';
@@ -202,7 +209,7 @@
       hero.innerHTML = heroMarkup();
       card.appendChild(hero);
 
-      card.appendChild(el('p', 'opt-card__note', surface.note));
+      card.appendChild(wrap(el('p', 'opt-card__note', surface.note)));
 
       host.appendChild(card);
 
