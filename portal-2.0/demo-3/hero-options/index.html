@@ -1,0 +1,68 @@
+<!-- Demo 3 — hero dot field, the three final options.
+     A decision page: the same hero three times, varying only colour
+     and grid spacing. Configs come straight from the playground.
+
+     Borrows the playground's hero CSS rather than restating it, so
+     these heroes cannot drift away from the ones you tuned. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo 3 — Hero options</title>
+
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
+  <link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../composer/prompt.css">
+  <link rel="stylesheet" href="../css/d3-fa.css">
+  <link rel="stylesheet" href="../dot-playground/css/playground.css">
+  <link rel="stylesheet" href="css/options.css">
+</head>
+<body class="pg opt">
+
+  <header class="pg-bar">
+    <div class="pg-bar__id">
+      <span class="pg-bar__dot" aria-hidden="true"></span>
+      <p class="pg-bar__title">Hero options</p>
+      <p class="pg-bar__sub">Three final dot fields</p>
+    </div>
+    <nav class="pg-bar__links" aria-label="Related pages">
+      <a href="../index.html">Demo 3 main</a>
+      <a href="../dot-playground/index.html">Dot playground</a>
+    </nav>
+    <div class="pg-bar__actions">
+      <button type="button" class="pg-btn" data-act="content">Hide the copy</button>
+    </div>
+  </header>
+
+  <main class="opt-main">
+    <p class="opt-lede">
+      One dot field, three surfaces. Same 60px grid, same teal 1.6px dots
+      at 45%, same cascade at 0.08/s, same clear hole, same mesh at 0.10,
+      same spotlight on hover. <strong>The background is the only thing
+      that differs.</strong> Hover a hero for the pointer response; hide
+      the copy to judge the field on its own.
+    </p>
+
+    <div class="opt-list" id="opt-list"></div>
+
+    <p class="opt-foot">
+      All three need <code>js/tru-dot-lab.js</code> — the shipped
+      <code>TruDotField</code> has no cascade, no link mesh and no pointer
+      response. To ship one, point the home at that engine instead of
+      <code>dot-field.js</code> (the <code>mount</code> signature is
+      identical), or port those three features across.
+    </p>
+  </main>
+
+  <div class="opt-toast" id="opt-toast" role="status" aria-live="polite"></div>
+
+  <script src="../dot-playground/js/tru-dot-lab.js"></script>
+  <script src="js/options.js"></script>
+</body>
+</html>

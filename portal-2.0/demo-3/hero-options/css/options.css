@@ -1,0 +1,174 @@
+/* Demo 3 — hero options. Page chrome only; the heroes themselves are
+   styled by ../dot-playground/css/playground.css so the three match
+   what was tuned there. */
+
+.opt-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px clamp(16px, 3vw, 40px) 64px;
+}
+
+.opt-lede {
+  max-width: 68ch;
+  margin: 0 0 28px;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.6;
+  color: var(--text-secondary, #3d524f);
+}
+
+.opt-lede strong {
+  color: var(--text-default, #172d2d);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.opt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.opt-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+/* ── Background tag ──────────────────────────────────────────
+   The tag is the identifier — swatch, name, hex. No A/B/C: the
+   colour is the option, so labelling it twice adds nothing.
+   ------------------------------------------------------------ */
+
+.opt-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 5px 12px 5px 6px;
+  border: 1px solid var(--border-subtle, #dde3e0);
+  border-radius: 999px;
+  background: var(--surface-neutral-01, #fff);
+}
+
+.opt-tag__chip {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  /* The pale surfaces need an edge or they read as a hole. */
+  border: 1px solid rgba(23, 45, 45, 0.16);
+}
+
+.opt-tag__name {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-default, #172d2d);
+  white-space: nowrap;
+}
+
+.opt-tag__hex {
+  font-size: 0.6875rem;
+  color: var(--text-secondary, #3d524f);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.opt-card__copy {
+  flex: 0 0 auto;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--border-default, #c8d2ce);
+  border-radius: var(--radius-md, 6px);
+  background: var(--surface-neutral-01, #fff);
+  font: inherit;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-default, #172d2d);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.opt-card__copy:hover {
+  border-color: var(--interactive-default, #004c45);
+  background: rgba(0, 76, 69, 0.05);
+}
+
+.opt-card__copy:focus-visible,
+.opt .pg-btn:focus-visible {
+  outline: 2px solid var(--border-focus, #128ab2);
+  outline-offset: 2px;
+}
+
+.opt-card__note {
+  margin: 10px 0 0;
+  max-width: 68ch;
+  font-size: 0.6875rem;
+  line-height: 1.55;
+  color: var(--text-caption, #5f716d);
+}
+
+/* Judging the field on its own: the copy goes, the hero stays exactly
+   the size it was, so the comparison doesn't shift under you. */
+.opt--bare .pg-hero__content,
+.opt--bare .pg-hero__veil {
+  visibility: hidden;
+}
+
+.opt .pg-btn.is-on {
+  background: var(--interactive-default, #004c45);
+  border-color: var(--interactive-default, #004c45);
+  color: #fff;
+}
+
+.opt-foot {
+  max-width: 68ch;
+  margin: 40px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-subtle, #dde3e0);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #3d524f);
+}
+
+.opt-foot code {
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--surface-neutral-01, #fff);
+}
+
+.opt-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 40;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #172d2d;
+  color: #fff;
+  font-size: var(--font-size-xs, 0.75rem);
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.opt-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (max-width: 900px) {
+  .opt .pg-bar__links {
+    display: none;
+  }
+
+  .opt .pg-bar__sub {
+    display: none;
+  }
+
+  .opt .pg-bar__id {
+    margin-right: auto;
+  }
+}
