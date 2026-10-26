@@ -488,11 +488,15 @@
   workspace.querySelectorAll("[data-d3-kyb-start-new]").forEach(function (btn) {
     btn.addEventListener("click", startNew);
   });
-  /* Delegated — panel back button is mounted by D3AiPanel. */
+  /* Delegated — the New Chat button is mounted by D3AiPanel. It drops the
+     current thread and returns to the prior KYB screen. */
   document.addEventListener("click", function (event) {
     var t = event.target;
     if (!t || !t.closest) return;
-    if (t.closest("[data-d3-chat-back]")) leaveReport();
+    if (!t.closest("[data-d3-chat-new]")) return;
+    /* KYB only — the Transactions panel handles its own New Chat (d3-tx-agent.js). */
+    if (shell && shell.getAttribute("data-d3-chat-mode") !== "kyb") return;
+    leaveReport();
   });
 
   workspace.querySelectorAll("[data-d3-kyb-recent-card]").forEach(function (card) {

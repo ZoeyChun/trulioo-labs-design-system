@@ -98,10 +98,9 @@
       iconHost.innerHTML = full ? icons.collapse : icons.expand;
     }
     btn.setAttribute("aria-pressed", full ? "true" : "false");
-    btn.setAttribute(
-      "aria-label",
-      full ? "Exit full canvas chat" : "Expand chat to full canvas"
-    );
+    var label = full ? "Collapse" : "Expand";
+    btn.setAttribute("aria-label", label);
+    btn.setAttribute("data-tooltip", label);
   }
 
   function setFull(full) {

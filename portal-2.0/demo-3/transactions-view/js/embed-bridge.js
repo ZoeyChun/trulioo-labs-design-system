@@ -141,4 +141,85 @@
   } else {
     announce();
   }
+
+  /* ---- KPI strip → quick filters ----
+     Each stat filters the table through the same panel filters the Filter
+     menu uses (so the Filter chrome and counts stay truthful). Clicking the
+     active stat, or Total, clears the view. renderStats() rebuilds the strip
+     on every render, so state is re-applied from a MutationObserver. */
+  var STAT_SPECS = [
+    { key: "total", spec: null },
+    { key: "verified", spec: { clear: true, outcomes: ["positive"] }, outcomes: ["positive"], risks: [] },
+    { key: "review", spec: { clear: true, outcomes: ["intermediate"] }, outcomes: ["intermediate"], risks: [] },
+    { key: "not-verified", spec: { clear: true, outcomes: ["negative"] }, outcomes: ["negative"], risks: [] },
+    { key: "high-risk", spec: { clear: true, risks: ["high"] }, outcomes: [], risks: ["high"] }
+  ];
+
+  function sameSet(a, b) {
+    return a.length === b.length && a.every(function (v) { return b.indexOf(v) !== -1; });
+  }
+
+  function activeStatKey() {
+    var api = window.UTTransactions;
+    if (!api) return "";
+    var st = api.getState();
+    var f = st.filters || {};
+    var clean = !st.search && !st.product && !(st.date && (st.date.start || st.date.end)) &&
+      !(f.products || []).length && !(f.sources || []).length && !(f.types || []).length &&
+      !(f.watchlist || []).length && !f.country;
+    if (!clean) return "";
+    var o = f.outcomes || [];
+    var r = f.risks || [];
+    if (!o.length && !r.length) return "total";
+    for (var i = 1; i < STAT_SPECS.length; i += 1) {
+      if (sameSet(o, STAT_SPECS[i].outcomes) && sameSet(r, STAT_SPECS[i].risks)) return STAT_SPECS[i].key;
+    }
+    return "";
+  }
+
+  function syncStats(host) {
+    var active = activeStatKey();
+    Array.prototype.forEach.call(host.querySelectorAll(".ut-tx-stat"), function (el, i) {
+      var def = STAT_SPECS[i];
+      if (!def) return;
+      el.setAttribute("role", "button");
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("data-stat", def.key);
+      var on = def.key === active;
+      el.classList.toggle("is-active", on);
+      el.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  function pickStat(el) {
+    var api = window.UTTransactions;
+    if (!api || !el) return;
+    var key = el.getAttribute("data-stat");
+    var def = STAT_SPECS.filter(function (d) { return d.key === key; })[0];
+    if (!def) return;
+    if (!def.spec || key === activeStatKey()) api.applySpec({ clear: true, predicate: null });
+    else api.applySpec(def.spec);
+  }
+
+  function bindStats() {
+    var host = document.getElementById("utTxStats");
+    if (!host) return;
+    host.addEventListener("click", function (event) {
+      pickStat(event.target.closest(".ut-tx-stat"));
+    });
+    host.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      var el = event.target.closest(".ut-tx-stat");
+      if (!el) return;
+      event.preventDefault();
+      pickStat(el);
+    });
+    new MutationObserver(function () { syncStats(host); }).observe(host, { childList: true });
+    syncStats(host);
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () { window.setTimeout(bindStats, 0); });
+  } else {
+    window.setTimeout(bindStats, 0);
+  }
 })();

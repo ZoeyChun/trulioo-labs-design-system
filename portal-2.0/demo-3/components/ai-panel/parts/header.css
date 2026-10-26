@@ -56,6 +56,20 @@
   display: inline-grid;
 }
 
+.d3-chat-pane__new {
+  display: none;
+}
+
+.d3-chat-pane__new[hidden] {
+  display: none !important;
+}
+
+/* New Chat appears once a KYB / Transactions thread is under way (same
+   trigger the back button used). */
+.d1-shell:is([data-d3-chat-mode="kyb"], [data-d3-chat-mode="tx"]) .d3-chat-pane__new:not([hidden]) {
+  display: inline-grid;
+}
+
 .d3-chat-pane__brand {
   margin: 0;
   font-size: 20px;

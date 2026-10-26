@@ -918,6 +918,24 @@
     lastMatches = [];
   });
 
+  /* New Chat (panel header): drop the thread, reset the table filters and
+     return the panel to its empty landing. Only acts on the Transactions page. */
+  document.addEventListener("click", function (event) {
+    var t = event.target;
+    if (!t || !t.closest || !t.closest("[data-d3-chat-new]")) return;
+    if (!onTransactions()) return;
+    thread.innerHTML = "";
+    historyTurns = [];
+    lastMatches = [];
+    lastIntent = null;
+    setBusy(false);
+    setSuggestions(SUGGEST_FILTER);
+    hideFollow();
+    applySpec({ clear: true, predicate: null });
+    document.dispatchEvent(new CustomEvent("d3-kyb:restore-idle"));
+    if (window.D3Nav) window.D3Nav.markChatIdle();
+  });
+
   window.D3TxAgent = {
     respond: respond,
     parseQuery: parseQuery,

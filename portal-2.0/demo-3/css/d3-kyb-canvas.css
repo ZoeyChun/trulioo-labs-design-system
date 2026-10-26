@@ -141,9 +141,10 @@
 }
 
 .d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing] .d3-kyb-recent__title {
-  font-size: 22px;
+  /* heading/sm */
+  font-size: 16px;
   font-weight: 600;
-  line-height: 30px;
+  line-height: 22px;
   color: var(--text-default, #172d2d);
 }
 

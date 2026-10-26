@@ -170,6 +170,26 @@
   border-left: none;
 }
 
+/* KPI tiles double as quick filters (js/embed-bridge.js). */
+.th-tx .ut-tx-stat[role="button"] {
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.th-tx .ut-tx-stat[role="button"]:hover {
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.th-tx .ut-tx-stat[role="button"]:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: -2px;
+}
+
+.th-tx .ut-tx-stat.is-active {
+  background: var(--surface-neutral-02, #f4f6f4);
+  box-shadow: inset 0 -2px 0 var(--interactive-default, #0e8a78);
+}
+
 .th-tx .ut-tx-stat__label {
   margin: 0;
   font-size: var(--font-size-xs, 12px);

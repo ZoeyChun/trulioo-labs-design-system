@@ -2,7 +2,7 @@
    Figma: AgentHub 1274:17557, Recurring User KYB 1274:15652
    Part styles live under ./parts/ */
 
-@import url("./parts/header.css");
+@import url("./parts/header.css?v=4");
 @import url("./parts/prompt-card.css");
 @import url("./parts/composer.css?v=2");
 @import url("./parts/askbar.css");
@@ -354,4 +354,49 @@ html.d3-chat-pane-resizing * {
   .d1-shell[data-d3-view="agents"] .d1-main {
     padding: 0 !important;
   }
+}
+
+/* Header icon-button tooltips — dark simple tooltip (Components/tooltip) at its
+   smallest size, shown under the button. Close sits at the panel edge, so its
+   tooltip is right-aligned to stay inside; expand's is centred. */
+.d3-chat-pane__tools [data-tooltip] {
+  position: relative;
+}
+
+.d3-chat-pane__tools [data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  z-index: 20;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--surface-inverse, #172d2d);
+  color: var(--text-inverse, #f4f6f4);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 16px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -2px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.d3-chat-pane__tools .d3-chat-pane__close[data-tooltip]::after {
+  left: auto;
+  right: 0;
+  transform: translateY(-2px);
+}
+
+.d3-chat-pane__tools [data-tooltip]:hover::after,
+.d3-chat-pane__tools [data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 150ms;
+}
+
+.d3-chat-pane__tools .d3-chat-pane__close[data-tooltip]:hover::after,
+.d3-chat-pane__tools .d3-chat-pane__close[data-tooltip]:focus-visible::after {
+  transform: translateY(0);
 }

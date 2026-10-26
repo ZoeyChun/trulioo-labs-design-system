@@ -124,3 +124,43 @@ html[data-d3-home-layout="4"] .d1-shell[data-d3-view="home"][data-d3-home-skin="
 html[data-d3-home-layout="4"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main::-webkit-scrollbar {
   display: none;
 }
+
+/* Composer: message on top; the KYB context tag drops to the bottom row,
+   on the same line as the send button. Pure layout — the markup is shared,
+   so the field wrapper is dissolved and its children placed on a grid. */
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d3-home-hero .d1-prompt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: var(--spacing-8, 8px);
+  row-gap: var(--spacing-16, 16px);
+  min-height: 128px;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d3-home-hero .d1-prompt__files {
+  grid-column: 1 / -1;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d3-home-hero .d1-prompt__field {
+  display: contents;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d3-home-hero .d1-prompt__entry {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-self: start;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d3-home-hero .tds-tag.d1-prompt__ctx {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  align-self: center;
+}
+
+html[data-d3-home-layout="4"] .d1-home[data-d1-stage="home"] .d3-home-hero .d1-prompt__bar {
+  grid-column: 2;
+  grid-row: 2;
+  width: auto;
+}
