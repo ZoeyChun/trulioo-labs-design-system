@@ -1,0 +1,131 @@
+/* Demo 3 — home 6 (?home=6): home 4's full-bleed hero on a white surface,
+   with the flat dot field from hero-options ("White" option) instead of the
+   globe. Field is drawn by js/d3-home-6.js through the playground engine. */
+
+html[data-d3-home-layout="6"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] {
+  padding: 0 0 64px !important;
+  gap: 0;
+}
+
+html[data-d3-home-layout="6"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero {
+  align-self: stretch;
+  width: 100% !important;
+  height: 420px !important;
+  min-height: 420px !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  /* Soft mint glow pooling at the sides, white at the top, centre and
+     foot. Every stop is transparent before the hero's bottom edge, so the
+     hero melts into the page below with no seam. */
+  background:
+    radial-gradient(ellipse 38% 40% at 3% 52%, rgba(143, 200, 172, 0.6), transparent 100%),
+    radial-gradient(ellipse 38% 40% at 97% 52%, rgba(160, 210, 188, 0.55), transparent 100%),
+    #fff !important;
+}
+
+html[data-d3-home-layout="6"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body {
+  justify-content: center !important;
+  height: 100% !important;
+  min-height: 420px !important;
+  padding: 48px 24px !important;
+}
+
+html[data-d3-home-layout="6"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"][data-d1-repeat="true"] .d1-brief {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  margin-top: 64px !important;
+  padding: 0 48px;
+}
+
+/* The old flat field and the logo orb give way to the new field. */
+html[data-d3-home-layout="6"] .d3-home-dots,
+html[data-d3-home-layout="6"] .d1-home[data-d1-stage="home"] .d3-home-orb {
+  display: none !important;
+}
+
+.d3-home-6-dots {
+  /* Dots fade out toward the foot instead of being cut by the hero edge. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 62%, transparent 96%);
+  mask-image: linear-gradient(to bottom, #000 0, #000 62%, transparent 96%);
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Near-white plate, blurred + feathered, so the grid fades out behind the
+   header and composer. Same geometry as home 4's veil. */
+.d3-home-6-veil {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: min(760px, 96%);
+  height: 330px;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 80%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 80%, transparent 100%);
+  pointer-events: none;
+}
+
+html[data-d3-home-layout="6"] .d3-home-hero__body {
+  position: relative;
+  z-index: 1;
+}
+
+/* Light surface: headline and composer edge take the light tone. */
+html[data-d3-home-layout="6"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d1-hello__back,
+html[data-d3-home-layout="6"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d1-hello p {
+  color: var(--text-default, #172d2d);
+}
+
+html[data-d3-home-layout="6"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero__body > .d1-composer > .d1-prompt,
+html[data-d3-home-layout="6"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero > .d1-composer > .d1-prompt {
+  width: min(520px, 100%);
+  border-color: rgba(23, 45, 45, 0.08);
+}
+
+/* Composer text wraps downward instead of clipping to one line. */
+html[data-d3-home-layout="6"] .d1-home[data-d1-stage="home"] .d1-prompt__field {
+  flex: 0 0 auto;
+  align-items: flex-start;
+  height: auto;
+  min-height: 24px;
+}
+
+html[data-d3-home-layout="6"] .d1-home[data-d1-stage="home"] .d1-prompt__entry {
+  align-items: start;
+  height: auto;
+  grid-template-rows: auto;
+}
+
+html[data-d3-home-layout="6"] .d1-home[data-d1-stage="home"] .d1-prompt__input {
+  display: block;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+html[data-d3-home-layout="6"] .d1-home[data-d1-stage="home"] .d1-prompt__ph {
+  align-self: start;
+  height: 22px;
+}
+
+/* Full-bleed to the right edge: no scrollbar gutter, no drawer strip. */
+html[data-d3-home-layout="6"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main {
+  scrollbar-gutter: auto !important;
+  scrollbar-width: none;
+}
+
+html[data-d3-home-layout="6"] .d1-shell[data-d3-view="home"][data-d3-home-skin="dark"] .d1-main::-webkit-scrollbar {
+  display: none;
+}
+
+html[data-d3-home-layout="6"] .d1-shell[data-d3-view="home"] .d1-main .d1-drawer {
+  display: none !important;
+}

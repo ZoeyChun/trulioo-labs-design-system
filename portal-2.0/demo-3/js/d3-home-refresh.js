@@ -12,7 +12,7 @@
   if (alertTitle) alertTitle.textContent = HEADLINE;
 
   /* Home 4's alert button follows the new headline; Home 5 keeps its hero link wording. */
-  if (document.documentElement.getAttribute("data-d3-home-layout") === "4") {
+  if (/^[46]$/.test(document.documentElement.getAttribute("data-d3-home-layout"))) {
     var goBtn = alertCard && alertCard.querySelector(".d1-brief__go");
     if (goBtn) {
       Array.prototype.forEach.call(goBtn.childNodes, function (node) {

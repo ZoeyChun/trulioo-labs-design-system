@@ -1,4 +1,4 @@
-/* Demo 3 — home skin: dark (default, Figma 1609:50255) or light. Default (no param): 4 (globe). Options: ?home=1 (dark), 2 (light), 3 (full-bleed), 4 (globe), 5 (globe at side); light/dark kept as aliases. */
+/* Demo 3 — home skin: dark (default, Figma 1609:50255) or light. Default (no param): 4 (globe). Options: ?home=1 (dark), 2 (light), 3 (full-bleed), 4 (globe), 5 (globe at side), 6 (white dot field); light/dark kept as aliases. */
 (function () {
   "use strict";
 
@@ -12,13 +12,14 @@
   /* Layout options built on the dark skin: ?home=3 (full-bleed), 4 (globe),
      5 (globe at side). Each loads css/d3-home-N.css plus the listed js/d3-home-X.js
      files, in order (home 5 reuses the home 4 globe). */
-  var ASSET_VERSION = "42";
+  var ASSET_VERSION = "46";
   /* Main home when no ?home= is given. Explicit ?home=1|dark|2|light|3|5 still wins. */
   var DEFAULT_HOME = "4";
   var LAYOUTS = {
     "3": { js: [] },
     "4": { js: ["4", "refresh"], css: ["refresh"] },
-    "5": { js: ["4", "refresh", "5"], css: ["refresh"] }
+    "5": { js: ["4", "refresh", "5"], css: ["refresh"] },
+    "6": { js: ["6", "refresh"], css: ["refresh"] }
   };
 
   function applyLayout() {

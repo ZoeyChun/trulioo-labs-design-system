@@ -86,10 +86,11 @@ Session keys: `d3-signed-in`, `d3-from-signin` (Demo 3 only). Demo 1 keeps its o
 | Home 3 (full-bleed) | [`home-3/`](home-3/) or `?home=3` | Figma `1626:93274` — edge-to-edge hero |
 | **Home 4 (globe) — main** | [`home-4/`](home-4/) or `?home=4`, or no param | Rotating dot globe, composer at its centre. Default home; change `DEFAULT_HOME` in `js/d3-home-skin.js`. |
 | Home 5 (globe at side) | [`home-5/`](home-5/) or `?home=5` | Figma `1626:93274` (updated) — gradient hero, copy left, composer right |
+| Home 6 (white dot field) | [`home-6/`](home-6/) or `?home=6` | White hero with the hero-options "White" dot field (cascade, mesh, hover glow) and a mint glow that fades into the cards below |
 | Labs | Labs rail → `labs.html?embed=1` | Catalog; not “Agent hub” |
 | Labs catalog Home | `pages/…/labs.html` sidenav | Experimental nav only |
 
-Add the next option as `home-6/` + `?home=6` (register it in `LAYOUTS` in `js/d3-home-skin.js` if it needs CSS/JS).
+Add the next option as `home-7/` + `?home=7` (register it in `LAYOUTS` in `js/d3-home-skin.js` if it needs CSS/JS).
 
 Agent hub is retired. KYB is a top-level rail item (crumbs: **KYB Verification [/ entity]**).
 
