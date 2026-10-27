@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { LabsTreeNode } from "../ubo/types";
-import { ChevronDownIcon, graphIcon, WarningIcon } from "./icons";
+import { ChevronDownIcon, CloseIcon, graphIcon, WarningIcon } from "./icons";
 
 type ConnectedEntity = NonNullable<NonNullable<LabsTreeNode["details"]>["connected"]>[number];
 type DetailField = NonNullable<NonNullable<LabsTreeNode["details"]>["fields"]>[number];
@@ -9,6 +9,7 @@ interface UboDrawerProps {
   node: LabsTreeNode;
   connected: ConnectedEntity[];
   onConnectedSelect: (nodeId: string) => void;
+  onDismiss: () => void;
 }
 
 function UsFlagIcon() {
@@ -72,7 +73,7 @@ function DrawerAccordion({
   );
 }
 
-export function UboDrawer({ node, connected, onConnectedSelect }: UboDrawerProps) {
+export function UboDrawer({ node, connected, onConnectedSelect, onDismiss }: UboDrawerProps) {
   const details = node.details || {
     fields: [
       { label: "Relationship", value: node.subtitle || "—" },
@@ -110,6 +111,14 @@ export function UboDrawer({ node, connected, onConnectedSelect }: UboDrawerProps
         {details.status && (
           <span className={`tds-tag tds-tag--sm tds-tag--${statusTone}`}>{details.status}</span>
         )}
+        <button
+          type="button"
+          className="kyb-ubo-drawer__close"
+          aria-label="Close entity details"
+          onClick={onDismiss}
+        >
+          <CloseIcon />
+        </button>
       </div>
 
       {details.fields?.length ? (

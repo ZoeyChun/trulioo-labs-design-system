@@ -69,6 +69,8 @@ export type GraphMode = "inline" | "fullscreen";
 export interface CanvasSlot {
   x: number;
   y: number;
+  /** Content-hugging card width used for layout / wires. */
+  width: number;
 }
 
 export interface CanvasWire {
@@ -80,6 +82,8 @@ export interface UboLayoutNode {
   node: LabsTreeNode;
   x: number;
   y: number;
+  /** Content-hugging card width (matches CSS max-content estimate). */
+  width: number;
   /**
    * Filtered out by the entity-type toggle, but kept because visible
    * descendants would otherwise be orphaned from the hierarchy.

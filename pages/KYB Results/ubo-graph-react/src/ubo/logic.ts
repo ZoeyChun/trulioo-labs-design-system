@@ -46,14 +46,19 @@ export const UBO_CANVAS = {
      the framing stable when a pruned tree would otherwise collapse the canvas. */
   width: 1010,
   height: 662,
-  /* Must match the CSS card width (.kyb-ubo-node / --button in kyb-results.css and
-     demo-3 d3-kyb-ubo-graph.css). If they differ, sibling cards overlap and wires
-     miss the card centres. */
-  nodeWidth: 288,
+  /* Card width hugs label text; keep these bounds in sync with CSS. */
+  nodeMinWidth: 160,
+  nodeMaxWidth: 320,
+  /** Fallback / average used only when a node width is unknown. */
+  nodeWidth: 200,
   nodeHeight: 64,
+  /** Horizontal chrome inside a card: pad + icon + gap (before label text). */
+  nodeChromeX: 12 + 40 + 12 + 12,
+  /** Approx. Inter sm medium advance width for layout estimates. */
+  nodeCharWidth: 7.4,
   wireRadius: 8,
   /** Horizontal gap between adjacent sibling subtrees. */
-  columnGap: 12,
+  columnGap: 24,
   /** Distance from one tier's top edge to the next. */
   tierPitch: 165,
   /** Top inset of the root card. */
@@ -368,17 +373,32 @@ function uboBuildVisibleTree(
   return { node, children, structural: !matchesType, moreCount };
 }
 
+/** Content-hugging card width so labels aren’t forced into a fixed box. */
+export function uboCardWidth(node: LabsTreeNode): number {
+  const { nodeMinWidth, nodeMaxWidth, nodeChromeX, nodeCharWidth } = UBO_CANVAS;
+  const nameLen = String(node.name || "").length;
+  const metaLen = String(node.subtitle || "").length;
+  const textW = Math.ceil(Math.max(nameLen, metaLen) * nodeCharWidth);
+  return Math.min(nodeMaxWidth, Math.max(nodeMinWidth, nodeChromeX + textW));
+}
+
 /** Bottom-up pass: a subtree is as wide as its children, or one card at minimum. */
-function uboMeasureSubtree(visible: UboVisibleNode, widths: Map<UboVisibleNode, number>): number {
-  const { nodeWidth, columnGap } = UBO_CANVAS;
-  let width: number = nodeWidth;
+function uboMeasureSubtree(
+  visible: UboVisibleNode,
+  widths: Map<UboVisibleNode, number>,
+  cardWidths: Map<UboVisibleNode, number>
+): number {
+  const { columnGap } = UBO_CANVAS;
+  const cardW = uboCardWidth(visible.node);
+  cardWidths.set(visible, cardW);
+  let width: number = cardW;
 
   if (visible.children.length) {
     const childrenWidth = visible.children.reduce(
-      (sum, child, i) => sum + uboMeasureSubtree(child, widths) + (i ? columnGap : 0),
+      (sum, child, i) => sum + uboMeasureSubtree(child, widths, cardWidths) + (i ? columnGap : 0),
       0
     );
-    width = Math.max(nodeWidth, childrenWidth);
+    width = Math.max(cardW, childrenWidth);
   }
 
   widths.set(visible, width);
@@ -391,16 +411,19 @@ function uboPlaceSubtree(
   left: number,
   depth: number,
   widths: Map<UboVisibleNode, number>,
-  out: Array<{ visible: UboVisibleNode; x: number; y: number; depth: number }>
+  cardWidths: Map<UboVisibleNode, number>,
+  out: Array<{ visible: UboVisibleNode; x: number; y: number; depth: number; cardW: number }>
 ) {
   const { nodeWidth, columnGap, tierPitch, padTop } = UBO_CANVAS;
   const width = widths.get(visible) ?? nodeWidth;
+  const cardW = cardWidths.get(visible) ?? uboCardWidth(visible.node);
 
   out.push({
     visible,
-    x: left + (width - nodeWidth) / 2,
+    x: left + (width - cardW) / 2,
     y: padTop + depth * tierPitch,
     depth,
+    cardW,
   });
 
   if (!visible.children.length) return;
@@ -412,7 +435,7 @@ function uboPlaceSubtree(
 
   let cursor = left + (width - childrenWidth) / 2;
   visible.children.forEach((child) => {
-    uboPlaceSubtree(child, cursor, depth + 1, widths, out);
+    uboPlaceSubtree(child, cursor, depth + 1, widths, cardWidths, out);
     cursor += (widths.get(child) ?? nodeWidth) + columnGap;
   });
 }
@@ -458,11 +481,18 @@ export function buildUboLayout(
   }
 
   const widths = new Map<UboVisibleNode, number>();
-  const contentWidth = uboMeasureSubtree(root, widths);
+  const cardWidths = new Map<UboVisibleNode, number>();
+  const contentWidth = uboMeasureSubtree(root, widths, cardWidths);
 
   const width = Math.max(UBO_CANVAS.width, contentWidth);
-  const placed: Array<{ visible: UboVisibleNode; x: number; y: number; depth: number }> = [];
-  uboPlaceSubtree(root, (width - contentWidth) / 2, 0, widths, placed);
+  const placed: Array<{
+    visible: UboVisibleNode;
+    x: number;
+    y: number;
+    depth: number;
+    cardW: number;
+  }> = [];
+  uboPlaceSubtree(root, (width - contentWidth) / 2, 0, widths, cardWidths, placed);
 
   const maxDepth = placed.reduce((deepest, item) => Math.max(deepest, item.depth), 0);
   const height = Math.max(
@@ -470,32 +500,33 @@ export function buildUboLayout(
     padTop + maxDepth * tierPitch + nodeHeight + padBottom
   );
 
-  const nodes: UboLayoutNode[] = placed.map(({ visible, x, y }) => ({
+  const nodes: UboLayoutNode[] = placed.map(({ visible, x, y, cardW }) => ({
     node: visible.node,
     x,
     y,
+    width: cardW,
     structural: visible.structural,
     moreCount: visible.moreCount,
-    moreX: x + nodeWidth / 2,
+    moreX: x + cardW / 2,
     moreY: y + nodeHeight + moreOffsetY,
   }));
 
   const slotById: Record<string, CanvasSlot> = {};
   nodes.forEach((item) => {
-    slotById[item.node.id] = { x: item.x, y: item.y };
+    slotById[item.node.id] = { x: item.x, y: item.y, width: item.width };
   });
 
   // Wires come from the same placed tree as the cards, so a pruned node can
   // never leave a line hanging in empty space.
   const wires: CanvasWire[] = [];
-  placed.forEach(({ visible, x, y }) => {
-    const fromX = x + nodeWidth / 2;
+  placed.forEach(({ visible, x, y, cardW }) => {
+    const fromX = x + cardW / 2;
     const fromY = y + nodeHeight;
 
     visible.children.forEach((child) => {
       const childSlot = slotById[child.node.id];
       if (!childSlot) return;
-      const toX = childSlot.x + nodeWidth / 2;
+      const toX = childSlot.x + childSlot.width / 2;
       const toY = childSlot.y;
       wires.push({
         d: uboRoundedWirePath(fromX, fromY, toX, toY, Math.round((fromY + toY) / 2)),

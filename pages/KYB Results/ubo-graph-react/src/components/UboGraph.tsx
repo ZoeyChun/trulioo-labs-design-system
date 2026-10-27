@@ -51,6 +51,7 @@ function isBrowserFullscreen() {
 function GraphNodeButton({
   node,
   structural,
+  cardWidth,
   state,
   index,
   mode,
@@ -59,6 +60,7 @@ function GraphNodeButton({
 }: {
   node: LabsTreeNode;
   structural: boolean;
+  cardWidth: number;
   state: UboGraphState;
   index: Record<string, NodeIndexEntry>;
   mode: GraphMode;
@@ -76,9 +78,14 @@ function GraphNodeButton({
     <button
       type="button"
       className={classes.join(" ")}
+      style={{ width: `${cardWidth}px`, maxWidth: `${cardWidth}px` }}
       data-kyb-ubo-node
       data-kyb-ubo-node-id={node.id}
-      title={structural ? "Filtered out, but shown to keep the ownership path intact" : undefined}
+      title={
+        structural
+          ? "Filtered out, but shown to keep the ownership path intact"
+          : node.name || undefined
+      }
       aria-pressed={state.selectedId === node.id ? "true" : "false"}
       onClick={() => onSelect(node.id)}
       onMouseEnter={() => onHover(node.id)}
@@ -154,6 +161,16 @@ export function UboGraph({ tree }: UboGraphProps) {
       updateState({ selectedId: null });
     }
   }, [layout, state.selectedId, updateState]);
+
+  useEffect(() => {
+    if (!state.selectedId) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      updateState({ selectedId: null });
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [state.selectedId, updateState]);
 
   useEffect(() => {
     if (!filterOpen) return;
@@ -352,8 +369,9 @@ export function UboGraph({ tree }: UboGraphProps) {
 
     // Card edges relative to the centre of the area the drawer leaves visible.
     const limit = available / 2 - UBO_FOCUS_MARGIN;
+    const cardW = slot.width || UBO_CANVAS.nodeWidth;
     const left = (slot.x - layout.width / 2) * state.zoom + state.panX;
-    const right = (slot.x + UBO_CANVAS.nodeWidth - layout.width / 2) * state.zoom + state.panX;
+    const right = (slot.x + cardW - layout.width / 2) * state.zoom + state.panX;
 
     let panX = state.panX;
     if (left < -limit) panX += -limit - left;
@@ -430,7 +448,7 @@ export function UboGraph({ tree }: UboGraphProps) {
       const target = event.target as HTMLElement;
       if (
         target.closest(
-          "input, label, a, button, .kyb-ubo-graph__toolbar-card, .kyb-ubo-graph__legend, .kyb-ubo-graph__zoom, .kyb-ubo-graph__filter-btn, .kyb-ubo-graph__entity-toggle, .kyb-ubo-graph__search, .kyb-ubo-canvas__more-slot, .kyb-ubo-canvas__more-btn, .kyb-ubo-drawer, [data-kyb-ubo-node-id]"
+          "input, label, a, button, .kyb-ubo-graph__toolbar-bar, .kyb-ubo-graph__toolbar-card, .kyb-ubo-graph__legend, .kyb-ubo-graph__zoom, .kyb-ubo-graph__filter-btn, .kyb-ubo-graph__entity-toggle, .kyb-ubo-graph__search, .kyb-ubo-canvas__more-slot, .kyb-ubo-canvas__more-btn, .kyb-ubo-drawer, [data-kyb-ubo-node-id]"
         )
       ) {
         return;
@@ -523,130 +541,132 @@ export function UboGraph({ tree }: UboGraphProps) {
         </div>
       )}
 
-      <div className="kyb-ubo-graph__toolbar-card">
-        <label className="kyb-ubo-graph__search">
-          <span className="kyb-ubo-graph__search-icon" aria-hidden="true">
-            <SearchIcon />
-          </span>
-          <input
-            className="kyb-ubo-graph__search-input"
-            type="search"
-            placeholder="Search entities..."
-            data-kyb-ubo-search
-            aria-label="Search entities in ownership graph"
-            value={state.searchQuery}
-            onChange={(event) => updateState({ searchQuery: event.target.value })}
-          />
-        </label>
-
-        <div className="kyb-ubo-graph__entity-toggle" role="group" aria-label="Entity type visibility">
-          <button
-            type="button"
-            className={`kyb-ubo-graph__entity-btn${state.showBusiness ? " kyb-ubo-graph__entity-btn--active" : ""}`}
-            aria-pressed={state.showBusiness ? "true" : "false"}
-            data-kyb-ubo-entity="business"
-            aria-label="Show business entities"
-            disabled={lockBusinessToggle}
-            title={lockBusinessToggle ? "At least one entity type must stay visible" : undefined}
-            onClick={() => updateState({ showBusiness: !state.showBusiness })}
-          >
-            <BuildingIcon />
-          </button>
-          <button
-            type="button"
-            className={`kyb-ubo-graph__entity-btn${state.showPerson ? " kyb-ubo-graph__entity-btn--active" : ""}`}
-            aria-pressed={state.showPerson ? "true" : "false"}
-            data-kyb-ubo-entity="person"
-            aria-label="Show person entities"
-            disabled={lockPersonToggle}
-            title={lockPersonToggle ? "At least one entity type must stay visible" : undefined}
-            onClick={() => updateState({ showPerson: !state.showPerson })}
-          >
-            <PersonIcon />
-          </button>
-        </div>
-
-        <div
-          ref={filterRef}
-          className={`tds-filter-button kyb-ubo-graph__filter-btn${isFilterActive ? " tds-filter-button--selected" : ""}${isFilterMulti ? " tds-filter-button--multi" : ""}${filterOpen ? " tds-filter-button--open" : ""}`}
-          data-kyb-ubo-filter
-          data-tds-dropdown-bound="1"
-        >
-          <button
-            type="button"
-            className="tds-btn tds-btn--md tds-btn--secondary"
-            aria-expanded={filterOpen ? "true" : "false"}
-            aria-haspopup="menu"
-            onClick={(event) => {
-              if ((event.target as HTMLElement).closest(".tds-filter-button__clear")) {
-                clearFilters();
-                return;
-              }
-              setFilterOpen((open) => !open);
-            }}
-          >
-            <span className="tds-btn__leading-icon" aria-hidden="true">
-              <FilterIcon />
+      <div className="kyb-ubo-graph__toolbar-bar">
+        <div className="kyb-ubo-graph__toolbar-card">
+          <label className="kyb-ubo-graph__search">
+            <span className="kyb-ubo-graph__search-icon" aria-hidden="true">
+              <SearchIcon />
             </span>
-            <span className="tds-filter-button__trigger-default">Filter</span>
-            <span className="tds-filter-button__trigger-value">{filterLabel}</span>
-            {isFilterMulti && (
-              <span className="tds-counter tds-counter--primary tds-counter--sm tds-filter-button__counter">
-                {filterCounter}
-              </span>
-            )}
-            <span className="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                <path d="M4 4l8 8M12 4l-8 8" />
-              </svg>
-            </span>
-          </button>
+            <input
+              className="kyb-ubo-graph__search-input"
+              type="search"
+              placeholder="Search entities..."
+              data-kyb-ubo-search
+              aria-label="Search entities in ownership graph"
+              value={state.searchQuery}
+              onChange={(event) => updateState({ searchQuery: event.target.value })}
+            />
+          </label>
+
+          <div className="kyb-ubo-graph__entity-toggle" role="group" aria-label="Entity type visibility">
+            <button
+              type="button"
+              className={`kyb-ubo-graph__entity-btn${state.showBusiness ? " kyb-ubo-graph__entity-btn--active" : ""}`}
+              aria-pressed={state.showBusiness ? "true" : "false"}
+              data-kyb-ubo-entity="business"
+              aria-label="Show business entities"
+              disabled={lockBusinessToggle}
+              title={lockBusinessToggle ? "At least one entity type must stay visible" : undefined}
+              onClick={() => updateState({ showBusiness: !state.showBusiness })}
+            >
+              <BuildingIcon />
+            </button>
+            <button
+              type="button"
+              className={`kyb-ubo-graph__entity-btn${state.showPerson ? " kyb-ubo-graph__entity-btn--active" : ""}`}
+              aria-pressed={state.showPerson ? "true" : "false"}
+              data-kyb-ubo-entity="person"
+              aria-label="Show person entities"
+              disabled={lockPersonToggle}
+              title={lockPersonToggle ? "At least one entity type must stay visible" : undefined}
+              onClick={() => updateState({ showPerson: !state.showPerson })}
+            >
+              <PersonIcon />
+            </button>
+          </div>
+
           <div
-            className="tds-dropdown-panel tds-dropdown-panel--filter-menu kyb-ubo-graph__filter-menu"
-            role="menu"
-            hidden={!filterOpen}
+            ref={filterRef}
+            className={`tds-filter-button kyb-ubo-graph__filter-btn${isFilterActive ? " tds-filter-button--selected" : ""}${isFilterMulti ? " tds-filter-button--multi" : ""}${filterOpen ? " tds-filter-button--open" : ""}`}
+            data-kyb-ubo-filter
+            data-tds-dropdown-bound="1"
           >
-            {UBO_FILTER_GROUPS.map((group) => (
-              <div key={group.id}>
-                <div className="tds-dropdown-panel__header">{group.label}</div>
-                {group.options.map((option) => (
-                  <label key={option.id} className="tds-action-list-item">
-                    <input
-                      type="checkbox"
-                      className="tds-checkbox"
-                      data-kyb-ubo-filter-checkbox
-                      data-kyb-ubo-filter-group={group.id}
-                      data-kyb-ubo-filter-value={option.id}
-                      checked={state.filters[group.id][option.id]}
-                      onChange={(event) =>
-                        handleFilterChange(group.id, option.id, event.target.checked)
-                      }
-                    />
-                    <span className="tds-action-list-item__label">{option.label}</span>
-                  </label>
-                ))}
-              </div>
-            ))}
+            <button
+              type="button"
+              className="tds-btn tds-btn--md tds-btn--secondary"
+              aria-expanded={filterOpen ? "true" : "false"}
+              aria-haspopup="menu"
+              onClick={(event) => {
+                if ((event.target as HTMLElement).closest(".tds-filter-button__clear")) {
+                  clearFilters();
+                  return;
+                }
+                setFilterOpen((open) => !open);
+              }}
+            >
+              <span className="tds-btn__leading-icon" aria-hidden="true">
+                <FilterIcon />
+              </span>
+              <span className="tds-filter-button__trigger-default">Filter</span>
+              <span className="tds-filter-button__trigger-value">{filterLabel}</span>
+              {isFilterMulti && (
+                <span className="tds-counter tds-counter--primary tds-counter--sm tds-filter-button__counter">
+                  {filterCounter}
+                </span>
+              )}
+              <span className="tds-btn__trailing-icon tds-filter-button__clear" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M4 4l8 8M12 4l-8 8" />
+                </svg>
+              </span>
+            </button>
+            <div
+              className="tds-dropdown-panel tds-dropdown-panel--filter-menu kyb-ubo-graph__filter-menu"
+              role="menu"
+              hidden={!filterOpen}
+            >
+              {UBO_FILTER_GROUPS.map((group) => (
+                <div key={group.id}>
+                  <div className="tds-dropdown-panel__header">{group.label}</div>
+                  {group.options.map((option) => (
+                    <label key={option.id} className="tds-action-list-item">
+                      <input
+                        type="checkbox"
+                        className="tds-checkbox"
+                        data-kyb-ubo-filter-checkbox
+                        data-kyb-ubo-filter-group={group.id}
+                        data-kyb-ubo-filter-value={option.id}
+                        checked={state.filters[group.id][option.id]}
+                        onChange={(event) =>
+                          handleFilterChange(group.id, option.id, event.target.checked)
+                        }
+                      />
+                      <span className="tds-action-list-item__label">{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="kyb-ubo-graph__toolbar kyb-ubo-graph__toolbar--right">
-        <div className="kyb-ubo-graph__zoom" role="group" aria-label="Graph zoom controls">
-          <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Zoom in" onClick={() => handleZoom("in")}>
-            <ZoomInIcon />
-          </button>
-          <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Zoom out" onClick={() => handleZoom("out")}>
-            <ZoomOutIcon />
-          </button>
-          <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Reset view" onClick={resetView}>
-            <ResetViewIcon />
-          </button>
-          {mode === "inline" && (
-            <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Enter fullscreen" onClick={openFullscreen}>
-              <FullscreenEnterIcon />
+        <div className="kyb-ubo-graph__toolbar kyb-ubo-graph__toolbar--right">
+          <div className="kyb-ubo-graph__zoom" role="group" aria-label="Graph zoom controls">
+            <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Zoom in" onClick={() => handleZoom("in")}>
+              <ZoomInIcon />
             </button>
-          )}
+            <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Zoom out" onClick={() => handleZoom("out")}>
+              <ZoomOutIcon />
+            </button>
+            <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Reset view" onClick={resetView}>
+              <ResetViewIcon />
+            </button>
+            {mode === "inline" && (
+              <button type="button" className="kyb-ubo-graph__zoom-btn" aria-label="Enter fullscreen" onClick={openFullscreen}>
+                <FullscreenEnterIcon />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -702,7 +722,7 @@ export function UboGraph({ tree }: UboGraphProps) {
             ))}
           </svg>
           <div className="kyb-ubo-canvas__nodes">
-            {layout.nodes.map(({ node, x, y, structural }) => (
+            {layout.nodes.map(({ node, x, y, width: cardWidth, structural }) => (
               <div
                 key={node.id}
                 className="kyb-ubo-canvas__slot"
@@ -712,6 +732,7 @@ export function UboGraph({ tree }: UboGraphProps) {
                 <GraphNodeButton
                   node={node}
                   structural={structural}
+                  cardWidth={cardWidth}
                   state={state}
                   index={index}
                   mode={mode}
@@ -730,6 +751,7 @@ export function UboGraph({ tree }: UboGraphProps) {
           node={selectedNode}
           connected={uboConnectedEntities(selectedNode, index)}
           onConnectedSelect={handleConnectedSelect}
+          onDismiss={() => updateState({ selectedId: null })}
         />
       )}
     </div>

@@ -125,7 +125,9 @@
 .d3-kyb-ownership__view[data-d3-kyb-own-panel="graph"]:not([hidden]) {
   display: block;
   width: 100%;
-  min-height: 520px;
+  min-width: 0;
+  min-height: min(520px, 70vh);
+  height: min(640px, 78vh);
 }
 
 .d3-kyb-ubo-graph {
@@ -290,6 +292,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
   min-height: 0;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-2xl);
@@ -297,26 +300,49 @@
   background-image: radial-gradient(circle, color-mix(in srgb, var(--border-subtle) 65%, transparent) 1px, transparent 1px);
   background-size: 16px 16px;
   overflow: hidden;
+  container-type: inline-size;
+  container-name: kyb-ubo;
+}
+
+/* Single flex strip: search/filter card + zoom — never absolutely overlap.
+   Stays below the entity drawer (drawer z-index is higher). */
+.kyb-ubo-graph__toolbar-bar {
+  position: absolute;
+  z-index: 3;
+  top: var(--spacing-8);
+  left: var(--spacing-8);
+  right: var(--spacing-8);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  min-width: 0;
+  pointer-events: none;
+}
+
+.kyb-ubo-graph__toolbar-bar > * {
+  pointer-events: auto;
 }
 
 .kyb-ubo-graph__toolbar-card {
-  position: absolute;
-  z-index: 2;
-  top: var(--spacing-8);
-  left: var(--spacing-8);
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
   gap: 10px;
+  width: max-content;
+  max-width: none;
   padding: var(--padding-sm);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   background-color: var(--surface-neutral-01);
   box-shadow: var(--elevation-sm);
+  box-sizing: border-box;
+  overflow: visible;
 }
 
 .kyb-ubo-graph__toolbar {
-  position: absolute;
-  z-index: 2;
   display: flex;
   align-items: center;
   gap: var(--gap-sm);
@@ -327,15 +353,21 @@
 }
 
 .kyb-ubo-graph__toolbar--right {
-  top: var(--spacing-8);
-  right: var(--spacing-8);
+  position: relative;
+  top: auto;
+  right: auto;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .kyb-ubo-graph__search {
   display: inline-flex;
   align-items: center;
   gap: var(--gap-sm);
+  flex: 0 0 auto;
   width: 180px;
+  min-width: 180px;
+  max-width: 180px;
   height: 32px;
   padding: 0 var(--padding-sm);
   border: 1px solid var(--border-strong);
@@ -378,6 +410,7 @@
 .kyb-ubo-graph__entity-toggle {
   display: inline-flex;
   align-items: center;
+  flex-shrink: 0;
   gap: var(--gap-xs);
   padding: var(--padding-xs);
   border-radius: var(--radius-card);
@@ -412,6 +445,8 @@
 .kyb-ubo-graph__filter-btn {
   position: relative;
   z-index: 3;
+  flex: 0 0 auto;
+  flex-shrink: 0;
 }
 
 .kyb-ubo-graph__filter-btn .tds-dropdown-panel {
@@ -646,7 +681,10 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-12);
-  width: min(100%, 288px);
+  /* Width set inline from layout (content hug); CSS bounds as fallback */
+  width: max-content;
+  min-width: 160px;
+  max-width: 320px;
   padding: var(--spacing-12);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -709,9 +747,6 @@
   font-variation-settings: var(--font-variation-figma-medium);
   color: var(--text-default);
   white-space: nowrap;
-  /* Cards are a fixed 288px (= UBO_CANVAS.nodeWidth in the bundle). A name that
-     still doesn't fit is cut with an ellipsis instead of spilling out of the card;
-     the full name is on the title attribute (see d3-kyb-ubo-graph.js). */
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -720,10 +755,15 @@
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   color: var(--text-description);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kyb-ubo-node--button {
-  width: 288px;
+  width: max-content;
+  min-width: 160px;
+  max-width: 320px;
   margin: 0;
   font: inherit;
   text-align: left;
@@ -797,8 +837,13 @@
   margin-top: var(--spacing-4);
 }
 
+/* Don't squeeze the search/filter card when the drawer opens — only nudge zoom. */
+.kyb-ubo-graph--with-drawer .kyb-ubo-graph__toolbar-bar {
+  right: var(--spacing-8);
+}
+
 .kyb-ubo-graph--with-drawer .kyb-ubo-graph__toolbar--right {
-  right: calc(var(--kyb-ubo-drawer-width) + var(--spacing-8));
+  margin-right: var(--kyb-ubo-drawer-width);
 }
 
 .kyb-ubo-graph--with-drawer .kyb-ubo-graph__stage {
@@ -812,7 +857,8 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 5;
+  /* Above the entity drawer in fullscreen */
+  z-index: 7;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -854,8 +900,7 @@
   height: 16px;
 }
 
-[data-kyb-ubo-mode="fullscreen"] .kyb-ubo-graph__toolbar-card,
-[data-kyb-ubo-mode="fullscreen"] .kyb-ubo-graph__toolbar--right {
+[data-kyb-ubo-mode="fullscreen"] .kyb-ubo-graph__toolbar-bar {
   top: calc(56px + var(--spacing-8));
 }
 
@@ -927,7 +972,8 @@
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 4;
+  /* Above toolbar / legend / canvas chrome */
+  z-index: 6;
   width: var(--kyb-ubo-drawer-width);
   height: 100%;
   max-height: none;
@@ -969,11 +1015,45 @@
 
 .kyb-ubo-drawer__title {
   flex: 1;
+  min-width: 0;
   margin: 0;
   font-size: var(--font-size-md);
   line-height: var(--line-height-sm);
   font-weight: var(--font-weight-semibold);
   color: #262933;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kyb-ubo-drawer__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--icon-default);
+  cursor: pointer;
+}
+
+.kyb-ubo-drawer__close:hover {
+  background-color: var(--surface-neutral-03);
+}
+
+.kyb-ubo-drawer__close:focus-visible {
+  outline: 2px solid var(--border-interactive);
+  outline-offset: 2px;
+}
+
+.kyb-ubo-drawer__close svg {
+  width: 16px;
+  height: 16px;
 }
 
 .kyb-ubo-drawer__fields {
@@ -1214,5 +1294,121 @@
 
   .kyb-ubo-tree__branch-tail {
     display: none;
+  }
+}
+
+/* ---- Responsive UBO surface (container-sized, works in narrow report hosts) ---- */
+
+@container kyb-ubo (max-width: 820px) {
+  .kyb-ubo-graph__search {
+    max-width: none;
+  }
+
+  .kyb-ubo-graph__legend {
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    max-width: calc(100% - var(--spacing-16, 16px));
+  }
+
+  .kyb-ubo-drawer {
+    width: 320px;
+  }
+
+  .kyb-ubo-graph--with-drawer .kyb-ubo-graph__toolbar--right {
+    margin-right: 320px;
+  }
+
+  .kyb-ubo-graph--with-drawer .kyb-ubo-graph__stage {
+    padding-right: 320px;
+  }
+}
+
+@container kyb-ubo (max-width: 680px) {
+  .kyb-ubo-graph__toolbar-card {
+    gap: 8px;
+  }
+
+  .kyb-ubo-graph__toolbar--right {
+    margin-left: auto;
+  }
+
+  .kyb-ubo-graph__search {
+    width: 148px;
+    min-width: 148px;
+    max-width: 148px;
+  }
+}
+
+/* Narrow: entity details become a bottom sheet (~75% of the canvas) */
+@container kyb-ubo (max-width: 560px) {
+  .kyb-ubo-graph--with-drawer .kyb-ubo-graph__stage {
+    padding-right: 0;
+  }
+
+  .kyb-ubo-graph--with-drawer .kyb-ubo-graph__toolbar--right {
+    margin-right: 0;
+  }
+
+  .kyb-ubo-drawer {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 75%;
+    max-height: 75%;
+    border-left: none;
+    border-top: 1px solid var(--border-subtle);
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    box-shadow: var(--elevation-md, 0 -8px 24px rgba(23, 45, 45, 0.16));
+  }
+
+  .kyb-ubo-graph--with-drawer .kyb-ubo-graph__legend {
+    bottom: calc(75% + var(--spacing-8));
+  }
+
+  .kyb-ubo-graph__legend {
+    max-width: calc(100% - 160px);
+  }
+}
+
+@container kyb-ubo (max-width: 420px) {
+  .kyb-ubo-graph__toolbar-bar {
+    top: var(--spacing-4);
+    left: var(--spacing-4);
+    right: var(--spacing-4);
+    gap: 6px;
+  }
+
+  .kyb-ubo-graph__toolbar-card {
+    gap: 6px;
+  }
+
+  .kyb-ubo-graph__search {
+    width: 132px;
+    min-width: 132px;
+    max-width: 132px;
+  }
+
+  .kyb-ubo-graph__legend {
+    left: var(--spacing-4);
+    padding: var(--padding-sm);
+    max-width: calc(100% - 8px);
+  }
+
+  .kyb-ubo-graph--with-drawer .kyb-ubo-graph__legend {
+    bottom: calc(75% + var(--spacing-4));
+  }
+}
+
+/* Fluid graph panel height on small viewports (outside the surface container) */
+@media (max-width: 720px) {
+  .d3-kyb-ownership__view[data-d3-kyb-own-panel="graph"]:not([hidden]) {
+    min-height: 360px;
+    height: min(520px, 70vh);
+  }
+
+  .d3-kyb-ownership__head {
+    flex-wrap: wrap;
   }
 }
