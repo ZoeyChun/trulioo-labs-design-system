@@ -104,6 +104,10 @@
   }
 
   function verifyTitle() {
+    var awaitEl = document.querySelector("[data-d3-kyb-map-await]");
+    if (awaitEl && !awaitEl.hidden && awaitEl.getAttribute("data-d3-await-stage") === "name") {
+      return "Verify a business";
+    }
     var place = lastPlace.country || lastPlace.cc;
     var short = place ? shortPlace(place) : "";
     return short ? "Verify Meridian in " + short : "Verify Meridian";
@@ -321,7 +325,17 @@
     } else if (step === "verify") {
       hideMatchList(false);
       var confirming = !!document.querySelector("[data-d1-confirm-card], [data-d3-kyb-confirm='yes']");
-      setPlaceholders(confirming ? "Confirm above, or ask a follow-up" : "Select a match or refine your search");
+      var awaitEl = document.querySelector("[data-d3-kyb-map-await]");
+      var awaiting = awaitEl && !awaitEl.hidden ? awaitEl.getAttribute("data-d3-await-stage") : "";
+      setPlaceholders(
+        awaiting === "name"
+          ? "Business name, e.g. Meridian"
+          : awaiting === "country"
+            ? "Country of registration, e.g. United States"
+            : confirming
+              ? "Confirm above, or ask a follow-up"
+              : "Select a match or refine your search"
+      );
     } else {
       setPlaceholders("Ask about business verification");
     }

@@ -90,6 +90,15 @@
     openResumeExperience();
   }
 
+  /* New Chat always starts over at the KYB landing — never on a bare map. */
+  function newChat() {
+    if (window.D3KybReport && typeof window.D3KybReport.abort === "function") {
+      window.D3KybReport.abort();
+    }
+    syncChatBack(false);
+    openResumeExperience();
+  }
+
   function updateMapNudge() {
     if (mapNudge) mapNudge.hidden = true;
   }
@@ -496,7 +505,7 @@
     if (!t.closest("[data-d3-chat-new]")) return;
     /* KYB only — the Transactions panel handles its own New Chat (d3-tx-agent.js). */
     if (shell && shell.getAttribute("data-d3-chat-mode") !== "kyb") return;
-    leaveReport();
+    newChat();
   });
 
   workspace.querySelectorAll("[data-d3-kyb-recent-card]").forEach(function (card) {

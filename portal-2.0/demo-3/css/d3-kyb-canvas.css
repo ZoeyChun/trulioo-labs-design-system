@@ -468,3 +468,122 @@
 @media (prefers-reduced-motion: reduce) {
   .d3-kyb-country__pulse { animation: none; }
 }
+
+/* ------------------------------------------------------------------
+   Resolving — no map until a business and a country are identified
+   ------------------------------------------------------------------ */
+
+/* Same dotted ground as the waiting card. */
+.d1-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="map"][data-d3-kyb-resolving] {
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d1-shell[data-d3-view="chat"] .d3-workspace[data-d3-kyb-surface="map"][data-d3-kyb-resolving] > .d3-kyb-dots {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle 440px at 50% 48%, transparent 0, transparent 38%, #000 100%);
+  mask-image: radial-gradient(circle 440px at 50% 48%, transparent 0, transparent 38%, #000 100%);
+}
+
+/* The map is kept alive (Leaflet needs its size) but invisible. */
+.d3-workspace[data-d3-kyb-surface="map"][data-d3-kyb-resolving] .d3-kyb-map {
+  background: transparent;
+}
+
+.d3-workspace[data-d3-kyb-surface="map"][data-d3-kyb-resolving] .d3-kyb-map__leaflet,
+.d3-workspace[data-d3-kyb-surface="map"][data-d3-kyb-resolving] .d3-kyb-map__overlay {
+  visibility: hidden;
+}
+
+/* Skeleton of the "Search in progress" card. */
+.d3-kyb-skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 220ms ease, visibility 0s linear 220ms;
+}
+
+.d3-workspace[data-d3-kyb-resolving] .d3-kyb-skeleton {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 220ms ease;
+}
+
+.d3-kyb-skeleton__card {
+  gap: 16px;
+}
+
+.sk {
+  display: block;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e8ede8 0%, #f4f6f4 45%, #e8ede8 90%);
+  background-size: 220% 100%;
+  animation: d3-kyb-sk 1.4s ease-in-out infinite;
+}
+
+@keyframes d3-kyb-sk {
+  0% { background-position: 110% 0; }
+  100% { background-position: -110% 0; }
+}
+
+.sk--pill { width: 148px; height: 26px; border-radius: 999px; }
+.sk--title { width: 260px; height: 28px; }
+.sk--line { width: 100%; max-width: 52ch; height: 14px; }
+.sk--short { width: 62%; }
+.sk--hint { width: 280px; max-width: 70%; height: 12px; }
+
+.sk-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  margin: 4px 0;
+}
+
+.sk-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sk--dot { flex: 0 0 22px; width: 22px; height: 22px; border-radius: 50%; }
+
+.sk-step__text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.sk--label { width: 120px; height: 14px; }
+.sk--label.sk--wide { width: 170px; }
+.sk--note { width: 200px; height: 12px; }
+.sk--note.sk--short { width: 130px; }
+
+/* The real card rises into the place the skeleton held. */
+.d3-kyb-map__await:not([hidden]) .d3-kyb-country {
+  animation: d3-kyb-card-in 320ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+}
+
+@keyframes d3-kyb-card-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk,
+  .d3-kyb-map__await:not([hidden]) .d3-kyb-country { animation: none; }
+}

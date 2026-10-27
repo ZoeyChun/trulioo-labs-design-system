@@ -132,6 +132,7 @@
       verify: verify,
       awaiting: !!(verify && mapEl && mapEl.classList.contains("is-awaiting-country") && awaitEl && !awaitEl.hidden),
       query: text("[data-d3-kyb-map-await-query]"),
+      stage: awaitEl ? awaitEl.getAttribute("data-d3-await-stage") || "" : "",
       caption: text("[data-d3-kyb-map-caption]"),
       /* Map context only belongs to a verification — otherwise it is whatever
          the last search left behind. */
@@ -262,7 +263,10 @@
     if (st.surface === "report" && st.session && resume.expandToFullReport) {
       resume.expandToFullReport(st.session);
     } else if (st.awaiting && maps && maps.setAwaitingCountry) {
-      maps.setAwaitingCountry(true, st.query || "this business");
+      maps.setAwaitingCountry(true, st.stage === "name" ? "" : st.query || "this business");
+    } else if (maps && !st.verify && maps.setAwaitingCountry) {
+      /* A plain Q&A chat has no business on the map yet. */
+      maps.setAwaitingCountry(true, "");
     } else if (maps && st.resultIds && st.resultIds.length && maps.plotResults) {
       var list = st.resultIds.map(maps.findById).filter(Boolean);
       if (list.length) maps.plotResults(list, st.caption || undefined);

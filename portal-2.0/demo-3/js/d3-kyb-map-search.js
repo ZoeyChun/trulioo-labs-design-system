@@ -574,6 +574,10 @@
     var awaitEl = document.querySelector("[data-d3-kyb-map-await]");
     if (mapEl) mapEl.classList.toggle("is-awaiting-country", awaitingCountry);
     if (awaitEl) {
+      /* "name": the user hasn't said which business yet; "country": we have a
+         name and need the jurisdiction. The right panel reads this attribute. */
+      awaitEl.setAttribute("data-d3-await-stage", queryLabel ? "country" : "name");
+      awaitEl.setAttribute("data-d3-await-query", queryLabel || "");
       awaitEl.hidden = !awaitingCountry;
       var qEl = awaitEl.querySelector("[data-d3-kyb-map-await-query]");
       if (qEl) qEl.textContent = queryLabel || "this business";
@@ -667,8 +671,15 @@
     );
   }
 
+  /* The map stays out of sight (right panel shows a skeleton / the waiting card)
+     until there are matches to show on it. js/d3-kyb-canvas.js reads this. */
+  function markMapReady() {
+    if (workspace) workspace.setAttribute("data-d3-map-ready", "1");
+  }
+
   function plotResults(items, captionText, opts) {
     opts = opts || {};
+    markMapReady();
     /* null/undefined → full demo set; explicit [] keeps the map empty (filter wipe). */
     var list = items == null ? MERIDIAN_US.slice() : items.slice();
     lastResults = list.slice();
@@ -771,6 +782,7 @@
   /* Crossfade to map → zoom out to matches (skip current-location pin). */
   function revealMatches(items, captionText, opts) {
     opts = opts || {};
+    markMapReady();
     var list = items && items.length ? items.slice() : MERIDIANS.slice();
     lastResults = list.slice();
     var label = captionText || matchCaption(list);

@@ -58,7 +58,7 @@
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=13">
   <link rel="stylesheet" href="css/d3-workspace.css?v=33">
-  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=3">
+  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=4">
   <link rel="stylesheet" href="css/d3-kyb-details.css?v=1">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
@@ -337,13 +337,13 @@
             <div class="d3-kyb-country">
               <span class="d3-kyb-country__eyebrow" role="status">
                 <span class="d3-kyb-country__pulse" aria-hidden="true"></span>
-                Waiting for country
+                <span data-d3-await-eyebrow>Waiting for country</span>
               </span>
               <h2 class="d3-kyb-country__title">Search in progress</h2>
-              <p class="d3-kyb-country__lead">
+              <p class="d3-kyb-country__lead" data-d3-await-lead>
                 Looking up <strong data-d3-kyb-map-await-query>—</strong>. Reply with the country of registration in chat to continue.
               </p>
-              <ol class="d3-kyb-steps" aria-label="Verification progress">
+              <ol class="d3-kyb-steps" aria-label="Verification progress" data-d3-await-steps>
                 <li class="d3-kyb-steps__item is-done">
                   <span class="d3-kyb-steps__mark" aria-hidden="true">
                     <svg viewBox="0 0 12 12" fill="none"><path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m2.5 6.2 2.3 2.3L9.5 3.8"/></svg>
@@ -368,7 +368,23 @@
                   </span>
                 </li>
               </ol>
-              <p class="d3-kyb-country__hint">Example: <span>United States</span> or <span>United Kingdom</span></p>
+              <p class="d3-kyb-country__hint" data-d3-await-hint>Example: <span>United States</span> or <span>United Kingdom</span></p>
+            </div>
+          </div>
+          <!-- Shown while the agent is working out the business + country: the
+               "Search in progress" card as a skeleton, so the map never flashes. -->
+          <div class="d3-kyb-skeleton" data-d3-kyb-skeleton aria-hidden="true">
+            <div class="d3-kyb-country d3-kyb-skeleton__card">
+              <span class="sk sk--pill"></span>
+              <span class="sk sk--title"></span>
+              <span class="sk sk--line"></span>
+              <span class="sk sk--line sk--short"></span>
+              <div class="sk-steps">
+                <div class="sk-step"><span class="sk sk--dot"></span><span class="sk-step__text"><span class="sk sk--label"></span><span class="sk sk--note"></span></span></div>
+                <div class="sk-step"><span class="sk sk--dot"></span><span class="sk-step__text"><span class="sk sk--label sk--wide"></span><span class="sk sk--note sk--short"></span></span></div>
+                <div class="sk-step"><span class="sk sk--dot"></span><span class="sk-step__text"><span class="sk sk--label"></span><span class="sk sk--note"></span></span></div>
+              </div>
+              <span class="sk sk--hint"></span>
             </div>
           </div>
           <div class="d3-kyb-map__overlay">
@@ -1364,11 +1380,11 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js?v=40"></script>
 <script src="js/d3-kyb-ubo-graph.js?v=7"></script>
 <script src="js/d3-kyb-result-tabs.js?v=6"></script>
-<script src="js/d3-kyb-resume.js?v=43"></script>
+<script src="js/d3-kyb-resume.js?v=44"></script>
 <script src="js/d3-kyb-report-reveal.js?v=34"></script>
-<script src="js/d3-kyb-map-search.js?v=47"></script>
+<script src="js/d3-kyb-map-search.js?v=49"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
-<script src="js/d3-kyb-agent.js?v=26"></script>
+<script src="js/d3-kyb-agent.js?v=27"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=40"></script>
@@ -1381,13 +1397,13 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="../demo-4/js/truai-bubble.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-orb-motion.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-float.js?v=10"></script>
-<script src="components/ai-panel/treatments/treatments.js?v=12"></script>
+<script src="components/ai-panel/treatments/treatments.js?v=14"></script>
 <script src="js/d3-home-skin.js?v=21"></script>
 <script src="js/d3-home-placeholder.js?v=3"></script>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>
 <script src="js/d3-home-dots.js"></script>
-<script src="js/d3-kyb-canvas.js?v=1"></script>
-<script src="js/d3-chat-history.js?v=7"></script>
+<script src="js/d3-kyb-canvas.js?v=3"></script>
+<script src="js/d3-chat-history.js?v=9"></script>
 <script src="js/d3-home-orb.js?v=5"></script>
 </body>
 </html>

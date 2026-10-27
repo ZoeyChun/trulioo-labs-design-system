@@ -674,7 +674,54 @@
 
   /* Name without country — ask in chat only. No country filter chips (those
      imply result facets). Map stays blank until a jurisdiction is named. */
+  /* “verify a business” names no business at all. Strip the request words and
+     the generic nouns; if nothing is left there is no name to look up yet. */
+  function cleanName(label) {
+    return String(label || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9\s&.'-]/g, " ")
+      .replace(
+        /\b(please|can|could|you|i|we|want|wants|would|like|to|need|help|me|with|let'?s|lets|verify|verification|check|find|search|look|up|for|run|do|a|an|the|my|our|some|this|that|new|another|one|kyb|kyc|business|businesses|company|companies|entity|entities|organi[sz]ation|firm|corporation|customer|client)\b/g,
+        " "
+      )
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function playNameAsk() {
+    hideFollow();
+    showChatBack();
+    candState.list = [];
+    candState.filterIds = [];
+    candState.queryLabel = "";
+    candState.pending = null;
+    candState.mode = "name";
+    compareIds = [];
+
+    showAwaitingCountry("");
+
+    var wrap = playHtml("");
+    wrap.classList.add("d3-kyb-cand-panel");
+    candState.root = wrap;
+    wrap.innerHTML =
+      '<div class="ai-reply">' +
+      '<p class="ai-reply__lead">Which business would you like to verify?</p>' +
+      '<p class="ai-reply__sub">Tell me the legal business name — and the country if you know it, for example <strong>Meridian</strong> or “Meridian, United Kingdom”.</p>' +
+      "</div>";
+    stick();
+
+    setComposerPlaceholder(PLACEHOLDER.search);
+    var input = composerInputs()[0];
+    if (input) {
+      try {
+        input.focus();
+      } catch (e) {}
+    }
+    return wrap;
+  }
+
   function playCountryAsk(queryLabel) {
+    if (!cleanName(queryLabel)) return playNameAsk();
     hideFollow();
     showChatBack();
     candState.list = [];
