@@ -35,7 +35,7 @@
     { id: "au", cc: "AU", label: "Australia" }
   ];
   var SUGGEST_AFTER = [
-    { q: "Why is this entity high risk?" },
+    { q: "What contributed to this verification result?" },
     { q: "Who ultimately owns this business?" },
     { q: "Has this entity ever traded?" }
   ];
@@ -249,7 +249,7 @@
       return { intent: "ownership", flaggedOnly: /flagged/.test(lower) };
     }
 
-    if (/why .{0,40}(flag|risk|fail|review)|flagged|high risk|risk signal|what('s| is) wrong|sanctions|shell/.test(lower)) {
+    if (/why .{0,40}(flag|risk|fail|review)|flagged|high risk|risk signal|what('s| is) wrong|sanctions|shell|contributed to|verification result/.test(lower)) {
       return { intent: "risk" };
     }
 

@@ -13,7 +13,7 @@
   if (!shell) return;
 
   var REPORT_NEXT = [
-    "Why is this entity high risk?",
+    "What contributed to this verification result?",
     "Who ultimately owns this business?",
     "Has this entity ever traded?"
   ];

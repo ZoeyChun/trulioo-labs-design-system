@@ -5,7 +5,7 @@
   "use strict";
 
   var DEFAULT_PROMPTS = [
-    "Why is this entity high risk?",
+    "What contributed to this verification result?",
     "Who ultimately owns this business?",
     "Has this entity ever traded?",
   ];
@@ -249,6 +249,7 @@
     if (!normalized) return "risk";
     if (
       normalized === "why is this entity high risk?" ||
+      normalized === "what contributed to this verification result?" ||
       normalized === "why is this high risk?" ||
       normalized.indexOf("high risk") !== -1
     ) {
