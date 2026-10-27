@@ -381,7 +381,7 @@
     var arrow =
       '<span class="d3-ai-next__arrow" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>';
     host.innerHTML =
-      '<p class="d3-ai-next__label">Continue your investigation</p><div class="d3-ai-next__list">' +
+      '<div class="d3-ai-next__list">' +
       nextQuestions
         .map(function (q) {
           return (
