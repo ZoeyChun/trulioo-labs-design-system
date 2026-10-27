@@ -1500,8 +1500,40 @@
     return playHtml(html);
   }
 
+  /* One place for transaction history: a question about past verifications /
+     transactions asked anywhere in KYB is answered on the Transactions page,
+     by the Transaction Agent, instead of being forced through KYB search.
+     "this verification result" is about the current report, not history. */
+  function isTransactionsIntent(text) {
+    var t = String(text || "").toLowerCase();
+    if (/this (verification|check|entity|business)/.test(t)) return false;
+    return (
+      /\btransactions?\b/.test(t) ||
+      /\b(previous|past|prior|earlier|old|recent|completed|my|all|latest)\s+(kyb\s+)?(verifications?|checks?|searches|results?)\b/.test(t) ||
+      /\b(verification|search|transaction|check)\s+history\b/.test(t) ||
+      /\b(my|the)\s+history\b/.test(t)
+    );
+  }
+
+  function handOffToTransactions(text) {
+    if (window.D3ChatHistory && window.D3ChatHistory.leave) window.D3ChatHistory.leave();
+    if (window.D3Transactions && window.D3Transactions.open) window.D3Transactions.open();
+    window.setTimeout(function () {
+      document.dispatchEvent(
+        new CustomEvent("d3-chat:send", {
+          detail: { text: text, agent: "tx" },
+          cancelable: true
+        })
+      );
+    }, 250);
+  }
+
   async function respond(text) {
     if (busy || onTx()) return;
+    if (onKyb() && isTransactionsIntent(text)) {
+      handOffToTransactions(text);
+      return;
+    }
     if (!onKyb()) {
       /* Promote into KYB when user sends from agents hub with kyb intent */
       ensureKybOpen();
@@ -1732,6 +1764,7 @@
   window.D3KybAgent = {
     respond: respond,
     parseQuery: parseQuery,
+    isTransactionsIntent: isTransactionsIntent,
     selected: selected,
     confirmSelect: confirmSelect,
     showMatches: playCandidateResults,

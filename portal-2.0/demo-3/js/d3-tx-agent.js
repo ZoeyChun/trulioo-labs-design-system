@@ -336,7 +336,33 @@
       return { intent: intent, spec: spec, layout: "list", label: "declined or unsuccessful verifications" };
     }
 
-    if (/verif(ied|ication)?|positive|clear|no hits|accepted|passed/.test(lower) && !/not verif/.test(lower)) {
+    /* Asking for past verifications / the history in general ("find a previous
+       verification", "search my transaction history") is a request for the whole
+       table, not for the "verified" outcome. A name or country on top of that
+       ("past verifications for Apex") searches for it. */
+    if (
+      /\b(previous|past|prior|earlier|old|latest|my|all|recent)\s+(kyb\s+)?(verifications?|checks?|searches|transactions?)\b|\b(transaction|verification|search)\s+history\b|\bmy history\b/.test(
+        lower
+      )
+    ) {
+      var rest = lower
+        .replace(/[^a-z0-9\s-]/g, " ")
+        .replace(
+          /\b(show|find|search|list|get|look|up|for|me|my|the|a|an|of|in|to|please|can|you|i|want|need|previous|past|prior|earlier|old|latest|all|recent|kyb|verifications?|checks?|searches|transactions?|history|across|through|within|your|our|any|that|this|where|is|are|was|were|have|had|did|do|what|which|one|ones)\b/g,
+          " "
+        )
+        .replace(/\s+/g, " ")
+        .trim();
+      if (!rest) {
+        spec.predicate = null;
+        return { intent: "history", spec: spec, layout: "list", label: "your transaction history" };
+      }
+      /* A name / country on top of it: that is what to look for. */
+      spec.search = rest;
+      return { intent: "search", spec: spec, layout: "list", label: rest };
+    }
+
+    if (/\bverified\b|\bpositive\b|no hits|accepted|\bpassed\b|\bclear\b/.test(lower) && !/not verif/.test(lower)) {
       intent = "verified";
       spec.outcomes = ["positive"];
       return { intent: intent, spec: spec, layout: "list", label: "verified transactions" };
@@ -440,7 +466,7 @@
     /* Generic search: use first meaningful token against dataset */
     if (/show|find|filter|search|list|get|where/.test(lower)) {
       var tokens = lower.replace(/[^a-z0-9\s-]/g, " ").split(/\s+/).filter(function (t) {
-        return t.length > 2 && !/^(show|find|filter|search|list|get|the|and|for|with|from|that|this|all|any|me|please|transactions?|verifications?)$/.test(t);
+        return t.length > 2 && !/^(show|find|filter|search|list|get|the|and|for|with|from|that|this|all|any|me|please|transactions?|verifications?|previous|past|prior|earlier|old|latest|recent|my|history|checks?|searches|kyb)$/.test(t);
       });
       if (tokens.length) {
         spec.search = tokens.join(" ");

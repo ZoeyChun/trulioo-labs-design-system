@@ -428,6 +428,10 @@
     if (!restoring && !thread.children.length) activeId = null;
   });
 
+  /* Hand-offs that change page without a rail click (e.g. the KYB agent sending a
+     transaction-history question to Transactions) store the chat the same way. */
+  window.D3ChatHistory = { leave: leave };
+
   persist();
   render();
 })();
