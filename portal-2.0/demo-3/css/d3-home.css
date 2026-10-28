@@ -481,3 +481,8 @@
   color: var(--text-inverse);
   background: var(--surface-inverse);
 }
+
+/* The dark hero (home 1, 4, 5): the reminder under the composer reads light. */
+.d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero .d1-composer__note {
+  color: rgba(244, 246, 244, 0.64);
+}

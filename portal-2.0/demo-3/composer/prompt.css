@@ -440,3 +440,32 @@
 .d1-prompt__send.is-stop .d1-stop-square {
   display: block;
 }
+
+/* Under every composer: a quiet reminder that answers need checking. */
+.d1-composer__note {
+  margin: 0;
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+  text-align: center;
+}
+
+/* .d1-composer spaces its children by 24px; the note belongs to the prompt. */
+.d1-composer > .d1-composer__note {
+  margin-top: calc(var(--spacing-24, 24px) * -1 + var(--spacing-8, 8px));
+}
+
+.d3-chat-pane__composer > .d1-composer__note {
+  margin-top: var(--spacing-8, 8px);
+}
+
+/* In the panel the composers gap by 12px, not 24px. */
+.d3-chat-pane .d1-composer > .d1-composer__note {
+  margin-top: calc(var(--spacing-12, 12px) * -1 + var(--spacing-8, 8px));
+}
+
+/* The panel's empty-state composer is hidden once the real one is parked in it:
+   its note goes too, so there is only ever one under the input. */
+.d3-pane-idle-form[hidden] ~ .d1-composer__note {
+  display: none;
+}

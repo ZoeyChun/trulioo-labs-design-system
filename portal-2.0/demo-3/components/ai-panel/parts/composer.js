@@ -51,6 +51,7 @@
       "</div>" +
       "</div>" +
       "</form>" +
+      '<p class="d1-composer__note">TRU AI can make mistakes. Please double-check responses.</p>' +
       "</div>"
     );
   };
