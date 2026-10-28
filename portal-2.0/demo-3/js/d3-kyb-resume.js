@@ -90,12 +90,15 @@
     openResumeExperience();
   }
 
-  /* New Chat always starts over at the KYB landing — never on a bare map. */
+  /* New Chat always starts over at the KYB landing — never on a bare map. It is
+     the only thing (besides starting a new search) that ends the conversation:
+     moving between pages keeps the thread. */
   function newChat() {
     if (window.D3KybReport && typeof window.D3KybReport.abort === "function") {
       window.D3KybReport.abort();
     }
     syncChatBack(false);
+    clearThread();
     openResumeExperience();
   }
 
@@ -183,13 +186,13 @@
     }
   }
 
-  function reportNextActions(session) {
-    var name = (session && session.businessName) || "this business";
+  /* The same three follow-ups the live verification ends with (see REPORT_NEXT in
+     components/ai-panel/treatments/treatments.js) — one set, one look. */
+  function reportNextActions() {
     return [
-      { q: "Who are the beneficial owners?", tab: "ownership" },
-      { q: "Show web & social insights for " + name, tab: "web" },
-      { q: "Any match signals I should review?", tab: "signals" },
-      { q: "Summarize the " + name + " verification", tab: "overview" }
+      { q: "What contributed to this verification result?", tab: "signals" },
+      { q: "Who ultimately owns this business?", tab: "ownership" },
+      { q: "Has this entity ever traded?", tab: "overview" }
     ];
   }
 
@@ -204,38 +207,39 @@
     renderInlineNextActions(actions);
   }
 
+  /* Same list as the live flow (treatments' .d3-ai-next--list): plain rows with
+     an arrow, no heading and no boxes. */
   function renderInlineNextActions(actions) {
     var thread = document.querySelector("[data-d1-thread]");
     if (!thread || !actions || !actions.length) return;
     var prev = thread.querySelector("[data-d3-kyb-next]");
     if (prev) prev.remove();
 
+    var arrow =
+      '<span class="d3-ai-next__arrow" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>';
     var wrap = document.createElement("div");
-    wrap.className = "d3-kyb-next";
+    wrap.className = "d3-ai-next d3-ai-next--list";
     wrap.setAttribute("data-d3-kyb-next", "");
     wrap.setAttribute("role", "group");
-    wrap.setAttribute("aria-label", "Suggested next actions");
-
-    var label = document.createElement("p");
-    label.className = "d3-kyb-next__label";
-    label.textContent = "Suggested next actions";
-    wrap.appendChild(label);
-
-    var list = document.createElement("div");
-    list.className = "d3-kyb-next__list";
-    actions.forEach(function (action) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "d3-kyb-next__btn";
-      btn.setAttribute("data-d3-kyb-suggest", action.q);
-      if (action.tab) btn.setAttribute("data-d3-kyb-tab-hint", action.tab);
-      btn.innerHTML =
-        '<span class="d3-kyb-next__text">' +
-        escapeHtml(action.q) +
-        '</span><span class="d3-kyb-next__arrow" aria-hidden="true"><svg class="d3-fa-line" width="16" height="16" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>';
-      list.appendChild(btn);
-    });
-    wrap.appendChild(list);
+    wrap.setAttribute("aria-label", "Continue your investigation");
+    wrap.innerHTML =
+      '<div class="d3-ai-next__list">' +
+      actions
+        .map(function (action) {
+          return (
+            '<button type="button" class="d3-ai-next__btn" data-d3-kyb-suggest="' +
+            escapeHtml(action.q) +
+            '"' +
+            (action.tab ? ' data-d3-kyb-tab-hint="' + escapeHtml(action.tab) + '"' : "") +
+            '><span class="d3-ai-next__text">' +
+            escapeHtml(action.q) +
+            "</span>" +
+            arrow +
+            "</button>"
+          );
+        })
+        .join("") +
+      "</div>";
     thread.appendChild(wrap);
 
     var pane = document.querySelector("[data-d3-chat-thread]");
@@ -319,7 +323,8 @@
     setSurface("map");
     setResumeVisible(false);
     updateMapNudge();
-    clearThread();
+    /* The thread is NOT cleared here: the conversation continues across pages
+       until New Chat (js/d3-chat-history.js re-applies this page's state). */
     document.dispatchEvent(new CustomEvent("d3-kyb:restore-idle"));
     if (window.D3KybAgent && window.D3KybAgent.setComposerPlaceholder) {
       window.D3KybAgent.setComposerPlaceholder(
@@ -343,7 +348,6 @@
     prepareDetailChrome();
     setSurface("resume");
     setResumeVisible(false);
-    clearThread();
     if (window.D3KybAgent && window.D3KybAgent.setComposerPlaceholder) {
       window.D3KybAgent.setComposerPlaceholder(
         window.D3KybAgent.PLACEHOLDER.search

@@ -1516,7 +1516,7 @@
   }
 
   function handOffToTransactions(text) {
-    if (window.D3ChatHistory && window.D3ChatHistory.leave) window.D3ChatHistory.leave();
+    if (window.D3ChatHistory && window.D3ChatHistory.leave) window.D3ChatHistory.leave({ skipApply: true });
     if (window.D3Transactions && window.D3Transactions.open) window.D3Transactions.open();
     window.setTimeout(function () {
       document.dispatchEvent(
@@ -1588,6 +1588,30 @@
   }
 
   /* ---- wiring ---- */
+
+  /* The conversation continues across pages, so a KYB card (Confirm, a country
+     chip, a match) can be clicked while the user is on another page: take them
+     back to KYB, then let the click through. */
+  var KYB_CONTROL =
+    "[data-d3-kyb-confirm], [data-d3-kyb-country-pick], [data-d3-kyb-cand], .ai-cand, [data-d3-kyb-select], [data-d3-kyb-filter]";
+
+  thread.addEventListener(
+    "click",
+    function (event) {
+      if (!onTx()) return;
+      var control = event.target.closest && event.target.closest(KYB_CONTROL);
+      if (!control || !thread.contains(control)) return;
+      var rail = document.querySelector('[data-d3-nav="kyb"]');
+      if (!rail) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      rail.click();
+      window.setTimeout(function () {
+        control.click();
+      }, 450);
+    },
+    true
+  );
 
   thread.addEventListener("click", function (event) {
     if (!onKyb()) return;
@@ -1754,6 +1778,13 @@
   );
 
   document.addEventListener("d3-view:kyb", function () {
+    /* Coming back to a conversation already under way (the thread carries on
+       across pages): its follow-ups live inline in the thread, as on
+       Transactions. The docked starter chips are only for an empty start. */
+    if (thread.querySelector(".d1-user")) {
+      hideFollow();
+      return;
+    }
     setComposerPlaceholder(PLACEHOLDER.search);
     setSuggestions(SUGGEST_SEARCH);
   });

@@ -194,10 +194,30 @@
     return !!(t && t.querySelector("[data-d1-co], .d1-report__title"));
   }
 
+  /* On another page only the part of the thread after the "agent launched"
+     divider is this page's own work; a loader left over in the KYB part is not
+     the Transaction Agent thinking. */
+  function thinkingNow(t, kyb) {
+    if (!t) return false;
+    var sel = ".d1-thinking, [data-d3-kyb-starting]";
+    if (kyb) return !!t.querySelector(sel);
+    var rules = t.querySelectorAll("[data-d3-chat-divider]");
+    var from = rules.length ? rules[rules.length - 1] : null;
+    var node = from ? from.nextElementSibling : t.firstElementChild;
+    for (; node; node = node.nextElementSibling) {
+      if (node.matches(sel) || node.querySelector(sel)) return true;
+    }
+    return false;
+  }
+
   function readPanelActivity() {
     var t = thread();
-    var report = hasReport();
-    var block = realProgressBlock();
+    /* The conversation continues across pages, so this thread can hold a KYB
+       report / investigation while the panel is on Transactions. Those are the
+       KYB agent's states; on another page the panel is simply awaiting input. */
+    var kyb = isKyb();
+    var report = kyb && hasReport();
+    var block = kyb ? realProgressBlock() : null;
     var toolsLabel = block && block.querySelector("[data-d1-tools-label]");
     var toolsText = toolsLabel ? toolsLabel.textContent.trim() : "";
     var currentText = currentActivityLabel(block);
@@ -218,11 +238,11 @@
         iconHtml: review ? "" : ICON_FILE
       };
     }
-    if (t && t.querySelector(".d1-thinking, [data-d3-kyb-starting]")) {
-      if (step === "investigating") return acting("Checking registry", ICON_SEARCH);
+    if (thinkingNow(t, kyb)) {
+      if (kyb && step === "investigating") return acting("Checking registry", ICON_SEARCH);
       return { label: "Thinking", busy: true, bubble: "thinking", iconHtml: ICON_SEARCH };
     }
-    if (step === "investigating") return acting("Checking registry", ICON_SEARCH);
+    if (kyb && step === "investigating") return acting("Checking registry", ICON_SEARCH);
     return { label: "Awaiting input", busy: false, bubble: "idle", iconHtml: "" };
   }
 

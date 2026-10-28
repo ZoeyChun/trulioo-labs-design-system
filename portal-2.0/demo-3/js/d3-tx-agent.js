@@ -374,6 +374,14 @@
       return { intent: intent, spec: spec, layout: "list", label: "incomplete transactions" };
     }
 
+    var businessProduct = /business\s+(essentials?|insights?|complete)\b/.exec(lower);
+    if (businessProduct) {
+      var productName = "Business " + businessProduct[1].replace(/^e.*/, "Essentials").replace(/^i.*/, "Insights").replace(/^c.*/, "Complete");
+      intent = "product-business";
+      spec.product = productName;
+      return { intent: intent, spec: spec, layout: "list", label: productName + " transactions" };
+    }
+
     if (/device/.test(lower)) {
       intent = "product-device";
       spec.search = "Device Intelligence";
@@ -773,8 +781,42 @@
     );
   }
 
+  /* Wherever the user is, the agent that can finish the job takes over: a request
+     to verify / find a business, asked on Transactions, goes to the KYB agent
+     (and KYB hands transaction questions back here). Anything that talks about
+     transactions, history or outcomes stays on this page. */
+  function isKybIntent(text) {
+    var t = String(text || "").toLowerCase();
+    if (
+      /\btransactions?\b|\bhistory\b|\b(previous|past|prior|earlier|recent|latest)\b|\bdeclined\b|\bflagged\b|high.?risk|\bverified\b|not verified|\breview\b|\bsummar|\bclear\b|\bfilter\b|\boutcomes?\b/.test(
+        t
+      )
+    ) {
+      return false;
+    }
+    return /\bverify\b|\bverification\s+(for|of|on)\b|\bkyb\b|\bmeridian\b|\b(run|start|do|new)\s+(a\s+)?(kyb|business|company)\b|\b(find|search|look\s*up|check|onboard)\s+(a\s+|the\s+|my\s+|this\s+|that\s+)?(new\s+)?(business|company|entity)\b/.test(
+      t
+    );
+  }
+
+  function handOffToKyb(text) {
+    var rail = document.querySelector('[data-d3-nav="kyb"]');
+    if (!rail) return false;
+    rail.click();
+    window.setTimeout(function () {
+      document.dispatchEvent(
+        new CustomEvent("d3-chat:send", {
+          detail: { text: text, agent: "kyb" },
+          cancelable: true
+        })
+      );
+    }, 450);
+    return true;
+  }
+
   async function respond(text) {
     if (busy) return;
+    if (onTransactions() && isKybIntent(text) && handOffToKyb(text)) return;
     parkActive();
     hideFollow();
     setBusy(true);
@@ -979,6 +1021,7 @@
     },
     respond: respond,
     parseQuery: parseQuery,
+    isKybIntent: isKybIntent,
     lastMatches: function () {
       return lastMatches.slice();
     }

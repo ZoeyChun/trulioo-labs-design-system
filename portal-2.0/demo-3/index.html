@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="css/shell.css">
   <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="composer/prompt.css?v=7">
-  <link rel="stylesheet" href="css/messages.css?v=8">
+  <link rel="stylesheet" href="css/messages.css?v=11">
   <link rel="stylesheet" href="css/motion.css?v=10">
   <link rel="stylesheet" href="css/d3-thinking.css?v=4">
   <link rel="stylesheet" href="css/drawer.css?v=3">
@@ -50,15 +50,15 @@
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/loader.css?v=2">
   <link rel="stylesheet" href="css/d3-fa.css?v=3">
-  <link rel="stylesheet" href="css/d3-shell.css?v=38">
-  <link rel="stylesheet" href="css/d3-rail.css?v=18">
+  <link rel="stylesheet" href="css/d3-shell.css?v=39">
+  <link rel="stylesheet" href="css/d3-rail.css?v=19">
   <link rel="stylesheet" href="components/ai-panel/ai-panel.css?v=21">
   <link rel="stylesheet" href="../demo-4/css/truai-bubble.css?v=4">
   <link rel="stylesheet" href="components/ai-panel/treatments/treatments.css?v=9">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=13">
   <link rel="stylesheet" href="css/d3-workspace.css?v=33">
-  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=4">
+  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=5">
   <link rel="stylesheet" href="css/d3-kyb-details.css?v=1">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
@@ -244,6 +244,20 @@
         </div>
       </div>
     </div>
+  
+    <!-- Second layer of the nav: every chat. Opened from "See all" in the Chats
+         menu; the back button returns to the main nav. -->
+    <section class="d1-rail__layer2" data-d3-rail-layer2 aria-label="All chats" hidden>
+      <header class="d1-l2__head">
+        <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular d1-l2__back" data-d3-rail-back aria-label="Back to navigation">
+          <span class="tds-icon-btn__icon">
+            <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 3 5 8l5 5"/></svg>
+          </span>
+        </button>
+        <h2 class="d1-l2__title">Chats</h2>
+      </header>
+      <div class="d1-l2__list" data-d3-chat-list-all role="menu" aria-label="All chats"></div>
+    </section>
   </aside>
 
   <!-- Figma PageShell 1280:20394 — canvas holds TruAI panel + main -->
@@ -554,6 +568,13 @@
             <button type="button" class="d3-kyb-recent__viewall" data-d3-kyb-view-all>View all</button>
           </div>
           <div class="d3-kyb-recent__grid">
+            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Harbor Point Capital LLC" data-status="Not Verified" data-country="United States" data-txid="8f70dde0-955d-57ba-8855-170e93040c3f" data-date="14 Mar 2026, 14:31">
+              <span class="d3-kyb-recent__product">Business Complete</span>
+              <span class="d3-kyb-recent__name">Harbor Point Capital LLC</span>
+              <span class="d3-kyb-recent__role">Parent Company</span>
+              <span class="d1-tag d1-tag--negative">Not Verified</span>
+              <span class="d3-kyb-recent__date">14 Mar 2026, 14:31</span>
+            </button>
             <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Apex Nordic Logistics AB" data-status="Verified" data-country="Sweden" data-txid="a7bc12e4-91f0-4c2d-8e55-3b1d9a0f6c28" data-date="12 Mar 2026, 09:00">
               <span class="d3-kyb-recent__product">Business Insights</span>
               <span class="d3-kyb-recent__name">Apex Nordic Logistics AB</span>
@@ -565,13 +586,6 @@
               <span class="d3-kyb-recent__product">Business Essentials</span>
               <span class="d3-kyb-recent__name">Apex Dynamics LLC</span>
               <span class="d3-kyb-recent__role">Subsidiary Company</span>
-              <span class="d1-tag d1-tag--negative">Not Verified</span>
-              <span class="d3-kyb-recent__date">12 Mar 2026, 09:00</span>
-            </button>
-            <button type="button" class="d3-kyb-recent__card" data-d3-kyb-recent-card data-biz="Jane Doe" data-status="Not Verified" data-country="United States" data-txid="e2f90b17-6d4a-48c3-b1e8-5f7a2c9d0136" data-date="12 Mar 2026, 09:00">
-              <span class="d3-kyb-recent__product">Business Essentials</span>
-              <span class="d3-kyb-recent__name">Jane Doe</span>
-              <span class="d3-kyb-recent__role">Owns 35%</span>
               <span class="d1-tag d1-tag--negative">Not Verified</span>
               <span class="d3-kyb-recent__date">12 Mar 2026, 09:00</span>
             </button>
@@ -1380,30 +1394,32 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js?v=40"></script>
 <script src="js/d3-kyb-ubo-graph.js?v=7"></script>
 <script src="js/d3-kyb-result-tabs.js?v=6"></script>
-<script src="js/d3-kyb-resume.js?v=44"></script>
+<script src="js/d3-kyb-resume.js?v=46"></script>
 <script src="js/d3-kyb-report-reveal.js?v=34"></script>
 <script src="js/d3-kyb-map-search.js?v=49"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
-<script src="js/d3-kyb-agent.js?v=29"></script>
+<script src="js/d3-kyb-agent.js?v=32"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
-<script src="js/d3-nav.js?v=40"></script>
-<script src="js/d3-transactions.js?v=9"></script>
+<script src="js/d3-nav.js?v=41"></script>
+<script src="js/d3-transactions.js?v=10"></script>
 <script src="js/d3-org.js?v=5"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
-<script src="js/d3-tx-agent.js?v=9"></script>
+<script src="transactions-view/js/demo-transactions.js?v=1"></script>
+<script src="js/d3-tx-agent.js?v=12"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
 <script src="js/d3-chat-bridge.js?v=12"></script>
 <script src="../demo-4/js/truai-bubble.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-orb-motion.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-float.js?v=10"></script>
-<script src="components/ai-panel/treatments/treatments.js?v=15"></script>
+<script src="components/ai-panel/treatments/treatments.js?v=17"></script>
 <script src="js/d3-home-skin.js?v=21"></script>
 <script src="js/d3-home-placeholder.js?v=3"></script>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>
 <script src="js/d3-home-dots.js"></script>
 <script src="js/d3-kyb-canvas.js?v=3"></script>
-<script src="js/d3-chat-history.js?v=10"></script>
+<script src="js/d3-chat-history.js?v=15"></script>
+<script src="js/d3-chat-follow.js?v=1"></script>
 <script src="js/d3-home-orb.js?v=5"></script>
 </body>
 </html>

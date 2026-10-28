@@ -1,16 +1,21 @@
-/* Demo 3 — page-by-page chat history.
+/* Demo 3 — one continuous AI-panel conversation, kept until New Chat.
 
-   The AI panel's conversation on KYB Verification and on Transactions is
-   stored as it happens and listed in the rail's Chats menu, so leaving a page
-   (or opening a new chat) never loses it. Picking a row takes you back to the
-   page and puts the conversation, and the page around it, back as it was:
+   The panel's thread is NOT reset when the user moves between KYB Verification,
+   Transactions and Home. It carries on, and each page remembers where the
+   conversation left it:
 
-     KYB   thread + surface (map / waiting for country / report) + map
-           matches + selected business + the agent's confirm / filter state
-     TX    thread + table filters (panel filters + the agent's predicate)
+     KYB   surface (map / waiting for country / report) + map matches +
+           selected business + the agent's confirm / filter state
+     TX    table filters (panel filters + the agent's predicate)
+
+   Coming back to a page (rail click, or picking the chat from the Chats menu)
+   puts that page back the way the conversation left it.
+
+   New Chat ends the conversation: it is stored in the rail's Chats menu, the
+   thread is cleared and every agent starts over. Picking a stored chat later
+   reloads its thread and takes you to the page it was last on.
 
    Home chats keep using chat.js's own list (rendered right below ours).
-
    Chats live in memory only: a reload (soft or hard) is a fresh start. */
 (function () {
   "use strict";
@@ -22,6 +27,7 @@
 
   var MAX_ENTRIES = 12;
   var KIND_LABEL = { kyb: "KYB Verification", tx: "Transactions" };
+  var NAV_PAGE = { kyb: "kyb", transactions: "tx" };
 
   var entries = [];
   /* Older builds kept chats in sessionStorage; make sure none linger. */
@@ -32,24 +38,6 @@
   var restoring = false;
   var seq = Date.now();
   var timer = 0;
-
-  /* ------------------------------------------------------------ storage */
-
-  /* The same conversation never appears twice: entries of one kind with the
-     same thread are one chat (newest wins). */
-  function dedupe(list) {
-    var seen = {};
-    return list.filter(function (e) {
-      var key = e.kind + "|" + (e.html || "");
-      if (seen[key]) return false;
-      seen[key] = true;
-      return true;
-    });
-  }
-
-  function persist() {
-    /* Memory only — nothing to write. Kept so callers read the same. */
-  }
 
   /* ------------------------------------------------------------ helpers */
 
@@ -77,6 +65,10 @@
     return null;
   }
 
+  function hasThread() {
+    return !!thread.querySelector(".d1-user");
+  }
+
   function firstUserMessage() {
     var p = $(".d1-user p", thread);
     var t = p ? p.textContent.trim() : "";
@@ -97,12 +89,6 @@
     return !!thread.querySelector(VERIFY_SELECTOR);
   }
 
-  function titleFor(kind) {
-    var pane = text("[data-d3-ai-title]");
-    if (kind === "kyb" && isVerifyFlow() && /^verify /i.test(pane)) return pane;
-    return firstUserMessage() || pane || KIND_LABEL[kind];
-  }
-
   function txFrame() {
     var frame = $("[data-d3-tx-frame]");
     return frame && frame.contentWindow ? frame : null;
@@ -117,6 +103,17 @@
     }
   }
 
+  /* The same conversation never appears twice. */
+  function dedupe(list) {
+    var seen = {};
+    return list.filter(function (e) {
+      var key = e.html || "";
+      if (seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
   /* ------------------------------------------------------------ capture */
 
   function kybState() {
@@ -127,10 +124,13 @@
     var selected = maps && maps.getSelected ? maps.getSelected() : null;
     var surface = ws ? ws.getAttribute("data-d3-kyb-surface") : "map";
     var verify = isVerifyFlow();
+    var awaiting = !!(verify && mapEl && mapEl.classList.contains("is-awaiting-country") && awaitEl && !awaitEl.hidden);
     var st = {
       surface: surface,
       verify: verify,
-      awaiting: !!(verify && mapEl && mapEl.classList.contains("is-awaiting-country") && awaitEl && !awaitEl.hidden),
+      /* On the landing the conversation has nothing KYB-specific to put back. */
+      landing: surface === "resume" && !verify && !awaiting,
+      awaiting: awaiting,
       query: text("[data-d3-kyb-map-await-query]"),
       stage: awaitEl ? awaitEl.getAttribute("data-d3-await-stage") || "" : "",
       caption: text("[data-d3-kyb-map-caption]"),
@@ -181,35 +181,40 @@
     return st;
   }
 
+  function titleFor(entry, kind) {
+    var pane = text("[data-d3-ai-title]");
+    /* "Verify Meridian in US" is only true on the KYB page; remember it so the
+       name survives moving to another page. */
+    if (kind === "kyb" && isVerifyFlow() && /^verify /i.test(pane)) entry.verifyTitle = pane;
+    return entry.verifyTitle || firstUserMessage() || pane || KIND_LABEL[kind];
+  }
+
   function capture() {
     window.clearTimeout(timer);
     if (restoring) return;
     var kind = pageKind();
     if (!kind) return;
-    /* An empty thread is a reset in progress, not a conversation: leave the
-       active chat as it is (New Chat / leaving a page clear activeId). */
-    if (!thread.children.length) return;
+    /* An empty thread is a reset in progress, not a conversation. */
+    if (!hasThread()) return;
     var entry = active();
     if (!entry) {
-      /* Re-opened (or re-arrived at) a conversation we already hold: adopt it
-         instead of listing a copy. */
+      /* Re-arrived at a conversation we already hold: adopt it, don't copy it. */
       var html = thread.innerHTML;
       entry = entries.filter(function (e) {
-        return e.kind === kind && e.html === html;
+        return e.html === html;
       })[0];
       if (entry) activeId = entry.id;
     }
     if (!entry) {
       seq += 1;
-      entry = { id: "c" + seq, kind: kind };
+      entry = { id: "c" + seq, pages: {} };
       entries.unshift(entry);
       activeId = entry.id;
-    } else if (entry.kind !== kind) {
-      return;
     }
-    entry.title = titleFor(kind);
+    entry.kind = kind;
+    entry.title = titleFor(entry, kind);
     entry.html = thread.innerHTML;
-    entry.state = kind === "kyb" ? kybState() : txState();
+    entry.pages[kind] = kind === "kyb" ? kybState() : txState();
     entry.ts = Date.now();
     var at = entries.indexOf(entry);
     if (at > 0) {
@@ -219,7 +224,6 @@
     /* Current chat first, so if a twin exists it is the twin that goes. */
     entries = dedupe(entries);
     if (entries.length > MAX_ENTRIES) entries.length = MAX_ENTRIES;
-    persist();
     render();
   }
 
@@ -251,44 +255,38 @@
     if (pane) pane.classList.add("is-active");
   }
 
-  function restoreKyb(entry) {
-    var st = entry.state || {};
+  /* Put the KYB workspace back where the conversation left it. Never touches the
+     thread. */
+  function applyKyb(st) {
+    if (!st || st.landing) return;
     var maps = window.D3KybMapSearch;
     var resume = window.D3KybResume;
-    if (!resume || !resume.openMapExperience) return;
-
-    resume.openMapExperience();
-    thread.innerHTML = entry.html;
+    if (!resume) return;
 
     if (st.surface === "report" && st.session && resume.expandToFullReport) {
       resume.expandToFullReport(st.session);
-    } else if (st.awaiting && maps && maps.setAwaitingCountry) {
-      maps.setAwaitingCountry(true, st.stage === "name" ? "" : st.query || "this business");
-    } else if (maps && !st.verify && maps.setAwaitingCountry) {
-      /* A plain Q&A chat has no business on the map yet. */
-      maps.setAwaitingCountry(true, "");
-    } else if (maps && st.resultIds && st.resultIds.length && maps.plotResults) {
-      var list = st.resultIds.map(maps.findById).filter(Boolean);
-      if (list.length) maps.plotResults(list, st.caption || undefined);
+    } else {
+      if (maps && maps.ensureMapSurface) maps.ensureMapSurface();
+      if (st.awaiting && maps && maps.setAwaitingCountry) {
+        maps.setAwaitingCountry(true, st.stage === "name" ? "" : st.query || "this business");
+      } else if (maps && !st.verify && maps.setAwaitingCountry) {
+        /* A plain Q&A chat has no business on the map yet. */
+        maps.setAwaitingCountry(true, "");
+      } else if (maps && st.resultIds && st.resultIds.length && maps.plotResults) {
+        var list = st.resultIds.map(maps.findById).filter(Boolean);
+        if (list.length) maps.plotResults(list, st.caption || undefined);
+      }
     }
     if (maps && maps.setSelected && st.selectedId && maps.findById) {
       maps.setSelected(maps.findById(st.selectedId));
     }
     if (window.D3KybAgent && window.D3KybAgent.restoreState) window.D3KybAgent.restoreState(st.agent);
-
-    resumeChrome();
     if (resume.syncChatBack) resume.syncChatBack(true);
-    var el = $("[data-d3-chat-thread]");
-    if (el) el.scrollTop = el.scrollHeight;
   }
 
-  function restoreTx(entry) {
-    var st = entry.state || {};
-    if (window.D3Transactions && window.D3Transactions.open) window.D3Transactions.open();
-    thread.innerHTML = entry.html;
+  function applyTx(st) {
+    if (!st) return;
     if (window.D3TxAgent && window.D3TxAgent.restoreContext) window.D3TxAgent.restoreContext(st.ctx);
-    resumeChrome();
-
     var f = st.filters;
     if (!f) return;
     var spec = {
@@ -321,47 +319,88 @@
     );
   }
 
+  /* A rule with a label marks where the conversation moved to another page. */
+  var DIVIDER_LABEL = { kyb: "KYB Agent launched", tx: "Transactions Agent launched" };
+
+  function addDivider(kind) {
+    if (!DIVIDER_LABEL[kind] || !hasThread()) return;
+    var last = thread.lastElementChild;
+    if (last && last.getAttribute("data-d3-chat-divider") === kind) return;
+    var rule = document.createElement("div");
+    rule.className = "d3-chat-divider";
+    rule.setAttribute("data-d3-chat-divider", kind);
+    rule.setAttribute("role", "separator");
+    var label = document.createElement("span");
+    label.textContent = DIVIDER_LABEL[kind];
+    rule.appendChild(label);
+    thread.appendChild(rule);
+  }
+
+  function applyPage(entry, kind) {
+    if (!entry || !entry.pages || !entry.pages[kind]) return;
+    if (kind === "kyb") applyKyb(entry.pages.kyb);
+    else if (kind === "tx") applyTx(entry.pages.tx);
+  }
+
+  /* Reload a stored conversation: thread first, then the page it was last on. */
   function restore(id) {
     var entry = entries.filter(function (e) {
       return e.id === id;
     })[0];
-    if (!entry) return;
+    if (!entry || entry.id === activeId && hasThread() && entry.kind === pageKind()) return;
     capture();
     restoring = true;
     activeId = entry.id;
     try {
-      if (entry.kind === "kyb") restoreKyb(entry);
-      else if (entry.kind === "tx") restoreTx(entry);
+      thread.innerHTML = entry.html;
+      if (window.D3KybAgent && window.D3KybAgent.restoreState) {
+        window.D3KybAgent.restoreState(entry.pages.kyb ? entry.pages.kyb.agent : {});
+      }
+      if (window.D3TxAgent && window.D3TxAgent.restoreContext) {
+        window.D3TxAgent.restoreContext(entry.pages.tx ? entry.pages.tx.ctx : {});
+      }
+      if (entry.kind === "tx") {
+        if (window.D3Transactions && window.D3Transactions.open) window.D3Transactions.open();
+      } else if (window.D3KybResume && window.D3KybResume.openMapExperience) {
+        window.D3KybResume.openMapExperience();
+      }
+      applyPage(entry, entry.kind);
+      resumeChrome();
+      var el = $("[data-d3-chat-thread]");
+      if (el) el.scrollTop = el.scrollHeight;
     } finally {
       window.setTimeout(function () {
         restoring = false;
         render();
       }, 900);
     }
-    /* Close the flyout we were clicked in. */
-    var fly = host.closest(".d1-fly");
-    if (fly && document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   }
 
-  /* ------------------------------------------------------------ leaving */
+  /* ------------------------------------------------------------ moving between pages */
 
-  /* Leaving a page stores its chat, then the thread is cleared so the next
-     page starts clean instead of inheriting this page's messages. */
-  function leave() {
-    var kind = pageKind();
+  /* The conversation stays; this stores what the page we are leaving looked like
+     and, on arrival, puts the destination page back as the conversation left it.
+     opts.skipApply: the caller is about to drive the destination itself. */
+  function leave(opts) {
+    opts = opts || {};
+    var from = pageKind();
     capture();
-    if (!kind) return;
     window.setTimeout(function () {
-      /* Rail items that do not change the page (the Chats menu button, same-page
-         clicks) must not end the conversation — only an actual page change does. */
-      if (restoring || pageKind() === kind) return;
-      activeId = null;
-      if (!thread.children.length) return;
-      thread.replaceChildren();
-      if (window.D3KybAgent && window.D3KybAgent.restoreState) window.D3KybAgent.restoreState({});
-      if (window.D3TxAgent && window.D3TxAgent.restoreContext) window.D3TxAgent.restoreContext({});
-      if (window.D3Nav) window.D3Nav.markChatIdle();
-      document.dispatchEvent(new CustomEvent("d3-kyb:restore-idle"));
+      if (restoring) return;
+      var to = opts.to || pageKind();
+      if (!to) return;
+      var entry = active();
+      if (!entry || !hasThread()) return;
+      if (to !== from) addDivider(to);
+      if (!opts.skipApply && (to !== from || opts.force)) applyPage(entry, to);
+      /* The nav handlers (and re-opening the KYB report) park the pane idle even
+         though the thread is still here — switch it back on once they are done,
+         and once more after any async tail of the page restore. */
+      resumeChrome();
+      window.setTimeout(function () {
+        if (!restoring && hasThread() && pageKind() === to) resumeChrome();
+      }, 250);
     }, 0);
   }
 
@@ -370,49 +409,138 @@
     function (event) {
       var t = event.target;
       if (!t || !t.closest) return;
-      if (t.closest("[data-d3-nav]")) {
-        leave();
+      var nav = t.closest("[data-d3-nav]");
+      if (nav) {
+        var page = NAV_PAGE[nav.getAttribute("data-d3-nav")];
+        /* Only rail items that open KYB / Transactions bring a page back. The
+           Chats button, Home, settings … leave the conversation alone. */
+        if (page) leave({ force: true });
+        else capture();
         return;
       }
-      /* New Chat starts a fresh conversation: keep this one in the menu. */
+      /* New Chat: the conversation goes into the menu and everything starts over. */
       if (t.closest("[data-d3-chat-new]")) {
         capture();
         activeId = null;
+        window.setTimeout(startOver, 0);
       }
     },
     true
   );
 
+  function startOver() {
+    thread.replaceChildren();
+    if (window.D3KybAgent && window.D3KybAgent.restoreState) window.D3KybAgent.restoreState({});
+    if (window.D3TxAgent && window.D3TxAgent.restoreContext) window.D3TxAgent.restoreContext({});
+    var api = txApi();
+    if (api && api.clearAiView) api.clearAiView();
+    var ws = $("[data-d3-workspace]");
+    if (ws) ws.removeAttribute("data-d3-map-ready");
+    if (window.D3Nav) window.D3Nav.markChatIdle();
+    render();
+  }
+
   /* ------------------------------------------------------------ menu */
+
+  var MENU_MAX = 5;
+  var listAll = $("[data-d3-chat-list-all]");
+
+  function rowFor(entry) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "d1-chat-row d3-chat-row" + (entry.id === activeId ? " d1-chat-row--current" : "");
+    btn.setAttribute("role", "menuitem");
+    btn.setAttribute("data-d3-chat-entry", entry.id);
+    var name = document.createElement("span");
+    name.className = "d3-chat-row__title";
+    name.textContent = entry.title || KIND_LABEL[entry.kind];
+    var tag = document.createElement("span");
+    tag.className = "d3-chat-row__tag";
+    tag.textContent = Object.keys(entry.pages)
+      .map(function (k) {
+        return k === "kyb" ? "KYB" : "Transactions";
+      })
+      .join(" · ");
+    btn.appendChild(name);
+    btn.appendChild(tag);
+    return btn;
+  }
 
   function render() {
     host.innerHTML = "";
-    if (!entries.length) return;
+    if (listAll) listAll.innerHTML = "";
+    if (!entries.length) {
+      closeLayer2();
+      return;
+    }
     var label = document.createElement("p");
     label.className = "d1-fly__label";
     label.textContent = "Recent";
     host.appendChild(label);
-    entries.forEach(function (entry) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "d1-chat-row d3-chat-row" + (entry.id === activeId ? " d1-chat-row--current" : "");
-      btn.setAttribute("role", "menuitem");
-      btn.setAttribute("data-d3-chat-entry", entry.id);
-      var name = document.createElement("span");
-      name.className = "d3-chat-row__title";
-      name.textContent = entry.title || KIND_LABEL[entry.kind];
-      var tag = document.createElement("span");
-      tag.className = "d3-chat-row__tag";
-      tag.textContent = KIND_LABEL[entry.kind] || "";
-      btn.appendChild(name);
-      btn.appendChild(tag);
-      host.appendChild(btn);
+    /* The hover menu is a glance: the 5 most recent, then "See all". */
+    entries.slice(0, MENU_MAX).forEach(function (entry) {
+      host.appendChild(rowFor(entry));
     });
+    if (entries.length > MENU_MAX) {
+      var more = document.createElement("button");
+      more.type = "button";
+      more.className = "d3-chat-seeall";
+      more.setAttribute("data-d3-chat-seeall", "");
+      more.textContent = "See all (" + entries.length + ")";
+      host.appendChild(more);
+    }
+    if (listAll) {
+      entries.forEach(function (entry) {
+        listAll.appendChild(rowFor(entry));
+      });
+    }
+  }
+
+  /* ---- second layer of the nav ---- */
+
+  var layer2 = $("[data-d3-rail-layer2]");
+
+  function openLayer2() {
+    if (!layer2) return;
+    layer2.hidden = false;
+    shell.setAttribute("data-d3-rail-layer", "2");
+    var back = $("[data-d3-rail-back]");
+    if (back) window.setTimeout(function () { back.focus(); }, 60);
+    if (document.activeElement && document.activeElement !== back && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+  }
+
+  function closeLayer2() {
+    if (shell.getAttribute("data-d3-rail-layer") !== "2") return;
+    shell.removeAttribute("data-d3-rail-layer");
+    if (layer2) layer2.hidden = true;
+    var chats = $('[data-d3-nav="messages"]');
+    if (chats) chats.focus({ preventScroll: true });
   }
 
   host.addEventListener("click", function (event) {
+    if (event.target.closest("[data-d3-chat-seeall]")) {
+      openLayer2();
+      return;
+    }
     var row = event.target.closest("[data-d3-chat-entry]");
     if (row) restore(row.getAttribute("data-d3-chat-entry"));
+  });
+
+  if (listAll) {
+    listAll.addEventListener("click", function (event) {
+      var row = event.target.closest("[data-d3-chat-entry]");
+      if (row) restore(row.getAttribute("data-d3-chat-entry"));
+    });
+  }
+
+  document.addEventListener("click", function (event) {
+    if (event.target.closest && event.target.closest("[data-d3-rail-back]")) closeLayer2();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && shell.getAttribute("data-d3-rail-layer") === "2") closeLayer2();
   });
 
   /* ------------------------------------------------------------ wiring */
@@ -422,16 +550,10 @@
     subtree: true,
     characterData: true
   });
-  /* The KYB screens fire this when they reset to their empty state
-     (New Chat, back to landing) — but not while we are restoring. */
-  document.addEventListener("d3-kyb:restore-idle", function () {
-    if (!restoring && !thread.children.length) activeId = null;
-  });
 
   /* Hand-offs that change page without a rail click (e.g. the KYB agent sending a
-     transaction-history question to Transactions) store the chat the same way. */
+     transaction-history question to Transactions) store the page the same way. */
   window.D3ChatHistory = { leave: leave };
 
-  persist();
   render();
 })();

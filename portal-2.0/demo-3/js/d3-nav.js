@@ -208,6 +208,9 @@
 
   function openKybChat(opts) {
     opts = opts || {};
+    /* A Transactions drawer left open fades the whole slot out (and the KYB
+       workspace with it) — KYB has no drawer, so shut it. */
+    document.dispatchEvent(new CustomEvent("d1-drawer:close"));
     shell.setAttribute("data-d3-view", "chat");
     setChatOpen(true, "kyb");
     setActiveNav("kyb");

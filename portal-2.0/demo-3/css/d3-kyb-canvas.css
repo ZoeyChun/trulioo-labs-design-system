@@ -587,3 +587,10 @@
   .sk,
   .d3-kyb-map__await:not([hidden]) .d3-kyb-country { animation: none; }
 }
+
+/* Safeguard: a Transactions drawer that is still "expanded" must never fade the
+   KYB workspace out (the slot is hidden while a drawer covers it). */
+.d1-shell[data-d3-view="chat"] .d1-main[data-d1-drawer] .d1-slot {
+  opacity: 1;
+  pointer-events: auto;
+}

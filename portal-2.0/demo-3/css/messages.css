@@ -776,3 +776,36 @@
   color: var(--text-description);
   text-decoration: line-through;
 }
+
+/* Where the conversation moved to another page (js/d3-chat-history.js). */
+.d3-chat-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  /* The thread's own 24px gap already spaces it from its neighbours. */
+  margin: 0;
+  /* Subtle: xs type, caption colour. */
+  color: var(--text-caption, #8a9690);
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+  text-align: center;
+}
+
+.d3-chat-divider::before,
+.d3-chat-divider::after {
+  content: "";
+  flex: 1 1 0;
+  height: 1px;
+  background: var(--border-subtle, #dde2de);
+  opacity: 0.7;
+}
+
+.d3-chat-divider span {
+  flex: 0 0 auto;
+}
+
+/* Back-to-back hops (nothing said in between) sit close together. */
+.d3-chat-divider + .d3-chat-divider {
+  margin-top: -12px;
+}
