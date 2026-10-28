@@ -378,6 +378,16 @@
     var input = byId("brr-business-name");
     if (!input || !entity) return;
 
+    // Demo: every dropdown option resolves to the Meridian Apex Consulting scenario
+    // (same country as the option picked) since only one scenario is built.
+    var pool = SEARCH_POOL_BY_COUNTRY[entity.countryCode] || [];
+    for (var i = 0; i < pool.length; i++) {
+      if (normalize(pool[i].name).indexOf("meridian apex") !== -1) {
+        entity = pool[i];
+        break;
+      }
+    }
+
     state.selected = entity;
     input.value = entity.name;
     fillPrefillFields(entity);

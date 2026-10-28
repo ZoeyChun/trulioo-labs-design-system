@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 640" width="800" height="640" role="img" aria-label="Meridian Apex Consulting website preview">
+  <defs>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a47"/>
+      <stop offset="1" stop-color="#1d4f7a"/>
+    </linearGradient>
+    <linearGradient id="img1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2c6a9b"/>
+      <stop offset="1" stop-color="#0f2a47"/>
+    </linearGradient>
+  </defs>
+  <style>
+    text { font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
+  </style>
+  <rect width="800" height="640" fill="#ffffff"/>
+
+  <!-- nav -->
+  <rect width="800" height="64" fill="#ffffff"/>
+  <line x1="0" y1="64" x2="800" y2="64" stroke="#e6e9ee"/>
+  <path d="M40 40 L52 20 L64 40 Z" fill="#c9a24a"/>
+  <path d="M48 40 L58 26 L68 40 Z" fill="#0f2a47"/>
+  <text x="78" y="38" font-size="17" font-weight="700" fill="#0f2a47">Meridian Apex</text>
+  <text x="440" y="37" font-size="13" fill="#4a5a6b">Services</text>
+  <text x="510" y="37" font-size="13" fill="#4a5a6b">Industries</text>
+  <text x="580" y="37" font-size="13" fill="#4a5a6b">Insights</text>
+  <text x="640" y="37" font-size="13" fill="#4a5a6b">About</text>
+  <rect x="700" y="20" width="62" height="28" rx="14" fill="#0f2a47"/>
+  <text x="731" y="38" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Contact</text>
+
+  <!-- hero -->
+  <rect y="65" width="800" height="300" fill="url(#hero)"/>
+  <circle cx="690" cy="150" r="130" fill="#ffffff" opacity="0.05"/>
+  <circle cx="740" cy="300" r="90" fill="#c9a24a" opacity="0.12"/>
+  <text x="48" y="140" font-size="12" font-weight="600" letter-spacing="2" fill="#c9a24a">STRATEGY · OPERATIONS · GROWTH</text>
+  <text x="48" y="196" font-size="40" font-weight="700" fill="#ffffff">Clear strategy for</text>
+  <text x="48" y="244" font-size="40" font-weight="700" fill="#ffffff">growing businesses.</text>
+  <text x="48" y="282" font-size="15" fill="#c8d6e5">We help mid-market companies sharpen strategy,</text>
+  <text x="48" y="304" font-size="15" fill="#c8d6e5">streamline operations and scale with confidence.</text>
+  <rect x="48" y="318" width="150" height="26" rx="13" fill="#c9a24a"/>
+  <text x="123" y="335" text-anchor="middle" font-size="12" font-weight="700" fill="#0f2a47">Book a consultation</text>
+  <rect x="210" y="318" width="120" height="26" rx="13" fill="none" stroke="#c8d6e5"/>
+  <text x="270" y="335" text-anchor="middle" font-size="12" font-weight="600" fill="#ffffff">Our services</text>
+
+  <!-- stats band -->
+  <rect y="365" width="800" height="76" fill="#f5f7fa"/>
+  <text x="120" y="400" text-anchor="middle" font-size="24" font-weight="700" fill="#0f2a47">12+</text>
+  <text x="120" y="420" text-anchor="middle" font-size="11" fill="#6b7a8a">Years of experience</text>
+  <text x="320" y="400" text-anchor="middle" font-size="24" font-weight="700" fill="#0f2a47">180</text>
+  <text x="320" y="420" text-anchor="middle" font-size="11" fill="#6b7a8a">Clients served</text>
+  <text x="520" y="400" text-anchor="middle" font-size="24" font-weight="700" fill="#0f2a47">94%</text>
+  <text x="520" y="420" text-anchor="middle" font-size="11" fill="#6b7a8a">Client retention</text>
+  <text x="700" y="400" text-anchor="middle" font-size="24" font-weight="700" fill="#0f2a47">3</text>
+  <text x="700" y="420" text-anchor="middle" font-size="11" fill="#6b7a8a">Offices</text>
+
+  <!-- services -->
+  <text x="48" y="478" font-size="20" font-weight="700" fill="#0f2a47">What we do</text>
+  <g>
+    <rect x="48" y="496" width="216" height="120" rx="10" fill="#ffffff" stroke="#e6e9ee"/>
+    <rect x="64" y="512" width="32" height="32" rx="8" fill="url(#img1)"/>
+    <text x="64" y="566" font-size="14" font-weight="700" fill="#0f2a47">Corporate Strategy</text>
+    <text x="64" y="586" font-size="11" fill="#6b7a8a">Market entry, positioning</text>
+    <text x="64" y="601" font-size="11" fill="#6b7a8a">and long-term planning.</text>
+    <rect x="292" y="496" width="216" height="120" rx="10" fill="#ffffff" stroke="#e6e9ee"/>
+    <rect x="308" y="512" width="32" height="32" rx="8" fill="#c9a24a"/>
+    <text x="308" y="566" font-size="14" font-weight="700" fill="#0f2a47">Operations</text>
+    <text x="308" y="586" font-size="11" fill="#6b7a8a">Process design and cost</text>
+    <text x="308" y="601" font-size="11" fill="#6b7a8a">optimisation.</text>
+    <rect x="536" y="496" width="216" height="120" rx="10" fill="#ffffff" stroke="#e6e9ee"/>
+    <rect x="552" y="512" width="32" height="32" rx="8" fill="url(#img1)"/>
+    <text x="552" y="566" font-size="14" font-weight="700" fill="#0f2a47">Financial Advisory</text>
+    <text x="552" y="586" font-size="11" fill="#6b7a8a">Planning, forecasting and</text>
+    <text x="552" y="601" font-size="11" fill="#6b7a8a">investor readiness.</text>
+  </g>
+</svg>

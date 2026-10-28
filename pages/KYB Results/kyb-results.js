@@ -1878,7 +1878,7 @@
       riskLevel: "High",
       summary: "{name} returned elevated AML signals including adverse media indicators and high-risk jurisdiction exposure.",
       overviewNarrative:
-        "{name} presents elevated onboarding risk driven by a commercially dormant operating profile and opaque offshore ownership structure. Registry data confirms good standing, but no verifiable trading activity, an expired web presence, and zero-activity annual reports suggest a shell or pass-through entity rather than an active consultancy. Payment delinquencies and industry-activity mismatches further increase default and AML exposure.",
+        "{name} presents elevated onboarding risk driven by a commercially dormant operating profile and opaque offshore ownership structure. Registry data confirms good standing, but no verifiable trading activity and zero-activity annual reports suggest a shell or pass-through entity rather than an active consultancy. Payment delinquencies and industry-activity mismatches further increase default and AML exposure.",
       sidebarSummary: {
         overview:
           "{name} is an active US corporation registered at a registered-agent address, with no verifiable trading activity and ownership routed through an offshore BVI holding.",
@@ -1917,7 +1917,7 @@
         findings: [
           "Business Model 84/100: credit default risk + payment delinquencies",
           "Financial Health 68/100: High Risk",
-          "2 operational signals: virtual office, expired domain",
+          "1 operational signal: virtual office address",
         ],
       },
       summaryPage: {
@@ -1942,23 +1942,23 @@
         },
         "business-insights": {
           truai:
-            "{name} is active but commercially dormant.\n\nZero employees, $1 capital, expired website, and a virtual office address after 6 years of incorporation. All three risk scores are critical (18/100).",
+            "{name} is active but commercially dormant.\n\nZero employees, $1 capital, and a virtual office address after 6 years of incorporation. All three risk scores are critical (18/100).",
           prompt: "What would improve these scores?",
           findings: [
             "Legitimacy 18, Suspicion 18, Confidence 18",
             "Virtual office at known registered-agent suite",
-            "2 operational signals: virtual office, expired domain",
+            "1 operational signal: virtual office address",
           ],
         },
         presence: {
           truai:
-            "No active digital footprint. Registered domain expired Feb 2025 and hasn't been renewed.\n\nNo social media presence found except an unverified LinkedIn profile.",
-          prompt: "Is this consistent with a shell entity?",
+            "Active digital footprint. Domain registered in 2019 and renewed through 2027.\n\nFour social profiles found, consistent with the business name.",
+          prompt: "Is the web presence consistent?",
           findings: [
-            "Domain expired 18 months ago, never renewed",
-            "No live website available to verify",
-            "No Instagram or Facebook presence",
-            { text: "LinkedIn profile exists but unverified", tone: "intermediate" },
+            { text: "Domain active and renewed through 2027", tone: "positive" },
+            { text: "Live website matches declared consulting activity", tone: "positive" },
+            { text: "4 social profiles found", tone: "positive" },
+            { text: "LinkedIn company page not yet verified", tone: "intermediate" },
           ],
         },
         financial: {
@@ -2879,7 +2879,12 @@
 
     if (presence.previewText) {
       var placeholder = document.querySelector(".kyb-browser-mock__placeholder");
-      if (placeholder) placeholder.textContent = presence.previewText;
+      if (placeholder) {
+        placeholder.textContent = presence.previewText;
+        placeholder.hidden = false;
+      }
+      var previewImage = document.querySelector(".kyb-browser-mock__image");
+      if (previewImage) previewImage.hidden = true;
     }
 
   }
@@ -3520,7 +3525,7 @@
   function computePresenceContributorCard(profile) {
     var domainExpired = getPresenceFieldValue("Domain Expired");
     var findings = getFindingTextsFromProfile(profile, "presence") || getTabFindingTexts("presence");
-    var metric = domainExpired ? "Domain expired " + domainExpired + "." : "No active web presence";
+    var metric = domainExpired && /\d/.test(domainExpired) ? "Domain active until " + domainExpired + "." : "No active web presence";
     var detail = "";
     findings.forEach(function (text) {
       if (/LinkedIn|social|unverified|website/i.test(text) && !detail) detail = text;
