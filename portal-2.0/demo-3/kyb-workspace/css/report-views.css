@@ -116,6 +116,13 @@
   color: var(--text-default, #172d2d);
 }
 
+/* The ownership panel ships its own "Ownership & UBO" heading, which
+   is the same words again directly under ours. Ours stays, because it
+   is the one every section gets; the panel's goes. */
+[data-kw-view] .d3-kyb-panel[data-d3-kyb-panel="ownership"] .d3-kyb-ownership__title {
+  display: none;
+}
+
 /* ------------------------------------------------------------------
    Stub — the offer
    ------------------------------------------------------------------ */
@@ -249,18 +256,37 @@
    as opening something else.
    ================================================================== */
 
+/* No outer card. A card inside a card is one edge too many, and the
+   generated sections are the cards — the report is a stack of them,
+   not a box with a stack inside it. */
+.d3-kyb-resume[data-kw-view="feed"] {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 [data-kw-view="feed"] .d3-kyb-resume__body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 0;
   overflow: visible;
+  background: transparent;
 }
 
+/* The identity row and the overview become the first two cards. */
+[data-kw-view="feed"] .d3-kyb-resume__identity,
+[data-kw-view="feed"] .d3-kyb-panel[data-d3-kyb-panel="overview"],
 [data-kw-view="feed"] .d3-kyb-panel[data-kw-label][data-kw-state="done"] {
   padding: 20px;
   border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 16px;
   background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--kw-elevation-card, 0 12px 24px rgba(138, 154, 144, 0.22));
+}
+
+[data-kw-view="feed"] .kw-stub {
+  box-shadow: var(--kw-elevation-card, 0 12px 24px rgba(138, 154, 144, 0.22));
 }
 
 /* The generated section replaces its own offer in place, so the order
@@ -270,28 +296,64 @@
 /* ==================================================================
    VIEW B · Nodes
 
-   A canvas: the overview as the root card, the four sections as
-   children below it, joined by elbow connectors. Refers to Figma
-   554:67495 for the arrangement — dotted ground, rounded cards,
-   orthogonal links — not its content, which goes well outside KYB.
+   A canvas, not a page. The dot ground is the stage's own field —
+   workspace-canvas.css §1c hides it on the report surface because the
+   card covers it, and this view turns it back on and drops every
+   container between it and the nodes. There is no in-between surface:
+   the nodes sit directly on the ground.
 
-   The connectors are CSS: a stem down from the root, a spine across
-   the children, and a drop into each. Real routing would need SVG and
-   measurement, and buys nothing at four fixed children.
+   It pans in both axes like a FigJam board (js/report-views.js), so
+   .d3-workspace__detail stops scrolling and clips instead, and the
+   card is what moves.
+
+   The tree is one parent and four peers, laid out horizontally. The
+   sections are not a hierarchy — ownership does not contain signals —
+   so a vertical chain would assert an order that is not there. A
+   generated node grows and its peers give up width to it.
    ================================================================== */
 
-[data-kw-view="nodes"] .d3-kyb-resume__body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  padding: 24px 20px 32px;
-  overflow: visible;
-  background-image: radial-gradient(var(--border-subtle, #dde2de) 1px, transparent 1px);
-  background-size: 18px 18px;
-  border-radius: 16px;
+/* The ground comes back. */
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-kw-view="nodes"]) .kw-stage__dots {
+  display: block;
 }
 
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-kw-view="nodes"]) {
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+/* Pan viewport: clip, do not scroll, and show the grab affordance. */
+.d3-workspace[data-d3-kyb-surface="report"]:has([data-kw-view="nodes"]) .d3-workspace__detail {
+  overflow: hidden !important;
+  cursor: grab;
+  touch-action: none;
+}
+
+.d3-workspace[data-d3-kyb-surface="report"]:has([data-kw-view="nodes"]) .d3-workspace__detail.is-panning {
+  cursor: grabbing;
+}
+
+/* Nothing between the ground and the nodes. */
+.d3-kyb-resume[data-kw-view="nodes"] {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Grid, not flex. The parent node is capped at 560px for readability,
+   which with flex-wrap means it never fills its row — so the first
+   child tucked in beside it instead of dropping below. Grid separates
+   "how wide the box looks" from "how much of the row it claims". */
+[data-kw-view="nodes"] .d3-kyb-resume__body {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+  padding: 8px 0 40px;
+  overflow: visible;
+  background: transparent;
+}
+
+/* The parent node. */
 [data-kw-view="nodes"] .d3-kyb-resume__identity,
 [data-kw-view="nodes"] .d3-kyb-panel[data-d3-kyb-panel="overview"] {
   width: 100%;
@@ -300,33 +362,43 @@
   border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 14px;
   background: var(--surface-neutral-01, #fff);
-  box-shadow: 0 1px 2px rgba(22, 33, 27, 0.05);
+  box-shadow: 0 1px 2px rgba(22, 33, 27, 0.06), 0 8px 20px rgba(138, 154, 144, 0.18);
 }
 
 [data-kw-view="nodes"] .d3-kyb-panel[data-d3-kyb-panel="overview"] {
   margin-top: 12px;
 }
 
-/* The stem from the root down to the children's spine. */
+/* The stem down to the children's spine. */
 [data-kw-view="nodes"] .d3-kyb-panel[data-d3-kyb-panel="overview"]::after {
   content: "";
   display: block;
   width: 1px;
-  height: 28px;
-  margin: 18px auto -28px;
+  height: 34px;
+  margin: 18px auto -34px;
   background: var(--border-subtle, #dde2de);
 }
 
-/* The children sit in a row on a shared spine. */
+/* Parent spans the row; the cap only governs how wide it looks. */
+[data-kw-view="nodes"] .d3-kyb-resume__identity,
+[data-kw-view="nodes"] .d3-kyb-panel[data-d3-kyb-panel="overview"] {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
+/* The children: four peers across one row. They are peers, not a
+   chain — ownership does not contain signals — so a vertical tree
+   would assert an order that is not there. */
 [data-kw-view="nodes"] .kw-stub,
 [data-kw-view="nodes"] .d3-kyb-panel[data-kw-label][data-kw-state="done"] {
   position: relative;
-  width: 100%;
-  max-width: 260px;
-  margin-top: 46px;
+  min-width: 0;
+  margin-top: 52px;
   padding: 16px;
+  border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 14px;
-  box-shadow: 0 1px 2px rgba(22, 33, 27, 0.05);
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: 0 1px 2px rgba(22, 33, 27, 0.06), 0 8px 20px rgba(138, 154, 144, 0.18);
 }
 
 /* Each child's drop from the spine. */
@@ -334,20 +406,20 @@
 [data-kw-view="nodes"] .d3-kyb-panel[data-kw-label][data-kw-state="done"]::after {
   content: "";
   position: absolute;
-  top: -18px;
+  top: -20px;
   left: 50%;
   width: 1px;
-  height: 18px;
+  height: 20px;
   background: var(--border-subtle, #dde2de);
 }
 
-/* Generated children open to full width — the point of the view is
-   that attention moves to whatever was just produced. */
+/* A generated node claims two of the four columns; its peers give up
+   the room and reflow around it, wrapping to a second row when two
+   have been generated. */
 [data-kw-view="nodes"] .d3-kyb-panel[data-kw-label][data-kw-state="done"] {
-  max-width: 560px;
+  grid-column: span 2;
   padding: 20px;
-  border: 1px solid var(--interactive-default, #0e8a78);
-  background: var(--surface-neutral-01, #fff);
+  border-color: color-mix(in srgb, var(--interactive-default, #0e8a78) 45%, var(--border-subtle, #dde2de));
 }
 
 [data-kw-view="nodes"] .kw-stub__blurb { display: none; }
@@ -400,9 +472,17 @@
   display: none !important;
 }
 
+/* The offer fills the pane and its CTA sits at the bottom, where the
+   eye lands after reading what the section would contain — rather
+   than interrupting between the blurb and the rest of the pane. */
 [data-kw-view="rail"] .kw-stub {
   border: 0;
   padding: 0;
+  min-height: 220px;
+}
+
+[data-kw-view="rail"] .kw-stub__cta {
+  margin-top: auto;
 }
 
 /* ------------------------------------------------------------------
@@ -464,11 +544,26 @@
 
 .kw-index__label { flex: 1 1 auto; min-width: 0; }
 
+/* "+" rather than the word Generate: at this size the label crowded
+   every section name, and the plus reads the same as the one on the
+   stub's own button. */
 .kw-index__state {
+  display: inline-flex;
   flex: 0 0 auto;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-caption, #8a9690);
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 12%, #fff);
+  color: var(--interactive-default, #0e8a78);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.kw-index__state:empty {
+  display: none;
 }
 
 .kw-index__item.is-active .kw-index__state { color: inherit; }

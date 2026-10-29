@@ -404,7 +404,7 @@ routed correctly; that one had none.
 | View | Offer | Reading |
 |--|--|--|
 | **Feed** | Stubs stacked under the overview | One column that grows downward. "Generate the next part" reads as continuing, not as opening something else. |
-| **Nodes** | A canvas of connected cards | Root plus four children on a dotted ground, joined by elbow connectors. Generated children open to full width. Refers to [Figma `554:67495`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=554-67495) for the arrangement only — its content goes well outside KYB. |
+| **Nodes** | A canvas of connected cards | A parent and four **peers in a row** — the sections are not a hierarchy, so a vertical chain would assert an order that is not there. Pans in both axes like a FigJam board, grab cursor and all; no zoom, since at four fixed children there is nothing to zoom out to see. Refers to [Figma `554:67495`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=554-67495) for the arrangement only — its content goes well outside KYB. |
 | **Rail** | A standing index down the left | Every section listed whether it exists yet or not, with its state. Answers "what else could I have?" without scrolling. |
 | **Focus** | One section, nothing else | The contrast: no index, no neighbours, a pager strip. Asks what a report is when the reader is never given a choice of what to read *next*, only what to ask for next. |
 
@@ -414,6 +414,25 @@ same rule.
 
 **Reset to overview only** in the lab panel puts every section back to `idle`,
 for running the flow again without a reload.
+
+Three things that bit, worth knowing before editing:
+
+- **The node canvas is grid, not flex.** The parent is capped at 560px for
+  readability, so under `flex-wrap` it never filled its row and the first child
+  tucked in beside it. Grid separates how wide the box *looks* from how much of
+  the row it *claims*; a generated node then takes `span 2` and its peers
+  reflow around it.
+- **The dot ground is the stage's own field**, not a background on an
+  in-between container. `workspace-canvas.css` §1c hides it on the report
+  surface because the card covers it; the nodes view turns it back on and drops
+  every container between it and the nodes.
+- **The stub icons are inline SVG.** FA Free carries almost no regular-weight
+  glyphs beyond a small set, so `fa-regular fa-sitemap` and friends rendered as
+  nothing at all.
+
+In the rail, the row selects and the **`+` generates** — so looking at an
+ungenerated section shows you its offer rather than generating it by the act of
+looking.
 
 ## Removed: the tab strip
 
