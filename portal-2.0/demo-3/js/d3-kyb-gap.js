@@ -71,7 +71,7 @@
     var actions = "";
     if (el.getAttribute("data-actions") === "1") {
       actions =
-        '<div class="d3-kyb-gap__actions"><button type="button" class="tds-btn tds-btn--lg tds-btn--primary" data-d3-addons-continue>' +
+        '<div class="d3-kyb-gap__actions"><button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-addons-continue>' +
         (st.addons.length ? "Continue" : "Continue without add-ons") +
         "</button></div>";
     }
@@ -315,7 +315,7 @@
       html = entitySection("profile", st, c, biz);
       if (el.getAttribute("data-actions") === "1") {
         html +=
-          '<div class="d3-kyb-gap__actions"><button type="button" class="tds-btn tds-btn--lg tds-btn--primary" data-d3-profile-continue' +
+          '<div class="d3-kyb-gap__actions"><button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-profile-continue' +
           (profileReady(st) ? "" : ' aria-disabled="true"') + ">Continue</button></div>";
       }
       return html;
@@ -331,7 +331,7 @@
     }
     if (el.getAttribute("data-actions") === "1") {
       html +=
-        '<div class="d3-kyb-gap__actions"><button type="button" class="tds-btn tds-btn--lg tds-btn--primary" data-d3-inputs-continue' +
+        '<div class="d3-kyb-gap__actions"><button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-inputs-continue' +
         (S.inputsComplete() ? "" : ' aria-disabled="true"') + ">Continue</button></div>";
     }
     return html;

@@ -853,6 +853,17 @@
     return '<p class="ai-said">' + esc(biz.name) + "</p>";
   }
 
+  /* A step that has been answered stays in the record, but nothing in it can be
+     pressed any more. */
+  function lockPanel(el) {
+    if (!el) return;
+    el.classList.add("is-past");
+    Array.prototype.forEach.call(el.querySelectorAll("button, input, select, textarea"), function (c) {
+      c.disabled = true;
+      c.setAttribute("aria-disabled", "true");
+    });
+  }
+
   /* Every step of the verification is its own message, so the chat reads as a
      record of what was asked and chosen. The earlier panels stay in place but
      go quiet. */
@@ -991,7 +1002,7 @@
     if (idx > 0) html += '<button type="button" class="d3-kyb-wiz__back" data-d3-wiz-back>‹ Back</button>';
     var single = wiz.step === "package" || wiz.step === "finder" || (wiz.step === "business" && wiz.listing);
     if (single && wizAnswered(wiz.step)) {
-      html += '<button type="button" class="tds-btn tds-btn--lg tds-btn--primary" data-d3-wiz-next>Continue</button>';
+      html += '<button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-wiz-next>Continue</button>';
     }
     /* Everything is already answered (they came back to change one thing): go straight on. */
     var all = steps.every(wizAnswered);
@@ -1296,7 +1307,7 @@
         : "No add-ons"
     );
     wiz.active = false;
-    wiz.el.hidden = true;
+    lockPanel(wiz.el);
     renderUser(parts.join(" · "));
     showConfirmStep(biz);
   }
@@ -1375,9 +1386,9 @@
       '<p class="tds-announcement__title" data-d1-confirm-action>Ready to verify</p>' +
       '<ul class="d3-kyb-review" data-d1-confirm-detail>' + lines.join("") + "</ul>" +
       '<div class="tds-announcement__actions" data-d1-confirm-buttons>' +
-      '<button type="button" class="tds-btn tds-btn--lg tds-btn--primary" data-d3-kyb-confirm="yes">Execute verification</button>' +
-      '<button type="button" class="tds-btn tds-btn--lg tds-btn--secondary" data-d3-kyb-wizard-reopen>Change selections</button>' +
-      '<button type="button" class="tds-btn tds-btn--lg tds-btn--secondary" data-d3-kyb-confirm="no">Cancel</button>' +
+      '<button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-kyb-confirm="yes">Execute verification</button>' +
+      '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-kyb-wizard-reopen>Change selections</button>' +
+      '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-kyb-confirm="no">Cancel</button>' +
       "</div></div></div>";
     stick();
   }
@@ -2241,6 +2252,7 @@
     if (confirmBtn) {
       event.preventDefault();
       var answer = confirmBtn.getAttribute("data-d3-kyb-confirm");
+      lockPanel(confirmBtn.closest(".tds-announcement"));
       if (answer === "yes" && candState.pending) {
         var chosen = candState.pending;
         candState.pending = null;
@@ -2282,6 +2294,7 @@
     }
     if (event.target.closest("[data-d3-kyb-wizard-reopen]")) {
       event.preventDefault();
+      lockPanel(event.target.closest(".tds-announcement"));
       wizReopen();
       return;
     }

@@ -586,7 +586,7 @@
 }
 
 /* Continue is the step's main action: full-size, not the compact button. */
-.d3-kyb-gap__actions .tds-btn--lg {
+.d3-kyb-gap__actions .tds-btn--md {
   min-width: 128px;
 }
 
