@@ -58,7 +58,7 @@
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-home.css?v=15">
   <link rel="stylesheet" href="css/d3-workspace.css?v=33">
-  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=8">
+  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=9">
   <link rel="stylesheet" href="css/d3-embed-report.css?v=1">
   <link rel="stylesheet" href="css/d3-kyb-details.css?v=1">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
@@ -412,15 +412,14 @@
           <!-- Figma 1811:73412 — the match step shows this card on the dotted ground
                instead of a map. Filled by js/d3-kyb-canvas.js from the agent's matches. -->
           <div class="d3-kyb-choice" data-d3-kyb-choice-panel aria-live="polite">
-            <div class="d3-kyb-choice__card">
-              <div class="d3-kyb-choice__head">
-                <span class="d3-kyb-choice__tag"><span class="d3-kyb-choice__dot" aria-hidden="true"></span><span data-kc-tag>Waiting for your choice</span></span>
-                <div class="d3-kyb-choice__text">
-                  <h2 class="d3-kyb-choice__title" data-kc-title>Several businesses share this name</h2>
-                  <p class="d3-kyb-choice__lead" data-kc-lead>Verifying the wrong one would give the wrong result, so a choice is needed.</p>
-                </div>
-              </div>
-              <dl class="d3-kyb-choice__facts" data-kc-facts></dl>
+            <div class="d3-kyb-country">
+              <span class="d3-kyb-country__eyebrow" role="status">
+                <span class="d3-kyb-country__pulse" aria-hidden="true"></span>
+                <span data-kc-tag>Waiting for your choice</span>
+              </span>
+              <h2 class="d3-kyb-country__title" data-kc-title>Several businesses share this name</h2>
+              <p class="d3-kyb-country__lead" data-kc-lead>Verifying the wrong one would give the wrong result, so a choice is needed.</p>
+              <ol class="d3-kyb-steps" aria-label="Verification progress" data-kc-steps></ol>
             </div>
           </div>
           <div class="d3-kyb-map__overlay">
@@ -1441,8 +1440,8 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-home-placeholder.js?v=3"></script>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>
 <script src="js/d3-home-dots.js"></script>
-<script src="js/d3-kyb-canvas.js?v=4"></script>
-<script src="js/d3-chat-history.js?v=15"></script>
+<script src="js/d3-kyb-canvas.js?v=6"></script>
+<script src="js/d3-chat-history.js?v=16"></script>
 <script src="js/d3-chat-follow.js?v=1"></script>
 <script src="js/d3-embed-report.js?v=4"></script>
 <script src="js/d3-home-orb.js?v=5"></script>

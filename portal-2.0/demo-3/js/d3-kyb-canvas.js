@@ -138,10 +138,6 @@
       ws.removeAttribute(RESOLVING);
     }
 
-    function fact(label, value) {
-      return '<div class="d3-kyb-choice__fact"><dt>' + label + "</dt><dd>" + value + "</dd></div>";
-    }
-
     function esc(v) {
       return String(v == null ? "" : v)
         .replace(/&/g, "&amp;")
@@ -155,7 +151,7 @@
       return m ? m[1].toUpperCase() : biz.city || "";
     }
 
-    function fill(tag, title, lead, facts) {
+    function fill(tag, title, lead, steps) {
       if (!panel) return;
       var set = function (sel, html) {
         var el = panel.querySelector(sel);
@@ -164,11 +160,10 @@
       set("[data-kc-tag]", esc(tag));
       set("[data-kc-title]", esc(title));
       set("[data-kc-lead]", esc(lead));
-      set("[data-kc-facts]", facts);
+      set("[data-kc-steps]", steps);
     }
 
     function showChoice(kind, maps, agentState) {
-      var facts = "";
       if (kind === "confirm") {
         var biz = maps && maps.findById ? maps.findById(agentState.pendingId) : null;
         if (!biz) return false;
@@ -176,9 +171,9 @@
           "Waiting for your confirmation",
           biz.name,
           "Confirm in chat to run the verification on this business.",
-          fact("Registered in", esc(biz.city || biz.country)) +
-            fact("Registration number", esc(biz.reg || "—")) +
-            fact("Status", esc(biz.status || "—"))
+          step("done", "Name set", esc(biz.name)) +
+            step("done", "Business matches", esc([biz.city || biz.country, biz.reg].filter(Boolean).join(" \u00b7 "))) +
+            step("current", "Confirmation needed", "Reply in chat to continue")
         );
       } else {
         var list = (maps && maps.getLastResults && maps.getLastResults()) || [];
@@ -188,31 +183,36 @@
           regions[regionOf(b)] = true;
         });
         var k = Object.keys(regions).length;
-        var active = list.filter(function (b) {
-          return /^active$/i.test(b.status || "");
-        }).length;
         var us = list.length && list.every(function (b) { return b.cc === "US"; });
         var unit = us ? (k === 1 ? "state" : "states") : k === 1 ? "region" : "regions";
+        var name = esc(agentState && agentState.queryLabel) || (n ? esc(list[0].name) : "Business name");
+        var where = n ? esc(list[0].country || "") : "";
         if (!n) {
           fill(
             "No matches yet",
             "No businesses match",
             "Try another country or a different name.",
-            fact("Exact name matches", "0")
+            step("done", "Name set", name) +
+              step("current", "Country needed", "Try another country") +
+              step("todo", "Business matches", "Pick the right entity")
           );
         } else if (n === 1) {
           fill(
             "Waiting for your choice",
             "One business matches",
             "Select it to continue with the verification.",
-            fact("Exact name matches", "1") + fact("Registered in", esc(list[0].city || list[0].country)) + fact("Currently active", active + " of 1")
+            step("done", "Name set", name) +
+              step("done", "Country set", where || "\u2014") +
+              step("current", "Business matches", "1 match \u00b7 Select it in chat")
           );
         } else {
           fill(
             "Waiting for your choice",
             "Several businesses share this name",
             "Verifying the wrong one would give the wrong result, so a choice is needed.",
-            fact("Exact name matches", String(n)) + fact("Registered in", k + " " + unit) + fact("Currently active", active + " of " + n)
+            step("done", "Name set", name) +
+              step("done", "Country set", where || "\u2014") +
+              step("current", "Business matches", n + " matches across " + k + " " + unit + " \u00b7 Pick one")
           );
         }
       }

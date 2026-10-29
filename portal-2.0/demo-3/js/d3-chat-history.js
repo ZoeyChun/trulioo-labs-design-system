@@ -320,7 +320,7 @@
   }
 
   /* A rule with a label marks where the conversation moved to another page. */
-  var DIVIDER_LABEL = { kyb: "KYB Agent launched", tx: "Transactions Agent launched" };
+  var DIVIDER_LABEL = { kyb: "Continued in KYB Verification", tx: "Continued in Transactions" };
 
   function addDivider(kind) {
     if (!DIVIDER_LABEL[kind] || !hasThread()) return;

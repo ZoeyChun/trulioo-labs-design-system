@@ -204,7 +204,7 @@
     return !!(t && t.querySelector("[data-d1-co], .d1-report__title"));
   }
 
-  /* On another page only the part of the thread after the "agent launched"
+  /* On another page only the part of the thread after the "Continued in …"
      divider is this page's own work; a loader left over in the KYB part is not
      the Transaction Agent thinking. */
   function thinkingNow(t, kyb) {
