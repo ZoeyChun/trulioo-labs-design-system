@@ -75,6 +75,8 @@
     var verdictLabel = st
       ? st === "Review" ? "Needs review" : st === "Not Verified" ? "Not verified" : st
       : level === "high" ? "Needs review" : level === "medium" ? "Verified · review notes" : "Verified";
+    /* "Needs review" is a hold, not a failure: yellow. Red stays for Not verified / Flagged. */
+    if (verdictLabel === "Needs review") verdictTone = "intermediate";
 
     var addrRisk = risks.filter(function (x) {
       return /address/i.test(x.label + " " + x.id);
