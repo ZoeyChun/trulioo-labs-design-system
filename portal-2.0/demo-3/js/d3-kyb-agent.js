@@ -294,6 +294,9 @@
     if (/match signal|signals tab|open signals/.test(lower)) {
       return { intent: "tab", tab: "signals" };
     }
+    if (/additional data|additional detail/.test(lower)) {
+      return { intent: "tab", tab: "additional" };
+    }
     if (/raw data|sources/.test(lower)) {
       return { intent: "tab", tab: /source/.test(lower) ? "signals" : "raw" };
     }

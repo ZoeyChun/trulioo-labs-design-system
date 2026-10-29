@@ -136,7 +136,7 @@
   <link rel="stylesheet" href="kyb-workspace/css/workspace-canvas.css?v=15">
   <link rel="stylesheet" href="kyb-workspace/css/country-step.css?v=9">
   <link rel="stylesheet" href="kyb-workspace/css/landing-layouts.css?v=19">
-  <link rel="stylesheet" href="kyb-workspace/css/report-options.css?v=1">
+  <link rel="stylesheet" href="kyb-workspace/css/report-views.css?v=4">
 </head>
 <body>
 
@@ -307,30 +307,29 @@
 
     <!-- Report layout lab. Same shape as the landing's and the country
          step's, shown only on the report surface. -->
-    <!-- Collapsed by default, unlike the other screens' labs: the report
-         is full-bleed, so an open panel sits on top of the thing being
-         judged — over the side nav in particular. -->
+    <!-- Report view lab.
+         Collapsed by default and pinned top-right: the report is
+         full-bleed, and the breadcrumb sits at the top-left. -->
     <details class="kw-lab kw-lab--report" data-kw-report-lab>
-      <summary class="kw-lab__toggle" title="Design exploration — pick a combination and delete this panel">
+      <summary class="kw-lab__toggle" title="Design exploration — pick a view and delete this panel">
         <span class="kw-variants__tag">Lab</span>
-        <span class="kw-lab__toggle-text">Report</span>
+        <span class="kw-lab__toggle-text">Report view</span>
       </summary>
 
       <div class="kw-lab__row">
-        <span class="kw-lab__label">Navigation</span>
-        <div class="kw-lab__opts" role="group" aria-label="Report navigation" data-kw-raxis="nav">
-          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-ropt="tabs">Tabs</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-ropt="stacked">Stacked</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-ropt="sidenav">Side nav</button>
+        <span class="kw-lab__label">View</span>
+        <div class="kw-lab__opts" role="group" aria-label="Report view" data-kw-raxis="view">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-ropt="feed">Feed</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-ropt="nodes">Nodes</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-ropt="rail">Rail</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-ropt="focus">Focus</button>
         </div>
       </div>
 
       <div class="kw-lab__row">
-        <span class="kw-lab__label">Surface</span>
-        <div class="kw-lab__opts" role="group" aria-label="Report surface" data-kw-raxis="surface">
-          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-ropt="card">One card</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-ropt="sections">Sections</button>
-          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-ropt="flat">Flat</button>
+        <span class="kw-lab__label">Session</span>
+        <div class="kw-lab__opts" role="group" aria-label="Session">
+          <button type="button" class="kw-lab__opt" data-kw-reset>Reset to overview only</button>
         </div>
       </div>
     </details>
@@ -682,7 +681,7 @@
 
         <!-- Full report chrome (shown after verify / opening a recent card) -->
         <article class="d3-workspace__card d3-kyb-resume" data-d3-kyb-resume
-                 data-kw-nav="tabs" data-kw-surface="card" hidden>
+                 data-kw-view="feed" hidden>
           <div class="d3-kyb-resume__body">
             <div class="d3-kyb-resume__identity">
               <div class="d3-workspace__biz-row">
@@ -1518,7 +1517,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-kyb-report-reveal.js?v=31"></script>
 <script src="js/d3-kyb-map-search.js?v=46"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
-<script src="js/d3-kyb-agent.js?v=23"></script>
+<script src="js/d3-kyb-agent.js?v=24"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=38"></script>
@@ -1541,6 +1540,6 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="kyb-workspace/js/landing-layouts.js?v=11"></script>
 <script src="kyb-workspace/js/kyb-boot.js?v=1"></script>
 <script src="kyb-workspace/js/report-boot.js?v=1"></script>
-<script src="kyb-workspace/js/report-options.js?v=1"></script>
+<script src="kyb-workspace/js/report-views.js?v=2"></script>
 </body>
 </html>

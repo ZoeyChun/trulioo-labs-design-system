@@ -53,9 +53,9 @@ kyb-workspace/
   js/country-step.js         # country data + the two selector treatments
   js/landing-layouts.js      # landing layout axes, presets, chips
   report.html                # the report, isolated — opens on one business
-  css/report-options.css     # report navigation + surface axes
+  css/report-views.css       # report views + generation states
   js/report-boot.js          # opens the report for Apex Nordic Logistics AB
-  js/report-options.js       # report layout switch
+  js/report-views.js         # progressive generation + view switch
 ```
 
 `css/` and `js/` under `demo-3/` are **shared, not copied**. The page carries
@@ -366,49 +366,54 @@ conditions, and the first thing to drift. It retries until the surface actually
 changes, because `d3-kyb-resume.js` binds those cards on `d1-app-ready` and the
 card can exist before its handler does.
 
-### Axes
+### Progressive generation
 
-| Axis | Attribute | Options |
+The report no longer arrives whole. **Only the Overview is generated on load**;
+Ownership & UBO, Match Signals & Sources, Web & Social Insights and Additional
+Data are offered as stubs the user asks for, one at a time. The traditional tab
+bar is hidden in every view — it is the thing being moved away from.
+
+**Generation rides the chat.** Asking for a section dispatches the same
+`d3-chat:send` the suggested-action buttons use, so the left panel shows the
+prompt, the agent's thinking state and its reply — the real path, not a
+simulation of one. `js/d3-kyb-agent.js` answers and calls
+`D3KybReport.selectTab()`; that call is wrapped, and **it** is what marks a
+section generated. The 4.2s timeout is only a floor for an answer that never
+selects.
+
+Two details that matter if you touch this:
+
+- **`MIN_RUN_MS`** holds the generating state open for 1.5s. The agent calls
+  `selectTab()` early in its handler, *before* it has written the answer, so
+  without a floor the progress line flashes and the section looks like it was
+  there all along.
+- **The card scrolls, not its body.** `d3-workspace.css` gives
+  `.d3-kyb-resume__body` `overflow-y: auto` and lets it flex to the stage
+  height, so the report scrolled inside a card pinned to the viewport.
+  Progressive generation needs the opposite — the card grows and the page
+  scrolls past it, or "generate the next part" appends into a box that never
+  changes size. The card had to stop flexing (`flex: 0 0 auto`), not just get
+  `height: auto`, and the scrollport moved out to `.d3-workspace__detail`.
+
+`js/d3-kyb-agent.js` gained one `parseQuery` pattern — `additional data` →
+the Additional Data tab. The other three sections already had phrasings that
+routed correctly; that one had none.
+
+### Views
+
+| View | Offer | Reading |
 |--|--|--|
-| Navigation | `data-kw-nav` | `tabs` · `stacked` · `sidenav` |
-| Surface | `data-kw-surface` | `card` · `sections` · `flat` |
+| **Feed** | Stubs stacked under the overview | One column that grows downward. "Generate the next part" reads as continuing, not as opening something else. |
+| **Nodes** | A canvas of connected cards | Root plus four children on a dotted ground, joined by elbow connectors. Generated children open to full width. Refers to [Figma `554:67495`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=554-67495) for the arrangement only — its content goes well outside KYB. |
+| **Rail** | A standing index down the left | Every section listed whether it exists yet or not, with its state. Answers "what else could I have?" without scrolling. |
+| **Focus** | One section, nothing else | The contrast: no index, no neighbours, a pager strip. Asks what a report is when the reader is never given a choice of what to read *next*, only what to ask for next. |
 
-**Navigation** is the real question this screen poses — five tabs means four
-fifths of a verification is invisible at any moment.
+Per-section state is on both the stub and the panel as `data-kw-state` =
+`idle` · `running` · `done`, so a view styles the offer and the result from the
+same rule.
 
-- **Tabs** *(as shipped)* — cheapest to scan when you know which section you
-  want; worst when you do not.
-- **Stacked** — the whole report as one document, the tab bar demoted to a
-  sticky jump nav. Reads end to end and ctrl-F finds everything; the cost is
-  one long page where tabs gave five short ones.
-- **Side nav** — tabs' focus with a list that stays readable past five
-  entries. Costs horizontal room that a two-column data grid also wants.
-
-**Surface** — `card` is the shipped slab; `sections` gives each panel its own
-card on the dot ground; `flat` drops the card entirely. `sections` only means
-anything when every panel is on screen, so it is scoped to `stacked` — with
-tabs there is one panel, and one card around it *is* the `card` option.
-
-Both no-card options switch the dot ground back on. `workspace-canvas.css` §1c
-hides it on the report surface because the card covers it; without that these
-two would be white on white.
-
-### What needed JS
-
-The panels are hidden with the `hidden` attribute by
-`js/d3-kyb-result-tabs.js`, so the options that show them all have to beat it —
-that is the one `!important` in `report-options.css`. Two consequences:
-
-- **Side nav** shows one panel at a time like tabs, but it cannot use `hidden`
-  for that any more, so selection is tracked with a class and kept in step by
-  listening to the same tab clicks.
-- **Stacked** has every panel on screen, so a tab click has nothing to switch.
-  A capture-phase handler suppresses the report's own switch and scrolls to the
-  section instead.
-
-Section headings come from `data-kw-label` via `attr()`, so stacked and side
-nav name their sections without a second copy of the tab labels to keep in
-sync.
+**Reset to overview only** in the lab panel puts every section back to `idle`,
+for running the flow again without a reload.
 
 ## Removed: the tab strip
 
@@ -420,8 +425,12 @@ show two things at once.
 
 ## Next
 
-1. Pick a combination on the landing and a country-selector treatment, then
-   delete both lab panels.
+1. Pick a combination on the landing, a country-selector treatment and a
+   report view, then delete the three lab panels.
 2. Give the map surface the same once-over the country step got — it still
    fills the sheet edge to edge, and it is the one screen that breaks both the
    600px cap and the height hug.
+3. **Report content is a stand-in.** The demo fixtures only carry ownership,
+   risk and web data for the Meridian entities, so a generated section on
+   Apex Nordic falls back to a default record or to "no records attached in
+   this demo". The generation flow is real; the payload is not.
