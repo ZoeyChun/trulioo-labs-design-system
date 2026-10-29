@@ -1,0 +1,241 @@
+/* ============================================================
+   Demo 3 — KYB report: layout options
+   ============================================================
+   Loaded by report.html only. Two axes on the report card:
+
+     data-kw-nav       tabs | stacked | sidenav
+     data-kw-surface   card | sections | flat
+
+   Markup: report.html → [data-kw-nav]. Switch: js/report-options.js.
+
+   Same constraint as the other screens: CSS over ONE set of nodes.
+   The five panels are rendered and driven by js/d3-kyb-result-tabs.js
+   and js/d3-kyb-report-reveal.js, which hide them with the `hidden`
+   attribute. The navigation options that show every panel at once
+   therefore have to beat `hidden` — hence the `!important` on
+   .d3-kyb-panel below. It is the one place in this file that needs it.
+
+   Panel headings come from data-kw-label via attr(), so the stacked
+   and side-nav options name their sections without a second copy of
+   the tab labels to keep in sync.
+   ------------------------------------------------------------------ */
+
+.kw-lab--report { display: none; }
+
+.kw-shell[data-d3-view="chat"] .kw-stage:has(.d3-workspace[data-d3-kyb-surface="report"]) .kw-lab--report {
+  display: block;
+}
+
+/* The lab sits over the report, which is full-bleed on this surface.
+   Pin it to the stage's top-left and let it scroll with nothing. */
+.kw-lab--report {
+  top: 12px;
+  left: 12px;
+}
+
+/* ==================================================================
+   AXIS 1 · Navigation
+   ================================================================== */
+
+/* A · Tabs — one panel at a time, which is what the report ships with.
+   Cheapest to scan when you know which section you want; worst when
+   you do not, because four fifths of the report is invisible. */
+
+/* ------------------------------------------------------------------
+   Shared by the two options that show every panel at once
+   ------------------------------------------------------------------ */
+
+[data-kw-nav="stacked"] .d3-kyb-panel,
+[data-kw-nav="sidenav"] .d3-kyb-panel[data-kw-label] {
+  display: block !important;
+}
+
+/* Raw and Sources are not in the tab bar — they feed the Raw Data
+   dialog and the signals panel. Stacking them would put two panels on
+   the page that the report never navigates to. */
+[data-kw-nav="stacked"] .d3-kyb-panel:not([data-kw-label]),
+[data-kw-nav="sidenav"] .d3-kyb-panel:not([data-kw-label]) {
+  display: none !important;
+}
+
+/* The section heading each panel lacks when it is not announced by a
+   tab. attr() keeps it tied to the markup rather than duplicated. */
+[data-kw-nav="stacked"] .d3-kyb-panel[data-kw-label]::before,
+[data-kw-nav="sidenav"] .d3-kyb-panel[data-kw-label]::before {
+  content: attr(data-kw-label);
+  display: block;
+  margin-bottom: 16px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--text-default, #172d2d);
+}
+
+/* B · Stacked — the whole report as one document, the tab bar demoted
+   to a sticky jump nav. Reads end to end, and ctrl-F finds everything;
+   the cost is a long page where tabs gave you five short ones. */
+
+[data-kw-nav="stacked"] .d3-kyb-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  margin-inline: -24px;
+  padding: 10px 24px;
+  background: color-mix(in srgb, var(--surface-neutral-01, #fff) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+}
+
+[data-kw-nav="stacked"] .d3-kyb-panel[data-kw-label] + .d3-kyb-panel[data-kw-label] {
+  margin-top: 36px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-subtle, #dde2de);
+}
+
+/* Scroll target offset, so a jump does not put the heading under the
+   sticky nav. */
+[data-kw-nav="stacked"] .d3-kyb-panel[data-kw-label] {
+  scroll-margin-top: 64px;
+}
+
+/* C · Side nav — sections listed down the left, one shown at a time.
+   Tabs' focus with a list that stays readable past five entries; the
+   cost is horizontal room, which a 5-column data grid also wants. */
+
+[data-kw-nav="sidenav"] .d3-kyb-resume__body {
+  display: grid;
+  grid-template-columns: 184px minmax(0, 1fr);
+  grid-template-areas:
+    "identity identity"
+    "nav      panel";
+  column-gap: 28px;
+  align-items: start;
+}
+
+[data-kw-nav="sidenav"] .d3-kyb-resume__identity { grid-area: identity; }
+[data-kw-nav="sidenav"] .d3-kyb-tabs { grid-area: nav; }
+
+/* Every panel lands in the same cell; only the selected one shows. */
+[data-kw-nav="sidenav"] .d3-kyb-panel { grid-area: panel; }
+
+[data-kw-nav="sidenav"] .d3-kyb-panel[data-kw-label]:not(.is-selected) {
+  display: none !important;
+}
+
+[data-kw-nav="sidenav"] .d3-kyb-tabs {
+  position: sticky;
+  top: 12px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  border-bottom: 0;
+}
+
+[data-kw-nav="sidenav"] .d3-kyb-tabs__item {
+  justify-content: flex-start;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 8px;
+  text-align: left;
+  white-space: normal;
+}
+
+[data-kw-nav="sidenav"] .d3-kyb-tabs__item.is-active {
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 9%, #fff);
+  color: var(--interactive-default, #0e8a78);
+}
+
+/* The underline that marks the active tab is meaningless in a column. */
+[data-kw-nav="sidenav"] .d3-kyb-tabs__item::after {
+  display: none;
+}
+
+/* The panel already has the nav's label beside it. */
+[data-kw-nav="sidenav"] .d3-kyb-panel[data-kw-label]::before {
+  display: none;
+}
+
+/* ==================================================================
+   AXIS 2 · Surface
+   ================================================================== */
+
+/* A · One card — the report ships as a single slab. */
+
+/* B · Sections — each panel its own card on the dot ground. Only
+   means anything when every panel is on screen, so it follows the
+   navigation axis: with tabs there is one panel, and one card for it
+   is the "one card" option by another name. */
+[data-kw-surface="sections"][data-kw-nav="stacked"] {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+[data-kw-surface="sections"][data-kw-nav="stacked"] .d3-kyb-resume__body {
+  padding: 0;
+  background: transparent;
+}
+
+[data-kw-surface="sections"][data-kw-nav="stacked"] .d3-kyb-resume__identity,
+[data-kw-surface="sections"][data-kw-nav="stacked"] .d3-kyb-panel[data-kw-label] {
+  margin-top: 16px;
+  padding: 24px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 16px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--kw-elevation-card, 0 12px 24px rgba(138, 154, 144, 0.22));
+}
+
+[data-kw-surface="sections"][data-kw-nav="stacked"] .d3-kyb-panel[data-kw-label] + .d3-kyb-panel[data-kw-label] {
+  border-top: 1px solid var(--border-subtle, #dde2de);
+  padding-top: 24px;
+}
+
+[data-kw-surface="sections"][data-kw-nav="stacked"] .d3-kyb-tabs {
+  margin-inline: 0;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle, #dde2de);
+}
+
+/* C · Flat — no card at all. The report is the page. */
+[data-kw-surface="flat"] {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+[data-kw-surface="flat"] .d3-kyb-resume__body {
+  padding-inline: 0;
+  background: transparent;
+}
+
+[data-kw-surface="flat"][data-kw-nav="stacked"] .d3-kyb-tabs {
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+/* The dot ground is hidden on the report surface (workspace-canvas.css
+   §1c, because the card covers it). The two options that drop the card
+   want it back — otherwise they are white on white. */
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-kw-surface="flat"]) .kw-stage__dots,
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-kw-surface="sections"][data-kw-nav="stacked"]) .kw-stage__dots {
+  display: block;
+}
+
+/* ------------------------------------------------------------------
+   Narrow
+   ------------------------------------------------------------------ */
+
+@media (max-width: 1100px) {
+  /* 184px of nav plus a data grid does not fit; fall back to the
+     stacked reading of the same content. */
+  [data-kw-nav="sidenav"] .d3-kyb-resume__body {
+    display: block;
+  }
+
+  [data-kw-nav="sidenav"] .d3-kyb-tabs {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+}

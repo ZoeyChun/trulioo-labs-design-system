@@ -12,6 +12,7 @@ KYB screens, and a rail full of destinations that lead out of them is noise.
 |--|--|
 | GitHub Pages | [demo-3/kyb-workspace/](https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/kyb-workspace/) |
 | Local | http://127.0.0.1:8765/portal-2.0/demo-3/kyb-workspace/index.html |
+| Report (isolated) | [demo-3/kyb-workspace/report.html](https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/kyb-workspace/report.html) |
 
 No sign-in, same as `ai-panel-lab/` — this is a layout lab.
 
@@ -51,6 +52,10 @@ kyb-workspace/
   js/kyb-boot.js             # KYB-only boot (initial view, brand-mark re-point)
   js/country-step.js         # country data + the two selector treatments
   js/landing-layouts.js      # landing layout axes, presets, chips
+  report.html                # the report, isolated — opens on one business
+  css/report-options.css     # report navigation + surface axes
+  js/report-boot.js          # opens the report for Apex Nordic Logistics AB
+  js/report-options.js       # report layout switch
 ```
 
 `css/` and `js/` under `demo-3/` are **shared, not copied**. The page carries
@@ -339,6 +344,71 @@ The sheet removal and the `.d3-kyb-map` fill both had to be dealt with before
 - `d3-workspace.css` fills `.d3-kyb-map` white for the Leaflet pane. With the
   sheet gone that fill became the thing covering the dots, so it is cleared
   while `is-awaiting-country` is set.
+
+## Report, isolated
+
+`report.html` — the finished report for **Apex Nordic Logistics AB**, with no
+landing or search in front of it.
+
+It is a **copy of `index.html`**, not a trimmed page. The report pipeline
+reaches across most of that markup — the resume card skeleton, the five result
+panels, the UBO graph host, the Details and Raw Data dialogs, the chat
+templates — and `js/d3-kyb-resume.js` binds the recent-transaction cards at
+load. Cutting it down would mean re-deriving which parts the report happens to
+need and being wrong about it silently. It sits in the same folder, so
+`<base href="../">` and every relative path work unchanged.
+
+`js/report-boot.js` gets there by **clicking the recent-transaction card** for
+that business — the same path a user takes. That handler already builds the
+session, expands the card to a full report, seeds the chat and sets the status
+tag; doing any of it here would be a second copy of the report's entry
+conditions, and the first thing to drift. It retries until the surface actually
+changes, because `d3-kyb-resume.js` binds those cards on `d1-app-ready` and the
+card can exist before its handler does.
+
+### Axes
+
+| Axis | Attribute | Options |
+|--|--|--|
+| Navigation | `data-kw-nav` | `tabs` · `stacked` · `sidenav` |
+| Surface | `data-kw-surface` | `card` · `sections` · `flat` |
+
+**Navigation** is the real question this screen poses — five tabs means four
+fifths of a verification is invisible at any moment.
+
+- **Tabs** *(as shipped)* — cheapest to scan when you know which section you
+  want; worst when you do not.
+- **Stacked** — the whole report as one document, the tab bar demoted to a
+  sticky jump nav. Reads end to end and ctrl-F finds everything; the cost is
+  one long page where tabs gave five short ones.
+- **Side nav** — tabs' focus with a list that stays readable past five
+  entries. Costs horizontal room that a two-column data grid also wants.
+
+**Surface** — `card` is the shipped slab; `sections` gives each panel its own
+card on the dot ground; `flat` drops the card entirely. `sections` only means
+anything when every panel is on screen, so it is scoped to `stacked` — with
+tabs there is one panel, and one card around it *is* the `card` option.
+
+Both no-card options switch the dot ground back on. `workspace-canvas.css` §1c
+hides it on the report surface because the card covers it; without that these
+two would be white on white.
+
+### What needed JS
+
+The panels are hidden with the `hidden` attribute by
+`js/d3-kyb-result-tabs.js`, so the options that show them all have to beat it —
+that is the one `!important` in `report-options.css`. Two consequences:
+
+- **Side nav** shows one panel at a time like tabs, but it cannot use `hidden`
+  for that any more, so selection is tracked with a class and kept in step by
+  listening to the same tab clicks.
+- **Stacked** has every panel on screen, so a tab click has nothing to switch.
+  A capture-phase handler suppresses the report's own switch and scrolls to the
+  section instead.
+
+Section headings come from `data-kw-label` via `attr()`, so stacked and side
+nav name their sections without a second copy of the tab labels to keep in
+sync.
 
 ## Removed: the tab strip
 
