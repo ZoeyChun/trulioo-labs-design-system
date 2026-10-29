@@ -59,6 +59,7 @@
       q.set("country", row.country || "");
       q.set("txid", row.trid);
       q.set("date", row.date || "");
+      q.set("product", row.product || "");
     }
     var src = "index.html?" + q.toString();
     frame.setAttribute("data-d1-tx-src", src);

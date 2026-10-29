@@ -1,7 +1,7 @@
 /* Demo 3 — embed=report: open the KYB report for one transaction.
 
    Loaded on every page but only acts in a frame opened with
-   ?embed=report&name=…&status=…&country=…&txid=…&date=… (the Transactions
+   ?embed=report&name=…&status=…&country=…&txid=…&date=…&product=… (the Transactions
    drawer builds that URL; see js/d3-transactions.js). */
 (function () {
   "use strict";
@@ -19,6 +19,7 @@
     businessName: params.get("name") || "Business",
     status: params.get("status") || "Verified",
     country: params.get("country") || "United States",
+    tier: ({ "Business Essentials": "essentials", "Business Insights": "insights", "Business Complete": "complete" })[params.get("product")] || "complete",
     transactionId: params.get("txid") || "",
     date: params.get("date") || ""
   };

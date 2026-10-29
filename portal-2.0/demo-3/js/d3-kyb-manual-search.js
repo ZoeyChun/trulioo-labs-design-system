@@ -8,11 +8,12 @@
   var COUNTRIES = [
     { code: "gb", name: "United Kingdom", registry: "Companies House", broadTotal: 412 },
     { code: "us", name: "United States", registry: "Secretary of State business registry", broadTotal: 1284 },
-    { code: "ca", name: "Canada", registry: "Corporations Canada", broadTotal: 296 },
+    { code: "ca", name: "Canada", registry: "Corporations Canada", broadTotal: 296, lat: 49.2827, lon: -123.1207 },
     { code: "au", name: "Australia", registry: "ASIC business registry", broadTotal: 188 },
     { code: "de", name: "Germany", registry: "Handelsregister", broadTotal: 524 },
     { code: "nl", name: "Netherlands", registry: "KVK business registry", broadTotal: 241 },
-    { code: "sg", name: "Singapore", registry: "ACRA business registry", broadTotal: 157 }
+    { code: "sg", name: "Singapore", registry: "ACRA business registry", broadTotal: 157, lat: 1.2833, lon: 103.8515 },
+    { code: "se", name: "Sweden", registry: "Bolagsverket", broadTotal: 133 }
   ];
 
   var MERIDIAN_APEX = {
@@ -59,6 +60,11 @@
       { id: "meridian-apex-us", name: "Meridian Apex Consulting Inc.", country: "United States", countryCode: "us", brn: "US-8891-INC", address1: "50 Fremont St", city: "San Francisco", state: "CA", postal: "94105", sample: "elevated", lon: -122.395, lat: 37.791 }
     ]
   };
+
+  /* The manual flow has three steps: (1) the name, (2) package + Business Finder,
+     (3) the details. `armed` means the user has pressed Continue, so the
+     registry search / entity form is open; until then typing never opens a list. */
+  var flow = { armed: false };
 
   var typeahead = {
     country: getCountryByCode("us"),
@@ -224,9 +230,14 @@
   function updateSubmitButton() {
     var submit = byId("vb-submit-btn");
     if (!submit) return;
-    if (typeahead.selected) submit.removeAttribute("aria-disabled");
+    var S = window.D3KybSession;
+    var needsInputs = S && S.requirements().fields > 0 && !S.inputsComplete();
+    if ((typeahead.selected || manualMode()) && !needsInputs) submit.removeAttribute("aria-disabled");
     else submit.setAttribute("aria-disabled", "true");
   }
+
+  /* Add-ons, package or the details typed in change what Submit is waiting for. */
+  document.addEventListener("d3-kyb:session-change", updateSubmitButton);
 
   function updateSearchPlaceholder() {
     var input = byId("vb-q");
@@ -364,6 +375,7 @@
 
   function clearSelection() {
     typeahead.selected = null;
+    if (window.D3KybSession) window.D3KybSession.set({ entity: null }, "manual");
     showPrefill(false);
     updateSubmitButton();
   }
@@ -373,6 +385,9 @@
     if (!input || !entity) return;
 
     typeahead.selected = entity;
+    if (window.D3KybSession) {
+      window.D3KybSession.set({ entity: { id: entity.id, name: entity.name, cc: typeahead.country.code } }, "manual");
+    }
     input.value = entity.name;
     fillPrefillFields(entity);
     showPrefill(true);
@@ -385,6 +400,21 @@
   function onSearchInput() {
     var input = byId("vb-q");
     if (!input) return;
+
+    /* Step 1: just a name field. Step 2 appears; no suggestions yet. */
+    if (!flow.armed) {
+      updateStage();
+      return;
+    }
+    /* A registry without search: this field is the entity's legal name. */
+    if (manualMode()) {
+      var S0 = window.D3KybSession;
+      if (S0 && S0.get().profile.name !== input.value) {
+        var pr = S0.get().profile;
+        S0.set({ profile: { name: input.value, regNo: pr.regNo, address: pr.address, taxId: pr.taxId } }, "manual");
+      }
+      return;
+    }
 
     if (typeahead.selected && input.value !== typeahead.selected.name) {
       clearSelection();
@@ -437,13 +467,174 @@
     var trigger = byId("vb-country-trigger");
     if (trigger) trigger.setAttribute("aria-label", "Country, " + country.name);
 
-    var input = byId("vb-q");
-    if (input) input.value = "";
+    /* The name stays: only what depended on the old registry is dropped. */
     updateSearchPlaceholder();
-    clearSelection();
+    typeahead.selected = null;
+    if (window.D3KybSession && !manualMode()) window.D3KybSession.set({ entity: null }, "manual");
+    showPrefill(false);
     updateSearchHint("");
     closeMenu();
+    /* Tell the shared session (the AI panel follows it). */
+    if (window.D3KybSession) window.D3KybSession.set({ country: country.code }, "manual");
+    syncFinderMode();
   }
+
+  /* A registry with no automated search: the typeahead is switched off and the
+     entity is entered by hand (section 1 of the form). */
+  function manualMode() {
+    var S = window.D3KybSession;
+    return !!S && !S.finderOn(typeahead.country.code);
+  }
+
+  /* The Business Finder switch: the user's wish, limited by what the registry
+     supports. */
+  function syncFinderUI() {
+    var S = window.D3KybSession;
+    var toggle = document.querySelector("[data-d3-finder-toggle]");
+    var hint = document.querySelector("[data-d3-finder-hint]");
+    if (!S || !toggle) return;
+    var supported = S.finderSupported(typeahead.country.code);
+    var on = supported && S.get().finderEnabled;
+    toggle.setAttribute("aria-checked", on ? "true" : "false");
+    toggle.setAttribute("aria-disabled", supported ? "false" : "true");
+    toggle.classList.toggle("tds-switch__track--on", on);
+    var wrap = toggle.closest(".tds-switch");
+    if (wrap) wrap.classList.toggle("tds-switch--disabled", !supported);
+    var state = document.querySelector("[data-d3-finder-state]");
+    if (state) {
+      state.textContent = !supported
+        ? "Not available for " + typeahead.country.name
+        : on
+          ? "On — registry data is pre-filled and locked"
+          : "Off — you’ll type the details yourself";
+    }
+    var next = document.querySelector("[data-d3-setup-next]");
+    if (next) next.textContent = on ? "Next: pick the business" : "Next: enter the entity details";
+    if (hint) {
+      hint.textContent = !supported
+        ? typeahead.country.registry + " has no automated search, so you’ll enter the entity by hand."
+        : on
+          ? "Searches " + typeahead.country.registry + " for matching entities, so you can pick the right one."
+          : "Turned off: you’ll type the entity’s details yourself.";
+    }
+  }
+
+  function summaryText() {
+    var S = window.D3KybSession;
+    var input = byId("vb-q");
+    var name = input && input.value.trim();
+    return [name, S && S.package(S.get().package).name, "Finder " + (manualMode() ? "off" : "on")].filter(Boolean).join(" · ");
+  }
+
+  /* Which step is showing: step 2 appears once a name is typed; Continue folds
+     it into a one-line summary. */
+  function updateStage() {
+    var input = byId("vb-q");
+    var setup = document.querySelector("[data-d3-kyb-setup]");
+    var sum = document.querySelector("[data-d3-kyb-setup-summary]");
+    var hint = byId("vb-search-hint");
+    var len = input ? normalize(input.value).length : 0;
+    if (setup) setup.hidden = flow.armed || len < MIN_QUERY_LEN;
+    if (sum) {
+      sum.hidden = !flow.armed;
+      var label = sum.querySelector("[data-d3-summary-text]");
+      if (flow.armed && label) label.textContent = summaryText();
+    }
+    if (hint) hint.hidden = flow.armed;
+    syncFinderUI();
+  }
+
+  /* Continue (the arrow, or Enter): open the registry search, or the entity form. */
+  function advance() {
+    var input = byId("vb-q");
+    if (!input || normalize(input.value).length < MIN_QUERY_LEN) return;
+    flow.armed = true;
+    var S = window.D3KybSession;
+    if (S && manualMode()) {
+      var pr = S.get().profile;
+      S.set({ profile: { name: input.value.trim(), regNo: pr.regNo, address: pr.address, taxId: pr.taxId } }, "manual");
+    }
+    updateStage();
+    syncFinderMode();
+  }
+
+  /* Back to step 2 (name / package / Finder), keeping what was typed. */
+  function editSetup() {
+    flow.armed = false;
+    closeMenu();
+    clearSelection();
+    showPrefill(false);
+    updateStage();
+    updateSubmitButton();
+  }
+
+  /* Open what comes next, given the Finder setting. */
+  function syncFinderMode() {
+    var S = window.D3KybSession;
+    var lookup = byId("vb-lookup");
+    var off = manualMode();
+    if (lookup) lookup.classList.toggle("vb-lookup--manual", off);
+    syncFinderUI();
+    if (!flow.armed) {
+      updateSubmitButton();
+      return;
+    }
+    if (off && S) {
+      closeMenu();
+      typeahead.selected = null;
+      S.set({ entity: { id: "manual:" + typeahead.country.code, name: S.get().profile.name, cc: typeahead.country.code } }, "manual");
+      showPrefill(true);
+    } else {
+      if (S && S.get().entity && /^manual:/.test(S.get().entity.id)) {
+        S.set({ entity: null }, "manual");
+      }
+      if (!typeahead.selected) {
+        showPrefill(false);
+        onSearchInput();
+      }
+    }
+    updateSubmitButton();
+  }
+
+  document.addEventListener("d3-kyb:session-change", function (event) {
+    var d = event.detail || {};
+    if (!d.changed) return;
+    if (d.changed.indexOf("finderEnabled") !== -1 || d.changed.indexOf("package") !== -1) {
+      updateStage();
+      if (d.changed.indexOf("finderEnabled") !== -1 && flow.armed) syncFinderMode();
+    }
+    /* The legal name typed in the entity form also shows in the name field. */
+    var input = byId("vb-q");
+    if (flow.armed && manualMode() && input && d.state && d.changed.indexOf("profile") !== -1 && document.activeElement !== input) {
+      if (input.value !== d.state.profile.name) input.value = d.state.profile.name;
+    }
+  });
+
+  /* Typing the entity's name keeps the session's entity in step. */
+  document.addEventListener("d3-kyb:session-change", function (event) {
+    var d = event.detail || {};
+    var S = window.D3KybSession;
+    if (!S || !manualMode() || d.changed.indexOf("profile") === -1) return;
+    var name = d.state.profile.name;
+    if (!d.state.entity || d.state.entity.name === name) return;
+    S.set({ entity: { id: d.state.entity.id, name: name, cc: d.state.entity.cc } }, "manual");
+  });
+
+  /* The AI panel (or a reset) changed the country: show it in the select. */
+  function followSession(code) {
+    var root = byId("vb-country-select");
+    if (!root) return;
+    var want = code || "us";
+    if (want === typeahead.country.code) return;
+    var item = root.querySelector('[data-country-code="' + want + '"]');
+    if (item) item.click();
+  }
+
+  document.addEventListener("d3-kyb:session-change", function (event) {
+    var d = event.detail || {};
+    if (d.source === "manual" || d.changed.indexOf("country") === -1) return;
+    followSession(d.state.country);
+  });
 
   function entityToBiz(entity) {
     if (!entity) return null;
@@ -536,11 +727,38 @@
 
   function submitSelected() {
     var submit = byId("vb-submit-btn");
-    if (!submit || submit.getAttribute("aria-disabled") === "true" || !typeahead.selected) return;
+    if (!submit || submit.getAttribute("aria-disabled") === "true" || (!typeahead.selected && !manualMode())) return;
 
-    var biz = entityToBiz(typeahead.selected);
+    var biz;
+    if (manualMode()) {
+      var S = window.D3KybSession;
+      var p = S.get().profile;
+      var cc = typeahead.country.code;
+      biz = entityToBiz({
+        id: "manual:" + cc,
+        name: p.name.trim(),
+        country: typeahead.country.name,
+        countryCode: cc,
+        brn: p.regNo.trim(),
+        address1: p.address.trim(),
+        city: "",
+        state: "",
+        postal: "",
+        sample: "standard",
+        lat: typeahead.country.lat || 0,
+        lon: typeahead.country.lon || 0
+      });
+      if (biz) {
+        biz.cc = cc.toUpperCase();
+        biz.country = typeahead.country.name;
+      }
+    } else {
+      biz = entityToBiz(typeahead.selected);
+    }
     closeMenu();
     if (!biz) return;
+    /* Owners typed for a registry that does not publish them. */
+    if (window.D3KybSession) biz = window.D3KybSession.applyInputs(biz);
 
     /* Cover the handoff freeze (landing → map zoom → report). */
     showSubmitLoader(biz.name);
@@ -601,6 +819,10 @@
     if (window.TdsInteractiveSelect) {
       window.TdsInteractiveSelect.init(document);
     }
+    /* A country already in the session (restored chat, AI panel) wins. */
+    if (window.D3KybSession && window.D3KybSession.get().country) {
+      followSession(window.D3KybSession.get().country);
+    }
 
     input.addEventListener("input", onSearchInput);
     input.addEventListener("focus", function () {
@@ -608,6 +830,11 @@
       onSearchInput();
     });
     input.addEventListener("keydown", function (event) {
+      if (!flow.armed && (event.key === "Enter" || event.key === "ArrowDown")) {
+        event.preventDefault();
+        advance();
+        return;
+      }
       if (event.key === "ArrowDown") {
         event.preventDefault();
         if (!typeahead.menuOpen) onSearchInput();
@@ -651,14 +878,55 @@
       });
     }
 
+    var goBtn = document.querySelector("[data-d3-setup-go]");
+    if (goBtn) goBtn.addEventListener("click", advance);
+    var editBtn = document.querySelector("[data-d3-setup-edit]");
+    if (editBtn) editBtn.addEventListener("click", editSetup);
+    var toggle = document.querySelector("[data-d3-finder-toggle]");
+    if (toggle) {
+      var flip = function () {
+        var S = window.D3KybSession;
+        if (!S || toggle.getAttribute("aria-disabled") === "true") return;
+        S.set({ finderEnabled: toggle.getAttribute("aria-checked") !== "true" }, "manual");
+      };
+      var sw = toggle.closest(".tds-switch");
+      if (sw) {
+        sw.addEventListener("click", function (event) {
+          /* The (i) beside the label explains the switch; it does not flip it. */
+          if (event.target.closest(".d3-kyb-info")) {
+            event.preventDefault();
+            return;
+          }
+          event.preventDefault();
+          flip();
+        });
+      }
+      toggle.addEventListener("keydown", function (event) {
+        if (event.key === " " || event.key === "Enter") {
+          event.preventDefault();
+          flip();
+        }
+      });
+    }
+
     updateSearchPlaceholder();
     updateSearchHint("");
+    updateStage();
     updateSubmitButton();
   }
 
   function init() {
     initTypeahead();
     window.D3KybManualSearch = {
+      /* The AI panel builds the same record for a hand-entered entity. */
+      thinBiz: function (entity) {
+        var biz = entityToBiz(entity);
+        if (biz) {
+          biz.cc = String(entity.countryCode || "").toUpperCase();
+          biz.country = entity.country;
+        }
+        return biz;
+      },
       submitSelected: submitSelected,
       clearSelection: clearSelection,
       getSelected: function () {

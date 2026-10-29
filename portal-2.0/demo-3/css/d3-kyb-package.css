@@ -1,0 +1,195 @@
+/* Demo 3 — Essentials / Insights / Complete selector (js/d3-kyb-package.js). */
+.d3-kyb-pkg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 4px);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.d3-kyb-pkg__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12, 12px);
+}
+
+.d3-kyb-pkg__label {
+  flex: 0 0 auto;
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: var(--line-height-xs, 16px);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.d3-kyb-pkg__note {
+  margin: 0;
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+}
+
+/* On the manual search form: only once a business has been chosen (it lives
+   inside the pre-filled block), just above Submit. */
+.vb-prefill > .d3-kyb-pkg {
+  margin-top: var(--spacing-16, 16px);
+}
+
+/* On the right-panel steps card. */
+.d3-kyb-country > .d3-kyb-pkg {
+  padding-top: var(--spacing-8, 8px);
+  border-top: 1px solid var(--border-subtle, #dde2de);
+}
+
+/* In the AI panel's confirm card. */
+.d1-confirm .d3-kyb-pkg {
+  margin: var(--spacing-8, 8px) 0 var(--spacing-4, 4px);
+}
+
+/* "Which package should I run?" — cards in the same style as the match cards. */
+.d3-kyb-pkgcards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+  width: 100%;
+}
+
+.d3-kyb-pkgcard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-16, 16px);
+  border: 1px solid var(--border-strong, #c4cdc8);
+  border-radius: var(--radius-xl, 16px);
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #172d2d);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease, scale 120ms ease-out;
+}
+
+.d3-kyb-pkgcard:hover,
+.d3-kyb-pkgcard.is-on {
+  border-color: var(--interactive-default, #004c45);
+  box-shadow: 0 0 0 3px var(--interactive-subtle, #e3f1ee);
+}
+
+.d3-kyb-pkgcard:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
+
+.d3-kyb-pkgcard:active {
+  scale: 0.98;
+}
+
+.d3-kyb-pkgcard__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-pkgcard__name {
+  font-size: var(--font-size-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 20px;
+}
+
+.d3-kyb-pkgcard__badge {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: var(--interactive-subtle, #e3f1ee);
+  color: var(--text-positive, #004c45);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.d3-kyb-pkgcard.is-recommended {
+  border-color: var(--interactive-default, #004c45);
+}
+
+.d3-kyb-pkgcard__note {
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+  color: var(--text-description, #526660);
+}
+
+.d3-kyb-pkgcard__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+}
+
+.d3-kyb-pkgcard__list > span {
+  position: relative;
+  padding-left: 14px;
+}
+
+.d3-kyb-pkgcard__list > span::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--icon-faint, #617269);
+}
+
+.d3-kyb-pkgcard__impact {
+  font-size: var(--font-size-xs, 12px);
+  line-height: 18px;
+  color: var(--text-caption, #617269);
+}
+
+.d3-kyb-pkgcard__impact.is-warn {
+  padding: var(--spacing-8, 8px) var(--spacing-12, 12px);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-review-subtle, #fdf3e1);
+  color: var(--text-review, #7a4b00);
+}
+
+.d3-kyb-pkgcard__select {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  color: var(--interactive-default, #004c45);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.d3-kyb-pkgcard__select svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 160ms ease;
+}
+
+.d3-kyb-pkgcard:hover .d3-kyb-pkgcard__select svg {
+  transform: translateX(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-kyb-pkgcard,
+  .d3-kyb-pkgcard__select svg {
+    transition: none;
+  }
+}
+
+
+/* An earlier step of the verification: still in the record, no longer live. */
+.d3-kyb-cand-panel.is-past {
+  opacity: 0.55;
+  pointer-events: none;
+}

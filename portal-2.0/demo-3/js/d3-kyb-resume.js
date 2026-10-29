@@ -99,6 +99,7 @@
     }
     syncChatBack(false);
     clearThread();
+    if (window.D3KybSession) window.D3KybSession.reset("reset");
     openResumeExperience();
   }
 
@@ -366,6 +367,7 @@
     var name = session.businessName || "Acme Inc.";
 
     if (window.D3Nav) window.D3Nav.openKybChat({ resume: true });
+    if (window.D3KybReport && window.D3KybReport.setTier) window.D3KybReport.setTier(session.tier || "complete");
     setSurface("report");
     setResumeVisible(true);
     if (resumeCard) resumeCard.classList.add("is-live");

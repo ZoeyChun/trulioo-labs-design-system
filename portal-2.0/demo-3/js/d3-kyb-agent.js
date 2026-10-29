@@ -45,6 +45,11 @@
     search: "Business name and country",
     country: "Country of registration, e.g. United States",
     list: "Select a match or refine your search",
+    package: "Choose a package above",
+    addons: "Choose add-ons above",
+    inputs: "Fill in the details above",
+    profile: "Enter the entity details above",
+    finder: "Choose how to find the business above",
     confirm: "Confirm above, or ask a follow-up",
     running: "Verification in progress…",
     report: "Ask about this verification"
@@ -186,6 +191,21 @@
       return window.D3KybMapSearch.parsePlaceQuery(text);
     }
     return { raw: String(text || "").trim(), nameQuery: String(text || "").trim(), country: null, cc: null };
+  }
+
+  /* The shared KYB session (js/d3-kyb-session.js): a country the user already
+     chose — in either panel — is the default scope, so it is never asked twice. */
+  function sessionPlace() {
+    var S = window.D3KybSession;
+    var row = S && S.get().country ? S.country(S.get().country) : null;
+    return row ? { country: row.name, cc: row.cc.toUpperCase() } : null;
+  }
+
+  function rememberPlace(scope) {
+    var S = window.D3KybSession;
+    if (S && scope && (scope.cc || scope.country)) {
+      S.set({ country: scope.cc || (S.countries.filter(function (c) { return c.name === scope.country; })[0] || {}).cc }, "agent");
+    }
   }
 
   function withPlace(result, place) {
@@ -661,7 +681,6 @@
       '<div class="ai-cands">' +
       list.map(candidateCardHtml).join("") +
       "</div>";
-
     syncMapToVisible();
     stick();
   }
@@ -787,6 +806,11 @@
       cc: code.toLowerCase(),
       country: label || code
     };
+    rememberPlace(scope);
+    if (window.D3KybSession && !window.D3KybSession.finderOn(scope.cc)) {
+      wizStart({ scope: scope, query: candState.queryLabel });
+      return true;
+    }
     var map = window.D3KybMapSearch;
     if (!map || typeof map.findBusinesses !== "function") return false;
 
@@ -816,51 +840,545 @@
     }
 
     if (map.setAwaitingCountry) map.setAwaitingCountry(false);
-    revealScopedMatches(scoped, scope);
-    playCandidateResults(scoped, candState.queryLabel || "Meridian", scope);
+    wizStart({ scope: scope, query: candState.queryLabel || "Meridian", matches: scoped });
     return true;
   }
 
-  function showConfirmStep(biz) {
-    if (!biz) return;
+  /* The business name as the user's own turn — only on the first step after a
+     pick (a card click makes no user message of its own). Later steps follow a
+     recorded choice, so repeating the name would read as the user saying it again. */
+  function saidHtml(biz) {
+    if (!candState.justPicked) return "";
+    candState.justPicked = false;
+    return '<p class="ai-said">' + esc(biz.name) + "</p>";
+  }
+
+  /* Every step of the verification is its own message, so the chat reads as a
+     record of what was asked and chosen. The earlier panels stay in place but
+     go quiet. */
+  function newStepPanel() {
+    thread.querySelectorAll(".d3-kyb-cand-panel").forEach(function (panel) {
+      panel.classList.add("is-past");
+    });
+    var wrap = playHtml("");
+    wrap.classList.add("d3-kyb-cand-panel", "d3-kyb-agent-wrap");
+    candState.root = wrap;
+    return wrap;
+  }
+
+  /* What every step starts with. */
+  function beginStep(biz, mode, placeholder) {
     ensureKybOpen();
     parkActive();
     hideFollow();
     showChatBack();
-    if (!candState.root || !candState.root.isConnected) {
-      candState.root = playHtml("");
-      candState.root.classList.add("d3-kyb-cand-panel", "d3-kyb-agent-wrap");
-    }
-    candState.mode = "confirm";
+    newStepPanel();
+    candState.mode = mode;
     candState.pending = biz;
-    setComposerPlaceholder(PLACEHOLDER.confirm);
+    setComposerPlaceholder(placeholder);
     focusCandOnMap(biz);
-    var addr = biz.addr || biz.city || "";
-    var detail =
-      esc(bizCountry(biz)) +
-      " · " +
-      esc(biz.reg) +
-      (addr ? "<br>" + esc(addr) : "");
-    /* Same chrome as data-d1-tpl="confirm" — mint announcement + sparkle icon. */
+  }
+
+  /* "the Secretary of State business registry" / "Companies House". */
+  function registryThe(biz) {
+    var S = window.D3KybSession;
+    var c = S && S.country(biz.cc);
+    return c ? c.the : "the registry";
+  }
+
+  function cap(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
+  /* ====================================================================
+     The setup wizard — ONE card in the AI panel.
+
+     Question N of M, answered in place and free to go back and forth:
+
+       package → Business Finder → business → add-ons → details
+
+     Steps that do not apply drop out (no Finder question for a registry
+     without search, no details step for Essentials without BAV), so M follows
+     the choices. Earlier answers sit above as chips; pressing one, or Back,
+     returns to that question. Changing an answer recalculates the later ones.
+     When the last question is answered the card folds away and one line of
+     chat records what was chosen, followed by the "Ready to verify" summary.
+     ==================================================================== */
+  var wiz = null;
+
+  function wizActive() {
+    return !!(wiz && wiz.active && wiz.el && wiz.el.isConnected);
+  }
+
+  function wizCc() {
+    var st = window.D3KybSession.get();
+    return String((st.entity && st.entity.cc) || (wiz && wiz.scope && wiz.scope.cc) || "").toLowerCase();
+  }
+
+  /* Will there be details to fill in, given what is chosen so far? */
+  function wizNeedsInputs() {
+    var S = window.D3KybSession;
+    var st = S.get();
+    var c = S.country(wizCc());
+    var owners = S.tabAllowed(st.package, "ownership", []) && c && c.ubo === "private";
+    return !!(owners || st.addons.indexOf("never") !== -1);
+  }
+
+  function wizSteps() {
+    var steps = ["package"];
+    if (!wiz.fixedBiz && wiz.finderSupported) steps.push("finder");
+    if (!wiz.fixedBiz) steps.push("business");
+    steps.push("addons");
+    if (wizNeedsInputs()) steps.push("inputs");
+    return steps;
+  }
+
+  function wizAnswered(step) {
+    var st = window.D3KybSession.get();
+    if (step === "package") return st.packageChosen;
+    if (step === "finder") return wiz.finderAnswered;
+    if (step === "business") return !!wiz.biz;
+    if (step === "addons") return st.addonsChosen;
+    if (step === "inputs") return st.inputsDone;
+    return false;
+  }
+
+  function wizChipText(step) {
+    var S = window.D3KybSession;
+    var st = S.get();
+    if (step === "package") return S.package(st.package).name;
+    if (step === "finder") return S.finderOn(wizCc()) ? "Business Finder" : "Manual entry";
+    if (step === "business") return wiz.biz ? wiz.biz.name : "";
+    if (step === "addons") {
+      return st.addons.length
+        ? st.addons.map(function (id) { return S.addon(id).short; }).join(", ")
+        : "No add-ons";
+    }
+    return "Details";
+  }
+
+  function wizTopHtml() {
+    var steps = wizSteps();
+    var idx = steps.indexOf(wiz.step);
+    var dots = steps
+      .map(function (s, i) {
+        return '<span class="d3-kyb-wiz__dot' + (i < idx ? " is-done" : i === idx ? " is-now" : "") + '"></span>';
+      })
+      .join("");
+    var chips = steps
+      .filter(function (s) {
+        return s !== wiz.step && wizAnswered(s);
+      })
+      .map(function (s) {
+        return (
+          '<button type="button" class="d3-kyb-wiz__chip" data-d3-wiz-goto="' + s + '"><span>' +
+          esc(wizChipText(s)) + '</span><i aria-hidden="true">✎</i></button>'
+        );
+      })
+      .join("");
+    return (
+      '<div class="d3-kyb-wiz__head"><span class="d3-kyb-wiz__count">Question ' + (idx + 1) + " of " + steps.length +
+      '</span><span class="d3-kyb-wiz__dots" aria-hidden="true">' + dots + "</span></div>" +
+      (chips ? '<div class="d3-kyb-wiz__chips">' + chips + "</div>" : "")
+    );
+  }
+
+  /* "Back", and a forward button for a question that already has an answer. */
+  function wizFootHtml() {
+    var steps = wizSteps();
+    var idx = steps.indexOf(wiz.step);
+    var html = "";
+    if (idx > 0) html += '<button type="button" class="d3-kyb-wiz__back" data-d3-wiz-back>‹ Back</button>';
+    var single = wiz.step === "package" || wiz.step === "finder" || (wiz.step === "business" && wiz.listing);
+    if (single && wizAnswered(wiz.step)) {
+      html += '<button type="button" class="tds-btn tds-btn--lg tds-btn--primary" data-d3-wiz-next>Continue</button>';
+    }
+    /* Everything is already answered (they came back to change one thing): go straight on. */
+    var all = steps.every(wizAnswered);
+    if (all && idx < steps.length - 1) {
+      html += '<button type="button" class="d3-kyb-wiz__back" data-d3-wiz-finish>Skip to summary ›</button>';
+    }
+    return html;
+  }
+
+  /* The count, dots and chips follow the answers; the question below is left alone. */
+  function wizRefreshTop() {
+    if (!wizActive()) return;
+    var top = wiz.el.querySelector("[data-d3-wiz-top]");
+    var foot = wiz.el.querySelector("[data-d3-wiz-foot]");
+    if (top) top.innerHTML = wizTopHtml();
+    if (foot) foot.innerHTML = wizFootHtml();
+  }
+
+  function wizMatches() {
+    if (wiz.matches) return wiz.matches;
+    var map = window.D3KybMapSearch;
+    if (!map || typeof map.findBusinesses !== "function") return [];
+    var scope = wiz.scope || {};
+    var q = wiz.query || "Meridian";
+    var needle = /meridian/i.test(q) ? "meridian" : q;
+    var found = map.findBusinesses(needle, scope);
+    if (!found.length && /meridian/i.test(q)) found = map.findBusinesses("meridian", scope);
+    wiz.matches = found;
+    return found;
+  }
+
+  function wizGo(step) {
+    if (!wizActive()) return;
+    wiz.step = step;
+    wiz.listing = false;
+    wiz.el.innerHTML =
+      '<div class="d3-kyb-wiz__top" data-d3-wiz-top>' + wizTopHtml() + "</div>" +
+      '<div class="d3-kyb-wiz__body" data-d3-wiz-body></div>' +
+      '<div class="d3-kyb-wiz__foot" data-d3-wiz-foot></div>';
+    wiz.body = wiz.el.querySelector("[data-d3-wiz-body]");
+    wizFillBody();
+    wiz.el.querySelector("[data-d3-wiz-foot]").innerHTML = wizFootHtml();
+    stick();
+  }
+
+  function wizNext() {
+    if (!wizActive()) return;
+    var steps = wizSteps();
+    var idx = steps.indexOf(wiz.step);
+    if (idx === -1 || idx >= steps.length - 1) {
+      wizFinish();
+      return;
+    }
+    wizGo(steps[idx + 1]);
+  }
+
+  function wizBack() {
+    if (!wizActive()) return;
+    var steps = wizSteps();
+    var idx = steps.indexOf(wiz.step);
+    if (idx > 0) wizGo(steps[idx - 1]);
+  }
+
+  function wizReply(lead, sub) {
+    return (
+      '<div class="ai-reply"><p class="ai-reply__lead">' + lead + "</p>" +
+      (sub ? '<p class="ai-reply__sub">' + sub + "</p>" : "") + "</div>"
+    );
+  }
+
+  function wizFillBody() {
+    var S = window.D3KybSession;
+    var st = S.get();
+    var body = wiz.body;
+    var cc = wizCc();
+    var c = S.country(cc);
+    var reg = c ? c.the : "the registry";
+    var pk = S.package(st.package);
+    var map = window.D3KybMapSearch;
+
+    candState.pending = wiz.biz || null;
+    candState.queryLabel = wiz.query || candState.queryLabel;
+    candState.root = body;
+
+    if (wiz.step === "package") {
+      candState.mode = "package";
+      setComposerPlaceholder(PLACEHOLDER.package);
+      body.innerHTML =
+        wizReply(
+          wiz.fixedBiz
+            ? "Great — I’ve retrieved the baseline records for " + esc(wiz.biz.name) + " from " + esc(reg) + "."
+            : "Got it — " + esc(wiz.query) + (c ? " in " + esc(c.name) : "") + ".",
+          "What level of compliance and risk verification do you need to perform today?"
+        ) + '<div data-d3-kyb-pkg data-variant="cards"></div>';
+      if (window.D3KybPackage) window.D3KybPackage.render(body.querySelector("[data-d3-kyb-pkg]"));
+      return;
+    }
+
+    if (wiz.step === "finder") {
+      candState.mode = "finder";
+      setComposerPlaceholder(PLACEHOLDER.finder);
+      var icons = window.D3KybIcons || {};
+      var on = wiz.finderAnswered && S.finderOn(cc);
+      var off = wiz.finderAnswered && !S.finderOn(cc);
+      body.innerHTML =
+        wizReply(
+          "Selected " + esc(pk.name) + ".",
+          "Would you like to use Business Finder? It searches " + esc(reg) + " for matching entities, so you can pick the right one instead of typing its details."
+        ) +
+        '<div class="d3-ai-selector d3-kyb-choicelist"><div class="d3-ai-selector__rows">' +
+        '<button type="button" class="d3-ai-selector__row' + (on ? " is-on" : "") + '" data-d3-kyb-finder-pick="on">' +
+        '<span class="d3-ai-selector__mark" aria-hidden="true">' + (icons.finder || "") + "</span>" +
+        '<span class="d3-ai-selector__copy"><span class="ai-cand__name">Use Business Finder</span>' +
+        '<span class="d3-ai-selector__addr">Search ' + esc(reg) + " and choose from the matches</span>" +
+        '<span class="d3-ai-selector__reg">Registry data is pre-filled and locked</span></span></button>' +
+        '<button type="button" class="d3-ai-selector__row' + (off ? " is-on" : "") + '" data-d3-kyb-finder-pick="off">' +
+        '<span class="d3-ai-selector__mark" aria-hidden="true">' + (icons.manual || "") + "</span>" +
+        '<span class="d3-ai-selector__copy"><span class="ai-cand__name">Enter details manually</span>' +
+        '<span class="d3-ai-selector__addr">Type the entity’s name, number and address yourself</span>' +
+        '<span class="d3-ai-selector__reg is-warn">+3 fields (name, registration number, address)</span></span></button>' +
+        "</div></div>";
+      return;
+    }
+
+    if (wiz.step === "business") {
+      if (map && map.ensureMapSurface) map.ensureMapSurface();
+      if (map && map.setAwaitingCountry) map.setAwaitingCountry(false);
+      var ws = document.querySelector("[data-d3-workspace]");
+      if (ws) ws.setAttribute("data-d3-map-ready", "");
+      if (S.finderOn(cc)) {
+        /* The matching businesses — the same list as always, inside this card. */
+        wiz.listing = true;
+        var host = document.createElement("div");
+        host.className = "d3-kyb-cand-panel d3-kyb-agent-wrap";
+        body.appendChild(host);
+        playCandidateResults(wizMatches(), wiz.query || "Meridian", Object.assign({ target: host }, wiz.scope || {}));
+        setComposerPlaceholder(PLACEHOLDER.list);
+        return;
+      }
+      /* By hand: the entity profile. */
+      candState.mode = "profile";
+      setComposerPlaceholder(PLACEHOLDER.profile);
+      if (!st.entity || !/^manual:/.test(st.entity.id)) {
+        S.set({ entity: { id: "manual:" + cc, name: st.profile.name, cc: cc } }, "agent");
+      }
+      body.innerHTML =
+        wizReply(
+          S.finderSupported(cc) ? "No problem — I’ll collect the entity details." : esc(cap(reg)) + " doesn’t support automated search.",
+          (S.finderSupported(cc) ? "Type them in, or " : "So I’ll collect the entity details instead — or ") +
+            "drop a certificate and I’ll read them for you."
+        ) + '<div data-d3-kyb-inputs data-variant="profile" data-actions="1"></div>';
+      if (window.D3KybGap) window.D3KybGap.renderInputs(body.querySelector("[data-d3-kyb-inputs]"));
+      return;
+    }
+
+    if (wiz.step === "addons") {
+      candState.mode = "addons";
+      setComposerPlaceholder(PLACEHOLDER.addons);
+      wiz.addonsBefore = JSON.stringify(st.addons);
+      body.innerHTML =
+        wizReply(
+          "Selected " + esc(pk.name) + ".",
+          "Would you like to attach any add-ons to this verification?"
+        ) + '<div data-d3-kyb-addons data-actions="1"></div>';
+      if (window.D3KybGap) window.D3KybGap.renderAddons(body.querySelector("[data-d3-kyb-addons]"));
+      return;
+    }
+
+    if (wiz.step === "inputs") {
+      candState.mode = "inputs";
+      setComposerPlaceholder(PLACEHOLDER.inputs);
+      var r = S.requirements();
+      var ready = ["<li>" + esc(cap(reg)) + " data is pre-filled and locked (legal name, registration number, address).</li>"];
+      if (st.addons.indexOf("monitoring") !== -1) ready.push("<li>Continuous monitoring will start once the verification completes.</li>");
+      var because = [];
+      if (r.ubo === "private" || r.ubo === "skipped") because.push(esc(reg) + " doesn’t disclose who owns the business");
+      if (r.bank) because.push("you selected Bank Account Verification");
+      var n = r.fields;
+      body.innerHTML =
+        '<div class="ai-reply"><p class="ai-reply__lead">I’ve configured the verification pipeline.</p>' +
+        '<ul class="ai-reply__list">' + ready.join("") + "</ul>" +
+        '<p class="ai-reply__sub">Because ' + because.join(" and ") + ", please complete " +
+        (n === 1 ? "this missing detail" : "these " + n + " missing details") + ":</p></div>" +
+        '<div data-d3-kyb-inputs data-actions="1"></div>';
+      if (window.D3KybGap) window.D3KybGap.renderInputs(body.querySelector("[data-d3-kyb-inputs]"));
+    }
+  }
+
+  /* What the wizard sets up: a business is known, or a name + country to search. */
+  function wizStart(opts) {
+    var S = window.D3KybSession;
+    opts = opts || {};
+    ensureKybOpen();
+    parkActive();
+    hideFollow();
+    showChatBack();
+    thread.querySelectorAll(".d3-kyb-cand-panel, .d3-kyb-wizard").forEach(function (panel) {
+      panel.classList.add("is-past");
+    });
+    var el = playHtml("");
+    el.classList.add("d3-kyb-agent-wrap", "d3-kyb-wizard");
+    var scope = opts.scope || null;
+    var biz = opts.biz || null;
+    if (biz && !scope) scope = { cc: String(biz.cc || "").toLowerCase(), country: biz.country };
+    var cc = String((scope && scope.cc) || "").toLowerCase();
+    wiz = {
+      el: el,
+      body: null,
+      active: true,
+      step: "package",
+      scope: scope,
+      query: opts.query || (biz && biz.name) || "",
+      matches: opts.matches || null,
+      biz: biz,
+      fixedBiz: !!biz,
+      finderSupported: !biz && !!cc && S.finderSupported(cc),
+      /* If they already turned the switch off on the form, it is answered. */
+      finderAnswered: !!biz || (!S.get().finderEnabled && !!cc),
+      listing: false
+    };
+    if (biz) {
+      S.set({ entity: { id: biz.id, name: biz.name, cc: biz.cc } }, "agent");
+      focusCandOnMap(biz);
+    }
+    var steps = wizSteps();
+    var first = steps.filter(function (x) { return !wizAnswered(x); })[0] || steps[0];
+    wizGo(first);
+  }
+
+  function wizPackagePicked(id) {
+    var S = window.D3KybSession;
+    if (id) S.set({ package: id }, "agent");
+    /* Owners and details depend on the package. */
+    S.set({ inputsDone: false }, "agent");
+    wizNext();
+  }
+
+  function wizFinderPicked(on) {
+    var S = window.D3KybSession;
+    var changed = wiz.finderAnswered && S.get().finderEnabled !== !!on;
+    wiz.finderAnswered = true;
+    S.set({ finderEnabled: !!on }, "agent");
+    /* A different way of finding the business means choosing it again. */
+    if (changed || (wiz.biz && S.finderOn(wizCc()) === !!on && /^manual:/.test(wiz.biz.id) === !!on)) {
+      wiz.biz = null;
+      S.set({ entity: null, profileDone: false, inputsDone: false }, "agent");
+    }
+    wizNext();
+  }
+
+  /* A business was picked from the list. */
+  function wizBusinessPicked(biz) {
+    var S = window.D3KybSession;
+    wiz.biz = biz;
+    wiz.scope = { cc: String(biz.cc || "").toLowerCase(), country: biz.country };
+    S.set({ entity: { id: biz.id, name: biz.name, cc: biz.cc }, inputsDone: false }, "agent");
+    focusCandOnMap(biz);
+    wizNext();
+  }
+
+  /* The entity form was filled in. */
+  function wizProfileDone() {
+    var S = window.D3KybSession;
+    var ms = window.D3KybManualSearch;
+    var st = S.get();
+    if (!st.entity || !ms || !ms.thinBiz) return;
+    var cc = st.entity.cc;
+    var c = S.country(cc);
+    var coords = { sg: [1.2833, 103.8515], ca: [49.2827, -123.1207], us: [38.9, -77.0] }[cc] || [0, 0];
+    var biz = ms.thinBiz({
+      id: "manual:" + cc,
+      name: st.profile.name.trim(),
+      country: c.name,
+      countryCode: cc,
+      brn: st.profile.regNo.trim(),
+      address1: st.profile.address.trim(),
+      city: "",
+      state: "",
+      postal: "",
+      sample: "standard",
+      lat: coords[0],
+      lon: coords[1]
+    });
+    if (!biz) return;
+    wiz.biz = biz;
+    S.set({ profileDone: true, entity: { id: biz.id, name: biz.name, cc: cc }, inputsDone: false }, "agent");
+    wizNext();
+  }
+
+  /* Every question answered: fold the card away, record the choices in one line,
+     then the summary. */
+  function wizFinish() {
+    var S = window.D3KybSession;
+    var st = S.get();
+    var biz = wiz.biz;
+    if (!biz) return;
+    var parts = [S.package(st.package).name];
+    if (!wiz.fixedBiz && wiz.finderSupported) parts.push(S.finderOn(wizCc()) ? "Business Finder" : "Manual entry");
+    parts.push(biz.name);
+    parts.push(
+      st.addons.length
+        ? st.addons.map(function (id) { return S.addon(id).short; }).join(" + ")
+        : "No add-ons"
+    );
+    wiz.active = false;
+    wiz.el.hidden = true;
+    renderUser(parts.join(" · "));
+    showConfirmStep(biz);
+  }
+
+  /* From the summary: change something. The card comes back with the answers kept. */
+  function wizReopen() {
+    if (!wiz || !wiz.biz) return;
+    ensureKybOpen();
+    thread.querySelectorAll(".d3-kyb-cand-panel, .d3-kyb-wizard").forEach(function (panel) {
+      panel.classList.add("is-past");
+    });
+    var el = playHtml("");
+    el.classList.add("d3-kyb-agent-wrap", "d3-kyb-wizard");
+    wiz.el = el;
+    wiz.active = true;
+    wizGo("package");
+  }
+
+  document.addEventListener("d3-kyb:package-pick", function (event) {
+    if (wizActive() && wiz.step === "package") wizPackagePicked(event.detail && event.detail.id);
+  });
+  document.addEventListener("d3-kyb:addons-done", function () {
+    if (!wizActive() || wiz.step !== "addons") return;
+    if (JSON.stringify(window.D3KybSession.get().addons) !== wiz.addonsBefore) {
+      window.D3KybSession.set({ inputsDone: false }, "agent");
+    }
+    wizNext();
+  });
+  document.addEventListener("d3-kyb:profile-done", function () {
+    if (wizActive() && wiz.step === "business") wizProfileDone();
+  });
+  document.addEventListener("d3-kyb:inputs-done", function () {
+    if (wizActive() && wiz.step === "inputs") wizNext();
+  });
+  /* A choice made on the right of the screen (or an add-on toggled) updates the chips. */
+  document.addEventListener("d3-kyb:session-change", function () {
+    if (wizActive()) wizRefreshTop();
+  });
+
+  /* STEP 5 — one summary, one click. */
+  function showConfirmStep(biz) {
+    if (!biz) return;
+    beginStep(biz, "confirm", PLACEHOLDER.confirm);
+    var S = window.D3KybSession;
+    var st = S.get();
+    var r = S.requirements();
+
+    var did = [];
+    if (r.bank) {
+      var bn = S.bankName(st.bank.routing);
+      did.push("validated the routing number" + (bn ? " with " + esc(bn) : ""));
+    }
+    if (r.ubo === "private") {
+      did.push("mapped <strong>" + esc(st.ubo.name.trim()) + "</strong> as the " + parseFloat(st.ubo.pct) + "% controlling UBO");
+    }
+    var lead = "Everything is ready" + (did.length ? ". I’ve " + did.join(", and ") : "") + ". Click below to start the verification.";
+
+    var lines = [];
+    lines.push("<li><b>Entity</b>" + esc(biz.name) + (biz.status ? " (" + esc(biz.status) + ")" : "") + "</li>");
+    lines.push("<li><b>Scope</b>" + esc(S.scopeLabel()) + "</li>");
+    if (r.ubo === "public") lines.push("<li><b>Ownership</b>Pulled from " + esc(registryThe(biz)) + "</li>");
+    if (r.ubo === "skipped") lines.push("<li><b>Ownership</b>Reported as not disclosed</li>");
+    if (st.ubo.email.trim() && r.ubo === "private" && st.uboRoute === "email") {
+      lines.push("<li><b>Downstream</b>An automated KYC invite will be sent to the UBO</li>");
+    }
+
     candState.root.innerHTML =
-      '<p class="ai-said">' +
-      esc(biz.name) +
-      "</p>" +
+      saidHtml(biz) +
+      '<div class="ai-reply"><p class="ai-reply__lead">' + lead + "</p></div>" +
       '<div class="tds-announcement tds-announcement--info d1-confirm" data-d1-confirm-card>' +
       '<span class="tds-announcement__icon" data-d1-confirm-icon aria-hidden="true">' +
       '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
       '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m3 13 6.5-6.5M10.5 3l.7 1.8L13 5.5l-1.8.7L10.5 8l-.7-1.8L8 5.5l1.8-.7L10.5 3ZM4 4.5l.4 1 .9.4-.9.4L4 7.5l-.4-1-.9-.4.9-.4L4 4.5Z"/>' +
       "</svg></span>" +
       '<div class="tds-announcement__content">' +
-      '<p class="tds-announcement__title" data-d1-confirm-action>Run a KYB check on ' +
-      esc(biz.name) +
-      "?</p>" +
-      '<p class="tds-announcement__message" data-d1-confirm-detail>' +
-      detail +
-      "</p>" +
+      '<p class="tds-announcement__title" data-d1-confirm-action>Ready to verify</p>' +
+      '<ul class="d3-kyb-review" data-d1-confirm-detail>' + lines.join("") + "</ul>" +
       '<div class="tds-announcement__actions" data-d1-confirm-buttons>' +
-      '<button type="button" class="tds-btn tds-btn--sm tds-btn--primary" data-d3-kyb-confirm="yes">Confirm</button>' +
-      '<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" data-d3-kyb-confirm="no">Cancel</button>' +
+      '<button type="button" class="tds-btn tds-btn--lg tds-btn--primary" data-d3-kyb-confirm="yes">Execute verification</button>' +
+      '<button type="button" class="tds-btn tds-btn--lg tds-btn--secondary" data-d3-kyb-wizard-reopen>Change selections</button>' +
+      '<button type="button" class="tds-btn tds-btn--lg tds-btn--secondary" data-d3-kyb-confirm="no">Cancel</button>' +
       "</div></div></div>";
     stick();
   }
@@ -894,8 +1412,15 @@
     compareIds = matches.map(function (b) {
       return b.id;
     });
-    var wrap = playHtml("");
-    wrap.classList.add("d3-kyb-cand-panel");
+    var wrap = opts.target;
+    if (!wrap) {
+      /* The earlier steps stay in the record, quiet. */
+      thread.querySelectorAll(".d3-kyb-cand-panel").forEach(function (panel) {
+        panel.classList.add("is-past");
+      });
+      wrap = playHtml("");
+      wrap.classList.add("d3-kyb-cand-panel");
+    }
     candState.root = wrap;
     showChatBack();
     paintCandidateList();
@@ -910,7 +1435,15 @@
       candState.filterIds = [];
       candState.queryLabel = biz.name;
     }
-    showConfirmStep(biz);
+    pickBusiness(biz);
+  }
+
+  /* A business was chosen. Inside the wizard that answers its question; from
+     anywhere else (a marker on the map, one exact match) it starts the wizard
+     with the business known. */
+  function pickBusiness(biz) {
+    if (wizActive() && wiz.step === "business" && wiz.listing) wizBusinessPicked(biz);
+    else wizStart({ biz: biz });
   }
 
   function playStartingVerification(biz) {
@@ -942,6 +1475,7 @@
   function runConfirmedVerify(biz) {
     var map = window.D3KybMapSearch;
     if (!biz || !map) return;
+    if (window.D3KybSession) biz = window.D3KybSession.applyInputs(biz);
     playStartingVerification(biz);
     map.selectBusiness(biz, { skipUserTurn: true, confirmed: true });
   }
@@ -1171,6 +1705,12 @@
       return;
     }
     var scope = { country: parsed.country || null, cc: parsed.cc || null };
+    if (!scope.country && !scope.cc) scope = sessionPlace() || scope;
+    rememberPlace(scope);
+    if (scope.cc && window.D3KybSession && !window.D3KybSession.finderOn(scope.cc)) {
+      wizStart({ scope: scope, query: parsed.query });
+      return;
+    }
     /* No jurisdiction yet — don't run a cross-border search; ask for country. */
     if (!scope.country && !scope.cc) {
       playCountryAsk(parsed.query || "Meridian");
@@ -1194,8 +1734,7 @@
       setSuggestions(SUGGEST_SEARCH);
       return;
     }
-    revealScopedMatches(matches, scope);
-    playCandidateResults(matches, parsed.query || "Meridian", scope);
+    wizStart({ scope: scope, query: parsed.query || "Meridian", matches: matches });
     hideFollow();
   }
 
@@ -1205,6 +1744,12 @@
     var map = window.D3KybMapSearch;
     var biz = parsed.biz || null;
     var scope = { country: parsed.country || null, cc: parsed.cc || null };
+    if (!scope.country && !scope.cc) scope = sessionPlace() || scope;
+    rememberPlace(scope);
+    if (scope.cc && window.D3KybSession && !window.D3KybSession.finderOn(scope.cc)) {
+      wizStart({ scope: scope, query: parsed.name });
+      return;
+    }
     /* Prefer multi-match disambiguation before any single findByName hit —
        “Meridian” must never auto-lock one US entity. */
     if (!biz && parsed.name && map) {
@@ -1215,8 +1760,7 @@
       }
       var loose = map.findBusinesses(parsed.name, scope);
       if (loose && loose.length > 1) {
-        revealScopedMatches(loose, scope);
-        playCandidateResults(loose, parsed.name || "Meridian", scope);
+        wizStart({ scope: scope, query: parsed.name || "Meridian", matches: loose });
         hideFollow();
         return;
       }
@@ -1235,6 +1779,20 @@
     confirmSelect(biz);
   }
 
+  /* A report only has the tabs of the package it was run with. */
+  function packageBlocks(tab, what) {
+    var R = window.D3KybReport;
+    if (!R || !R.tabAllowed || R.tabAllowed(tab)) return false;
+    var S = window.D3KybSession;
+    var current = S && S.package(R.getTier());
+    playHtml(
+      "<p>" + esc(what) + " isn’t part of <strong>" + esc(current ? current.name : "this package") +
+        "</strong>. Choose <strong>Insights</strong> or <strong>Complete</strong> and run the verification again to include it.</p>"
+    );
+    setSuggestions(SUGGEST_AFTER);
+    return true;
+  }
+
   async function handleOwnership(parsed) {
     var biz = selected();
     if (!biz) {
@@ -1242,10 +1800,19 @@
       setSuggestions(SUGGEST_SEARCH);
       return;
     }
+    if (packageBlocks("ownership", "Ownership and UBO data")) return;
     if (window.D3KybReport && window.D3KybReport.selectTab) {
       window.D3KybReport.selectTab("ownership");
     }
     var owners = biz.ownership || [];
+    if (biz.ownershipUndisclosed) {
+      playHtml(
+        "<p>The registry doesn’t publish who owns <strong>" + esc(biz.name) +
+          "</strong>, and no owner details were provided, so ownership is reported as not disclosed.</p>"
+      );
+      setSuggestions(SUGGEST_AFTER);
+      return;
+    }
     var list = parsed.flaggedOnly
       ? owners.filter(function (o) {
           return o.flagged;
@@ -1413,6 +1980,7 @@
       setSuggestions(SUGGEST_SEARCH);
       return;
     }
+    if (packageBlocks(parsed.tab, "The " + parsed.tab + " section")) return;
     if (window.D3KybReport && window.D3KybReport.selectTab) {
       window.D3KybReport.selectTab(parsed.tab);
     }
@@ -1545,10 +2113,12 @@
     historyTurns.push({ role: "user", text: text });
 
     try {
-      /* Follow-up while waiting on a country: “United States” / “Germany”. */
-      if (candState.mode === "country" && candState.list.length) {
+      /* Follow-up while waiting on a country: “United States” / “Germany” / “us”.
+         A reply that is only a place answers the question; one that also names
+         a business is a fresh search. */
+      if (candState.mode === "country" && (candState.list.length || cleanName(candState.queryLabel))) {
         var placeReply = placeFromText(text);
-        if (placeReply.country || placeReply.cc) {
+        if ((placeReply.country || placeReply.cc) && (candState.list.length || !cleanName(placeReply.nameQuery))) {
           await playTyping(1200, "Scoping to " + (placeReply.country || "that country") + "…");
           if (
             applyCountryPick(
@@ -1559,6 +2129,46 @@
             historyTurns.push({ role: "assistant", intent: "find" });
             return;
           }
+        }
+      }
+
+      /* The Business Finder question, answered in words. */
+      if (wizActive() && wiz.step === "finder") {
+        var fw = String(text || "").toLowerCase();
+        var byHand = /\b(manual|manually|myself|by hand|no finder|enter)\b/.test(fw);
+        var useIt = /\b(finder|search|yes|use it|sure)\b/.test(fw);
+        if (byHand || useIt) {
+          wizFinderPicked(!byHand);
+          return;
+        }
+      }
+
+      /* “use Insights” / “verify it with the Complete package”. */
+      var named = window.D3KybSession && window.D3KybSession.packageFromText(text);
+      if (named) {
+        window.D3KybSession.set({ package: named }, "agent");
+        var leftover = String(text || "")
+          .toLowerCase()
+          .replace(/business\s+(essentials|insights|complete)/g, "")
+          .replace(/\b(use|run|with|the|package|tier|plan|please|switch|change|set|upgrade|to|choose|pick|select|go|essentials|insights|complete|instead|for|this|it|that|and|then|ok|okay)\b/g, "")
+          .replace(/[^a-z]/g, "");
+        if (!leftover) {
+          var row = window.D3KybSession.package(named);
+          playHtml(
+            "<p>Okay — I’ll use <strong>" + esc(row.name) + "</strong> (" + esc(row.note.toLowerCase()) + ")." +
+              "</p>"
+          );
+          historyTurns.push({ role: "assistant", intent: "package" });
+          if (wizActive()) {
+            window.D3KybSession.set({ inputsDone: false }, "agent");
+            if (wiz.step === "package") wizNext();
+            else wizGo(wiz.step);
+          } else if (wiz && wiz.biz) {
+            /* Already at the summary: it changes the scope, so reopen the questions. */
+            window.D3KybSession.set({ inputsDone: false }, "agent");
+            wizReopen();
+          }
+          return;
         }
       }
 
@@ -1579,6 +2189,7 @@
       }
       historyTurns.push({ role: "assistant", intent: parsed.intent });
     } catch (err) {
+      if (window.console && console.error) console.error("[D3KybAgent]", err);
       playHtml("<p>Something went wrong handling that KYB request. Try again in a moment.</p>");
       setSuggestions(SUGGEST_SEARCH);
     } finally {
@@ -1593,7 +2204,7 @@
      chip, a match) can be clicked while the user is on another page: take them
      back to KYB, then let the click through. */
   var KYB_CONTROL =
-    "[data-d3-kyb-confirm], [data-d3-kyb-country-pick], [data-d3-kyb-cand], .ai-cand, [data-d3-kyb-select], [data-d3-kyb-filter]";
+    "[data-d3-kyb-confirm], [data-d3-kyb-pkg-pick], [data-d3-kyb-finder-pick], [data-d3-wiz-goto], [data-d3-wiz-back], [data-d3-wiz-next], [data-d3-wiz-finish], [data-d3-kyb-wizard-reopen], [data-d3-kyb-country-pick], [data-d3-kyb-cand], .ai-cand, [data-d3-kyb-select], [data-d3-kyb-filter]";
 
   thread.addEventListener(
     "click",
@@ -1642,6 +2253,40 @@
       return;
     }
 
+    var finderPick = event.target.closest("[data-d3-kyb-finder-pick]");
+    if (finderPick) {
+      event.preventDefault();
+      if (wizActive() && wiz.step === "finder") wizFinderPicked(finderPick.getAttribute("data-d3-kyb-finder-pick") === "on");
+      return;
+    }
+
+    var goto = event.target.closest("[data-d3-wiz-goto]");
+    if (goto) {
+      event.preventDefault();
+      if (wizActive()) wizGo(goto.getAttribute("data-d3-wiz-goto"));
+      return;
+    }
+    if (event.target.closest("[data-d3-wiz-back]")) {
+      event.preventDefault();
+      wizBack();
+      return;
+    }
+    if (event.target.closest("[data-d3-wiz-finish]")) {
+      event.preventDefault();
+      if (wizActive()) wizFinish();
+      return;
+    }
+    if (event.target.closest("[data-d3-wiz-next]")) {
+      event.preventDefault();
+      wizNext();
+      return;
+    }
+    if (event.target.closest("[data-d3-kyb-wizard-reopen]")) {
+      event.preventDefault();
+      wizReopen();
+      return;
+    }
+
     var countryPick = event.target.closest("[data-d3-kyb-country-pick]");
     if (countryPick) {
       event.preventDefault();
@@ -1668,7 +2313,7 @@
       event.preventDefault();
       var candId = cand.getAttribute("data-d3-kyb-cand") || cand.getAttribute("data-id");
       var candBiz = window.D3KybMapSearch && window.D3KybMapSearch.findById(candId);
-      if (candBiz) showConfirmStep(candBiz);
+      if (candBiz) pickBusiness(candBiz);
       return;
     }
 
@@ -1798,7 +2443,14 @@
     isTransactionsIntent: isTransactionsIntent,
     selected: selected,
     confirmSelect: confirmSelect,
-    showMatches: playCandidateResults,
+    showMatches: function (items, label) {
+      var first = (items && items[0]) || {};
+      wizStart({
+        scope: { cc: String(first.cc || "").toUpperCase(), country: first.country },
+        query: label || "Meridian",
+        matches: items
+      });
+    },
     askCountry: playCountryAsk,
     setComposerPlaceholder: setComposerPlaceholder,
     PLACEHOLDER: PLACEHOLDER,
@@ -1811,6 +2463,10 @@
         filterIds: (candState.filterIds || []).slice(),
         listIds: (candState.list || []).map(function (b) { return b.id; }),
         pendingId: candState.pending ? candState.pending.id : null,
+        wizard: wizActive()
+          ? { n: wizSteps().indexOf(wiz.step) + 1, m: wizSteps().length }
+          : null,
+        session: window.D3KybSession ? window.D3KybSession.get() : null,
         turns: historyTurns.slice(-12)
       };
     },
@@ -1825,6 +2481,7 @@
       candState.mode = st.mode || "list";
       candState.pending = st.pendingId && find ? find(st.pendingId) : null;
       historyTurns = (st.turns || []).slice();
+      if (window.D3KybSession) window.D3KybSession.set(st.session || { country: null, query: "" }, "restore");
       busy = false;
     }
   };

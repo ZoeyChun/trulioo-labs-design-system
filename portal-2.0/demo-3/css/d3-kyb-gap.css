@@ -1,0 +1,817 @@
+/* Demo 3 — add-on cards and the "missing details" form (js/d3-kyb-gap.js). */
+.d3-kyb-gap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.d3-kyb-gap[hidden] {
+  display: none;
+}
+
+.d3-kyb-gap__actions {
+  display: flex;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-gap__actions [aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---- add-ons ---- */
+.d3-kyb-addons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+}
+
+.d3-kyb-addons__title {
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.d3-kyb-addon {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12, 12px);
+  cursor: pointer;
+}
+
+.d3-kyb-addon .tds-checkbox {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+
+.d3-kyb-addon__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.d3-kyb-addon__name {
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 16px;
+  color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-addon__note {
+  font-size: var(--font-size-xs, 12px);
+  line-height: 16px;
+  color: var(--text-description, #526660);
+}
+
+.d3-kyb-addon__impact {
+  font-size: var(--font-size-xs, 12px);
+  line-height: 18px;
+  color: var(--text-caption, #617269);
+}
+
+.d3-kyb-addon__impact.is-fields {
+  color: var(--text-review, #7a4b00);
+  font-weight: 500;
+}
+
+/* ---- missing details ---- */
+.d3-kyb-gapblock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+  box-sizing: border-box;
+  padding: var(--spacing-16, 16px);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-xl, 16px);
+  background: var(--surface-neutral-01, #fff);
+}
+
+.d3-kyb-gapblock--locked {
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d3-kyb-gapblock__title {
+  margin: 0;
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.d3-kyb-gapblock__title.is-action {
+  color: var(--text-review, #7a4b00);
+}
+
+.d3-kyb-gapblock__hint {
+  margin: 0;
+  color: var(--text-description, #526660);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+}
+
+.d3-kyb-gapblock__row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+  color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-gapblock__row b {
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.d3-kyb-gapblock__lock {
+  margin: 0;
+  color: var(--text-positive, #004c45);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.d3-kyb-gapblock__detect {
+  margin: -2px 0 0;
+  min-height: 0;
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  line-height: 16px;
+}
+
+.d3-kyb-gapblock__detect:empty {
+  display: none;
+}
+
+.d3-kyb-gaprow {
+  display: flex;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-gapfield {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.d3-kyb-gapfield.is-pct {
+  flex: 0 0 96px;
+}
+
+.d3-kyb-gapfield > span {
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.d3-kyb-gapfield input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--spacing-12, 12px);
+  border: 1px solid var(--border-strong, #c4cdc8);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  font-size: var(--font-size-sm, 14px);
+}
+
+.d3-kyb-gapfield input::placeholder {
+  color: var(--text-placeholder, #8a9a92);
+}
+
+.d3-kyb-gapfield input:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 1px;
+}
+
+.d3-kyb-gaplink {
+  align-self: flex-start;
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--interactive-default, #004c45);
+  font: inherit;
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.d3-kyb-gaplink:hover {
+  text-decoration: underline;
+}
+
+.d3-kyb-gapowners {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.d3-kyb-gapowners li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-12, 12px);
+  padding: var(--spacing-8, 8px) 0;
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+}
+
+.d3-kyb-gapowners li:last-child {
+  border-bottom: 0;
+}
+
+/* In the AI panel and on the manual form. */
+.d3-kyb-cand-panel > .d3-kyb-gap {
+  margin-top: var(--spacing-12, 12px);
+}
+
+.vb-prefill > .d3-kyb-gap {
+  margin-top: var(--spacing-16, 16px);
+}
+
+/* Owners tab when the registry hides ownership and the user skipped it. */
+.d3-kyb-own-empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 4px);
+  padding: var(--spacing-24, 24px) 0;
+}
+
+.d3-kyb-own-empty__title {
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 20px;
+}
+
+/* "Ready to verify" summary on the Confirm card. */
+.d3-kyb-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+  margin: 0 0 var(--spacing-8, 8px);
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+}
+
+.d3-kyb-review li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.d3-kyb-review b {
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Bullets inside an AI message. */
+.ai-reply__list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 var(--spacing-8, 8px);
+  padding-left: 18px;
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+}
+
+/* ---- the form variant (manual search panel) ---- */
+
+/* Section 1 is the green "verified" line (js/d3-kyb-gap.js); the old five-field
+   pre-filled grid is no longer shown. */
+.vb-prefill > .vb-prefill__badge,
+.vb-prefill > .vb-prefill__grid {
+  display: none;
+}
+
+.d3-kyb-gapverified {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-8, 8px);
+  box-sizing: border-box;
+  padding: var(--spacing-12, 12px) var(--spacing-16, 16px);
+  border: 1px solid var(--border-positive, #b8d9d1);
+  border-radius: var(--radius-xl, 16px);
+  background: var(--surface-positive-subtle, #e3f1ee);
+  color: var(--text-positive, #004c45);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+}
+
+.d3-kyb-gapverified > span:first-child {
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+
+.d3-kyb-gapverified b {
+  display: block;
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.d3-kyb-gapverified > span:last-child {
+  color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-gapverified b {
+  color: var(--text-positive, #004c45);
+}
+
+.d3-kyb-gapfield select {
+  box-sizing: border-box;
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--spacing-8, 8px);
+  border: 1px solid var(--border-strong, #c4cdc8);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  font-size: var(--font-size-sm, 14px);
+}
+
+.d3-kyb-gapfield select:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 1px;
+}
+
+.d3-kyb-gapfield.is-title {
+  flex: 0 0 140px;
+}
+
+.d3-kyb-gaprow {
+  align-items: flex-end;
+}
+
+.d3-kyb-gapremove {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: var(--icon-faint, #617269);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.d3-kyb-gapremove:hover {
+  color: var(--text-default, #172d2d);
+}
+
+.d3-kyb-gapradios {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-gapradios__label {
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.d3-kyb-gapradio {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8, 8px);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.d3-kyb-gapdrop {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12, 12px);
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-12, 12px) var(--spacing-16, 16px);
+  border: 1.5px dashed var(--border-strong, #8a9a92);
+  border-radius: var(--radius-xl, 16px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.d3-kyb-gapdrop:hover,
+.d3-kyb-gapdrop.is-on {
+  border-color: var(--interactive-default, #004c45);
+}
+
+.d3-kyb-gapdrop.is-on {
+  border-style: solid;
+  background: var(--interactive-subtle, #e3f1ee);
+}
+
+.d3-kyb-gapdrop__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--interactive-default, #004c45);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.d3-kyb-gapdrop__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+}
+
+.d3-kyb-gapdrop__text b {
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.d3-kyb-gapdrop__text i {
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  font-style: normal;
+  line-height: 16px;
+}
+
+.d3-kyb-gapsummary {
+  margin: 0;
+  padding: var(--spacing-8, 8px) var(--spacing-12, 12px);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--text-description, #526660);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* ---- manual flow, step 2: package + Business Finder ----
+   One quiet box (the same one the list of matching businesses sits in) that
+   drops under the name field like the suggestion list: a title, two white rows,
+   and the arrow to carry on. Built from TDS pieces: segmented control, switch,
+   tooltip, icon button. */
+.d3-kyb-setup-menu:not([hidden]) {
+  display: block;
+  /* Hang from the field's right edge so a wide box grows leftwards, over the
+     country select, instead of past the edge of the screen. */
+  left: auto;
+  right: 0;
+}
+
+.d3-kyb-setup-menu .d3-ai-selector.d3-kyb-setup {
+  width: max-content;
+  min-width: 100%;
+  max-width: calc(100vw - var(--spacing-32, 32px));
+  background: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
+  box-shadow: var(--elevation-xl, 0 12px 32px rgba(23, 45, 45, 0.16));
+}
+
+.d3-kyb-setup__card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12, 12px);
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+}
+
+.d3-kyb-setup__card > [data-d3-kyb-pkg] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.d3-kyb-setup__card .d3-kyb-pkg__row {
+  flex-wrap: wrap;
+}
+
+.d3-kyb-setup__card .d3-kyb-pkg__label {
+  display: none;
+}
+
+.d3-kyb-setup__finder .d3-ai-selector__mark {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+.d3-kyb-setup__finder .d3-ai-selector__copy {
+  flex: 1 1 auto;
+}
+
+.d3-kyb-setup__finder .ai-cand__name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.d3-kyb-setup__foot {
+  align-items: center;
+}
+
+/* (i) + tooltip next to the switch label */
+.d3-kyb-info {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.d3-kyb-info__btn {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-strong, #8a9a92);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--icon-faint, #617269);
+  font: inherit;
+  font-size: 10px;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1;
+  cursor: help;
+}
+
+.d3-kyb-info__btn:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
+
+.d3-kyb-info__tip {
+  position: absolute;
+  z-index: 110;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  width: max-content;
+  max-width: 240px;
+  transform: translateX(-30%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 120ms ease, visibility 0s linear 120ms;
+}
+
+.d3-kyb-info__tip .tds-tooltip__text {
+  white-space: normal;
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+}
+
+.d3-kyb-info:hover .d3-kyb-info__tip,
+.d3-kyb-info:focus-within .d3-kyb-info__tip {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.d3-kyb-setup-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12, 12px);
+  margin-top: var(--spacing-12, 12px);
+  padding: var(--spacing-8, 8px) var(--spacing-12, 12px);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+}
+
+.d3-kyb-setup-summary[hidden] {
+  display: none;
+}
+
+/* ---- choice rows in the AI panel (same look as the list of matching businesses) ---- */
+.d3-kyb-choicelist .d3-ai-selector__row {
+  align-items: flex-start;
+}
+
+.d3-kyb-choicelist .d3-ai-selector__mark {
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.d3-kyb-choicelist .d3-ai-selector__row.is-on {
+  box-shadow: inset 0 0 0 1.5px var(--interactive-default, #004c45);
+}
+
+.d3-kyb-choicelist .d3-ai-selector__row.is-on .d3-ai-selector__mark {
+  background: var(--interactive-default, #004c45);
+  color: #fff;
+}
+
+.d3-kyb-choicelist .d3-ai-selector__reg.is-warn {
+  color: var(--text-review, #7a4b00);
+}
+
+.d3-kyb-choicelist__badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 8px;
+  border-radius: 9999px;
+  background: var(--interactive-subtle, #e3f1ee);
+  color: var(--text-positive, #004c45);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  vertical-align: 1px;
+}
+
+.d3-kyb-cand-panel > .d3-kyb-choicelist,
+.d3-kyb-cand-panel > .d3-kyb-gap > .d3-kyb-choicelist {
+  margin-top: var(--spacing-12, 12px);
+}
+
+/* Continue is the step's main action: full-size, not the compact button. */
+.d3-kyb-gap__actions .tds-btn--lg {
+  min-width: 128px;
+}
+
+/* ---- the setup wizard (AI panel): Question N of M ---- */
+.d3-kyb-wizard {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: var(--spacing-16, 16px);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-3xl, 24px);
+}
+
+.d3-kyb-wizard.is-past {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.d3-kyb-wiz__top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+  /* divider runs edge to edge of the outlined card */
+  margin: 0 calc(-1 * var(--spacing-16, 16px)) var(--spacing-12, 12px);
+  padding: 0 var(--spacing-16, 16px) var(--spacing-12, 12px);
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+}
+
+.d3-kyb-wiz__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12, 12px);
+}
+
+.d3-kyb-wiz__count {
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.d3-kyb-wiz__dots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.d3-kyb-wiz__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-strong, #c4cdc8);
+}
+
+.d3-kyb-wiz__dot.is-done {
+  background: var(--interactive-default, #004c45);
+}
+
+.d3-kyb-wiz__dot.is-now {
+  background: var(--interactive-default, #004c45);
+  box-shadow: 0 0 0 3px var(--interactive-subtle, #e3f1ee);
+}
+
+.d3-kyb-wiz__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.d3-kyb-wiz__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  margin: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 9999px;
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+  cursor: pointer;
+  transition: border-color 160ms ease;
+}
+
+.d3-kyb-wiz__chip > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.d3-kyb-wiz__chip > i {
+  flex: 0 0 auto;
+  color: var(--icon-faint, #617269);
+  font-style: normal;
+}
+
+.d3-kyb-wiz__chip:hover {
+  border-color: var(--interactive-default, #004c45);
+}
+
+.d3-kyb-wiz__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12, 12px);
+  margin-top: var(--spacing-12, 12px);
+}
+
+.d3-kyb-wiz__foot:empty {
+  display: none;
+}
+
+.d3-kyb-wiz__foot > .tds-btn:only-child {
+  margin-left: auto;
+}
+
+.d3-kyb-wiz__foot {
+  flex-wrap: wrap;
+}
+
+.d3-kyb-wiz__back {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--interactive-default, #004c45);
+  font: inherit;
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.d3-kyb-wiz__back:hover {
+  text-decoration: underline;
+}
+
+/* The pieces inside a question sit flush in the card. */
+.d3-kyb-wiz__body > .d3-kyb-gap,
+.d3-kyb-wiz__body > .d3-kyb-choicelist,
+.d3-kyb-wiz__body > .d3-kyb-pkg {
+  margin-top: var(--spacing-12, 12px);
+}

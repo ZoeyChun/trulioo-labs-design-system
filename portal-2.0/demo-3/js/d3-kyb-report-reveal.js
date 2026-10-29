@@ -600,12 +600,35 @@
       .replace(/"/g, "&quot;");
   }
 
+  /* The package the report was run with decides which tabs exist (see
+     D3KybSession.packages). Paths that never ran a package — Recent cards,
+     the Transactions drawer without a product — show the full report. */
+  var tier = "complete";
+  var tierAddons = [];
+
+  function tabAllowed(id) {
+    var S = window.D3KybSession;
+    return !S || S.tabAllowed(tier, id, tierAddons);
+  }
+
+  function setTier(next, addons) {
+    var S = window.D3KybSession;
+    tier = S && S.package(next) ? next : "complete";
+    tierAddons = addons || [];
+    resumeCard.querySelectorAll("[data-d3-kyb-tab]").forEach(function (t) {
+      t.hidden = !tabAllowed(t.getAttribute("data-d3-kyb-tab"));
+    });
+    var active = resumeCard.querySelector("[data-d3-kyb-tab].is-active");
+    if (!active || active.hidden) selectTab("overview", { silent: true });
+  }
+
   function selectTab(id, opts) {
     opts = opts || {};
     /* Sources live inside Match Signals & Sources. */
     if (id === "sources") id = "signals";
     var panel = resumeCard.querySelector('[data-d3-kyb-panel="' + id + '"]');
     if (!panel) return false;
+    if (resumeCard.querySelector('[data-d3-kyb-tab="' + id + '"]') && !tabAllowed(id)) return false;
     var tab = resumeCard.querySelector('[data-d3-kyb-tab="' + id + '"]');
     resumeCard.querySelectorAll("[data-d3-kyb-tab]").forEach(function (t) {
       var on = !!tab && t === tab;
@@ -723,6 +746,17 @@
 
     if (window.D3KybUboGraph && window.D3KybUboGraph.unmountFrom) {
       window.D3KybUboGraph.unmountFrom(panel);
+    }
+
+    /* A registry that does not publish ownership, and the user skipped it
+       (see D3KybSession.applyInputs). */
+    if (biz && biz.ownershipUndisclosed) {
+      panel.innerHTML =
+        '<div class="d3-kyb-own-empty">' +
+        '<p class="d3-kyb-own-empty__title">Ownership not disclosed</p>' +
+        '<p class="d3-workspace__hint">The registry does not publish who owns this business, and no owner details were provided.</p>' +
+        "</div>";
+      return;
     }
 
     var mounted =
@@ -918,6 +952,10 @@
     revealToken += 1;
     var token = revealToken;
     var data = reportData(biz);
+    setTier(
+      window.D3KybSession ? window.D3KybSession.get().package : "complete",
+      window.D3KybSession ? window.D3KybSession.get().addons : []
+    );
 
     /* Chat-pane Back (not the minimize X) — available as soon as verify starts. */
     if (window.D3KybResume && window.D3KybResume.syncChatBack) {
@@ -979,6 +1017,11 @@
     reveal: reveal,
     abort: abortReveal,
     selectTab: selectTab,
+    setTier: setTier,
+    getTier: function () {
+      return tier;
+    },
+    tabAllowed: tabAllowed,
     renderOwnershipPanel: renderOwnershipPanel,
     renderRawPanel: renderRawPanel,
     openRawDialog: openRawDialog,

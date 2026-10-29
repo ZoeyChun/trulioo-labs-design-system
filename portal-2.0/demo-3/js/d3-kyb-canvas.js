@@ -151,8 +151,12 @@
       return m ? m[1].toUpperCase() : biz.city || "";
     }
 
+    /* While the wizard is open the right-hand card says which question it is. */
+    var wizTag = null;
+
     function fill(tag, title, lead, steps) {
       if (!panel) return;
+      tag = wizTag || tag;
       var set = function (sel, html) {
         var el = panel.querySelector(sel);
         if (el && el.innerHTML !== html) el.innerHTML = html;
@@ -164,17 +168,116 @@
     }
 
     function showChoice(kind, maps, agentState) {
-      if (kind === "confirm") {
-        var biz = maps && maps.findById ? maps.findById(agentState.pendingId) : null;
-        if (!biz) return false;
+      wizTag = agentState && agentState.wizard ? "Question " + agentState.wizard.n + " of " + agentState.wizard.m : null;
+      var S = window.D3KybSession;
+      var picked = function (b) {
+        return esc([b.city || b.country, b.reg].filter(Boolean).join(" · "));
+      };
+      var pkgName = function () {
+        return esc((S && S.package(S.get().package) && S.package(S.get().package).name) || "");
+      };
+      var addonsNote = function () {
+        var ids = (S && S.get().addons) || [];
+        return ids.length
+          ? esc(ids.map(function (id) { return S.addon(id).short; }).join(", "))
+          : "None";
+      };
+      var pending = maps && maps.findById && agentState ? maps.findById(agentState.pendingId) : null;
+      /* A hand-entered entity is not in the dataset: describe it from the session. */
+      if (!pending && agentState && /^manual:/.test(agentState.pendingId || "") && S) {
+        var ent = S.get();
+        pending = {
+          id: agentState.pendingId,
+          name: ent.profile.name || (ent.entity && ent.entity.name) || "",
+          reg: ent.profile.regNo,
+          city: (S.country(ent.entity && ent.entity.cc) || {}).name || "",
+          cc: ent.entity && ent.entity.cc
+        };
+      }
+
+      /* The package question comes before the search: no business yet. */
+      if (kind === "package" && !pending) {
+        var gc = S && S.country(S.get().country);
         fill(
-          "Waiting for your confirmation",
-          biz.name,
-          "Confirm in chat to run the verification on this business.",
-          step("done", "Name set", esc(biz.name)) +
-            step("done", "Business matches", esc([biz.city || biz.country, biz.reg].filter(Boolean).join(" \u00b7 "))) +
-            step("current", "Confirmation needed", "Reply in chat to continue")
+          "Waiting for your package",
+          (agentState && agentState.queryLabel) || "Business",
+          "Choose how much to verify in the chat — then I’ll search" + (gc ? " " + gc.registry : " the registry") + ".",
+          step("done", "Name set", esc((agentState && agentState.queryLabel) || "")) +
+            step("done", "Country set", esc(gc ? gc.name : "")) +
+            step("current", "Package needed", "Choose in the chat") +
+            step("todo", "Business matches", "Pick the right entity")
         );
+        ws.setAttribute(CHOICE, "package");
+        return true;
+      }
+
+      if (kind === "finder") {
+        var fc = S && S.country(S.get().country);
+        fill(
+          "Search method",
+          (agentState && agentState.queryLabel) || "Business",
+          "Choose in the chat whether to search" + (fc ? " " + fc.registry : " the registry") + " or enter the details yourself.",
+          step("done", "Name set", esc((agentState && agentState.queryLabel) || "")) +
+            step("done", "Country set", esc(fc ? fc.name : "")) +
+            step("done", "Package set", pkgName()) +
+            step("current", "Business Finder", "Choose in the chat")
+        );
+        ws.setAttribute(CHOICE, "finder");
+        return true;
+      }
+
+      if (kind === "profile") {
+        var pc = S && S.get().entity ? S.country(S.get().entity.cc) : null;
+        fill(
+          "Entity details needed",
+          pc ? pc.name : "Entity details",
+          (pc ? pc.registry : "This registry") + " has no automated search. Enter the entity details in the chat.",
+          step("done", "Country set", esc(pc ? pc.name : "")) +
+            step("done", "Package set", pkgName()) +
+            step("current", "Entity details", "Enter them in the chat")
+        );
+        ws.setAttribute(CHOICE, "profile");
+        return true;
+      }
+
+      if (kind === "package" || kind === "addons" || kind === "inputs" || kind === "confirm") {
+        if (!pending) return false;
+        var r = S ? S.requirements() : { fields: 0, ubo: "none", bank: false };
+        var steps =
+          step("done", "Name set", esc(pending.name)) +
+          step("done", "Business matches", picked(pending));
+        var tag, lead;
+        if (kind === "package") {
+          tag = "Waiting for your package";
+          lead = "Choose how much to verify for this business in the chat.";
+          steps += step("current", "Package needed", "Choose in the chat") + step("todo", "Add-ons", "Optional risk modules");
+        } else if (kind === "addons") {
+          tag = "Optional add-ons";
+          lead = "Choose any specialized risk modules in the chat, or continue without.";
+          steps += step("done", "Package set", pkgName()) + step("current", "Add-ons", "Choose in the chat");
+        } else if (kind === "inputs") {
+          tag = "Details needed";
+          lead = "Only what the registry does not hold is asked for — " + r.fields + (r.fields === 1 ? " detail" : " details") + ". Fill it in the chat.";
+          steps +=
+            step("done", "Package set", pkgName()) +
+            step("done", "Add-ons", addonsNote()) +
+            step(
+              "current",
+              "Missing details",
+              [r.ubo === "private" ? "Owner" : r.ubo === "public" ? "UBO email" : "", r.bank ? "Bank account" : ""]
+                .filter(Boolean)
+                .join(" \u00b7 ") || "Fill in the chat"
+            );
+        } else {
+          tag = "Waiting for your confirmation";
+          lead = "Execute the verification in the chat when you are ready.";
+          steps += step("done", "Package set", pkgName()) + step("done", "Add-ons", addonsNote());
+          if (r.ubo === "public") steps += step("done", "Ownership", "Pulled from " + esc((S.country(pending.cc) || {}).registry || "the registry"));
+          else if (r.ubo === "private") steps += step("done", "Ownership", esc(S.get().ubo.name.trim()) + " · " + parseFloat(S.get().ubo.pct) + "%");
+          else if (r.ubo === "skipped") steps += step("done", "Ownership", "Reported as not disclosed");
+          steps += step("current", "Ready to verify", "Execute in the chat");
+        }
+        fill(tag, pending.name, lead, steps);
       } else {
         var list = (maps && maps.getLastResults && maps.getLastResults()) || [];
         var n = list.length;
@@ -270,7 +373,10 @@
       var mode = agent && agent.mode;
       stop();
       if (mode === "list" && showChoice("matches", maps, agent)) return;
-      if (mode === "confirm" && agent.pendingId && showChoice("confirm", maps, agent)) return;
+      if (mode === "profile" && showChoice("profile", maps, agent)) return;
+      if (mode === "package" && !agent.pendingId && showChoice("package", maps, agent)) return;
+      if (mode === "finder" && showChoice("finder", maps, agent)) return;
+      if (agent.pendingId && (mode === "package" || mode === "addons" || mode === "inputs" || mode === "confirm") && showChoice(mode, maps, agent)) return;
       /* Verifying (confirmed) or between steps: skeleton until the report opens. */
       skeleton(false);
     }

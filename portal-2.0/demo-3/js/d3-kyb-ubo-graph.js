@@ -208,6 +208,9 @@
         riskFilter: biz.ownershipGraph.riskFilter || null
       };
     }
+    if (biz.ownershipUserProvided && biz.ownership && biz.ownership.length) {
+      return synthesizeFromOwnership(biz);
+    }
     if (/meridian/i.test(biz.name || "")) {
       var rich = clone(MERIDIAN_HOLDINGS_GRAPH);
       rich.tree.name = biz.name;
@@ -224,7 +227,7 @@
   }
 
   function tableRowsFromBiz(biz) {
-    if (/meridian/i.test((biz && biz.name) || "")) return MERIDIAN_TABLE_ROWS.slice();
+    if (!(biz && biz.ownershipUserProvided) && /meridian/i.test((biz && biz.name) || "")) return MERIDIAN_TABLE_ROWS.slice();
     var rows = (biz.ownership || []).map(function (owner) {
       return {
         name: owner.name || "—",
