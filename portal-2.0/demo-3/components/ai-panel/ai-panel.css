@@ -4,7 +4,7 @@
 
 @import url("./parts/header.css?v=4");
 @import url("./parts/prompt-card.css");
-@import url("./parts/composer.css?v=2");
+@import url("./parts/composer.css?v=3");
 @import url("./parts/askbar.css");
 
 .d3-chat-pane {

@@ -123,3 +123,10 @@
   background: var(--surface-selected);
   box-shadow: inset 0 0 0 1px var(--border-interactive);
 }
+
+/* One composer only: while the home composer is parked in the pane, the idle
+   form stays hidden whatever state the pane is in. */
+.d3-chat-pane__composer:has(> .d1-composer) .d3-pane-idle-form,
+.d3-chat-pane__composer:has(> .d1-composer) > .d1-composer__note {
+  display: none !important;
+}

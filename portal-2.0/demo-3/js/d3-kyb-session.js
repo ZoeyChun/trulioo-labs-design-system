@@ -89,9 +89,7 @@
     { id: "filings", name: "Filings", short: "Filings", note: "Additional information on the business such as Judgements, Bankruptcies, Insolvencies etc.", fields: 0, impact: "" },
     { id: "web", name: "Web Insights", short: "Web Insights", note: "", fields: 0, impact: "" },
     { id: "ubo", name: "UBO Discovery", short: "UBO Discovery", note: "", fields: 0, impact: "", privateOnly: true },
-    { id: "ubopsc", name: "UBO and PSC Discovery", short: "UBO and PSC Discovery", note: "", fields: 0, impact: "", privateOnly: true },
-    { id: "risk", name: "Business Risk Values", short: "Business Risk Values", note: "", fields: 0, impact: "" },
-    { id: "monitoring", name: "Monitoring History", short: "Monitoring History", note: "", fields: 0, impact: "" }
+    { id: "ubopsc", name: "UBO and PSC Discovery", short: "UBO and PSC Discovery", note: "", fields: 0, impact: "", privateOnly: true }
   ];
 
   /* Which add-ons a package offers: Essentials has none; Insights gets the full

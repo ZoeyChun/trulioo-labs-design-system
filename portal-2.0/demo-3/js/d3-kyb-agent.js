@@ -1165,7 +1165,6 @@
       setComposerPlaceholder(PLACEHOLDER.inputs);
       var r = S.requirements();
       var ready = ["<li>" + esc(cap(reg)) + " data is pre-filled and locked (legal name, registration number, address).</li>"];
-      if (st.addons.indexOf("monitoring") !== -1) ready.push("<li>Continuous monitoring will start once the verification completes.</li>");
       var because = [];
       if (r.ubo === "private" || r.ubo === "skipped") because.push(esc(reg) + " doesn’t disclose who owns the business");
       if (r.bank) because.push("you selected Bank Account Verification");

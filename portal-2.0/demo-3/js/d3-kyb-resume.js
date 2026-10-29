@@ -119,6 +119,16 @@
     if (window.D3ChatHistory && window.D3ChatHistory.leave) {
       window.D3ChatHistory.leave({ to: "kyb", skipApply: true });
     }
+    /* A conversation that started from the search form has no stored history entry,
+       so the call above leaves the pane idle — switch it on when the thread has
+       messages. */
+    var th = document.querySelector("[data-d1-thread]");
+    if (th && th.children.length) {
+      window.setTimeout(function () {
+        if (window.D3Nav && window.D3Nav.markChatActive) window.D3Nav.markChatActive();
+        document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
+      }, 50);
+    }
     /* …and the agent offers the next step. */
     if (window.D3KybAgent && window.D3KybAgent.askNewVerification) {
       window.D3KybAgent.askNewVerification();
