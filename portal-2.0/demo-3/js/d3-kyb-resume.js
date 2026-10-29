@@ -75,6 +75,7 @@
     if (mode !== "report" && resumeCard) resumeCard.classList.remove("is-live");
     /* Chat-pane chevron covers search + verify; report crumb ("KYB Verification") is the page back. */
     if (mode === "report") syncChatBack(true);
+    syncNewBtn();
   }
 
   /* Exit report OR search-results chat back to the prior KYB screen. */
@@ -101,6 +102,33 @@
     clearThread();
     if (window.D3KybSession) window.D3KybSession.reset("reset");
     openResumeExperience();
+  }
+
+  /* "New verification" (report page): back to the KYB landing with a clean setup.
+     Unlike New Chat, the AI panel keeps its earlier messages and actions. */
+  function newVerification() {
+    if (window.D3KybReport && typeof window.D3KybReport.abort === "function") {
+      window.D3KybReport.abort();
+    }
+    syncChatBack(false);
+    if (window.D3KybSession) window.D3KybSession.reset("reset");
+    if (window.D3KybManualSearch && window.D3KybManualSearch.resetForm) window.D3KybManualSearch.resetForm();
+    openResumeExperience();
+    /* Going to the landing parks the AI pane idle; the conversation is still
+       there, so switch the pane back on (history keeps it, page left as is). */
+    if (window.D3ChatHistory && window.D3ChatHistory.leave) {
+      window.D3ChatHistory.leave({ to: "kyb", skipApply: true });
+    }
+    /* …and the agent offers the next step. */
+    if (window.D3KybAgent && window.D3KybAgent.askNewVerification) {
+      window.D3KybAgent.askNewVerification();
+      /* The pane restore above settles asynchronously and can reset the hint. */
+      window.setTimeout(function () {
+        if (window.D3KybAgent.setComposerPlaceholder) {
+          window.D3KybAgent.setComposerPlaceholder(window.D3KybAgent.PLACEHOLDER.search);
+        }
+      }, 400);
+    }
   }
 
   function updateMapNudge() {
@@ -278,6 +306,22 @@
     return detail && (detail.querySelector("[data-d3-kyb-crumb]") || detail.querySelector(".d3-workspace__crumb"));
   }
 
+  /* "New verification" is not on the empty landing: it shows on the report, and
+     on the landing once something has been started (a name typed, a business or
+     package picked). */
+  function syncNewBtn(forceMode) {
+    var btn = detail && detail.querySelector("[data-d3-kyb-new]");
+    if (!btn) return;
+    var surface = forceMode || workspace.getAttribute("data-d3-kyb-surface");
+    var show = surface === "report";
+    if (!show && surface === "resume") {
+      var q = document.getElementById("vb-q");
+      var st = window.D3KybSession && window.D3KybSession.get();
+      show = !!((q && q.value.trim()) || (st && (st.entity || st.packageChosen)));
+    }
+    btn.hidden = !show;
+  }
+
   function renderCrumbs(mode, bizName) {
     var el = crumbEl();
     if (!el) return;
@@ -285,9 +329,11 @@
     if (mode !== "report") {
       el.innerHTML = "";
       el.hidden = true;
+      syncNewBtn();
       return;
     }
     el.hidden = false;
+    syncNewBtn("report");
     el.innerHTML =
       '<button type="button" class="d3-workspace__crumb-link" data-d3-crumb="kyb">KYB Verification</button>' +
       '<span class="d3-workspace__crumb-sep" aria-hidden="true"> / </span>' +
@@ -568,6 +614,10 @@
 
   if (detail) {
     detail.addEventListener("click", function (event) {
+      if (event.target.closest("[data-d3-kyb-new]")) {
+        newVerification();
+        return;
+      }
       var btn = event.target.closest("[data-d3-crumb]");
       if (!btn || !detail.contains(btn)) return;
       var go = btn.getAttribute("data-d3-crumb");
@@ -581,11 +631,17 @@
     });
   }
 
+  document.addEventListener("input", function (event) {
+    if (event.target && event.target.id === "vb-q") syncNewBtn();
+  });
+  document.addEventListener("d3-kyb:session-change", function () { syncNewBtn(); });
+
   window.D3KybResume = {
     hasIncomplete: hasIncomplete,
     openMapExperience: openMapExperience,
     openResumeExperience: openResumeExperience,
     leaveReport: leaveReport,
+    newVerification: newVerification,
     syncChatBack: syncChatBack,
     renderCrumbs: renderCrumbs,
     ensureDemoSession: ensureDemoSession,

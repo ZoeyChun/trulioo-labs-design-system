@@ -928,7 +928,7 @@
     var steps = ["package"];
     if (!wiz.fixedBiz && wiz.finderSupported) steps.push("finder");
     if (!wiz.fixedBiz) steps.push("business");
-    steps.push("addons");
+    if (window.D3KybSession.addonsFor().length) steps.push("addons");
     if (wizNeedsInputs()) steps.push("inputs");
     return steps;
   }
@@ -2452,6 +2452,27 @@
       });
     },
     askCountry: playCountryAsk,
+    /* "New verification": the conversation stays; the agent starts the next one by
+       asking for a business name and country. The workspace is left on the landing. */
+    askNewVerification: function () {
+      hideFollow();
+      candState.list = [];
+      candState.filterIds = [];
+      candState.queryLabel = "";
+      candState.pending = null;
+      candState.mode = "name";
+      compareIds = [];
+      var wrap = playHtml("");
+      wrap.classList.add("d3-kyb-cand-panel");
+      candState.root = wrap;
+      wrap.innerHTML =
+        '<div class="ai-reply">' +
+        '<p class="ai-reply__lead">Ready for a new verification.</p>' +
+        '<p class="ai-reply__sub">Type the business name and country — for example <strong>Meridian, United States</strong>.</p>' +
+        "</div>";
+      stick();
+      setComposerPlaceholder(PLACEHOLDER.search);
+    },
     setComposerPlaceholder: setComposerPlaceholder,
     PLACEHOLDER: PLACEHOLDER,
     /* Chat history (js/d3-chat-history.js): serialise / re-attach the candidate

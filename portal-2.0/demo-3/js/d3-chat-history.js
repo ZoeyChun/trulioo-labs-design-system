@@ -326,6 +326,11 @@
     if (!DIVIDER_LABEL[kind] || !hasThread()) return;
     var last = thread.lastElementChild;
     if (last && last.getAttribute("data-d3-chat-divider") === kind) return;
+    /* Only the latest page change is marked — earlier rules are dropped so the
+       thread does not fill up with them. */
+    Array.prototype.forEach.call(thread.querySelectorAll("[data-d3-chat-divider]"), function (old) {
+      old.remove();
+    });
     var rule = document.createElement("div");
     rule.className = "d3-chat-divider";
     rule.setAttribute("data-d3-chat-divider", kind);
@@ -382,6 +387,31 @@
   /* The conversation stays; this stores what the page we are leaving looked like
      and, on arrival, puts the destination page back as the conversation left it.
      opts.skipApply: the caller is about to drive the destination itself. */
+  /* A rail click always opens the page fresh: the right-hand panel goes back to
+     the page's starting point while the conversation stays as it is. */
+  function resetPage(kind) {
+    if (kind === "kyb") {
+      if (window.D3KybSession) window.D3KybSession.reset("reset");
+      if (window.D3KybManualSearch && window.D3KybManualSearch.resetForm) window.D3KybManualSearch.resetForm();
+    } else if (kind === "tx") {
+      document.dispatchEvent(new CustomEvent("d1-drawer:close"));
+      whenReady(
+        function () {
+          var api = txApi();
+          var win = txFrame() && txFrame().contentWindow;
+          return api && win.document.readyState === "complete" && win.document.getElementById("utTxBody");
+        },
+        function () {
+          var api = txApi();
+          if (api && api.clearAiView) api.clearAiView();
+          if (api && api.applySpec) {
+            api.applySpec({ clear: true, outcomes: [], risks: [], products: [], sources: [], types: [], watchlist: [], country: "" });
+          }
+        }
+      );
+    }
+  }
+
   function leave(opts) {
     opts = opts || {};
     var from = pageKind();
@@ -390,10 +420,12 @@
       if (restoring) return;
       var to = opts.to || pageKind();
       if (!to) return;
+      /* A rail click opens the page fresh, with or without a conversation. */
+      if (opts.reset) resetPage(to);
       var entry = active();
       if (!entry || !hasThread()) return;
       if (to !== from) addDivider(to);
-      if (!opts.skipApply && (to !== from || opts.force)) applyPage(entry, to);
+      if (!opts.reset && !opts.skipApply && (to !== from || opts.force)) applyPage(entry, to);
       /* The nav handlers (and re-opening the KYB report) park the pane idle even
          though the thread is still here — switch it back on once they are done,
          and once more after any async tail of the page restore. */
@@ -414,7 +446,7 @@
         var page = NAV_PAGE[nav.getAttribute("data-d3-nav")];
         /* Only rail items that open KYB / Transactions bring a page back. The
            Chats button, Home, settings … leave the conversation alone. */
-        if (page) leave({ force: true });
+        if (page) leave({ force: true, reset: true });
         else capture();
         return;
       }

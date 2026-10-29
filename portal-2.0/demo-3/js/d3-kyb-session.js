@@ -94,12 +94,13 @@
     { id: "monitoring", name: "Monitoring History", short: "Monitoring History", note: "", fields: 0, impact: "" }
   ];
 
-  /* The two ownership add-ons only make sense where the registry keeps owners
-     private; a public registry (UK PSC, …) already supplies them. */
-  function addonsFor(cc) {
-    var row = country(cc || (state.entity && state.entity.cc) || state.country);
-    var isPublic = !!row && row.ubo === "public";
-    return ADDONS.filter(function (a) { return !(a.privateOnly && isPublic); });
+  /* Which add-ons a package offers: Essentials has none; Insights gets the full
+     list (with the two ownership discovery modules); Complete already covers
+     ownership, so those two drop out. */
+  function addonsFor(packageId) {
+    var id = packageId || state.package;
+    if (id === "essentials") return [];
+    return ADDONS.filter(function (a) { return !(id === "complete" && a.privateOnly); });
   }
 
   /* A few real ABA routing numbers, so the demo can name the bank. */
@@ -204,6 +205,11 @@
       next.addons = (Array.isArray(patch.addons) ? patch.addons : []).filter(function (id, i, all) {
         return addon(id) && all.indexOf(id) === i;
       });
+    }
+    /* A package change drops add-ons it does not offer. */
+    if ("addons" in patch || "package" in patch) {
+      var offered = addonsFor("package" in next ? next.package : state.package).map(function (a) { return a.id; });
+      next.addons = ("addons" in next ? next.addons : state.addons).filter(function (id) { return offered.indexOf(id) !== -1; });
     }
     if ("addonsChosen" in patch) next.addonsChosen = !!patch.addonsChosen;
     if ("entity" in patch) {

@@ -263,12 +263,7 @@
 
 /* ---- the form variant (manual search panel) ---- */
 
-/* Section 1 is the green "verified" line (js/d3-kyb-gap.js); the old five-field
-   pre-filled grid is no longer shown. */
-.vb-prefill > .vb-prefill__badge,
-.vb-prefill > .vb-prefill__grid {
-  display: none;
-}
+/* The pre-filled registry fields (badge + grid) are the entity section again. */
 
 .d3-kyb-gapverified {
   display: flex;

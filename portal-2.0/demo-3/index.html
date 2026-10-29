@@ -58,10 +58,10 @@
   <link rel="stylesheet" href="../demo-4/css/truai-bubble.css?v=4">
   <link rel="stylesheet" href="components/ai-panel/treatments/treatments.css?v=9">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
-  <link rel="stylesheet" href="css/d3-home.css?v=16">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=33">
-  <link rel="stylesheet" href="css/d3-kyb-gap.css?v=23">
-  <link rel="stylesheet" href="css/d3-kyb-package.css?v=13">
+  <link rel="stylesheet" href="css/d3-home.css?v=18">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=34">
+  <link rel="stylesheet" href="css/d3-kyb-gap.css?v=25">
+  <link rel="stylesheet" href="css/d3-kyb-package.css?v=14">
   <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=9">
   <link rel="stylesheet" href="css/d3-embed-report.css?v=1">
   <link rel="stylesheet" href="css/d3-kyb-details.css?v=1">
@@ -435,6 +435,7 @@
         <div class="d3-workspace__detail" data-d3-kyb-detail hidden>
         <div class="d3-workspace__detail-top">
           <nav class="d3-workspace__crumb" data-d3-kyb-crumb aria-label="Breadcrumb" hidden></nav>
+          <button type="button" class="tds-btn tds-btn--md tds-btn--secondary d3-workspace__new" data-d3-kyb-new hidden>New verification</button>
         </div>
 
         <div class="d3-workspace__landing" data-d3-kyb-landing>
@@ -513,62 +514,10 @@
                     <div class="vb-combobox__footer" id="vb-search-footer" hidden></div>
                   </div>
                 </div>
-                <!-- Step 2 of the manual flow: once a name is typed, a panel drops under the
-                     field (like the suggestion list) to choose the package and Business
-                     Finder. Continue (the arrow) opens the search or the entity form. -->
-                <div class="tds-combobox__menu d3-kyb-setup-menu" data-d3-kyb-setup hidden>
-                  <div class="d3-ai-selector d3-kyb-setup">
-                    <p class="d3-ai-selector__title">How should I verify it?</p>
-
-                    <div class="d3-kyb-setup__card">
-                      <div data-d3-kyb-pkg></div>
-                    </div>
-
-                    <div class="d3-kyb-setup__card d3-kyb-setup__finder">
-                      <span class="d3-ai-selector__mark" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
-                      </span>
-                      <span class="d3-ai-selector__copy">
-                        <span class="ai-cand__name">
-                          Business Finder
-                          <span class="d3-kyb-info">
-                            <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular d3-kyb-info__btn" aria-label="About Business Finder" aria-describedby="d3-finder-tip"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.25v3.5" stroke-linecap="round"/><circle cx="8" cy="5.25" r=".6" fill="currentColor"/></svg></span></button>
-                            <span class="tds-tooltip tds-tooltip--dark tds-tooltip--bottom d3-kyb-info__tip" id="d3-finder-tip" role="tooltip">
-                              <span class="tds-tooltip__body"><span class="tds-tooltip__text" data-d3-finder-hint></span></span>
-                              <span class="tds-tooltip__caret" aria-hidden="true"></span>
-                            </span>
-                          </span>
-                        </span>
-                        <span class="d3-ai-selector__reg" data-d3-finder-state></span>
-                      </span>
-                      <div class="tds-switch">
-                        <div class="tds-switch__track tds-switch__track--sm tds-switch__track--on" role="switch" tabindex="0" aria-checked="true" aria-label="Business Finder" data-d3-finder-toggle>
-                          <span class="tds-switch__indicator" aria-hidden="true"></span>
-                          <span class="tds-switch__handle" aria-hidden="true"></span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="d3-ai-selector__pager d3-kyb-setup__foot">
-                      <span data-d3-setup-next>Next: pick the business</span>
-                      <button type="button" class="tds-icon-btn tds-icon-btn--primary tds-icon-btn--md tds-icon-btn--circular" data-d3-setup-go aria-label="Continue">
-                        <span class="tds-icon-btn__icon" aria-hidden="true">
-                          <svg viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 3v10m0 0-3.5-3.5M8 13l3.5-3.5"/></svg>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
 
             <p class="vb-search-hint" id="vb-search-hint">Enter at least 3 characters to search for a business.</p>
-
-            <div class="d3-kyb-setup-summary" data-d3-kyb-setup-summary hidden>
-              <span data-d3-summary-text></span>
-              <button type="button" class="d3-kyb-gaplink" data-d3-setup-edit>Edit</button>
-            </div>
-
 
             <div class="vb-prefill" id="vb-prefill" hidden>
               <span class="tds-tag tds-tag--xl tds-tag--positive vb-prefill__badge" aria-hidden="true">
@@ -635,6 +584,7 @@
                 </div>
               </div>
 
+              <div data-d3-kyb-pkg data-variant="compact"></div>
               <div data-d3-kyb-addons></div>
               <div data-d3-kyb-inputs data-variant="form"></div>
 
@@ -1477,14 +1427,14 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js?v=40"></script>
 <script src="js/d3-kyb-ubo-graph.js?v=8"></script>
 <script src="js/d3-kyb-result-tabs.js?v=6"></script>
-<script src="js/d3-kyb-session.js?v=15"></script>
-<script src="js/d3-kyb-gap.js?v=11"></script>
+<script src="js/d3-kyb-session.js?v=17"></script>
+<script src="js/d3-kyb-gap.js?v=13"></script>
 <script src="js/d3-kyb-package.js?v=11"></script>
-<script src="js/d3-kyb-resume.js?v=48"></script>
+<script src="js/d3-kyb-resume.js?v=53"></script>
 <script src="js/d3-kyb-report-reveal.js?v=37"></script>
 <script src="js/d3-kyb-map-search.js?v=51"></script>
-<script src="js/d3-kyb-manual-search.js?v=13"></script>
-<script src="js/d3-kyb-agent.js?v=58"></script>
+<script src="js/d3-kyb-manual-search.js?v=15"></script>
+<script src="js/d3-kyb-agent.js?v=60"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=42"></script>
@@ -1505,7 +1455,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>
 <script src="js/d3-home-dots.js"></script>
 <script src="js/d3-kyb-canvas.js?v=16"></script>
-<script src="js/d3-chat-history.js?v=16"></script>
+<script src="js/d3-chat-history.js?v=19"></script>
 <script src="js/d3-chat-follow.js?v=1"></script>
 <script src="js/d3-embed-report.js?v=5"></script>
 <script src="js/d3-home-orb.js?v=5"></script>

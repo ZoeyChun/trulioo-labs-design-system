@@ -455,6 +455,15 @@
   min-width: 0;
 }
 
+.d3-workspace__new {
+  flex: 0 0 auto;
+}
+
+/* .tds-btn sets display, which beats the [hidden] attribute. */
+.d3-workspace__new[hidden] {
+  display: none !important;
+}
+
 .d3-workspace__detail-top .d3-workspace__crumb {
   flex: 1 1 auto;
   min-width: 0;

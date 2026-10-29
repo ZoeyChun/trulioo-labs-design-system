@@ -54,7 +54,9 @@
 
   function addonsMarkup(el) {
     var st = S.get();
-    var list = (S.addonsFor ? S.addonsFor() : S.addons)
+    var offered = S.addonsFor ? S.addonsFor() : S.addons;
+    if (!offered.length) return "";
+    var list = offered
       .map(function (a) {
         var on = st.addons.indexOf(a.id) !== -1;
         return (
@@ -82,6 +84,8 @@
   function paintAddons(el) {
     var html = addonsMarkup(el);
     if (el.innerHTML !== html) el.innerHTML = html;
+    /* Essentials has no add-ons: nothing to show. */
+    if (el.getAttribute("data-actions") !== "1") el.hidden = !html;
   }
 
   function renderAddons(el) {
@@ -194,9 +198,7 @@
     }
     if (!st.entity) return "";
     var line = esc(st.entity.name) + (biz && biz.reg ? " · " + esc(biz.reg) : "");
-    if (variant === "form") {
-      return '<div class="d3-kyb-gapverified"><span aria-hidden="true">✓</span><span><b>' + esc(reg) + " verified</b>" + line + "</span></div>";
-    }
+    if (variant === "form") return ""; // the pre-filled fields above already show it
     return block(
       "Pre-filled &amp; verified (" + esc(reg) + ")",
       "",

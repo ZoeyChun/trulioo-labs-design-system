@@ -64,7 +64,8 @@
   /* The manual flow has three steps: (1) the name, (2) package + Business Finder,
      (3) the details. `armed` means the user has pressed Continue, so the
      registry search / entity form is open; until then typing never opens a list. */
-  var flow = { armed: false };
+  /* Typing opens the registry search straight away (no setup step any more). */
+  var flow = { armed: true };
 
   var typeahead = {
     country: getCountryByCode("us"),
@@ -571,7 +572,6 @@
       var label = sum.querySelector("[data-d3-summary-text]");
       if (flow.armed && label) label.textContent = summaryText();
     }
-    if (hint) hint.hidden = flow.armed;
     syncFinderUI();
   }
 
@@ -960,6 +960,16 @@
       },
       submitSelected: submitSelected,
       clearSelection: clearSelection,
+      /* Back to an empty landing search (New verification). */
+      resetForm: function () {
+        var q = byId("vb-q");
+        if (q) q.value = "";
+        closeMenu();
+        clearSelection();
+        showPrefill(false);
+        updateStage();
+        updateSubmitButton();
+      },
       getSelected: function () {
         return typeahead.selected;
       }
