@@ -444,8 +444,10 @@
 /* Under every composer: a quiet reminder that answers need checking. */
 .d1-composer__note {
   margin: 0;
-  color: var(--text-caption, #617269);
+  /* xs body text (12/16, regular) in the placeholder grey — present, not loud. */
+  color: var(--text-placeholder, #8a9a90);
   font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-regular, 400);
   line-height: var(--line-height-xs, 16px);
   text-align: center;
 }

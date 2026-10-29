@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../Components/icon-button/icon-button.css">
   <link rel="stylesheet" href="css/shell.css">
   <link rel="stylesheet" href="css/home.css">
-  <link rel="stylesheet" href="composer/prompt.css?v=9">
+  <link rel="stylesheet" href="composer/prompt.css?v=10">
   <link rel="stylesheet" href="css/messages.css?v=11">
   <link rel="stylesheet" href="css/motion.css?v=10">
   <link rel="stylesheet" href="css/d3-thinking.css?v=4">
@@ -46,19 +46,20 @@
   <link rel="stylesheet" href="../../pages/shared/flag-icons.css">
   <link rel="stylesheet" href="css/d3-kyb-search.css?v=2">
   <link rel="stylesheet" href="css/welcome.css">
-  <link rel="stylesheet" href="css/briefing.css?v=2">
+  <link rel="stylesheet" href="css/briefing.css?v=3">
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/loader.css?v=2">
   <link rel="stylesheet" href="css/d3-fa.css?v=3">
   <link rel="stylesheet" href="css/d3-shell.css?v=39">
-  <link rel="stylesheet" href="css/d3-rail.css?v=19">
+  <link rel="stylesheet" href="css/d3-rail.css?v=21">
   <link rel="stylesheet" href="components/ai-panel/ai-panel.css?v=21">
   <link rel="stylesheet" href="../demo-4/css/truai-bubble.css?v=4">
   <link rel="stylesheet" href="components/ai-panel/treatments/treatments.css?v=9">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
-  <link rel="stylesheet" href="css/d3-home.css?v=14">
+  <link rel="stylesheet" href="css/d3-home.css?v=15">
   <link rel="stylesheet" href="css/d3-workspace.css?v=33">
-  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=5">
+  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=8">
+  <link rel="stylesheet" href="css/d3-embed-report.css?v=1">
   <link rel="stylesheet" href="css/d3-kyb-details.css?v=1">
   <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
@@ -114,7 +115,11 @@
   <script>
     (function () {
       var n = null;
-      try { n = new URLSearchParams(window.location.search).get("home"); } catch (e) {}
+      try {
+        var q = new URLSearchParams(window.location.search);
+        n = q.get("home");
+        if (q.get("embed") === "report") document.documentElement.classList.add("d3-embed-report");
+      } catch (e) {}
       n = n || "4";
       var css = { "3": ["3"], "4": ["4", "refresh"], "5": ["5", "refresh"], "6": ["6", "refresh"] }[n];
       if (!css) return;
@@ -122,7 +127,7 @@
       root.setAttribute("data-d3-home-layout", n);
       root.setAttribute("data-d3-home-css", "1");
       css.forEach(function (name) {
-        document.write('<link rel="stylesheet" href="css/d3-home-' + name + '.css?v=49">');
+        document.write('<link rel="stylesheet" href="css/d3-home-' + name + '.css?v=51">');
       });
     })();
   </script>
@@ -145,6 +150,22 @@
 
     <nav class="d1-rail__nav" aria-label="Primary">
       <div class="d1-rail__nav-top">
+        <div class="d1-fly d1-fly--chats">
+          <button type="button" class="d1-nav-btn d1-nav-btn--lg" data-d3-nav="messages" aria-label="Chats" aria-haspopup="true" aria-controls="d1-chat-menu">
+            <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h10.5A2.25 2.25 0 0 1 19.5 6.75v7.5a2.25 2.25 0 0 1-2.25 2.25H9.3L5.4 19.6a.75.75 0 0 1-1.2-.6v-2.5A2.25 2.25 0 0 1 4.5 14.25v-7.5Z"/>
+            </svg>
+            <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M6.75 3.75A2.25 2.25 0 0 0 4.5 6v8.25c0 .6.24 1.17.66 1.59L4.5 18.9a.75.75 0 0 0 1.2.6l3.3-2.48h7.95A2.25 2.25 0 0 0 19.2 14.77V6A2.25 2.25 0 0 0 16.95 3.75H6.75Z"/>
+            </svg>
+            <span class="d1-nav-tip" aria-hidden="true">Chats</span>
+          </button>
+          <div class="d1-fly__panel d1-chats" id="d1-chat-menu" role="menu" aria-label="Chats">
+            <div class="d1-chats__recent d3-chats__pages" data-d3-chat-history></div>
+            <div class="d1-chats__recent" data-d1-chat-list></div>
+          </div>
+        </div>
+        <hr class="d3-rail__rule" aria-hidden="true">
         <button type="button" class="d1-nav-btn is-active" data-d3-nav="home" aria-label="Home" aria-current="page">
           <!-- Same house silhouette for line + solid (no FA chimney roof). -->
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -156,8 +177,12 @@
           <span class="d1-nav-tip" aria-hidden="true">Home</span>
         </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="kyb" aria-label="KYB Verification">
-          <i class="fa-regular fa-building d1-nav-btn__icon d1-nav-btn__icon--line" aria-hidden="true"></i>
-          <i class="fa-solid fa-building d1-nav-btn__icon d1-nav-btn__icon--fill" aria-hidden="true"></i>
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.5 21V5a1.5 1.5 0 0 1 1.5-1.5h8A1.5 1.5 0 0 1 15.5 5v16M15.5 9.5H18a1.5 1.5 0 0 1 1.5 1.5v10M3 21h18M8 7.5h3.5M8 11.5h3.5M8 15.5h3.5"/>
+          </svg>
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M6 3a2 2 0 0 0-2 2v15.25H3a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5h-1V11a2 2 0 0 0-2-2h-2V5a2 2 0 0 0-2-2H6Zm1.75 3.75a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5Zm0 4a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5Zm0 4a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5Z" fill-rule="evenodd"/>
+          </svg>
           <span class="d1-nav-tip" aria-hidden="true">KYB Verification</span>
         </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="transactions" aria-label="Transactions">
@@ -192,23 +217,6 @@
           </svg>
           <span class="d1-nav-tip" aria-hidden="true">Dev Dashboard</span>
         </button>
-      </div>
-      <div class="d1-rail__nav-bottom">
-        <div class="d1-fly d1-fly--chats">
-          <button type="button" class="d1-nav-btn d1-nav-btn--lg" data-d3-nav="messages" aria-label="Chats" aria-haspopup="true" aria-controls="d1-chat-menu">
-            <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h10.5A2.25 2.25 0 0 1 19.5 6.75v7.5a2.25 2.25 0 0 1-2.25 2.25H9.3L5.4 19.6a.75.75 0 0 1-1.2-.6v-2.5A2.25 2.25 0 0 1 4.5 14.25v-7.5Z"/>
-            </svg>
-            <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M6.75 3.75A2.25 2.25 0 0 0 4.5 6v8.25c0 .6.24 1.17.66 1.59L4.5 18.9a.75.75 0 0 0 1.2.6l3.3-2.48h7.95A2.25 2.25 0 0 0 19.2 14.77V6A2.25 2.25 0 0 0 16.95 3.75H6.75Z"/>
-            </svg>
-            <span class="d1-nav-tip" aria-hidden="true">Chats</span>
-          </button>
-          <div class="d1-fly__panel d1-chats" id="d1-chat-menu" role="menu" aria-label="Chats">
-            <div class="d1-chats__recent d3-chats__pages" data-d3-chat-history></div>
-            <div class="d1-chats__recent" data-d1-chat-list></div>
-          </div>
-        </div>
       </div>
     </nav>
 
@@ -399,6 +407,20 @@
                 <div class="sk-step"><span class="sk sk--dot"></span><span class="sk-step__text"><span class="sk sk--label"></span><span class="sk sk--note"></span></span></div>
               </div>
               <span class="sk sk--hint"></span>
+            </div>
+          </div>
+          <!-- Figma 1811:73412 — the match step shows this card on the dotted ground
+               instead of a map. Filled by js/d3-kyb-canvas.js from the agent's matches. -->
+          <div class="d3-kyb-choice" data-d3-kyb-choice-panel aria-live="polite">
+            <div class="d3-kyb-choice__card">
+              <div class="d3-kyb-choice__head">
+                <span class="d3-kyb-choice__tag"><span class="d3-kyb-choice__dot" aria-hidden="true"></span><span data-kc-tag>Waiting for your choice</span></span>
+                <div class="d3-kyb-choice__text">
+                  <h2 class="d3-kyb-choice__title" data-kc-title>Several businesses share this name</h2>
+                  <p class="d3-kyb-choice__lead" data-kc-lead>Verifying the wrong one would give the wrong result, so a choice is needed.</p>
+                </div>
+              </div>
+              <dl class="d3-kyb-choice__facts" data-kc-facts></dl>
             </div>
           </div>
           <div class="d3-kyb-map__overlay">
@@ -1331,7 +1353,7 @@ No evidence of active trading, clients, or revenue.</p>
           <iframe
             class="d1-tx__frame"
             title="Business Verification Report"
-            data-d1-tx-src="transactions/kyb-results/index.html?embed=1"
+            data-d1-tx-src="index.html?embed=report"
             loading="lazy"
             referrerpolicy="no-referrer"
           ></iframe>
@@ -1384,7 +1406,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="components/ai-panel/parts/size.js?v=3"></script>
 <script src="components/ai-panel/ai-panel.js?v=7"></script>
 <script src="js/loader-mark.js"></script>
-<script src="js/auth-gate.js?v=3"></script>
+<script src="js/auth-gate.js?v=4"></script>
 <script src="composer/prompt.js?v=4"></script>
 <script src="js/chat.js?v=2"></script>
 <script src="js/drawer.js?v=4"></script>
@@ -1397,30 +1419,32 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-kyb-result-tabs.js?v=6"></script>
 <script src="js/d3-kyb-resume.js?v=46"></script>
 <script src="js/d3-kyb-report-reveal.js?v=34"></script>
-<script src="js/d3-kyb-map-search.js?v=49"></script>
+<script src="js/d3-kyb-map-search.js?v=51"></script>
 <script src="js/d3-kyb-manual-search.js?v=4"></script>
 <script src="js/d3-kyb-agent.js?v=32"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
-<script src="js/d3-nav.js?v=41"></script>
-<script src="js/d3-transactions.js?v=10"></script>
+<script src="js/d3-nav.js?v=42"></script>
+<script src="js/d3-transactions.js?v=11"></script>
 <script src="js/d3-org.js?v=5"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="transactions-view/js/demo-transactions.js?v=1"></script>
+<script src="js/d3-home-recent.js?v=1"></script>
 <script src="js/d3-tx-agent.js?v=12"></script>
 <script src="js/d3-org-agent.js?v=1"></script>
 <script src="js/d3-chat-bridge.js?v=12"></script>
 <script src="../demo-4/js/truai-bubble.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-orb-motion.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-float.js?v=10"></script>
-<script src="components/ai-panel/treatments/treatments.js?v=17"></script>
-<script src="js/d3-home-skin.js?v=22"></script>
+<script src="components/ai-panel/treatments/treatments.js?v=19"></script>
+<script src="js/d3-home-skin.js?v=24"></script>
 <script src="js/d3-home-placeholder.js?v=3"></script>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>
 <script src="js/d3-home-dots.js"></script>
-<script src="js/d3-kyb-canvas.js?v=3"></script>
+<script src="js/d3-kyb-canvas.js?v=4"></script>
 <script src="js/d3-chat-history.js?v=15"></script>
 <script src="js/d3-chat-follow.js?v=1"></script>
+<script src="js/d3-embed-report.js?v=4"></script>
 <script src="js/d3-home-orb.js?v=5"></script>
 </body>
 </html>

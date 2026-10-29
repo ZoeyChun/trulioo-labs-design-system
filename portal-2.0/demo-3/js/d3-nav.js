@@ -37,7 +37,7 @@
       placeholder: "Describe your task or ask about an agent"
     },
     kyb: {
-      hello: "Hi, I’m your KYB Agent.",
+      hello: "Hi, I’m TruAI.",
       sub: "Let’s find your business.",
       placeholder: "Ask about business verification"
     },
@@ -47,12 +47,12 @@
       placeholder: "Ask about transactions"
     },
     kyc: {
-      hello: "Hi, I’m your KYC Agent.",
+      hello: "Hi, I’m TruAI.",
       sub: "Let’s verify a person.",
       placeholder: "Ask about identity verification"
     },
     org: {
-      hello: "Hi, I’m your Org Admin Agent.",
+      hello: "Hi, I’m TruAI.",
       sub: "Manage users, roles, and invitations.",
       placeholder: "Ask about users or invitations"
     }

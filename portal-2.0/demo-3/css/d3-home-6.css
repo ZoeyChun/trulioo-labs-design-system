@@ -132,5 +132,5 @@ html[data-d3-home-layout="6"] .d1-shell[data-d3-view="home"] .d1-main .d1-drawer
 
 /* Home 6's hero is white: back to the caption colour. */
 html[data-d3-home-layout="6"] .d1-home[data-d3-home-skin="dark"][data-d1-stage="home"] .d3-home-hero .d1-composer__note {
-  color: var(--text-caption, #617269);
+  color: var(--text-placeholder, #8a9a90);
 }

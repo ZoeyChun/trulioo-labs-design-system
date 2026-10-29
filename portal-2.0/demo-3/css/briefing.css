@@ -320,3 +320,20 @@
   filter: blur(60px);
   pointer-events: none;
 }
+
+/* Recent Transactions rows open the transaction (js/d3-home-recent.js). */
+.d1-brief__tx-row {
+  cursor: pointer;
+}
+
+.d1-brief__tx-row:hover .tds-data-table__row-header {
+  color: var(--text-link, #006b5c);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.d1-brief__tx-row:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+  border-radius: 6px;
+}

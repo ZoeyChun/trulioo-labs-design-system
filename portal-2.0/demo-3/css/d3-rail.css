@@ -76,6 +76,14 @@
   text-align: center;
 }
 
+/* Labs flask — its 16px artboard is edge to edge, so it reads larger than the
+   24px-grid icons at the same size. */
+.d1-rail .d1-nav-btn[data-d3-nav="labs"] .d1-nav-btn__icon--line,
+.d1-rail .d1-nav-btn[data-d3-nav="labs"] .d1-nav-btn__icon--fill {
+  width: 13px;
+  height: 13px;
+}
+
 /* Hover / focus name labels beside the rail. */
 .d1-rail .d1-nav-tip {
   position: absolute;
@@ -187,11 +195,20 @@
   height: 20px;
 }
 
-/* Chat flyout opens beside the bottom message icon */
+/* Chat flyout opens beside the message icon at the top of the nav */
 .d1-fly--chats .d1-fly__panel {
-  top: auto;
-  bottom: 0;
+  top: 0;
+  bottom: auto;
   left: calc(100% + 12px);
+}
+
+/* Divider between Chats and the page destinations */
+.d1-rail .d3-rail__rule {
+  width: 24px;
+  height: 0;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--border-neutral-02, rgba(0, 0, 0, 0.12));
 }
 
 /* Keep any open fly panel above siblings inside the rail. */

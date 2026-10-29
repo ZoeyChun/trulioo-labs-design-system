@@ -60,7 +60,7 @@
   var LINES = [
     "Loading Pacific Ridge Financial",
     "Syncing 47 new transactions",
-    "Starting your KYB and KYC agents"
+    "Getting your workspace ready"
   ];
   var label = loader.querySelector("[data-d1-loader-text]");
 

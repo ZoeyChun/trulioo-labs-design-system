@@ -42,7 +42,8 @@
     return mode() === "kyb" || mode() === "tx";
   }
 
-  var TX_TITLE = "Transaction Agent";
+  /* The panel is one assistant, not a set of named agents. */
+  var PANEL_NAME = "TruAI";
 
   function chatPaneActive() {
     var el = document.querySelector(".d3-chat-pane");
@@ -132,7 +133,16 @@
     var t = thread();
     var p = t && t.querySelector(".d1-user p");
     var q = p ? p.textContent.trim() : "";
-    if (!q) return "KYB Agent";
+    if (!q) return PANEL_NAME;
+    return q.length > 40 ? q.slice(0, 37) + "…" : q;
+  }
+
+  /* Off the KYB page the header still names the conversation, not an agent. */
+  function conversationTitle() {
+    var t = thread();
+    var p = t && t.querySelector(".d1-user p");
+    var q = p ? p.textContent.trim() : "";
+    if (!q) return PANEL_NAME;
     return q.length > 40 ? q.slice(0, 37) + "…" : q;
   }
 
@@ -326,7 +336,7 @@
       selectorPage = 0;
       selectorKey = "";
       lastPlace = { country: "", cc: "" };
-      setTitle(isKyb() ? "Verify Meridian" : TX_TITLE);
+      setTitle(PANEL_NAME);
     }
     step = wanted;
     setAttr("data-d3-ai-step", step);
@@ -359,7 +369,7 @@
     } else {
       setPlaceholders("Ask about business verification");
     }
-    if (step !== "landing") setTitle(isKyb() ? kybTitle() : TX_TITLE);
+    if (step !== "landing") setTitle(isKyb() ? kybTitle() : conversationTitle());
     syncReportView();
     syncHeaderChrome();
     syncBack();
@@ -449,7 +459,7 @@
     ident.innerHTML =
       '<span class="d3-ai-ident__orb" data-d3-ai-ident-orb></span>' +
       '<span class="d3-ai-ident__copy">' +
-      '<span class="d3-ai-ident__title" data-d3-ai-title>Verify Meridian</span>' +
+      '<span class="d3-ai-ident__title" data-d3-ai-title>TruAI</span>' +
       '<span class="d3-ai-ident__status">' +
       '<span class="d3-ai-ident__status-icon is-empty" data-d3-ai-status-icon aria-hidden="true" hidden></span>' +
       '<span data-d3-ai-status>Awaiting input</span>' +
@@ -666,7 +676,7 @@
 
   function onUserText(text) {
     rememberPlace(text || "");
-    if (step !== "landing" && (lastPlace.country || lastPlace.cc)) setTitle(isKyb() ? kybTitle() : verifyTitle());
+    if (step !== "landing" && (lastPlace.country || lastPlace.cc)) setTitle(isKyb() ? kybTitle() : conversationTitle());
   }
 
   function watchThread() {

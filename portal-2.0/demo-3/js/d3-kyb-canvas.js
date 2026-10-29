@@ -108,21 +108,29 @@
     apply();
   }
 
-  /* Until a business AND a country are identified there is nothing to put on a
-     map. From the first message until then the right panel shows a skeleton of
-     the "Search in progress" card; it resolves into the real card (name /
-     country needed) or, once there are matches, the map. */
+  /* The KYB flow never shows a map. The right panel is the dotted ground with a
+     card on it, following what the user has told us so far:
+
+       no name / no country   "Waiting for …" card         (watchAwaitStage)
+       agent working          skeleton of that card
+       several matches        "Several businesses share this name"  (Figma 1811:73412)
+       one picked, to confirm  the same card for that business
+       verifying              skeleton, until the report opens
+
+     Nothing here touches the thread; it only reads it and the agent's state. */
   function watchResolving() {
     var ws = document.querySelector("[data-d3-workspace]");
     var awaitEl = document.querySelector("[data-d3-kyb-map-await]");
     var thread = document.querySelector("[data-d1-thread]");
     var composer = document.querySelector("[data-d1-composer]");
+    var panel = document.querySelector("[data-d3-kyb-choice-panel]");
     if (!ws || !awaitEl || !thread) return;
 
     var busy = false;
     var sawBusy = false;
     var failsafe = 0;
     var RESOLVING = "data-d3-kyb-resolving";
+    var CHOICE = "data-d3-kyb-choice";
 
     function stop() {
       window.clearTimeout(failsafe);
@@ -130,38 +138,141 @@
       ws.removeAttribute(RESOLVING);
     }
 
+    function fact(label, value) {
+      return '<div class="d3-kyb-choice__fact"><dt>' + label + "</dt><dd>" + value + "</dd></div>";
+    }
+
+    function esc(v) {
+      return String(v == null ? "" : v)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    /* "New York, NY" → NY. The match list is one country at a time. */
+    function regionOf(biz) {
+      var m = /,\s*([A-Za-z]{2,})\s*$/.exec(biz.city || "");
+      return m ? m[1].toUpperCase() : biz.city || "";
+    }
+
+    function fill(tag, title, lead, facts) {
+      if (!panel) return;
+      var set = function (sel, html) {
+        var el = panel.querySelector(sel);
+        if (el && el.innerHTML !== html) el.innerHTML = html;
+      };
+      set("[data-kc-tag]", esc(tag));
+      set("[data-kc-title]", esc(title));
+      set("[data-kc-lead]", esc(lead));
+      set("[data-kc-facts]", facts);
+    }
+
+    function showChoice(kind, maps, agentState) {
+      var facts = "";
+      if (kind === "confirm") {
+        var biz = maps && maps.findById ? maps.findById(agentState.pendingId) : null;
+        if (!biz) return false;
+        fill(
+          "Waiting for your confirmation",
+          biz.name,
+          "Confirm in chat to run the verification on this business.",
+          fact("Registered in", esc(biz.city || biz.country)) +
+            fact("Registration number", esc(biz.reg || "—")) +
+            fact("Status", esc(biz.status || "—"))
+        );
+      } else {
+        var list = (maps && maps.getLastResults && maps.getLastResults()) || [];
+        var n = list.length;
+        var regions = {};
+        list.forEach(function (b) {
+          regions[regionOf(b)] = true;
+        });
+        var k = Object.keys(regions).length;
+        var active = list.filter(function (b) {
+          return /^active$/i.test(b.status || "");
+        }).length;
+        var us = list.length && list.every(function (b) { return b.cc === "US"; });
+        var unit = us ? (k === 1 ? "state" : "states") : k === 1 ? "region" : "regions";
+        if (!n) {
+          fill(
+            "No matches yet",
+            "No businesses match",
+            "Try another country or a different name.",
+            fact("Exact name matches", "0")
+          );
+        } else if (n === 1) {
+          fill(
+            "Waiting for your choice",
+            "One business matches",
+            "Select it to continue with the verification.",
+            fact("Exact name matches", "1") + fact("Registered in", esc(list[0].city || list[0].country)) + fact("Currently active", active + " of 1")
+          );
+        } else {
+          fill(
+            "Waiting for your choice",
+            "Several businesses share this name",
+            "Verifying the wrong one would give the wrong result, so a choice is needed.",
+            fact("Exact name matches", String(n)) + fact("Registered in", k + " " + unit) + fact("Currently active", active + " of " + n)
+          );
+        }
+      }
+      ws.setAttribute(CHOICE, kind);
+      return true;
+    }
+
+    function skeleton(withFailsafe) {
+      ws.removeAttribute(CHOICE);
+      if (ws.hasAttribute(RESOLVING)) return;
+      ws.setAttribute(RESOLVING, "");
+      if (!withFailsafe) return;
+      /* Never leave the skeleton up for good (e.g. a search with no hits). */
+      failsafe = window.setTimeout(function () {
+        stop();
+        if (window.D3KybMapSearch && window.D3KybMapSearch.setAwaitingCountry) {
+          window.D3KybMapSearch.setAwaitingCountry(true, "");
+        }
+      }, 12000);
+    }
+
     function sync() {
       if (!thread.querySelector(".d1-user")) {
         busy = false;
         sawBusy = false;
         ws.removeAttribute("data-d3-map-ready");
+        ws.removeAttribute(CHOICE);
         stop();
         return;
       }
-      if (ws.getAttribute("data-d3-kyb-surface") !== "map") return stop();
-      if (!awaitEl.hidden) {
-        /* The waiting card replaces the map: nothing is ready until matches come. */
-        ws.removeAttribute("data-d3-map-ready");
+      if (ws.getAttribute("data-d3-kyb-surface") !== "map") {
+        ws.removeAttribute(CHOICE);
         return stop();
       }
-      if (ws.hasAttribute("data-d3-map-ready")) return stop();
-      if (busy || !sawBusy) {
-        if (!ws.hasAttribute(RESOLVING)) {
-          ws.setAttribute(RESOLVING, "");
-          /* Never leave the skeleton up for good (e.g. a search with no hits). */
-          failsafe = window.setTimeout(function () {
-            ws.setAttribute("data-d3-map-ready", "1");
-            stop();
-          }, 12000);
+      if (!awaitEl.hidden) {
+        /* The waiting card replaces everything: nothing is ready until matches come. */
+        ws.removeAttribute("data-d3-map-ready");
+        ws.removeAttribute(CHOICE);
+        return stop();
+      }
+      if (!ws.hasAttribute("data-d3-map-ready")) {
+        if (busy || !sawBusy) return skeleton(true);
+        /* The agent finished and still knows no business / country (plain Q&A):
+           show what it is waiting for. */
+        stop();
+        ws.removeAttribute(CHOICE);
+        if (window.D3KybMapSearch && window.D3KybMapSearch.setAwaitingCountry) {
+          window.D3KybMapSearch.setAwaitingCountry(true, "");
         }
         return;
       }
-      /* The agent finished and still knows no business / country (plain Q&A):
-         keep the map away and show what it is waiting for. */
+      /* There are matches: what the card says depends on where the agent is. */
+      var agent = window.D3KybAgent && window.D3KybAgent.getState ? window.D3KybAgent.getState() : null;
+      var maps = window.D3KybMapSearch;
+      var mode = agent && agent.mode;
       stop();
-      if (window.D3KybMapSearch && window.D3KybMapSearch.setAwaitingCountry) {
-        window.D3KybMapSearch.setAwaitingCountry(true, "");
-      }
+      if (mode === "list" && showChoice("matches", maps, agent)) return;
+      if (mode === "confirm" && agent.pendingId && showChoice("confirm", maps, agent)) return;
+      /* Verifying (confirmed) or between steps: skeleton until the report opens. */
+      skeleton(false);
     }
 
     if (composer) {
@@ -177,7 +288,9 @@
       attributeFilter: ["data-d3-kyb-surface", "data-d3-map-ready"]
     });
     new MutationObserver(sync).observe(awaitEl, { attributes: true, attributeFilter: ["hidden"] });
-    new MutationObserver(sync).observe(thread, { childList: true });
+    /* subtree: the candidate panel repaints in place when a chip is toggled or a
+       match is picked. */
+    new MutationObserver(sync).observe(thread, { childList: true, subtree: true });
     sync();
   }
 

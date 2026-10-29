@@ -1,0 +1,37 @@
+/* Demo 3 — "embed=report" mode.
+
+   The Transactions drawer shows a transaction's report by embedding this same
+   app in a frame with ?embed=report&… — so the drawer is always the current KYB
+   result view (the one the KYB flow ends on), not a second, older copy.
+   Everything except the report is removed here. */
+
+html.d3-embed-report,
+html.d3-embed-report body {
+  background: var(--surface-neutral-01, #fff);
+}
+
+html.d3-embed-report .d1-shell {
+  padding: 0;
+  gap: 0;
+  background: var(--surface-neutral-01, #fff);
+}
+
+html.d3-embed-report .d1-rail,
+html.d3-embed-report .d3-chat-pane,
+html.d3-embed-report [data-d3-ai-panel-mount],
+html.d3-embed-report [data-d3-askbar],
+html.d3-embed-report .d1-loader,
+html.d3-embed-report .d3-workspace__detail-top {
+  display: none !important;
+}
+
+html.d3-embed-report .d3-canvas,
+html.d3-embed-report .d1-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The report fills the frame; the page around it is the drawer. */
+html.d3-embed-report .d3-workspace[data-d3-kyb-surface="report"] .d3-workspace__detail {
+  padding: 16px;
+}
