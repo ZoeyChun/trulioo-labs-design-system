@@ -273,6 +273,7 @@
     /* Company name appears immediately in the report identity block. */
     if (pageTitle) pageTitle.hidden = true;
     if (bizName) bizName.textContent = biz.name;
+    if (window.D3KybFindings) window.D3KybFindings.setStatus(null);
     setBizTag("Verifying…", "review");
     var detailsBtn = detail.querySelector("[data-d3-kyb-raw-action]");
     if (detailsBtn) detailsBtn.hidden = false;
@@ -308,7 +309,7 @@
     }
     if (detailDate) detailDate.textContent = dateLabel;
 
-    selectTab("overview", { silent: true });
+    selectTab("findings", { silent: true });
     renderOwnershipPanel(biz);
     renderRawPanel(biz);
     if (window.D3KybResultTabs && window.D3KybResultTabs.renderAll) {
@@ -317,6 +318,7 @@
       renderSignalsPanel(biz);
     }
     renderAlerts(biz);
+    if (window.D3KybFindings) window.D3KybFindings.render(resumeCard, biz);
 
     if (hero) {
       hero.classList.remove("is-revealed");
@@ -446,6 +448,7 @@
       prev.body.hidden = true;
     });
 
+    if (window.D3KybFindings) window.D3KybFindings.release();
     if (biz.riskLevel === "high" || (biz.risks && biz.risks.some(function (r) { return r.severity === "high"; }))) {
       setBizTag("Needs review", "review");
     } else if (biz.riskLevel === "medium") {
@@ -607,6 +610,7 @@
   var tierAddons = [];
 
   function tabAllowed(id) {
+    if (id === "findings") return true;
     var S = window.D3KybSession;
     return !S || S.tabAllowed(tier, id, tierAddons);
   }
@@ -619,7 +623,9 @@
       t.hidden = !tabAllowed(t.getAttribute("data-d3-kyb-tab"));
     });
     var active = resumeCard.querySelector("[data-d3-kyb-tab].is-active");
-    if (!active || active.hidden) selectTab("overview", { silent: true });
+    if (!active || active.hidden) selectTab("findings", { silent: true });
+    /* Tabs changed, so which evidence links are reachable changed too. */
+    if (currentBiz && window.D3KybFindings) window.D3KybFindings.render(resumeCard, currentBiz);
   }
 
   function selectTab(id, opts) {
@@ -649,6 +655,9 @@
       panel.classList.add("d3-kyb-panel--flash");
     }
     /* Ensure tab bodies exist (resume/recent opens never called reveal). */
+    if (id === "findings" && window.D3KybFindings) {
+      window.D3KybFindings.render(resumeCard, resolveBiz());
+    }
     if (id === "ownership") {
       window.requestAnimationFrame(function () {
         ensureOwnershipPanel(resolveBiz());
@@ -941,11 +950,15 @@
   function abortReveal() {
     revealToken += 1;
     currentBiz = null;
+    if (window.D3KybFindings) window.D3KybFindings.release();
   }
 
   async function reveal(biz) {
     if (!biz) return;
     currentBiz = biz;
+    /* Findings shows its skeleton until the report finishes verifying. This has to be
+       the very first thing: reveal() is async and the skeleton timer starts early. */
+    if (window.D3KybFindings) window.D3KybFindings.hold();
     if (window.D3KybMapSearch && window.D3KybMapSearch.setSelected) {
       window.D3KybMapSearch.setSelected(biz);
     }
@@ -1034,6 +1047,7 @@
       if (window.D3KybResultTabs && window.D3KybResultTabs.renderAll) {
         window.D3KybResultTabs.renderAll(resumeCard, biz);
       }
+      if (window.D3KybFindings) window.D3KybFindings.render(resumeCard, biz);
       return biz;
     },
     getCurrent: function () {

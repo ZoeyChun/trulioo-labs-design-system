@@ -172,6 +172,7 @@
 
   /* The Web & Social tab also opens for the Web Insights add-on. */
   function tabAllowed(id, tab, addons) {
+    if (tab === "findings") return true;
     var row = pkg(id) || pkg(DEFAULT_PACKAGE);
     if (row.tabs.indexOf(tab) !== -1) return true;
     return tab === "web" && (addons || []).indexOf("web") !== -1;
