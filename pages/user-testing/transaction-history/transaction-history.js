@@ -296,10 +296,13 @@
   }
 
   function activeFilterCount() {
+    /* Pages that lift Outcome and Risk out of the panel (window.UT_INLINE_FILTERS)
+       count only what the panel still holds. */
+    var inline = !!window.UT_INLINE_FILTERS;
     return (
-      panelFilters.outcomes.length +
+      (inline ? 0 : panelFilters.outcomes.length) +
       panelFilters.products.length +
-      panelFilters.risks.length +
+      (inline ? 0 : panelFilters.risks.length) +
       panelFilters.sources.length +
       panelFilters.types.length +
       panelFilters.watchlist.length +
@@ -606,6 +609,7 @@
     showFailedLast7Days: showFailedLast7Days,
     clearAiView: clearAiView,
     applySpec: applyAiSpec,
+    clearFilters: clearAllFilters,
     getState: getAiState,
     snapshot: function () {
       return snapshotRows(rows);
@@ -822,7 +826,7 @@
   function clearAllFilters() {
     document
       .querySelectorAll(
-        '#utTxFilters input[type="checkbox"], #utTxFilters select'
+        '#utTxFilters input[type="checkbox"], #utTxFilters select, #utTxQuick input[type="checkbox"]'
       )
       .forEach(function (el) {
         if (el.tagName === "SELECT") {

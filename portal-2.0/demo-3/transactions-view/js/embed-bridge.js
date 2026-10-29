@@ -142,84 +142,85 @@
     announce();
   }
 
-  /* ---- KPI strip → quick filters ----
-     Each stat filters the table through the same panel filters the Filter
-     menu uses (so the Filter chrome and counts stay truthful). Clicking the
-     active stat, or Total, clears the view. renderStats() rebuilds the strip
-     on every render, so state is re-applied from a MutationObserver. */
-  var STAT_SPECS = [
-    { key: "total", spec: null },
-    { key: "verified", spec: { clear: true, outcomes: ["positive"] }, outcomes: ["positive"], risks: [] },
-    { key: "review", spec: { clear: true, outcomes: ["intermediate"] }, outcomes: ["intermediate"], risks: [] },
-    { key: "not-verified", spec: { clear: true, outcomes: ["negative"] }, outcomes: ["negative"], risks: [] },
-    { key: "high-risk", spec: { clear: true, risks: ["high"] }, outcomes: [], risks: ["high"] }
-  ];
-
-  function sameSet(a, b) {
-    return a.length === b.length && a.every(function (v) { return b.indexOf(v) !== -1; });
-  }
-
-  function activeStatKey() {
-    var api = window.UTTransactions;
-    if (!api) return "";
-    var st = api.getState();
-    var f = st.filters || {};
-    var clean = !st.search && !st.product && !(st.date && (st.date.start || st.date.end)) &&
-      !(f.products || []).length && !(f.sources || []).length && !(f.types || []).length &&
-      !(f.watchlist || []).length && !f.country;
-    if (!clean) return "";
-    var o = f.outcomes || [];
-    var r = f.risks || [];
-    if (!o.length && !r.length) return "total";
-    for (var i = 1; i < STAT_SPECS.length; i += 1) {
-      if (sameSet(o, STAT_SPECS[i].outcomes) && sameSet(r, STAT_SPECS[i].risks)) return STAT_SPECS[i].key;
-    }
-    return "";
-  }
-
-  function syncStats(host) {
-    var active = activeStatKey();
-    Array.prototype.forEach.call(host.querySelectorAll(".ut-tx-stat"), function (el, i) {
-      var def = STAT_SPECS[i];
-      if (!def) return;
-      el.setAttribute("role", "button");
-      el.setAttribute("tabindex", "0");
-      el.setAttribute("data-stat", def.key);
-      var on = def.key === active;
-      el.classList.toggle("is-active", on);
-      el.setAttribute("aria-pressed", on ? "true" : "false");
-    });
-  }
-
-  function pickStat(el) {
-    var api = window.UTTransactions;
-    if (!api || !el) return;
-    var key = el.getAttribute("data-stat");
-    var def = STAT_SPECS.filter(function (d) { return d.key === key; })[0];
-    if (!def) return;
-    if (!def.spec || key === activeStatKey()) api.applySpec({ clear: true, predicate: null });
-    else api.applySpec(def.spec);
-  }
-
-  function bindStats() {
-    var host = document.getElementById("utTxStats");
+  /* ---- Outcome / Risk quick filters ----
+     The checkboxes keep the engine's names (ut-filt-outcome / ut-filt-risk), so
+     the table, the AI agent and "Clear all" all keep working; this only opens
+     the menus and tells the engine when a box changed. */
+  function bindQuick() {
+    var host = document.getElementById("utTxQuick");
+    var panel = document.getElementById("utTxFilters");
     if (!host) return;
-    host.addEventListener("click", function (event) {
-      pickStat(event.target.closest(".ut-tx-stat"));
+    var items = Array.prototype.slice.call(host.querySelectorAll(".ut-tx-quick__item"));
+
+    function closeAll(except) {
+      items.forEach(function (item) {
+        if (item === except) return;
+        item.querySelector(".ut-tx-quick__menu").hidden = true;
+        item.querySelector(".ut-tx-quick__btn").setAttribute("aria-expanded", "false");
+      });
+    }
+
+    function sync() {
+      items.forEach(function (item) {
+        var n = item.querySelectorAll("input:checked").length;
+        var count = item.querySelector(".ut-tx-quick__count");
+        count.textContent = String(n);
+        count.hidden = n === 0;
+        item.classList.toggle("is-selected", n > 0);
+      });
+      var clear = document.getElementById("utTxQuickClear");
+      if (clear) {
+        var any = document.querySelectorAll("#utTxQuick input:checked, #utTxFilters input:checked").length > 0;
+        if (!any) {
+          Array.prototype.forEach.call(document.querySelectorAll("#utTxFilters select"), function (el) {
+            if (el.value) any = true;
+          });
+        }
+        clear.hidden = !any;
+      }
+    }
+
+    var clearBtn = document.getElementById("utTxQuickClear");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        closeAll(null);
+        if (window.UTTransactions && window.UTTransactions.clearFilters) window.UTTransactions.clearFilters();
+        sync();
+      });
+    }
+
+    items.forEach(function (item) {
+      var btn = item.querySelector(".ut-tx-quick__btn");
+      var menu = item.querySelector(".ut-tx-quick__menu");
+      btn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        var open = menu.hidden;
+        closeAll(item);
+        menu.hidden = !open;
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      menu.addEventListener("change", function () {
+        sync();
+        /* The engine listens on the filter panel; poke it. */
+        if (panel) panel.dispatchEvent(new Event("change", { bubbles: true }));
+      });
     });
-    host.addEventListener("keydown", function (event) {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      var el = event.target.closest(".ut-tx-stat");
-      if (!el) return;
-      event.preventDefault();
-      pickStat(el);
+
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".ut-tx-quick__item")) closeAll(null);
     });
-    new MutationObserver(function () { syncStats(host); }).observe(host, { childList: true });
-    syncStats(host);
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closeAll(null);
+    });
+
+    /* Filters also change from outside (the agent, Clear all): follow the table. */
+    var body = document.getElementById("utTxBody");
+    if (body) new MutationObserver(sync).observe(body, { childList: true });
+    sync();
   }
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () { window.setTimeout(bindStats, 0); });
+    document.addEventListener("DOMContentLoaded", function () { window.setTimeout(bindQuick, 0); });
   } else {
-    window.setTimeout(bindStats, 0);
+    window.setTimeout(bindQuick, 0);
   }
 })();

@@ -53,6 +53,8 @@
       icon.setAttribute("viewBox", "0 0 16 16");
       icon.innerHTML =
         '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/>';
+      /* Arrow trails the label. */
+      all.appendChild(icon);
     }
   }
 
