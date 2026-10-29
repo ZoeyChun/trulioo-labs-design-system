@@ -118,3 +118,8 @@
 .d3-chat-pane.is-active .d3-pane-idle-form {
   display: none !important;
 }
+
+.d3-pane-idle-form [aria-label="Voice input"][aria-pressed="true"] {
+  background: var(--surface-selected);
+  box-shadow: inset 0 0 0 1px var(--border-interactive);
+}

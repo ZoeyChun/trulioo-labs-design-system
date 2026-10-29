@@ -377,9 +377,28 @@
   display: grid;
 }
 
-/* KYB context tag — home composer only. */
+/* KYB context label — plain text with a green dot (not a chip), home composer only. */
 .d1-home[data-d1-stage="home"] .tds-tag.d1-prompt__ctx {
   display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.d1-prompt__ctx-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--interactive-default, #004c45);
+  flex: 0 0 auto;
 }
 
 /* Rotating home placeholder — same cell as the input, never under the tag. */
