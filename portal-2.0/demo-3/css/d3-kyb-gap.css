@@ -75,7 +75,7 @@
 }
 
 .d3-kyb-addon__impact.is-fields {
-  color: var(--text-review, #7a4b00);
+  color: var(--color-teal-70, #006b5c);
   font-weight: 500;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .d3-kyb-gapblock__title.is-action {
-  color: var(--text-review, #7a4b00);
+  color: var(--color-teal-70, #006b5c);
 }
 
 .d3-kyb-gapblock__hint {
@@ -172,51 +172,8 @@
   flex: 0 0 96px;
 }
 
-.d3-kyb-gapfield > span {
-  color: var(--text-caption, #617269);
-  font-size: var(--font-size-xs, 12px);
-  font-weight: 500;
-  line-height: 16px;
-}
-
-.d3-kyb-gapfield input {
-  box-sizing: border-box;
-  width: 100%;
-  height: 36px;
-  padding: 0 var(--spacing-12, 12px);
-  border: 1px solid var(--border-strong, #c4cdc8);
-  border-radius: var(--radius-lg, 12px);
-  background: var(--surface-neutral-01, #fff);
-  color: var(--text-default, #172d2d);
-  font: inherit;
-  font-size: var(--font-size-sm, 14px);
-}
-
-.d3-kyb-gapfield input::placeholder {
-  color: var(--text-placeholder, #8a9a92);
-}
-
-.d3-kyb-gapfield input:focus-visible {
-  outline: 2px solid var(--border-focus, #004c45);
-  outline-offset: 1px;
-}
-
 .d3-kyb-gaplink {
   align-self: flex-start;
-  appearance: none;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--interactive-default, #004c45);
-  font: inherit;
-  font-size: var(--font-size-sm, 14px);
-  font-weight: 500;
-  line-height: 20px;
-  cursor: pointer;
-}
-
-.d3-kyb-gaplink:hover {
-  text-decoration: underline;
 }
 
 .d3-kyb-gapowners {
@@ -345,22 +302,21 @@
   color: var(--text-positive, #004c45);
 }
 
-.d3-kyb-gapfield select {
-  box-sizing: border-box;
-  width: 100%;
-  height: 36px;
-  padding: 0 var(--spacing-8, 8px);
-  border: 1px solid var(--border-strong, #c4cdc8);
-  border-radius: var(--radius-lg, 12px);
-  background: var(--surface-neutral-01, #fff);
+.d3-kyb-gapselect {
+  position: relative;
+}
+
+.d3-kyb-gapselect__native {
+  appearance: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
   color: var(--text-default, #172d2d);
   font: inherit;
   font-size: var(--font-size-sm, 14px);
-}
-
-.d3-kyb-gapfield select:focus-visible {
-  outline: 2px solid var(--border-focus, #004c45);
-  outline-offset: 1px;
+  cursor: pointer;
 }
 
 .d3-kyb-gapfield.is-title {
@@ -373,40 +329,30 @@
 
 .d3-kyb-gapremove {
   flex: 0 0 auto;
-  width: 28px;
-  height: 36px;
-  border: 0;
-  background: transparent;
-  color: var(--icon-faint, #617269);
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
+  width: 40px;
+  height: 40px;
 }
 
-.d3-kyb-gapremove:hover {
-  color: var(--text-default, #172d2d);
+.d3-kyb-gapradios .tds-radio-group__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8, 8px);
+  padding-left: 0;
+}
+
+.d3-kyb-gapradios .tds-radio-group__item .tds-radio {
+  position: static;
+}
+
+.d3-kyb-gapradios .tds-radio-group__item + .tds-text-input,
+.d3-kyb-gapradios .tds-text-input {
+  margin: 4px 0;
 }
 
 .d3-kyb-gapradios {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-8, 8px);
-}
-
-.d3-kyb-gapradios__label {
-  color: var(--text-caption, #617269);
-  font-size: var(--font-size-xs, 12px);
-  font-weight: 500;
-  line-height: 16px;
-}
-
-.d3-kyb-gapradio {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8, 8px);
-  font-size: var(--font-size-sm, 14px);
-  line-height: 20px;
-  cursor: pointer;
 }
 
 .d3-kyb-gapdrop {
@@ -553,27 +499,7 @@
 }
 
 .d3-kyb-info__btn {
-  display: grid;
-  place-items: center;
-  width: 16px;
-  height: 16px;
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--border-strong, #8a9a92);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--icon-faint, #617269);
-  font: inherit;
-  font-size: 10px;
-  font-style: italic;
-  font-weight: 600;
-  line-height: 1;
   cursor: help;
-}
-
-.d3-kyb-info__btn:focus-visible {
-  outline: 2px solid var(--border-focus, #004c45);
-  outline-offset: 2px;
 }
 
 .d3-kyb-info__tip {
@@ -643,7 +569,7 @@
 }
 
 .d3-kyb-choicelist .d3-ai-selector__reg.is-warn {
-  color: var(--text-review, #7a4b00);
+  color: var(--color-teal-70, #006b5c);
 }
 
 .d3-kyb-choicelist__badge {
@@ -814,4 +740,28 @@
 .d3-kyb-wiz__body > .d3-kyb-choicelist,
 .d3-kyb-wiz__body > .d3-kyb-pkg {
   margin-top: var(--spacing-12, 12px);
+}
+
+/* Finder found nothing: the dropdown says so and offers the manual route. */
+.vb-nomatch {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-8, 8px);
+  padding: var(--spacing-16, 16px);
+}
+
+.vb-nomatch__title {
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.vb-nomatch__text {
+  margin: 0;
+  color: var(--text-description, #526660);
+  font-size: var(--font-size-xs, 12px);
+  line-height: 16px;
 }

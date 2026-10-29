@@ -103,30 +103,51 @@
     ca: { name: "Meridian Technologies Inc.", regNo: "BC1234567", address: "1055 W Georgia St, Vancouver, BC V6E 3P3", taxId: "123456789 RT0001" }
   };
 
+  function fid(attr) {
+    return "d3gf-" + String(attr).replace(/[^a-z0-9]+/gi, "-");
+  }
+
+  /* TDS text input (large). */
   function field(label, attr, value, extra) {
     extra = extra || {};
+    var id = fid(attr);
     return (
-      '<label class="d3-kyb-gapfield' + (extra.cls ? " " + extra.cls : "") + '"><span>' + esc(label) + "</span>" +
-      "<input " + attr + ' value="' + esc(value) + '" autocomplete="off"' +
+      '<div class="tds-text-input d3-kyb-gapfield' + (extra.cls ? " " + extra.cls : "") + '">' +
+      '<label class="tds-field-label" for="' + id + '">' + esc(label) + "</label>" +
+      '<div class="tds-text-input__field tds-text-input__field--lg">' +
+      '<input class="tds-text-input__native" id="' + id + '" ' + attr + ' value="' + esc(value) + '" autocomplete="off"' +
       ' type="' + (extra.type || "text") + '"' +
       (extra.mode ? ' inputmode="' + extra.mode + '"' : "") +
-      (extra.ph ? ' placeholder="' + esc(extra.ph) + '"' : "") + "></label>"
+      (extra.ph ? ' placeholder="' + esc(extra.ph) + '"' : "") + "></div></div>"
     );
   }
 
+  /* TDS select trigger (large) with a native <select> inside, so the choice is
+     still read from the same data attribute. */
   function select(label, attr, value, options, extra) {
     extra = extra || {};
+    var id = fid(attr);
     return (
-      '<label class="d3-kyb-gapfield' + (extra.cls ? " " + extra.cls : "") + '"><span>' + esc(label) + "</span>" +
-      "<select " + attr + ">" +
+      '<div class="tds-select d3-kyb-gapfield' + (extra.cls ? " " + extra.cls : "") + '">' +
+      '<label class="tds-field-label" for="' + id + '">' + esc(label) + "</label>" +
+      '<div class="tds-select__trigger tds-select__trigger--lg d3-kyb-gapselect">' +
+      '<select class="d3-kyb-gapselect__native" id="' + id + '" ' + attr + ">" +
       '<option value="">Select…</option>' +
       options
         .map(function (o) {
           return '<option value="' + esc(o) + '"' + (o === value ? " selected" : "") + ">" + esc(o) + "</option>";
         })
         .join("") +
-      "</select></label>"
+      "</select>" +
+      '<span class="tds-select__trailing-group"><span class="tds-caret tds-caret--default" aria-hidden="true">' +
+      '<svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>' +
+      "</span></span></div></div>"
     );
+  }
+
+  /* Text-style action as a TDS invisible button. */
+  function linkBtn(attr, label) {
+    return '<button type="button" class="tds-btn tds-btn--invisible tds-btn--md d3-kyb-gaplink" ' + attr + ">" + label + "</button>";
   }
 
   function upload(kind, label, on, hint) {
@@ -194,6 +215,7 @@
         field("UBO 1 name", 'data-d3-gap="ubo.name"', st.ubo.name, { ph: "Full legal name" }) +
         select("Title", 'data-d3-gap="ubo.title"', st.ubo.title, TITLES, { cls: "is-title" }) +
         field("Ownership %", 'data-d3-gap="ubo.pct"', st.ubo.pct, { mode: "decimal", ph: "e.g. 45", cls: "is-pct" }) +
+        (st.extraUbos.length ? '<span class="d3-kyb-gapremove" aria-hidden="true"></span>' : "") +
         "</div>"
     );
     st.extraUbos.forEach(function (o, i) {
@@ -202,7 +224,7 @@
           field("UBO " + (i + 2) + " name", 'data-d3-gap="extra.' + i + '.name"', o.name, { ph: "Full legal name" }) +
           select("Title", 'data-d3-gap="extra.' + i + '.title"', o.title, TITLES, { cls: "is-title" }) +
           field("Ownership %", 'data-d3-gap="extra.' + i + '.pct"', o.pct, { mode: "decimal", ph: "e.g. 30", cls: "is-pct" }) +
-          '<button type="button" class="d3-kyb-gapremove" data-d3-gap-remove="' + i + '" aria-label="Remove owner">×</button>' +
+          '<button type="button" class="tds-icon-btn tds-icon-btn--md tds-icon-btn--invisible tds-icon-btn--circular d3-kyb-gapremove" data-d3-gap-remove="' + i + '" aria-label="Remove owner"><span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m4.5 4.5 7 7m0-7-7 7"/></svg></span></button>' +
           "</div>"
       );
     });
@@ -225,7 +247,7 @@
       return block(
         (variant === "form" ? "2 · " : "") + "Beneficial ownership (UBO)",
         "Skipped — ownership will be reported as not disclosed.",
-        '<button type="button" class="d3-kyb-gaplink" data-d3-gap-unskip>Add owner details</button>'
+        linkBtn("data-d3-gap-unskip","Add owner details")
       );
     }
     if (r.ubo !== "private") return "";
@@ -240,7 +262,7 @@
           field("Ownership %", 'data-d3-gap="ubo.pct"', st.ubo.pct, { mode: "decimal", ph: "e.g. 45", cls: "is-pct" }) +
           field("UBO work email (for KYC invite)", 'data-d3-gap="ubo.email"', st.ubo.email, { type: "email", ph: "name@company.com" }) +
           "</div>" +
-          '<button type="button" class="d3-kyb-gaplink" data-d3-gap-skip>I don’t have this</button>',
+          linkBtn("data-d3-gap-skip","I don’t have this"),
         { action: true }
       );
     }
@@ -248,17 +270,17 @@
       "2 · Beneficial ownership (UBO)",
       hint,
       ownerRows(st) +
-        (st.extraUbos.length < 3 ? '<button type="button" class="d3-kyb-gaplink" data-d3-gap-add>+ Add another beneficial owner</button>' : "") +
-        '<div class="d3-kyb-gapradios" role="radiogroup" aria-label="Identity check route">' +
-        '<span class="d3-kyb-gapradios__label">Identity check route</span>' +
-        '<label class="d3-kyb-gapradio"><input type="radio" name="d3-uboroute" data-d3-gap-route="email"' + (st.uboRoute === "email" ? " checked" : "") + "> Send a KYC invite by email</label>" +
+        (st.extraUbos.length < 3 ? linkBtn("data-d3-gap-add","+ Add another beneficial owner") : "") +
+        '<div class="tds-radio-group d3-kyb-gapradios" role="radiogroup" aria-label="Identity check route">' +
+        '<span class="tds-field-label">Identity check route</span>' +
+        '<label class="tds-radio-group__item"><input type="radio" class="tds-radio" name="d3-uboroute" data-d3-gap-route="email"' + (st.uboRoute === "email" ? " checked" : "") + '><span class="tds-radio-group__content"><span class="tds-radio-group__label">Send a KYC invite by email</span></span></label>' +
         (st.uboRoute === "email"
           ? field("UBO work email", 'data-d3-gap="ubo.email"', st.ubo.email, { type: "email", ph: "name@company.com" })
           : "") +
-        '<label class="d3-kyb-gapradio"><input type="radio" name="d3-uboroute" data-d3-gap-route="docs"' + (st.uboRoute === "docs" ? " checked" : "") + "> I’ll collect ID documents myself</label>" +
+        '<label class="tds-radio-group__item"><input type="radio" class="tds-radio" name="d3-uboroute" data-d3-gap-route="docs"' + (st.uboRoute === "docs" ? " checked" : "") + '><span class="tds-radio-group__content"><span class="tds-radio-group__label">I’ll collect ID documents myself</span></span></label>' +
         "</div>" +
         upload("proof", st.uboProof ? "Cap table attached" : "Upload cap table / share register", st.uboProof, "Optional — speeds up ownership verification") +
-        '<button type="button" class="d3-kyb-gaplink" data-d3-gap-skip>I don’t have this</button>',
+        linkBtn("data-d3-gap-skip","I don’t have this"),
       { action: true }
     );
   }

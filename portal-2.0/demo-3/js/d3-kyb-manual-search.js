@@ -430,6 +430,21 @@
 
     if (!result.visible.length) {
       closeMenu();
+      if (flow.armed) {
+        /* The setup step is folded away, so say it here: nothing found, and offer
+           the manual route instead of leaving the user with a blank dropdown. */
+        var opts = byId("vb-search-options");
+        var foot = byId("vb-search-footer");
+        if (opts) {
+          opts.innerHTML =
+            '<div class="vb-nomatch"><p class="vb-nomatch__title">No matches for “' + escapeHtml(input.value.trim()) + '”</p>' +
+            '<p class="vb-nomatch__text">Try a different spelling or the registration number, or enter the details yourself.</p>' +
+            '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-nomatch-manual>Enter details manually</button></div>';
+          if (foot) foot.hidden = true;
+          openMenu();
+        }
+        return;
+      }
       var hint = byId("vb-search-hint");
       if (hint) {
         hint.textContent = "No matches found for this search.";
@@ -440,6 +455,22 @@
 
     renderMenu(result);
   }
+
+  function escapeHtml(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  document.addEventListener("click", function (event) {
+    var t = event.target;
+    if (!t || !t.closest || !t.closest("[data-d3-nomatch-manual]")) return;
+    event.preventDefault();
+    var S = window.D3KybSession;
+    if (S) S.set({ finderEnabled: false }, "manual");
+  });
 
   function selectActiveMatch() {
     if (!typeahead.visibleMatches.length) return;

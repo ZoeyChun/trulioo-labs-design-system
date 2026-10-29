@@ -156,7 +156,7 @@
   padding: var(--spacing-8, 8px) var(--spacing-12, 12px);
   border-radius: var(--radius-lg, 12px);
   background: var(--surface-review-subtle, #fdf3e1);
-  color: var(--text-review, #7a4b00);
+  color: var(--color-teal-70, #006b5c);
 }
 
 .d3-kyb-pkgcard__select {
