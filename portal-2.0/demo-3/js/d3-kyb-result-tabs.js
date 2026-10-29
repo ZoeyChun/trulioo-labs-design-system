@@ -947,6 +947,8 @@
       sourcesPanel.innerHTML =
         '<p class="d3-workspace__hint">Sources are shown under Match Signals &amp; Sources.</p>';
     }
+    /* Findings is the first tab — every open path ends up here, so fill it too. */
+    if (window.D3KybFindings) window.D3KybFindings.render(resumeCard, biz);
   }
 
   window.D3KybResultTabs = {

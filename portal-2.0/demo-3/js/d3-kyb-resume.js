@@ -421,6 +421,8 @@
   function expandToFullReport(session) {
     session = session || readSession() || DEFAULT_SESSION;
     var name = session.businessName || "Acme Inc.";
+    /* Findings must read the same status the header tag shows. */
+    if (window.D3KybFindings) window.D3KybFindings.setStatus(session.status || "Verified");
 
     if (window.D3Nav) window.D3Nav.openKybChat({ resume: true });
     if (window.D3KybReport && window.D3KybReport.setTier) window.D3KybReport.setTier(session.tier || "complete");
