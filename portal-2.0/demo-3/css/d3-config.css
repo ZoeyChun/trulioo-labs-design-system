@@ -1,0 +1,231 @@
+/* Demo 3 — Settings → Configuration (lives inside the Organization admin slot). */
+
+.d3-config {
+  display: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.d3-config::-webkit-scrollbar { display: none; }
+
+.d3-org[data-d3-settings-page="config"] .d3-org__frame { display: none; }
+.d3-org[data-d3-settings-page="config"] .d3-config { display: block; }
+
+.d3-cfg {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 880px;
+  margin-inline: auto;
+  padding: var(--spacing-32) clamp(32px, 5vw, 56px) var(--spacing-48, 48px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+.d3-cfg__title {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-xl);
+}
+
+.d3-cfg__sub {
+  margin: var(--spacing-8) 0 0;
+  color: var(--text-caption);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-lg);
+}
+
+.d3-cfg__tabs {
+  display: flex;
+  gap: var(--spacing-24);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.d3-cfg__tab {
+  margin: 0 0 -1px;
+  padding: var(--spacing-8) 0 var(--spacing-12);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--text-description);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium, 500);
+  cursor: pointer;
+}
+
+.d3-cfg__tab.is-active {
+  border-bottom-color: var(--interactive-default);
+  color: var(--text-default);
+}
+
+.d3-cfg__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  padding: var(--spacing-24);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  background: var(--surface-neutral-01);
+}
+
+.d3-cfg__block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+
+.d3-cfg__h {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+}
+
+.d3-cfg__hint {
+  margin: calc(-1 * var(--spacing-8)) 0 0;
+  color: var(--text-caption);
+  font-size: var(--font-size-sm);
+  line-height: 20px;
+}
+
+.d3-cfg__rule {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.d3-cfg__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.d3-cfg__cards .tds-radio-card { cursor: pointer; }
+
+.d3-cfg__bullets { color: var(--text-caption); }
+
+.d3-cfg__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+}
+
+.d3-cfg__row-text,
+.d3-cfg__check-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.d3-cfg__check-name {
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 20px;
+}
+
+.d3-cfg__check-note {
+  color: var(--text-description);
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+}
+
+.d3-cfg__checks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+
+.d3-cfg__check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+  cursor: pointer;
+}
+
+.d3-cfg__check .tds-checkbox { flex: 0 0 auto; margin-top: 2px; }
+
+.d3-cfg__empty {
+  margin: 0;
+  color: var(--text-description);
+  font-size: var(--font-size-sm);
+}
+
+.d3-cfg__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-12);
+  padding-top: var(--spacing-16);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.d3-cfg__status {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.d3-cfg__status b {
+  color: var(--text-default);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.d3-cfg__summary {
+  color: var(--text-caption);
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+}
+
+.d3-cfg__actions {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  gap: var(--spacing-8);
+  margin-left: auto;
+}
+
+/* Saved: the choices are read-only until Edit. */
+.d3-cfg__card.is-locked .d3-cfg__cards,
+.d3-cfg__card.is-locked .d3-cfg__row .tds-switch,
+.d3-cfg__card.is-locked .d3-cfg__checks {
+  pointer-events: none;
+}
+
+.d3-cfg__card.is-locked .d3-cfg__cards .tds-radio-card:not(.tds-radio-card--selected) {
+  opacity: 0.55;
+}
+
+/* Settings flyout (Configuration / Org admin), same panel as the account menu. */
+.d1-fly--settings .d1-fly__panel {
+  top: auto;
+  bottom: -8px;
+  left: calc(100% + 24px);
+}
+
+.d1-fly__label {
+  margin: 0;
+  padding: var(--spacing-8) var(--spacing-12) var(--spacing-4);
+  color: var(--text-caption);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.d1-fly--settings .d1-menu-item[aria-current="page"] {
+  background: var(--surface-selected);
+}

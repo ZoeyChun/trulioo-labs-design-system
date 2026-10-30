@@ -274,7 +274,7 @@
           steps += step("done", "Package set", pkgName()) + step("done", "Add-ons", addonsNote());
           if (r.ubo === "public") steps += step("done", "Ownership", "Pulled from " + esc((S.country(pending.cc) || {}).registry || "the registry"));
           else if (r.ubo === "private") steps += step("done", "Ownership", esc(S.get().ubo.name.trim()) + " · " + parseFloat(S.get().ubo.pct) + "%");
-          else if (r.ubo === "skipped") steps += step("done", "Ownership", "Reported as not disclosed");
+          else if (r.ubo === "skipped" || r.ubo === "off") steps += step("done", "Ownership", "Reported as not disclosed");
           steps += step("current", "Ready to verify", "Execute in the chat");
         }
         fill(tag, pending.name, lead, steps);

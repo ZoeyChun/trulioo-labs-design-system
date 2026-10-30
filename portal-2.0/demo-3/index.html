@@ -58,9 +58,11 @@
   <link rel="stylesheet" href="../demo-4/css/truai-bubble.css?v=4">
   <link rel="stylesheet" href="components/ai-panel/treatments/treatments.css?v=9">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
+  <link rel="stylesheet" href="css/d3-config.css?v=4">
+  <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="css/d3-home.css?v=18">
   <link rel="stylesheet" href="css/d3-workspace.css?v=34">
-  <link rel="stylesheet" href="css/d3-kyb-gap.css?v=26">
+  <link rel="stylesheet" href="css/d3-kyb-gap.css?v=30">
   <link rel="stylesheet" href="css/d3-kyb-package.css?v=14">
   <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=9">
   <link rel="stylesheet" href="css/d3-embed-report.css?v=1">
@@ -226,13 +228,24 @@
     </nav>
 
     <div class="d1-rail__tools">
-      <button type="button" class="d1-tool-btn d1-tool-btn--lg" data-d3-nav="settings" aria-label="Settings">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
-          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-        </svg>
-        <span class="d1-nav-tip" aria-hidden="true">Settings</span>
-      </button>
+      <div class="d1-fly d1-fly--settings">
+        <button type="button" class="d1-tool-btn d1-tool-btn--lg" data-d3-nav="settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
+            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+          </svg>
+          <span class="d1-nav-tip" aria-hidden="true">Settings</span>
+        </button>
+        <div class="d1-fly__panel d1-account-menu" id="d1-settings-menu" role="menu" aria-label="Settings">
+          <p class="d1-fly__label" role="presentation">Settings</p>
+          <button type="button" class="d1-menu-item" role="menuitem" data-d3-settings-go="config">
+            <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M2.5 4.5h6M11.5 4.5h2M2.5 11.5h2M7.5 11.5h6"/><circle cx="10" cy="4.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="11.5" r="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Configuration
+          </button>
+          <button type="button" class="d1-menu-item" role="menuitem" data-d3-settings-go="org">
+            <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6" cy="5.5" r="2.25" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M2 13c.5-2.2 2-3.4 4-3.4s3.5 1.2 4 3.4M11 3.5a2.25 2.25 0 0 1 0 4M12.5 9.8c.9.5 1.5 1.5 1.8 3.2"/></svg>Org admin
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="d1-rail__account">
@@ -307,6 +320,7 @@
           loading="lazy"
           referrerpolicy="no-referrer"
         ></iframe>
+        <div class="d3-config" data-d3-config aria-label="Configuration"></div>
       </section>
       <section class="d3-workspace" data-d3-workspace data-d3-kyb-surface="map" aria-label="KYB Verification">
         <canvas class="d3-kyb-dots" id="d3-kyb-dots" aria-hidden="true"></canvas>
@@ -585,6 +599,10 @@
                 </div>
               </div>
 
+              <div class="d3-kyb-savedline" data-d3-kyb-saved hidden>
+                <span class="d3-kyb-savedline__text"><b>Saved configuration</b><span data-d3-saved-text></span></span>
+                <button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-saved-edit>Edit</button>
+              </div>
               <div data-d3-kyb-pkg data-variant="compact"></div>
               <div data-d3-kyb-addons></div>
               <div data-d3-kyb-inputs data-variant="form"></div>
@@ -1432,19 +1450,20 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-kyb-ubo-graph.js?v=8"></script>
 <script src="js/d3-kyb-result-tabs.js?v=7"></script>
 <script src="js/d3-kyb-findings.js?v=2"></script>
-<script src="js/d3-kyb-session.js?v=20"></script>
+<script src="js/d3-kyb-session.js?v=21"></script>
 <script src="js/d3-kyb-gap.js?v=14"></script>
+<script src="js/d3-kyb-config.js?v=4"></script>
 <script src="js/d3-kyb-package.js?v=11"></script>
 <script src="js/d3-kyb-resume.js?v=55"></script>
 <script src="js/d3-kyb-report-reveal.js?v=38"></script>
 <script src="js/d3-kyb-map-search.js?v=51"></script>
 <script src="js/d3-kyb-manual-search.js?v=15"></script>
-<script src="js/d3-kyb-agent.js?v=62"></script>
+<script src="js/d3-kyb-agent.js?v=67"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=42"></script>
 <script src="js/d3-transactions.js?v=19"></script>
-<script src="js/d3-org.js?v=5"></script>
+<script src="js/d3-org.js?v=7"></script>
 <script src="../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="transactions-view/js/demo-transactions.js?v=1"></script>
 <script src="js/d3-home-recent.js?v=2"></script>
@@ -1459,7 +1478,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-home-placeholder.js?v=3"></script>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>
 <script src="js/d3-home-dots.js"></script>
-<script src="js/d3-kyb-canvas.js?v=16"></script>
+<script src="js/d3-kyb-canvas.js?v=17"></script>
 <script src="js/d3-chat-history.js?v=19"></script>
 <script src="js/d3-chat-follow.js?v=1"></script>
 <script src="js/d3-embed-report.js?v=5"></script>

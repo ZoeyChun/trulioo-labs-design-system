@@ -931,11 +931,19 @@
     var S = window.D3KybSession;
     var st = S.get();
     var c = S.country(wizCc());
-    var owners = S.tabAllowed(st.package, "ownership", []) && c && c.ubo === "private";
+    var owners = S.tabAllowed(st.package, "ownership", []) && c && c.ubo === "private" && S.hasUboAddon(st.addons);
     return !!(owners || st.addons.indexOf("never") !== -1);
   }
 
   function wizSteps() {
+    /* With a saved configuration only what is left is asked: which business, and
+       any details that business needs. */
+    if (wiz.saved) {
+      var short = [];
+      if (!wiz.fixedBiz) short.push("business");
+      if (wizNeedsInputs()) short.push("inputs");
+      return short;
+    }
     var steps = ["package"];
     if (!wiz.fixedBiz && wiz.finderSupported) steps.push("finder");
     if (!wiz.fixedBiz) steps.push("business");
@@ -987,6 +995,14 @@
         );
       })
       .join("");
+    if (wiz.saved) {
+      var S0 = window.D3KybSession;
+      return (
+        '<div class="d3-kyb-wiz__head"><span class="d3-kyb-wiz__count">Saved configuration</span>' +
+        '<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" data-d3-wiz-edit-saved>Edit</button></div>' +
+        '<div class="d3-kyb-wiz__chips"><span class="d3-kyb-wiz__chip is-static"><span>' + esc(S0.scopeLabel()) + "</span></span></div>"
+      );
+    }
     return (
       '<div class="d3-kyb-wiz__head"><span class="d3-kyb-wiz__count">Question ' + (idx + 1) + " of " + steps.length +
       '</span><span class="d3-kyb-wiz__dots" aria-hidden="true">' + dots + "</span></div>" +
@@ -1222,11 +1238,24 @@
       finderAnswered: !!biz || (!S.get().finderEnabled && !!cc),
       listing: false
     };
+    /* A saved configuration (Settings → Configuration) answers the package, Finder
+       and add-on questions up front. */
+    var cfg = S.savedConfig && S.savedConfig();
+    if (cfg) {
+      wiz.saved = true;
+      S.set({ package: cfg.package, packageChosen: true, finderEnabled: cfg.finder, addons: cfg.addons, addonsChosen: true }, "agent");
+      wiz.finderAnswered = true;
+    }
     if (biz) {
       S.set({ entity: { id: biz.id, name: biz.name, cc: biz.cc } }, "agent");
       focusCandOnMap(biz);
     }
     var steps = wizSteps();
+    if (!steps.length) {
+      wiz.biz = biz;
+      wizFinish();
+      return;
+    }
     var first = steps.filter(function (x) { return !wizAnswered(x); })[0] || steps[0];
     wizGo(first);
   }
@@ -1308,7 +1337,7 @@
     );
     wiz.active = false;
     lockPanel(wiz.el);
-    renderUser(parts.join(" · "));
+    renderUser(wiz.saved ? biz.name : parts.join(" · "));
     showConfirmStep(biz);
   }
 
@@ -1323,6 +1352,9 @@
     el.classList.add("d3-kyb-agent-wrap", "d3-kyb-wizard");
     wiz.el = el;
     wiz.active = true;
+    /* Edit leaves the saved setup for this one verification: every question again. */
+    wiz.saved = false;
+    wiz.finderAnswered = true;
     wizGo("package");
   }
 
@@ -1367,9 +1399,9 @@
 
     var lines = [];
     lines.push("<li><b>Entity</b>" + esc(biz.name) + (biz.status ? " (" + esc(biz.status) + ")" : "") + "</li>");
-    lines.push("<li><b>Scope</b>" + esc(S.scopeLabel()) + "</li>");
+    lines.push("<li><b>" + (wiz && wiz.saved ? "Saved configuration" : "Scope") + "</b>" + esc(S.scopeLabel()) + "</li>");
     if (r.ubo === "public") lines.push("<li><b>Ownership</b>Pulled from " + esc(registryThe(biz)) + "</li>");
-    if (r.ubo === "skipped") lines.push("<li><b>Ownership</b>Reported as not disclosed</li>");
+    if (r.ubo === "skipped" || r.ubo === "off") lines.push("<li><b>Ownership</b>Reported as not disclosed</li>");
     if (st.ubo.email.trim() && r.ubo === "private" && st.uboRoute === "email") {
       lines.push("<li><b>Downstream</b>An automated KYC invite will be sent to the UBO</li>");
     }
@@ -1378,17 +1410,12 @@
       saidHtml(biz) +
       '<div class="ai-reply"><p class="ai-reply__lead">' + lead + "</p></div>" +
       '<div class="tds-announcement tds-announcement--info d1-confirm" data-d1-confirm-card>' +
-      '<span class="tds-announcement__icon" data-d1-confirm-icon aria-hidden="true">' +
-      '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
-      '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m3 13 6.5-6.5M10.5 3l.7 1.8L13 5.5l-1.8.7L10.5 8l-.7-1.8L8 5.5l1.8-.7L10.5 3ZM4 4.5l.4 1 .9.4-.9.4L4 7.5l-.4-1-.9-.4.9-.4L4 4.5Z"/>' +
-      "</svg></span>" +
       '<div class="tds-announcement__content">' +
-      '<p class="tds-announcement__title" data-d1-confirm-action>Ready to verify</p>' +
       '<ul class="d3-kyb-review" data-d1-confirm-detail>' + lines.join("") + "</ul>" +
       '<div class="tds-announcement__actions" data-d1-confirm-buttons>' +
-      '<button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-kyb-confirm="yes">Execute verification</button>' +
-      '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-kyb-wizard-reopen>Change selections</button>' +
-      '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-kyb-confirm="no">Cancel</button>' +
+      '<button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-kyb-confirm="yes">Verify</button>' +
+      '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-kyb-wizard-reopen>Edit</button>' +
+      '<button type="button" class="tds-btn tds-btn--md tds-btn--invisible" data-d3-kyb-confirm="no">Cancel</button>' +
       "</div></div></div>";
     stick();
   }
@@ -2214,7 +2241,7 @@
      chip, a match) can be clicked while the user is on another page: take them
      back to KYB, then let the click through. */
   var KYB_CONTROL =
-    "[data-d3-kyb-confirm], [data-d3-kyb-pkg-pick], [data-d3-kyb-finder-pick], [data-d3-wiz-goto], [data-d3-wiz-back], [data-d3-wiz-next], [data-d3-wiz-finish], [data-d3-kyb-wizard-reopen], [data-d3-kyb-country-pick], [data-d3-kyb-cand], .ai-cand, [data-d3-kyb-select], [data-d3-kyb-filter]";
+    "[data-d3-kyb-confirm], [data-d3-kyb-pkg-pick], [data-d3-kyb-finder-pick], [data-d3-wiz-goto], [data-d3-wiz-edit-saved], [data-d3-wiz-back], [data-d3-wiz-next], [data-d3-wiz-finish], [data-d3-kyb-wizard-reopen], [data-d3-kyb-country-pick], [data-d3-kyb-cand], .ai-cand, [data-d3-kyb-select], [data-d3-kyb-filter]";
 
   thread.addEventListener(
     "click",
@@ -2268,6 +2295,18 @@
     if (finderPick) {
       event.preventDefault();
       if (wizActive() && wiz.step === "finder") wizFinderPicked(finderPick.getAttribute("data-d3-kyb-finder-pick") === "on");
+      return;
+    }
+
+    if (event.target.closest("[data-d3-wiz-edit-saved]")) {
+      event.preventDefault();
+      /* Leave the saved setup for this one verification: the questions, with the
+         saved answers already filled in. */
+      if (wizActive()) {
+        wiz.saved = false;
+        wiz.finderAnswered = true;
+        wizGo("package");
+      }
       return;
     }
 
