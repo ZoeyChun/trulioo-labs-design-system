@@ -21,9 +21,12 @@
    Lab panel — top right, clear of the breadcrumb
    ------------------------------------------------------------------ */
 
+/* Below the detail's top bar, not level with it. The breadcrumb owns the
+   top-left and the parent's "New verification" button owns the top-right,
+   so 12px from the top sat straight on top of that button. */
 .kw-lab--report {
   display: none;
-  top: 12px;
+  top: 62px;
   right: 12px;
   left: auto;
 }

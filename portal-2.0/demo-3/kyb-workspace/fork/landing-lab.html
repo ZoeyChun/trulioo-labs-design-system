@@ -1,0 +1,49 @@
+
+    <!-- Landing layout lab.
+         Sits on the dot ground rather than inside the sheet, so the
+         controls are never mistaken for part of the design they drive.
+         Only shown on the KYB landing (see landing-layouts.css).
+
+         Three independent axes — header, search, recent — plus a toggle
+         for whether recents read as a separated secondary section. The
+         presets are shorthand that set all four at once.
+
+         Every option is CSS over ONE set of nodes. The search is the
+         vb-lookup composite wired by js/d3-kyb-manual-search.js by id,
+         and the recent cards are bound by js/d3-kyb-resume.js, so
+         per-option markup would mean per-option wiring. -->
+    <details class="kw-lab kw-lab--landing" data-kw-lab open>
+      <summary class="kw-lab__toggle" title="Design exploration — pick a combination and delete this panel">
+        <span class="kw-variants__tag">Lab</span>
+        <span class="kw-lab__toggle-text">Layout</span>
+      </summary>
+
+      <div class="kw-lab__row kw-lab__row--presets">
+        <div class="kw-lab__presets" role="group" aria-label="Presets" data-kw-presets>
+          <button type="button" class="kw-lab__preset is-active" data-kw-preset="figma">Figma</button>
+          <button type="button" class="kw-lab__preset" data-kw-preset="boxed">Boxed</button>
+          <button type="button" class="kw-lab__preset" data-kw-preset="tiles">Tiles</button>
+          <button type="button" class="kw-lab__preset" data-kw-preset="rows">Rows</button>
+        </div>
+      </div>
+
+      <div class="kw-lab__row">
+        <span class="kw-lab__label">Grouping</span>
+        <div class="kw-lab__opts" role="group" aria-label="Container grouping" data-kw-axis="group">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="open">Open</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="all">One container</button>
+        </div>
+      </div>
+
+      <div class="kw-lab__row">
+        <span class="kw-lab__label">Recent</span>
+        <div class="kw-lab__opts" role="group" aria-label="Recent transactions treatment" data-kw-axis="recent">
+          <button type="button" class="kw-lab__opt is-active" aria-pressed="true" data-kw-opt="list">List</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="rows">Rows</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="tiles">Tiles</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="chips">Chips</button>
+          <button type="button" class="kw-lab__opt" aria-pressed="false" data-kw-opt="table">Table</button>
+        </div>
+      </div>
+    </details>
+

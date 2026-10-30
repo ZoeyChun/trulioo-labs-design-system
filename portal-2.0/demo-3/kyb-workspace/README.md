@@ -1,12 +1,12 @@
 # Demo 3 — KYB workspace canvas
 
-Fork of `../index.html` reduced to **KYB Verification only**, re-cast as a
-two-column workspace: TruAI docked on the left, a dotted canvas on the right
-with the content on a 600px white sheet, centred.
+Fork of `../index.html` re-cast as a two-column workspace: TruAI docked on the
+left, a dotted canvas on the right with the content on a 600px white sheet,
+centred.
 
-The page opens straight on KYB Verification. Home, Transactions, Labs, Dev
-Dashboard and Chats are gone from the rail — this fork exists to work on the
-KYB screens, and a rail full of destinations that lead out of them is noise.
+The page opens straight on KYB Verification — that is what it exists to work
+on — but the rail is the parent's in full, so everything else is still
+reachable.
 
 | | URL |
 |--|--|
@@ -16,44 +16,78 @@ KYB screens, and a rail full of destinations that lead out of them is noise.
 
 No sign-in, same as `ai-panel-lab/` — this is a layout lab.
 
+## The pages are generated — run the build
+
+`index.html` and `report.html` are **not edited by hand.** They are the parent
+page plus a short, named list of deltas, and `build.mjs` applies them:
+
+```bash
+node portal-2.0/demo-3/kyb-workspace/build.mjs
+```
+
+**Run it whenever `../index.html` moves.** Edit `build.mjs` (or
+`fork/landing-lab.html`) to change the fork; edit the `css/` and `js/` files
+here freely — those are the fork's own and the build does not touch them.
+
+This replaced hand-merging, which drifted twice. The second time the fork was
+missing **ten stylesheets and thirteen scripts** the parent had gained — chat
+history, chat-follow, the AI-panel treatments, the TruAI bubble, the
+verification wizard — so the sidebar and the chat suggestions were visibly a
+different build of the same product. Nothing in the fork said so; it just
+looked wrong.
+
+Every transform asserts that its anchor matches exactly once, so a parent that
+moves out from under the fork **fails the build** instead of quietly writing a
+page with a piece missing.
+
 ## Status
 
 - **KYB Verification landing** — rebuilt on Figma `1665:20500`, with two
   layout axes. See [Landing layouts](#landing-layouts).
-- **Waiting for country** — a status screen, with two step-tracker
-  treatments. See [Waiting for country](#waiting-for-country).
-- **Map view, report, matches** — render on the canvas already (nothing in
-  `.d1-main` was touched), but they break out of both the width cap and the
-  height hug and haven't had a design pass.
+- **Waiting for country** — now the **parent's** panel (`.d3-kyb-country`).
+  This fork's own version has been removed; see
+  [Waiting for country](#waiting-for-country).
+- **Report, isolated** — `report.html`, four agentic views over progressive
+  generation. See [Report, isolated](#report-isolated).
+- **Map view, matches** — render on the canvas already (nothing in `.d1-main`
+  was touched), but they break out of both the width cap and the height hug
+  and haven't had a design pass.
 
 ## What changed vs. the parent page
 
 | | Parent `demo-3/index.html` | Here |
 |--|--|--|
-| Scope | Home, KYB, Transactions, Labs, Org | **KYB only.** Rail trimmed to KYB + Settings; opens on KYB Verification |
+| Scope | Opens on Home | **Opens on KYB Verification** (`data-d3-lab` + `kyb-boot.js`) |
 | TruAI panel | Collapses to the floating ask bar | Permanent column; close control + askbar removed |
 | Right side | White `.d1-main`, flush to the shell | `surface-neutral-02` canvas with a dot field; content on one white sheet with a shadow |
 | Content width | Full bleed | Sheet capped at 600px, centred horizontally **and vertically** (map and report excepted) |
 | Sheet height | Full height of the shell | Hugs its content; scrolls inside only when taller than the stage |
-| Waiting for country | Status card — pulse, title, three-dot rail | Working step: the question, a step tracker, and the country picker |
+| Auth | `js/auth-gate.js` | An inline shim — see below |
 
-Everything else — rail, KYB agent, map, report, drawer, motion — is the parent's,
-unforked.
+Everything else — **the rail**, the KYB agent, map, report, drawer, motion — is
+the parent's, unforked.
+
+> The rail used to be trimmed to KYB + Settings, on the grounds that a rail
+> full of destinations leading out of the KYB screens was noise. That is what
+> made the sidebar look like an old build once the parent gained its Chats
+> menu and second layer, so it is gone: the rail is the parent's now. The
+> home view it can reach is already neutralised — `workspace-canvas.css` §4
+> makes `.kw-stage` an inert pass-through there.
 
 ## Files
 
 ```
 kyb-workspace/
-  index.html                 # the fork
+  build.mjs                  # SOURCE OF TRUTH for the two pages — run it
+  fork/landing-lab.html      # the landing lab panel, injected by the build
+  index.html                 # GENERATED — do not edit
+  report.html                # GENERATED — do not edit
   css/workspace-canvas.css   # stage, dot ground, the sheet (width + height), docked panel
-  css/country-step.css       # waiting-for-country step
-  css/landing-layouts.css    # KYB landing — the four layout axes + lab panel
+  css/landing-layouts.css    # KYB landing — the layout axes + lab panel
+  css/report-views.css       # report views + generation states
   js/workspace-canvas.js     # dot field mount, docked-panel guard
   js/kyb-boot.js             # KYB-only boot (initial view, brand-mark re-point)
-  js/country-step.js         # country data + the two selector treatments
   js/landing-layouts.js      # landing layout axes, presets, chips
-  report.html                # the report, isolated — opens on one business
-  css/report-views.css       # report views + generation states
   js/report-boot.js          # opens the report for Apex Nordic Logistics AB
   js/report-views.js         # progressive generation + view switch
 ```
@@ -296,54 +330,33 @@ Pick a combination, then delete the panel, the lab section of
 
 ## Waiting for country
 
-`index.html` → `[data-d3-kyb-map-await]`, `css/country-step.css`,
-`js/country-step.js`.
+**This fork no longer owns this screen.** `css/country-step.css` and
+`js/country-step.js` are deleted, and the lab panel with them.
 
-A **status screen, not a form**. The user answers in chat, so there is nothing
-to pick here. It carries five things: that it is waiting, what it is waiting
-on, what it already has, what comes next, and what a valid answer looks like.
+The design graduated: the parent page now ships its own waiting-for-country
+panel — `.d3-kyb-country` with a `.d3-kyb-steps` tracker, inside
+`[data-d3-kyb-map-await]` — carrying the same ideas this fork worked out (a
+status screen rather than a form; a timeline tracker; the question answered in
+chat). Keeping a second copy here in the `kw-country` namespace would have
+meant two implementations of one screen, with this one losing every time the
+parent moved.
 
-An earlier pass made this an interactive country picker — a dropdown, a
-quick-pick grid, a Continue button that handed the answer to the agent. All
-removed: the conversation already owns that input, and a second one on the
-canvas meant two places to answer the same question. It is in git history.
+What the fork still does for it is a layout fix, in `workspace-canvas.css`:
+`.d3-kyb-map` is `position: absolute; inset: 0` over the Leaflet pane, so out
+of flow it contributes no height and the hugging sheet collapsed to 2px. On
+the map surface the awaiting-country state goes back in flow and the map
+chrome underneath comes out. Everything below about the old axes is history —
+see git for `country-step.css`.
 
-### Axes
+<details>
+<summary>What it used to be</summary>
 
-Both mirror the landing's, so the two screens stay in step.
+A status screen with two axes — grouping and six step-tracker treatments
+(timeline, cards, rail, numbered, chevrons, inline), timeline default. Before
+that, an interactive country picker with a dropdown, a quick-pick grid and a
+Continue button; removed because the conversation already owns that input.
 
-| Axis | Attribute | Options |
-|--|--|--|
-| Grouping | `data-kw-group` | `open` · `all` |
-| Step tracker | `data-kw-steps` | `cards` · `timeline` |
-
-**Step tracker** — three steps only: Name set ✓ → Country needed → Business
-matches.
-
-- **Cards** — three cells across a tinted band, the current one lifted onto
-  white. Reads as "you are here, of three". The per-step notes are hidden
-  here: at a third of 600px there is no room for a second line, and a
-  truncated hint is worse than none.
-- **Timeline** — stacked, marks joined by a rule. Vertical space is the one
-  thing this screen has spare, and it buys room for the note under each label,
-  so each step says what it *is* as well as where it sits.
-
-**Grouping** — `open` puts the content on the dot ground (and gets the same
-canvas mask the landing uses, clearing the pattern behind the text); `all`
-boxes it in one card. Under `all` the tracker's tinted band becomes an outline
-instead, so the card does not stack two greys.
-
-### Clearing the way for it
-
-The sheet removal and the `.d3-kyb-map` fill both had to be dealt with before
-`open` could show any dots at all:
-
-- `.kw-stage__body` is the white card the other KYB surfaces sit on. Its
-  removal is keyed off the resume surface **and** the await panel, because
-  this step lives on the *map* surface with the panel drawn over it.
-- `d3-workspace.css` fills `.d3-kyb-map` white for the Leaflet pane. With the
-  sheet gone that fill became the thing covering the dots, so it is cleared
-  while `is-awaiting-country` is set.
+</details>
 
 ## Report, isolated
 

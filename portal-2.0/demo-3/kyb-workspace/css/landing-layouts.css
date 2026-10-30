@@ -369,8 +369,11 @@
    "One container" needs none of it — its card already covers the
    content.
    ------------------------------------------------------------------ */
-.kw-shell[data-d3-view="chat"] .kw-stage:has([data-d3-kyb-landing][data-kw-group="open"]):has(.d3-workspace[data-d3-kyb-surface="resume"]) .kw-stage__dots,
-.kw-shell[data-d3-view="chat"] .kw-stage:has([data-kw-country][data-kw-group="open"]):has([data-d3-kyb-map-await]:not([hidden])) .kw-stage__dots {
+/* The country step is no longer matched here: the parent page ships
+   its own waiting-for-country panel now (.d3-kyb-country), and this
+   fork's [data-kw-country] markup went with the rebuild. The panel is
+   a card in its own right, so it needs no clearing. */
+.kw-shell[data-d3-view="chat"] .kw-stage:has([data-d3-kyb-landing][data-kw-group="open"]):has(.d3-workspace[data-d3-kyb-surface="resume"]) .kw-stage__dots {
   -webkit-mask-image: radial-gradient(
     circle 440px at 50% 48%,
     transparent 0,
