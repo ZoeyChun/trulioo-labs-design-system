@@ -288,6 +288,15 @@
     if (/open (the )?(report|overview)|show (the )?report|go to overview/.test(lower)) {
       return { intent: "tab", tab: "overview" };
     }
+    /* Findings is the report's first tab, so it needs a phrasing of its
+       own — "summary" above would otherwise swallow anything asking
+       what the check concluded. */
+    if (/finding|verdict/.test(lower)) {
+      return { intent: "tab", tab: "findings" };
+    }
+    if (/business info|registry detail|company detail/.test(lower)) {
+      return { intent: "tab", tab: "overview" };
+    }
     if (/web|social/.test(lower) && /insight|signal|tab|show|open/.test(lower)) {
       return { intent: "tab", tab: "web" };
     }

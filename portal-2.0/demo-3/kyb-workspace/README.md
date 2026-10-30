@@ -368,10 +368,16 @@ card can exist before its handler does.
 
 ### Progressive generation
 
-The report no longer arrives whole. **Only the Overview is generated on load**;
-Ownership & UBO, Match Signals & Sources, Web & Social Insights and Additional
-Data are offered as stubs the user asks for, one at a time. The traditional tab
-bar is hidden in every view — it is the thing being moved away from.
+The report no longer arrives whole. **Only Findings is generated on load** —
+it is the verdict, and the one section worth having before you know what you
+are looking for. Business Info, Owners & UBOs, Match Signals & Sources, Web &
+Social Insights and Additional Data are offered as stubs the user asks for, one
+at a time. The traditional tab bar is hidden in every view — it is the thing
+being moved away from.
+
+> Findings is upstream's doing: `831fb9b` added it as the report's first tab and
+> renamed Overview to **Business Info**. Making it the seeded section is what
+> keeps this fork reading the same way the parent does.
 
 **Generation rides the chat.** Asking for a section dispatches the same
 `d3-chat:send` the suggested-action buttons use, so the left panel shows the
@@ -403,8 +409,8 @@ routed correctly; that one had none.
 
 | View | Offer | Reading |
 |--|--|--|
-| **Feed** | Stubs stacked under the overview | One column that grows downward. "Generate the next part" reads as continuing, not as opening something else. |
-| **Nodes** | A canvas of connected cards | A parent and four **peers in a row** — the sections are not a hierarchy, so a vertical chain would assert an order that is not there. Pans in both axes like a FigJam board, grab cursor and all; no zoom, since at four fixed children there is nothing to zoom out to see. Refers to [Figma `554:67495`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=554-67495) for the arrangement only — its content goes well outside KYB. |
+| **Feed** | Stubs stacked under Findings | One column that grows downward. "Generate the next part" reads as continuing, not as opening something else. |
+| **Nodes** | A canvas, read left to right | **Three columns** — the report, every section as a card, and the one you open drawn in full. Pans in both axes like a FigJam board, grab cursor and all, and zooms from a `− % + Fit` control at the foot. Follows [Figma `1804:89084`](https://www.figma.com/design/qtvqgc1fWEw0znhl4b8xPF/Portal-2.0-Design---2026?node-id=1804-89084). |
 | **Rail** | A standing index down the left | Every section listed whether it exists yet or not, with its state. Answers "what else could I have?" without scrolling. |
 | **Focus** | One section, nothing else | The contrast: no index, no neighbours, a pager strip. Asks what a report is when the reader is never given a choice of what to read *next*, only what to ask for next. |
 
@@ -412,16 +418,41 @@ Per-section state is on both the stub and the panel as `data-kw-state` =
 `idle` · `running` · `done`, so a view styles the offer and the result from the
 same rule.
 
-**Reset to overview only** in the lab panel puts every section back to `idle`,
-for running the flow again without a reload.
+**Reset to overview only** in the lab panel puts every section back to `idle`
+(Findings excepted — it is seeded), for running the flow again without a
+reload.
 
-Three things that bit, worth knowing before editing:
+Things that bit, worth knowing before editing:
 
-- **The node canvas is grid, not flex.** The parent is capped at 560px for
-  readability, so under `flex-wrap` it never filled its row and the first child
-  tucked in beside it. Grid separates how wide the box *looks* from how much of
-  the row it *claims*; a generated node then takes `span 2` and its peers
-  reflow around it.
+- **Nothing in columns 1 and 2 of the node canvas may change size.** The whole
+  point of the three-column split is that generating a section does not move
+  anything: the card was already there and stays put, and what changes is what
+  column 3 holds. Three separate things broke that and each had to be fixed:
+
+  - `grid-row: 1 / -1` with no `grid-template-rows` resolves against an
+    explicit grid that has one line, so it collapsed to a single row and the
+    open panel stretched it. The grid now declares one row per section,
+    `--kw-rows`, set from `js/report-views.js`.
+  - The open panel is **absolutely positioned**, not a grid item. As an item it
+    would be the tallest thing in the rows it spans and the section column
+    would stretch to match.
+  - The state tag has a `min-width`. "Not generated" is wider than "Ready", and
+    letting it shrink handed the room back to the title, which unwrapped — and
+    every card below moved. For the same reason the progress *line* is hidden
+    in this view and the tag carries the spinner instead.
+
+- **Column 3 is the only thing that scrolls.** It is also the only thing that
+  can be tall, which is what bounds the overflow. A `pointerdown` inside a
+  `.d3-kyb-panel` does not start a pan, so the panel scrolls and the ground
+  drags.
+
+- **The requested section keeps the canvas.** `handleTab()` in
+  `js/d3-kyb-agent.js` selects the asked-for tab and *then* hands off to
+  `handleRisk()`, which selects Business Info when the entity has no risks — so
+  asking for Match Signals opened a different node. `report-views.js` holds the
+  selection on a 6s clock (not until the first `selectTab`, which would let the
+  second one through). Anything the agent produces still counts as generated; a
+  user click clears the hold outright.
 - **The dot ground is the stage's own field**, not a background on an
   in-between container. `workspace-canvas.css` §1c hides it on the report
   surface because the card covers it; the nodes view turns it back on and drops

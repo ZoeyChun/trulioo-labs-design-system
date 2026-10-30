@@ -160,7 +160,87 @@
   font-size: 14px;
 }
 
-.kw-stub__text { min-width: 0; }
+.kw-stub__text { min-width: 0; flex: 1 1 auto; }
+
+/* What the card says about itself. Shown only in the nodes view,
+   where the card persists after generation and needs to say which of
+   the two it is; elsewhere the card disappears when the section
+   arrives, so the tag would only ever read "Not generated". */
+.kw-stub__tag {
+  display: none;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  /* One width for all three states. "Not generated" is wider than
+     "Ready", and letting the tag shrink on generation handed the extra
+     room back to the title, which then unwrapped — moving every card
+     below it. The card must not change size when its state does. */
+  min-width: 92px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--text-description, #526660);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 15px;
+  white-space: nowrap;
+}
+
+/* Progress, in the one place on the card that cannot change its size. */
+.kw-stub__tag[data-kw-tone="running"] {
+  color: var(--interactive-default, #0e8a78);
+}
+
+.kw-stub__tag[data-kw-tone="running"]::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  border: 2px solid color-mix(in srgb, var(--interactive-default, #0e8a78) 25%, transparent);
+  border-top-color: var(--interactive-default, #0e8a78);
+  border-radius: 50%;
+  animation: kw-spin 700ms linear infinite;
+}
+
+.kw-stub__tag[data-kw-tone="done"] {
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 11%, #fff);
+  color: var(--interactive-default, #0e8a78);
+}
+
+/* The port on the node's right edge — the Figma affordance for "there
+   is a branch here you have not opened". It sits on the wire. */
+.kw-stub__port {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: -11px;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 50%;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--interactive-default, #0e8a78);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.kw-stub__port:hover {
+  border-color: var(--interactive-default, #0e8a78);
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 10%, #fff);
+}
+
+.kw-stub__port:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
 
 .kw-stub__title {
   margin: 0 0 3px;
@@ -274,9 +354,8 @@
   background: transparent;
 }
 
-/* The identity row and the overview become the first two cards. */
+/* The identity row and every generated section are cards. */
 [data-kw-view="feed"] .d3-kyb-resume__identity,
-[data-kw-view="feed"] .d3-kyb-panel[data-d3-kyb-panel="overview"],
 [data-kw-view="feed"] .d3-kyb-panel[data-kw-label][data-kw-state="done"] {
   padding: 20px;
   border: 1px solid var(--border-subtle, #dde2de);
@@ -294,22 +373,28 @@
 [data-kw-view="feed"] .kw-index { display: none; }
 
 /* ==================================================================
-   VIEW B · Nodes
+   VIEW B · Nodes          (Figma 1804-89084)
 
-   A canvas, not a page. The dot ground is the stage's own field —
-   workspace-canvas.css §1c hides it on the report surface because the
-   card covers it, and this view turns it back on and drops every
-   container between it and the nodes. There is no in-between surface:
-   the nodes sit directly on the ground.
+   A canvas, not a page, reading left to right in three columns:
 
-   It pans in both axes like a FigJam board (js/report-views.js), so
-   .d3-workspace__detail stops scrolling and clips instead, and the
-   card is what moves.
+     1 · the report       the root node — who this is about
+     2 · the sections     one card each, every section the report has
+     3 · the open one     the section you asked for, drawn in full
 
-   The tree is one parent and four peers, laid out horizontally. The
-   sections are not a hierarchy — ownership does not contain signals —
-   so a vertical chain would assert an order that is not there. A
-   generated node grows and its peers give up width to it.
+   The column split is the whole design. Generating a section does not
+   change columns 1 or 2 at all — the card was already there and stays
+   exactly where it was; what changes is what column 3 holds. That is
+   what stops the cards jumping around, which the previous pass did
+   every time a section arrived, because it made the generated node
+   claim two of four shared columns and pushed its peers aside.
+
+   It also bounds the overflow. Column 3 is the only thing that can be
+   tall, so it is the only thing that has to scroll — the section
+   content scrolls inside its own node while the canvas pans around it.
+
+   The dot ground is the stage's own field. workspace-canvas.css §1c
+   hides it on the report surface because the card covers it; this view
+   turns it back on and drops every container between it and the nodes.
    ================================================================== */
 
 /* The ground comes back. */
@@ -339,25 +424,63 @@
   box-shadow: none !important;
 }
 
-/* Grid, not flex. The parent node is capped at 560px for readability,
-   which with flex-wrap means it never fills its row — so the first
-   child tucked in beside it instead of dropping below. Grid separates
-   "how wide the box looks" from "how much of the row it claims". */
+/* Three fixed columns. `width: max-content` keeps them at their stated
+   widths instead of stretching to the viewport, which is also what
+   makes scrollWidth a usable measurement for Fit. */
 [data-kw-view="nodes"] .d3-kyb-resume__body {
+  --kw-col-1: 340px;
+  --kw-col-2: 304px;
+  --kw-col-3: 560px;
+  --kw-col-gap: 76px;
+
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: var(--kw-col-1) var(--kw-col-2) var(--kw-col-3);
+  /* Explicit rows, one per section, set from js/report-views.js as
+     --kw-rows. Without them `grid-row: 1 / -1` on the root resolves
+     against an explicit grid that has only one line and collapses to a
+     single row — which is what made the section cards shuffle every
+     time something was generated. */
+  grid-template-rows: repeat(var(--kw-rows, 6), auto);
+  column-gap: var(--kw-col-gap);
+  row-gap: 14px;
   align-items: start;
-  padding: 8px 0 40px;
+  justify-content: start;
+  width: max-content;
+  padding: 16px 0 96px;
   overflow: visible;
   background: transparent;
 }
 
-/* The parent node. */
-[data-kw-view="nodes"] .d3-kyb-resume__identity,
-[data-kw-view="nodes"] .d3-kyb-panel[data-d3-kyb-panel="overview"] {
-  width: 100%;
-  max-width: 560px;
+/* The wires sit under the nodes and share the camera transform. */
+.kw-wires {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.kw-wire {
+  fill: none;
+  stroke: var(--border-subtle, #dde2de);
+  stroke-width: 1.5;
+}
+
+.kw-wire.is-live {
+  stroke: var(--interactive-default, #0e8a78);
+  stroke-width: 2;
+}
+
+/* Column 1 — the root. Centred against the full height of the section
+   column, which is what makes the fan of wires read as one branch. */
+[data-kw-view="nodes"] .d3-kyb-resume__identity {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: center;
   padding: 18px 20px;
   border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 14px;
@@ -365,71 +488,186 @@
   box-shadow: 0 1px 2px rgba(22, 33, 27, 0.06), 0 8px 20px rgba(138, 154, 144, 0.18);
 }
 
-[data-kw-view="nodes"] .d3-kyb-panel[data-d3-kyb-panel="overview"] {
-  margin-top: 12px;
-}
-
-/* The stem down to the children's spine. */
-[data-kw-view="nodes"] .d3-kyb-panel[data-d3-kyb-panel="overview"]::after {
-  content: "";
-  display: block;
-  width: 1px;
-  height: 34px;
-  margin: 18px auto -34px;
-  background: var(--border-subtle, #dde2de);
-}
-
-/* Parent spans the row; the cap only governs how wide it looks. */
-[data-kw-view="nodes"] .d3-kyb-resume__identity,
-[data-kw-view="nodes"] .d3-kyb-panel[data-d3-kyb-panel="overview"] {
-  grid-column: 1 / -1;
-  justify-self: center;
-}
-
-/* The children: four peers across one row. They are peers, not a
-   chain — ownership does not contain signals — so a vertical tree
-   would assert an order that is not there. */
-[data-kw-view="nodes"] .kw-stub,
-[data-kw-view="nodes"] .d3-kyb-panel[data-kw-label][data-kw-state="done"] {
+/* Column 2 — every section, always, in a fixed order. --kw-row is set
+   in js/report-views.js: the stubs are interleaved with their panels
+   in the document, so the DOM order of this column's children is not
+   the order the column is read in. */
+[data-kw-view="nodes"] .kw-stub {
   position: relative;
+  z-index: 1;
+  grid-column: 2;
+  grid-row: var(--kw-row, auto);
+  gap: 6px;
   min-width: 0;
-  margin-top: 52px;
-  padding: 16px;
-  border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: 14px;
-  background: var(--surface-neutral-01, #fff);
-  box-shadow: 0 1px 2px rgba(22, 33, 27, 0.06), 0 8px 20px rgba(138, 154, 144, 0.18);
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(22, 33, 27, 0.05);
+  cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
-/* Each child's drop from the spine. */
-[data-kw-view="nodes"] .kw-stub::before,
-[data-kw-view="nodes"] .d3-kyb-panel[data-kw-label][data-kw-state="done"]::after {
-  content: "";
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  width: 1px;
-  height: 20px;
-  background: var(--border-subtle, #dde2de);
+/* A generated section keeps its card here — it is the node, and the
+   node is what you click to bring the section back up in column 3. */
+[data-kw-view="nodes"] .kw-stub[data-kw-state="done"] {
+  display: flex;
 }
 
-/* A generated node claims two of the four columns; its peers give up
-   the room and reflow around it, wrapping to a second row when two
-   have been generated. */
-[data-kw-view="nodes"] .d3-kyb-panel[data-kw-label][data-kw-state="done"] {
-  grid-column: span 2;
-  padding: 20px;
-  border-color: color-mix(in srgb, var(--interactive-default, #0e8a78) 45%, var(--border-subtle, #dde2de));
+[data-kw-view="nodes"] .kw-stub:hover {
+  border-color: color-mix(in srgb, var(--interactive-default, #0e8a78) 40%, var(--border-subtle, #dde2de));
+  box-shadow: 0 2px 10px rgba(22, 33, 27, 0.08);
 }
 
+[data-kw-view="nodes"] .kw-stub.is-selected {
+  border-color: var(--interactive-default, #0e8a78);
+  box-shadow: 0 0 0 1px var(--interactive-default, #0e8a78), 0 4px 14px rgba(14, 138, 120, 0.16);
+}
+
+/* The identity row is sized for a full-width report header; at node
+   width the name ran to four lines and pushed the actions off the
+   bottom. Stack it instead, and let the name set at node scale. */
+[data-kw-view="nodes"] .d3-kyb-resume__identity .d3-workspace__biz-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+[data-kw-view="nodes"] .d3-kyb-resume__identity .d3-workspace__biz-name {
+  font-size: 19px;
+  line-height: 26px;
+}
+
+[data-kw-view="nodes"] .kw-stub__head { align-items: center; }
+[data-kw-view="nodes"] .kw-stub__icon { width: 28px; height: 28px; border-radius: 8px; }
+[data-kw-view="nodes"] .kw-stub__title { margin: 0; font-size: 14px; }
 [data-kw-view="nodes"] .kw-stub__blurb { display: none; }
 
-[data-kw-view="nodes"] .kw-stub__cta {
-  align-self: stretch;
-  justify-content: center;
+/* The card carries the offer in its tag and its port; the full-width
+   CTA belongs to the views that give a section a pane of its own. */
+[data-kw-view="nodes"] .kw-stub__cta { display: none; }
+[data-kw-view="nodes"] .kw-stub__tag { display: inline-flex; }
+[data-kw-view="nodes"] .kw-stub[data-kw-state="idle"] .kw-stub__port { display: flex; }
+
+/* The tag carries progress here. The progress line would add a row to
+   the card for the duration of the generation and then take it away
+   again — the card changing size, which is the one thing a node on a
+   canvas must not do. */
+[data-kw-view="nodes"] .kw-stub__progress { display: none !important; }
+
+/* Column 3 — the open section. One at a time, bounded, and scrolling
+   inside itself: js/report-views.js keeps a pointerdown here from
+   starting a pan, so the panel scrolls and the ground drags. */
+[data-kw-view="nodes"] .d3-kyb-panel[data-kw-label][data-kw-state="done"] {
+  /* Out of the grid's flow on purpose. As a grid item it would be the
+     tallest thing in the rows it spans, so the section column would
+     stretch to match it and the cards would move apart the moment a
+     section opened. Absolute, it cannot affect them at all — and it
+     still counts toward the body's scroll extent, which is what Fit
+     measures. */
+  position: absolute;
+  top: 16px;
+  left: calc(var(--kw-col-1) + var(--kw-col-2) + var(--kw-col-gap) * 2);
+  z-index: 1;
+  width: var(--kw-col-3);
+  max-height: min(680px, calc(100vh - 210px));
+  padding: 0 22px 22px;
+  overflow: auto;
+  border: 1px solid var(--interactive-default, #0e8a78);
+  border-radius: 16px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: 0 1px 2px rgba(22, 33, 27, 0.06), 0 10px 28px rgba(138, 154, 144, 0.2);
+  cursor: default;
+}
+
+[data-kw-view="nodes"] .d3-kyb-panel[data-kw-label]:not(.is-selected) {
+  display: none !important;
+}
+
+/* The section's name as an overline, stuck to the top of its own
+   scrollport so it stays legible however far down you read. */
+[data-kw-view="nodes"] .d3-kyb-panel[data-kw-label][data-kw-state="done"]::before {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0 -22px 14px;
+  padding: 16px 22px 12px;
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-description, #526660);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 16px;
+  text-transform: uppercase;
 }
 
 [data-kw-view="nodes"] .kw-index { display: none; }
+
+/* ------------------------------------------------------------------
+   Zoom — bottom centre of the canvas, as in the Figma
+
+   Last round this was left out on the grounds that four fixed nodes
+   gave nothing to zoom out to. The three-column layout changes that:
+   an open section puts real width off-screen, so there is somewhere
+   to zoom out to and a Fit worth having.
+   ------------------------------------------------------------------ */
+
+.kw-zoom {
+  display: none;
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  z-index: 4;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 6px;
+  transform: translateX(-50%);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 999px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: 0 2px 10px rgba(22, 33, 27, 0.1);
+}
+
+.d3-workspace__detail:has([data-kw-view="nodes"]) .kw-zoom {
+  display: flex;
+}
+
+.kw-zoom__btn,
+.kw-zoom__fit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.kw-zoom__btn { width: 26px; height: 26px; font-size: 15px; }
+.kw-zoom__fit { padding: 0 11px; height: 26px; }
+
+.kw-zoom__btn:hover,
+.kw-zoom__fit:hover { background: var(--surface-neutral-02, #f4f6f4); }
+
+.kw-zoom__btn:focus-visible,
+.kw-zoom__fit:focus-visible {
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 1px;
+}
+
+.kw-zoom__level {
+  min-width: 42px;
+  color: var(--text-description, #526660);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
 
 /* ==================================================================
    VIEW C · Rail
@@ -465,10 +703,6 @@
 /* One at a time. */
 [data-kw-view="rail"] .d3-kyb-panel[data-kw-label]:not(.is-selected),
 [data-kw-view="rail"] .kw-stub:not(.is-selected) {
-  display: none !important;
-}
-
-[data-kw-view="rail"] .d3-kyb-panel[data-d3-kyb-panel="overview"]:not(.is-selected) {
   display: none !important;
 }
 
@@ -590,10 +824,6 @@
   display: none !important;
 }
 
-[data-kw-view="focus"] .d3-kyb-panel[data-d3-kyb-panel="overview"]:not(.is-selected) {
-  display: none !important;
-}
-
 /* The index becomes a pager strip rather than a list. */
 [data-kw-view="focus"] .kw-index {
   position: static;
@@ -637,9 +867,12 @@
     flex-wrap: wrap;
   }
 
-  [data-kw-view="nodes"] .kw-stub,
-  [data-kw-view="nodes"] .d3-kyb-panel[data-kw-label][data-kw-state="done"] {
-    max-width: none;
+  /* The canvas keeps its three columns at any width — it pans, so a
+     narrow viewport means panning further, not reflowing. Only the
+     open section gives up width. */
+  [data-kw-view="nodes"] .d3-kyb-resume__body {
+    grid-template-columns: 280px 260px 460px;
+    column-gap: 56px;
   }
 }
 
