@@ -8,6 +8,7 @@
     "signals",
     "ownership",
     "match",
+    "additional",
     "web"
   ];
 
