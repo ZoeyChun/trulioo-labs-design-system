@@ -1,0 +1,125 @@
+/* Verification Module V2 — page shell overrides (does not touch V1). */
+
+.v2-report-host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.v2-report-host:empty {
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  border: 1px dashed var(--border-subtle, #dde2de);
+  border-radius: var(--radius-lg, 8px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--text-description, #526660);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.v2-report-host:empty::before {
+  content: "Verification Module V2";
+}
+
+.d1-shell[data-v2-view="workspace"] .d1-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 8px 8px 8px 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+.d1-shell[data-v2-view="workspace"] .d1-slot {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  overflow: hidden;
+}
+
+/* Chat reference chips used by V2 only */
+.v2-chat-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 4px 0 0;
+  padding: 6px 10px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 999px;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #172d2d);
+  font-family: var(--font-family, Inter, system-ui, sans-serif);
+  font-size: var(--font-size-sm, 14px);
+  line-height: var(--line-height-sm, 18px);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.v2-chat-ref:hover,
+.v2-chat-ref:focus-visible {
+  background: var(--surface-neutral-02, #f4f6f4);
+  border-color: var(--border-strong, #a8b4ac);
+  outline: none;
+}
+
+.v2-chat-ref[aria-current="true"] {
+  border-color: var(--interactive-default, #006b5c);
+  background: color-mix(in srgb, var(--interactive-default, #006b5c) 8%, white);
+}
+
+.v2-chat-ref__mark {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--interactive-default, #006b5c);
+  flex-shrink: 0;
+}
+
+.v2-msg-refs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+/* V2 chat thread visibility (keeps V1/ai-panel CSS untouched) */
+.d3-chat-pane.is-active .d3-chat-pane__empty {
+  display: none !important;
+}
+
+.d3-chat-pane.is-active .d3-chat-pane__thread,
+.d3-chat-pane__thread:not([hidden]) {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-16, 16px);
+}
+
+.d3-chat-pane__thread .d1-thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+}
+
+.d3-chat-pane__thread[hidden] {
+  display: none !important;
+}
