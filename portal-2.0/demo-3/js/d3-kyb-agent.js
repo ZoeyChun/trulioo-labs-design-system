@@ -931,8 +931,7 @@
     var S = window.D3KybSession;
     var st = S.get();
     var c = S.country(wizCc());
-    var owners = S.tabAllowed(st.package, "ownership", []) && c && c.ubo === "private" && S.hasUboAddon(st.addons);
-    return !!(owners || st.addons.indexOf("never") !== -1);
+    return false; // ownership is read from data; there is no owner form any more
   }
 
   function wizSteps() {

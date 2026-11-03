@@ -69,12 +69,30 @@
     post: post
   };
 
+  /* The Settings menu opens on hover / focus. Once a page is chosen it closes, even
+     though the pointer is still over it, and opens again the next time the pointer
+     comes back. */
+  var fly = document.querySelector(".d1-fly--settings");
+
+  function closeMenu() {
+    if (!fly) return;
+    fly.classList.add("is-closed");
+    if (document.activeElement && fly.contains(document.activeElement) && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+  }
+
+  if (fly) {
+    fly.addEventListener("mouseleave", function () { fly.classList.remove("is-closed"); });
+  }
+
   /* The gear opens the Settings menu (hover / focus); pressing it itself opens
      Configuration. */
   document.querySelectorAll('[data-d3-nav="settings"]').forEach(function (btn) {
     btn.addEventListener("click", function (event) {
       event.preventDefault();
       goOrg("config");
+      closeMenu();
     });
   });
 
@@ -82,7 +100,7 @@
     item.addEventListener("click", function (event) {
       event.preventDefault();
       goOrg(item.getAttribute("data-d3-settings-go"));
-      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      closeMenu();
     });
   });
 })();

@@ -89,7 +89,9 @@
     { id: "filings", name: "Filings", short: "Filings", note: "Additional information on the business such as Judgements, Bankruptcies, Insolvencies etc.", fields: 0, impact: "" },
     { id: "web", name: "Web Insights", short: "Web Insights", note: "", fields: 0, impact: "" },
     { id: "ubo", name: "UBO Discovery", short: "UBO Discovery", note: "", fields: 0, impact: "", privateOnly: true },
-    { id: "ubopsc", name: "UBO and PSC Discovery", short: "UBO and PSC Discovery", note: "", fields: 0, impact: "", privateOnly: true }
+    { id: "ubopsc", name: "UBO and PSC Discovery", short: "UBO and PSC Discovery", note: "", fields: 0, impact: "", privateOnly: true },
+    { id: "risk", name: "Business Risk Values", short: "Business Risk Values", note: "", fields: 0, impact: "" },
+    { id: "monitoring", name: "Monitoring History", short: "Monitoring History", note: "", fields: 0, impact: "" }
   ];
 
   /* Which add-ons a package offers: Essentials has none; Insights gets the full
@@ -218,6 +220,12 @@
   /* The Web & Social tab also opens for the Web Insights add-on. */
   function tabAllowed(id, tab, addons) {
     if (tab === "findings") return true;
+    /* Owners & UBOs: Complete includes it; Insights shows it when a UBO add-on is
+       selected; Essentials never. The graph and details come from data, not from
+       anything the user types. */
+    if (tab === "ownership") {
+      return id === "complete" || (id === "insights" && hasUboAddon(addons));
+    }
     var row = pkg(id) || pkg(DEFAULT_PACKAGE);
     if (row.tabs.indexOf(tab) !== -1) return true;
     return tab === "web" && (addons || []).indexOf("web") !== -1;
@@ -384,12 +392,11 @@
        private  it does not — the user supplies the UBO (a gap)
        off      it does not, and UBO Discovery is not selected — nothing is asked */
   function ownershipMode() {
-    if (!state.entity || !tabAllowed(state.package, "ownership", [])) return "none";
+    if (!state.entity || !tabAllowed(state.package, "ownership", state.addons)) return "none";
     var row = country(state.entity.cc);
-    if (row && row.ubo === "public") return "public";
-    /* A registry that hides owners is only asked about them when UBO Discovery is
-       selected; without it ownership is reported as not disclosed. */
-    return hasUboAddon(state.addons) ? "private" : "off";
+    /* Owners come from data: the registry where it publishes them, our own sources
+       otherwise. Nothing is asked of the user. */
+    return row && row.ubo === "public" ? "public" : "none";
   }
 
   function hasUboAddon(list) {

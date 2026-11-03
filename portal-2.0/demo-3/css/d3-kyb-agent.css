@@ -492,3 +492,10 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+/* Business list rows: same name size as the "Report is ready" card (14 / 500). */
+.d3-kyb-cand-panel .d3-ai-selector__row[data-d3-kyb-cand] .ai-cand__name {
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 18px;
+}

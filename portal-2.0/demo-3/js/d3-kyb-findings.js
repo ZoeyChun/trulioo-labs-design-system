@@ -557,6 +557,7 @@
   /* ----------------------------------------------------------- loading state */
 
   var SKELETON_MS = 2400; /* how long the skeleton plays before the summary appears */
+  var instantUntil = 0; /* a finished report is being re-opened: paint at once */
   var held = false; /* live verification holds the skeleton until it finishes */
   var holdTimer = 0;
 
@@ -658,7 +659,8 @@
 
     panel.dataset.kfKey = key;
     window.clearTimeout(panel.__kfTimer);
-    if (reducedMotion()) {
+    /* Coming back to a finished report (the View button): no skeleton. */
+    if (reducedMotion() || Date.now() < instantUntil) {
       panel.dataset.kfState = "ready";
       paint(panel, card, biz, false);
       return true;
@@ -742,6 +744,10 @@
        or null to derive the verdict from the business's own risk data. */
     hold: hold,
     release: release,
+    /* For the next ms, a business is painted straight away instead of playing the skeleton. */
+    instant: function (ms) {
+      instantUntil = Date.now() + (ms || 800);
+    },
     setStatus: function (v) {
       statusOverride = v || null;
     }

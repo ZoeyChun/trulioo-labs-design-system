@@ -52,7 +52,7 @@
           '<input type="radio" class="tds-radio" name="d3-cfg-package" tabindex="-1"' + (on ? " checked" : "") + ' aria-hidden="true">' +
           '<span class="tds-radio-card__content">' +
           '<span class="tds-radio-card__label-row"><span class="tds-radio-card__label">' + esc(p.name) + "</span>" +
-          (p.recommended ? ' <span class="tds-tag tds-tag--sm tds-tag--positive">Recommended</span>' : "") + "</span>" +
+          (p.recommended ? ' <span class="tds-tag tds-tag--sm tds-tag--positive">Default</span>' : "") + "</span>" +
           '<span class="tds-radio-card__description">' + esc(p.tagline) + "</span>" +
           '<span class="tds-radio-card__description d3-cfg__bullets">' + esc(p.bullets.join(" · ")) + "</span>" +
           "</span></div>"
@@ -122,7 +122,10 @@
       (locked
         ? '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-cfg-edit>Edit</button>'
         : '<button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-cfg-save>Save configuration</button>' +
-          (saved ? '<button type="button" class="tds-btn tds-btn--md tds-btn--invisible" data-d3-cfg-cancel>Cancel</button>' : "")) +
+          (saved
+            ? '<button type="button" class="tds-btn tds-btn--md tds-btn--invisible" data-d3-cfg-cancel>Cancel</button>' +
+              '<button type="button" class="tds-btn tds-btn--md tds-btn--invisible" data-d3-cfg-clear>Clear saved configuration</button>'
+            : "")) +
       "</span></div>" +
       "</section></div>";
     if (locked) {
@@ -171,6 +174,15 @@
     if (t.closest("[data-d3-cfg-edit]")) {
       locked = false;
       render();
+      return;
+    }
+    if (t.closest("[data-d3-cfg-clear]")) {
+      S.clearConfig();
+      S.reset("config");
+      loadDraft();
+      locked = false;
+      render();
+      document.dispatchEvent(new CustomEvent("d3-kyb:config-change"));
       return;
     }
     if (t.closest("[data-d3-cfg-cancel]")) {

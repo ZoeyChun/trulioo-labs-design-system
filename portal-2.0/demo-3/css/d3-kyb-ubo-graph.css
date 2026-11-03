@@ -42,12 +42,14 @@
   min-width: 0;
 }
 
-.d3-kyb-ownership__table {
+.d3-kyb-ownership__table,
+.d3-kyb-officer__table {
   width: 100%;
   min-width: 0;
 }
 
-.d3-kyb-ownership__table .tds-data-table thead th {
+.d3-kyb-ownership__table .tds-data-table thead th,
+.d3-kyb-officer__table .tds-data-table thead th {
   background: var(--surface-neutral-02, #f4f6f4);
   font-size: 12px;
   font-weight: 500;
@@ -60,65 +62,110 @@
 .d3-kyb-officer {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
   width: 100%;
   box-sizing: border-box;
-  padding: var(--spacing-24, 24px);
-  border-radius: var(--radius-2xl, 16px);
-  background: var(--surface-neutral-02, #f4f6f4);
+  margin-top: var(--spacing-32, 32px);
 }
 
 .d3-kyb-officer__title {
   margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.45;
-  color: #262933;
-}
-
-.d3-kyb-officer__grid {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  width: 100%;
-}
-
-.d3-kyb-officer__row {
-  display: flex;
-  gap: 32px;
-  align-items: flex-start;
-  width: 100%;
-}
-
-.d3-kyb-officer__field {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.d3-kyb-officer__field--spacer {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.d3-kyb-officer__field .d3-kyb-overview__value--ok {
+  font-size: var(--font-size-md, 16px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 24px;
   color: var(--text-default, #172d2d);
 }
 
-.d3-kyb-officer__field .d3-kyb-overview__value--ok .d3-fa-line {
-  color: var(--icon-positive, #3d8b5e);
+.d3-kyb-officer__main {
+  cursor: pointer;
+}
+
+.d3-kyb-officer__main:hover td {
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d3-kyb-officer__main:focus-visible {
+  outline: 2px solid var(--border-focus, #0e8a78);
+  outline-offset: -2px;
+}
+
+.d3-kyb-officer__chev {
+  width: 48px;
+  text-align: right;
+}
+
+.d3-kyb-officer__chev-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-faint, #617269);
+  transition: transform 160ms ease;
+}
+
+.d3-kyb-officer__chev-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.d3-kyb-officer__main[aria-expanded="true"] .d3-kyb-officer__chev-icon {
+  transform: rotate(180deg);
+}
+
+.d3-kyb-officer__detail[hidden] {
+  display: none;
+}
+
+.d3-kyb-officer__detail > td {
+  padding: 0;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d3-kyb-officer__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 48px;
+  padding: var(--spacing-16, 16px) var(--spacing-16, 16px) var(--spacing-24, 24px);
+}
+
+.d3-kyb-officer__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.d3-kyb-officer__item {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.d3-kyb-officer__item dt {
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 20px;
+}
+
+.d3-kyb-officer__item dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-description, #526660);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 900px) {
-  .d3-kyb-officer__row {
-    flex-direction: column;
-    gap: 16px;
+  .d3-kyb-officer__cols {
+    grid-template-columns: 1fr;
   }
 
-  .d3-kyb-officer__field--spacer {
-    display: none;
+  .d3-kyb-officer__item {
+    grid-template-columns: 120px 1fr;
   }
 }
 
@@ -1411,4 +1458,25 @@
   .d3-kyb-ownership__head {
     flex-wrap: wrap;
   }
+}
+
+.d3-kyb-ownership__info {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  vertical-align: -3px;
+  color: var(--icon-faint, #617269);
+  cursor: help;
+}
+
+.d3-kyb-ownership__info svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* The owners table opens rows just like the officers table below it. */
+.d3-kyb-ownership__table .d3-kyb-officer__main {
+  cursor: pointer;
 }

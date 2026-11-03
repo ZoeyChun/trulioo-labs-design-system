@@ -229,3 +229,10 @@
 .d1-fly--settings .d1-menu-item[aria-current="page"] {
   background: var(--surface-selected);
 }
+
+/* Closed after a choice, until the pointer leaves and comes back. */
+.d1-fly--settings.is-closed .d1-fly__panel {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}

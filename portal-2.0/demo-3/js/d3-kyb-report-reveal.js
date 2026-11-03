@@ -486,6 +486,41 @@
     appendReportCard(biz, data);
   }
 
+  var reports = {};
+  var reportSeq = 0;
+  var lastReportId = null;
+
+  /* "View" on a report card: show that report in the KYB workspace, wherever the
+     conversation is (the chat travels between pages, the workspace does not). */
+  function openRecordedReport(rid) {
+    var rec = reports[rid] || reports[lastReportId];
+    if (!rec || !window.D3KybResume || !window.D3KybResume.expandToFullReport) return;
+    var shell = document.querySelector(".d1-shell");
+    var onKyb = shell && shell.getAttribute("data-d3-view") === "chat";
+    var onThis = onKyb && workspace.getAttribute("data-d3-kyb-surface") === "report" && currentBiz === rec.biz;
+    if (onThis) return;
+    if (window.D3KybFindings && window.D3KybFindings.instant) window.D3KybFindings.instant(1500);
+    window.D3KybResume.expandToFullReport({
+      businessName: rec.biz.name,
+      status: rec.status,
+      tier: rec.tier,
+      addons: rec.addons,
+      biz: rec.biz
+    });
+    /* Opening the KYB page parks the chat pane idle; the conversation stays on. */
+    window.setTimeout(function () {
+      if (window.D3Nav && window.D3Nav.markChatActive) window.D3Nav.markChatActive();
+      document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
+    }, 60);
+  }
+
+  document.addEventListener("click", function (event) {
+    var btn = event.target.closest && event.target.closest(".d1-report-ready__card button");
+    if (!btn) return;
+    event.preventDefault();
+    openRecordedReport(btn.getAttribute("data-d3-report-open"));
+  });
+
   function appendReportCard(biz, data) {
     var thread = document.querySelector("[data-d1-thread]");
     if (!thread) return;
@@ -560,6 +595,22 @@
       readyReg.textContent = regDigits
         ? "Reg. " + regDigits[1].replace(/\s+/g, "")
         : regRaw;
+    }
+
+    /* Remember what this card opens, so its View button can bring the report back
+       to the workspace from any page. */
+    var viewBtn = node.querySelector(".d1-report-ready__card button");
+    if (viewBtn) {
+      reportSeq += 1;
+      var rid = "rep-" + reportSeq;
+      reports[rid] = {
+        biz: currentBiz || biz,
+        status: biz.riskLevel === "high" ? "Review" : "Verified",
+        tier: tier,
+        addons: (window.D3KybSession && window.D3KybSession.get().addons.slice()) || []
+      };
+      lastReportId = rid;
+      viewBtn.setAttribute("data-d3-report-open", rid);
     }
 
     thread.appendChild(node);
@@ -1038,8 +1089,8 @@
     renderOwnershipPanel: renderOwnershipPanel,
     renderRawPanel: renderRawPanel,
     openRawDialog: openRawDialog,
-    seedFromName: function (name) {
-      currentBiz = null;
+    seedFromName: function (name, biz) {
+      currentBiz = biz || null;
       if (bizName && name) bizName.textContent = name;
       var biz = resolveBiz();
       renderOwnershipPanel(biz);
