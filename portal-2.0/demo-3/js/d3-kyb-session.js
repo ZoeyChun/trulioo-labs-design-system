@@ -82,7 +82,7 @@
       tabs: ["overview", "signals", "ownership", "additional", "web"]
     }
   ];
-  var DEFAULT_PACKAGE = "essentials";
+  var DEFAULT_PACKAGE = "insights"; /* the package marked Default */
 
   /* Optional risk modules. `fields` is what each one asks the user for. */
   var ADDONS = [
@@ -90,8 +90,7 @@
     { id: "web", name: "Web Insights", short: "Web Insights", note: "", fields: 0, impact: "" },
     { id: "ubo", name: "UBO Discovery", short: "UBO Discovery", note: "", fields: 0, impact: "", privateOnly: true },
     { id: "ubopsc", name: "UBO and PSC Discovery", short: "UBO and PSC Discovery", note: "", fields: 0, impact: "", privateOnly: true },
-    { id: "risk", name: "Business Risk Values", short: "Business Risk Values", note: "", fields: 0, impact: "" },
-    { id: "monitoring", name: "Monitoring History", short: "Monitoring History", note: "", fields: 0, impact: "" }
+    { id: "risk", name: "Business Risk Values", short: "Business Risk Values", note: "", fields: 0, impact: "" }
   ];
 
   /* Which add-ons a package offers: Essentials has none; Insights gets the full

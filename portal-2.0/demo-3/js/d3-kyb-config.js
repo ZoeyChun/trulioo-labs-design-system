@@ -31,7 +31,7 @@
     var cfg = S.savedConfig();
     draft = cfg
       ? { package: cfg.package, finder: cfg.finder, addons: cfg.addons.slice() }
-      : { package: "essentials", finder: true, addons: [] };
+      : { package: "insights", finder: true, addons: [] };
   }
 
   function offered() {

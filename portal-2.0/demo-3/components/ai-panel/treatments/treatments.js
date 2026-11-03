@@ -534,6 +534,20 @@
         selectorPage = 0;
       }
 
+      /* A business picked earlier: a freshly drawn list opens on the page that has it
+         (and without a city filter hiding it), so the selection is in view. */
+      if (!host && window.__d3SelectedCandId) {
+        var pickedAt = matches
+          .map(function (match) {
+            return match.id;
+          })
+          .indexOf(window.__d3SelectedCandId);
+        if (pickedAt > -1) {
+          selectorCity = "";
+          selectorPage = Math.floor(pickedAt / 3);
+        }
+      }
+
       var cityMap = {};
       matches.forEach(function (match) {
         var label = cityLabel(match.city);
@@ -594,7 +608,9 @@
       var rowHtml = slice
         .map(function (row) {
           return (
-            '<button type="button" class="d3-ai-selector__row" data-d3-kyb-cand="' +
+            '<button type="button" class="d3-ai-selector__row' +
+            (window.__d3SelectedCandId && window.__d3SelectedCandId === row.id ? " is-on" : "") +
+            '" data-d3-kyb-cand="' +
             esc(row.id) +
             '" data-id="' +
             esc(row.id) +

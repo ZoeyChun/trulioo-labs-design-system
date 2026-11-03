@@ -985,6 +985,8 @@
       .join("");
     var chips = steps
       .filter(function (s) {
+        /* No add-ons chosen: nothing to show; the chip appears once there is one. */
+        if (s === "addons" && !window.D3KybSession.get().addons.length) return false;
         return s !== wiz.step && wizAnswered(s);
       })
       .map(function (s) {
@@ -1016,13 +1018,26 @@
     var html = "";
     if (idx > 0) html += '<button type="button" class="d3-kyb-wiz__back" data-d3-wiz-back>‹ Back</button>';
     var single = wiz.step === "package" || wiz.step === "finder" || (wiz.step === "business" && wiz.listing);
+    var S9 = window.D3KybSession;
+    var st9 = S9.get();
+    var cont = '<button type="button" class="tds-btn tds-btn--md tds-btn--primary" ';
     if (single && wizAnswered(wiz.step)) {
-      html += '<button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-wiz-next>Continue</button>';
+      html += cont + 'data-d3-wiz-next>Continue</button>';
+    } else if (wiz.step === "addons") {
+      /* The forms' own Continue lives here, so every question ends the same way:
+         Back on the left, Continue on the right. */
+      html += cont + "data-d3-addons-continue>" + (st9.addons.length ? "Continue" : "Continue without add-ons") + "</button>";
+    } else if (wiz.step === "inputs") {
+      html += cont + "data-d3-inputs-continue" + (S9.inputsComplete() ? "" : ' aria-disabled="true"') + ">Continue</button>";
+    } else if (wiz.step === "business" && !wiz.listing) {
+      var ready = !!(st9.profile.name.trim() && st9.profile.regNo.trim() && st9.profile.address.trim());
+      html += cont + "data-d3-profile-continue" + (ready ? "" : ' aria-disabled="true"') + ">Continue</button>";
     }
     /* Everything is already answered (they came back to change one thing): go straight on. */
     var all = steps.every(wizAnswered);
     if (all && idx < steps.length - 1) {
-      html += '<button type="button" class="d3-kyb-wiz__back" data-d3-wiz-finish>Skip to summary ›</button>';
+      html +=
+        '<div class="d3-kyb-wiz__skip"><button type="button" class="tds-btn tds-btn--sm tds-btn--invisible" data-d3-wiz-finish>Skip to summary ›</button></div>';
     }
     return html;
   }
@@ -1150,6 +1165,9 @@
       if (S.finderOn(cc)) {
         /* The matching businesses — the same list as always, inside this card. */
         wiz.listing = true;
+        /* A business picked earlier shows as selected, so Continue never stands there
+           for a choice you cannot see. */
+        window.__d3SelectedCandId = wiz.biz ? wiz.biz.id : null;
         var host = document.createElement("div");
         host.className = "d3-kyb-cand-panel d3-kyb-agent-wrap";
         body.appendChild(host);
@@ -1168,7 +1186,7 @@
           S.finderSupported(cc) ? "No problem — I’ll collect the entity details." : esc(cap(reg)) + " doesn’t support automated search.",
           (S.finderSupported(cc) ? "Type them in, or " : "So I’ll collect the entity details instead — or ") +
             "drop a certificate and I’ll read them for you."
-        ) + '<div data-d3-kyb-inputs data-variant="profile" data-actions="1"></div>';
+        ) + '<div data-d3-kyb-inputs data-variant="profile"></div>';
       if (window.D3KybGap) window.D3KybGap.renderInputs(body.querySelector("[data-d3-kyb-inputs]"));
       return;
     }
@@ -1181,7 +1199,7 @@
         wizReply(
           "Selected " + esc(pk.name) + ".",
           "Would you like to attach any add-ons to this verification?"
-        ) + '<div data-d3-kyb-addons data-actions="1"></div>';
+        ) + '<div data-d3-kyb-addons></div>';
       if (window.D3KybGap) window.D3KybGap.renderAddons(body.querySelector("[data-d3-kyb-addons]"));
       return;
     }
@@ -1200,7 +1218,7 @@
         '<ul class="ai-reply__list">' + ready.join("") + "</ul>" +
         '<p class="ai-reply__sub">Because ' + because.join(" and ") + ", please complete " +
         (n === 1 ? "this missing detail" : "these " + n + " missing details") + ":</p></div>" +
-        '<div data-d3-kyb-inputs data-actions="1"></div>';
+        '<div data-d3-kyb-inputs></div>';
       if (window.D3KybGap) window.D3KybGap.renderInputs(body.querySelector("[data-d3-kyb-inputs]"));
     }
   }
@@ -1335,6 +1353,7 @@
         : "No add-ons"
     );
     wiz.active = false;
+    window.__d3SelectedCandId = null;
     lockPanel(wiz.el);
     renderUser(wiz.saved ? biz.name : parts.join(" · "));
     showConfirmStep(biz);
@@ -1355,6 +1374,23 @@
     wiz.saved = false;
     wiz.finderAnswered = true;
     wizGo("package");
+  }
+
+  /* Cancel from the summary: start over exactly as when the business was first
+     searched — a clean session (saved setup or defaults) and the first question
+     again, for the same name and country. */
+  function wizRestart() {
+    if (!wiz) return false;
+    var S = window.D3KybSession;
+    var scope = wiz.scope;
+    var query = wiz.query;
+    var matches = wiz.matches;
+    var country = S.get().country;
+    window.__d3SelectedCandId = null;
+    S.reset("reset");
+    if (country) S.set({ country: country }, "agent");
+    wizStart({ scope: scope, query: query, matches: matches });
+    return true;
   }
 
   document.addEventListener("d3-kyb:package-pick", function (event) {
@@ -2279,10 +2315,15 @@
       event.preventDefault();
       var answer = confirmBtn.getAttribute("data-d3-kyb-confirm");
       lockPanel(confirmBtn.closest(".tds-announcement"));
+      /* What was pressed goes into the thread first, as the user's own turn. */
+      renderUser(String(confirmBtn.textContent || "").trim());
       if (answer === "yes" && candState.pending) {
         var chosen = candState.pending;
         candState.pending = null;
         runConfirmedVerify(chosen);
+      } else if (answer === "no" && wiz && wiz.biz && !wizActive()) {
+        /* Cancel before the report: the same response as the first search. */
+        wizRestart();
       } else {
         paintCandidateList();
         restoreMapList();
@@ -2332,7 +2373,9 @@
     }
     if (event.target.closest("[data-d3-kyb-wizard-reopen]")) {
       event.preventDefault();
+      var reopenBtn = event.target.closest("[data-d3-kyb-wizard-reopen]");
       lockPanel(event.target.closest(".tds-announcement"));
+      renderUser(String((reopenBtn && reopenBtn.textContent) || "Edit").trim());
       wizReopen();
       return;
     }
