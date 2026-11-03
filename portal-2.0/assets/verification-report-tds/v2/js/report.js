@@ -457,17 +457,19 @@
         ? Tabs.additionalDataForBiz(biz)
         : null;
     var onlineSources =
-      Tabs && typeof Tabs.onlineSourcesForBiz === "function"
+      data.onlineSources ||
+      (Tabs && typeof Tabs.onlineSourcesForBiz === "function"
         ? Tabs.onlineSourcesForBiz(biz)
-        : [];
+        : []);
     var truliooCaps =
       Tabs && typeof Tabs.truliooCapabilities === "function"
         ? Tabs.truliooCapabilities()
         : [];
     var social =
-      Tabs && typeof Tabs.socialProfileForBiz === "function"
+      data.socialProfile ||
+      (Tabs && typeof Tabs.socialProfileForBiz === "function"
         ? Tabs.socialProfileForBiz(biz)
-        : null;
+        : null);
     var metrics = (matchData && matchData.metrics) || {};
     var matchRows = (matchData && matchData.rows) || [];
 
@@ -793,7 +795,7 @@
               data: "Present",
               detail: {
                 description:
-                  "Connected entities and formations-agent patterns elevate fraud risk.",
+                  "Connected entities and a shared registered address elevate fraud risk.",
                 value: "Increased the risk score",
                 source: "DRA"
               }
@@ -857,12 +859,12 @@
             {
               impact: "increased",
               signal:
-                "Connected entities share a formations-agent address pattern.",
+                "Registered address is shared with multiple unrelated entities at the same location.",
               applicable: "Yes",
               data: "Present",
               detail: {
                 description:
-                  "Shared registered-agent address across related entities elevates third-party risk.",
+                  "The registered address is shared with multiple unrelated entities, elevating third-party risk.",
                 value: "Increased the risk score",
                 source: "DRA"
               }
@@ -918,8 +920,8 @@
         if (/sanctions/.test(lower)) {
           return "Sanctions screening clear.";
         }
-        if (/formations-agent|registered-agent|connected entities share/.test(lower)) {
-          return "Shared formations-agent address.";
+        if (/formations-agent|registered-agent|shared with multiple unrelated/.test(lower)) {
+          return "Address shared with unrelated entities.";
         }
         if (/recognized corporate domicile|jurisdiction/.test(lower)) {
           return "Recognized corporate domicile.";
@@ -1613,15 +1615,25 @@
         '<div class="v2-web-fields__grid">' +
         tdsDataField(
           "Website Status",
-          social.highRisk
-            ? "Unavailable — domain expired, no live site to render"
-            : "Active"
+          social.websiteStatus ||
+            (social.highRisk
+              ? "Unavailable — domain expired, no live site to render"
+              : "Active")
         ) +
-        tdsDataField("Domain Registrar", "GoDaddy.com, LLC") +
-        tdsDataField("Domain Registered", social.founded || "1 Feb 2019") +
+        tdsDataField(
+          "Domain Registrar",
+          social.domainRegistrar || "GoDaddy.com, LLC"
+        ) +
+        tdsDataField(
+          "Domain Registered",
+          social.domainRegistered || social.founded || "1 Feb 2019"
+        ) +
         (social.highRisk
           ? tdsDataFieldTone("Domain Expired", "1 Feb 2025", "negative")
-          : tdsDataField("Domain", social.domain || "—")) +
+          : tdsDataField(
+              social.domainExpires ? "Domain Expires" : "Domain",
+              social.domainExpires || social.domain || "—"
+            )) +
         "</div>" +
         '<hr class="v2-web-fields__divider" />' +
         '<p class="v2-section-label">Social profiles</p>' +
@@ -1629,8 +1641,8 @@
         '<div class="v2-web-fields__social-row">' +
         tdsLinkField(
           "LinkedIn",
-          "https://linkedin.com/" + handle,
-          "linkedin.com/" + handle
+          "https://linkedin.com/company/" + handle,
+          "linkedin.com/company/" + handle
         ) +
         tdsLinkField(
           "Instagram",
@@ -1926,7 +1938,7 @@
         summary: CARD_LABELS.signals,
         ask: "Which risk signals are driving this score?",
         preview: function () {
-          var indicators = [
+          var indicators = data.riskCategories || [
             { label: "Business Model", score: 84, risk: "high" },
             { label: "Financial Health", score: 68, risk: "high" },
             { label: "Fraud & Financial Crimes", score: 63, risk: "medium" },
@@ -1944,7 +1956,7 @@
             { label: "No physical presence.", tone: "negative" },
             { label: "Shell-company ownership patterns.", tone: "negative" },
             { label: "Incomplete registry filings.", tone: "positive" },
-            { label: "Shared formations-agent address.", tone: "positive" },
+            { label: "Address shared with unrelated entities.", tone: "negative" },
             { label: "No bankruptcy filings.", tone: "positive" },
             { label: "No adverse media matches.", tone: "positive" }
           ];
@@ -2204,19 +2216,33 @@
             '<div class="v2-web-fields__grid">' +
             tdsDataField(
               "Website Status",
-              "Unavailable — domain expired, no live site to render"
+              social.websiteStatus ||
+                (social.highRisk
+                  ? "Unavailable — domain expired, no live site to render"
+                  : "Active")
             ) +
-            tdsDataField("Domain Registrar", "GoDaddy.com, LLC") +
-            tdsDataField("Domain Registered", "1 Feb 2019") +
-            tdsDataFieldTone("Domain Expired", "1 Feb 2025", "negative") +
+            tdsDataField(
+              "Domain Registrar",
+              social.domainRegistrar || "GoDaddy.com, LLC"
+            ) +
+            tdsDataField(
+              "Domain Registered",
+              social.domainRegistered || social.founded || "1 Feb 2019"
+            ) +
+            (social.highRisk
+              ? tdsDataFieldTone("Domain Expired", "1 Feb 2025", "negative")
+              : tdsDataField(
+                  "Domain Expires",
+                  social.domainExpires || "—"
+                )) +
             "</div>" +
             '<hr class="v2-web-fields__divider" />' +
             '<div class="v2-web-fields__social">' +
             '<div class="v2-web-fields__social-row">' +
             tdsLinkField(
               "LinkedIn",
-              "https://linkedin.com/" + handle,
-              "linkedin.com/" + handle
+              "https://linkedin.com/company/" + handle,
+              "linkedin.com/company/" + handle
             ) +
             tdsLinkField(
               "Instagram",

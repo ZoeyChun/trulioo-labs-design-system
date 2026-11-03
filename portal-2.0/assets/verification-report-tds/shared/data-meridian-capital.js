@@ -332,7 +332,8 @@
     transactionId: "8c2f4e7a-19bd-4f02-a6c1-77de42915b3a",
     transactionIdShort: "8c2f4e7a-19bd-4f0...",
     date: "17 Jun 2026, 2:14 PM",
-    verified: false,
+    /* Registry match is Verified in Demo 3; the risk verdict is separate. */
+    verified: true,
     riskLevel: "high",
     riskLabel: "High Risk",
     riskScore: 87,
