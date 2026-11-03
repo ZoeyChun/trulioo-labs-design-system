@@ -185,7 +185,7 @@
     if (!t) return null;
     var blocks = t.querySelectorAll(".d1-block");
     for (var i = 0; i < blocks.length; i += 1) {
-      if (blocks[i].querySelector(".d1-progress")) return blocks[i];
+      if (blocks[i].querySelector(".d1-progress") && !supersededByNewSearch(blocks[i])) return blocks[i];
     }
     return null;
   }
@@ -199,9 +199,22 @@
     return (labels[labels.length - 1].textContent || "").trim();
   }
 
+  /* A new search or verification started after `node` puts the chat back in the
+     selection step; what came before stays in the record. */
+  function supersededByNewSearch(node) {
+    var t = thread();
+    if (!t || !node) return false;
+    var starts = t.querySelectorAll(".d3-kyb-wizard, .d3-kyb-cand-panel");
+    var newest = starts.length ? starts[starts.length - 1] : null;
+    return !!newest && !!(node.compareDocumentPosition(newest) & Node.DOCUMENT_POSITION_FOLLOWING);
+  }
+
   function hasReport() {
     var t = thread();
-    return !!(t && t.querySelector("[data-d1-co], .d1-report__title"));
+    if (!t) return false;
+    var reports = t.querySelectorAll("[data-d1-co], .d1-report__title");
+    if (!reports.length) return false;
+    return !supersededByNewSearch(reports[reports.length - 1]);
   }
 
   /* On another page only the part of the thread after the "Continued in …"
@@ -210,7 +223,13 @@
   function thinkingNow(t, kyb) {
     if (!t) return false;
     var sel = ".d1-thinking, [data-d3-kyb-starting]";
-    if (kyb) return !!t.querySelector(sel);
+    if (kyb) {
+      var live = t.querySelectorAll(sel);
+      for (var k = 0; k < live.length; k += 1) {
+        if (!supersededByNewSearch(live[k])) return true;
+      }
+      return false;
+    }
     var rules = t.querySelectorAll("[data-d3-chat-divider]");
     var from = rules.length ? rules[rules.length - 1] : null;
     var node = from ? from.nextElementSibling : t.firstElementChild;
@@ -354,7 +373,10 @@
       setPlaceholders("Ask about this verification");
     } else if (step === "verify") {
       hideMatchList(false);
-      var confirming = !!document.querySelector("[data-d1-confirm-card], [data-d3-kyb-confirm='yes']");
+      var confirming = Array.prototype.some.call(
+        document.querySelectorAll("[data-d1-confirm-card], [data-d3-kyb-confirm='yes']"),
+        function (n) { return !supersededByNewSearch(n); }
+      );
       var awaitEl = document.querySelector("[data-d3-kyb-map-await]");
       var awaiting = awaitEl && !awaitEl.hidden ? awaitEl.getAttribute("data-d3-await-stage") : "";
       setPlaceholders(
