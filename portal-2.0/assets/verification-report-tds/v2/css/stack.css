@@ -450,43 +450,22 @@
   margin-top: auto;
 }
 
-/* Expand control: a named action plus a line saying where it leads. */
-.v2-card__more {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  margin-left: auto;
-  min-width: 0;
-}
-
+/* Expand control: one named action sharing the footer row with the Ask chip.
+   The label is never clipped — when the pair cannot fit, the footer wraps and
+   the button keeps its own row, still flush with the content's right edge. */
 .v2-card__more-btn {
+  margin-left: auto;
   max-width: 100%;
 }
 
 .v2-card__more-btn .tds-btn__label {
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.v2-card__more-hint {
-  margin: 0;
-  color: var(--text-caption, #71807a);
-  font-size: var(--font-size-xs, 12px);
-  line-height: var(--line-height-xs, 16px);
-  text-align: right;
-}
-
 @media (max-width: 48rem) {
-  .v2-card__more {
-    align-items: stretch;
+  .v2-card__more-btn {
     margin-left: 0;
     width: 100%;
-  }
-
-  .v2-card__more-hint {
-    text-align: left;
   }
 }
 

@@ -320,21 +320,22 @@
      says the full view carries every section, so the control is not a bare
      maximise glyph the reader has to guess at. */
   function expandActionHtml(cardId, label, sectionCount) {
+    var hint =
+      "Opens the full view, with tabs for all " +
+      (sectionCount || 6) +
+      " report sections";
     return (
-      '<div class="v2-card__more">' +
       '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md v2-card__more-btn" data-v2-expand-open="' +
       esc(cardId) +
+      '" title="' +
+      esc(hint) +
       '">' +
       '<span class="tds-btn__leading-icon" aria-hidden="true">' +
       EXPAND_ICON_SVG +
       "</span>" +
       '<span class="tds-btn__label">' +
       esc(label || "View full details") +
-      "</span></button>" +
-      '<p class="v2-card__more-hint">Full view &middot; tabs for all ' +
-      esc(String(sectionCount || 6)) +
-      " sections</p>" +
-      "</div>"
+      "</span></button>"
     );
   }
 
@@ -1919,7 +1920,7 @@
       {
         id: "overview",
         kicker: "Overview",
-        more: "View registry record & working notes",
+        more: "View registry record & notes",
         title: insightHeadline,
         titleHtml:
           '<span class="v2-card__title-risk">High risk entity</span>: ' +
@@ -1934,7 +1935,7 @@
       {
         id: "signals",
         kicker: "Signals",
-        more: "View all 10 signals across 5 categories",
+        more: "View all 10 risk signals",
         title:
           "10 risk signals across 5 categories. Business Model (84) and Financial Health (68) drive the overall " +
           riskScore +
@@ -2025,7 +2026,7 @@
       {
         id: "ownership",
         kicker: "Ownership",
-        more: "View every owner & the ownership graph",
+        more: "View owners & ownership graph",
         title: (function () {
           var parts = [];
           parts.push(owners.length + " shareholders identified, " + ownerDepth + " deep");
@@ -2072,7 +2073,7 @@
       {
         id: "match",
         kicker: "Match Signals & Sources",
-        more: "View field-by-field results & " + (onlineSources.length + truliooCaps.length) + " sources",
+        more: "View all fields & sources",
         title: matchedCount + " of " + totalFields + " fields matched (" + matchPct + "%). " +
           (data.verified !== false ? "Verification outcome: Verified." : "Verification outcome: Review required."),
         summary: CARD_LABELS.match,
@@ -2124,7 +2125,7 @@
       {
         id: "additional",
         kicker: "Officers",
-        more: "View officer records & full registry data",
+        more: "View officer & registry records",
         title: (function () {
           if (!officerDisplayName) return "No officers or directors on file.";
           var parts = [];
@@ -2181,7 +2182,7 @@
       {
         id: "web",
         kicker: "Web & Social",
-        more: "View domain record & all 4 social profiles",
+        more: "View domain & social profiles",
         title: (function () {
           if (!social) return "No web or social data available.";
           var presence = social.highRisk ? "Low" : "Established";
