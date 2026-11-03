@@ -709,6 +709,9 @@
     if (id === "findings" && window.D3KybFindings) {
       window.D3KybFindings.render(resumeCard, resolveBiz());
     }
+    if (id === "risk" && window.D3KybPanels) {
+      window.D3KybPanels.mount(panel, "signals");
+    }
     if (id === "ownership") {
       window.requestAnimationFrame(function () {
         ensureOwnershipPanel(resolveBiz());

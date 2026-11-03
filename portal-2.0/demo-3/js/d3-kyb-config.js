@@ -17,6 +17,7 @@
   var PRODUCTS = [{ id: "kyb", label: "KYB" }];
   var product = "kyb";
   var draft = null; // { package, finder, addons }
+  var touched = false; // add-ons changed by hand in this draft
   var locked = false; // a saved configuration is shown read-only until Edit
 
   function esc(v) {
@@ -29,9 +30,10 @@
 
   function loadDraft() {
     var cfg = S.savedConfig();
+    touched = !!cfg;
     draft = cfg
       ? { package: cfg.package, finder: cfg.finder, addons: cfg.addons.slice() }
-      : { package: "insights", finder: true, addons: [] };
+      : { package: "insights", finder: true, addons: S.defaultAddons ? S.defaultAddons("insights") : [] };
   }
 
   function offered() {
@@ -150,6 +152,7 @@
     var card = t.closest("[data-d3-cfg-package]");
     if (card) {
       draft.package = card.getAttribute("data-d3-cfg-package");
+      if (!touched) draft.addons = S.defaultAddons ? S.defaultAddons(draft.package) : [];
       prune();
       render();
       return;
@@ -162,6 +165,7 @@
     var add = t.closest("input[data-d3-cfg-addon]");
     if (add) {
       var id = add.getAttribute("data-d3-cfg-addon");
+      touched = true;
       draft.addons = draft.addons.filter(function (x) { return x !== id; });
       if (add.checked) draft.addons.push(id);
       render();

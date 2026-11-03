@@ -415,3 +415,183 @@
 .d3kf-loading .dv-summary-card:hover { background-image: none; box-shadow: none; }
 .d3kf-in { animation: d3-kyb-field-in var(--d3-dur-panel, 300ms) var(--d3-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both; }
 @media (prefers-reduced-motion: reduce) { .d3kf-sk { animation: none; } .d3kf-in { animation: none; } }
+
+
+/* ------------------------------------------------------------------ Overview
+   High-level only: headline, identity, three fact groups, one question. */
+.d3ko {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16, 16px);
+  padding: var(--spacing-24, 24px) 0 var(--spacing-16, 16px);
+}
+
+.d3ko__kicker {
+  margin: 0;
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.d3ko__headline {
+  margin: 0;
+  max-width: 720px;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-xl, 20px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 28px;
+}
+
+.d3ko__headline-risk { color: var(--text-negative, #b3261e); }
+.d3ko__headline-warn { color: var(--text-intermediate, #8a5a00); }
+.d3ko__headline-ok { color: var(--text-positive, #166534); }
+
+.d3ko__rule {
+  width: 100%;
+  margin: var(--spacing-4, 4px) 0;
+  border: 0;
+  border-top: 1px solid var(--border-subtle, #dde2de);
+}
+
+.d3ko__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16, 16px);
+  min-width: 0;
+}
+
+.d3ko__thumb {
+  flex: 0 0 120px;
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  box-shadow: 0 4px 16px rgba(23, 45, 45, 0.12);
+}
+
+.d3ko__who {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+  min-width: 0;
+}
+
+.d3ko__name-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.d3ko__name {
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 26px;
+}
+
+.d3ko__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+}
+
+.d3ko__fields .tds-data-field {
+  width: auto;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.d3ko__flag img {
+  display: block;
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.d3ko__facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--surface-neutral-01, #fff);
+  overflow: hidden;
+}
+
+.d3ko__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--spacing-16, 16px);
+}
+
+.d3ko__col + .d3ko__col {
+  border-left: 1px solid var(--border-subtle, #dde2de);
+}
+
+.d3ko__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8, 8px);
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-md, 16px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 18px;
+}
+
+.d3ko__heading-icon {
+  display: inline-flex;
+  flex: 0 0 16px;
+  color: var(--icon-faint, #617269);
+}
+
+.d3ko__col-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.d3ko__link {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--text-link, #006b5c);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.d3ko__link:hover { text-decoration: underline; }
+
+.d3ko__ask {
+  align-self: flex-start;
+  margin-top: var(--spacing-8, 8px);
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .d3ko__facts { grid-template-columns: 1fr; }
+  .d3ko__col + .d3ko__col { border-left: 0; border-top: 1px solid var(--border-subtle, #dde2de); }
+  .d3ko__identity { align-items: flex-start; flex-direction: column; }
+}
+
+/* Overview / Risk Analysis: the KYB Results page, framed. */
+.d3-rframe {
+  display: block;
+  width: 100%;
+  min-height: 240px;
+  border: 0;
+  background: transparent;
+}

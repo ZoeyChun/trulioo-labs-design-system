@@ -338,6 +338,143 @@
     "not-checked": ["Not checked", "default"]
   };
 
+  /* ------------------------------------------------------- overview (high level) */
+
+  var OV_ICON = {
+    location:
+      '<svg class="d3-fa-line" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 14s4.5-3.9 4.5-7.5a4.5 4.5 0 1 0-9 0C3.5 10.1 8 14 8 14Z"/><circle cx="8" cy="6.5" r="1.5" stroke="currentColor" stroke-width="1.5"/></svg>',
+    owners:
+      '<svg class="d3-fa-line" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6" cy="5.25" r="2" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M2.25 13c.35-2.15 1.85-3.25 3.75-3.25S9.4 10.85 9.75 13"/><circle cx="11.25" cy="5.75" r="1.5" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10.1 9.6c1.15.2 2.15.95 2.55 2.4"/></svg>',
+    globe:
+      '<svg class="d3-fa-line" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.25" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 2.75v10.5M2.85 6h10.3M2.85 10h10.3"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M5.35 3.85c-.95 1.2-1.5 2.7-1.5 4.15s.55 2.95 1.5 4.15M10.65 3.85c.95 1.2 1.5 2.7 1.5 4.15s-.55 2.95-1.5 4.15"/></svg>'
+  };
+
+  var SPARKLE =
+    '<svg class="icon" viewBox="0 0 12.375 12.375" fill="none" aria-hidden="true"><path d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z" fill="currentColor"/></svg>';
+
+  function ovField(label, value, href) {
+    var v = value == null || value === "" ? "—" : value;
+    var inner = href
+      ? '<a class="d3ko__link" href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">' + esc(v) + "</a>"
+      : '<p class="tds-data-field__value">' + esc(v) + "</p>";
+    return (
+      '<div class="tds-data-field"><div class="tds-data-field__label-row"><p class="tds-data-field__label">' + esc(label) +
+      '</p></div><div class="tds-data-field__content"><div class="tds-data-field__value-row">' + inner + "</div></div></div>"
+    );
+  }
+
+  function ovHeading(kind, label) {
+    return '<p class="d3ko__heading"><span class="d3ko__heading-icon" aria-hidden="true">' + OV_ICON[kind] + "</span>" + esc(label) + "</p>";
+  }
+
+  /* The high-level overview: headline, who the business is, and three short fact
+     groups. Everything deeper lives in the other tabs. */
+  function overviewHtml(biz, card) {
+    var m = build(biz);
+    var r = biz.report || {};
+    var own = biz.ownership || [];
+    var tone = m.verdictTone;
+    var lead =
+      tone === "negative" ? "High risk entity" : tone === "intermediate" ? "Medium risk entity" : "Low risk entity";
+    var reasons = (biz.risks || [])
+      .map(function (x) {
+        return String(x.label || "").toLowerCase();
+      })
+      .filter(Boolean)
+      .slice(0, 3);
+    var tail = reasons.length
+      ? reasons.join(", ")
+      : tone === "positive"
+        ? "active registration, sanctions and adverse media clear"
+        : "some checks need review";
+
+    var country = biz.country || (biz.report && biz.report.country) || "United States";
+    var reg = biz.reg || r.regNumber || "—";
+    var taxId = r.taxId || biz.taxId || "—";
+    var addrFull = String(biz.addr || r.address || "").split(" - ")[0].trim();
+    var office = addrFull.split(",")[0].trim() || "—";
+    var mapsHref = addrFull ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(addrFull) : "";
+    var email = r.email || biz.email || "";
+    var domain = email.indexOf("@") > 0 ? email.split("@")[1] : "";
+    /* Ownership comes from the same data as the Owners & UBOs tab (the graph), and is
+       only summarised here when that tab is part of the package. */
+    var ownTab = card && card.querySelector('[data-d3-kyb-tab="ownership"]');
+    var ownIncluded = !card || (ownTab && !ownTab.hidden);
+    var layers = "—";
+    var owners = "—";
+    if (!ownIncluded) {
+      layers = "Not included";
+      owners = "Not included";
+    } else if (biz.ownershipUndisclosed) {
+      layers = "Not disclosed";
+      owners = "Not disclosed";
+    } else {
+      var g = window.D3KybUboGraph && window.D3KybUboGraph.graphFromBiz ? window.D3KybUboGraph.graphFromBiz(biz) : null;
+      var depth = 0;
+      var persons = 0;
+      (function walk(node, d) {
+        if (!node) return;
+        if (d > depth) depth = d;
+        if (d > 0 && node.type !== "business") persons += 1;
+        (node.children || []).forEach(function (c) {
+          walk(c, d + 1);
+        });
+      })(g && g.tree, 0);
+      if (!persons && own.length) {
+        persons = own.filter(function (o) { return o.type !== "corp"; }).length || own.length;
+        depth = 1;
+      }
+      if (persons) {
+        layers = depth > 1 ? depth + " (Multi-tiered)" : "1 (Direct)";
+        owners = String(persons);
+      }
+    }
+
+    return (
+      '<div class="d3-kyb-findings d3ko">' +
+      '<p class="d3ko__kicker">Overview</p>' +
+      '<h2 class="d3ko__headline"><span class="d3ko__headline-' + (tone === "positive" ? "ok" : tone === "intermediate" ? "warn" : "risk") + '">' +
+      esc(lead) + "</span>: " + esc(tail) + "</h2>" +
+      '<hr class="d3ko__rule">' +
+      '<div class="d3ko__identity">' +
+      '<img class="d3ko__thumb" src="assets/kyb-resume/building.png" alt="Office location" width="120" height="90">' +
+      '<div class="d3ko__who"><div class="d3ko__name-row"><p class="d3ko__name">' + esc(biz.name || "Business") + "</p>" + tag(tone, m.verdictLabel) + "</div>" +
+      '<div class="d3ko__fields">' +
+      '<div class="tds-data-field"><div class="tds-data-field__label-row"><p class="tds-data-field__label">Country / Jurisdiction</p></div>' +
+      '<div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">' + esc(country) +
+      '</p><span class="d3ko__flag" aria-hidden="true"><img src="assets/kyb-resume/flag-us.svg" alt="" width="18" height="12"></span></div></div></div>' +
+      ovField("BRN / Registration number", reg) +
+      ovField("Tax ID", taxId) +
+      "</div></div></div>" +
+      '<div class="d3ko__facts">' +
+      '<div class="d3ko__col">' + ovHeading("location", "Address") + '<div class="d3ko__col-fields">' +
+      ovField("Office address", office, mapsHref) + ovField("Entities registered", biz.entitiesRegistered || "1") + "</div></div>" +
+      '<div class="d3ko__col">' + ovHeading("owners", "Ownership") + '<div class="d3ko__col-fields">' +
+      ovField("Ownership layer", layers) + ovField("Beneficial owners", owners) + "</div></div>" +
+      '<div class="d3ko__col">' + ovHeading("globe", "Contact details") + '<div class="d3ko__col-fields">' +
+      ovField("Website", domain, domain ? "https://" + domain : "") + ovField("Email", email, email ? "mailto:" + email : "") + "</div></div>" +
+      "</div>" +
+      '<button type="button" class="tds-ai-tag tds-ai-tag--md d3ko__ask" data-d3ko-ask="What are the key risk factors for this business?">' +
+      '<span class="tds-ai-tag__icon" aria-hidden="true">' + SPARKLE + '</span><span class="tds-ai-tag__label">What are the key risk factors for this business?</span></button>' +
+      "</div>"
+    );
+  }
+
+  /* The skeleton matches this layout. */
+  function overviewSkeletonHtml() {
+    var sk = function (w, h, extra) {
+      return '<span class="d3kf-sk' + (extra ? " " + extra : "") + '" style="width:' + w + ";height:" + h + 'px"></span>';
+    };
+    var col = '<div class="d3ko__col"><div class="d3kf-sk-stack">' + sk("90px", 14) + sk("70%", 14) + sk("60px", 12) + sk("55%", 14) + "</div></div>";
+    return (
+      '<span class="sr-only">Generating overview…</span><div aria-hidden="true" class="d3-kyb-findings d3ko">' +
+      sk("80px", 12) + '<div style="height:12px"></div>' + sk("78%", 24) + '<hr class="d3ko__rule">' +
+      '<div class="d3ko__identity">' + sk("120px", 90, "d3ko__thumb") +
+      '<div class="d3ko__who"><div class="d3kf-sk-stack">' + sk("240px", 22) + sk("70%", 14) + "</div></div></div>" +
+      '<div class="d3ko__facts">' + col + col + col + "</div></div>"
+    );
+  }
+
   function html(m) {
     var heroClass = "kyb-summary-hero--" + m.verdictTone;
     var accent = m.verdictTone === "default" ? "" : "dv-summary-card__accent--" + m.verdictTone;
@@ -460,6 +597,13 @@
   function bind(card) {
     if (card.__d3kfBound) return;
     card.__d3kfBound = true;
+    card.addEventListener("click", function (event) {
+      var ask = event.target.closest && event.target.closest("[data-d3ko-ask]");
+      if (!ask) return;
+      document.dispatchEvent(
+        new CustomEvent("d3-chat:send", { detail: { text: ask.getAttribute("data-d3ko-ask"), agent: "kyb" }, cancelable: true })
+      );
+    });
     var savedScroll = 0;
 
     function body() {
@@ -618,7 +762,8 @@
 
   function paint(panel, card, biz, animate) {
     try {
-      panel.innerHTML = html(buildModel(card, biz));
+      if (window.D3KybPanels && window.D3KybPanels.mount(panel, "summary")) { /* native Summary */ }
+      else panel.innerHTML = overviewHtml(biz, card);
       if (animate) {
         var root = panel.firstElementChild;
         if (root) root.classList.add("d3kf-in");
@@ -626,7 +771,7 @@
     } catch (err) {
       /* Never leave the tab blank: show a message and keep the cause in the console. */
       if (window.console && console.error) console.error("D3KybFindings render failed", err);
-      panel.innerHTML = '<p class="d3-workspace__hint">Findings could not be generated for this result.</p>';
+      panel.innerHTML = '<p class="d3-workspace__hint">The overview could not be generated for this result.</p>';
     }
     panel.removeAttribute("aria-busy");
     bind(card);
@@ -668,7 +813,7 @@
     panel.dataset.kfState = "loading";
     panel.__kfDone = false;
     panel.setAttribute("aria-busy", "true");
-    panel.innerHTML = skeletonHtml();
+    panel.innerHTML = overviewSkeletonHtml();
     panel.__kfTimer = window.setTimeout(function () {
       panel.__kfDone = true;
       if (!held) finish(panel);

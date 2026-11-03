@@ -102,6 +102,11 @@
     return ADDONS.filter(function (a) { return !(id === "complete" && a.privateOnly); });
   }
 
+  /* Business Risk Values starts ticked wherever the package offers it. */
+  function defaultAddons(packageId) {
+    return addonsFor(packageId).some(function (a) { return a.id === "risk"; }) ? ["risk"] : [];
+  }
+
   /* A few real ABA routing numbers, so the demo can name the bank. */
   var BANKS = {
     "021000021": "JPMorgan Chase",
@@ -124,10 +129,13 @@
       var c = JSON.parse(raw);
       if (!c || !pkg(c.package)) return null;
       var offered = addonsFor(c.package).map(function (a) { return a.id; });
+      var list = Array.isArray(c.addons) ? c.addons.slice() : [];
+      /* Configurations saved before Business Risk Values became a default get it once. */
+      if (c.v !== 2 && offered.indexOf("risk") !== -1 && list.indexOf("risk") === -1) list.push("risk");
       return {
         package: c.package,
         finder: c.finder !== false,
-        addons: (Array.isArray(c.addons) ? c.addons : []).filter(function (id, i, all) {
+        addons: list.filter(function (id, i, all) {
           return offered.indexOf(id) !== -1 && all.indexOf(id) === i;
         })
       };
@@ -138,7 +146,7 @@
 
   function saveConfig(cfg) {
     try {
-      window.localStorage.setItem(CONFIG_KEY, JSON.stringify({ package: cfg.package, finder: cfg.finder !== false, addons: cfg.addons || [] }));
+      window.localStorage.setItem(CONFIG_KEY, JSON.stringify({ v: 2, package: cfg.package, finder: cfg.finder !== false, addons: cfg.addons || [] }));
     } catch (e) { /* storage blocked: the demo just won't remember */ }
   }
 
@@ -154,8 +162,9 @@
       query: "",
       package: DEFAULT_PACKAGE,
       packageChosen: false,
-      addons: [],
+      addons: defaultAddons(DEFAULT_PACKAGE),
       addonsChosen: false,
+      addonsTouched: false, // the user changed the add-ons themselves (so a package change keeps them)
       entity: null, // { id, name, cc } — the business picked so far
       finderEnabled: true, // the user's Business Finder switch (a registry without search ignores it)
       profile: { name: "", regNo: "", address: "", taxId: "" }, // typed in when the registry has no automated search
@@ -179,6 +188,7 @@
       st.packageChosen = true;
       st.addons = cfg.addons.slice();
       st.addonsChosen = true;
+      st.addonsTouched = true;
       st.finderEnabled = cfg.finder;
     }
     return st;
@@ -218,7 +228,7 @@
 
   /* The Web & Social tab also opens for the Web Insights add-on. */
   function tabAllowed(id, tab, addons) {
-    if (tab === "findings") return true;
+    if (tab === "findings" || tab === "risk") return true;
     /* Owners & UBOs: Complete includes it; Insights shows it when a UBO add-on is
        selected; Essentials never. The graph and details come from data, not from
        anything the user types. */
@@ -265,6 +275,7 @@
       next.addons = ("addons" in next ? next.addons : state.addons).filter(function (id) { return offered.indexOf(id) !== -1; });
     }
     if ("addonsChosen" in patch) next.addonsChosen = !!patch.addonsChosen;
+    if ("addonsTouched" in patch) next.addonsTouched = !!patch.addonsTouched;
     if ("entity" in patch) {
       var e = patch.entity;
       next.entity = e && e.id ? { id: String(e.id), name: String(e.name || ""), cc: String(e.cc || "").toLowerCase() } : null;
@@ -319,6 +330,12 @@
        only asks until one has been made. */
     if ("package" in patch && !("packageChosen" in next)) next.packageChosen = true;
     if ("addons" in patch && !("addonsChosen" in next)) next.addonsChosen = true;
+    /* Toggling an add-on by hand is remembered. Until then a package change brings
+       that package's default add-ons (Business Risk Values) with it. */
+    if ("addons" in patch && source === "addons" && !("addonsTouched" in next)) next.addonsTouched = true;
+    if ("package" in patch && !("addons" in patch) && !state.addonsTouched && !next.addonsTouched) {
+      next.addons = defaultAddons(next.package);
+    }
 
     /* A different business starts the questions over. */
     if ("entity" in next) {
@@ -367,8 +384,9 @@
         finderEnabled: cfgR ? cfgR.finder : true,
         package: cfgR ? cfgR.package : blank.package,
         packageChosen: !!cfgR,
-        addons: cfgR ? cfgR.addons.slice() : [],
+        addons: cfgR ? cfgR.addons.slice() : defaultAddons(blank.package),
         addonsChosen: !!cfgR,
+        addonsTouched: !!cfgR,
         entity: null,
         profile: blank.profile,
         profileDoc: false,
@@ -546,6 +564,7 @@
     packages: PACKAGES,
     addons: ADDONS,
     addonsFor: addonsFor,
+    defaultAddons: defaultAddons,
     hasUboAddon: hasUboAddon,
     savedConfig: savedConfig,
     saveConfig: saveConfig,

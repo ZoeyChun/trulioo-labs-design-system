@@ -764,6 +764,13 @@
 /* The saved-configuration chip is a label, not a button. */
 .d3-kyb-wiz__chip.is-static {
   cursor: default;
+  border-radius: 16px;
+}
+
+.d3-kyb-wiz__chip.is-static > span {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
 }
 .d3-kyb-wiz__chip.is-static:hover {
   border-color: var(--border-subtle, #dde2de);

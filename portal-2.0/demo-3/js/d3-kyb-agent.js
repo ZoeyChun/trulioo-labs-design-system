@@ -1272,7 +1272,7 @@
     var cfg = S.savedConfig && S.savedConfig();
     if (cfg) {
       wiz.saved = true;
-      S.set({ package: cfg.package, packageChosen: true, finderEnabled: cfg.finder, addons: cfg.addons, addonsChosen: true }, "agent");
+      S.set({ package: cfg.package, packageChosen: true, finderEnabled: cfg.finder, addons: cfg.addons, addonsChosen: true, addonsTouched: true }, "agent");
       wiz.finderAnswered = true;
     }
     if (biz) {
