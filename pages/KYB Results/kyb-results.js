@@ -1995,11 +1995,11 @@
         },
         "match-signals": {
           truai:
-            "Business Name and City failed to match across all 4 responding datasources. Only Jurisdiction and State Province returned consistent results (3/4 matched each). With a 50% field match rate and 0 of 4 sources confirming the full record, this entity does not meet the KYB Standard verification rule.",
+            "Business Name, Jurisdiction, City and State Province all matched across the 4 responding datasources (4/4 each, 100% field match rate). The BRN record matches, so this entity meets the KYB Standard verification rule. 3 of 7 datasources did not respond, which does not change the result.",
           prompt: "Show non-responding sources",
           findings: [
-            "Business Name matched 1 of 4 sources",
-            "City returned 0 of 4 matches",
+            { text: "Business Name matched 4 of 4 sources", tone: "positive" },
+            { text: "City matched 4 of 4 sources", tone: "positive" },
             { text: "3 of 7 datasources did not respond", tone: "intermediate" },
           ],
         },
@@ -2141,6 +2141,62 @@
       officerNote: "No verifiable national ID for either officer. Full officer detail in Supporting Records.",
       officerNoteTitle: "Note",
       officerTone: "warning",
+      /* Meridian Apex is verified: the BRN matches in every responding datasource. */
+      detail: {
+        matchSignals: {
+          verified: true,
+          rule: "Verification Rule: KYB Standard: 1 Records Match (BRN)",
+          metrics: {
+            "Fields Checked": "4 fields",
+            "Sources Responded": "4 of 7 datasources",
+          },
+          rows: {
+            "business-name": {
+              status: "match",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+            jurisdiction: {
+              status: "match",
+              input: "Delaware",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+            city: {
+              status: "match",
+              input: "Wilmington",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+            "state-province": {
+              status: "match",
+              input: "Delaware",
+              sources: "4/4 matched",
+              sourceRows: [
+                { name: "Business Documents 323100", status: "match" },
+                { name: "Business Insights 344568", status: "match" },
+                { name: "Business Insights 773174", status: "match" },
+                { name: "Ownership Tree 480052", status: "match" },
+              ],
+            },
+          },
+        },
+      },
     },
     default: {
       score: 55,
@@ -2924,6 +2980,30 @@
     return buildSignalsCell("No Match", "negative", TABLE_CROSS_ICON);
   }
 
+  /* The status tag next to the company name is the result of the verification rule,
+     the same result the Match Signals banner shows. It used to be fixed markup
+     ("Verified"), which contradicted profiles whose rule fails. */
+  function syncResultStatusTag(verified) {
+    var tag = document.querySelector(".dv-header__title-group .tds-tag");
+    if (!tag) return;
+    tag.classList.toggle("tds-tag--positive", !!verified);
+    tag.classList.toggle("tds-tag--negative", !verified);
+    var label = verified ? "Verified" : "Not Verified";
+    var icon = tag.querySelector(".tds-tag__leading-visual");
+    if (icon) {
+      if (!tag.__kybVerifiedIcon) tag.__kybVerifiedIcon = icon.innerHTML;
+      icon.innerHTML = verified ? tag.__kybVerifiedIcon : TABLE_CROSS_ICON;
+    }
+    /* Replace only the text, keeping the icon node. */
+    var textNode = null;
+    tag.childNodes.forEach(function (n) {
+      if (n.nodeType === 3 && n.textContent.trim()) textNode = n;
+    });
+    if (textNode) textNode.textContent = "\n              " + label + "\n            ";
+    else tag.appendChild(document.createTextNode(label));
+    tag.setAttribute("aria-label", "Verification result: " + label);
+  }
+
   function renderMatchSignalsDetail(match) {
     if (!match) return;
 
@@ -3694,6 +3774,13 @@
     renderSignalsTabSummary(profile);
     renderTabSummaries(profile, entity);
     renderProfileDetail(profile, entity);
+    /* Header status = the verification result the Match Signals banner ends up showing.
+       Profiles without matchSignals data keep the banner's markup default, so read the
+       banner itself rather than the profile. */
+    var matchBanner = document.querySelector(".kyb-match-verification-banner");
+    if (matchBanner) {
+      syncResultStatusTag(matchBanner.classList.contains("kyb-match-verification-banner--positive"));
+    }
 
     var insightsSummaryEl = document.querySelector(".kyb-insights-summary");
     if (insightsSummaryEl) insightsSummaryEl.textContent = insightsSummary;
