@@ -37,6 +37,17 @@
     ensureTurn();
   }
 
+  /* "New verification" puts the pane back to its opening state. */
+  function resetThread() {
+    turn = null;
+    if (thread) {
+      thread.innerHTML = "";
+      thread.hidden = true;
+    }
+    if (empty) empty.hidden = false;
+    if (pane) pane.classList.remove("is-active");
+  }
+
   function appendUser(text) {
     var host = ensureTurn();
     if (!host) return;
@@ -273,6 +284,7 @@
 
     reportApi = global.VerificationReportV3.mount(host, {
       data: sample(),
+      onNewVerification: resetThread,
       onCardChange: function (id) {
         highlightRefs(id);
       },

@@ -1,0 +1,95 @@
+/* Report actions — Raw Data / Export / New verification, plus the Raw Data
+   dialog's JSON panel and the confirmation toast. Shared by V2 and V3. */
+
+.vr-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm, 8px);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.vr-actions .tds-btn {
+  flex-shrink: 0;
+}
+
+/* --- Raw Data dialog --- */
+
+.vr-raw-dialog .tds-dialog__body {
+  min-height: 0;
+}
+
+.vr-json {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-lg, 12px);
+  background-color: var(--surface-neutral-02, #f6f8f6);
+  overflow: hidden;
+}
+
+.vr-json__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md, 12px);
+  padding: var(--padding-sm, 8px) var(--padding-md, 16px);
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+  background-color: var(--surface-neutral-01, #fff);
+}
+
+.vr-json__lang {
+  color: var(--text-caption, #71807a);
+  font-family: var(--font-family, system-ui);
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.vr-json__body {
+  max-height: min(60vh, 32rem);
+  overflow: auto;
+  padding: var(--padding-md, 16px);
+}
+
+.vr-json__pre {
+  margin: 0;
+  color: var(--text-default, #14281f);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre;
+  tab-size: 2;
+}
+
+/* --- Confirmation toast --- */
+
+.vr-toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--spacing-24, 24px);
+  z-index: 1200;
+  transform: translateX(-50%);
+  max-width: min(28rem, calc(100vw - 2rem));
+  box-shadow: var(--elevation-md, 0 8px 24px rgba(20, 40, 31, 0.16));
+  animation: vr-toast-in 200ms ease-out;
+}
+
+@keyframes vr-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vr-toast {
+    animation: none;
+  }
+}

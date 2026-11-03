@@ -1004,7 +1004,12 @@
       '<select class="v3-board__layout-select" data-v3-layout-select aria-label="Second-level detail layout">' +
       '<option value="overlay" selected>View more overlay</option>' +
       '<option value="split">Split view</option>' +
-      "</select></label></div>" +
+      "</select></label>" +
+      /* Raw Data / Export / New verification — same three as Demo 3. */
+      (global.VerificationReportActions
+        ? global.VerificationReportActions.actionsHtml({ size: "sm" })
+        : "") +
+      "</div>" +
       '<div class="v3-board__workspace" data-v3-workspace>' +
       '<div class="v3-board__scroller" data-v3-scroller>' +
       '<div class="v3-board__grid">' +
@@ -1459,6 +1464,20 @@
     });
 
     setActive(activeId);
+
+    /* Raw Data / Export / New verification — same three as Demo 3. */
+    if (global.VerificationReportActions) {
+      global.VerificationReportActions.bind(host, {
+        data: data,
+        onNewVerification: function () {
+          closeDetail();
+          setActive(CARD_ORDER[0], { scroll: true });
+          if (options && typeof options.onNewVerification === "function") {
+            options.onNewVerification();
+          }
+        }
+      });
+    }
 
     return {
       goToCard: function (id) {

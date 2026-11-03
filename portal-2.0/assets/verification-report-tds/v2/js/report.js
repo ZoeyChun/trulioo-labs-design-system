@@ -325,7 +325,7 @@
       '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md v2-card__more-btn" data-v2-expand-open="' +
       esc(cardId) +
       '">' +
-      '<span class="tds-btn__leading-visual" aria-hidden="true">' +
+      '<span class="tds-btn__leading-icon" aria-hidden="true">' +
       EXPAND_ICON_SVG +
       "</span>" +
       '<span class="tds-btn__label">' +
@@ -2288,6 +2288,15 @@
     ];
   }
 
+  function reportActions() {
+    return global.VerificationReportActions || null;
+  }
+
+  function reportActionsHtml(size) {
+    var A = reportActions();
+    return A ? A.actionsHtml({ size: size || "md" }) : "";
+  }
+
   function render(host, data) {
     var sections = buildCards(data);
     var byId = {};
@@ -2366,12 +2375,7 @@
       esc(data.name || "Verification report") +
       "</div>" +
       '<div class="v2-stack__chrome-actions">' +
-      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-v2-download>' +
-      '<span class="tds-btn__leading-visual" aria-hidden="true">' +
-      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none">' +
-      '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M8 2.5v7.25M8 9.75 5.25 7M8 9.75 10.75 7M3 12.5h10"/>' +
-      "</svg></span>" +
-      '<span class="tds-btn__label">Download Report</span></button>' +
+      reportActionsHtml("md") +
       "</div>" +
       "</div>" +
       '<div class="v2-stack__progress" role="tablist" aria-label="Report sections" aria-orientation="vertical">' +
@@ -3283,6 +3287,22 @@
     setActive(activeId, { force: true });
     updateStackFromScroll();
     mountOwnershipPreview();
+
+    /* Raw Data / Export / New verification — same three as Demo 3. */
+    var Actions = reportActions();
+    if (Actions) {
+      Actions.bind(host, {
+        data: data,
+        onExport: downloadReport,
+        onNewVerification: function () {
+          if (isExpanded()) closeExpand();
+          setActive(CARD_ORDER[0], { scroll: true, force: true });
+          if (options && typeof options.onNewVerification === "function") {
+            options.onNewVerification();
+          }
+        }
+      });
+    }
 
     return {
       goToCard: function (id) {

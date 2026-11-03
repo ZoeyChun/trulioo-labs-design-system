@@ -85,6 +85,10 @@
   display: none;
 }
 
+.v3-board__chrome .vr-actions {
+  margin-left: auto;
+}
+
 .v3-board__layout-switch {
   display: inline-flex;
   align-items: center;
