@@ -59,10 +59,16 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 100%;
   flex-shrink: 1;
+  min-width: 0;
+  /* Leave room for the dot halo so it is not clipped by the board edge. */
+  padding-left: var(--spacing-4);
+}
+
+.v3-board__eyebrow-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
   min-width: 0;
 }
 
@@ -73,6 +79,10 @@
   border-radius: var(--radius-full);
   background: var(--text-positive);
   box-shadow: 0 0 0 var(--spacing-4) color-mix(in srgb, var(--text-positive) 16%, transparent);
+}
+
+.v3-board__layout-switch[hidden] {
+  display: none;
 }
 
 .v3-board__layout-switch {

@@ -190,7 +190,7 @@
       return;
     }
 
-    if (/additional|officer|williamson|evidence|filings|tax|director|psc/.test(q)) {
+    if (/additional|officer|cho|evidence|filings|tax|director|member|psc/.test(q)) {
       appendAssistant(
         "<p>Officer on file: <strong>" +
           escHtml(officer.fullName || "—") +

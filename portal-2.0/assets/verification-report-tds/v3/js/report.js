@@ -348,17 +348,19 @@
         ? Tabs.matchDataForBiz(biz)
         : null;
     var onlineSources =
-      Tabs && typeof Tabs.onlineSourcesForBiz === "function"
+      data.onlineSources ||
+      (Tabs && typeof Tabs.onlineSourcesForBiz === "function"
         ? Tabs.onlineSourcesForBiz(biz)
-        : [];
+        : []);
     var truliooCaps =
       Tabs && typeof Tabs.truliooCapabilities === "function"
         ? Tabs.truliooCapabilities()
         : [];
     var social =
-      Tabs && typeof Tabs.socialProfileForBiz === "function"
+      data.socialProfile ||
+      (Tabs && typeof Tabs.socialProfileForBiz === "function"
         ? Tabs.socialProfileForBiz(biz)
-        : null;
+        : null);
 
     var verified = data.verified !== false;
     var riskScore = typeof data.riskScore === "number" ? data.riskScore : 87;
@@ -367,11 +369,12 @@
     var gaugeLabel =
       riskBand === "high" ? "High Risk" : riskBand === "medium" ? "Medium Risk" : "Low Risk";
     var outcome =
-      riskBand === "high"
+      data.outcomeLabel ||
+      (riskBand === "high"
         ? "High Risk Entity"
         : riskBand === "medium"
           ? "Medium Risk Entity"
-          : data.riskLabel || (verified ? "Verified" : "Review");
+          : data.riskLabel || (verified ? "Verified" : "Review"));
     var flaggedOwners = ownership.filter(function (o) {
       return o.flagged || o.status === "negative";
     });
@@ -383,8 +386,17 @@
     var matchedCount = matchRows.filter(function (r) { return r.status === "match"; }).length;
     var totalFields = matchRows.length;
     var matchPct = totalFields ? Math.round((matchedCount / totalFields) * 100) : 0;
-    var ownerDepth = (graph.tree && graph.tree.children) ? "2 layers" : "1 layer";
+    var ownerDepth =
+      data.ownerDepth ||
+      ((graph.tree && graph.tree.children) ? "2 layers" : "1 layer");
     var entityName = data.name || "This business";
+    var riskCategories = data.riskCategories || [
+      { label: "Business Model", score: 84, risk: "high" },
+      { label: "Financial Health", score: 68, risk: "high" },
+      { label: "Fraud & Financial Crimes", score: 63, risk: "medium" },
+      { label: "Governance & Compliance", score: 52, risk: "high" },
+      { label: "Third-Party & Market", score: 57, risk: "low" }
+    ];
     var emphasizeRisk = riskBand === "high" || riskBand === "medium";
     var markTone = riskBand === "high" ? "negative" : "intermediate";
     function riskMark(text) {
@@ -469,7 +481,23 @@
             " before treating this entity as low risk."
           : "Registry attributes largely match with limited residual risk."
     );
-    var heroLedeHtml = heroParts.slice(0, 4).join(" ");
+    /* data.heroLede wins over the derived lede; **phrases** become risk marks. */
+    var heroLedeHtml = (data.heroLede && data.heroLede.length)
+      ? data.heroLede
+          .map(function (line) {
+            return String(line)
+              .split("**")
+              .map(function (part, i) {
+                return i % 2 ? riskMark(part) : esc(part);
+              })
+              .join("");
+          })
+          .join(" ")
+      : heroParts.slice(0, 4).join(" ");
+    var suggestedActions = data.suggestedActions || [
+      { label: "Review ownership", target: "ownership" },
+      { label: "Review risk signals", target: "signals" }
+    ];
     var buildingSrc =
       data.buildingSrc || "../../verification-report/assets/kyb/building.png";
     var mapSrc = data.mapSrc || "../../verification-report/assets/kyb/map.png";
@@ -511,16 +539,15 @@
             '<div class="v3-suggested" aria-label="Suggested actions">' +
             '<p class="v3-section-label">Suggested Actions</p>' +
             '<div class="v3-suggested__ctas">' +
-            tdsSecondaryBtn(
-              'data-v3-view-more="ownership"',
-              "Review ownership",
-              "md"
-            ) +
-            tdsSecondaryBtn(
-              'data-v3-view-more="signals"',
-              "Review risk signals",
-              "md"
-            ) +
+            suggestedActions
+              .map(function (action) {
+                return tdsSecondaryBtn(
+                  'data-v3-view-more="' + esc(action.target) + '"',
+                  esc(action.label),
+                  "md"
+                );
+              })
+              .join("") +
             "</div></div></div>" +
             '<aside class="v3-entity" aria-label="Entity information">' +
             '<div class="v3-entity__top">' +
@@ -642,26 +669,12 @@
             : "Risk categories scored across the portfolio"),
         ask: "Which risk signals are driving this score?",
         html: function () {
-          var categories = [
-            { label: "Business Model", score: 84, risk: "high" },
-            { label: "Financial Health", score: 68, risk: "high" },
-            { label: "Fraud & Financial Crimes", score: 63, risk: "medium" },
-            { label: "Governance & Compliance", score: 52, risk: "high" },
-            { label: "Third-Party & Market", score: 57, risk: "low" }
-          ];
           return (
             cardHeadHtml("signals", "Risk Signals", this.summary) +
-            riskIndicatorsHtml(categories)
+            riskIndicatorsHtml(riskCategories)
           );
         },
         detail: function () {
-          var categories = [
-            { label: "Business Model", score: 84, risk: "high" },
-            { label: "Financial Health", score: 68, risk: "high" },
-            { label: "Fraud & Financial Crimes", score: 63, risk: "medium" },
-            { label: "Governance & Compliance", score: 52, risk: "high" },
-            { label: "Third-Party & Market", score: 57, risk: "low" }
-          ];
           return (
             '<div class="v3-metrics">' +
             tdsDataField("Overall score", riskScore + " / 100") +
@@ -678,7 +691,7 @@
                 : "—"
             ) +
             "</div>" +
-            riskIndicatorsHtml(categories) +
+            riskIndicatorsHtml(riskCategories) +
             (alerts.length
               ? '<p class="v3-section-label">Screening checks</p><div class="v3-metrics">' +
                 alerts
@@ -870,15 +883,24 @@
             '<div class="v3-metrics">' +
             tdsDataField(
               "Website status",
-              social && social.highRisk
-                ? "Unavailable — domain expired or no live site"
-                : "Active"
+              (social && social.websiteStatus) ||
+                (social && social.highRisk
+                  ? "Unavailable — domain expired or no live site"
+                  : "Active")
             ) +
-            tdsDataField("Domain registrar", "GoDaddy.com, LLC") +
+            tdsDataField(
+              "Domain registrar",
+              (social && social.domainRegistrar) || "GoDaddy.com, LLC"
+            ) +
             tdsDataField(
               "Domain registered",
-              (social && social.founded) || "1 Feb 2019"
+              (social && social.domainRegistered) ||
+                (social && social.founded) ||
+                "1 Feb 2019"
             ) +
+            ((social && social.domainExpires)
+              ? tdsDataField("Domain expires", social.domainExpires)
+              : "") +
             (domain
               ? tdsLinkField("Website", "https://" + domain, domain)
               : tdsDataField("Website", "—")) +
@@ -887,8 +909,8 @@
             '<div class="v3-metrics">' +
             tdsLinkField(
               "LinkedIn",
-              "https://linkedin.com/" + handle,
-              "linkedin.com/" + handle
+              "https://linkedin.com/company/" + handle,
+              "linkedin.com/company/" + handle
             ) +
             tdsLinkField(
               "Instagram",
@@ -971,16 +993,17 @@
       .join("");
 
     host.innerHTML =
-      '<div class="v3-board" data-v3-board data-v3-mode="board" data-v3-layout="split">' +
+      '<div class="v3-board" data-v3-board data-v3-mode="board" data-v3-layout="overlay">' +
       '<div class="v3-board__chrome">' +
       '<p class="v3-board__eyebrow"><span class="v3-board__eyebrow-dot" aria-hidden="true"></span>' +
+      '<span class="v3-board__eyebrow-text">' +
       esc(data.name || "Verification report") +
-      "</p>" +
-      '<label class="v3-board__layout-switch">' +
+      "</span></p>" +
+      '<label class="v3-board__layout-switch" hidden>' +
       '<span class="v3-board__layout-switch-label">Detail</span>' +
       '<select class="v3-board__layout-select" data-v3-layout-select aria-label="Second-level detail layout">' +
-      '<option value="overlay">View more overlay</option>' +
-      '<option value="split" selected>Split view</option>' +
+      '<option value="overlay" selected>View more overlay</option>' +
+      '<option value="split">Split view</option>' +
       "</select></label></div>" +
       '<div class="v3-board__workspace" data-v3-workspace>' +
       '<div class="v3-board__scroller" data-v3-scroller>' +
@@ -1034,7 +1057,7 @@
     var activeId = cards[0] ? cards[0].id : null;
     var expandedId = null;
     var mode = "board";
-    var layout = "split";
+    var layout = "overlay";
     var flipTimer = null;
     var FLIP_MS = 480;
     var onCardChange = options && options.onCardChange;
