@@ -1,0 +1,83 @@
+/* Verification Module V3 — page shell (does not touch V1/V2). */
+
+.v3-report-host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.v3-report-host:empty {
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-2xl);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-neutral-02);
+  color: var(--text-description);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  text-align: center;
+}
+
+.v3-report-host:empty::before {
+  content: "Verification Module V3";
+}
+
+.d1-shell[data-v3-view="workspace"] .d1-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+.d1-shell[data-v3-view="workspace"] .d1-slot {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.v3-msg-refs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  margin-top: var(--spacing-12);
+}
+
+.v3-chat-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--spacing-4) var(--spacing-12);
+  border-radius: var(--radius-badge);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-primary);
+  color: var(--text-default);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  cursor: pointer;
+}
+
+.v3-chat-ref__mark {
+  width: var(--spacing-8);
+  height: var(--spacing-8);
+  border-radius: var(--radius-full);
+  background: var(--interactive-default);
+  flex-shrink: 0;
+}
