@@ -178,7 +178,7 @@
     country: "United States",
     cc: "US",
     city: "Wilmington, Delaware",
-    addr: "Suite 400, 1 King Street, London EC2V 8AU",
+    addr: "1209 N Orange St, Wilmington, DE 19801",
     transactionId: "8c2f4e7a-19bd-4f02-a6c1-77de42915b3a",
     transactionIdShort: "8c2f4e7a-19bd-4f0...",
     date: "17 Jun 2026, 2:14 PM",
@@ -187,18 +187,18 @@
     riskLabel: "Verified",
     overview: {
       regNumber: "BRN 11876542",
-      taxId: "GB341209876",
+      taxId: "EIN 84-3921756",
       status: "Active",
       sizing: "0 employees; $1 authorised / $1 paid-up capital.",
       legalForm: "Private company limited by shares",
       address:
-        "Suite 400, 1 King Street, London EC2V 8AU - virtual office at a formations-agent suite; no operational premises.",
+        "1209 N Orange St, Wilmington, DE 19801 - virtual office at a formations-agent suite; no operational premises.",
       industry: "Registered under SIC 70229",
       industryNote:
         "(management consultancy activities), a catch-all code.\nNo evidence of active trading, clients, or revenue.",
-      regDate: "Incorporated 1 Feb 2019 (England & Wales)",
+      regDate: "Incorporated 1 Feb 2019 (Delaware)",
       phone: "+1 280 794 0000",
-      email: "info@meridianapexconsulting.co.uk",
+      email: "info@meridianapexconsulting.com",
       alerts: [
         "Adverse Media: None found",
         "Sanctions: None found",
@@ -228,7 +228,7 @@
     ownershipTableRows: ownershipTableRows,
     officer: officer,
     report: {
-      email: "info@meridianapexconsulting.co.uk",
+      email: "info@meridianapexconsulting.com",
       legalForm: "Private company limited by shares"
     }
   };

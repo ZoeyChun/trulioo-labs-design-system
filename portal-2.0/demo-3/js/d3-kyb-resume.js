@@ -316,20 +316,12 @@
     return detail && (detail.querySelector("[data-d3-kyb-crumb]") || detail.querySelector(".d3-workspace__crumb"));
   }
 
-  /* "New verification" is not on the empty landing: it shows on the report, and
-     on the landing once something has been started (a name typed, a business or
-     package picked). */
+  /* "New verification" belongs to the report page only. */
   function syncNewBtn(forceMode) {
     var btn = detail && detail.querySelector("[data-d3-kyb-new]");
     if (!btn) return;
     var surface = forceMode || workspace.getAttribute("data-d3-kyb-surface");
-    var show = surface === "report";
-    if (!show && surface === "resume") {
-      var q = document.getElementById("vb-q");
-      var st = window.D3KybSession && window.D3KybSession.get();
-      show = !!((q && q.value.trim()) || (st && (st.entity || st.packageChosen)));
-    }
-    btn.hidden = !show;
+    btn.hidden = surface !== "report";
   }
 
   function renderCrumbs(mode, bizName) {
@@ -425,7 +417,7 @@
     if (window.D3KybFindings) window.D3KybFindings.setStatus(session.status || "Verified");
 
     if (window.D3Nav) window.D3Nav.openKybChat({ resume: true });
-    if (window.D3KybReport && window.D3KybReport.setTier) window.D3KybReport.setTier(session.tier || "complete");
+    if (window.D3KybReport && window.D3KybReport.setTier) window.D3KybReport.setTier(session.tier || "complete", session.addons);
     setSurface("report");
     setResumeVisible(true);
     if (resumeCard) resumeCard.classList.add("is-live");
@@ -459,7 +451,7 @@
     }
     /* Populate Owners & UBOs / other report tabs (resume path skips reveal). */
     if (window.D3KybReport && window.D3KybReport.seedFromName) {
-      window.D3KybReport.seedFromName(name);
+      window.D3KybReport.seedFromName(name, session.biz);
     }
     if (resumeCard && detail) {
       var metaBlocks = resumeCard.querySelectorAll(".d3-workspace__meta > div:not(.d3-workspace__meta-divider)");

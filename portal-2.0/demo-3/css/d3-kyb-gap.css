@@ -760,3 +760,92 @@
   font-size: var(--font-size-xs, 12px);
   line-height: 16px;
 }
+
+/* The saved-configuration chip is a label, not a button. */
+.d3-kyb-wiz__chip.is-static {
+  cursor: default;
+}
+.d3-kyb-wiz__chip.is-static:hover {
+  border-color: var(--border-subtle, #dde2de);
+}
+
+/* Manual search with a saved configuration: one line + Edit instead of the
+   package select and the add-ons. */
+.vb-prefill--saved [data-d3-kyb-pkg],
+.vb-prefill--saved [data-d3-kyb-addons] {
+  display: none !important;
+}
+
+.d3-kyb-savedline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12, 12px);
+  padding: var(--spacing-8, 8px) var(--spacing-12, 12px);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+}
+
+.d3-kyb-savedline[hidden] { display: none; }
+
+.d3-kyb-savedline__text b { font-weight: 600; }
+
+/* "Ready to verify": no icon column, and the buttons wrap instead of being cut off. */
+.d1-confirm.tds-announcement {
+  overflow: visible;
+}
+
+.d1-confirm .tds-announcement__content {
+  min-width: 0;
+}
+
+.d1-confirm .tds-announcement__actions {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Cancel is the TDS text button (invisible variant); on the gray card it must not
+   show the white surface fill of that variant. */
+.d1-confirm .tds-btn--invisible {
+  background-color: transparent;
+}
+
+.d1-confirm .tds-btn--invisible:hover {
+  background-color: var(--surface-hover);
+}
+
+/* Wizard footer: Back on the left, Continue on the right, "Skip to summary" on its
+   own line under Continue. */
+.d3-kyb-wiz__foot > .tds-btn {
+  margin-left: auto;
+}
+
+.d3-kyb-wiz__skip .tds-btn {
+  margin-left: 0;
+}
+
+.d3-kyb-wiz__skip {
+  display: flex;
+  flex: 0 0 100%;
+  justify-content: flex-end;
+  margin-top: calc(-1 * var(--spacing-4, 4px));
+}
+
+.d3-kyb-wiz__foot [aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* A business picked earlier shows as selected in the list (same look as the other
+   choice rows: green outline, filled mark). */
+.d3-kyb-wizard .d3-ai-selector__row[data-d3-kyb-cand].is-on {
+  box-shadow: inset 0 0 0 1.5px var(--interactive-default, #004c45);
+}
+
+.d3-kyb-wizard .d3-ai-selector__row[data-d3-kyb-cand].is-on .d3-ai-selector__mark {
+  background: var(--interactive-default, #004c45);
+  color: #fff;
+}

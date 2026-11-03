@@ -82,14 +82,15 @@
       tabs: ["overview", "signals", "ownership", "additional", "web"]
     }
   ];
-  var DEFAULT_PACKAGE = "essentials";
+  var DEFAULT_PACKAGE = "insights"; /* the package marked Default */
 
   /* Optional risk modules. `fields` is what each one asks the user for. */
   var ADDONS = [
     { id: "filings", name: "Filings", short: "Filings", note: "Additional information on the business such as Judgements, Bankruptcies, Insolvencies etc.", fields: 0, impact: "" },
     { id: "web", name: "Web Insights", short: "Web Insights", note: "", fields: 0, impact: "" },
     { id: "ubo", name: "UBO Discovery", short: "UBO Discovery", note: "", fields: 0, impact: "", privateOnly: true },
-    { id: "ubopsc", name: "UBO and PSC Discovery", short: "UBO and PSC Discovery", note: "", fields: 0, impact: "", privateOnly: true }
+    { id: "ubopsc", name: "UBO and PSC Discovery", short: "UBO and PSC Discovery", note: "", fields: 0, impact: "", privateOnly: true },
+    { id: "risk", name: "Business Risk Values", short: "Business Risk Values", note: "", fields: 0, impact: "" }
   ];
 
   /* Which add-ons a package offers: Essentials has none; Insights gets the full
@@ -110,6 +111,40 @@
     "011401533": "TD Bank",
     "322271627": "JPMorgan Chase"
   };
+
+  /* The saved KYB configuration (Settings → Configuration). Kept in this browser
+     (localStorage) so a verification can start from it instead of asking each
+     question. null = nothing saved, so TruAI asks step by step. */
+  var CONFIG_KEY = "d3-kyb-config";
+
+  function savedConfig() {
+    try {
+      var raw = window.localStorage.getItem(CONFIG_KEY);
+      if (!raw) return null;
+      var c = JSON.parse(raw);
+      if (!c || !pkg(c.package)) return null;
+      var offered = addonsFor(c.package).map(function (a) { return a.id; });
+      return {
+        package: c.package,
+        finder: c.finder !== false,
+        addons: (Array.isArray(c.addons) ? c.addons : []).filter(function (id, i, all) {
+          return offered.indexOf(id) !== -1 && all.indexOf(id) === i;
+        })
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveConfig(cfg) {
+    try {
+      window.localStorage.setItem(CONFIG_KEY, JSON.stringify({ package: cfg.package, finder: cfg.finder !== false, addons: cfg.addons || [] }));
+    } catch (e) { /* storage blocked: the demo just won't remember */ }
+  }
+
+  function clearConfig() {
+    try { window.localStorage.removeItem(CONFIG_KEY); } catch (e) { /* ignore */ }
+  }
 
   var EVENT = "d3-kyb:session-change";
 
@@ -136,7 +171,20 @@
     };
   }
 
-  var state = blankState();
+  /* A fresh session starts from the saved configuration, if there is one. */
+  function withConfig(st) {
+    var cfg = savedConfig();
+    if (cfg) {
+      st.package = cfg.package;
+      st.packageChosen = true;
+      st.addons = cfg.addons.slice();
+      st.addonsChosen = true;
+      st.finderEnabled = cfg.finder;
+    }
+    return st;
+  }
+
+  var state = withConfig(blankState());
 
   function copy(o) {
     return JSON.parse(JSON.stringify(o));
@@ -171,6 +219,12 @@
   /* The Web & Social tab also opens for the Web Insights add-on. */
   function tabAllowed(id, tab, addons) {
     if (tab === "findings") return true;
+    /* Owners & UBOs: Complete includes it; Insights shows it when a UBO add-on is
+       selected; Essentials never. The graph and details come from data, not from
+       anything the user types. */
+    if (tab === "ownership") {
+      return id === "complete" || (id === "insights" && hasUboAddon(addons));
+    }
     var row = pkg(id) || pkg(DEFAULT_PACKAGE);
     if (row.tabs.indexOf(tab) !== -1) return true;
     return tab === "web" && (addons || []).indexOf("web") !== -1;
@@ -305,15 +359,16 @@
 
   function reset(source) {
     var blank = blankState();
+    var cfgR = savedConfig();
     set(
       {
         country: null,
         query: "",
-        finderEnabled: true,
-        package: blank.package,
-        packageChosen: false,
-        addons: [],
-        addonsChosen: false,
+        finderEnabled: cfgR ? cfgR.finder : true,
+        package: cfgR ? cfgR.package : blank.package,
+        packageChosen: !!cfgR,
+        addons: cfgR ? cfgR.addons.slice() : [],
+        addonsChosen: !!cfgR,
         entity: null,
         profile: blank.profile,
         profileDoc: false,
@@ -333,11 +388,18 @@
   /* Does this entity + package hit a registry that hides ownership?
        none     Essentials, or no business picked yet
        public   the registry publishes owners — they are shown, not asked
-       private  it does not — the user supplies the UBO (a gap) */
+       private  it does not — the user supplies the UBO (a gap)
+       off      it does not, and UBO Discovery is not selected — nothing is asked */
   function ownershipMode() {
-    if (!state.entity || !tabAllowed(state.package, "ownership", [])) return "none";
+    if (!state.entity || !tabAllowed(state.package, "ownership", state.addons)) return "none";
     var row = country(state.entity.cc);
-    return row && row.ubo === "public" ? "public" : "private";
+    /* Owners come from data: the registry where it publishes them, our own sources
+       otherwise. Nothing is asked of the user. */
+    return row && row.ubo === "public" ? "public" : "none";
+  }
+
+  function hasUboAddon(list) {
+    return (list || []).indexOf("ubo") !== -1 || (list || []).indexOf("ubopsc") !== -1;
   }
 
   /* Does this country's registry support automated search? When it does not,
@@ -451,12 +513,12 @@
   function applyInputs(biz) {
     if (!biz) return biz;
     var r = requirements();
-    if (r.ubo !== "private" && r.ubo !== "skipped") return biz;
+    if (r.ubo !== "private" && r.ubo !== "skipped" && r.ubo !== "off") return biz;
     var out = {};
     Object.keys(biz).forEach(function (k) { out[k] = biz[k]; });
     /* A ready-made graph from the dataset would win over what the user typed. */
     delete out.ownershipGraph;
-    if (r.ubo === "skipped") {
+    if (r.ubo === "skipped" || r.ubo === "off") {
       out.ownership = [];
       out.ownershipUndisclosed = true;
     } else {
@@ -484,6 +546,10 @@
     packages: PACKAGES,
     addons: ADDONS,
     addonsFor: addonsFor,
+    hasUboAddon: hasUboAddon,
+    savedConfig: savedConfig,
+    saveConfig: saveConfig,
+    clearConfig: clearConfig,
     package: pkg,
     addon: addon,
     packageFromText: packageFromText,

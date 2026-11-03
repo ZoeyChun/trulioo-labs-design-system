@@ -204,6 +204,16 @@ html.d3-chat-pane-resizing * {
   );
 }
 
+/* No scrollbar at rest; it appears only while the thread is being scrolled. */
+.d3-chat-pane__thread {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.d3-chat-pane__thread.is-scrolling {
+  scrollbar-color: var(--border-strong, #c4cdc8) transparent;
+}
+
 .d3-chat-pane__thread .d1-thread {
   display: flex;
   flex-direction: column;

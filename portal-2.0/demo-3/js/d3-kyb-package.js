@@ -105,7 +105,7 @@
             '<span class="d3-ai-selector__mark" aria-hidden="true">' + window.D3KybIcons[p.id] + "</span>" +
             '<span class="d3-ai-selector__copy">' +
             '<span class="ai-cand__name">' + esc(p.name) +
-            (p.recommended ? ' <span class="d3-kyb-choicelist__badge">Recommended</span>' : "") + "</span>" +
+            (p.recommended ? ' <span class="d3-kyb-choicelist__badge">Default</span>' : "") + "</span>" +
             '<span class="d3-ai-selector__addr">' + esc(p.tagline) + "</span>" +
             '<span class="d3-ai-selector__addr">' + esc(p.bullets.join(" · ")) + "</span>" +
             '<span class="d3-ai-selector__reg' + (im.warn ? " is-warn" : "") + '">' + esc(im.text) + "</span>" +

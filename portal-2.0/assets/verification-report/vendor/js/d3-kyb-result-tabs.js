@@ -954,6 +954,14 @@
     renderWebPanel: renderWebPanel,
     renderMatchSignalsPanel: renderMatchSignalsPanel,
     renderAdditionalPanel: renderAdditionalPanel,
-    renderSourcesPanel: renderSourcesPanel
+    renderSourcesPanel: renderSourcesPanel,
+    /* Data accessors — same payloads the V1 panels render (for V2 / other hosts). */
+    matchDataForBiz: matchDataForBiz,
+    additionalDataForBiz: additionalDataForBiz,
+    onlineSourcesForBiz: onlineSourcesForBiz,
+    socialProfileForBiz: socialProfileForBiz,
+    truliooCapabilities: function () {
+      return TRULIOO_CAPS.slice();
+    }
   };
 })();
