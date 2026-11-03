@@ -1,0 +1,2707 @@
+/* ============================================================
+   Demo App — Unified KYC Flow (mobile, 402 × 874)
+   Figma: 33k0rNBk5KVuFlOkEFoNfh
+     · Home - Industries        2271:55710
+     · Home - Products          2258:54170
+     · Device Intel Loading     2255:50517
+   Background globe reuses pages/KYC eIDAS/device-intel-loading (1300:2338).
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --da-ease: cubic-bezier(0.22, 1, 0.36, 1);   /* entrances — settles quickly */
+  --da-ease-inout: cubic-bezier(0.4, 0, 0.2, 1); /* the sliding pill */
+  --da-ease-out: cubic-bezier(0.33, 0, 0.67, 1); /* exits */
+  --da-ease-soft: cubic-bezier(0.37, 0, 0.63, 1); /* long, gentle card fades */
+  --da-slide: 340ms;
+  /* Step is well under the card fade duration, so each card is still coming up
+     as the next one starts — they overlap rather than arriving one at a time. */
+  --da-card-step: 110ms;
+  --da-card-fade: 700ms;
+}
+
+.da-page {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--surface-neutral-03);
+  font-family: var(--font-family);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-32) var(--spacing-16);
+}
+
+/* --- Device frame ------------------------------------------------------- */
+
+.da-frame {
+  position: relative;
+  width: 402px;
+  max-width: 100%;
+  height: 874px;
+  max-height: calc(100vh - var(--spacing-64));
+  border-radius: var(--radius-xl);
+  box-shadow: var(--elevation-lg);
+  /* `clip` so the globe canvas, which deliberately overflows the frame, cannot
+     turn it into a scroll container when a card or pill takes focus. */
+  overflow: hidden;
+  overflow: clip;
+  isolation: isolate;
+  background: linear-gradient(180deg, #ffffff 0%, #cfffe2 100%);
+}
+
+/* Give the frame back some height on laptop screens rather than clipping it. */
+@media (max-height: 940px) {
+  .da-page {
+    padding: var(--spacing-16);
+  }
+
+  .da-frame {
+    max-height: calc(100vh - var(--spacing-32));
+  }
+}
+
+/* --- Animated background ------------------------------------------------ */
+
+.da-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.da-bg__wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #ffffff 0%, #cfffe2 100%);
+}
+
+.da-globe {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.da-globe__canvas {
+  position: absolute;
+  display: block;
+  max-width: none;
+  margin: 0;
+  touch-action: none;
+}
+
+/* --- Screen scaffold ---------------------------------------------------- */
+
+.da-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.da-logo {
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  position: absolute;
+  left: 16px;
+  top: 24px;
+  width: 370px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.da-logo img {
+  display: block;
+}
+
+/* --- Hero --------------------------------------------------------------- */
+
+/* Figma gives the hero a fixed 184px box, but it only holds ~88px of text.
+   Keeping it shrinkable means a short frame eats that slack before it ever
+   squeezes the cards. */
+.da-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  height: 184px;
+  flex: 0 1 auto;
+  min-height: 0;
+  width: 295px;
+}
+
+.da-hero__title {
+  margin: 0;
+  width: 369px;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-display-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: 44px;
+  color: var(--text-default);
+}
+
+.da-hero__sub {
+  margin: 0;
+  width: 100%;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+/* --- Stage -------------------------------------------------------------- */
+
+/* Hero pinned to the top, bottom block pinned to the bottom with the same gutter
+   the frame uses on the sides. The space between them is whatever is left over, so
+   the content never runs past the bottom edge when the frame is shorter than 874px.
+   The logo and hero are shared across all three screens; only `.da-stage__bottom`
+   swaps, which is what lets the browse → loading transition be a plain fade. */
+.da-stage {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 176px;
+  bottom: var(--spacing-24);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-24);
+}
+
+.da-stage__bottom {
+  width: 100%;
+  flex: none;
+}
+
+.da-browse {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+  width: 100%;
+}
+
+/* Segmented pills */
+
+.da-pills {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-12);
+  width: 100%;
+  padding: var(--spacing-2);
+  border-radius: 24px;
+  filter: drop-shadow(0 -4px 3px rgba(0, 0, 0, 0.06));
+  background-image:
+    linear-gradient(162.772deg, rgba(209, 255, 227, 0.4) 30.623%, rgba(0, 76, 69, 0) 97.909%),
+    linear-gradient(90deg, #172d2d 0%, #172d2d 100%);
+}
+
+/* The selected state is this one element sliding between the two pills, rather
+   than a background swapped from pill to pill. JS sets its width and offset. */
+.da-pills__thumb {
+  position: absolute;
+  left: var(--spacing-2);
+  top: var(--spacing-2);
+  height: calc(100% - (var(--spacing-2) * 2));
+  border-radius: 30px;
+  background: var(--color-white, #ffffff);
+  transition:
+    transform var(--da-slide, 340ms) var(--da-ease-inout),
+    width var(--da-slide, 340ms) var(--da-ease-inout);
+  z-index: 0;
+}
+
+.da-pill {
+  position: relative;
+  z-index: 1;
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-12) var(--spacing-24);
+  border: none;
+  border-radius: 30px;
+  background: transparent;
+  color: var(--text-inverse);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--da-slide, 340ms) var(--da-ease-inout);
+}
+
+.da-pill svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.da-pill[aria-selected="true"] {
+  color: var(--text-default);
+  cursor: default;
+}
+
+/* Horizontal card rail */
+
+/* The rail alone cancels the stage's 16px right gutter, so the card that runs off
+   the side reaches the frame edge instead of stopping short of it. The hero and
+   pills keep the gutter. */
+.da-rail {
+  width: auto;
+  margin-right: -16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.da-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* Figma pins the track at 480px, which clips the third card even at the end of the
+   scroll. Sizing to content keeps the same resting view but lets all three be
+   scrolled to in full. */
+.da-rail__track {
+  display: flex;
+  gap: var(--spacing-12);
+  align-items: flex-start;
+  height: 258px;
+  width: max-content;
+}
+
+.da-card {
+  position: relative;
+  flex: none;
+  width: 160px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--spacing-12);
+  padding: 14px;
+  border: 0.5px solid var(--color-green-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 16px 32px -6px rgba(0, 76, 69, 0.15);
+  overflow: hidden;
+  text-decoration: none;
+  background-size: 100% 100%;
+  background-image:
+    linear-gradient(110.974deg, rgba(209, 255, 227, 0.4) 8.1453%, rgba(0, 76, 69, 0) 79.291%),
+    url("data:image/svg+xml;utf8,<svg viewBox='0 0 160 258' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><rect x='0' y='0' height='100%25' width='100%25' fill='url(%23grad)' opacity='0.25'/><defs><radialGradient id='grad' gradientUnits='userSpaceOnUse' cx='0' cy='0' r='10' gradientTransform='matrix(4.8579 -26.443 17.027 3.6916 153 198)'><stop stop-color='rgba(194,237,228,1)' offset='0'/><stop stop-color='rgba(194,237,228,0)' offset='1'/></radialGradient></defs></svg>"),
+    linear-gradient(90deg, #004c45 0%, #004c45 100%),
+    linear-gradient(175.452deg, rgba(250, 255, 252, 0.5) 2.9083%, rgba(0, 76, 69, 0) 100.57%),
+    linear-gradient(200.227deg, #def9e9 17.356%, #ffffff 90.7%);
+}
+
+.da-card__art {
+  position: absolute;
+  display: block;
+  max-width: none;
+  transform-origin: center;
+}
+
+.da-card__foot {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.da-card__labels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.da-card__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 22px;
+  color: var(--text-inverse);
+  white-space: nowrap;
+}
+
+.da-card__foot svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+
+.da-tag {
+  position: relative;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-2) var(--padding-sm);
+  border-radius: var(--radius-badge);
+  overflow: hidden;
+}
+
+.da-tag::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 107, 92, 0.6);
+  mix-blend-mode: multiply;
+  border-radius: inherit;
+}
+
+.da-tag span {
+  position: relative;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-inverse);
+  white-space: nowrap;
+}
+
+/* Card art placements — mirrors the Figma frames exactly (card box is 160 × 258). */
+
+.da-card--finance .da-card__art {
+  width: 178.233px;
+  height: 107.969px;
+  left: -61.6px;
+  top: 59.4px;
+  transform: rotate(-30deg);
+}
+
+.da-card--marketplace .da-card__art {
+  width: 169.849px;
+  height: 146.509px;
+  left: -39.5px;
+  top: 27.74px;
+}
+
+.da-card--gaming .da-card__art {
+  width: 203.405px;
+  height: 122.949px;
+  left: -81px;
+  top: 30.63px;
+}
+
+.da-card--kyc-docs .da-card__art {
+  width: 179.982px;
+  height: 113.866px;
+  left: -46.2px;
+  top: 36.15px;
+  transform: rotate(30deg);
+}
+
+.da-card--eid .da-card__art {
+  width: 134px;
+  height: 245px;
+  left: -30.5px;
+  top: -58.5px;
+}
+
+.da-card--eudi .da-card__art {
+  width: 141px;
+  height: 136px;
+  left: -22.64px;
+  top: 18.56px;
+}
+
+/* --- Device Intel Loading ----------------------------------------------- */
+
+.da-loading {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 178px;
+  bottom: var(--spacing-24);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-24);
+}
+
+.da-status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  width: 100%;
+  padding: var(--spacing-16) var(--spacing-12);
+  border: 0.5px solid var(--color-green-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 16px 32px -6px rgba(0, 76, 69, 0.15);
+  overflow: hidden;
+  background-size: 100% 100%;
+  background-image:
+    linear-gradient(155.548deg, rgba(209, 255, 227, 0.4) 8.1453%, rgba(0, 76, 69, 0) 79.291%),
+    url("data:image/svg+xml;utf8,<svg viewBox='0 0 370 104' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><rect x='0' y='0' height='100%25' width='100%25' fill='url(%23grad)' opacity='0.25'/><defs><radialGradient id='grad' gradientUnits='userSpaceOnUse' cx='0' cy='0' r='10' gradientTransform='matrix(11.234 -10.659 39.374 1.4881 353.81 79.814)'><stop stop-color='rgba(194,237,228,1)' offset='0'/><stop stop-color='rgba(194,237,228,0)' offset='1'/></radialGradient></defs></svg>"),
+    linear-gradient(90deg, #004c45 0%, #004c45 100%),
+    linear-gradient(179.206deg, rgba(250, 255, 252, 0.5) 2.9083%, rgba(0, 76, 69, 0) 100.57%),
+    linear-gradient(183.675deg, #def9e9 17.356%, #ffffff 90.7%);
+}
+
+.da-status__head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  width: 100%;
+}
+
+.da-status__spinner {
+  flex: none;
+  display: block;
+  width: 24px;
+  height: 24px;
+  animation: da-spin 1s linear infinite;
+}
+
+@keyframes da-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .da-status__spinner {
+    animation-duration: 3s;
+  }
+}
+
+.da-status__title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+  color: var(--text-inverse);
+  white-space: nowrap;
+}
+
+.da-status__body {
+  margin: 0;
+  width: 100%;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-inverse);
+}
+
+/* ============================================================
+   Select Flow — Figma 2258:54699 (journey) and 2258:54943 (method)
+   One template; `demo-flows.js` supplies the content per step.
+   ============================================================ */
+
+.da-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-neutral-01);
+}
+
+.da-sheet__scroll {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.da-sheet__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Back bar */
+
+.da-topbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 var(--gap-lg);
+}
+
+.da-back {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-sm);
+  border: none;
+  padding: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.da-back svg {
+  flex: none;
+  width: 12px;
+  height: 12px;
+}
+
+/* Upper (white) half — title + detected country */
+
+.da-flow__top {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-xl);
+  padding: 0 var(--gap-lg) var(--padding-xl);
+}
+
+.da-flow__title {
+  margin: 0;
+  width: 100%;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 26px;
+  color: var(--text-default);
+}
+
+.da-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  width: 100%;
+}
+
+.da-field__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-default);
+}
+
+.da-field__group {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  background: var(--surface-neutral-03);
+}
+
+.da-field__hint {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-8);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-default);
+}
+
+.da-field__hint svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.da-select {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  height: 48px;
+  padding: var(--padding-sm) var(--padding-md);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  background: var(--surface-neutral-01);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-default);
+  text-align: left;
+  cursor: pointer;
+}
+
+.da-select:hover {
+  border-color: var(--border-interactive);
+}
+
+.da-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.da-select__caret {
+  flex: none;
+  display: block;
+}
+
+/* Lower (grey) half — the options */
+
+/* 24px everywhere: section → first card, and card → card. The recommended
+   card's ribbon overhangs into its own 24px margin, so the gap you see above
+   it is the same 24px as everywhere else. */
+.da-flow__bottom {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-xl);
+  padding: var(--padding-xl) var(--gap-lg);
+  background: var(--surface-neutral-02);
+}
+
+.da-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-md);
+  width: 100%;
+}
+
+.da-section__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+  color: var(--text-default);
+}
+
+.da-section__note {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+/* Isolated so the recommended card's ribbon, which paints behind the card on a
+   negative z-index, stays above the grey bottom-half background. */
+.da-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-xl);
+  width: 100%;
+  isolation: isolate;
+}
+
+/* Check card */
+
+.da-check {
+  position: relative;
+  display: flex;
+  gap: var(--padding-md);
+  width: 100%;
+  padding: var(--gap-lg);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background-color 200ms var(--da-ease-inout),
+    border-color 200ms var(--da-ease-inout);
+}
+
+.da-check:hover {
+  background: var(--surface-hover);
+}
+
+.da-check[aria-pressed="true"],
+.da-check[aria-pressed="true"]:hover {
+  border-color: var(--border-interactive);
+  background: var(--surface-selected);
+}
+
+/* The "Recommended" ribbon is a rounded teal panel sitting behind the card, not
+   a thick top border — that is what gives its bottom edge the curve where the
+   card's own 16px top corners cut into it (Figma 2258:54818). The card keeps a
+   plain 2px border on all four sides in both states. */
+.da-check--recommended {
+  margin-top: 24px;
+}
+
+/* The band tracks the card's border: subtle until the card is selected, teal
+   once it is. The label has to flip with it to stay readable on grey. */
+.da-check--recommended::before {
+  content: "";
+  position: absolute;
+  top: -26px;             /* 24px band + the card's 2px top border */
+  left: -2px;             /* line up with the card's border box */
+  right: -2px;
+  height: 46px;           /* runs on behind the card's top corner radius */
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  background: var(--border-subtle);
+  transition: background-color 200ms var(--da-ease-inout);
+  z-index: -1;
+}
+
+.da-check--recommended[aria-pressed="true"]::before {
+  background: var(--border-interactive);
+}
+
+.da-check__ribbon {
+  position: absolute;
+  top: -22px;             /* centred in the 24px band */
+  left: 16px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-description);
+  transition: color 200ms var(--da-ease-inout);
+}
+
+.da-check[aria-pressed="true"] .da-check__ribbon {
+  color: var(--text-inverse);
+}
+
+.da-check__icon {
+  flex: none;
+  display: flex;
+  align-items: flex-start;
+  padding-top: var(--spacing-2);
+}
+
+.da-check__icon svg {
+  width: 20px;
+  height: 20px;
+  color: var(--icon-default);
+}
+
+.da-check__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--padding-md);
+}
+
+.da-check__texts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-sm);
+}
+
+.da-check__title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+  color: var(--text-default);
+}
+
+.da-check__desc {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+.da-check__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--padding-sm);
+}
+
+.da-check__tags span {
+  padding: var(--spacing-2) var(--padding-sm);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-badge);
+  background: var(--surface-neutral-02);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+/* App menu */
+
+.da-appmenu {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-md);
+  padding: var(--gap-lg) var(--gap-lg) var(--padding-xl);
+  background: var(--surface-neutral-01);
+  filter: drop-shadow(0 -6px 5px rgba(0, 0, 0, 0.06)) drop-shadow(0 -16px 16px rgba(0, 0, 0, 0.12));
+}
+
+/* No spacing of its own — the app menu's 16px top padding and 12px gap are the
+   only things between it, the top edge, and the button. */
+.da-appmenu__note {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+.da-appmenu__note svg {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  color: var(--icon-faint);
+}
+
+.da-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: var(--padding-md) var(--padding-lg);
+  border: 1px solid var(--interactive-default);
+  border-radius: var(--radius-lg);
+  background: var(--interactive-default);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-inverse);
+  cursor: pointer;
+}
+
+.da-cta svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.da-cta:hover {
+  background: var(--interactive-hover);
+  border-color: var(--interactive-hover);
+}
+
+/* ============================================================
+   Electronic ID flow — Figma 925:16452 / 16542 / 16574 / 16607
+   ============================================================ */
+
+/* Back bar with the step counter and progress rule */
+
+.da-topbar--progress {
+  position: relative;
+  justify-content: space-between;
+  border-bottom: 3px solid var(--border-subtle);
+}
+
+.da-topbar__step {
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+.da-topbar__bar {
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 3px;
+  background: var(--surface-inverse);
+  transition: width 400ms var(--da-ease-inout);
+}
+
+/* These screens own their padding, so the shared bottom-half drops its gutter. */
+.da-flow__bottom--flush {
+  gap: var(--gap-lg);
+  padding: var(--padding-xl) var(--gap-lg);
+}
+
+.da-flow__bottom--white {
+  gap: var(--padding-xl);
+  padding: var(--padding-xl) var(--gap-lg);
+  background: var(--surface-neutral-01);
+}
+
+.da-section .da-flow__title {
+  width: auto;
+}
+
+/* Positive pill */
+
+.da-tag-positive {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--spacing-4) var(--padding-sm);
+  border: 1px solid var(--border-positive);
+  border-radius: var(--radius-badge);
+  background: var(--surface-positive);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-positive);
+}
+
+.da-tag-positive svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-positive);
+}
+
+/* Bank list */
+
+.da-banks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-xl);
+  padding-top: var(--padding-xl);
+}
+
+.da-bank {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+  width: 100%;
+  padding: var(--gap-lg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 200ms var(--da-ease-inout), border-color 200ms var(--da-ease-inout);
+}
+
+.da-bank:hover {
+  background: var(--surface-hover);
+}
+
+/* Outline + fill carry the selected state; no ribbon on these cards. */
+.da-bank.is-selected,
+.da-bank.is-selected:hover {
+  border: 2px solid var(--border-interactive);
+  background: var(--surface-selected);
+}
+
+.da-bank__logo {
+  flex: none;
+  display: block;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: url("assets/banks/base.png") center / cover no-repeat;
+}
+
+.da-bank__logo--white {
+  background: var(--surface-neutral-01);
+}
+
+.da-bank__logo--bare {
+  background: none;
+}
+
+.da-bank__logo {
+  position: relative;
+}
+
+.da-bank__logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Two logos are not square, and Figma crops rather than letterboxes them.
+   These mirror the scale/offset on 925:16517 (Rabo) and 925:16508 (ASN). */
+.da-bank__logo--bare img {
+  position: absolute;
+  left: 0;
+  top: 7.17%;
+  width: 100%;
+  height: 120.77%;
+  object-fit: fill;
+}
+
+.da-bank__logo--asn img {
+  position: absolute;
+  left: -11.24%;
+  top: -12.09%;
+  width: 122.91%;
+  height: 122.91%;
+  object-fit: fill;
+}
+
+.da-bank__name {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+  color: var(--text-default);
+}
+
+/* Data field list — stacked (label over value) or row (value right-aligned) */
+
+.da-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-md);
+  width: 100%;
+  padding: var(--spacing-8) 0;
+}
+
+.da-field-row {
+  display: flex;
+  width: 100%;
+}
+
+.da-field-row--stack {
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.da-field-row--row {
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-8);
+}
+
+.da-field-row__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+.da-field-row__value {
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.da-field-row--row .da-field-row__value {
+  font-weight: var(--font-weight-medium);
+  text-align: right;
+}
+
+.da-field-row__divider {
+  display: block;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.da-field-row__note {
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+.da-field-row--stack .da-field-row__value {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  flex-wrap: wrap;
+}
+
+/* Requested-attributes table — Figma 925:16789 */
+
+.da-dt {
+  width: 100%;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  background: var(--surface-neutral-01);
+  overflow: hidden;
+}
+
+.da-dt__head {
+  padding: var(--spacing-16);
+}
+
+.da-dt__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 22px;
+  color: var(--text-default);
+}
+
+.da-dt__columns,
+.da-dt__row {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-16);
+}
+
+.da-dt__columns {
+  background: var(--surface-neutral-02);
+}
+
+.da-dt__columns .da-dt__cell {
+  padding: var(--spacing-4) var(--spacing-8);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-description);
+}
+
+.da-dt__cell {
+  flex: 1 0 0;
+  min-width: 0;
+  padding: var(--padding-lg) var(--spacing-8);
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.da-dt__row .da-dt__cell {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.da-dt__cell--value {
+  font-weight: var(--font-weight-medium);
+}
+
+/* Stacked CTAs */
+
+.da-cta-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  width: 100%;
+}
+
+.da-cta--secondary {
+  border-color: var(--border-strong);
+  background: var(--surface-neutral-01);
+  color: var(--text-default);
+}
+
+.da-cta--secondary:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
+}
+
+/* Announcement */
+
+.da-announce {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: 12px 12px 12px 16px;
+  border-radius: var(--radius-lg);
+}
+
+.da-announce--negative {
+  border: 1px solid var(--border-negative);
+  background: var(--surface-negative);
+}
+
+.da-announce--negative svg {
+  color: var(--icon-negative);
+}
+
+.da-announce--info {
+  background: var(--surface-selected);
+}
+
+.da-announce--info svg {
+  color: var(--icon-interactive);
+}
+
+.da-announce svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.da-announce__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+}
+
+.da-announce__title {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+}
+
+.da-announce__body {
+  color: var(--text-description);
+}
+
+/* Accordion */
+
+.da-accordion {
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-neutral-01);
+  overflow: hidden;
+}
+
+.da-accordion__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--padding-md);
+  border: none;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.da-accordion__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.da-accordion__head svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-muted);
+  transition: transform 200ms var(--da-ease-inout);
+}
+
+.da-accordion.is-open .da-accordion__head svg {
+  transform: rotate(180deg);
+}
+
+.da-accordion__body {
+  display: none;
+  padding: var(--padding-md);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.da-accordion.is-open .da-accordion__body {
+  display: block;
+}
+
+.da-accordion__body .da-fields {
+  gap: var(--gap-lg);
+  padding: 0;
+}
+
+.da-accordion__body .da-field-row__divider {
+  display: none;
+}
+
+.da-accordion__body .da-field-row__value {
+  font-weight: var(--font-weight-medium);
+}
+
+.da-accordion__empty {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+/* ============================================================
+   Report — Figma 925:16607
+   ============================================================ */
+
+.da-verdict {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  width: 100%;
+  padding: var(--spacing-24) var(--spacing-16);
+  background-image: linear-gradient(53.214deg, #eaf7f0 35.363%, #c1eed6 97.956%);
+}
+
+.da-verdict__head {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-sm);
+}
+
+.da-verdict__head svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  color: var(--icon-positive);
+}
+
+.da-verdict__label {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 26px;
+  color: var(--text-positive);
+}
+
+.da-tag-neutral {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--spacing-4) var(--padding-sm);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-badge);
+  background: var(--surface-neutral-02);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+.da-tag-neutral svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.da-verdict__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+  padding: var(--spacing-16);
+  border-radius: var(--radius-xl);
+  background: var(--color-white, #ffffff);
+}
+
+.da-verdict__card-title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  line-height: 22px;
+  color: var(--text-default);
+}
+
+.da-signals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.da-signal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  margin: 0;
+  padding: var(--gap-xs) var(--padding-sm) var(--gap-xs) 0;
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-description);
+}
+
+.da-signal svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--text-positive);
+}
+
+.da-signal__divider {
+  display: block;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* Sticky tab rail */
+
+.da-rtabs {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  /* Scroll containers get min-height:auto resolved to 0, so without this the
+     flex column squashes the rail and crops the pills. */
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  padding: var(--spacing-16);
+  background: var(--color-white, #ffffff);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.02), 0 4px 30px -2px rgba(0, 0, 0, 0.04);
+  /* The document report has four tabs — they scroll rather than wrap. */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.da-rtabs::-webkit-scrollbar {
+  display: none;
+}
+
+.da-rtab {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  flex: none;
+  padding: var(--spacing-12) var(--padding-lg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  background: var(--surface-neutral-02);
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  line-height: 22px;
+  color: var(--text-default);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 200ms var(--da-ease-inout), color 200ms var(--da-ease-inout);
+}
+
+.da-rtab svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.da-rtab[aria-selected="true"] {
+  border-color: var(--interactive-default);
+  background: var(--interactive-default);
+  color: var(--text-inverse);
+  cursor: default;
+}
+
+/* Report panels */
+
+.da-report__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  width: 100%;
+  padding: var(--padding-xl) var(--gap-lg);
+  background: var(--color-white, #ffffff);
+}
+
+.da-report__panel--grey {
+  background: var(--surface-neutral-02);
+}
+
+.da-report__heading {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 22px;
+  color: var(--text-default);
+}
+
+.da-report__pending {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-description);
+}
+
+/* TruAI card */
+
+.da-truai {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  padding: var(--spacing-16);
+  border-radius: var(--radius-xl);
+  background: var(--ai-surface);
+}
+
+.da-truai__block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  align-items: flex-start;
+}
+
+.da-truai__who,
+.da-truai__ask {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+}
+
+.da-truai__who {
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+}
+
+.da-truai__ask {
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+}
+
+.da-truai__text {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--icon-ai);
+}
+
+.da-truai__chip {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-badge);
+  background: var(--ai-badge);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--ai-accent);
+}
+
+/* ============================================================
+   Document capture — Figma 2271:57532
+   ============================================================ */
+
+.da-capture {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background: #121212;
+}
+
+.da-capture__bar {
+  display: flex;
+  align-items: center;
+  padding: 8px 4px 0;
+}
+
+.da-capture__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: none;
+  color: #f2f2f2;
+  cursor: pointer;
+}
+
+.da-capture__back svg {
+  width: 24px;
+  height: 24px;
+}
+
+.da-capture__titles {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.da-capture__title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  color: #f2f2f2;
+}
+
+.da-capture__step {
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  color: #bfbfbf;
+}
+
+.da-capture__spacer {
+  width: 48px;
+}
+
+.da-capture__progress {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0;
+}
+
+.da-capture__progress span {
+  width: 57px;
+  height: 4px;
+  border-radius: 4px;
+  background: #404040;
+}
+
+.da-capture__progress .is-done {
+  background: var(--color-white, #ffffff);
+}
+
+/* Camera viewfinder. The desk photo stands in for the live feed. */
+.da-capture__stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--padding-xl);
+  margin: 12px 16px;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("assets/doc/capture-bg.png") center / cover no-repeat;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.da-capture__scan {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 348px;
+  aspect-ratio: 348 / 219;
+  border: 5px solid var(--color-white, #ffffff);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.da-capture__doc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 182px;
+  transform: translate(-50%, -50%) rotate(-9.45deg);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.da-capture__corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 0 solid var(--color-white, #ffffff);
+}
+
+.da-capture__corner--tl {
+  top: 5px;
+  left: 5px;
+  border-top-width: 3px;
+  border-left-width: 3px;
+  border-top-left-radius: 22px;
+}
+
+.da-capture__corner--tr {
+  top: 5px;
+  right: 5px;
+  border-top-width: 3px;
+  border-right-width: 3px;
+  border-top-right-radius: 22px;
+}
+
+.da-capture__corner--bl {
+  bottom: 5px;
+  left: 5px;
+  border-bottom-width: 3px;
+  border-left-width: 3px;
+  border-bottom-left-radius: 21px;
+}
+
+.da-capture__corner--br {
+  bottom: 5px;
+  right: 5px;
+  border-bottom-width: 3px;
+  border-right-width: 3px;
+  border-bottom-right-radius: 22px;
+}
+
+.da-capture__hint {
+  max-width: 320px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: #121212;
+  font-size: var(--font-size-xs);
+  line-height: 18px;
+  color: var(--color-white, #ffffff);
+  text-align: center;
+}
+
+.da-capture__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 16px;
+}
+
+.da-capture__tips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 auto;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: #404040;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: #f2f2f2;
+}
+
+.da-capture__rotate {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================================
+   Report — Device Intelligence, Document and Biometric panels
+   Figma 2255:51891 / 52047 / 52207
+   ============================================================ */
+
+.da-report__panel--wide {
+  gap: var(--padding-xl);
+  padding: var(--padding-xl) var(--padding-xl);
+}
+
+.da-report__title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+  color: var(--text-default);
+}
+
+.da-report__block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+  width: 100%;
+}
+
+.da-report__rowhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-8);
+  width: 100%;
+}
+
+.da-report__note {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+/* Risk gauge */
+
+.da-gauge {
+  position: relative;
+  align-self: center;
+  width: 187px;
+  /* Room below the arc for the tag, which overhangs it. */
+  padding-bottom: 28px;
+}
+
+.da-gauge__arc {
+  display: block;
+  width: 187px;
+  height: 125px;
+  overflow: visible;
+}
+
+.da-gauge__value,
+.da-gauge__tag {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.da-gauge__value {
+  top: 42px;
+  font-size: 64px;
+  line-height: 61px;
+  color: var(--text-default);
+  font-variant-numeric: tabular-nums;
+}
+
+.da-gauge__tag {
+  top: 110px;
+  white-space: nowrap;
+}
+
+/* Intro: the needle sweeps up the arc, the green stroke draws in behind it and
+   the number counts up. Replayed by demo-app.js each time the tab is opened. */
+.da-gauge__needle {
+  transform-box: view-box;
+  transform-origin: 93.56px 124.8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .da-gauge__needle,
+  .da-gauge__line,
+  .da-gauge__fill {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.da-tag-positive--plain svg {
+  display: none;
+}
+
+.da-tag-intermediate {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--spacing-4) var(--padding-sm);
+  border: 1px solid var(--border-intermediate);
+  border-radius: var(--radius-badge);
+  background: var(--surface-intermediate);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-intermediate);
+  white-space: nowrap;
+}
+
+.da-announce--positive {
+  background: var(--surface-positive);
+}
+
+.da-announce--positive svg {
+  color: var(--icon-positive);
+}
+
+.da-signals--plain .da-signal {
+  color: var(--text-default);
+}
+
+.da-signal--body {
+  color: var(--text-default);
+}
+
+/* Outline button */
+
+.da-obtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--padding-md) var(--padding-lg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-neutral-01);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.da-obtn svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+/* Signal groups + table */
+
+.da-sgroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  width: 100%;
+  padding-bottom: var(--gap-lg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.da-sgroup__head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  margin: 0;
+}
+
+.da-sgroup__head svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.da-sgroup__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-description);
+}
+
+.da-count {
+  padding: var(--spacing-2) var(--padding-sm);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-badge);
+  background: var(--surface-neutral-02);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+.da-count--positive {
+  border-color: var(--border-positive);
+  background: var(--surface-positive);
+  color: var(--text-positive);
+}
+
+.da-count--negative {
+  border-color: var(--border-negative);
+  background: var(--surface-negative);
+  color: var(--text-negative);
+}
+
+.da-stable {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.da-stable__columns,
+.da-stable__row {
+  display: flex;
+  align-items: stretch;
+}
+
+.da-stable__columns {
+  border-radius: var(--radius-sm);
+  background: var(--surface-neutral-03);
+}
+
+.da-stable__columns .da-stable__cell {
+  padding: var(--spacing-4) var(--spacing-8);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-description);
+}
+
+.da-stable__cell {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: var(--padding-md) var(--spacing-8);
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.da-stable__row .da-stable__cell {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* The group that wraps the table already draws a rule underneath it, so the
+   last row's own border would double up. */
+.da-stable__row:last-child .da-stable__cell {
+  border-bottom: none;
+}
+
+.da-stable__note {
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+.da-stable__result {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-8);
+  font-weight: var(--font-weight-medium);
+}
+
+.da-stable__result svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.da-stable__result--positive {
+  color: var(--text-positive);
+}
+
+.da-stable__result--negative {
+  color: var(--text-negative);
+}
+
+.da-stable__result--muted {
+  color: var(--text-description);
+}
+
+/* Summary check rows */
+
+.da-checks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-md);
+  width: 100%;
+}
+
+.da-check-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  width: 100%;
+  padding: var(--gap-lg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+  font-family: inherit;
+  text-align: left;
+}
+
+button.da-check-row {
+  cursor: pointer;
+}
+
+button.da-check-row:hover {
+  background: var(--surface-hover);
+}
+
+.da-check-row__head,
+.da-check-row__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-8);
+  width: 100%;
+}
+
+.da-check-row__label {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+.da-check-row__label svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+.da-check-row__value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 24px;
+  color: var(--text-default);
+}
+
+.da-check-row__value em {
+  font-style: normal;
+  color: var(--text-positive);
+}
+
+.da-check-row__foot svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-default);
+}
+
+.da-value--negative {
+  font-style: normal;
+  color: var(--text-negative);
+}
+
+/* Captured scans + faces */
+
+.da-scan {
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-neutral-01);
+  overflow: hidden;
+}
+
+.da-scan__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-12) var(--spacing-16);
+  background: var(--surface-neutral-02);
+}
+
+.da-scan__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.da-scan__expand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #808080;
+  border-radius: 8px;
+  background: var(--surface-neutral-01);
+}
+
+.da-scan__expand svg {
+  width: 16px;
+  height: 16px;
+  color: #121212;
+}
+
+.da-scan__image {
+  aspect-ratio: 293 / 205;
+  overflow: hidden;
+}
+
+.da-scan__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* The portrait is a tall 661 × 1024 crop. Letterboxing it in a square keeps the
+   face in proportion, with the cream ground showing either side as in Figma. */
+.da-selfie {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-lg);
+  background: #fbf7e4;
+  overflow: hidden;
+}
+
+.da-selfie img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.da-selfie .da-scan__expand {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.da-faces {
+  display: flex;
+  gap: var(--spacing-12);
+  width: 100%;
+}
+
+.da-face {
+  position: relative;
+  flex: 1 0 0;
+  min-width: 0;
+  aspect-ratio: 1;
+  border-radius: var(--radius-lg);
+  background: #fbf7e4;
+  overflow: hidden;
+}
+
+.da-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+}
+
+.da-face em {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  padding: 0 6px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.85);
+  font-style: normal;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.da-face--more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-xs);
+  border: 1px dashed var(--border-strong);
+  background: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+}
+
+.da-face--more svg {
+  width: 16px;
+  height: 16px;
+  color: var(--icon-faint);
+}
+
+/* ============================================================
+   Bottom drawer — Figma 925:16837
+   Slides up over the sheet; the scrim fades with it.
+   ============================================================ */
+
+.da-drawer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* The design shows only the sheet; the scrim is added so the drawer reads as
+   a layer over the step behind it and gives you somewhere to tap to dismiss. */
+.da-drawer__scrim {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  background: rgba(23, 45, 45, 0.4);
+  cursor: pointer;
+  animation: da-fade-in 320ms var(--da-ease) both;
+}
+
+.da-drawer.is-closing .da-drawer__scrim {
+  animation: da-fade-out 260ms var(--da-ease-out) both;
+}
+
+.da-drawer__sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: var(--radius-3xl, 24px) var(--radius-3xl, 24px) 0 0;
+  background: var(--surface-neutral-01);
+  box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  animation: da-slide-up 340ms var(--da-ease) both;
+}
+
+.da-drawer.is-closing .da-drawer__sheet {
+  animation: da-slide-down 260ms var(--da-ease-out) both;
+}
+
+@keyframes da-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes da-slide-down {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.da-drawer__handle {
+  height: 4px;
+  margin: var(--gap-lg) var(--gap-lg) 0;
+}
+
+.da-drawer__title {
+  margin: 0;
+  padding: var(--padding-sm) var(--gap-lg);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  line-height: 32px;
+  color: var(--text-default);
+}
+
+.da-drawer__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--padding-xl);
+  padding: 0 var(--gap-lg) var(--gap-lg);
+}
+
+.da-drawer__qr {
+  display: block;
+  width: 296px;
+  max-width: 100%;
+  height: auto;
+}
+
+.da-drawer__note {
+  margin: 0;
+  width: 100%;
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+.da-drawer__gesture {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-8) 0 var(--padding-sm);
+}
+
+.da-drawer__gesture span {
+  display: block;
+  width: 108px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--surface-inverse);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .da-drawer__sheet,
+  .da-drawer__scrim,
+  .da-drawer.is-closing .da-drawer__sheet,
+  .da-drawer.is-closing .da-drawer__scrim {
+    animation-duration: 1ms;
+  }
+}
+
+/* ============================================================
+   Choose a country — Figma 1108:14658
+   Full-frame overlay over the Select Flow sheet.
+   ============================================================ */
+
+.da-countries {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  background: var(--surface-neutral-01);
+}
+
+.da-countries::-webkit-scrollbar {
+  display: none;
+}
+
+.da-countries__top {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-xl);
+  padding: var(--padding-xl) var(--gap-lg);
+}
+
+.da-countries__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-md);
+}
+
+.da-countries__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.da-countries__title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 26px;
+  color: var(--text-default);
+}
+
+.da-countries__close {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--spacing-2) 0 0;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  color: var(--icon-default);
+  cursor: pointer;
+}
+
+.da-countries__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.da-countries__note {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+/* Search */
+
+.da-search {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  padding: var(--padding-md);
+  border: 1px solid #96a3a1;
+  border-radius: var(--radius-lg);
+  background: var(--surface-neutral-01);
+}
+
+.da-search svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: #768584;
+}
+
+.da-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: var(--font-weight-regular);
+  line-height: 24px;
+  color: var(--text-default);
+}
+
+.da-search input::placeholder {
+  color: #768584;
+}
+
+/* Section lists */
+
+.da-countries__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-xl);
+}
+
+.da-countries__all {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-xl);
+  padding: var(--padding-xl) var(--gap-lg);
+  background: var(--surface-neutral-02);
+}
+
+.da-countries__label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.da-countries__empty {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: 16px;
+  color: var(--text-description);
+}
+
+/* Country row */
+
+.da-country {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: 0 var(--padding-xs);
+  border: none;
+  border-radius: var(--radius-button);
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.da-country:hover {
+  background: var(--surface-hover);
+}
+
+/* Sized to match Components/flag-icon/flag-icon.css — 18 × 12, 2px radius —
+   so the picker's flags read the same as everywhere else in the system. */
+.da-country__flag {
+  flex: none;
+  display: block;
+  width: 18px;
+  height: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs, 2px);
+  background-size: cover;
+  background-position: 50%;
+}
+
+.da-country__name {
+  flex: 1;
+  min-width: 0;
+  padding: var(--radius-md) 0;
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.da-country svg {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  color: var(--icon-faint);
+}
+
+/* The Select Flow field's own flag, at the larger size that screen uses. */
+.da-select__flag {
+  flex: none;
+  display: block;
+  width: 30px;
+  height: 20px;
+  border: 0.5px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background-size: cover;
+  background-position: 50%;
+}
+
+/* ============================================================
+   Motion
+   ------------------------------------------------------------
+   Intro (~1.7s): logo + hero rise in, pills follow, then the
+   cards fade one by one left to right. The globe is already
+   running — it never waits for the intro.
+   ============================================================ */
+
+@keyframes da-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes da-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes da-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.da-intro .da-logo {
+  animation: da-rise 450ms var(--da-ease) both;
+}
+
+.da-intro .da-hero {
+  animation: da-rise 500ms var(--da-ease) 120ms both;
+}
+
+.da-intro .da-pills {
+  animation: da-rise 450ms var(--da-ease) 620ms both;
+}
+
+/* Holds the cards down until JS arms the stagger, so they cannot flash at full
+   opacity first. `.da-intro` is dropped once the intro is over, which also means
+   the cards still show if the script never runs. */
+.da-intro .da-card {
+  opacity: 0;
+}
+
+/* Card stagger. Reused by the intro and by every tab switch — only the base
+   delay changes, so the cards always arrive in the same left-to-right order. */
+.da-rail--enter .da-card {
+  animation: da-fade-in var(--da-card-fade) var(--da-ease-soft) both;
+  animation-delay: var(--da-card-delay, 0ms);
+}
+
+.da-rail--enter .da-card:nth-child(2) {
+  animation-delay: calc(var(--da-card-delay, 0ms) + var(--da-card-step));
+}
+
+.da-rail--enter .da-card:nth-child(3) {
+  animation-delay: calc(var(--da-card-delay, 0ms) + (var(--da-card-step) * 2));
+}
+
+.da-rail--leave {
+  animation: da-fade-out 200ms var(--da-ease-out) both;
+}
+
+/* Browse ⇄ loading card */
+
+.da-swap-out {
+  animation: da-fade-out 280ms var(--da-ease-out) both;
+}
+
+.da-swap-in {
+  animation: da-fade-in 400ms var(--da-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .da-intro .da-logo,
+  .da-intro .da-hero,
+  .da-intro .da-pills,
+  .da-rail--enter .da-card,
+  .da-rail--leave,
+  .da-swap-out,
+  .da-swap-in {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+
+  .da-pills__thumb,
+  .da-pill,
+  .da-check {
+    transition-duration: 1ms;
+  }
+}

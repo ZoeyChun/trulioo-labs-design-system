@@ -1,0 +1,241 @@
+<!--
+  Demo App — Unified KYC Flow. One frame, three Figma screens:
+    Home / Industries      2271:55710
+    Home / Products        2258:54170
+    Device Intel Loading   2255:50517
+  Background globe reuses pages/KYC eIDAS/device-intel-loading (1300:2338).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo App — Unified KYC Flow · Trulioo Labs</title>
+
+  <link rel="preload" href="../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="demo-app.css?v=2">
+</head>
+<body class="da-page">
+
+  <div class="da-frame da-intro" id="da-frame">
+    <div class="da-bg" aria-hidden="true">
+      <div class="da-bg__wash"></div>
+    </div>
+
+    <div class="da-globe" aria-hidden="true">
+      <canvas class="da-globe__canvas" id="da-globe-canvas"></canvas>
+    </div>
+
+    <div class="da-screen" id="da-screen">
+
+      <button class="da-logo" type="button" id="da-home" aria-label="Trulioo — back to home" data-node-id="2271:55813">
+        <img src="assets/trulioo-logo.svg" alt="Trulioo" width="98.003" height="23.997">
+      </button>
+
+      <div class="da-stage">
+
+        <div class="da-hero" data-node-id="2271:55756">
+          <h1 class="da-hero__title" data-node-id="2271:55757">Identity, in motion.</h1>
+          <p class="da-hero__sub" data-node-id="2271:55758">
+            Verify people faster with device, KYC, eID, document and biometric signals working together.
+          </p>
+        </div>
+
+        <div class="da-stage__bottom">
+
+          <!-- ===== Browse: Industries / Products ========================= -->
+          <div class="da-browse" id="da-browse" data-node-id="2271:55759">
+
+            <div class="da-pills" role="tablist" aria-label="Browse by" data-node-id="2271:55760">
+              <span class="da-pills__thumb" id="da-pill-thumb" aria-hidden="true"></span>
+
+              <button class="da-pill" type="button" role="tab" id="tab-industries"
+                      aria-selected="true" aria-controls="rail-industries" data-node-id="2271:55761">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="2.5" cy="4" r="1" fill="currentColor"/>
+                  <circle cx="2.5" cy="8" r="1" fill="currentColor"/>
+                  <circle cx="2.5" cy="12" r="1" fill="currentColor"/>
+                  <path d="M6 4h8M6 8h8M6 12h8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
+                </svg>
+                Industries
+              </button>
+
+              <button class="da-pill" type="button" role="tab" id="tab-products"
+                      aria-selected="false" aria-controls="rail-products" data-node-id="2271:55764">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 1.5 14.5 5 8 8.5 1.5 5 8 1.5Z" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/>
+                  <path d="M1.5 8 8 11.5 14.5 8M1.5 11 8 14.5 14.5 11" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/>
+                </svg>
+                Products
+              </button>
+            </div>
+
+            <!-- Industries rail — 2271:55767 -->
+            <div class="da-rail" id="rail-industries" role="tabpanel" aria-labelledby="tab-industries">
+              <div class="da-rail__track" data-node-id="2271:55768">
+
+                <a class="da-card da-card--finance" href="#" data-flow="finance" data-node-id="2271:55769">
+                  <img class="da-card__art" src="assets/industry-finance.svg" alt="" width="178.233" height="107.969" aria-hidden="true">
+                  <div class="da-card__foot">
+                    <div class="da-card__labels">
+                      <p class="da-card__title">Finance</p>
+                      <span class="da-tag"><span>5 Flows</span></span>
+                    </div>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </a>
+
+                <a class="da-card da-card--marketplace" href="#" data-node-id="2271:55782">
+                  <img class="da-card__art" src="assets/industry-marketplace.svg" alt="" width="169.849" height="146.509" aria-hidden="true">
+                  <div class="da-card__foot">
+                    <div class="da-card__labels">
+                      <p class="da-card__title">Marketplace</p>
+                      <span class="da-tag"><span>5 Flows</span></span>
+                    </div>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </a>
+
+                <a class="da-card da-card--gaming" href="#" data-node-id="2271:55794">
+                  <img class="da-card__art" src="assets/industry-gaming.svg" alt="" width="203.405" height="122.949" aria-hidden="true">
+                  <div class="da-card__foot">
+                    <div class="da-card__labels">
+                      <p class="da-card__title">Gaming</p>
+                      <span class="da-tag"><span>5 Flows</span></span>
+                    </div>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </a>
+
+              </div>
+            </div>
+
+            <!-- Products rail — 2258:54227 -->
+            <div class="da-rail" id="rail-products" role="tabpanel" aria-labelledby="tab-products" hidden>
+              <div class="da-rail__track" data-node-id="2258:54228">
+
+                <a class="da-card da-card--kyc-docs" href="#" data-product="kyc-docs" data-node-id="2258:54229">
+                  <img class="da-card__art" src="assets/product-kyc-docs.svg" alt="" width="179.982" height="113.866" aria-hidden="true">
+                  <div class="da-card__foot">
+                    <div class="da-card__labels">
+                      <p class="da-card__title">KYC Docs<br>Verification</p>
+                    </div>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </a>
+
+                <a class="da-card da-card--eid" href="#" data-product="eid" data-node-id="2258:54242">
+                  <img class="da-card__art" src="assets/product-eid.svg" alt="" width="134" height="245" aria-hidden="true">
+                  <div class="da-card__foot">
+                    <div class="da-card__labels">
+                      <p class="da-card__title">eID<br>Verification</p>
+                    </div>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </a>
+
+                <a class="da-card da-card--eudi" href="#" data-product="eudi" data-node-id="2258:54254">
+                  <img class="da-card__art" src="assets/product-eudi-wallet.svg" alt="" width="141" height="136" aria-hidden="true">
+                  <div class="da-card__foot">
+                    <div class="da-card__labels">
+                      <p class="da-card__title">EUDI Wallet<br>Verification</p>
+                    </div>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </a>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Device Intel Loading ================================= -->
+          <div class="da-status" id="da-status" role="status" aria-live="polite" data-node-id="2255:50527" hidden>
+            <div class="da-status__head" data-node-id="2255:50528">
+              <img class="da-status__spinner" src="assets/spinner-circle.svg" alt="" width="24" height="24" aria-hidden="true">
+              <p class="da-status__title" data-node-id="2255:50530">Initializing device profile</p>
+            </div>
+            <p class="da-status__body" data-node-id="2255:50531">
+              We&rsquo;re gathering device intelligence in the background to help verify your identity securely.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Select Flow — 2258:54699 / 2258:54943 ===================== -->
+    <!-- The scroll area is rendered from demo-flows.js; the app menu is fixed. -->
+    <div class="da-sheet" id="da-sheet" hidden>
+      <div class="da-sheet__scroll" id="da-sheet-scroll"></div>
+      <div class="da-appmenu" id="da-sheet-menu" hidden></div>
+    </div>
+
+    <!-- ===== Bottom drawer — 925:16837 ================================= -->
+    <div class="da-drawer" id="da-drawer" role="dialog" aria-modal="true" hidden>
+      <button class="da-drawer__scrim" type="button" id="da-drawer-scrim" aria-label="Close"></button>
+      <div class="da-drawer__sheet" id="da-drawer-sheet"></div>
+    </div>
+
+    <!-- ===== Choose a country — 1108:14658 ============================= -->
+    <div class="da-countries" id="da-countries" role="dialog" aria-modal="true" aria-labelledby="da-countries-title" hidden>
+      <div class="da-countries__top">
+        <div class="da-countries__intro" data-node-id="1108:14662">
+          <div class="da-countries__head">
+            <h2 class="da-countries__title" id="da-countries-title">Choose a country</h2>
+            <button class="da-countries__close" type="button" id="da-countries-close" aria-label="Close" data-node-id="1108:14665">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M4.5 4.5l11 11M15.5 4.5l-11 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+          <p class="da-countries__note" data-node-id="1108:14667">
+            Select the country to discover the available journeys and customize your flows.
+          </p>
+        </div>
+
+        <div class="da-countries__group">
+          <label class="da-search" data-node-id="1108:14711">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="m11 11 3.2 3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input type="search" id="da-countries-search" placeholder="Search" aria-label="Search countries" autocomplete="off">
+          </label>
+
+          <h3 class="da-countries__label" id="da-featured-label" data-node-id="1108:14712">Featured</h3>
+          <div class="da-countries__group" id="da-featured"></div>
+        </div>
+      </div>
+
+      <div class="da-countries__all" data-node-id="1108:14719">
+        <h3 class="da-countries__label" data-node-id="1108:14720">All Countries</h3>
+        <div class="da-countries__group" id="da-all"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="demo-globe.js?v=2"></script>
+  <script src="demo-countries.js?v=2"></script>
+  <script src="demo-flows.js?v=2"></script>
+  <script src="demo-ui.js?v=2"></script>
+  <script src="demo-eid.js?v=2"></script>
+  <script src="demo-eudi.js?v=2"></script>
+  <script src="demo-doc.js?v=2"></script>
+  <script src="demo-app.js?v=2"></script>
+</body>
+</html>
