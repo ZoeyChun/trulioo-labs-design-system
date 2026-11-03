@@ -311,17 +311,30 @@
     );
   }
 
-  function expandIconBtn(cardId, label) {
+  var EXPAND_ICON_SVG =
+    '<svg width="16" height="16" viewBox="0 0 16 16" fill="none">' +
+    '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.5 2.5H13.5V6.5M6.5 13.5H2.5V9.5M13.5 2.5 9 7M2.5 13.5 7 9"/>' +
+    "</svg>";
+
+  /* The card preview is a summary; this names what the full view adds and
+     says the full view carries every section, so the control is not a bare
+     maximise glyph the reader has to guess at. */
+  function expandActionHtml(cardId, label, sectionCount) {
     return (
-      '<button type="button" class="tds-icon-btn tds-icon-btn--lg tds-icon-btn--secondary tds-icon-btn--circular" data-v2-expand-open="' +
+      '<div class="v2-card__more">' +
+      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md v2-card__more-btn" data-v2-expand-open="' +
       esc(cardId) +
-      '" aria-label="' +
-      esc(label || "Expand section") +
       '">' +
-      '<span class="tds-icon-btn__icon" aria-hidden="true">' +
-      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none">' +
-      '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.5 2.5H13.5V6.5M6.5 13.5H2.5V9.5M13.5 2.5 9 7M2.5 13.5 7 9"/>' +
-      "</svg></span></button>"
+      '<span class="tds-btn__leading-visual" aria-hidden="true">' +
+      EXPAND_ICON_SVG +
+      "</span>" +
+      '<span class="tds-btn__label">' +
+      esc(label || "View full details") +
+      "</span></button>" +
+      '<p class="v2-card__more-hint">Full view &middot; tabs for all ' +
+      esc(String(sectionCount || 6)) +
+      " sections</p>" +
+      "</div>"
     );
   }
 
@@ -355,14 +368,12 @@
       '">' +
       (opts.titleHtml || esc(opts.title)) +
       "</h2>" +
-      "</div>" +
-      '<div class="v2-card__header-actions">' +
-      expandIconBtn(opts.id, "Expand " + (opts.kicker || opts.title || "section")) +
       "</div></header>";
 
     var footer =
       '<footer class="v2-card__footer">' +
       askChipHtml(opts.ask || "Ask TruAI") +
+      expandActionHtml(opts.id, opts.more, opts.sectionCount) +
       "</footer>";
 
     return (
@@ -1908,6 +1919,7 @@
       {
         id: "overview",
         kicker: "Overview",
+        more: "View registry record & working notes",
         title: insightHeadline,
         titleHtml:
           '<span class="v2-card__title-risk">High risk entity</span>: ' +
@@ -1922,6 +1934,7 @@
       {
         id: "signals",
         kicker: "Signals",
+        more: "View all 10 signals across 5 categories",
         title:
           "10 risk signals across 5 categories. Business Model (84) and Financial Health (68) drive the overall " +
           riskScore +
@@ -2012,6 +2025,7 @@
       {
         id: "ownership",
         kicker: "Ownership",
+        more: "View every owner & the ownership graph",
         title: (function () {
           var parts = [];
           parts.push(owners.length + " shareholders identified, " + ownerDepth + " deep");
@@ -2058,6 +2072,7 @@
       {
         id: "match",
         kicker: "Match Signals & Sources",
+        more: "View field-by-field results & " + (onlineSources.length + truliooCaps.length) + " sources",
         title: matchedCount + " of " + totalFields + " fields matched (" + matchPct + "%). " +
           (data.verified !== false ? "Verification outcome: Verified." : "Verification outcome: Review required."),
         summary: CARD_LABELS.match,
@@ -2109,6 +2124,7 @@
       {
         id: "additional",
         kicker: "Officers",
+        more: "View officer records & full registry data",
         title: (function () {
           if (!officerDisplayName) return "No officers or directors on file.";
           var parts = [];
@@ -2165,6 +2181,7 @@
       {
         id: "web",
         kicker: "Web & Social",
+        more: "View domain record & all 4 social profiles",
         title: (function () {
           if (!social) return "No web or social data available.";
           var presence = social.highRisk ? "Low" : "Established";
@@ -2311,7 +2328,9 @@
             kicker: card.kicker,
             title: card.title,
             titleHtml: card.titleHtml,
-            ask: card.ask
+            ask: card.ask,
+            more: card.more,
+            sectionCount: expandSections.length
           },
           card.preview()
         );
