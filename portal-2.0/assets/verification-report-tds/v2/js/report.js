@@ -2732,7 +2732,9 @@
       var viewH = scroller ? scroller.clientHeight || 1 : 1;
       /* Card must fit under sticky top inside the scrollport, or the whole
          stack gets yanked upward when the track bottom catches the stickies. */
-      var cardH = Math.min(620, Math.max(420, viewH - 96));
+      /* 680 keeps the Overview card's identity fields and facts panel on
+         one screen; still clamped to the viewport on short windows. */
+      var cardH = Math.min(680, Math.max(420, viewH - 96));
       var stickyTop = Math.max(64, Math.round((viewH - cardH) / 2));
       if (stickyTop + cardH > viewH - 8) {
         stickyTop = Math.max(48, viewH - cardH - 8);
