@@ -550,10 +550,6 @@
 .v3-hero__copy > .v3-card__lede {
   margin-bottom: 0;
   max-width: 48ch;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  overflow: hidden;
 }
 
 .v3-suggested {
@@ -602,15 +598,6 @@
   align-items: flex-start;
   gap: var(--gap-md);
   min-width: 0;
-}
-
-.v3-entity__thumb {
-  width: 3.5rem;
-  height: 3.5rem;
-  flex-shrink: 0;
-  object-fit: cover;
-  border-radius: var(--radius-lg);
-  background: var(--surface-neutral-02);
 }
 
 .v3-entity__identity {
@@ -1126,14 +1113,23 @@
   pointer-events: none;
 }
 
+/* The rail sits at z-index 20 inside the shell and the canvas at 0, so the
+   canvas has to be lifted for the full-screen view to cover the whole page.
+   Split layout keeps the detail inline, so it is excluded. */
+.d3-canvas:has(.v3-board[data-v3-layout="overlay"] .v3-detail:not([hidden])) {
+  z-index: 950;
+}
+
+/* Full screen: covers the page edge to edge, no inset card. */
 .v3-detail {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 900;
   display: flex;
   flex-direction: column;
-  padding: 12px var(--v3-pad-x) 16px;
+  padding: 0;
   box-sizing: border-box;
+  background: var(--surface-neutral-01, #fff);
   opacity: 0;
   transform: translateY(12px) scale(0.985);
   transition:
@@ -1285,7 +1281,7 @@
   box-shadow: 0 2px 16px color-mix(in srgb, var(--text-default, #172d2d) 6%, transparent);
 }
 
-.v3-board[data-v3-mode="detail"][data-v3-layout="split"] .v3-detail__chips {
+.v3-board[data-v3-mode="detail"][data-v3-layout="split"] .v3-detail__tabs {
   display: none;
 }
 
@@ -1296,10 +1292,10 @@
   min-height: 0;
   width: 100%;
   height: 100%;
-  border: 1px solid color-mix(in srgb, var(--border-subtle, #dde2de) 80%, transparent);
-  border-radius: var(--v3-radius);
+  border: 0;
+  border-radius: 0;
   background: var(--surface-neutral-01, #fff);
-  box-shadow: 0 16px 48px rgba(23, 45, 45, 0.14);
+  box-shadow: none;
   overflow: hidden;
 }
 
@@ -1324,11 +1320,17 @@
   gap: 12px;
 }
 
-.v3-detail__chips.tds-filter-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+.v3-detail__tabs.tds-tabs {
   width: 100%;
+}
+
+.v3-detail__tabs .tds-tabs__list {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.v3-detail__tabs .tds-tabs__list::-webkit-scrollbar {
+  display: none;
 }
 
 .v3-detail__scroll {

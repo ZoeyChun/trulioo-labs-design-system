@@ -498,8 +498,6 @@
       { label: "Review ownership", target: "ownership" },
       { label: "Review risk signals", target: "signals" }
     ];
-    var buildingSrc =
-      data.buildingSrc || "../../verification-report/assets/kyb/building.png";
     var mapSrc = data.mapSrc || "../../verification-report/assets/kyb/map.png";
     var countryLabel = data.country || "United States";
     var flagSrc = /united kingdom|\buk\b|england|britain/i.test(countryLabel)
@@ -551,9 +549,6 @@
             "</div></div></div>" +
             '<aside class="v3-entity" aria-label="Entity information">' +
             '<div class="v3-entity__top">' +
-            '<img class="v3-entity__thumb" src="' +
-            esc(buildingSrc) +
-            '" alt="" width="56" height="56">' +
             '<div class="v3-entity__identity">' +
             '<p class="v3-entity__name">' +
             esc(entityName) +
@@ -977,8 +972,8 @@
     var chips = detailCards
       .map(function (card, index) {
         return (
-          '<button type="button" class="tds-filter-tab' +
-          (index === 0 ? " tds-filter-tab--selected" : "") +
+          '<button type="button" class="tds-tab-item' +
+          (index === 0 ? " tds-tab-item--active" : "") +
           '" role="tab" data-v3-detail-goto="' +
           esc(card.id) +
           '"' +
@@ -986,7 +981,10 @@
             ? ' aria-selected="true" aria-current="true"'
             : ' aria-selected="false"') +
           ">" +
+          '<span class="tds-tab-item__content">' +
           esc(card.title || CARD_LABELS[card.id] || card.id) +
+          "</span>" +
+          '<span class="tds-tab-item__indicator" aria-hidden="true"></span>' +
           "</button>"
         );
       })
@@ -1025,8 +1023,12 @@
       '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 3.5 5.5 8 10 12.5"/>' +
       "</svg></span></button>" +
       "</div>" +
-      '<div class="tds-filter-tabs v3-detail__chips" role="tablist" aria-label="Detail sections">' +
+      '<div class="tds-tabs v3-detail__tabs">' +
+      '<div class="tds-tabs__row">' +
+      '<div class="tds-tabs__list" role="tablist" aria-label="Detail sections">' +
       chips +
+      "</div></div>" +
+      '<div class="tds-tabs__divider" aria-hidden="true"></div>' +
       "</div>" +
       "</header>" +
       '<div class="v3-detail__scroll" data-v3-detail-scroll>' +
@@ -1255,7 +1257,7 @@
     function syncDetailTabs(id) {
       host.querySelectorAll("[data-v3-detail-goto]").forEach(function (btn) {
         var on = btn.getAttribute("data-v3-detail-goto") === id;
-        btn.classList.toggle("tds-filter-tab--selected", on);
+        btn.classList.toggle("tds-tab-item--active", on);
         btn.setAttribute("aria-selected", on ? "true" : "false");
         if (on) btn.setAttribute("aria-current", "true");
         else btn.removeAttribute("aria-current");

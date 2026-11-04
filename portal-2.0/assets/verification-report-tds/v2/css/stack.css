@@ -885,14 +885,22 @@
   pointer-events: none;
 }
 
+/* The rail sits at z-index 20 inside the shell and the canvas at 0, so the
+   canvas has to be lifted for the full-screen view to cover the whole page. */
+.d3-canvas:has(.v2-expand:not([hidden])) {
+  z-index: 950;
+}
+
+/* Full screen: covers the page edge to edge, no inset card. */
 .v2-expand {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 900;
   display: flex;
   flex-direction: column;
-  padding: var(--v2-stack-pad);
+  padding: 0;
   box-sizing: border-box;
+  background: var(--surface-neutral-01, #fff);
   opacity: 0;
   transform: translateY(12px) scale(0.985);
   transition:
@@ -918,10 +926,10 @@
   min-height: 0;
   width: 100%;
   height: 100%;
-  border: 1px solid color-mix(in srgb, var(--border-subtle, #dde2de) 80%, transparent);
-  border-radius: var(--v2-card-radius);
+  border: 0;
+  border-radius: 0;
   background: var(--surface-neutral-01, #fff);
-  box-shadow: var(--elevation-xl, 0 16px 48px rgba(23, 45, 45, 0.14));
+  box-shadow: none;
   overflow: hidden;
 }
 
@@ -954,11 +962,17 @@
 
 
 
-.v2-expand__chips.tds-filter-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+.v2-expand__tabs.tds-tabs {
   width: 100%;
+}
+
+.v2-expand__tabs .tds-tabs__list {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.v2-expand__tabs .tds-tabs__list::-webkit-scrollbar {
+  display: none;
 }
 
 
@@ -2577,7 +2591,7 @@
 
   .v2-expand,
   .v2-expand__body,
-  .v2-expand__chips .tds-filter-tab,
+  .v2-expand__tabs .tds-tab-item,
   .v2-view-toggle__btn {
     transition: none !important;
     animation: none !important;

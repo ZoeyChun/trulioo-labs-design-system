@@ -374,7 +374,7 @@
     var footer =
       '<footer class="v2-card__footer">' +
       askChipHtml(opts.ask || "Ask TruAI") +
-      expandActionHtml(opts.id, opts.more, opts.sectionCount) +
+      expandActionHtml(opts.id, null, opts.sectionCount) +
       "</footer>";
 
     return (
@@ -1920,7 +1920,6 @@
       {
         id: "overview",
         kicker: "Overview",
-        more: "View registry record & notes",
         title: insightHeadline,
         titleHtml:
           '<span class="v2-card__title-risk">High risk entity</span>: ' +
@@ -1935,7 +1934,6 @@
       {
         id: "signals",
         kicker: "Signals",
-        more: "View all 10 risk signals",
         title:
           "10 risk signals across 5 categories. Business Model (84) and Financial Health (68) drive the overall " +
           riskScore +
@@ -2026,7 +2024,6 @@
       {
         id: "ownership",
         kicker: "Ownership",
-        more: "View owners & ownership graph",
         title: (function () {
           var parts = [];
           parts.push(owners.length + " shareholders identified, " + ownerDepth + " deep");
@@ -2073,7 +2070,6 @@
       {
         id: "match",
         kicker: "Match Signals & Sources",
-        more: "View all fields & sources",
         title: matchedCount + " of " + totalFields + " fields matched (" + matchPct + "%). " +
           (data.verified !== false ? "Verification outcome: Verified." : "Verification outcome: Review required."),
         summary: CARD_LABELS.match,
@@ -2125,7 +2121,6 @@
       {
         id: "additional",
         kicker: "Officers",
-        more: "View officer & registry records",
         title: (function () {
           if (!officerDisplayName) return "No officers or directors on file.";
           var parts = [];
@@ -2182,7 +2177,6 @@
       {
         id: "web",
         kicker: "Web & Social",
-        more: "View domain & social profiles",
         title: (function () {
           if (!social) return "No web or social data available.";
           var presence = social.highRisk ? "Low" : "Established";
@@ -2339,7 +2333,6 @@
             title: card.title,
             titleHtml: card.titleHtml,
             ask: card.ask,
-            more: card.more,
             sectionCount: expandSections.length
           },
           card.preview()
@@ -2352,8 +2345,8 @@
         var label = CARD_LABELS[card.id] || card.summary || card.kicker || card.title;
         var selected = index === 0;
         return (
-          '<button type="button" class="tds-filter-tab' +
-          (selected ? " tds-filter-tab--selected" : "") +
+          '<button type="button" class="tds-tab-item' +
+          (selected ? " tds-tab-item--active" : "") +
           '" role="tab" data-v2-expand-goto="' +
           esc(card.id) +
           '"' +
@@ -2361,7 +2354,10 @@
             ? ' aria-selected="true" aria-current="true"'
             : ' aria-selected="false"') +
           ">" +
+          '<span class="tds-tab-item__content">' +
           esc(label) +
+          "</span>" +
+          '<span class="tds-tab-item__indicator" aria-hidden="true"></span>' +
           "</button>"
         );
       })
@@ -2401,8 +2397,12 @@
       '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 3.5 5.5 8 10 12.5"/>' +
       "</svg></span></button>" +
       "</div>" +
-      '<div class="tds-filter-tabs v2-expand__chips" role="tablist" aria-label="Report sections">' +
+      '<div class="tds-tabs v2-expand__tabs">' +
+      '<div class="tds-tabs__row">' +
+      '<div class="tds-tabs__list" role="tablist" aria-label="Report sections">' +
       chips +
+      "</div></div>" +
+      '<div class="tds-tabs__divider" aria-hidden="true"></div>' +
       "</div>" +
       "</header>" +
       '<div class="v2-expand__scroll" data-v2-expand-scroll>' +
@@ -2611,7 +2611,7 @@
       }
       expandChips.forEach(function (chip) {
         var current = chip.getAttribute("data-v2-expand-goto") === id;
-        chip.classList.toggle("tds-filter-tab--selected", current);
+        chip.classList.toggle("tds-tab-item--active", current);
         chip.setAttribute("aria-selected", current ? "true" : "false");
         if (current) chip.setAttribute("aria-current", "true");
         else chip.removeAttribute("aria-current");
