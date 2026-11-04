@@ -1853,7 +1853,9 @@
           data.verified !== false ? "Verified" : "Review",
           data.verified !== false ? "positive" : "intermediate"
         ) +
-        "</div>" +
+        "</div></div></div>" +
+        /* Fields sit full width so their columns line up with the facts
+           panel below, instead of being indented past the photo. */
         '<div class="v2-ov__fields">' +
         '<div class="tds-data-field">' +
         '<div class="tds-data-field__label-row"><p class="tds-data-field__label">Country / Jurisdiction</p></div>' +
@@ -1868,7 +1870,7 @@
         tdsDataField("BRN / Registration number", overview.regNumber || "—") +
         tdsDataField("Industry code", overview.industry || "—") +
         tdsDataField("Tax ID", overview.taxId || "—") +
-        "</div></div></div>"
+        "</div>"
       );
     }
 

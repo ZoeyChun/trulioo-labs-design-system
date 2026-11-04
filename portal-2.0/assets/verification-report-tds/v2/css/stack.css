@@ -365,7 +365,10 @@
   min-height: 0;
   border-top: 1px solid var(--border-subtle, #dde2de);
   padding-top: 24px;
-  overflow: hidden;
+  /* A short card scrolls rather than silently clipping registry data. */
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 /* V1-parity location hero (map + building thumbnail) */
@@ -1621,7 +1624,8 @@
 }
 
 /* Same identity strip as the Overview card preview */
-.v2-ov-detail > .v2-ov__identity-row {
+.v2-ov-detail > .v2-ov__identity-row,
+.v2-ov-detail > .v2-ov__fields {
   flex-shrink: 0;
   width: 100%;
 }
@@ -2663,9 +2667,14 @@
 .v2-ov {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-32, 32px);
+  gap: var(--spacing-16, 16px);
   min-height: 0;
   overflow: visible;
+}
+
+/* Blocks keep their height so a short card scrolls instead of squashing them. */
+.v2-ov > * {
+  flex-shrink: 0;
 }
 
 .v2-ov__identity-row {
@@ -2679,7 +2688,7 @@
 
 .v2-ov__photo-col {
   flex-shrink: 0;
-  width: 120px;
+  width: 48px;
   height: fit-content;
 }
 
@@ -2687,11 +2696,11 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: var(--radius-2xl, 16px);
+  border-radius: var(--radius-lg, 12px);
   background: var(--surface-neutral-02, #f4f6f4);
-  box-shadow: 0 4px 16px rgba(23, 45, 45, 0.12);
+  box-shadow: 0 2px 8px rgba(23, 45, 45, 0.10);
 }
 
 .v2-ov__identity {
@@ -2717,18 +2726,41 @@
   color: var(--text-default, #172d2d);
 }
 
+/* Three columns on the same rhythm as the facts panel below, so labels in
+   both blocks share the same gutters. */
 .v2-ov__fields {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 32px;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 0;
+  align-items: start;
+  width: 100%;
+  min-width: 0;
 }
 
 .v2-ov__fields .tds-data-field {
   width: auto;
   min-width: 0;
-  flex: 0 1 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
 }
+
+/* Fixed columns, so labels and values wrap instead of running past a cell. */
+.v2-ov__fields .tds-data-field__label-row {
+  display: flex;
+  min-width: 0;
+}
+
+.v2-ov__fields .tds-data-field__label {
+  white-space: normal;
+}
+
+.v2-ov__fields .tds-data-field__value {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+
 
 .v2-ov__flag img {
   display: block;
@@ -2799,7 +2831,7 @@
 .v2-ov__facts-fields {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .v2-ov__facts-link .v2-web-link,
