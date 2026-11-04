@@ -2811,6 +2811,14 @@
   white-space: nowrap;
 }
 
+/* An address reads better wrapped than ellipsised. */
+.v2-ov__facts-link--wrap .v2-web-link,
+.v2-ov__facts-link--wrap .v2-web-link__text {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
 /* Signals summary: gauge column hugs content; highlights fill the rest. */
 .v2-ov__panel.v2-signals__summary {
   grid-template-columns: max-content minmax(0, 1fr);

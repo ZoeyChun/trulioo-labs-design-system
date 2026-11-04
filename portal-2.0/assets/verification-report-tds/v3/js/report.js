@@ -500,6 +500,11 @@
     ];
     var mapSrc = data.mapSrc || "../../verification-report/assets/kyb/map.png";
     var countryLabel = data.country || "United States";
+    /* The stored address carries a trailing risk note after " - "; the card
+       shows the registered address itself. */
+    var registeredAddress = String(overview.address || data.addr || "")
+      .split(" - ")[0]
+      .trim();
     var flagSrc = /united kingdom|\buk\b|england|britain/i.test(countryLabel)
       ? "../../../Demo%201/assets/icons/flag-uk.svg"
       : "../v2/assets/overview/flag-us.svg";
@@ -561,11 +566,13 @@
                 esc(flagSrc) +
                 '" alt="" width="18" height="12"></span>'
             ) +
+            entityFactRow("Registration status", overview.status || "—") +
             entityFactRow(
               "BRN / Registration number",
               overview.regNumber || "—"
             ) +
-            entityFactRow("Tax ID", overview.taxId || "—") +
+            entityFactRow("Business address", registeredAddress) +
+            entityFactRow("Industry code", overview.industry || "—") +
             "</div></aside>"
           );
         }

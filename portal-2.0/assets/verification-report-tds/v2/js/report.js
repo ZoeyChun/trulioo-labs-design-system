@@ -1864,7 +1864,9 @@
         '<img src="' +
         esc(flag) +
         '" alt="" width="18" height="12"></span></div></div></div>' +
+        tdsDataField("Registration status", overview.status || "—") +
         tdsDataField("BRN / Registration number", overview.regNumber || "—") +
+        tdsDataField("Industry code", overview.industry || "—") +
         tdsDataField("Tax ID", overview.taxId || "—") +
         "</div></div></div>"
       );
@@ -1879,13 +1881,13 @@
         factsHeading("location", "Address") +
         '<div class="v2-ov__facts-fields">' +
         (officeMapsHref
-          ? '<div class="v2-ov__facts-link">' +
-            tdsDataFieldIcon("Office address", officeAddress, "", {
+          ? '<div class="v2-ov__facts-link v2-ov__facts-link--wrap">' +
+            tdsDataFieldIcon("Business address", officeAddressFull, "", {
               href: officeMapsHref,
               external: true
             }) +
             "</div>"
-          : tdsDataField("Office address", officeAddress)) +
+          : tdsDataField("Business address", officeAddressFull || "—")) +
         tdsDataField("Entities registered", entitiesRegistered) +
         "</div></div>" +
         '<div class="v2-ov__panel-col">' +
