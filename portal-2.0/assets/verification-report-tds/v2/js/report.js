@@ -402,12 +402,21 @@
     );
   }
 
-  function fieldGrid(fields) {
+  function fieldGrid(fields, opts) {
+    var cols = (opts && opts.cols) || 2;
     return (
-      '<div class="v2-field-grid">' +
+      '<div class="v2-field-grid' +
+      (cols === 3 ? " v2-field-grid--cols-3" : "") +
+      '">' +
       fields
         .map(function (field) {
-          return tdsDataField(field.label, field.value, field.note);
+          var html = tdsDataField(field.label, field.value, field.note);
+          return field.span === 2
+            ? html.replace(
+                'class="tds-data-field"',
+                'class="tds-data-field v2-field-grid__span-2"'
+              )
+            : html;
         })
         .join("") +
       "</div>"
@@ -2152,13 +2161,13 @@
               ? "Currently serving"
               : "No longer active" +
                 (officer.endDate ? " (ended " + officer.endDate + ")" : "");
-          return (
-            '<div class="v2-metrics">' +
-            tdsDataField("Directors", "1") +
-            tdsDataField("PSCs", "0") +
-            tdsDataField("Tenure", officerTenure || "—") +
-            "</div>" +
-            fieldGrid([
+          /* One three-column grid: the counts and the officer's fields share
+             the same gutters instead of being 3-up over 2-up. */
+          return fieldGrid(
+            [
+              { label: "Directors", value: "1" },
+              { label: "PSCs", value: "0" },
+              { label: "Tenure", value: officerTenure || "—" },
               { label: "Name", value: officerDisplayName },
               { label: "Position", value: officerDisplayPosition },
               { label: "Status", value: statusNote },
@@ -2169,11 +2178,13 @@
               {
                 label: "Primary address",
                 value: officer.address1,
+                span: 2,
                 note: officerAddressMatchesBiz
                   ? "Matches company registered address"
                   : ""
               }
-            ])
+            ],
+            { cols: 3 }
           );
         },
         detail: additionalDetail

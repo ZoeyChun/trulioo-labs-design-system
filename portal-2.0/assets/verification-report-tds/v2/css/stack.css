@@ -594,6 +594,39 @@
   gap: 10px 16px;
 }
 
+/* Three columns on the same rhythm as the Overview card's identity fields:
+   right-only cell padding keeps every column's left edge flush. */
+.v2-field-grid--cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px 0;
+  align-items: start;
+}
+
+.v2-field-grid--cols-3 .tds-data-field {
+  padding: 0 24px 0 0;
+  box-sizing: border-box;
+}
+
+.v2-field-grid__span-2 {
+  grid-column: span 2;
+}
+
+.v2-field-grid--cols-3 .tds-data-field__label-row {
+  display: flex;
+  min-width: 0;
+}
+
+.v2-field-grid--cols-3 .tds-data-field__label {
+  white-space: normal;
+}
+
+.v2-field-grid--cols-3 .tds-data-field__value {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+
 /* Website thumbnail widget (Figma 8877:65341) — right of web card fields */
 .v2-web-body {
   display: flex;
