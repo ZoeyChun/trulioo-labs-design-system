@@ -607,7 +607,8 @@
   box-sizing: border-box;
 }
 
-.v2-field-grid__span-2 {
+.v2-field-grid__span-2,
+.v2-span-2 {
   grid-column: span 2;
 }
 

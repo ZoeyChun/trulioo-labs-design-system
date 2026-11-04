@@ -1877,8 +1877,12 @@
         '" alt="" width="18" height="12"></span></div></div></div>' +
         tdsDataField("Registration status", overview.status || "—") +
         tdsDataField("BRN / Registration number", overview.regNumber || "—") +
-        tdsDataField("Industry code", overview.industry || "—") +
-        tdsDataField("Tax ID", overview.taxId || "—") +
+        /* Industry code takes the remaining two columns so its value has
+           room on one line. Tax ID lives in the expanded view. */
+        tdsDataField("Industry code", overview.industry || "—").replace(
+          'class="tds-data-field"',
+          'class="tds-data-field v2-span-2"'
+        ) +
         "</div>"
       );
     }

@@ -249,15 +249,35 @@
   }
 
   function sourceCardHtml(card) {
-    return (
-      '<div class="v3-source">' +
+    var linked = card.href && card.href !== "#";
+    var inner =
       '<span class="v3-source__mark">' +
       esc(card.mark) +
       '</span><p class="v3-source__title">' +
       esc(card.title) +
       '</p><p class="v3-source__meta">' +
       esc(card.meta) +
-      "</p></div>"
+      "</p>";
+    if (!linked) return '<div class="v3-source">' + inner + "</div>";
+    return (
+      '<a class="v3-source v3-source--link" href="' +
+      esc(card.href) +
+      '" target="_blank" rel="noopener noreferrer">' +
+      inner +
+      "</a>"
+    );
+  }
+
+  function sourceGroupHtml(label, cards, emptyText) {
+    return (
+      '<p class="v3-section-label">' +
+      esc(label) +
+      '<span class="v3-section-label__count">' +
+      esc(String(cards.length)) +
+      "</span></p>" +
+      (cards.length
+        ? '<div class="v3-source-grid">' + cards.map(sourceCardHtml).join("") + "</div>"
+        : '<p class="v3-card__lede">' + esc(emptyText) + "</p>")
     );
   }
 
@@ -772,12 +792,19 @@
             });
           }
           var metrics = (matchData && matchData.metrics) || {};
-          var sourceCards = [];
-          (truliooCaps || []).forEach(function (cap, i) {
-            sourceCards.push({ mark: String(i + 1), title: cap.title, meta: cap.desc });
+          /* Two named groups, as in V2: what Trulioo ran, then the public
+             records it read. One mixed "Datasources" list hid the
+             difference between them. */
+          var truliooCards = (truliooCaps || []).map(function (cap, i) {
+            return { mark: String(i + 1), title: cap.title, meta: cap.desc };
           });
-          (onlineSources || []).forEach(function (src) {
-            sourceCards.push({ mark: "↗", title: src.name, meta: src.desc });
+          var onlineCards = (onlineSources || []).map(function (src) {
+            return {
+              mark: "↗",
+              title: src.name,
+              meta: src.desc,
+              href: src.url
+            };
           });
           return (
             '<div class="v3-metrics">' +
@@ -790,12 +817,16 @@
             "</div>" +
             '<p class="v3-section-label">Match matrix</p>' +
             matrixListHtml(rows) +
-            '<p class="v3-section-label">Datasources</p>' +
-            (sourceCards.length
-              ? '<div class="v3-source-grid">' +
-                sourceCards.map(sourceCardHtml).join("") +
-                "</div>"
-              : '<p class="v3-card__lede">No additional sources listed.</p>')
+            sourceGroupHtml(
+              "Trulioo sources",
+              truliooCards,
+              "No Trulioo sources listed."
+            ) +
+            sourceGroupHtml(
+              "Online sources",
+              onlineCards,
+              "No online sources listed."
+            )
           );
         }
       },
