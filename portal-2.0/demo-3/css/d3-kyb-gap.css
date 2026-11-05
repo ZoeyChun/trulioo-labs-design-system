@@ -856,3 +856,9 @@
   background: var(--interactive-default, #004c45);
   color: #fff;
 }
+
+/* The saved configuration is the user's default package: say so, and say what happens next. */
+.d3-kyb-wiz__count--default { display: inline-flex; align-items: center; gap: 6px; color: var(--text-positive, #1f6a3f); font-weight: 600; }
+.d3-kyb-wiz__check { flex: none; }
+.d3-kyb-wiz__chip.is-static.is-default { background: var(--surface-positive, #e9f6ee); border-color: var(--border-positive, #b9dcc6); color: var(--text-body, #172d2d); font-weight: 500; }
+.d3-kyb-wiz__default-hint { margin: 0; font-size: var(--font-size-sm, 13px); line-height: 18px; color: var(--text-caption, #617269); }

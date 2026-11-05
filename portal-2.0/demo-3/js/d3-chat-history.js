@@ -477,10 +477,49 @@
   var MENU_MAX = 5;
   var listAll = $("[data-d3-chat-list-all]");
 
+  /* A conversation is "ongoing" while the panel is minimized and the thread holds one:
+     the Chats menu icon and the list get a dot until the panel is opened again. */
+  function isOngoing() {
+    return shell.getAttribute("data-d3-chat") === "closed" && hasThread();
+  }
+
+  function liveTitle() {
+    return text("[data-d3-ai-title]") || firstUserMessage() || "Current chat";
+  }
+
+  function liveRow() {
+    /* A conversation already stored in the list is marked there instead of repeated. */
+    if (!isOngoing() || active()) return null;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "d1-chat-row d3-chat-row d1-chat-row--live";
+    btn.setAttribute("role", "menuitem");
+    btn.setAttribute("data-d3-chat-live", "");
+    var name = document.createElement("span");
+    name.className = "d3-chat-row__title";
+    name.textContent = liveTitle();
+    var tag = document.createElement("span");
+    tag.className = "d3-chat-row__tag";
+    tag.textContent = "Ongoing";
+    btn.appendChild(name);
+    btn.appendChild(tag);
+    return btn;
+  }
+
+  function syncOngoing() {
+    var on = isOngoing();
+    if ((shell.getAttribute("data-d3-chat-ongoing") === "true") !== on) {
+      shell.setAttribute("data-d3-chat-ongoing", on ? "true" : "false");
+      render();
+    }
+  }
+
   function rowFor(entry) {
     var btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "d1-chat-row d3-chat-row" + (entry.id === activeId ? " d1-chat-row--current" : "");
+    var ongoing = entry.id === activeId && isOngoing();
+    btn.className = "d1-chat-row d3-chat-row" + (entry.id === activeId ? " d1-chat-row--current" : "") + (ongoing ? " d1-chat-row--live" : "");
+    if (ongoing) btn.setAttribute("data-d3-chat-live", "");
     btn.setAttribute("role", "menuitem");
     btn.setAttribute("data-d3-chat-entry", entry.id);
     var name = document.createElement("span");
@@ -488,11 +527,13 @@
     name.textContent = entry.title || KIND_LABEL[entry.kind];
     var tag = document.createElement("span");
     tag.className = "d3-chat-row__tag";
-    tag.textContent = Object.keys(entry.pages)
-      .map(function (k) {
-        return k === "kyb" ? "KYB" : "Transactions";
-      })
-      .join(" · ");
+    tag.textContent = ongoing
+      ? "Ongoing"
+      : Object.keys(entry.pages)
+          .map(function (k) {
+            return k === "kyb" ? "KYB" : "Transactions";
+          })
+          .join(" · ");
     btn.appendChild(name);
     btn.appendChild(tag);
     return btn;
@@ -501,7 +542,7 @@
   function render() {
     host.innerHTML = "";
     if (listAll) listAll.innerHTML = "";
-    if (!entries.length) {
+    if (!entries.length && !isOngoing()) {
       closeLayer2();
       return;
     }
@@ -509,6 +550,11 @@
     label.className = "d1-fly__label";
     label.textContent = "Recent";
     host.appendChild(label);
+    var live = liveRow();
+    if (live) {
+      host.appendChild(live);
+      if (listAll) listAll.appendChild(liveRow());
+    }
     /* The hover menu is a glance: the 5 most recent, then "See all". */
     entries.slice(0, MENU_MAX).forEach(function (entry) {
       host.appendChild(rowFor(entry));
@@ -571,11 +617,22 @@
     if (event.target.closest && event.target.closest("[data-d3-rail-back]")) closeLayer2();
   });
 
+  document.addEventListener("click", function (event) {
+    if (event.target.closest && event.target.closest("[data-d3-chat-live]") && window.D3Nav) {
+      closeLayer2();
+      window.D3Nav.openChatPanel();
+    }
+  });
+
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape" && shell.getAttribute("data-d3-rail-layer") === "2") closeLayer2();
   });
 
   /* ------------------------------------------------------------ wiring */
+
+  new MutationObserver(syncOngoing).observe(shell, { attributes: true, attributeFilter: ["data-d3-chat"] });
+  new MutationObserver(syncOngoing).observe(thread, { childList: true });
+  syncOngoing();
 
   new MutationObserver(schedule).observe(thread, {
     childList: true,

@@ -176,3 +176,27 @@ html {
   font-size: 11px;
   line-height: 16px;
 }
+
+/* Ongoing chat while the panel is minimized: a small dot on the Chats icon and on the live row. */
+.d1-nav-btn[data-d3-nav="messages"] { position: relative; }
+.d1-shell[data-d3-chat-ongoing="true"] .d1-nav-btn[data-d3-nav="messages"]::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--icon-positive, #2f9e63);
+  box-shadow: 0 0 0 2px var(--surface-default, #fff);
+}
+.d1-chat-row--live { position: relative; font-weight: var(--font-weight-medium); }
+.d1-chat-row--live::after {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--icon-positive, #2f9e63);
+}

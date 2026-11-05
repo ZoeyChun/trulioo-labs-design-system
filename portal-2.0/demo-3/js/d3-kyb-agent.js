@@ -1011,9 +1011,11 @@
     if (wiz.saved) {
       var S0 = window.D3KybSession;
       return (
-        '<div class="d3-kyb-wiz__head"><span class="d3-kyb-wiz__count">Saved configuration</span>' +
+        '<div class="d3-kyb-wiz__head"><span class="d3-kyb-wiz__count d3-kyb-wiz__count--default">' +
+        '<svg class="d3-kyb-wiz__check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/><path d="m5.4 8.2 1.8 1.8 3.4-3.6"/></svg>' +
+        'Your default package</span>' +
         '<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" data-d3-wiz-edit-saved>Edit</button></div>' +
-        '<div class="d3-kyb-wiz__chips"><span class="d3-kyb-wiz__chip is-static"><span>' + esc(S0.scopeLabel()) + "</span></span></div>"
+        '<div class="d3-kyb-wiz__chips"><span class="d3-kyb-wiz__chip is-static is-default"><span>' + esc(S0.scopeLabel()) + "</span></span></div>"
       );
     }
     return (
@@ -1246,6 +1248,12 @@
     thread.querySelectorAll(".d3-kyb-cand-panel, .d3-kyb-wizard").forEach(function (panel) {
       panel.classList.add("is-past");
     });
+    /* With a default package saved, say outside the card what happens next. */
+    if (!opts.biz && S.savedConfig && S.savedConfig()) {
+      playHtml(
+        '<div class="ai-reply"><p class="ai-reply__lead">Pick a business below and I’ll verify it with your default package — nothing else to set up.</p></div>'
+      );
+    }
     var el = playHtml("");
     el.classList.add("d3-kyb-agent-wrap", "d3-kyb-wizard");
     var scope = opts.scope || null;
