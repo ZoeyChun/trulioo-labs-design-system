@@ -3372,6 +3372,11 @@
       return createController(host, options || {});
     },
     cardIds: CARD_ORDER.slice(),
-    cardLabels: Object.assign({}, CARD_LABELS)
+    expandIds: EXPAND_ORDER.slice(),
+    cardLabels: Object.assign({}, CARD_LABELS),
+    /* Shared expand sections so V3/V4 can reuse the same tabs/content. */
+    buildSections: function (data) {
+      return buildCards(data || getSample() || {});
+    }
   };
 })(typeof window !== "undefined" ? window : globalThis);
