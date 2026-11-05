@@ -53,6 +53,29 @@
   overflow: hidden;
 }
 
+.v4-chat-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  flex-shrink: 0;
+  padding: 28px var(--spacing-16, 16px);
+  border-bottom: 1px solid var(--border-divider, #e8ede8);
+  background: var(--surface-neutral-01, #fff);
+}
+
+.v4-brh-switch {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.v4-brh-switch .tds-switch__label-group {
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium, 500);
+}
+
 .v4-msg-refs {
   display: flex;
   flex-wrap: wrap;
