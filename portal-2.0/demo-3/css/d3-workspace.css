@@ -1491,9 +1491,15 @@
   flex-shrink: 0;
   gap: 32px;
   overflow-x: auto;
+  /* scrolls by swipe or wheel; the bar itself stays out of sight */
+  scrollbar-width: none;
   /* overflow ≠ visible zeroes auto min-height in a flex column and crushed the tabs to 1px */
   min-height: 29px;
   border-bottom: 1px solid var(--border-strong, #c5cec8);
+}
+
+.d3-kyb-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .d3-kyb-tabs__item {

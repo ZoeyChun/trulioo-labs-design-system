@@ -804,6 +804,18 @@
       parts.push(cut > 0 ? mark(f.slice(0, cut)) + esc(f.slice(cut)) : mark(f));
     });
 
+    /* Bullets are short: just the key phrase of each sentence, no narrative. */
+    function cap1(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+    var shorts = [];
+    if (lead) {
+      var phrase = lead.indexOf(name) === 0 && lead.length > name.length ? lead.slice(name.length).trim() : lead;
+      shorts.push(esc(cap1(phrase)));
+    }
+    findings.forEach(function (f) {
+      var cut = f.search(/,| with | and /);
+      shorts.push(esc(cap1(cut > 0 ? f.slice(0, cut) : f)));
+    });
+
     var buttons = [].slice
       .call(hero.querySelectorAll(".kyb-summary-hero__actions [data-kyb-jump-tab]"))
       .filter(function (b) {
@@ -839,20 +851,28 @@
       );
     }
 
+    var gaugeEl = hero.querySelector(".kyb-summary-hero__gauge");
+    var score = gaugeEl ? gaugeEl.getAttribute("data-score") || "" : "";
+    var statusText = biz.status || "Active";
+    var statusFact =
+      '<div class="d3h-entity__fact"><div class="d3h-entity__fact-text">' +
+      '<span class="d3h-entity__fact-label">Registration status</span>' +
+      '<span class="d3h-entity__fact-value d3h-entity__fact-value--status"><i class="d3h-entity__dot' +
+      (/active/i.test(statusText) ? "" : " is-off") + '" aria-hidden="true"></i>' + esc(statusText) + "</span></div></div>";
     hero.outerHTML =
-      '<section class="d3h-card d3h-card--hero" aria-label="Verdict"><div class="d3h-card__inner">' +
-      '<img class="d3h-hero__map" src="assets/kyb-resume/map.png" alt="" width="769" height="182" aria-hidden="true">' +
-      '<div class="d3h-hero__copy">' +
-      '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(title) + "</h2>" +
-      '<p class="d3h-card__lede">' + parts.join(" ") + "</p>" +
-      (buttons
-        ? '<div class="d3h-suggested" aria-label="Suggested actions"><p class="d3h-section-label">Suggested Actions</p><div class="d3h-suggested__ctas">' + buttons + "</div></div>"
-        : "") +
+      '<section class="d3h-card d3h-card--hero d3h-card--hero-gauge d3h-card--tone-' + tone + '" aria-label="Verdict"><div class="d3h-card__inner">' +
+      '<div class="d3h-hero__main">' +
+      '<div class="d3h-hero__top">' +
+      (score ? '<div class="d3h-hero__gaugebox"><div class="dv-di-gauge d3h-hero__gauge" data-score="' + esc(score) + '"></div></div>' : "") +
+      '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">Risk Analysis</p>' +
+      '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(title) + "</h2></div>" +
+      "</div>" +
+      '<ul class="d3h-chips">' + shorts.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
       "</div>" +
       '<aside class="d3h-entity" aria-label="Entity information">' +
       '<div class="d3h-entity__facts">' +
       fact("Country / Jurisdiction", biz.country || r.country || "United States", '<span class="d3h-entity__fact-flag" aria-hidden="true"><span class="fi fi-' + esc(cc) + '"></span></span>') +
-      fact("Registration status", biz.status || "Active") +
+      statusFact +
       fact("BRN / Registration number", r.regNumber || biz.reg) +
       fact("Business address", r.address || biz.addr) +
       fact("Industry code", r.industry) +
@@ -876,6 +896,13 @@
     try {
       if (window.D3KybPanels && window.D3KybPanels.mount(panel, "summary")) {
         upgradeHero(panel, biz, card); /* native Summary, with the v3 hero */
+        panel.querySelectorAll(".d3h-hero__gauge[data-score]").forEach(function (g) {
+          var s = parseFloat(g.getAttribute("data-score") || "0");
+          g.setAttribute("data-risk", s < 30 ? "low" : s <= 60 ? "medium" : "high");
+          g.setAttribute("data-show-percent", "false");
+          g.removeAttribute("data-label");
+        });
+        if (window.ScoreGauge) window.ScoreGauge.renderAll(panel);
         tidyHighlights(panel);
       }
       else panel.innerHTML = overviewHtml(biz, card);
