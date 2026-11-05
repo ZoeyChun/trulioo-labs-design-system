@@ -14,12 +14,32 @@
   var CARD_LABELS =
     (global.VerificationReportV2 && global.VerificationReportV2.cardLabels) || {
       overview: "Overview",
+      "risk-summary": "Overview",
       signals: "Signals",
       ownership: "Owners & UBOs",
       match: "Match Signals & Sources",
       additional: "Additional Data",
       web: "Web & Social Insights"
     };
+
+  function filterRefs(cardIds) {
+    if (!cardIds || !cardIds.length) return cardIds;
+    if (!reportApi || typeof reportApi.getBrh !== "function") return cardIds;
+    var seen = {};
+    return cardIds
+      .map(function (id) {
+        if (reportApi.getBrh() && id === "overview") return "risk-summary";
+        if (!reportApi.getBrh() && (id === "signals" || id === "risk-summary")) {
+          return null;
+        }
+        return id;
+      })
+      .filter(function (id) {
+        if (!id || seen[id]) return false;
+        seen[id] = true;
+        return true;
+      });
+  }
 
   function ensureTurn() {
     if (!thread) return null;
@@ -66,10 +86,11 @@
     var row = document.createElement("div");
     row.className = "d1-turn";
     var refs = "";
-    if (cardIds && cardIds.length) {
+    var ids = filterRefs(cardIds);
+    if (ids && ids.length) {
       refs =
         '<div class="v2-msg-refs">' +
-        cardIds
+        ids
           .map(function (id) {
             return (
               '<button type="button" class="v2-chat-ref" data-v2-ref="' +
@@ -257,6 +278,12 @@
     }, 280);
   }
 
+  function syncBrhToggle(enabled) {
+    document.querySelectorAll("[data-v2-brh-toggle]").forEach(function (btn) {
+      btn.setAttribute("aria-checked", enabled ? "true" : "false");
+    });
+  }
+
   function bindShellChat() {
     if (form) {
       form.addEventListener("submit", function (event) {
@@ -272,6 +299,16 @@
     });
 
     document.addEventListener("click", function (event) {
+      var brhToggle = event.target.closest("[data-v2-brh-toggle]");
+      if (brhToggle) {
+        var next = brhToggle.getAttribute("aria-checked") !== "true";
+        syncBrhToggle(next);
+        if (reportApi && typeof reportApi.setBrh === "function") {
+          reportApi.setBrh(next);
+        }
+        return;
+      }
+
       var ref = event.target.closest("[data-v2-ref]");
       if (!ref) return;
       var id = ref.getAttribute("data-v2-ref");
