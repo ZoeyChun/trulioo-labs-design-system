@@ -760,9 +760,124 @@
     return model;
   }
 
+  /* ------------------------------------------------------------ overview hero */
+
+  /* Which tab each native jump target opens, so a button never points at a tab the
+     package does not include. */
+  var HERO_JUMP_TAB = { ownership: "ownership", presence: "web", "match-signals": "signals", signals: "risk", "business-insights": "additional", financial: "additional" };
+  var NATIVE_NAME = "Meridian Apex Consulting Inc."; /* the name baked into the native Summary */
+
+  /* The native Summary hero (gauge + verdict card) becomes the report hero from
+     verification-report-tds/v3: risk title, a narrative with the key phrases marked,
+     Suggested Actions, and an entity card. Text and actions come from the native hero;
+     the entity facts come from the business being shown. */
+  function upgradeHero(panel, biz, card) {
+    var hero = panel.querySelector(".kyb-summary-hero");
+    if (!hero || !biz) return;
+    var tone = hero.classList.contains("kyb-summary-hero--negative")
+      ? "negative"
+      : hero.classList.contains("kyb-summary-hero--intermediate")
+        ? "intermediate"
+        : "positive";
+    var name = biz.name || NATIVE_NAME;
+    var clean = function (n) {
+      return n ? n.textContent.replace(/\s+/g, " ").trim().split(NATIVE_NAME).join(name) : "";
+    };
+    var title = clean(hero.querySelector(".kyb-summary-hero__risk-label"));
+    var lead = clean(hero.querySelector(".kyb-summary-hero__verdict-title"));
+    var findings = [].slice.call(hero.querySelectorAll(".kyb-summary-hero__finding-text")).map(clean);
+
+    function mark(t) {
+      if (tone === "positive") return esc(t);
+      return '<mark class="d3h-card__lede-mark d3h-card__lede-mark--' + tone + '">' + esc(t) + "</mark>";
+    }
+    var parts = [];
+    if (lead) {
+      parts.push(
+        lead.indexOf(name) === 0 && lead.length > name.length
+          ? esc(name) + " " + mark(lead.slice(name.length).trim() + ".")
+          : mark(lead + ".")
+      );
+    }
+    findings.forEach(function (f) {
+      var cut = f.search(/,| with | and /);
+      parts.push(cut > 0 ? mark(f.slice(0, cut)) + esc(f.slice(cut)) : mark(f));
+    });
+
+    var buttons = [].slice
+      .call(hero.querySelectorAll(".kyb-summary-hero__actions [data-kyb-jump-tab]"))
+      .filter(function (b) {
+        var t = card && card.querySelector('[data-d3-kyb-tab="' + HERO_JUMP_TAB[b.getAttribute("data-kyb-jump-tab")] + '"]');
+        return !card || (t && !t.hidden);
+      })
+      .map(function (b) {
+        return { jump: b.getAttribute("data-kyb-jump-tab"), label: b.textContent.trim() };
+      });
+    /* The package may leave out the tabs the native buttons point at (Owners & UBOs,
+       Web Insights). Offer the tabs it does include instead of an empty block. */
+    [
+      { jump: "signals", label: "Review Risk Analysis" },
+      { jump: "match-signals", label: "Review Match Signals" }
+    ].forEach(function (f) {
+      var t = card && card.querySelector('[data-d3-kyb-tab="' + HERO_JUMP_TAB[f.jump] + '"]');
+      if (buttons.length < 2 && (!card || (t && !t.hidden))) buttons.push(f);
+    });
+    buttons = buttons
+      .map(function (b) {
+        return '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-kyb-jump-tab="' + esc(b.jump) + '">' + esc(b.label) + "</button>";
+      })
+      .join("");
+
+    var r = biz.report || {};
+    var cc = String(biz.cc || biz.countryCode || "US").toLowerCase();
+    function fact(label, value, trailing) {
+      return (
+        '<div class="d3h-entity__fact"><div class="d3h-entity__fact-text">' +
+        '<span class="d3h-entity__fact-label">' + esc(label) + "</span>" +
+        '<span class="d3h-entity__fact-value">' + esc(value == null || value === "" ? "—" : value) + "</span></div>" +
+        (trailing || "") + "</div>"
+      );
+    }
+
+    hero.outerHTML =
+      '<section class="d3h-card d3h-card--hero" aria-label="Verdict"><div class="d3h-card__inner">' +
+      '<img class="d3h-hero__map" src="assets/kyb-resume/map.png" alt="" width="769" height="182" aria-hidden="true">' +
+      '<div class="d3h-hero__copy">' +
+      '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(title) + "</h2>" +
+      '<p class="d3h-card__lede">' + parts.join(" ") + "</p>" +
+      (buttons
+        ? '<div class="d3h-suggested" aria-label="Suggested actions"><p class="d3h-section-label">Suggested Actions</p><div class="d3h-suggested__ctas">' + buttons + "</div></div>"
+        : "") +
+      "</div>" +
+      '<aside class="d3h-entity" aria-label="Entity information">' +
+      '<div class="d3h-entity__facts">' +
+      fact("Country / Jurisdiction", biz.country || r.country || "United States", '<span class="d3h-entity__fact-flag" aria-hidden="true"><span class="fi fi-' + esc(cc) + '"></span></span>') +
+      fact("Registration status", biz.status || "Active") +
+      fact("BRN / Registration number", r.regNumber || biz.reg) +
+      fact("Business address", r.address || biz.addr) +
+      fact("Industry code", r.industry) +
+      "</div></aside></div></section>";
+  }
+
+  /* The cards under the hero are "Highlights": no section question, and the risk tag
+     stays only on the Signals card. */
+  function tidyHighlights(panel) {
+    var h = panel.querySelector(".dv-summary-evidence__title");
+    if (h) h.textContent = "Highlights";
+    panel.querySelectorAll(".dv-summary-evidence .dv-summary-card").forEach(function (cardEl) {
+      if (cardEl.getAttribute("data-kyb-jump-tab") === "signals") return;
+      cardEl.querySelectorAll(".dv-summary-card__top .tds-tag").forEach(function (n) {
+        n.remove();
+      });
+    });
+  }
+
   function paint(panel, card, biz, animate) {
     try {
-      if (window.D3KybPanels && window.D3KybPanels.mount(panel, "summary")) { /* native Summary */ }
+      if (window.D3KybPanels && window.D3KybPanels.mount(panel, "summary")) {
+        upgradeHero(panel, biz, card); /* native Summary, with the v3 hero */
+        tidyHighlights(panel);
+      }
       else panel.innerHTML = overviewHtml(biz, card);
       if (animate) {
         var root = panel.firstElementChild;

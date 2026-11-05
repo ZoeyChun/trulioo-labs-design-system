@@ -595,3 +595,294 @@
   border: 0;
   background: transparent;
 }
+
+/* ================================================================
+   Overview hero — ported from verification-report-tds/v3 (board.css):
+   risk title, narrative with risk marks, Suggested Actions and the
+   entity card over a faded map. Class prefix v3- -> d3h-.
+   ================================================================ */
+.d3h-card {
+  --v3-radius: var(--radius-3xl);
+  --v3-surface: var(--surface-neutral-01);
+  --v3-shadow: var(--shadow-button-elevated);
+  --v3-type-hero: var(--font-size-2xl);
+  --v3-leading-hero: var(--line-height-2xl);
+  --v3-type-body: var(--font-size-sm);
+  --v3-leading-body: var(--line-height-lg);
+  --v3-type-meta: var(--font-size-xs);
+  --v3-leading-meta: var(--line-height-xs);
+}
+.d3h-card__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--padding-xl) var(--padding-xl) var(--padding-lg);
+  box-sizing: border-box;
+}
+
+.d3h-card__title--hero {
+  font-size: var(--v3-type-hero);
+  line-height: var(--v3-leading-hero);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.03em;
+}
+
+.d3h-card__lede {
+  margin: 0;
+  max-width: 54ch;
+  color: var(--text-description);
+  font-size: var(--v3-type-body);
+  line-height: var(--v3-leading-body);
+  font-weight: var(--font-weight-regular);
+}
+
+.d3h-card__lede-mark {
+  display: inline;
+  margin: 0;
+  padding: 0.08em 0.28em;
+  border-radius: var(--radius-sm);
+  font-style: normal;
+  font-weight: var(--font-weight-medium);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.d3h-card__lede-mark--negative {
+  background: var(--surface-negative);
+  color: var(--text-negative);
+}
+
+.d3h-card__lede-mark--intermediate {
+  background: var(--surface-intermediate);
+  color: var(--text-intermediate);
+}
+
+.d3h-card--hero .d3h-card__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(240px, 0.9fr);
+  gap: var(--gap-xl);
+  align-items: stretch;
+  padding: var(--padding-xl);
+  overflow: hidden;
+}
+
+.d3h-hero__map {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(58%, 26rem);
+  height: min(72%, 14rem);
+  object-fit: cover;
+  object-position: top right;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: linear-gradient(
+    225deg,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.45) 42%,
+    transparent 78%
+  );
+  -webkit-mask-image: linear-gradient(
+    225deg,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.45) 42%,
+    transparent 78%
+  );
+}
+
+.d3h-card--hero .d3h-hero__copy,
+.d3h-card--hero .d3h-entity {
+  position: relative;
+  z-index: 1;
+}
+
+.d3h-hero__copy > .d3h-card__title--hero {
+  margin-bottom: var(--spacing-8, 8px);
+}
+
+.d3h-hero__copy > .d3h-card__subtitle {
+  margin-bottom: var(--spacing-12, 12px);
+}
+
+.d3h-hero__copy > .d3h-card__lede {
+  margin-bottom: 0;
+  max-width: 48ch;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.d3h-suggested {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  margin-top: auto;
+  padding-top: var(--spacing-16);
+  min-width: 0;
+}
+
+.d3h-suggested .d3h-section-label {
+  margin: 0;
+}
+
+.d3h-suggested__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.d3h-hero__copy > .d3h-card__foot {
+  margin-top: auto;
+  padding-top: var(--spacing-8, 8px);
+}
+
+.d3h-entity__top {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-md);
+  min-width: 0;
+}
+
+.d3h-entity__thumb {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  background: var(--surface-neutral-02);
+}
+
+.d3h-entity__identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.d3h-entity__name {
+  margin: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  overflow-wrap: break-word;
+}
+
+.d3h-entity__meta {
+  margin: 0;
+  color: var(--text-caption);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.d3h-entity__about {
+  margin: 0;
+  color: var(--text-description);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.d3h-entity__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--surface-neutral-01);
+}
+
+.d3h-entity__fact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  padding: var(--spacing-12);
+  border-bottom: 1px solid var(--border-subtle);
+  min-width: 0;
+}
+
+.d3h-entity__fact:last-child {
+  border-bottom: none;
+}
+
+.d3h-entity__fact-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.d3h-entity__fact-label {
+  color: var(--text-caption);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.d3h-entity__fact-value {
+  min-width: 0;
+  color: var(--text-default);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  overflow-wrap: break-word;
+}
+
+.d3h-entity__fact-flag {
+  display: inline-flex;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.d3h-entity__fact-flag img {
+  display: block;
+  border-radius: var(--radius-xs);
+}
+
+.d3h-section-label {
+  margin: 0 0 var(--spacing-8, 8px);
+  color: var(--text-caption, #617269);
+  font-size: var(--v3-type-meta);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: var(--v3-leading-meta);
+}
+
+.d3h-card {
+    animation: none;
+    transition: none;
+}
+
+/* Hero glue */
+.d3h-card__title--hero { margin: 0; }
+.d3h-hero__copy > .d3h-card__lede { display: block; -webkit-line-clamp: unset; max-width: 58ch; overflow: visible; }
+.d3h-entity__fact-flag .fi { width: 18px; height: 12px; border-radius: 2px; background-size: cover; }
+.d3-rp--summary { container-type: inline-size; container-name: d3rp; }
+@container d3rp (max-width: 640px) {
+  }
+
+/* Highlights: three cards per row (was four), stepping down with the panel width. */
+.d3-rp--summary .kyb-summary-page .dv-summary-evidence__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@container d3rp (max-width: 760px) {
+  .d3-rp--summary .kyb-summary-page .dv-summary-evidence__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container d3rp (max-width: 480px) {
+  .d3-rp--summary .kyb-summary-page .dv-summary-evidence__grid { grid-template-columns: 1fr; }
+}
+
+/* Hero title takes the verdict colour from the TDS text tokens (same as the native risk label). */
+.d3h-card__title--negative { color: var(--text-negative); }
+.d3h-card__title--intermediate { color: var(--text-intermediate); }
+.d3h-card__title--positive { color: var(--text-positive); }
