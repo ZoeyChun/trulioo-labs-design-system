@@ -960,3 +960,9 @@
   .d3h-card--hero-gauge .d3h-card__inner { justify-content: center; gap: var(--spacing-48, 48px); }
   .d3h-hero__main { flex: 0 1 auto; }
 }
+
+/* Suggested actions back in the hero: one row, no arrows. */
+.d3h-hero__main .d3h-suggested { margin-top: var(--spacing-8, 8px); padding-top: 0; }
+.d3h-hero__main .d3h-suggested__ctas { flex-wrap: nowrap; }
+.d3h-hero__main .d3h-suggested__ctas .tds-btn { white-space: nowrap; }
+.d3h-hero__main .d3h-suggested__ctas .tds-btn__trailing-icon { display: none; }

@@ -836,7 +836,7 @@
     });
     buttons = buttons
       .map(function (b) {
-        return '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-kyb-jump-tab="' + esc(b.jump) + '">' + esc(b.label) + "</button>";
+        return '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-kyb-jump-tab="' + esc(b.jump) + '">' + esc(b.label) + "</button>";
       })
       .join("");
 
@@ -868,6 +868,9 @@
       '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(title) + "</h2></div>" +
       "</div>" +
       '<ul class="d3h-chips">' + shorts.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
+      (buttons
+        ? '<div class="d3h-suggested" aria-label="Suggested actions"><p class="d3h-section-label">Suggested Actions</p><div class="d3h-suggested__ctas">' + buttons + "</div></div>"
+        : "") +
       "</div>" +
       '<aside class="d3h-entity" aria-label="Entity information">' +
       '<div class="d3h-entity__facts">' +
