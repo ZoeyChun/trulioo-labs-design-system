@@ -55,6 +55,30 @@
   overflow: hidden;
 }
 
+/* Same BRH options strip as V4 chat. */
+.v2-chat-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm, 8px);
+  flex-shrink: 0;
+  padding: 28px var(--spacing-16, 16px);
+  border-bottom: 1px solid var(--border-divider, #e8ede8);
+  background: var(--surface-neutral-01, #fff);
+}
+
+.v2-brh-switch {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.v2-brh-switch .tds-switch__label-group {
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  line-height: var(--line-height-sm, 18px);
+  font-weight: var(--font-weight-medium, 500);
+}
+
 /* Chat reference chips used by V2 only */
 .v2-chat-ref {
   display: inline-flex;

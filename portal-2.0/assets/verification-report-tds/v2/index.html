@@ -22,6 +22,8 @@
   <link rel="stylesheet" href="../../../../Components/score-gauge/score-gauge.css">
   <link rel="stylesheet" href="../../../../Components/dialog/dialog.css">
   <link rel="stylesheet" href="../../../../Components/announcement/announcement.css">
+  <link rel="stylesheet" href="../../../../Components/switch/switch.css">
+  <link rel="stylesheet" href="../../../../Components/tooltip/tooltip.css">
   <link rel="stylesheet" href="../shared/report-actions.css">
   <link rel="stylesheet" href="../../../Demo%201/css/shell.css">
   <link rel="stylesheet" href="../../../demo-3/css/d3-fa.css">
@@ -80,6 +82,22 @@
         <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible d3-chat-pane__close" data-v2-chat-close aria-label="Minimize chat">
           <span class="tds-icon-btn__icon" aria-hidden="true"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="m4 4 8 8M12 4l-8 8"/></svg></span>
         </button>
+      </div>
+      <div class="v2-chat-options" aria-label="Report options">
+        <label class="tds-switch v2-brh-switch">
+          <span class="tds-switch__label-group">Business Risk Horizon</span>
+          <button
+            type="button"
+            class="tds-switch__track tds-switch__track--sm"
+            role="switch"
+            aria-checked="true"
+            aria-label="Business Risk Horizon"
+            data-v2-brh-toggle
+          >
+            <span class="tds-switch__indicator" aria-hidden="true"></span>
+            <span class="tds-switch__handle" aria-hidden="true"></span>
+          </button>
+        </label>
       </div>
       <div class="d3-chat-pane__body">
         <div class="d3-chat-pane__empty">

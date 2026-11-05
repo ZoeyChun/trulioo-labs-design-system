@@ -3,10 +3,14 @@
   "use strict";
 
   /* Stack cards = high-level summaries. Expand tabs = detailed sections. */
+  /* BRH on:  Overview(gauge), Ownership, Signals, Match, Additional, Web
+     BRH off: Overview(facts), Ownership, Match, Additional, Web
+     (overview ↔ risk-summary swap; signals only when BRH on). */
   var CARD_ORDER = [
+    "risk-summary",
     "overview",
-    "signals",
     "ownership",
+    "signals",
     "match",
     "additional",
     "web"
@@ -14,8 +18,8 @@
 
   var EXPAND_ORDER = [
     "overview",
-    "signals",
     "ownership",
+    "signals",
     "match",
     "additional",
     "web"
@@ -23,6 +27,7 @@
 
   var CARD_LABELS = {
     overview: "Overview",
+    "risk-summary": "Overview",
     signals: "Signals",
     ownership: "Owners & UBOs",
     match: "Match Signals & Sources",
@@ -124,6 +129,15 @@
       '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
       '<rect x="2.25" y="3.75" width="11.5" height="8.5" rx="1.25" stroke="currentColor" stroke-width="1.4"/>' +
       '<path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="m3.25 5.25 4.75 3.5 4.75-3.5"/>' +
+      "</svg>"
+    );
+  }
+
+  /* Same building glyph as Demo 1 / demo-3 entity chrome. */
+  function iconBuilding() {
+    return (
+      '<svg width="20" height="20" viewBox="0 0 384 512" fill="none" aria-hidden="true">' +
+      '<path fill="currentColor" d="M64 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 16 16l80 0 0-64c0-26.5 21.5-48 48-48s48 21.5 48 48l0 64 80 0c8.8 0 16-7.2 16-16l0-384c0-8.8-7.2-16-16-16L64 48zM0 64C0 28.7 28.7 0 64 0L320 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm88 40c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48zM232 88l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48c0-8.8 7.2-16 16-16zM88 232c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48zm144-16l48 0c8.8 0 16 7.2 16 16l0 48c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-48c0-8.8 7.2-16 16-16z"/>' +
       "</svg>"
     );
   }
@@ -374,7 +388,7 @@
     var footer =
       '<footer class="v2-card__footer">' +
       askChipHtml(opts.ask || "Ask TruAI") +
-      expandActionHtml(opts.id, null, opts.sectionCount) +
+      expandActionHtml(opts.expandId || opts.id, null, opts.sectionCount) +
       "</footer>";
 
     return (
@@ -1932,6 +1946,51 @@
       );
     }
 
+    /* Overview twin: same identity strip, gauge + highlights instead of facts. */
+    function overviewRiskSummaryHtml() {
+      var highlights = [
+        { label: "Elevated default risk.", tone: "negative" },
+        { label: "No physical presence.", tone: "negative" },
+        { label: "Shell-company ownership patterns.", tone: "negative" },
+        { label: "Incomplete registry filings.", tone: "positive" },
+        { label: "Address shared with unrelated entities.", tone: "negative" },
+        { label: "No bankruptcy filings.", tone: "positive" },
+        { label: "No adverse media matches.", tone: "positive" }
+      ];
+      return (
+        '<div class="v2-ov">' +
+        overviewIdentityRowHtml() +
+        '<div class="v2-ov__panel v2-signals__summary">' +
+        '<div class="v2-ov__panel-col v2-signals__gauges-col">' +
+        '<p class="v2-ov__panel-label">Risk Score</p>' +
+        '<div class="v2-signals__gauges">' +
+        '<div class="v2-signals__gauge" aria-label="' +
+        esc(riskLabel + " score " + riskScore) +
+        '">' +
+        '<div class="score-gauge-host" data-score="' +
+        esc(String(riskScore)) +
+        '" data-risk="' +
+        esc(riskBand) +
+        '" data-label="' +
+        esc(riskLabel) +
+        '" data-show-percent="false" data-max="100"></div>' +
+        "</div></div></div>" +
+        '<div class="v2-ov__panel-col">' +
+        '<p class="v2-ov__panel-label">Highlights</p>' +
+        '<ul class="v2-ov__highlights">' +
+        highlights
+          .map(function (item) {
+            return (
+              '<li class="v2-ov__highlight">' +
+              tdsTag(item.label, item.tone) +
+              "</li>"
+            );
+          })
+          .join("") +
+        "</ul></div></div></div>"
+      );
+    }
+
     /* All expand sections (detail). Stack cards use a subset via CARD_ORDER. */
     return [
       {
@@ -1947,6 +2006,20 @@
         ask: "What are the key risk factors for this business?",
         preview: overviewInsightHtml,
         detail: overviewDetail
+      },
+      {
+        id: "risk-summary",
+        expandId: "signals",
+        kicker: "Overview",
+        title: insightHeadline,
+        titleHtml:
+          '<span class="v2-card__title-risk">High risk entity</span>: ' +
+          esc(insightHeadlineParts.join(", ")),
+        summary: CARD_LABELS["risk-summary"],
+        badge: riskLabel,
+        badgeTone: "negative",
+        ask: "What are the key risk factors for this business?",
+        preview: overviewRiskSummaryHtml
       },
       {
         id: "signals",
@@ -2326,18 +2399,24 @@
 
     var dots = stackCards
       .map(function (card, index) {
+        var label = CARD_LABELS[card.id] || card.kicker || card.id;
         return (
           '<button type="button" class="v2-stack__dot" role="tab" data-v2-goto="' +
           esc(card.id) +
           '" aria-label="' +
-          esc(CARD_LABELS[card.id] || card.kicker || card.id) +
-          '" title="' +
-          esc(CARD_LABELS[card.id] || card.kicker || card.id) +
+          esc(label) +
           '" aria-controls="v2-slot-' +
           esc(card.id) +
           '"' +
           (index === 0 ? ' aria-selected="true" aria-current="true"' : ' aria-selected="false"') +
-          '><span class="v2-stack__dot-mark" aria-hidden="true"></span></button>'
+          '><span class="v2-stack__dot-mark" aria-hidden="true"></span>' +
+          /* Caret on the right → tooltip sits to the left of the rail. */
+          '<span class="tds-tooltip tds-tooltip--dark tds-tooltip--right tds-tooltip--caret-sm v2-stack__dot-tip" role="tooltip">' +
+          '<span class="tds-tooltip__body"><span class="tds-tooltip__text">' +
+          esc(label) +
+          "</span></span>" +
+          '<span class="tds-tooltip__caret" aria-hidden="true"></span>' +
+          "</span></button>"
         );
       })
       .join("");
@@ -2347,6 +2426,7 @@
         return cardShell(
           {
             id: card.id,
+            expandId: card.expandId || card.id,
             index: index,
             kicker: card.kicker,
             title: card.title,
@@ -2383,16 +2463,24 @@
       .join("");
 
     host.innerHTML =
-      '<div class="v2-stack" data-v2-stack data-v2-mode="stack" style="--v2-card-count:' +
+      '<div class="v2-stack" data-v2-stack data-v2-mode="stack" data-v2-brh="on" style="--v2-card-count:' +
       esc(String(stackCards.length)) +
       '">' +
       '<div class="v2-stack__chrome" data-v2-stack-chrome>' +
-      '<div class="v2-stack__eyebrow"><span class="v2-stack__eyebrow-dot" aria-hidden="true"></span>' +
+      '<div class="v2-stack__eyebrow">' +
+      '<span class="v2-stack__eyebrow-icon" aria-hidden="true">' +
+      iconBuilding() +
+      "</span>" +
+      '<span class="v2-stack__eyebrow-text">' +
       esc(data.name || "Verification report") +
+      "</span>" +
+      tdsTag(
+        data.verified !== false ? "Verified" : "Review",
+        data.verified !== false ? "positive" : "intermediate"
+      ) +
       "</div>" +
-      '<div class="v2-stack__chrome-actions">' +
+      /* Raw Data / Export / New verification — same three as V4 / Demo 3. */
       reportActionsHtml("md") +
-      "</div>" +
       "</div>" +
       '<div class="v2-stack__progress" role="tablist" aria-label="Report sections" aria-orientation="vertical">' +
       '<span class="v2-stack__progress-track" aria-hidden="true"></span>' +
@@ -2415,6 +2503,19 @@
       '<svg width="16" height="16" viewBox="0 0 16 16" fill="none">' +
       '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 3.5 5.5 8 10 12.5"/>' +
       "</svg></span></button>" +
+      '<span class="v2-stack__eyebrow-icon" aria-hidden="true">' +
+      iconBuilding() +
+      "</span>" +
+      '<h2 class="v2-expand__header-title">' +
+      esc(data.name || "Verification report") +
+      "</h2>" +
+      tdsTag(
+        data.verified !== false ? "Verified" : "Review",
+        data.verified !== false ? "positive" : "intermediate"
+      ) +
+      '<div class="v2-expand__header-end">' +
+      reportActionsHtml("md") +
+      "</div>" +
       "</div>" +
       '<div class="tds-tabs v2-expand__tabs">' +
       '<div class="tds-tabs__row">' +
@@ -2511,8 +2612,65 @@
     var dots = Array.prototype.slice.call(
       host.querySelectorAll(".v2-stack__progress [data-v2-goto]")
     );
-    var activeId = cards[0] ? cards[0].id : null;
-    var activeIndex = 0;
+    var brhEnabled = true;
+
+    /* BRH on: Overview(gauge)=risk-summary, Ownership, Signals, Match, Additional, Web.
+       BRH off: Overview(facts), Ownership, Match, Additional, Web. */
+    function isBrhOnlyCard(id) {
+      return id === "signals" || id === "risk-summary";
+    }
+
+    function visibleCardOrder() {
+      return CARD_ORDER.filter(function (id) {
+        if (brhEnabled) return id !== "overview";
+        return !isBrhOnlyCard(id);
+      });
+    }
+
+    function visibleExpandOrder() {
+      return brhEnabled
+        ? EXPAND_ORDER.slice()
+        : EXPAND_ORDER.filter(function (id) {
+            return id !== "signals";
+          });
+    }
+
+    function resolveCardId(id) {
+      if (!brhEnabled && isBrhOnlyCard(id)) return "overview";
+      if (brhEnabled && id === "overview") return "risk-summary";
+      return id;
+    }
+
+    function visibleSlotEls() {
+      var order = visibleCardOrder();
+      return order
+        .map(function (id) {
+          for (var i = 0; i < slotEls.length; i++) {
+            if (slotEls[i].getAttribute("data-v2-slot") === id) {
+              return slotEls[i];
+            }
+          }
+          return null;
+        })
+        .filter(Boolean);
+    }
+
+    function visibleCardEls() {
+      var order = visibleCardOrder();
+      return order
+        .map(function (id) {
+          for (var i = 0; i < cardEls.length; i++) {
+            if (cardEls[i].getAttribute("data-v2-card") === id) {
+              return cardEls[i];
+            }
+          }
+          return null;
+        })
+        .filter(Boolean);
+    }
+
+    var activeId = visibleCardOrder()[0] || (cards[0] && cards[0].id) || null;
+    var activeIndex = Math.max(0, visibleCardOrder().indexOf(activeId));
     var expandedId = null;
     var savedScrollTop = 0;
     var savedActiveId = null;
@@ -2670,7 +2828,7 @@
     }
 
     function openExpand(id, opts) {
-      var target = id || activeId;
+      var target = resolveCardId(id || activeId);
       if (!target || !expandRoot || !stackRoot) return;
       if (EXPAND_ORDER.indexOf(target) === -1) return;
       if (!isExpanded()) {
@@ -2720,6 +2878,7 @@
     }
 
     function switchExpand(id) {
+      id = resolveCardId(id);
       if (!isExpanded() || !id || id === expandedId) return;
       if (EXPAND_ORDER.indexOf(id) === -1) return;
       if (!expandBody) return;
@@ -2794,7 +2953,7 @@
     function maxSafeScroll() {
       if (!scroller) return 0;
       var m = slotMetrics();
-      var lastIndex = Math.max(0, slotEls.length - 1);
+      var lastIndex = Math.max(0, visibleSlotEls().length - 1);
       /*
         Park exactly when the last card sticks at --v2-sticky-top.
         Scrolling further into the end spacer releases the sticky stack.
@@ -2808,7 +2967,7 @@
         return;
       }
       activeId = id;
-      activeIndex = Math.max(0, CARD_ORDER.indexOf(id));
+      activeIndex = Math.max(0, visibleCardOrder().indexOf(id));
       cardEls.forEach(function (el) {
         el.setAttribute(
           "data-v2-active",
@@ -2836,10 +2995,11 @@
     }
 
     function scrollToCard(id) {
-      var index = CARD_ORDER.indexOf(id);
+      var order = visibleCardOrder();
+      var index = order.indexOf(id);
       if (!scroller || index < 0) return;
       var m = slotMetrics();
-      var lastIndex = Math.max(0, slotEls.length - 1);
+      var lastIndex = Math.max(0, order.length - 1);
       var top =
         index >= lastIndex ? maxSafeScroll() : Math.max(0, index * m.step);
       scroller.scrollTo({
@@ -2849,14 +3009,16 @@
     }
 
     function updateStackFromScroll() {
-      if (!scroller || !slotEls.length) return;
+      var slots = visibleSlotEls();
+      var visibleCards = visibleCardEls();
+      if (!scroller || !slots.length) return;
       var m = slotMetrics();
       var safeMax = maxSafeScroll();
       if (scroller.scrollTop > safeMax) {
         scroller.scrollTop = safeMax;
       }
       var reduce = preferReducedMotion();
-      var lastIndex = Math.max(0, slotEls.length - 1);
+      var lastIndex = Math.max(0, slots.length - 1);
       /*
         Sticky cards share the same top, so getBoundingClientRect distance always
         favors the first card. Drive the active section from scroll progress.
@@ -2872,8 +3034,8 @@
         bestIndex = lastIndex;
       }
 
-      cardEls.forEach(function (card, index) {
-        var next = cardEls[index + 1];
+      visibleCards.forEach(function (card, index) {
+        var next = visibleCards[index + 1];
         var progress = 0;
         if (!reduce && next) {
           var currentRect = card.getBoundingClientRect();
@@ -2886,8 +3048,8 @@
         card.style.setProperty("--v2-stack-p", String(progress));
       });
 
-      var bestId = slotEls[bestIndex]
-        ? slotEls[bestIndex].getAttribute("data-v2-slot")
+      var bestId = slots[bestIndex]
+        ? slots[bestIndex].getAttribute("data-v2-slot")
         : activeId;
       if (bestId && bestId !== activeId) setActive(bestId);
     }
@@ -2902,11 +3064,12 @@
     }
 
     function onResize() {
-      var index = Math.max(0, CARD_ORDER.indexOf(activeId));
+      var order = visibleCardOrder();
+      var index = Math.max(0, order.indexOf(activeId));
       syncViewHeight();
       if (scroller) {
         var m = slotMetrics();
-        var lastIndex = Math.max(0, slotEls.length - 1);
+        var lastIndex = Math.max(0, order.length - 1);
         scroller.scrollTop =
           index >= lastIndex ? maxSafeScroll() : index * m.step;
       }
@@ -3224,27 +3387,29 @@
         return;
       }
       if (isExpanded()) {
-        var idxExpand = EXPAND_ORDER.indexOf(expandedId || activeId);
+        var expandOrder = visibleExpandOrder();
+        var idxExpand = expandOrder.indexOf(expandedId || activeId);
         if (event.key === "ArrowRight" || event.key === "ArrowDown") {
           event.preventDefault();
-          if (idxExpand >= 0 && idxExpand < EXPAND_ORDER.length - 1) {
-            switchExpand(EXPAND_ORDER[idxExpand + 1]);
+          if (idxExpand >= 0 && idxExpand < expandOrder.length - 1) {
+            switchExpand(expandOrder[idxExpand + 1]);
           }
         } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
           event.preventDefault();
-          if (idxExpand > 0) switchExpand(EXPAND_ORDER[idxExpand - 1]);
+          if (idxExpand > 0) switchExpand(expandOrder[idxExpand - 1]);
         }
         return;
       }
+      var cardOrder = visibleCardOrder();
       var progressDot = event.target.closest && event.target.closest(".v2-stack__dot");
       if (progressDot && host.contains(progressDot)) {
-        var idxDot = CARD_ORDER.indexOf(progressDot.getAttribute("data-v2-goto"));
+        var idxDot = cardOrder.indexOf(progressDot.getAttribute("data-v2-goto"));
         if (event.key === "ArrowDown" || event.key === "ArrowRight") {
           event.preventDefault();
-          if (idxDot < CARD_ORDER.length - 1) {
-            setActive(CARD_ORDER[idxDot + 1], { scroll: true, force: true });
+          if (idxDot < cardOrder.length - 1) {
+            setActive(cardOrder[idxDot + 1], { scroll: true, force: true });
             var nextDot = host.querySelector(
-              '.v2-stack__progress [data-v2-goto="' + CARD_ORDER[idxDot + 1] + '"]'
+              '.v2-stack__progress [data-v2-goto="' + cardOrder[idxDot + 1] + '"]'
             );
             if (nextDot) nextDot.focus();
           }
@@ -3253,9 +3418,9 @@
         if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
           event.preventDefault();
           if (idxDot > 0) {
-            setActive(CARD_ORDER[idxDot - 1], { scroll: true, force: true });
+            setActive(cardOrder[idxDot - 1], { scroll: true, force: true });
             var prevDot = host.querySelector(
-              '.v2-stack__progress [data-v2-goto="' + CARD_ORDER[idxDot - 1] + '"]'
+              '.v2-stack__progress [data-v2-goto="' + cardOrder[idxDot - 1] + '"]'
             );
             if (prevDot) prevDot.focus();
           }
@@ -3263,19 +3428,19 @@
         }
         if (event.key === "Home") {
           event.preventDefault();
-          setActive(CARD_ORDER[0], { scroll: true, force: true });
+          setActive(cardOrder[0], { scroll: true, force: true });
           var firstDot = host.querySelector(
-            '.v2-stack__progress [data-v2-goto="' + CARD_ORDER[0] + '"]'
+            '.v2-stack__progress [data-v2-goto="' + cardOrder[0] + '"]'
           );
           if (firstDot) firstDot.focus();
           return;
         }
         if (event.key === "End") {
           event.preventDefault();
-          setActive(CARD_ORDER[CARD_ORDER.length - 1], { scroll: true, force: true });
+          setActive(cardOrder[cardOrder.length - 1], { scroll: true, force: true });
           var lastDot = host.querySelector(
             '.v2-stack__progress [data-v2-goto="' +
-              CARD_ORDER[CARD_ORDER.length - 1] +
+              cardOrder[cardOrder.length - 1] +
               '"]'
           );
           if (lastDot) lastDot.focus();
@@ -3283,23 +3448,23 @@
         }
       }
       if (!scroller || document.activeElement !== scroller) return;
-      var idx = CARD_ORDER.indexOf(activeId);
+      var idx = cardOrder.indexOf(activeId);
       if (event.key === "ArrowDown" || event.key === "PageDown") {
         event.preventDefault();
-        if (idx < CARD_ORDER.length - 1) {
-          setActive(CARD_ORDER[idx + 1], { scroll: true, force: true });
+        if (idx < cardOrder.length - 1) {
+          setActive(cardOrder[idx + 1], { scroll: true, force: true });
         }
       } else if (event.key === "ArrowUp" || event.key === "PageUp") {
         event.preventDefault();
         if (idx > 0) {
-          setActive(CARD_ORDER[idx - 1], { scroll: true, force: true });
+          setActive(cardOrder[idx - 1], { scroll: true, force: true });
         }
       } else if (event.key === "Home") {
         event.preventDefault();
-        setActive(CARD_ORDER[0], { scroll: true, force: true });
+        setActive(cardOrder[0], { scroll: true, force: true });
       } else if (event.key === "End") {
         event.preventDefault();
-        setActive(CARD_ORDER[CARD_ORDER.length - 1], { scroll: true, force: true });
+        setActive(cardOrder[cardOrder.length - 1], { scroll: true, force: true });
       } else if (event.key === "Enter") {
         event.preventDefault();
         openExpand(activeId);
@@ -3307,6 +3472,19 @@
     });
 
     setActive(activeId, { force: true });
+    if (stackRoot) {
+      stackRoot.style.setProperty(
+        "--v2-card-count",
+        String(visibleCardOrder().length)
+      );
+    }
+    var initTrack = host.querySelector(".v2-stack__track");
+    if (initTrack) {
+      initTrack.style.setProperty(
+        "--v2-card-count",
+        String(visibleCardOrder().length)
+      );
+    }
     updateStackFromScroll();
     mountOwnershipPreview();
 
@@ -3318,7 +3496,10 @@
         onExport: downloadReport,
         onNewVerification: function () {
           if (isExpanded()) closeExpand();
-          setActive(CARD_ORDER[0], { scroll: true, force: true });
+          setActive(visibleCardOrder()[0] || CARD_ORDER[0], {
+            scroll: true,
+            force: true
+          });
           if (options && typeof options.onNewVerification === "function") {
             options.onNewVerification();
           }
@@ -3326,11 +3507,48 @@
       });
     }
 
+    function setBrh(enabled) {
+      brhEnabled = enabled !== false;
+      var visible = visibleCardOrder();
+      if (stackRoot) {
+        stackRoot.setAttribute("data-v2-brh", brhEnabled ? "on" : "off");
+        stackRoot.style.setProperty("--v2-card-count", String(visible.length));
+      }
+      var track = host.querySelector(".v2-stack__track");
+      if (track) {
+        track.style.setProperty("--v2-card-count", String(visible.length));
+      }
+      syncViewHeight();
+      if (!brhEnabled) {
+        if (isExpanded() && expandedId === "signals") {
+          switchExpand("overview");
+        } else if (!isExpanded()) {
+          setActive("overview", { scroll: true, force: true });
+        }
+      } else {
+        if (!isExpanded()) {
+          setActive("risk-summary", { scroll: true, force: true });
+        }
+        if (
+          global.ScoreGauge &&
+          typeof global.ScoreGauge.renderAll === "function"
+        ) {
+          global.ScoreGauge.renderAll(host);
+        }
+      }
+      if (typeof options.onBrhChange === "function") {
+        options.onBrhChange(brhEnabled);
+      }
+    }
+
     return {
       goToCard: function (id) {
-        if (EXPAND_ORDER.indexOf(id) === -1) return;
+        id = resolveCardId(id);
+        if (EXPAND_ORDER.indexOf(id) === -1 && CARD_ORDER.indexOf(id) === -1) {
+          return;
+        }
         if (isExpanded()) {
-          switchExpand(id);
+          if (EXPAND_ORDER.indexOf(id) !== -1) switchExpand(id);
           return;
         }
         if (CARD_ORDER.indexOf(id) !== -1) {
@@ -3341,6 +3559,10 @@
       },
       expandCard: openExpand,
       collapseExpand: closeExpand,
+      setBrh: setBrh,
+      getBrh: function () {
+        return brhEnabled;
+      },
       getActiveCard: function () {
         return isExpanded() ? expandedId : activeId;
       },
@@ -3348,10 +3570,10 @@
         return mode;
       },
       getCardIds: function () {
-        return CARD_ORDER.slice();
+        return visibleCardOrder();
       },
       getExpandIds: function () {
-        return EXPAND_ORDER.slice();
+        return visibleExpandOrder();
       },
       destroy: function () {
         clearOwnershipGraph();
@@ -3374,7 +3596,7 @@
     cardIds: CARD_ORDER.slice(),
     expandIds: EXPAND_ORDER.slice(),
     cardLabels: Object.assign({}, CARD_LABELS),
-    /* Shared expand sections so V3/V4 can reuse the same tabs/content. */
+    /* Shared expand sections so V3 (and others) can reuse the same tabs/content. */
     buildSections: function (data) {
       return buildCards(data || getSample() || {});
     }
