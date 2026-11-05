@@ -254,6 +254,12 @@
     }, 280);
   }
 
+  function syncBrhToggle(enabled) {
+    document.querySelectorAll("[data-v4-brh-toggle]").forEach(function (btn) {
+      btn.setAttribute("aria-checked", enabled ? "true" : "false");
+    });
+  }
+
   function bindShellChat() {
     if (form) {
       form.addEventListener("submit", function (event) {
@@ -269,6 +275,17 @@
     });
 
     document.addEventListener("click", function (event) {
+      var brhToggle = event.target.closest("[data-v4-brh-toggle]");
+      if (brhToggle) {
+        var next =
+          brhToggle.getAttribute("aria-checked") !== "true";
+        syncBrhToggle(next);
+        if (reportApi && typeof reportApi.setBrh === "function") {
+          reportApi.setBrh(next);
+        }
+        return;
+      }
+
       var ref = event.target.closest("[data-v4-ref]");
       if (!ref) return;
       var id = ref.getAttribute("data-v4-ref");
@@ -288,6 +305,7 @@
       onCardChange: function (id) {
         highlightRefs(id);
       },
+      onBrhChange: syncBrhToggle,
       onAsk: function (prompt) {
         if (shell) shell.setAttribute("data-d3-chat", "open");
         submitPrompt(prompt);
@@ -296,6 +314,7 @@
     });
 
     global.VerificationReportV4Api = reportApi;
+    syncBrhToggle(reportApi.getBrh ? reportApi.getBrh() : true);
   }
 
   bindShellChat();

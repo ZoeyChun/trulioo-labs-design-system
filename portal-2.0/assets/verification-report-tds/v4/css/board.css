@@ -565,7 +565,7 @@
 .v4-hero__copy {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: var(--spacing-16, 16px);
   min-width: 0;
   min-height: 100%;
 }
@@ -647,6 +647,37 @@
   padding: 0;
   background: transparent;
   box-shadow: none;
+}
+
+/* Business Risk Horizon off: V3 status icon instead of gauge; hide Risk Signals. */
+.v4-board:not([data-v4-brh="off"]) .v4-hero__icon {
+  display: none;
+}
+
+.v4-board[data-v4-brh="off"] .v4-hero__gauge {
+  display: none;
+}
+
+.v4-board[data-v4-brh="off"] .v4-card--signals,
+.v4-board[data-v4-brh="off"] [data-v4-detail-goto="signals"] {
+  display: none;
+}
+
+.v4-board[data-v4-brh="off"] .v4-card--match {
+  grid-column: 1 / -1;
+}
+
+.v4-board[data-v4-brh="off"] .v4-hero__bullet[data-v4-brh-only="on"],
+.v4-board:not([data-v4-brh="off"]) .v4-hero__bullet[data-v4-brh-only="off"] {
+  display: none;
+}
+
+/*
+ * Keep the hero row as tall as the BRH-on layout so the entity card
+ * (equal-flex fact rows) does not compress when the gauge is hidden.
+ */
+.v4-board[data-v4-brh="off"] .v4-hero__copy {
+  min-height: calc(180px * 0.75 + 12rem);
 }
 
 .v4-risk-gauge {
@@ -837,19 +868,20 @@
   background: var(--surface-neutral-01);
 }
 
-.v4-entity__fact {
+.v4-entity__facts > .v4-entity__fact {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--gap-md);
   flex: 1 1 0;
-  min-height: 0;
-  padding: var(--spacing-12);
+  box-sizing: border-box;
+  padding: 16px 12px;
   border-bottom: 1px solid var(--border-subtle);
   min-width: 0;
+  min-height: calc(16px + 16px + 2.5em);
 }
 
-.v4-entity__fact:last-child {
+.v4-entity__facts > .v4-entity__fact:last-child {
   border-bottom: none;
 }
 
@@ -1266,7 +1298,12 @@
 }
 
 .v4-owner-card__body {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 0 0.35em;
   min-width: 0;
+  overflow: hidden;
 }
 
 .v4-owner-card > .tds-tag {
@@ -1284,23 +1321,30 @@
 
 .v4-owner-card__name {
   margin: 0;
+  flex: 0 0 auto;
   font-size: var(--v4-type-body);
   font-weight: var(--font-weight-semibold, 600);
   color: var(--text-default, #172d2d);
   line-height: var(--v4-leading-body);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .v4-owner-card__meta {
-  margin: 2px 0 0;
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: var(--v4-type-meta);
   color: var(--text-caption, #617269);
   line-height: var(--v4-leading-meta);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.v4-owner-card__meta::before {
+  content: "·";
+  margin-right: 0.35em;
+  color: var(--text-caption, #617269);
 }
 
 /* —— Risk —— */

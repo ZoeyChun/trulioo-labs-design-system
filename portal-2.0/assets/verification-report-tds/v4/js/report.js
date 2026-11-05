@@ -496,9 +496,16 @@
     if (!Graph || typeof Graph.mount !== "function") return false;
     var biz = toBiz(data);
     var graph =
-      Ubo && typeof Ubo.graphFromBiz === "function"
+      (data && data.ownershipGraph && data.ownershipGraph.tree
+        ? data.ownershipGraph
+        : null) ||
+      (Ubo && typeof Ubo.graphFromBiz === "function"
         ? Ubo.graphFromBiz(biz)
-        : data.ownershipGraph || null;
+        : null);
+    /* Never leave Graph empty — fall back to the Meridian demo tree. */
+    if ((!graph || !graph.tree) && Ubo && typeof Ubo.graphFromBiz === "function") {
+      graph = Ubo.graphFromBiz({ name: "Meridian Apex Consulting Ltd." });
+    }
     if (!graph || !graph.tree) return false;
     if (typeof Graph.unmount === "function") {
       try {
@@ -686,15 +693,40 @@
         })
         .join("");
     }
-    var heroBulletLines =
+    var heroBulletSource =
       data.heroLede && data.heroLede.length
-        ? data.heroLede.map(formatHeroLine)
+        ? data.heroLede.slice()
         : heroParts.slice(0, 4);
+    /* When BRH is off, swap the signals-count bullet for ownership/records copy. */
+    var heroBulletNoBrh =
+      (data.heroLedeNoBrh && data.heroLedeNoBrh.length
+        ? data.heroLedeNoBrh
+        : null) ||
+      heroBulletSource.map(function (line) {
+        if (/signals flagged/i.test(String(line))) {
+          return "**Ownership incomplete** — beneficial owners and financial filings need review.";
+        }
+        return line;
+      });
     var heroBulletsHtml =
       '<ul class="v4-hero__bullets">' +
-      heroBulletLines
-        .map(function (line) {
-          return '<li class="v4-hero__bullet">' + line + "</li>";
+      heroBulletSource
+        .map(function (line, index) {
+          var offLine =
+            heroBulletNoBrh[index] != null ? heroBulletNoBrh[index] : line;
+          if (String(offLine) === String(line)) {
+            return (
+              '<li class="v4-hero__bullet">' + formatHeroLine(line) + "</li>"
+            );
+          }
+          return (
+            '<li class="v4-hero__bullet" data-v4-brh-only="on">' +
+            formatHeroLine(line) +
+            "</li>" +
+            '<li class="v4-hero__bullet" data-v4-brh-only="off">' +
+            formatHeroLine(offLine) +
+            "</li>"
+          );
         })
         .join("") +
       "</ul>";
@@ -718,6 +750,33 @@
         ' data-show-percent="false" data-max="100" aria-label="' +
         esc(gaugeLabel + " score " + riskScore) +
         '"></div></div>'
+      );
+    }
+
+    /* V3-style status icon used when Business Risk Horizon is off. */
+    function riskIconHtml() {
+      var tone =
+        riskBand === "high"
+          ? "negative"
+          : riskBand === "medium"
+            ? "intermediate"
+            : "positive";
+      var svg =
+        riskBand === "low"
+          ? '<svg width="32" height="32" viewBox="0 0 32 32" fill="none">' +
+            '<circle cx="16" cy="16" r="12.5" stroke="currentColor" stroke-width="2"/>' +
+            '<path d="M11 16.25 14.1 19.4 21 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+            "</svg>"
+          : '<svg width="32" height="32" viewBox="0 0 32 32" fill="none">' +
+            '<circle cx="16" cy="16" r="12.5" stroke="currentColor" stroke-width="2"/>' +
+            '<path d="M16 10v8M16 22h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' +
+            "</svg>";
+      return (
+        '<span class="v4-hero__icon v4-hero__icon--' +
+        esc(tone) +
+        '" data-v4-brh-icon aria-hidden="true">' +
+        svg +
+        "</span>"
       );
     }
     var mapSrc = data.mapSrc || "../../verification-report/assets/kyb/map.png";
@@ -755,9 +814,10 @@
             esc(mapSrc) +
             '" alt="" width="769" height="182" aria-hidden="true">' +
             '<div class="v4-hero__copy">' +
-            '<div class="v4-hero__gauge" aria-label="Risk score">' +
+            '<div class="v4-hero__gauge" data-v4-brh-gauge aria-label="Risk score">' +
             riskGaugeHtml({ showLabel: false }) +
             "</div>" +
+            riskIconHtml() +
             '<div class="v4-hero__headline">' +
             '<h2 class="v4-card__title v4-card__title--hero" id="v4-title-overview">' +
             esc(outcome) +
@@ -1252,7 +1312,7 @@
       .join("");
 
     host.innerHTML =
-      '<div class="v4-board" data-v4-board data-v4-mode="board" data-v4-layout="overlay">' +
+      '<div class="v4-board" data-v4-board data-v4-mode="board" data-v4-layout="overlay" data-v4-brh="on">' +
       '<div class="v4-board__chrome">' +
       '<p class="v4-board__eyebrow">' +
       '<span class="v4-board__eyebrow-text">' +
@@ -1341,6 +1401,7 @@
     var flipTimer = null;
     var FLIP_MS = 480;
     var onCardChange = options && options.onCardChange;
+    var brhEnabled = true;
 
     function cardById(id) {
       for (var i = 0; i < cards.length; i++) {
@@ -1542,6 +1603,10 @@
       if (next === "graph") {
         global.requestAnimationFrame(function () {
           mountUboGraph(ownershipGraphHost(), data);
+          /* Second pass after the panel is laid out — React graph needs size. */
+          global.setTimeout(function () {
+            mountUboGraph(ownershipGraphHost(), data);
+          }, 60);
         });
       } else {
         clearOwnershipGraph();
@@ -1666,6 +1731,7 @@
     }
 
     function openDetail(id, opts) {
+      if (!brhEnabled && id === "signals") id = "overview";
       if (DETAIL_ORDER.indexOf(id) === -1) return;
       var section = expandById(id);
       if (!section || typeof section.detail !== "function" || !detailRoot || !board) {
@@ -1743,6 +1809,7 @@
     }
 
     function switchDetail(id) {
+      if (!brhEnabled && id === "signals") id = "overview";
       if (DETAIL_ORDER.indexOf(id) === -1) return;
       if (!isExpanded()) {
         openDetail(id);
@@ -1840,7 +1907,8 @@
       var ownershipView =
         event.target.closest("[data-v2-ownership-view]") ||
         event.target.closest("[data-v4-ownership-view]");
-      if (ownershipView && detailBody && detailBody.contains(ownershipView)) {
+      /* Toggle is parked in the detail intro tools (outside detailBody). */
+      if (ownershipView) {
         applyOwnershipView(
           ownershipView.getAttribute("data-v2-ownership-view") ||
             ownershipView.getAttribute("data-v4-ownership-view")
@@ -1947,8 +2015,30 @@
       });
     }
 
+    function setBrh(enabled) {
+      brhEnabled = enabled !== false;
+      if (board) board.setAttribute("data-v4-brh", brhEnabled ? "on" : "off");
+      if (!brhEnabled) {
+        if (isExpanded() && expandedId === "signals") {
+          switchDetail("overview");
+        } else if (!isExpanded() && activeId === "signals") {
+          setActive("overview", { scroll: true });
+        }
+      } else if (
+        brhEnabled &&
+        global.ScoreGauge &&
+        typeof global.ScoreGauge.renderAll === "function"
+      ) {
+        global.ScoreGauge.renderAll(host);
+      }
+      if (typeof options.onBrhChange === "function") {
+        options.onBrhChange(brhEnabled);
+      }
+    }
+
     return {
       goToCard: function (id) {
+        if (!brhEnabled && id === "signals") id = "overview";
         if (DETAIL_ORDER.indexOf(id) !== -1 && expandById(id)) {
           if (isExpanded()) switchDetail(id);
           else openDetail(id);
@@ -1961,6 +2051,10 @@
       openDetail: openDetail,
       closeDetail: closeDetail,
       setLayout: setLayout,
+      setBrh: setBrh,
+      getBrh: function () {
+        return brhEnabled;
+      },
       getActiveCard: function () {
         return isExpanded() ? expandedId : activeId;
       },
@@ -1971,10 +2065,18 @@
         return currentLayout();
       },
       getCardIds: function () {
-        return CARD_ORDER.slice();
+        return brhEnabled
+          ? CARD_ORDER.slice()
+          : CARD_ORDER.filter(function (id) {
+              return id !== "signals";
+            });
       },
       getExpandIds: function () {
-        return DETAIL_ORDER.slice();
+        return brhEnabled
+          ? DETAIL_ORDER.slice()
+          : DETAIL_ORDER.filter(function (id) {
+              return id !== "signals";
+            });
       },
       destroy: function () {
         if (flipTimer) {
