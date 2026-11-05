@@ -77,6 +77,7 @@
   --text-inverse: var(--color-white);               /* #ffffff */
   --text-disabled: var(--color-neutral-50);         /* #8a9a90 */
   --text-link: var(--color-teal-70);                /* #006b5c */
+  --text-ai: var(--color-violet-80);                /* #592d80 */
   --text-negative: var(--color-red-text);           /* #ba151d */
   --text-intermediate: var(--color-amber-text);     /* #775516 */
   --text-positive: var(--color-green-text);         /* #166534 */

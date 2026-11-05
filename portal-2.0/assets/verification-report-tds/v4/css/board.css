@@ -5,8 +5,9 @@
   --v4-gap: var(--spacing-8);
   --v4-pad-x: var(--padding-lg);
   --v4-shadow: var(--shadow-button-elevated);
-  --v4-surface: var(--surface-neutral-01);
-  --v4-canvas: var(--surface-neutral-02);
+  --v4-surface: var(--surface-neutral-01, #fff);
+  /* Fallbacks keep the canvas visible if a token in the wash is missing. */
+  --v4-canvas: var(--surface-neutral-02, #f4f6f4);
   /* Type ladder (top → bottom scan): status → entity → section → body → meta */
   --v4-type-hero: var(--font-size-2xl);
   --v4-type-entity: var(--font-size-lg);
@@ -29,8 +30,16 @@
   line-height: var(--v4-leading-body);
   color: var(--text-default);
   background:
-    radial-gradient(1000px 480px at 8% -8%, color-mix(in srgb, var(--interactive-default) 7%, transparent), transparent 58%),
-    radial-gradient(800px 420px at 92% 0%, color-mix(in srgb, var(--text-ai) 6%, transparent), transparent 52%),
+    radial-gradient(
+      1000px 480px at 8% -8%,
+      color-mix(in srgb, var(--interactive-default, #004c45) 7%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      800px 420px at 92% 0%,
+      color-mix(in srgb, var(--text-ai, var(--ai-accent, #592d80)) 6%, transparent),
+      transparent 52%
+    ),
     var(--v4-canvas);
   border-radius: var(--radius-xl);
   overflow: hidden;
