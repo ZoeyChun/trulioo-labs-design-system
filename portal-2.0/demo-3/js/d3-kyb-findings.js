@@ -881,14 +881,39 @@
 
   /* The cards under the hero are "Highlights": no section question, and the risk tag
      stays only on the Signals card. */
-  function tidyHighlights(panel) {
+  /* One card per report tab (after Overview), in tab order, named like the tab. A card
+     whose tab the package leaves out is dropped. */
+  var HIGHLIGHT_CARDS = [
+    { jump: "signals", name: "Risk Analysis" },
+    { jump: "match-signals", name: "Match Signals" },
+    { jump: "ownership", name: "Owners & UBOs" },
+    { jump: "presence", name: "Web Insights" },
+    { jump: "financial", name: "Additional Data", detail: "Virtual office address" }
+  ];
+
+  function tidyHighlights(panel, card) {
     var h = panel.querySelector(".dv-summary-evidence__title");
     if (h) h.textContent = "Highlights";
-    panel.querySelectorAll(".dv-summary-evidence .dv-summary-card").forEach(function (cardEl) {
-      if (cardEl.getAttribute("data-kyb-jump-tab") === "signals") return;
-      cardEl.querySelectorAll(".dv-summary-card__top .tds-tag").forEach(function (n) {
-        n.remove();
-      });
+    var grid = panel.querySelector(".dv-summary-evidence__grid");
+    if (!grid) return;
+    var cards = [].slice.call(grid.querySelectorAll(".dv-summary-card"));
+    var byJump = {};
+    cards.forEach(function (c) { byJump[c.getAttribute("data-kyb-jump-tab")] = c; });
+    cards.forEach(function (c) { c.remove(); });
+    HIGHLIGHT_CARDS.forEach(function (def) {
+      var c = byJump[def.jump];
+      if (!c) return;
+      var tabEl = card && card.querySelector('[data-d3-kyb-tab="' + HERO_JUMP_TAB[def.jump] + '"]');
+      if (card && (!tabEl || tabEl.hidden)) return;
+      var cap = c.querySelector(".dv-summary-card__caption");
+      if (cap) cap.textContent = def.name;
+      var det = c.querySelector(".dv-summary-card__detail");
+      if (det && def.detail) det.textContent = def.detail;
+      /* The risk tag stays only on the Risk Analysis card. */
+      if (def.jump !== "signals") {
+        c.querySelectorAll(".dv-summary-card__top .tds-tag").forEach(function (n) { n.remove(); });
+      }
+      grid.appendChild(c);
     });
   }
 
@@ -903,7 +928,7 @@
           g.removeAttribute("data-label");
         });
         if (window.ScoreGauge) window.ScoreGauge.renderAll(panel);
-        tidyHighlights(panel);
+        tidyHighlights(panel, card);
       }
       else panel.innerHTML = overviewHtml(biz, card);
       if (animate) {
