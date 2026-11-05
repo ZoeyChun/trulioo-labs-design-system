@@ -1169,30 +1169,48 @@
   }
 
   function expandSectionsFor(data) {
-    var V2 = global.VerificationReportV2;
-    var labels =
-      V2 && V2.cardLabels ? Object.assign({}, EXPAND_LABELS, V2.cardLabels) : EXPAND_LABELS;
-    var order =
-      V2 && V2.expandIds && V2.expandIds.length ? V2.expandIds.slice() : EXPAND_ORDER.slice();
+    var labels = EXPAND_LABELS;
+    var order = EXPAND_ORDER.slice();
     var byId = {};
+    var fromLocal = {};
+
+    /* Prefer V4 board card details so full view matches the local design/data. */
+    buildCards(data).forEach(function (card) {
+      if (card && card.id && typeof card.detail === "function") {
+        byId[card.id] = card;
+        fromLocal[card.id] = true;
+      }
+    });
+
+    /* Fill gaps V4 cards don't own yet (Overview, Additional Data) from V2. */
+    var V2 = global.VerificationReportV2;
     if (V2 && typeof V2.buildSections === "function") {
       V2.buildSections(data).forEach(function (section) {
-        if (section && section.id) byId[section.id] = section;
-      });
-    } else {
-      buildCards(data).forEach(function (card) {
-        if (card && card.id && typeof card.detail === "function") byId[card.id] = card;
+        if (
+          section &&
+          section.id &&
+          typeof section.detail === "function" &&
+          !byId[section.id]
+        ) {
+          byId[section.id] = section;
+        }
       });
     }
+
     return order
       .map(function (id) {
         var section = byId[id];
         if (!section || typeof section.detail !== "function") return null;
+        var label = labels[id] || section.kicker || id;
+        /* V4 cards keep the insight in `summary`; V2 expand sections keep it in `title`. */
+        var insight = fromLocal[id]
+          ? section.summary || ""
+          : section.title || section.summary || "";
         return {
           id: id,
-          label: labels[id] || section.summary || section.kicker || id,
-          title: section.title || "",
-          summary: section.summary || labels[id] || id,
+          label: label,
+          title: insight,
+          summary: label,
           ask: section.ask || "",
           detail: section.detail
         };
