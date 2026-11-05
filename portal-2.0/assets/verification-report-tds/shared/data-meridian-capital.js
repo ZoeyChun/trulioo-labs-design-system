@@ -297,7 +297,7 @@
     websiteStatus: "Active — live site responding",
     domainRegistrar: "GoDaddy.com, LLC",
     domainRegistered: "1 Feb 2019",
-    domainExpires: "1 Feb 2027"
+    domainExpires: "1 Feb 2029"
   };
 
   var DE_SEARCH =
@@ -341,10 +341,10 @@
     riskCategories: riskCategories,
     /* Demo 3 Overview verdict. ** ** marks the phrases the board highlights. */
     heroLede: [
-      NAME + " **required manual review.**",
-      "**9 of 16 verification signals flagged**, including unverified beneficial ownership and incomplete financial records.",
-      "**Business legitimacy score 18/100** with $0 reported revenue, 0 employees, and no verifiable operating history.",
-      "**Both officers lack national ID verification**, and web presence shows medium risk indicators across social and domain signals."
+      "**Manual review required** for " + NAME + ".",
+      "**9 of 16 signals flagged** — ownership and financials incomplete.",
+      "**Legitimacy score 18/100** — $0 revenue, 0 employees.",
+      "**No national ID** for officers · medium-risk web presence."
     ],
     suggestedActions: [
       { label: "View Beneficial Owner", target: "ownership" },
