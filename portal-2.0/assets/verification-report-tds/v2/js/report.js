@@ -3,8 +3,8 @@
   "use strict";
 
   /* Stack cards = high-level summaries. Expand tabs = detailed sections. */
-  /* BRH on:  Overview(gauge), Ownership, Signals, Match, Additional, Web
-     BRH off: Overview(facts), Ownership, Match, Additional, Web
+  /* BRH on:  Overview(gauge), Ownership, Signals, Match, Web
+     BRH off: Overview(facts), Ownership, Match, Web
      (overview ↔ risk-summary swap; signals only when BRH on). */
   var CARD_ORDER = [
     "risk-summary",
@@ -12,7 +12,6 @@
     "ownership",
     "signals",
     "match",
-    "additional",
     "web"
   ];
 
@@ -2053,40 +2052,8 @@
             medium: "intermediate",
             low: "positive"
           };
-          var highlights = [
-            { label: "Elevated default risk.", tone: "negative" },
-            { label: "No physical presence.", tone: "negative" },
-            { label: "Shell-company ownership patterns.", tone: "negative" },
-            { label: "Incomplete registry filings.", tone: "positive" },
-            { label: "Address shared with unrelated entities.", tone: "negative" },
-            { label: "No bankruptcy filings.", tone: "positive" },
-            { label: "No adverse media matches.", tone: "positive" }
-          ];
           return (
             '<div class="v2-match-preview">' +
-            '<div class="v2-match-preview__gauge-card">' +
-            '<div class="score-gauge-host" data-score="' +
-            esc(String(riskScore)) +
-            '" data-risk="' +
-            esc(riskBand) +
-            '" data-label="' +
-            esc(riskLabel) +
-            '" data-show-percent="false" data-max="100" aria-label="' +
-            esc(riskLabel + " score " + riskScore) +
-            '"></div>' +
-            '<div class="v2-match-preview__highlights">' +
-            '<p class="v2-match-preview__label">Highlights</p>' +
-            '<ul class="v2-ov__highlights">' +
-            highlights
-              .map(function (item) {
-                return (
-                  '<li class="v2-ov__highlight">' +
-                  tdsTag(item.label, item.tone) +
-                  "</li>"
-                );
-              })
-              .join("") +
-            "</ul></div></div>" +
             '<div class="v2-match-preview__indicators">' +
             '<p class="v2-match-preview__label">Risk indicators</p>' +
             '<ul class="v2-match-preview__list">' +
