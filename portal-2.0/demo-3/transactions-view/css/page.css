@@ -579,3 +579,75 @@
 .th-tx .ut-tx-quick__clear[hidden] {
   display: none;
 }
+
+/* ------------------------------------------------------------------
+   Same look as the KYB page: display title, soft cards, hairline rows.
+   ------------------------------------------------------------------ */
+.th-tx__title {
+  margin: 0 0 28px;
+  font-family: var(--font-family-display, "Tobias", Georgia, serif);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 40px;
+  letter-spacing: 0;
+}
+
+.th-tx .ut-tx-stats {
+  border-radius: 16px;
+}
+
+.th-tx .ut-tx-stat {
+  border-left: 0;
+}
+
+.th-tx .ut-tx-table-card {
+  border-radius: 16px;
+}
+
+.th-tx .ut-tx-table thead th {
+  background-color: var(--surface-neutral-01, #fff);
+}
+
+.th-tx .ut-tx-table thead th,
+.th-tx .ut-tx-table tbody td {
+  border-left: 0;
+  border-right: 0;
+}
+
+/* The sticky name column keeps its place without a vertical rule. */
+.th-tx .ut-tx-table thead th.ut-tx-th-name,
+.th-tx .ut-tx-table tbody td.ut-tx-td-name {
+  box-shadow: none;
+}
+.th-tx .ut-tx-table thead th.ut-tx-th-name {
+  background-color: var(--surface-neutral-01, #fff);
+}
+
+/* A short hairline between the KPIs: inset top and bottom, not full height. */
+.th-tx .ut-tx-stat {
+  position: relative;
+}
+.th-tx .ut-tx-stat + .ut-tx-stat::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 22%;
+  bottom: 22%;
+  width: 1px;
+  background: var(--border-subtle, #dde2de);
+}
+@media (max-width: 900px) {
+  .th-tx .ut-tx-stat + .ut-tx-stat::before { display: none; }
+}
+
+/* The table fills the card: when the card is wider than the columns (chat minimized) the rules
+   run edge to edge instead of stopping short of the right side. */
+.th-tx .ut-tx-table {
+  width: 100%;
+  max-width: none;
+  min-width: 1314px;
+}
+
+/* No fade once the last column is in view. */
+.th-tx .ut-tx-table-scroll::after { transition: opacity 160ms ease; }
+.th-tx .ut-tx-table-scroll.is-at-end::after { opacity: 0; }
