@@ -126,3 +126,21 @@
   width: 12px;
   height: 12px;
 }
+
+/* Menu icons (account + settings flyouts) match the side nav: 16px glyphs with a hairline stroke
+   (the rail draws 24-unit icons at 16px, so strokes land near 1px), kept centered in the old 24px slot. */
+.d1-menu-item .d3-fa-line,
+.d1-menu-item .fa-regular {
+  width: 16px;
+  height: 16px;
+  margin: 0 4px;
+  font-size: 16px;
+  flex: none;
+}
+.d1-menu-item .d3-fa-line [stroke-width] {
+  stroke-width: 1px;
+}
+.d1-menu-item .fa-regular {
+  line-height: 16px;
+  text-align: center;
+}
