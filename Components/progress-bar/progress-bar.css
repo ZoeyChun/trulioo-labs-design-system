@@ -1,0 +1,96 @@
+/* ============================================================
+   ProgressBar
+   Figma: ProgressBar (6825:63083)
+   Status:    active (default) | success | error
+   Size:      sm (4px, default) | lg (8px)
+   Alignment: default (label above) | inline (label beside)
+   ============================================================ */
+
+.tds-progress-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  font-family: var(--font-family);
+  width: 100%;
+}
+
+/* --- Label row --- */
+
+.tds-progress-bar__label-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-sm);
+}
+
+.tds-progress-bar__label {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.tds-progress-bar__percentage {
+  flex-shrink: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+/* --- Track --- */
+
+.tds-progress-bar__track {
+  position: relative;
+  width: 100%;
+  background: var(--border-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.tds-progress-bar__track--sm {
+  height: 4px;
+}
+
+.tds-progress-bar__track--lg {
+  height: 8px;
+}
+
+/* --- Fill --- */
+
+.tds-progress-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--interactive-default);
+  transition: width 0.3s ease;
+}
+
+/* --- Status variants --- */
+
+.tds-progress-bar--success .tds-progress-bar__fill {
+  background: var(--border-positive);
+}
+
+.tds-progress-bar--error .tds-progress-bar__fill {
+  background: var(--border-negative);
+}
+
+/* --- Helper text --- */
+
+.tds-progress-bar__helper {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-caption);
+}
+
+/* --- Inline alignment --- */
+
+.tds-progress-bar--inline {
+  flex-direction: row;
+  align-items: center;
+}
+
+.tds-progress-bar--inline .tds-progress-bar__track {
+  flex: 1;
+  min-width: 0;
+}
