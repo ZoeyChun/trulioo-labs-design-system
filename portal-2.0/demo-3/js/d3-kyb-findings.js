@@ -16,6 +16,7 @@
   "use strict";
 
   var statusOverride = null;
+  var lastVerdict = null; /* the verdict the Overview computed last: label + tone */
 
   var CHECK_TONE = { pass: "positive", review: "intermediate", fail: "negative", notrun: "default" };
   var CHECK_LABEL = { pass: "Complete", review: "Needs review", fail: "Failed / not found", notrun: "Not checked" };
@@ -77,6 +78,7 @@
       : level === "high" ? "Needs review" : level === "medium" ? "Verified · review notes" : "Verified";
     /* "Needs review" is a hold, not a failure: yellow. Red stays for Not verified / Flagged. */
     if (verdictLabel === "Needs review") verdictTone = "intermediate";
+    lastVerdict = { label: verdictLabel, tone: verdictTone };
 
     var addrRisk = risks.filter(function (x) {
       return /address/i.test(x.label + " " + x.id);
@@ -779,6 +781,20 @@
       : hero.classList.contains("kyb-summary-hero--intermediate")
         ? "intermediate"
         : "positive";
+    /* Without the Business Risk Values add-on there is no score: the hero states the verification
+       status instead (no gauge), in the status's own tone. */
+    var riskTab = card && card.querySelector('[data-d3-kyb-tab="risk"]');
+    var riskOn = !card || !!(riskTab && !riskTab.hidden);
+    var statusLabel = "";
+    if (!riskOn) {
+      if (lastVerdict) {
+        statusLabel = lastVerdict.label;
+        tone = lastVerdict.tone;
+      } else {
+        statusLabel = "Verified";
+        tone = "positive";
+      }
+    }
     var name = biz.name || NATIVE_NAME;
     var clean = function (n) {
       return n ? n.textContent.replace(/\s+/g, " ").trim().split(NATIVE_NAME).join(name) : "";
@@ -788,7 +804,6 @@
     var findings = [].slice.call(hero.querySelectorAll(".kyb-summary-hero__finding-text")).map(clean);
 
     function mark(t) {
-      if (tone === "positive") return esc(t);
       return '<mark class="d3h-card__lede-mark d3h-card__lede-mark--' + tone + '">' + esc(t) + "</mark>";
     }
     var parts = [];
@@ -804,17 +819,26 @@
       parts.push(cut > 0 ? mark(f.slice(0, cut)) + esc(f.slice(cut)) : mark(f));
     });
 
-    /* Bullets are short: just the key phrase of each sentence, no narrative. */
-    function cap1(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
-    var shorts = [];
-    if (lead) {
-      var phrase = lead.indexOf(name) === 0 && lead.length > name.length ? lead.slice(name.length).trim() : lead;
-      shorts.push(esc(cap1(phrase)));
+    /* Each point is one short sentence with only its key phrase highlighted. */
+    function sentence(raw) {
+      var m;
+      if (/manual review/i.test(raw)) return mark("Manual review") + " is required before any approval decision.";
+      if ((m = raw.match(/(\d+) of (\d+) verification signals flagged/i))) {
+        return mark(m[1] + " of " + m[2] + " signals") + " raised verification flags.";
+      }
+      if ((m = raw.match(/legitimacy score (\d+)\/100/i))) {
+        return "Legitimacy scored " + mark(m[1] + " of 100") + " against peer benchmarks.";
+      }
+      if (/officers? lack(s)? national id/i.test(raw)) {
+        return mark("Officer IDs") + " are missing national identification for both officers.";
+      }
+      /* Anything else: highlight the first phrase, keep the rest as plain text. */
+      var cut = raw.search(/,| with | and /);
+      return cut > 0 ? mark(raw.slice(0, cut)) + esc(raw.slice(cut)) + "." : mark(raw);
     }
-    findings.forEach(function (f) {
-      var cut = f.search(/,| with | and /);
-      shorts.push(esc(cap1(cut > 0 ? f.slice(0, cut) : f)));
-    });
+    var shorts = [];
+    if (lead) shorts.push(sentence(lead));
+    findings.forEach(function (f) { shorts.push(sentence(f)); });
 
     var buttons = [].slice
       .call(hero.querySelectorAll(".kyb-summary-hero__actions [data-kyb-jump-tab]"))
@@ -860,14 +884,14 @@
       '<span class="d3h-entity__fact-value d3h-entity__fact-value--status"><i class="d3h-entity__dot' +
       (/active/i.test(statusText) ? "" : " is-off") + '" aria-hidden="true"></i>' + esc(statusText) + "</span></div></div>";
     hero.outerHTML =
-      '<section class="d3h-card d3h-card--hero d3h-card--hero-gauge d3h-card--tone-' + tone + '" aria-label="Verdict"><div class="d3h-card__inner">' +
+      '<section class="d3h-card d3h-card--hero d3h-card--hero-gauge d3h-card--tone-' + tone + '" aria-label="Verdict"' + (riskOn ? "" : ' data-d3h-status="1"') + '><div class="d3h-card__inner">' +
       '<div class="d3h-hero__main">' +
       '<div class="d3h-hero__top">' +
-      (score ? '<div class="d3h-hero__gaugebox"><div class="dv-di-gauge d3h-hero__gauge" data-score="' + esc(score) + '"></div></div>' : "") +
-      '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">Risk Analysis</p>' +
-      '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(title) + "</h2></div>" +
+      (riskOn && score ? '<div class="d3h-hero__gaugebox"><div class="dv-di-gauge d3h-hero__gauge" data-score="' + esc(score) + '"></div></div>' : "") +
+      '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">' + (riskOn ? "Risk Analysis" : "Verification status") + "</p>" +
+      '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(riskOn ? title : statusLabel) + "</h2></div>" +
       "</div>" +
-      '<ul class="d3h-chips">' + shorts.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
+      '<ul class="d3h-points">' + shorts.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
       (buttons
         ? '<div class="d3h-suggested" aria-label="Suggested actions"><p class="d3h-section-label">Suggested Actions</p><div class="d3h-suggested__ctas">' + buttons + "</div></div>"
         : "") +
@@ -920,10 +944,39 @@
     });
   }
 
+  /* With no score the hero states the verification status, and the header tag is its source:
+     follow it whenever it changes (it reads "Verifying…" until the report is done). */
+  function syncHeroStatus(panel, card) {
+    var hero = panel.querySelector("[data-d3h-status]");
+    var tag = card && card.querySelector(".d1-tag");
+    if (!hero || !tag) return;
+    var text = tag.textContent.replace(/\s+/g, " ").trim();
+    if (!text || /verifying/i.test(text)) return;
+    var tone = tag.classList.contains("d1-tag--positive") ? "positive" : tag.classList.contains("d1-tag--review") ? "intermediate" : "negative";
+    hero.className = hero.className.replace(/d3h-card--tone-\w+/, "d3h-card--tone-" + tone);
+    var h = hero.querySelector(".d3h-hero__verdict .d3h-card__title");
+    if (h) {
+      h.textContent = text;
+      h.className = h.className.replace(/d3h-card__title--(positive|intermediate|negative)/, "d3h-card__title--" + tone);
+    }
+    hero.querySelectorAll(".d3h-card__lede-mark").forEach(function (m) {
+      m.className = m.className.replace(/d3h-card__lede-mark--\w+/, "d3h-card__lede-mark--" + tone);
+    });
+  }
+
+  function watchStatusTag(panel, card) {
+    var tag = card && card.querySelector(".d1-tag");
+    if (!tag || tag.__d3hWatched) return;
+    tag.__d3hWatched = true;
+    new MutationObserver(function () { syncHeroStatus(panel, card); }).observe(tag, { attributes: true, childList: true, characterData: true, subtree: true });
+  }
+
   function paint(panel, card, biz, animate) {
     try {
       if (window.D3KybPanels && window.D3KybPanels.mount(panel, "summary")) {
         upgradeHero(panel, biz, card); /* native Summary, with the v3 hero */
+        watchStatusTag(panel, card);
+        syncHeroStatus(panel, card);
         panel.querySelectorAll(".d3h-hero__gauge[data-score]").forEach(function (g) {
           var s = parseFloat(g.getAttribute("data-score") || "0");
           g.setAttribute("data-risk", s < 30 ? "low" : s <= 60 ? "medium" : "high");

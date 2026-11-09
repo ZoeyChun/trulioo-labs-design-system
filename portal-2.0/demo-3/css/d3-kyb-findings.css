@@ -966,3 +966,15 @@
 .d3h-hero__main .d3h-suggested__ctas { flex-wrap: nowrap; }
 .d3h-hero__main .d3h-suggested__ctas .tds-btn { white-space: nowrap; }
 .d3h-hero__main .d3h-suggested__ctas .tds-btn__trailing-icon { display: none; }
+
+/* Key points: bullets with a partly highlighted phrase (replaces the gray chips). */
+.d3h-points { list-style: disc; margin: 0; padding: 0 0 0 20px; display: flex; flex-direction: column; gap: 10px; color: var(--text-description, #526660); font-size: 15px; line-height: 24px; }
+.d3h-points li { padding-left: 4px; }
+.d3h-points li::marker { color: var(--text-description, #526660); }
+.d3h-points .d3h-card__lede-mark { font-weight: 500; padding: 1px 6px; border-radius: 4px; }
+
+/* Without a score: positive / intermediate status hero (design 2121:67912). */
+.d3h-card--hero-gauge.d3h-card--tone-positive { border-color: #eaf7f0; }
+.d3h-hero__verdict .d3h-card__title--positive { color: var(--text-positive, #166534); }
+.d3h-hero__verdict .d3h-card__title--intermediate { color: var(--text-intermediate, #8a5a00); }
+.d3h-card__lede-mark--positive { background: #eaf7f0; color: var(--text-positive, #166534); }

@@ -228,7 +228,9 @@
 
   /* The Web & Social tab also opens for the Web Insights add-on. */
   function tabAllowed(id, tab, addons) {
-    if (tab === "findings" || tab === "risk") return true;
+    if (tab === "findings") return true;
+    /* Risk Analysis is the Business Risk Values add-on. */
+    if (tab === "risk") return (addons || []).indexOf("risk") !== -1;
     /* Owners & UBOs: Complete includes it; Insights shows it when a UBO add-on is
        selected; Essentials never. The graph and details come from data, not from
        anything the user types. */
