@@ -270,8 +270,7 @@
     { id: "side", name: "1 · Classic side header" },
     { id: "stack", name: "2 · Score billboard" },
     { id: "mosaic", name: "3 · KPI mosaic" },
-    { id: "banner", name: "4 · Alert strip" },
-    { id: "rail", name: "5 · Split panel" }
+    { id: "banner", name: "4 · Alert strip" }
   ];
 
   function esc(v) {

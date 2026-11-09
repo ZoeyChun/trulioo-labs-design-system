@@ -21,4 +21,3 @@ The right-side entity facts card stays identical across every option.
 | `stack` | Score billboard | Ranked rows + impact bars | Full-width stack |
 | `mosaic` | KPI mosaic | Inside the tiles (no list) | Text links |
 | `banner` | Alert strip | Horizontal wrap chips | Inline under strip |
-| `rail` | Split panel | Numbered narrative list | Full-width stack |
