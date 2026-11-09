@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo 3 — Overview hero options</title>
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../../tokens/fonts.css">
+  <link rel="stylesheet" href="../../../tokens/tokens.css">
+  <link rel="stylesheet" href="../../../Components/button/button.css">
+  <link rel="stylesheet" href="../../../Components/switch/switch.css">
+  <link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+  <link rel="stylesheet" href="../../../Components/progress-bar/progress-bar.css">
+  <link rel="stylesheet" href="../../../Components/score-gauge/score-gauge.css">
+  <link rel="stylesheet" href="../../../Components/filter-tab/filter-tab.css">
+  <link rel="stylesheet" href="../../../Components/counter-label/counter-label.css">
+  <link rel="stylesheet" href="../../../assets/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="../../../pages/shared/flag-icons.css">
+  <link rel="stylesheet" href="../../demo-3/css/d3-kyb-findings.css">
+  <link rel="stylesheet" href="css/options.css">
+</head>
+<body class="oho">
+  <header class="oho-bar">
+    <div class="oho-bar__id">
+      <p class="oho-bar__title">Overview hero options</p>
+    </div>
+  </header>
+
+  <main class="oho-main">
+    <div class="oho-toolbar">
+      <div class="tds-filter-tabs oho-filters" role="tablist" aria-label="Risk level">
+        <button type="button" class="tds-filter-tab tds-filter-tab--selected" role="tab" aria-selected="true" data-oho-risk="high">
+          High Risk
+        </button>
+        <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-oho-risk="medium">
+          Medium Risk
+        </button>
+        <button type="button" class="tds-filter-tab" role="tab" aria-selected="false" data-oho-risk="low">
+          Low Risk
+        </button>
+      </div>
+      <label class="tds-switch oho-brh">
+        <span class="tds-switch__label-group">Business Risk Horizon</span>
+        <button type="button" class="tds-switch__track tds-switch__track--sm" role="switch" aria-checked="true" aria-label="Business Risk Horizon" data-oho-brh>
+          <span class="tds-switch__indicator" aria-hidden="true"></span>
+          <span class="tds-switch__handle" aria-hidden="true"></span>
+        </button>
+      </label>
+    </div>
+    <div class="oho-list" id="oho-list"></div>
+  </main>
+
+  <script src="../../../Components/score-gauge/score-gauge.js"></script>
+  <script src="js/options.js"></script>
+</body>
+</html>
