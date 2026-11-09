@@ -244,7 +244,7 @@
     var input = byId("vb-q");
     var label = document.querySelector('label[for="vb-q"]');
     if (!input) return;
-    var text = "Search for " + typeahead.country.name + " business";
+    var text = "Search by business name";
     input.placeholder = text;
     if (label) label.textContent = text;
   }

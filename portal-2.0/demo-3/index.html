@@ -61,7 +61,7 @@
   <link rel="stylesheet" href="css/d3-config.css?v=5">
   <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="css/d3-home.css?v=18">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=35">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=37">
   <link rel="stylesheet" href="css/d3-kyb-gap.css?v=36">
   <link rel="stylesheet" href="css/d3-kyb-package.css?v=14">
   <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=9">
@@ -214,18 +214,6 @@
             <path fill="currentColor" d="M10.6593 0C10.8256 0 10.986 0.0659699 11.1036 0.18359C11.221 0.30117 11.2872 0.46076 11.2872 0.62695C11.2872 0.79313 11.221 0.95272 11.1036 1.07031C10.986 1.18793 10.8256 1.2539 10.6593 1.2539H10.0323V5.71679L14.8692 13.7802H14.8712C14.9853 13.9706 15.0471 14.1882 15.0499 14.4101C15.0526 14.6319 14.9961 14.8508 14.8868 15.0439C14.7776 15.2366 14.6192 15.397 14.4278 15.5087C14.2362 15.6204 14.0178 15.6796 13.796 15.6796H1.25207C1.03035 15.6793 0.812606 15.6197 0.621206 15.5078C0.429926 15.3959 0.271286 15.2357 0.162216 15.0429C0.0531262 14.8498 -0.00277409 14.6308 0.000105914 14.4091C0.00298591 14.1874 0.0647559 13.9704 0.178816 13.7802L5.01476 5.71679V1.2539H4.38781C4.22148 1.2539 4.06207 1.18791 3.94445 1.07031C3.82683 0.95268 3.76085 0.79329 3.76085 0.62695C3.76088 0.46064 3.82685 0.30119 3.94445 0.18359C4.06206 0.0660399 4.22152 0 4.38781 0H10.6593ZM6.26962 1.2539V5.89064C6.26992 6.00414 6.23842 6.11564 6.17982 6.21284L4.26183 9.41404C5.3726 9.45254 6.55962 9.78694 7.80672 10.4179C9.58462 11.3178 10.9226 11.3966 11.8634 11.2109L8.86732 6.21284C8.80872 6.11574 8.77832 6.00404 8.77842 5.89064V1.2539H6.26962Z"/>
           </svg>
           <span class="d1-nav-tip" aria-hidden="true">Labs</span>
-        </button>
-        <!-- Placeholder only — no view / route yet. -->
-        <button type="button" class="d1-nav-btn d1-nav-btn--placeholder" data-d3-nav-placeholder="dev-dashboard" aria-label="Dev Dashboard">
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="3.75" y="5.25" width="16.5" height="11.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
-            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 20.25h8M12 16.75v3.5"/>
-            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m9.25 9.5 1.75 1.75L9.25 13M14.75 9.5 13 11.25l1.75 1.75"/>
-          </svg>
-          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="currentColor" d="M5.25 4.5A1.5 1.5 0 0 0 3.75 6v9.5c0 .83.67 1.5 1.5 1.5h6v1.75H8a.75.75 0 0 0 0 1.5h8a.75.75 0 0 0 0-1.5h-3.25V17H18.75c.83 0 1.5-.67 1.5-1.5V6A1.5 1.5 0 0 0 18.75 4.5H5.25Zm4.35 4.65a.75.75 0 0 1 0 1.06L8.31 11.5l1.29 1.29a.75.75 0 1 1-1.06 1.06l-1.82-1.82a.75.75 0 0 1 0-1.06l1.82-1.82a.75.75 0 0 1 1.06 0Zm5.06 0a.75.75 0 0 1 1.06 0l1.82 1.82a.75.75 0 0 1 0 1.06l-1.82 1.82a.75.75 0 1 1-1.06-1.06l1.29-1.29-1.29-1.29a.75.75 0 0 1 0-1.06Z"/>
-          </svg>
-          <span class="d1-nav-tip" aria-hidden="true">Dev Dashboard</span>
         </button>
       </div>
     </nav>
@@ -459,6 +447,7 @@
         <div class="d3-workspace__landing" data-d3-kyb-landing>
         <div class="d3-workspace__hero">
         <h1 class="d3-workspace__title">KYB Verification</h1>
+        <p class="d3-workspace__lede">Search for a business to start a verification yourself.</p>
         <!-- Manual search — synced from demo-2/verify-business -->
         <div class="d3-workspace__search" aria-labelledby="d3-kyb-search-h">
           <span class="d1-visually-hidden" id="d3-kyb-search-h">Search for a business</span>
@@ -519,9 +508,9 @@
                   <span class="tds-combobox__leading-visual vb-combobox__icon" aria-hidden="true">
                     <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
                   </span>
-                  <label class="d1-visually-hidden" for="vb-q">Search for United States business</label>
+                  <label class="d1-visually-hidden" for="vb-q">Search by business name</label>
                   <input class="tds-combobox__input" id="vb-q" type="text"
-                         placeholder="Search for United States business" autocomplete="off"
+                         placeholder="Search by business name" autocomplete="off"
                          role="combobox" aria-expanded="false" aria-controls="vb-search-list"
                          aria-autocomplete="list" aria-describedby="vb-search-hint"
                          data-d3-kyb-search>
@@ -1466,7 +1455,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-kyb-resume.js?v=57"></script>
 <script src="js/d3-kyb-report-reveal.js?v=41"></script>
 <script src="js/d3-kyb-map-search.js?v=51"></script>
-<script src="js/d3-kyb-manual-search.js?v=15"></script>
+<script src="js/d3-kyb-manual-search.js?v=18"></script>
 <script src="js/d3-kyb-agent.js?v=81"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>

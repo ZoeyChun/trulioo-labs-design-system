@@ -1855,3 +1855,14 @@
     display: none;
   }
 }
+
+/* The manual route, named in one line under the title. */
+.d3-workspace__lede {
+  margin: -8px 0 0;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--text-caption, #617269);
+}
+/* Only the empty landing carries them; once a search is under way the surface changes. */
+.d3-workspace:not([data-d3-kyb-surface="resume"]) .d3-workspace__lede { display: none; }
