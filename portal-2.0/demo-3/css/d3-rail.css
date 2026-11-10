@@ -381,18 +381,24 @@
 /* The rail's tooltips (Home, KYB…) reach past the rail; keep them above the Chats dock. */
 .d1-shell[data-d3-chatdock="open"] .d1-rail { position: relative; z-index: 50; }
 
-/* Home has a white page behind it, so the dock needs its own edge: surface 1 with the same
-   hairline the rail has, reading as an extension of the rail. */
-.d1-shell[data-d3-view="home"] .d3-chatdock {
+/* Every page: the dock gets its own edge, so it never blends into a white page. Docked (wide windows) it
+   is flush with the rail and ends in the same subtle hairline; floating (narrow windows) it is a rounded
+   card with a subtle outline and the shadow. */
+.d3-chatdock {
   background: var(--surface-neutral-01, #fff);
 }
-/* Docked (wide windows) it is flush with the rail; floating (narrow windows) it stays a rounded card. */
 @media (min-width: 1400px) {
-  .d1-shell[data-d3-view="home"] .d3-chatdock {
+  .d3-chatdock {
     border-radius: 0;
     border-right: 1px solid var(--border-subtle, #dde2de);
   }
 }
+@media (max-width: 1399px) {
+  .d1-shell[data-d3-chatdock="open"] .d3-chatdock {
+    border: 1px solid var(--border-subtle, #dde2de);
+  }
+}
+
 
 /* The Chats icon is only highlighted while the pointer is on it or the dock is open; focus left on it
    after closing the dock (or the flyout hover area around it) must not keep the hover color. */
