@@ -1,0 +1,707 @@
+/* ============================================================
+   TRANSACTIONS — page content (left column)
+   ============================================================
+   Same portal shell as the home page: side rail and workspace
+   header. The transactions table and filters come from the user-testing page; their
+   rules live in transaction-history.css. Overrides below only
+   fit that block into this column.
+   Prefix: v2- (shell) / th- (this page)
+   Scope:  everything inside .v2-content (plus .v2-rail).
+
+   Do not style .v2-stage, .v2-panel-slot, .ai-*, or the
+   [data-truai] states — those belong to shared/portal-shell/.
+   ============================================================ */
+
+/* ------------------------------------------------------------------
+   Side rail — 72px, right hairline
+   ------------------------------------------------------------------ */
+
+.v2-rail {
+  display: flex;
+  flex: 0 0 72px;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 72px;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.v2-rail__header {
+  display: flex;
+  justify-content: center;
+  padding: 20px var(--padding-lg) var(--padding-lg);
+}
+
+.v2-rail__logo {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--interactive-default);
+}
+
+.v2-rail__main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-xl) var(--padding-lg);
+}
+
+.v2-rail__item {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 140ms ease, background-color 140ms ease;
+}
+
+.v2-rail__item:hover {
+  color: var(--icon-default);
+  background: var(--surface-neutral-02);
+}
+
+.v2-rail__item[aria-current="page"],
+.v2-rail__item[aria-current="page"]:hover {
+  color: var(--icon-inverse);
+  background: var(--surface-inverse);
+}
+
+.v2-rail__item svg { width: 16px; height: 16px; }
+
+.v2-rail__collapse {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md) var(--padding-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.v2-rail__collapse button {
+  display: grid;
+  place-items: center;
+  width: 24px; height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--icon-faint);
+  background: transparent;
+  cursor: pointer;
+}
+
+.v2-rail__collapse svg { width: 16px; height: 16px; }
+
+.v2-rail__user {
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-md);
+}
+
+.v2-rail__avatar {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+  color: var(--text-inverse);
+  background: var(--interactive-default);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------
+   Transactions block — sits in the portal column, not the old shell
+   ------------------------------------------------------------------ */
+
+/* The column stays the viewport. Rows and the columns past the panel
+   scroll inside the table, so the right edge is not clipped. */
+.d3-tx-embed__main {
+  overflow: hidden;
+}
+
+/* Keep in sync with Labs .labs-page-header__title. */
+.th-tx__title {
+  margin: 0 0 24px;
+  flex: 0 0 auto;
+  font-family: var(--font-family, "Inter", system-ui, sans-serif);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--text-default, #172d2d);
+}
+
+/* High-level KPIs — same pattern as Org Admin .org-stats.
+   box-sizing keeps the 1px border inside 100% width so parents with
+   overflow:hidden don’t clip the right edge. */
+.th-tx .ut-tx-stats {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  background: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-card, 12px);
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 4px);
+  padding: var(--spacing-20, 20px) var(--spacing-16, 16px);
+  border-left: 1px solid var(--border-subtle, #dde2de);
+  min-width: 0;
+}
+
+.th-tx .ut-tx-stat:first-child {
+  border-left: none;
+}
+
+.th-tx .ut-tx-stat__label {
+  margin: 0;
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+  font-weight: var(--font-weight-medium, 500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-description, #526660);
+}
+
+.th-tx .ut-tx-stat__value {
+  margin: 0;
+  margin-top: auto;
+  font-size: var(--font-size-lg, 18px);
+  line-height: var(--line-height-2xl, 28px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-default, #172d2d);
+}
+
+@media (max-width: 900px) {
+  .th-tx .ut-tx-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .th-tx .ut-tx-stat:nth-child(4) {
+    border-left: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .th-tx .ut-tx-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Failed-verification reply inside the shared TruAI thread. */
+.th-chat {
+  font-size: var(--font-size-sm);
+  line-height: 22px;
+  color: var(--text-default);
+}
+
+.th-chat p,
+.th-chat ul {
+  margin: 0 0 22px;
+}
+
+.th-chat__found {
+  margin: 0 0 12px;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+}
+
+.th-chat__name {
+  margin-bottom: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+.th-chat__next {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.th-chat__next-label {
+  margin: 0 0 12px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 20px;
+  color: var(--text-caption);
+}
+
+.th-chat ul {
+  padding-left: 1.5em;
+}
+
+.th-chat li { margin: 0; }
+
+.th-tx.ut-tx-main {
+  flex: 1 1 auto;
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: transparent;
+  border-radius: 0;
+}
+
+.th-tx .ut-tx-main__scroll,
+.th-tx .ut-tx-page,
+.th-tx .ut-tx-block {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* Status line → table: keep a clear 16px gap (was collapsed by gap: 0). */
+.th-tx .ut-tx-table-section {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-search-status {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+/* Hug the rows when the result list is short. Grow only up to the
+   space under the title, then scroll inside the card. */
+.th-tx .ut-tx-table-card,
+.th-tx .tds-data-table-container {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  /* Keep the right edge visible even while the table scrolls horizontally. */
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-card, 12px);
+  background: var(--surface-neutral-01, #fff);
+}
+
+/* Scroll host — fade on the right hints that more columns are off-screen. */
+.th-tx .ut-tx-table-scroll {
+  position: relative;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-table-scroll::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 56px;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 42%,
+    rgba(255, 255, 255, 0.94) 100%
+  );
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  /* Soften the blur so it only reads on the far edge. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 55%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 55%);
+  border-right: 1px solid var(--border-subtle, #dde2de);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .th-tx .ut-tx-table-scroll::after {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+.th-tx .ut-tx-block {
+  gap: 24px;
+}
+
+.th-tx .ut-tx-toolbar,
+.th-tx .ut-tx-stats,
+.th-tx .ut-tx-table-card .tds-data-table__footer {
+  flex: 0 0 auto;
+}
+
+/* Empty state up: the table and its pager step aside. */
+.th-tx .ut-tx-table-scroll[hidden],
+.th-tx .ut-tx-table-card .tds-data-table__footer[hidden] {
+  display: none;
+}
+
+/* The table is wider than the column. Both scrollbars live on this box,
+   in view, so Score, Source, and Type are not cut off by the panel. */
+.th-tx .tds-data-table__wrapper {
+  flex: 0 1 auto;
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Reset removed from Demo 3 toolbar — never reserve space for it. */
+.th-tx .ut-tx-toolbar-reset {
+  display: none !important;
+}
+
+.th-tx .tds-data-table__wrapper::-webkit-scrollbar {
+  -webkit-appearance: none;
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+.th-tx .tds-data-table__wrapper::-webkit-scrollbar-track {
+  background: var(--surface-neutral-02);
+}
+
+.th-tx .tds-data-table__wrapper::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--color-neutral-40) 80%, transparent);
+  border: 3px solid var(--surface-neutral-02);
+  border-radius: var(--radius-full);
+}
+
+/* Figma 1049:109748 — one row, 8px gaps, 40px controls.
+   Search takes whatever is left. The date is sized to its own content —
+   "03/16/2026 - 03/20/2026" plus the calendar and clear icons — rather than
+   splitting the bar 50/50 with search for a ten-character value. */
+.th-tx .ut-tx-toolbar {
+  width: 100%;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.th-tx .ut-tx-toolbar__left {
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.th-tx .ut-tx-search {
+  width: auto;
+  max-width: none;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.th-tx .ut-tx-date {
+  flex: 0 1 248px;
+  width: 248px;
+  min-width: 0;
+  max-width: 248px;
+}
+
+/* Narrow columns: let the date give ground before search does. */
+@media (max-width: 1100px) {
+  .th-tx .ut-tx-date {
+    flex: 0 1 200px;
+    width: 200px;
+    max-width: 200px;
+  }
+}
+
+.th-tx .ut-tx-product[hidden] {
+  display: none !important;
+}
+
+.th-tx .tds-filter-button {
+  flex: 0 0 auto;
+}
+
+.th-tx .ut-tx-search .tds-text-input__field,
+.th-tx .ut-tx-date .tds-date-picker__field,
+.th-tx .ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary {
+  height: 40px;
+  min-height: 40px;
+}
+
+.th-tx .ut-tx-table {
+  width: 1352px;
+  min-width: 1352px;
+  max-width: none;
+}
+
+/* Text fills the cell. Anything longer than the column ends in an ellipsis
+   instead of painting into the next column. */
+.th-tx .ut-tx-table tbody td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.th-tx .ut-tx-table .tds-tag,
+.th-tx .ut-tx-score,
+.th-tx .ut-tx-name,
+.th-tx .ut-tx-name-cell,
+.th-tx .ut-tx-name-stack,
+.th-tx .ut-tx-name-row {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.th-tx .ut-tx-score {
+  overflow: hidden;
+}
+
+.th-tx .ut-tx-score__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.th-tx .ut-tx-table td.tds-data-table__actions-col {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* Filters take the TruAI slot. The chat collapses to the ask bar, and
+   the column stays on the left so the bar sits in the center of the table
+   instead of sliding under the filters. */
+/* Filters overlay handled in embed.css for Demo 3. */
+
+/* ------------------------------------------------------------------
+   Entrance
+   ------------------------------------------------------------------ */
+
+.th-tx {
+  animation: v2-rise 380ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+.th-tx { animation-delay: 40ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-rail > *,
+  .th-tx { animation: none; }
+}
+
+.v2-rail__item:focus-visible,
+.v2-rail__collapse button:focus-visible,
+.v2-rail__avatar:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Outcome / Risk quick filters + "More filters", in a row under search + date. */
+.th-tx .ut-tx-quick {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: -8px;
+}
+
+.th-tx .ut-tx-quick__item {
+  position: relative;
+}
+
+.th-tx .ut-tx-quick__btn {
+  gap: 4px;
+}
+
+.th-tx .ut-tx-quick__caret {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.th-tx .ut-tx-quick__btn[aria-expanded="true"] .ut-tx-quick__caret {
+  transform: rotate(180deg);
+}
+
+.th-tx .ut-tx-quick__menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  left: 0;
+  box-sizing: border-box;
+  width: 288px;
+  max-height: 360px;
+  overflow: auto;
+  padding: 8px;
+  background: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-card, 12px);
+  box-shadow: 0 8px 24px rgba(23, 45, 45, 0.12);
+}
+
+.th-tx .ut-tx-quick__menu[hidden] {
+  display: none;
+}
+
+.th-tx .ut-tx-quick__item.is-selected > .ut-tx-quick__btn,
+.th-tx .ut-tx-quick .tds-filter-button--selected > .tds-btn.tds-btn--secondary {
+  background: color-mix(in srgb, var(--interactive-default, #0e8a78) 12%, var(--surface-neutral-01, #fff));
+  border-color: var(--interactive-default, #0e8a78);
+  color: var(--text-default, #172d2d);
+}
+
+.th-tx .ut-tx-quick__count[hidden] {
+  display: none;
+}
+
+
+.th-tx .ut-tx-quick__clear[hidden] {
+  display: none;
+}
+
+/* Keyboard focus on the quick-filter row.
+   The DS secondary button marks focus by turning its 1px border
+   --border-focus — but .is-selected below paints the same border the same
+   colour and wins on specificity, so a focused filter looked identical to an
+   applied one, and a focused *applied* filter showed nothing at all. A 2px
+   offset ring is the treatment the side rail and the in-table controls
+   already use, and it reads on top of either state. */
+.th-tx .ut-tx-quick__btn:focus-visible,
+.th-tx .ut-tx-quick__clear:focus-visible,
+.th-tx .tds-filter-button > .tds-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* The ring replaces the border swap, so the 1px border must not also shift.
+   (button.css trims --btn padding by 1px on focus to make room for a 2px
+   focus border these buttons never actually grow.) */
+.th-tx .ut-tx-quick__btn:focus-visible,
+.th-tx .tds-filter-button > .tds-btn--sm:focus-visible {
+  padding: var(--padding-xs) var(--padding-sm);
+}
+
+/* .tds-checkbox brings its own --border-focus halo, but the menu's own
+   overflow would crop it at the first and last option. */
+.th-tx .ut-tx-quick__menu {
+  padding: 10px 8px;
+}
+
+/* ------------------------------------------------------------------
+   Same look as the KYB page: display title, soft cards, hairline rows.
+   ------------------------------------------------------------------ */
+.th-tx__title {
+  margin: 0 0 28px;
+  font-family: var(--font-family-display, "Tobias", Georgia, serif);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 40px;
+  letter-spacing: 0;
+}
+
+.th-tx .ut-tx-stats {
+  border-radius: 16px;
+}
+
+.th-tx .ut-tx-stat {
+  border-left: 0;
+}
+
+.th-tx .ut-tx-table-card {
+  border-radius: 16px;
+}
+
+.th-tx .ut-tx-table thead th {
+  background-color: var(--surface-neutral-01, #fff);
+}
+
+.th-tx .ut-tx-table thead th,
+.th-tx .ut-tx-table tbody td {
+  border-left: 0;
+  border-right: 0;
+}
+
+/* The sticky name column keeps its place without a vertical rule. */
+.th-tx .ut-tx-table thead th.ut-tx-th-name,
+.th-tx .ut-tx-table tbody td.ut-tx-td-name {
+  box-shadow: none;
+}
+.th-tx .ut-tx-table thead th.ut-tx-th-name {
+  background-color: var(--surface-neutral-01, #fff);
+}
+
+/* A short hairline between the KPIs: inset top and bottom, not full height. */
+.th-tx .ut-tx-stat {
+  position: relative;
+}
+.th-tx .ut-tx-stat + .ut-tx-stat::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 22%;
+  bottom: 22%;
+  width: 1px;
+  background: var(--border-subtle, #dde2de);
+}
+@media (max-width: 900px) {
+  .th-tx .ut-tx-stat + .ut-tx-stat::before { display: none; }
+}
+
+/* The table fills the card: when the card is wider than the columns (chat minimized) the rules
+   run edge to edge instead of stopping short of the right side. */
+.th-tx .ut-tx-table {
+  width: 100%;
+  max-width: none;
+  min-width: 1352px;
+}
+
+/* No fade once the last column is in view. */
+.th-tx .ut-tx-table-scroll::after { transition: opacity 160ms ease; }
+.th-tx .ut-tx-table-scroll.is-at-end::after { opacity: 0; }
+
+/* Pagination keyboard focus — the same 2px --border-focus ring the rest of
+   the table uses. Kept local to this preview so Components/data-table stays
+   untouched. */
+.th-tx .tds-data-table__pagination-direction:focus-visible,
+.th-tx .tds-data-table__pagination-page:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}

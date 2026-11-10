@@ -1,0 +1,1871 @@
+/* Transaction History — User Testing
+   Portal 2.0 Transactions (540:22723) + Table (301:20195) */
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  position: relative;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Subtle page scrollbars — shared across main, drawers, table */
+.app-shell,
+.app-shell * {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-neutral-40) 28%, transparent) transparent;
+}
+
+.app-shell *::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.app-shell *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-shell *::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--color-neutral-40) 28%, transparent);
+  border-radius: var(--radius-full);
+}
+
+.app-shell *::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--color-neutral-40) 48%, transparent);
+}
+
+.ut-tx-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  height: calc(100dvh - (2 * var(--spacing-8)));
+  max-height: calc(100dvh - (2 * var(--spacing-8)));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--surface-neutral-01);
+  border-radius: var(--radius-card);
+}
+
+.ut-tx-main__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.ut-tx-main__scroll::-webkit-scrollbar-track {
+  margin-block: var(--radius-card);
+}
+
+.ut-tx-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1344px;
+  margin: 0 auto;
+  padding: 32px 96px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.ut-tx-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+}
+
+/* Figma 696:20823 — vertical tab, right-middle of the page */
+.ut-tx-test-settings {
+  position: absolute;
+  top: 50%;
+  right: var(--spacing-8);
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 12px 4px;
+  border: 0;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  background-color: var(--color-neutral-30);
+  color: var(--text-default);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.ut-tx-test-settings:hover {
+  background-color: var(--color-neutral-40);
+}
+
+.ut-tx-test-settings:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.app-shell.ut-tx-drawer-open .ut-tx-test-settings {
+  display: none;
+}
+
+.ut-tx-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 42px;
+  flex: 0 0 auto;
+}
+
+.ut-tx-header__title {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--text-default);
+}
+
+.ut-tx-block {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.ut-tx-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  z-index: 6;
+  overflow: visible;
+}
+
+.ut-tx-table-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  width: 100%;
+}
+
+.ut-tx-search-status {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.ut-tx-search-status[hidden] {
+  display: none !important;
+}
+
+.ut-tx-toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/*
+ * Toolbar chrome — Figma SearchBar 681:18806, DatePicker 696:19518, Filter 681:17950
+ * 40px controls, 1px border-strong, radius-button
+ */
+.ut-tx-toolbar .tds-text-input__field,
+.ut-tx-toolbar .tds-date-picker__field,
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary {
+  box-sizing: border-box;
+  height: 40px;
+  min-height: 40px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-neutral-01);
+}
+
+.ut-tx-toolbar .tds-text-input__field:focus-within,
+.ut-tx-toolbar .tds-date-picker__field:focus-visible,
+.ut-tx-toolbar .tds-date-picker__field.tds-date-picker__field--focus,
+.ut-tx-date.tds-date-picker-range--open .tds-date-picker__field,
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary:focus-visible,
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary.tds-btn--focus {
+  border-color: var(--border-focus);
+  border-width: 2px;
+  box-shadow: none;
+}
+
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary {
+  padding: var(--padding-sm) var(--padding-md);
+  gap: var(--spacing-8);
+  box-shadow: var(--shadow-button-resting);
+}
+
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary:focus-visible,
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary.tds-btn--focus {
+  padding: calc(var(--padding-sm) - 1px) calc(var(--padding-md) - 1px);
+}
+
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary:hover {
+  background-color: var(--surface-neutral-02);
+  box-shadow: var(--shadow-button-elevated);
+}
+
+.ut-tx-toolbar .tds-filter-button > .tds-btn.tds-btn--secondary:active {
+  background-color: var(--surface-neutral-03);
+}
+
+.ut-tx-toolbar .tds-filter-button .tds-btn__leading-icon {
+  color: var(--icon-faint);
+}
+
+.ut-tx-toolbar .tds-filter-button--selected .tds-filter-button__counter.tds-counter {
+  display: inline-flex;
+}
+
+/* SearchBar 681:18806 — 480×40, trailing primary search */
+.ut-tx-search {
+  width: 480px;
+  max-width: 100%;
+}
+
+.ut-tx-search .tds-text-input__field {
+  gap: 8px;
+  padding: 0 6px 0 8px;
+  box-shadow: none;
+}
+
+.ut-tx-search .tds-text-input__field--lg:focus-within {
+  padding: 0 5px 0 7px;
+}
+
+.ut-tx-search .tds-text-input__native {
+  font-size: 14px;
+  line-height: 22px;
+  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.ut-tx-search .tds-text-input__native::-webkit-search-decoration,
+.ut-tx-search .tds-text-input__native::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.ut-tx-search .tds-text-input__native::placeholder {
+  color: var(--text-placeholder);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.ut-tx-search__submit.tds-icon-btn--primary {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  padding: 6px;
+  border-radius: var(--radius-button);
+}
+
+.ut-tx-search__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-faint);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ut-tx-search__clear[hidden] {
+  display: none;
+}
+
+.ut-tx-search__clear svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.ut-tx-toolbar-reset {
+  flex-shrink: 0;
+}
+
+/* DatePicker range 696:19518 / 696:19530 — single 240×40 field */
+.ut-tx-date {
+  position: relative;
+  width: 240px;
+  max-width: 100%;
+  flex-shrink: 0;
+  overflow: visible;
+  isolation: isolate;
+}
+
+.ut-tx-date.tds-date-picker-range--open {
+  z-index: 30;
+}
+
+.ut-tx-date[hidden],
+.ut-tx-product[hidden] {
+  display: none !important;
+}
+
+.ut-tx-date .tds-date-picker-range__fields {
+  width: 100%;
+  gap: 0;
+}
+
+.ut-tx-date .tds-date-picker[data-date-picker-part="start"] {
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+.ut-tx-date .tds-date-picker__field {
+  width: 100%;
+  padding: 0 var(--padding-md);
+  gap: var(--gap-sm);
+  box-shadow: var(--shadow-inset);
+}
+
+.ut-tx-date__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-default);
+}
+
+.ut-tx-date__label.tds-date-picker__placeholder {
+  color: var(--text-placeholder);
+}
+
+.ut-tx-date__clear {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-faint);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ut-tx-date--selected .ut-tx-date__clear {
+  display: inline-flex;
+}
+
+.ut-tx-date__clear svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.ut-tx-date.tds-date-picker-range--open .tds-date-picker__field,
+.ut-tx-date .tds-date-picker__field:focus-visible,
+.ut-tx-date .tds-date-picker__field.tds-date-picker__field--focus {
+  padding: 0 calc(var(--padding-md) - 1px);
+}
+
+.ut-tx-date__end {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}
+
+.ut-tx-date > .tds-date-picker__calendar,
+.ut-tx-date > .tds-date-picker-range__calendar {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 288px;
+  max-width: 288px;
+  z-index: 120;
+  margin-top: 0;
+}
+
+/* Product select — Figma Select 339:49763 */
+.ut-tx-product .tds-text-input__field {
+  gap: 8px;
+  padding: 0 8px;
+}
+
+.ut-tx-product__select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
+  color: var(--text-default);
+}
+
+.ut-tx-product:not(.ut-tx-product--filled) .ut-tx-product__select {
+  color: var(--text-placeholder);
+}
+
+.ut-tx-product__select option {
+  color: var(--text-default);
+}
+
+.ut-tx-product .tds-caret {
+  pointer-events: none;
+  color: var(--icon-faint);
+}
+
+.ut-tx-table .tds-data-table__sort-icon svg {
+  width: 8px;
+  height: 11px;
+  display: block;
+}
+
+.ut-tx-table-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--surface-neutral-01);
+}
+
+.ut-tx-table {
+  min-width: 1314px;
+  width: 1314px;
+  max-width: 1314px;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.ut-tx-table .tds-data-table__sort-label {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Sortable header control — a real button, styled as the header text. */
+.ut-tx-table .ut-tx-sort {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.ut-tx-table .ut-tx-sort:hover {
+  color: var(--text-default);
+}
+
+.ut-tx-table .ut-tx-sort:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* The caret carries the direction: the inactive half fades back. */
+.ut-tx-table th[aria-sort="ascending"] .tds-data-table__sort-icon path:nth-of-type(2),
+.ut-tx-table th[aria-sort="descending"] .tds-data-table__sort-icon path:nth-of-type(1) {
+  opacity: 0.3;
+}
+
+.ut-tx-table th,
+.ut-tx-table td {
+  height: 40px;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.ut-tx-table thead th {
+  height: 27px;
+  background-color: var(--surface-neutral-02);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-description);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 4px 8px;
+}
+
+.ut-tx-table tbody td {
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 8px;
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.ut-tx-table tbody td.ut-tx-td-name {
+  font-weight: 500;
+}
+
+/* Sticky Transaction — Cell 2 (Figma 301:20333) */
+.ut-tx-table thead th.ut-tx-th-name,
+.ut-tx-table tbody td.ut-tx-td-name {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  box-shadow: 1px 0 0 0 var(--border-subtle);
+}
+
+.ut-tx-table thead th.ut-tx-th-name {
+  z-index: 4;
+  background-color: var(--surface-neutral-02);
+}
+
+.ut-tx-table tbody td.ut-tx-td-name {
+  background-color: var(--surface-neutral-01);
+}
+.ut-tx-col-name,
+.ut-tx-th-name,
+.ut-tx-td-name {
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.ut-tx-col-outcome { width: 152px; min-width: 152px; max-width: 152px; }
+.ut-tx-col-date { width: 150px; min-width: 150px; max-width: 150px; }
+.ut-tx-col-product { width: 180px; min-width: 180px; max-width: 180px; }
+.ut-tx-col-country { width: 180px; min-width: 180px; max-width: 180px; }
+
+.ut-tx-table--flag-only {
+  min-width: 1254px;
+  width: 1254px;
+  max-width: 1254px;
+}
+
+.ut-tx-table--flag-only.ut-tx-table--trid {
+  min-width: 1404px;
+  width: 1404px;
+  max-width: 1404px;
+}
+
+/* Score combined with outcome — drop the 180px Score col, keep Transaction at 240px */
+.ut-tx-table--no-score {
+  min-width: 1134px;
+  width: 1134px;
+  max-width: 1134px;
+}
+
+.ut-tx-table--no-score.ut-tx-table--flag-only {
+  min-width: 1074px;
+  width: 1074px;
+  max-width: 1074px;
+}
+
+.ut-tx-table--no-score.ut-tx-table--trid {
+  min-width: 1284px;
+  width: 1284px;
+  max-width: 1284px;
+}
+
+.ut-tx-table--no-score.ut-tx-table--flag-only.ut-tx-table--trid {
+  min-width: 1224px;
+  width: 1224px;
+  max-width: 1224px;
+}
+
+.ut-tx-table--flag-only .ut-tx-col-country {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+}
+.ut-tx-col-score { width: 180px; min-width: 180px; max-width: 180px; }
+.ut-tx-col-source { width: 120px; min-width: 120px; max-width: 120px; }
+.ut-tx-col-type { width: 80px; min-width: 80px; max-width: 80px; }
+
+/* Without the Type column, Source takes the freed 80px — it now carries an
+   API key, portal user or workflow name, so the total table width is unchanged. */
+.ut-tx-table--no-type .ut-tx-col-source {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+/* ---- Empty states ----
+   Sits in the card in place of the table, so it centres on the card's visible
+   width rather than the table's much wider scroll width. */
+.ut-tx-no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-sizing: border-box;
+  min-height: 280px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.ut-tx-no-results[hidden] {
+  display: none;
+}
+
+/* The scroller and footer carry layout display values, which beat the UA's
+   [hidden] rule — hide them explicitly while the empty state is up. */
+.ut-tx-table-scroll[hidden],
+.ut-tx-table-card .tds-data-table__wrapper[hidden],
+.ut-tx-table-card .tds-data-table__footer[hidden] {
+  display: none;
+}
+
+.ut-tx-no-results__icon {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  color: var(--icon-faint);
+}
+
+.ut-tx-no-results__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ut-tx-no-results__title {
+  margin: 0;
+  max-width: 420px;
+  color: var(--text-default);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+
+.ut-tx-no-results__text {
+  margin: 0;
+  max-width: 420px;
+  color: var(--text-description);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.ut-tx-no-results__action {
+  margin-top: 16px;
+}
+
+/* No table means no bottom rule to meet. */
+.ut-tx-table-card--empty {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Multi-product rows: the primary product leads and a quiet "+N" expands the
+   cell in place to the full list. Collapsed it is a single tight line; expanded
+   the text wraps and the row grows to fit, so nothing overlays the table. */
+.ut-tx-product-cell {
+  display: flex;
+  align-items: center;
+  /* The count belongs to the name it follows — keep it close. */
+  gap: 2px;
+  min-width: 0;
+}
+
+.ut-tx-product-cell__lead,
+.ut-tx-product-cell__all {
+  min-width: 0;
+}
+
+.ut-tx-product-cell__lead {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ut-tx-product-cell__lead[hidden],
+.ut-tx-product-cell__all[hidden] {
+  display: none;
+}
+
+/* Expanded: block flow so the list wraps and the toggle trails the last word. */
+.ut-tx-product-cell.is-expanded {
+  display: block;
+  white-space: normal;
+}
+
+.ut-tx-product-cell__all {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Quiet by default — a count, not a chip. */
+.ut-tx-product-more {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--text-caption);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.ut-tx-product-more:hover {
+  color: var(--text-default);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ut-tx-product-more:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 1px;
+  border-radius: var(--radius-xs);
+}
+
+/* The cell clips its single collapsed line; expanded it has to be free to
+   wrap and push the row taller. */
+.ut-tx-table td.ut-tx-td-product {
+  overflow: hidden;
+}
+
+.ut-tx-table td.ut-tx-td-product:has(.is-expanded) {
+  overflow: visible;
+  white-space: normal;
+}
+
+/* Package — the named bundle of checks a transaction ran under. */
+.ut-tx-col-package { width: 190px; min-width: 190px; max-width: 190px; }
+
+/* Package widens the table rather than squeezing the other columns; the
+   card already scrolls horizontally. 1314 + 190 = 1504. */
+.ut-tx-table--package {
+  min-width: 1504px;
+  width: 1504px;
+  max-width: 1504px;
+}
+
+.ut-tx-table td.ut-tx-td-source,
+.ut-tx-table td.ut-tx-td-package {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ut-tx-col-actions,
+.ut-tx-table .tds-data-table__actions-col {
+  width: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  padding: 8px !important;
+  text-align: center;
+}
+
+.ut-tx-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ut-tx-expand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--icon-faint);
+  cursor: pointer;
+}
+
+.ut-tx-expand:hover {
+  color: var(--icon-default);
+}
+
+.ut-tx-expand .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Expanded parent — surface-neutral-02 (incl. sticky Transaction col) */
+.ut-tx-table tbody tr.ut-tx-row--expanded > td {
+  background-color: var(--surface-neutral-02);
+}
+
+.ut-tx-table tbody tr.ut-tx-row--expanded > td.tds-data-table__checkbox-cell,
+.ut-tx-table tbody tr.ut-tx-row--expanded > td.ut-tx-td-name {
+  background-color: var(--surface-neutral-02);
+}
+
+/*
+ * Child Transaction cells — Figma Cell 33 (mid) / Cell 36 (end)
+ * Mid: border-r only, continuous tree
+ * End: border-b + border-r, L-shaped tree
+ */
+/*
+ * Child Transaction cells — Figma Cell 33 (mid) / Cell 36 (end)
+ * Tree is absolutely pinned to the td so the stroke spans full row
+ * height (no gaps between segments when name-stack grows the row).
+ */
+.ut-tx-table tbody tr.ut-tx-row--child > td {
+  border-bottom: none;
+  background-color: var(--surface-neutral-01);
+}
+
+.ut-tx-table tbody tr.ut-tx-row--child > td.tds-data-table__checkbox-cell,
+.ut-tx-table tbody tr.ut-tx-row--child > td.ut-tx-td-name {
+  background-color: var(--surface-neutral-01);
+}
+
+.ut-tx-table tbody tr.ut-tx-row--child > td.ut-tx-td-name,
+.ut-tx-table--name-stack tbody tr.ut-tx-row--child > td.ut-tx-td-name {
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  border-bottom: none;
+  box-shadow: 1px 0 0 0 var(--border-subtle);
+}
+
+/* Name + detail / Name + TRID — allow cell to grow; tree still fills td */
+.ut-tx-table--name-stack tbody tr.ut-tx-row--child > td.ut-tx-td-name {
+  height: auto;
+  min-height: 40px;
+  max-height: none;
+}
+
+.ut-tx-table tbody tr.ut-tx-row--child-last > td {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ut-tx-table tbody tr.ut-tx-row--child-last > td.ut-tx-td-name,
+.ut-tx-table--name-stack tbody tr.ut-tx-row--child-last > td.ut-tx-td-name {
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 1px 0 0 0 var(--border-subtle);
+}
+
+.ut-tx-row--child .ut-tx-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  /* left inset: 8 pad + 16 tree + 8 gap — tree is out of flow */
+  padding: 0 8px 0 32px;
+}
+
+.ut-tx-table--name-stack .ut-tx-row--child .ut-tx-name-cell {
+  height: auto;
+  min-height: 40px;
+  padding: 8px 8px 8px 32px;
+}
+
+/* Pin tree to the sticky name td so it always spans full cell height */
+.ut-tx-row--child .ut-tx-tree-wrap {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  display: block;
+  width: 16px;
+  margin: 0;
+  color: var(--border-subtle);
+  pointer-events: none;
+}
+
+.ut-tx-row--child .ut-tx-tree {
+  display: block;
+  width: 16px;
+  height: 100%;
+}
+
+.ut-tx-row--child .ut-tx-name-stack {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.ut-tx-row--child .ut-tx-name {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--text-default);
+}
+
+.ut-tx-name {
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--text-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ut-product-tag {
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: 24px;
+  padding: 4px 8px;
+  border-radius: var(--radius-button);
+  background-color: #e0ebf9;
+  color: #1460b6;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.ut-tx-country {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ut-tx-country__flag {
+  display: inline-flex;
+  width: 16px;
+  height: 11px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ut-tx-country__flag .fi {
+  width: 16px;
+  height: 11px;
+  border-radius: 1px;
+  background-size: cover;
+}
+
+.ut-tx-country--flag-only .ut-tx-country__flag {
+  cursor: default;
+  outline: none;
+}
+
+.ut-tx-country--flag-only .ut-tx-country__flag:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.ut-tx-empty {
+  color: var(--text-placeholder);
+}
+
+/* Score = Tag shell + CounterLabel + label (Figma Cell 7) */
+.ut-tx-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 4px 8px 4px 4px;
+  border-radius: var(--radius-badge);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  font-variation-settings: var(--font-variation-figma-medium);
+}
+
+.ut-tx-score--positive { color: var(--text-positive); }
+.ut-tx-score--intermediate { color: var(--text-intermediate); }
+.ut-tx-score--negative { color: var(--text-negative); }
+
+.ut-tx-score .tds-counter {
+  flex-shrink: 0;
+}
+
+.ut-tx-score__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ut-tx-risk-level {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  font-variation-settings: var(--font-variation-figma-medium);
+  white-space: nowrap;
+}
+
+.ut-tx-table .tds-data-table__signals {
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+
+.ut-tx-table .tds-data-table__signals--intermediate {
+  color: var(--text-intermediate);
+}
+
+.ut-tx-table-card .tds-data-table__footer {
+  border-top: none;
+}
+
+.ut-tx-table-card .tds-data-table__pagination-direction:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.ut-tx-table .tds-tag {
+  max-width: none;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.ut-tx-product {
+  width: 200px;
+  max-width: 100%;
+}
+
+.ut-tx-col-trid {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+}
+
+.ut-tx-table--trid {
+  min-width: 1464px;
+  width: 1464px;
+  max-width: 1464px;
+}
+
+.ut-tx-trid-cell .ut-tx-id-row--column {
+  width: 100%;
+  max-width: 100%;
+}
+
+.ut-tx-trid-text {
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--text-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ut-tx-trid-cell .ut-tx-id-copy {
+  width: 16px;
+  height: 16px;
+}
+
+.ut-tx-row-menu {
+  display: inline-flex;
+}
+
+/* Row … menu — wide enough for “Copy Transaction ID” */
+.ut-tx-row-menu__panel.tds-dropdown-panel {
+  min-width: 220px;
+}
+
+.ut-tx-table .tds-data-table__actions-col {
+  overflow: visible;
+}
+
+.ut-tx-table--copy-icon .ut-tx-col-actions,
+.ut-tx-table--copy-icon .tds-data-table__actions-col {
+  width: 56px;
+  min-width: 56px;
+  max-width: 56px;
+}
+
+
+.ut-tx-name-stack {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ut-tx-name-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ut-tx-name-row .tds-counter--sm {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+}
+
+.ut-tx-name-sub {
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--text-caption);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ut-tx-id-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ut-tx-id-copy,
+.ut-tx-copy-trid {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--icon-interactive);
+  cursor: pointer;
+}
+
+.ut-tx-id-copy:hover,
+.ut-tx-copy-trid:hover {
+  color: var(--icon-interactive);
+  opacity: 0.85;
+}
+
+.ut-tx-id-copy .icon,
+.ut-tx-copy-trid .icon {
+  width: 10px;
+  height: 11px;
+  display: block;
+}
+
+.ut-tx-id-copy.is-copied,
+.ut-tx-copy-trid.is-copied {
+  color: var(--icon-interactive);
+}
+
+.ut-tx-id-copy.is-copied .icon,
+.ut-tx-copy-trid.is-copied .icon {
+  width: 10px;
+  height: 9px;
+}
+
+.ut-tx-flow-status {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  color: var(--icon-muted);
+}
+
+.ut-tx-flow-status .icon {
+  width: auto;
+  height: auto;
+  max-width: 12px;
+  max-height: 11px;
+  display: block;
+}
+
+.ut-tx-flow-status--in-progress {
+  color: var(--icon-intermediate);
+}
+
+.ut-tx-flow-status--failed,
+.ut-tx-flow-status--abandoned,
+.ut-tx-flow-status--timed-out {
+  color: var(--icon-muted);
+}
+
+/* Floating TDS tooltip — compact icon label; portaled to avoid table clipping */
+.ut-tx-floating-tooltip {
+  position: fixed;
+  z-index: 250;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.ut-tx-floating-tooltip[hidden] {
+  display: none !important;
+}
+
+.ut-tx-floating-tooltip .tds-tooltip__body {
+  padding: var(--padding-xs) var(--padding-sm);
+  border-radius: var(--radius-md);
+}
+
+.ut-tx-floating-tooltip .tds-tooltip__text {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+/* Floating Alert — dark surface like Tooltip · dark */
+.ut-tx-toast.tds-announcement {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 240;
+  width: min(360px, calc(100vw - 32px));
+  background-color: var(--surface-inverse);
+  color: var(--text-inverse);
+  transform: translateX(-50%) translateY(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.ut-tx-toast.tds-announcement .tds-announcement__icon {
+  color: var(--icon-inverse);
+}
+
+.ut-tx-toast.tds-announcement .tds-announcement__title,
+.ut-tx-toast.tds-announcement .tds-announcement__message {
+  color: var(--text-inverse);
+}
+
+.ut-tx-toast.tds-announcement .tds-dismiss {
+  color: var(--icon-inverse);
+}
+
+.ut-tx-toast.tds-announcement .tds-dismiss:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: var(--icon-inverse);
+}
+
+.ut-tx-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.ut-tx-toast[hidden] {
+  display: none !important;
+}
+
+.ut-tx-toast .tds-dismiss .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.ut-tx-table--name-stack tbody td.ut-tx-td-name,
+.ut-tx-table--date-double tbody td {
+  height: auto;
+  min-height: 40px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  white-space: normal;
+}
+
+.ut-tx-date-stack {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ut-tx-date-stack__day {
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--text-default);
+}
+
+.ut-tx-date-stack__time {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-caption);
+}
+
+
+.ut-tx-outcome-cell {
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.ut-tx-search-mark {
+  background-color: var(--surface-selected);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+  font: inherit;
+}
+
+/* Figma 621:73886 — TextContent gap spacing-2; cell ~68px / padding-lg */
+.ut-tx-outcome-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-8);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ut-tx-outcome-sub {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-caption);
+}
+
+.ut-tx-outcome-sub__label--positive { color: var(--text-positive); }
+.ut-tx-outcome-sub__label--intermediate { color: var(--text-intermediate); }
+.ut-tx-outcome-sub__label--negative { color: var(--text-negative); }
+
+.ut-tx-table--score-combined tbody td.ut-tx-outcome-cell {
+  white-space: normal;
+}
+
+/* Carrying the score as well, the outcome column needs the room the Score
+   column gave up. */
+.ut-tx-table--score-combined .ut-tx-col-outcome {
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+}
+
+.ut-tx-table--score-combined tbody td.ut-tx-outcome-cell--with-sub {
+  height: 68px;
+  min-height: 68px;
+  padding-top: var(--padding-lg);
+  padding-bottom: var(--padding-lg);
+  vertical-align: middle;
+}
+
+/* Score folded into the outcome: every row gets the taller measure, scored or
+   not, so the rows stay on one rhythm instead of jumping between two heights. */
+/* The extra .ut-tx-table outranks data-table.css's :not() chain, which also
+   sets a td height. */
+.ut-tx-table.ut-tx-table--score-combined.ut-tx-table--no-score tbody td {
+  height: 72px;
+  min-height: 72px;
+  vertical-align: middle;
+}
+
+.ut-tx-table--score-combined.ut-tx-table--no-score tbody td.ut-tx-outcome-cell--with-sub {
+  height: 72px;
+  min-height: 72px;
+  padding-top: var(--padding-md);
+  padding-bottom: var(--padding-md);
+}
+
+/* The score is a separate thought from the tag — give it a line of its own
+   rather than letting it crowd the tag's underside. */
+.ut-tx-table--score-combined.ut-tx-table--no-score .ut-tx-outcome-stack {
+  gap: 6px;
+}
+
+.ut-tx-table--score-combined.ut-tx-table--no-score .ut-tx-outcome-sub {
+  padding-left: 2px;
+}
+
+/* Shared side drawers — Settings + Filters (Figma 301:48285 · 396px)
+ * Header stays put; body scrolls inside the panel (not the page).
+ */
+.ut-tx-settings,
+.ut-tx-filters {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 396px;
+  height: calc(100dvh - (2 * var(--spacing-8)));
+  max-height: calc(100dvh - (2 * var(--spacing-8)));
+  padding: 16px;
+  gap: 16px;
+  overflow: hidden;
+  background: var(--surface-neutral-01);
+  border-radius: var(--radius-section);
+}
+
+/* Scrollbar flush to the right edge; content keeps 16px inset via body/header padding */
+.ut-tx-filters {
+  padding-right: 0;
+}
+
+.ut-tx-settings[hidden],
+.ut-tx-filters[hidden] {
+  display: none;
+}
+
+.ut-tx-settings__header,
+.ut-tx-filters__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.ut-tx-filters__header {
+  padding-right: 16px;
+}
+
+.ut-tx-settings__title,
+.ut-tx-filters__title {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--text-default);
+}
+
+.ut-tx-filters__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ut-tx-filters__clear {
+  color: var(--text-disabled);
+}
+
+.ut-tx-filters__clear:not(:disabled) {
+  color: var(--interactive-default);
+}
+
+.ut-tx-filters__clear:disabled {
+  cursor: default;
+}
+
+.ut-tx-settings__body,
+.ut-tx-filters__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* Content inset; scrollbar stays on .ut-tx-filters__body (flush to panel edge) */
+.ut-tx-filters__body-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 16px;
+}
+
+.ut-tx-filters__body {
+  gap: 0;
+}
+
+.ut-tx-settings__body::-webkit-scrollbar-track,
+.ut-tx-filters__body::-webkit-scrollbar-track {
+  margin-block: var(--radius-section);
+}
+
+.ut-tx-settings__section,
+.ut-tx-filters__section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.ut-tx-settings__heading,
+.ut-tx-filters__heading {
+  margin: 0;
+  padding: 4px 0;
+  width: 100%;
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--text-caption);
+}
+
+.ut-tx-settings__radios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Figma 301:48285 — NavItems stack flush; spacing comes from item padding */
+.ut-tx-filters__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.ut-tx-settings__option {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 20px;
+  padding-left: 0;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+
+.ut-tx-settings__option .tds-radio {
+  margin-top: 2px;
+}
+
+.ut-tx-settings__option span {
+  padding-top: 1px;
+}
+
+.ut-tx-filters__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0 4px;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.ut-tx-filters__option .tds-checkbox {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.ut-tx-filters__option-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+  padding: 6px 0;
+}
+
+.ut-tx-filters__option-label {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-default);
+}
+
+.ut-tx-filters__option-label--regular {
+  font-weight: 400;
+  font-variation-settings: normal;
+}
+
+.ut-tx-filters__option-label--positive { color: var(--text-positive); }
+.ut-tx-filters__option-label--intermediate { color: var(--text-intermediate); }
+.ut-tx-filters__option-label--negative { color: var(--text-negative); }
+
+.ut-tx-filters__option-desc {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  color: var(--text-caption);
+}
+
+/* ---- Package select ----
+   Trigger matches the Source field beside it; the panel is the DS dropdown,
+   so the product subtitle uses the action-list-item description style rather
+   than a tag — present, but quieter than the package name. */
+.ut-tx-pkg-select {
+  position: relative;
+  display: block;
+  /* The section is a flex column, so stretch rather than shrink to the
+     trigger's text — it has to line up with the Source field above it. */
+  width: 100%;
+  align-self: stretch;
+}
+
+.ut-tx-pkg-select__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  box-sizing: border-box;
+  width: 100%;
+  /* Same measure as the Source field above it (.tds-text-input__field--md). */
+  height: 32px;
+  padding: 0 var(--padding-sm);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-neutral-01);
+  color: var(--text-default);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ut-tx-pkg-select__trigger:hover {
+  border-color: var(--border-focus);
+}
+
+.ut-tx-pkg-select__trigger:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 1px;
+}
+
+.ut-tx-pkg-select__trigger .tds-text-input__leading-icon,
+.ut-tx-pkg-select__trigger .tds-caret {
+  flex: 0 0 auto;
+  color: var(--icon-faint);
+}
+
+.ut-tx-pkg-select__trigger .tds-caret {
+  margin-left: auto;
+}
+
+.ut-tx-pkg-select__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ut-tx-pkg-select__value--placeholder {
+  color: var(--text-placeholder);
+}
+
+/* Width comes entirely from TdsDropdownPanel, which sets an inline
+   min-width equal to the trigger. Two things have to hold for the panel to
+   line up with the field:
+   - border-box, or its padding and border add to that min-width and the panel
+     ends up wider than the trigger, too wide to fit beside it, and clamped to
+     the drawer edge;
+   - no percentage min-width here — the panel is portaled to <body> while open,
+     so a percentage resolves against the page, not the field. */
+.ut-tx-pkg-select__panel {
+  box-sizing: border-box;
+  width: 0;
+  padding: 4px;
+}
+
+.ut-tx-pkg-select__panel .tds-action-list-item {
+  gap: 6px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.ut-tx-filters__option--nested {
+  padding-left: 24px;
+  padding-right: 4px;
+}
+
+.ut-tx-filters__option[hidden],
+.ut-tx-filters__more-block[hidden],
+.ut-tx-filters__more[hidden] {
+  display: none !important;
+}
+
+/* Figma 301:48303 — secondary sm Button with plus leading icon */
+.ut-tx-filters__more.tds-btn {
+  margin-top: 4px;
+  align-self: flex-start;
+}
+
+.ut-tx-filters__select {
+  width: 100%;
+}
+
+.ut-tx-filters__select .tds-text-input__field {
+  height: 32px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  box-shadow: var(--shadow-inset);
+  background: var(--surface-neutral-01);
+  padding: 0 8px;
+  gap: 8px;
+}
+
+.ut-tx-filters__select .tds-text-input__leading-icon {
+  color: var(--text-caption);
+}
+
+.ut-tx-filters__select .tds-caret {
+  color: var(--icon-faint);
+  pointer-events: none;
+}
+
+.ut-tx-filters__select-native {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.ut-tx-filters__select-native:invalid {
+  color: var(--text-placeholder);
+}
+
+.ut-tx-filters__divider {
+  width: 100%;
+  height: 1px;
+  flex-shrink: 0;
+  background-color: var(--border-divider);
+}
+
+/* Figma 301:48326 — chevron left of uppercase label; right closed / down open */
+.ut-tx-filters__advanced-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-description);
+}
+
+.ut-tx-filters__advanced-toggle-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ut-tx-filters__advanced-chevron {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--icon-faint);
+  transition: transform 0.15s ease;
+}
+
+.ut-tx-filters__advanced-toggle[aria-expanded="true"] .ut-tx-filters__advanced-chevron {
+  transform: rotate(90deg);
+}
+
+.ut-tx-filters__advanced-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.ut-tx-filters__advanced-body[hidden] {
+  display: none !important;
+}
+
+.app-shell.ut-tx-drawer-open .ut-tx-page {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+@media (max-width: 1100px) {
+  .ut-tx-page {
+    padding: 24px 32px 32px;
+  }
+
+  .ut-tx-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .ut-tx-toolbar__left {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .ut-tx-search,
+  .ut-tx-date,
+  .ut-tx-product {
+    width: 100%;
+  }
+
+  .ut-tx-settings,
+  .ut-tx-filters {
+    position: fixed;
+    top: var(--spacing-8);
+    right: var(--spacing-8);
+    bottom: var(--spacing-8);
+    z-index: 40;
+    width: min(396px, calc(100vw - 24px));
+    box-shadow: var(--elevation-xl);
+  }
+}
