@@ -674,9 +674,9 @@
 /* ------------------------------------------------------------------
    Ground behind the AI panel too
    While the KYB landing / map prompt is showing, the gray dotted ground fills
-   the whole canvas so the panel floats on it instead of on white. Behind the
-   page column sits a clear, feathered gray plate (same as Transactions) so the
-   search + recent list sit on soft color, not on the dotted pattern.
+   the whole canvas so the panel floats on it instead of on white. The dots
+   fade out behind the page column (feathered clear patch — no oversized blur
+   plate under the search/list).
    ------------------------------------------------------------------ */
 .d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing]:not([hidden])),
 .d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="map"] [data-d3-kyb-map-await]:not([hidden])) {
@@ -695,21 +695,6 @@
   background-size: 18px 18px;
   -webkit-mask-image: radial-gradient(circle 440px at var(--d3-kyb-cx, 50%) 48%, transparent 0, transparent 38%, #000 100%);
   mask-image: radial-gradient(circle 440px at var(--d3-kyb-cx, 50%) 48%, transparent 0, transparent 38%, #000 100%);
-}
-
-/* Soft gray plate under the search + recent list (matches Transactions). */
-.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing]:not([hidden]))::after,
-.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="map"] [data-d3-kyb-map-await]:not([hidden]))::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  pointer-events: none;
-  top: 4px;
-  bottom: 4px;
-  left: calc(var(--d3-kyb-cx, 50%) - var(--d3-ground-w, 600px) / 2 + 4px);
-  width: calc(var(--d3-ground-w, 600px) - 8px);
-  background: var(--surface-neutral-02, #f4f6f4);
-  filter: blur(28px);
 }
 
 /* The workspace no longer paints its own gray or dots in those states: the canvas does. */
