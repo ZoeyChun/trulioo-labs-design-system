@@ -16,7 +16,7 @@
 
   var PRODUCTS = [{ id: "kyb", label: "KYB" }];
   var product = "kyb";
-  var draft = null; // { package, finder, addons }
+  var draft = null; // { package, country, finder, addons }
   var touched = false; // add-ons changed by hand in this draft
   var locked = false; // a saved configuration is shown read-only until Edit
 
@@ -32,8 +32,8 @@
     var cfg = S.savedConfig();
     touched = !!cfg;
     draft = cfg
-      ? { package: cfg.package, finder: cfg.finder, addons: cfg.addons.slice() }
-      : { package: "insights", finder: true, addons: S.defaultAddons ? S.defaultAddons("insights") : [] };
+      ? { package: cfg.package, country: S.savedCountry(), finder: cfg.finder, addons: cfg.addons.slice() }
+      : { package: "insights", country: S.savedCountry(), finder: true, addons: S.defaultAddons ? S.defaultAddons("insights") : [] };
   }
 
   function offered() {
@@ -43,6 +43,25 @@
   function prune() {
     var ids = offered().map(function (a) { return a.id; });
     draft.addons = draft.addons.filter(function (id) { return ids.indexOf(id) !== -1; });
+  }
+
+  function countrySelect() {
+    var cur = S.country(draft.country) || S.countries[0];
+    var items = S.countries
+      .map(function (c) {
+        return '<div class="tds-action-list-item' + (c.cc === cur.cc ? " tds-action-list-item--selected" : "") + '" role="option" data-value="' + esc(c.name) + '" data-country-code="' + c.cc + '">' +
+          '<span class="tds-action-list-item__leading-visual" aria-hidden="true"><span class="fi fi-' + c.cc + '"></span></span>' +
+          '<span class="tds-action-list-item__label">' + esc(c.name) + "</span></div>";
+      })
+      .join("");
+    return (
+      '<div class="tds-select tds-select--interactive d3-cfg__country" data-menu-type="flag" data-d3-cfg-country>' +
+      '<button type="button" class="tds-select__trigger tds-select__trigger--lg" aria-haspopup="listbox" aria-expanded="false" aria-label="Country, ' + esc(cur.name) + '">' +
+      '<span class="tds-select__country-flag" aria-hidden="true"><span class="fi fi-' + cur.cc + '"></span></span>' +
+      '<span class="tds-select__value">' + esc(cur.name) + "</span>" +
+      '<span class="tds-select__trailing-group"><span class="tds-caret tds-caret--default" aria-hidden="true"><svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg></span></span></button>' +
+      '<div class="tds-select__menu" role="listbox" aria-label="Country" hidden><div class="tds-dropdown-panel">' + items + "</div></div></div>"
+    );
   }
 
   function packageCards() {
@@ -82,13 +101,13 @@
   }
 
   function sameAsSaved(saved) {
-    return saved.package === draft.package && saved.finder === draft.finder &&
+    return saved.package === draft.package && saved.country === draft.country && saved.finder === draft.finder &&
       JSON.stringify(saved.addons.slice().sort()) === JSON.stringify(draft.addons.slice().sort());
   }
 
   function summary() {
     var pk = S.package(draft.package);
-    var parts = [pk.name, draft.finder ? "Business Finder" : "Manual entry"];
+    var parts = [S.country(draft.country).name, pk.name, draft.finder ? "Business Finder" : "Manual entry"];
     parts.push(draft.addons.length ? draft.addons.map(function (id) { return S.addon(id).short; }).join(" + ") : "No add-ons");
     return parts.join(" · ");
   }
@@ -105,6 +124,10 @@
       '<p class="d3-cfg__sub">Choose how verifications run. Once saved, TruAI and the search use this setup and stop asking step by step.</p></header>' +
       '<div class="d3-cfg__tabs" role="tablist" aria-label="Product">' + tabs + "</div>" +
       '<section class="d3-cfg__card' + (locked ? " is-locked" : "") + '" aria-label="KYB configuration">' +
+      '<div class="d3-cfg__block"><h2 class="d3-cfg__h">Country</h2>' +
+      '<p class="d3-cfg__hint">Where the businesses you verify are registered. The search starts here.</p>' +
+      countrySelect() + "</div>" +
+      '<hr class="d3-cfg__rule">' +
       '<div class="d3-cfg__block"><h2 class="d3-cfg__h">Package</h2>' +
       '<p class="d3-cfg__hint">What every KYB verification includes.</p>' +
       '<div class="d3-cfg__cards" role="radiogroup" aria-label="Package">' + packageCards() + "</div></div>" +
@@ -130,6 +153,7 @@
             : "")) +
       "</span></div>" +
       "</section></div>";
+    if (window.TdsInteractiveSelect) window.TdsInteractiveSelect.init(host);
     if (locked) {
       Array.prototype.forEach.call(host.querySelectorAll(".d3-cfg__card input"), function (i) { i.disabled = true; });
     }
@@ -137,9 +161,10 @@
 
   function save() {
     prune();
-    S.saveConfig({ package: draft.package, finder: draft.finder, addons: draft.addons });
+    S.saveConfig({ package: draft.package, country: draft.country, finder: draft.finder, addons: draft.addons });
     /* The next verification starts from this. */
     S.reset("config");
+    S.set({ country: draft.country }, "config");
     locked = true;
     render();
     document.dispatchEvent(new CustomEvent("d3-kyb:config-change"));
@@ -184,6 +209,7 @@
       S.clearConfig();
       S.reset("config");
       loadDraft();
+      S.set({ country: draft.country }, "config");
       locked = false;
       render();
       document.dispatchEvent(new CustomEvent("d3-kyb:config-change"));
@@ -194,6 +220,15 @@
       locked = true;
       render();
     }
+  });
+
+  host.addEventListener("tds-select:change", function (event) {
+    var item = event.detail && event.detail.item;
+    if (!item || locked || !event.target.closest("[data-d3-cfg-country]")) return;
+    draft.country = item.getAttribute("data-country-code");
+    S.saveCountry(draft.country);
+    S.set({ country: draft.country }, "config");
+    render();
   });
 
   host.addEventListener("keydown", function (event) {
@@ -245,4 +280,6 @@
   locked = !!S.savedConfig();
   render();
   syncSaved();
+  /* A saved country is where the search starts. */
+  S.set({ country: S.savedCountry() }, "config");
 })();

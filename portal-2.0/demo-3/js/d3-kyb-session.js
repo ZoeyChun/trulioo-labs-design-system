@@ -134,6 +134,7 @@
       if (c.v !== 2 && offered.indexOf("risk") !== -1 && list.indexOf("risk") === -1) list.push("risk");
       return {
         package: c.package,
+        country: savedCountry(),
         finder: c.finder !== false,
         addons: list.filter(function (id, i, all) {
           return offered.indexOf(id) !== -1 && all.indexOf(id) === i;
@@ -146,8 +147,24 @@
 
   function saveConfig(cfg) {
     try {
-      window.localStorage.setItem(CONFIG_KEY, JSON.stringify({ v: 2, package: cfg.package, finder: cfg.finder !== false, addons: cfg.addons || [] }));
+      window.localStorage.setItem(CONFIG_KEY, JSON.stringify({ v: 2, package: cfg.package, country: cfg.country || "us", finder: cfg.finder !== false, addons: cfg.addons || [] }));
     } catch (e) { /* storage blocked: the demo just won't remember */ }
+  }
+
+  /* The country is saved on its own, as soon as it is chosen, and starts as United States. */
+  var COUNTRY_KEY = "d3-kyb-country";
+
+  function savedCountry() {
+    try {
+      var c = country(window.localStorage.getItem(COUNTRY_KEY));
+      if (c) return c.cc;
+      window.localStorage.setItem(COUNTRY_KEY, "us");
+    } catch (e) { /* storage blocked */ }
+    return "us";
+  }
+
+  function saveCountry(cc) {
+    try { window.localStorage.setItem(COUNTRY_KEY, country(cc) ? country(cc).cc : "us"); } catch (e) { /* ignore */ }
   }
 
   function clearConfig() {
@@ -569,6 +586,8 @@
     defaultAddons: defaultAddons,
     hasUboAddon: hasUboAddon,
     savedConfig: savedConfig,
+    savedCountry: savedCountry,
+    saveCountry: saveCountry,
     saveConfig: saveConfig,
     clearConfig: clearConfig,
     package: pkg,

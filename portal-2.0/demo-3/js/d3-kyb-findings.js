@@ -374,9 +374,16 @@
   }
 
   function isBrhOn(card) {
-    var root = resumeRoot(card);
-    if (root && root.hasAttribute("data-d3-brh")) return root.getAttribute("data-d3-brh") !== "off";
+    /* Business Risk Values is an add-on: without it there is no score, gauge or Risk Analysis.
+       The in-page switch can still turn it off for a report that has it. */
+    var R = window.D3KybReport;
+    if (R && typeof R.tabAllowed === "function" && !R.tabAllowed("risk")) return false;
     return brhEnabled;
+  }
+
+  /* Only the in-page switch (the add-on is checked by the report's tab rules). */
+  function brhSwitchedOff() {
+    return !brhEnabled;
   }
 
   /* The high-level overview: headline, who the business is, and three short fact
@@ -907,30 +914,20 @@
         '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">Risk Analysis</p>' +
         '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(title) + "</h2></div>";
     } else {
-      var offTitle = /not verified/i.test(verifyStatus)
+      /* No score: the hero states the verification status, in its own tone. */
+      var offLabels = { negative: "Not Verified", intermediate: "Needs Review", positive: "Verified" };
+      var offTitle = /not verified|fail/i.test(verifyStatus)
         ? "Not Verified"
         : /review|flag/i.test(verifyStatus)
           ? "Needs Review"
           : /verif/i.test(verifyStatus)
             ? "Verified"
-            : name;
-      var offTone = /not verified|fail/i.test(verifyStatus)
-        ? "negative"
-        : /review|flag/i.test(verifyStatus)
-          ? "intermediate"
-          : "positive";
-      var office = String(r.address || biz.addr || "").split(" - ")[0].split(",")[0].trim() || "—";
+            : offLabels[tone] || "Verified";
+      var offTone = /not verified|fail/i.test(offTitle) ? "negative" : /review/i.test(offTitle) ? "intermediate" : "positive";
       topHtml =
-        '<div class="d3h-hero__thumbwrap">' +
-        '<img class="d3h-hero__thumb" src="assets/kyb-resume/building.png" alt="" width="120" height="90">' +
-        "</div>" +
         '<div class="d3h-hero__verdict">' +
-        '<p class="d3h-hero__eyebrow">Overview</p>' +
-        '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + offTone + '">' + esc(offTitle) + "</h2>" +
-        '<dl class="d3h-hero__meta">' +
-        '<div><dt>Registration</dt><dd>' + esc(r.regNumber || biz.reg || "—") + "</dd></div>" +
-        "<div><dt>Address</dt><dd>" + esc(office) + "</dd></div>" +
-        "</dl></div>";
+        '<p class="d3h-hero__eyebrow">Verification status</p>' +
+        '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + offTone + '">' + esc(offTitle) + "</h2></div>";
     }
 
     hero.outerHTML =
@@ -1208,6 +1205,7 @@
       statusOverride = v || null;
     },
     setBrh: setBrh,
+    brhSwitchedOff: brhSwitchedOff,
     isBrhOn: function (card) {
       return isBrhOn(card);
     }

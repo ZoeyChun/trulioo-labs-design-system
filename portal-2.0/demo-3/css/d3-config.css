@@ -101,6 +101,10 @@
   border-top: 1px solid var(--border-subtle);
 }
 
+.d3-cfg__country { width: 100%; max-width: 320px; }
+
+.d3-cfg__card.is-locked .d3-cfg__country { pointer-events: none; opacity: 0.7; }
+
 .d3-cfg__cards {
   display: flex;
   flex-direction: column;

@@ -663,7 +663,7 @@
   function tabAllowed(id) {
     if (id === "findings") return true;
     /* BRH off hides Risk Analysis regardless of package. */
-    if (id === "risk" && window.D3KybFindings && window.D3KybFindings.isBrhOn && !window.D3KybFindings.isBrhOn(resumeCard)) {
+    if (id === "risk" && window.D3KybFindings && window.D3KybFindings.brhSwitchedOff && window.D3KybFindings.brhSwitchedOff()) {
       return false;
     }
     var S = window.D3KybSession;
@@ -736,6 +736,12 @@
     if (id === "overview") {
       window.requestAnimationFrame(function () {
         ensureAdditionalPanel(resolveBiz());
+        /* The map was laid out while this tab was hidden: size it, and centre it, now it shows. */
+        if (heroMap) {
+          heroMap.invalidateSize({ animate: false });
+          var mb = resolveBiz();
+          if (mb && mb.lat != null && mb.lon != null) heroMap.setView([mb.lat, mb.lon], 12, { animate: false });
+        }
       });
     }
     if (id === "raw") {
