@@ -385,6 +385,18 @@
    hairline the rail has, reading as an extension of the rail. */
 .d1-shell[data-d3-view="home"] .d3-chatdock {
   background: var(--surface-neutral-01, #fff);
-  border-radius: 0;
-  border-right: 1px solid var(--border-subtle, #dde2de);
+}
+/* Docked (wide windows) it is flush with the rail; floating (narrow windows) it stays a rounded card. */
+@media (min-width: 1400px) {
+  .d1-shell[data-d3-view="home"] .d3-chatdock {
+    border-radius: 0;
+    border-right: 1px solid var(--border-subtle, #dde2de);
+  }
+}
+
+/* The Chats icon is only highlighted while the pointer is on it or the dock is open; focus left on it
+   after closing the dock (or the flyout hover area around it) must not keep the hover color. */
+.d1-fly--chats:focus-within .d1-nav-btn:not(:hover):not([aria-expanded="true"]),
+.d1-fly--chats:hover .d1-nav-btn:not(:hover):not([aria-expanded="true"]) {
+  background: transparent;
 }
