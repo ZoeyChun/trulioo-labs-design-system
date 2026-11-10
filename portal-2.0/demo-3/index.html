@@ -46,37 +46,37 @@
   <link rel="stylesheet" href="../../Components/counter-label/counter-label.css">
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../../pages/shared/flag-icons.css">
+  <link rel="stylesheet" href="../../Components/flag-icon/flag-icon.css">
   <link rel="stylesheet" href="css/d3-kyb-search.css?v=2">
   <link rel="stylesheet" href="css/welcome.css">
   <link rel="stylesheet" href="css/briefing.css?v=3">
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/loader.css?v=2">
-  <link rel="stylesheet" href="css/d3-fa.css?v=4">
-  <link rel="stylesheet" href="css/d3-icon-weight.css?v=1">
+  <link rel="stylesheet" href="css/d3-fa.css?v=3">
   <link rel="stylesheet" href="css/d3-shell.css?v=40">
-  <link rel="stylesheet" href="css/d3-rail.css?v=33">
-  <link rel="stylesheet" href="components/ai-panel/ai-panel.css?v=25">
+  <link rel="stylesheet" href="css/d3-rail.css?v=21">
+  <link rel="stylesheet" href="components/ai-panel/ai-panel.css?v=23">
   <link rel="stylesheet" href="../demo-4/css/truai-bubble.css?v=4">
   <link rel="stylesheet" href="components/ai-panel/treatments/treatments.css?v=9">
   <link rel="stylesheet" href="css/d3-labs.css?v=5">
   <link rel="stylesheet" href="css/d3-config.css?v=5">
   <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="css/d3-home.css?v=18">
-  <link rel="stylesheet" href="css/d3-workspace.css?v=37">
+  <link rel="stylesheet" href="css/d3-workspace.css?v=36">
   <link rel="stylesheet" href="css/d3-kyb-gap.css?v=36">
   <link rel="stylesheet" href="css/d3-kyb-package.css?v=14">
-  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=10">
+  <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=9">
   <link rel="stylesheet" href="css/d3-embed-report.css?v=1">
   <link rel="stylesheet" href="css/d3-kyb-details.css?v=1">
-  <link rel="stylesheet" href="css/d3-transactions.css?v=16">
+  <link rel="stylesheet" href="css/d3-transactions.css?v=10">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=2">
   <link rel="stylesheet" href="css/d3-kyb-agent.css?v=11">
   <link rel="stylesheet" href="css/d3-kyb-result-tabs.css?v=5">
-  <link rel="stylesheet" href="css/d3-kyb-findings.css?v=21">
+  <link rel="stylesheet" href="css/d3-kyb-findings.css?v=30">
   <link rel="stylesheet" href="../../Components/filter-tab/filter-tab.css">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
-  <link rel="stylesheet" href="css/d3-kyb-report-panels.css?v=10">
+  <link rel="stylesheet" href="css/d3-kyb-report-panels.css?v=18">
   <link rel="stylesheet" href="transactions/kyb-results/ubo-graph-dist/kyb-ubo-graph-react.css?v=4">
   <link rel="stylesheet" href="css/d3-kyb-ubo-graph.css?v=10">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
@@ -162,17 +162,18 @@
     <nav class="d1-rail__nav" aria-label="Primary">
       <div class="d1-rail__nav-top">
         <div class="d1-fly d1-fly--chats">
-          <button type="button" class="d1-nav-btn d1-nav-btn--lg" data-d3-nav="messages" aria-label="Chats" aria-controls="d3-rail-chats" aria-expanded="false">
+          <button type="button" class="d1-nav-btn d1-nav-btn--lg" data-d3-nav="messages" aria-label="Chats" aria-haspopup="true" aria-controls="d1-chat-menu">
             <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h10.5A2.25 2.25 0 0 1 19.5 6.75v7.5a2.25 2.25 0 0 1-2.25 2.25H9.3L5.4 19.6a.75.75 0 0 1-1.2-.6v-2.5A2.25 2.25 0 0 1 4.5 14.25v-7.5Z"/>
-            </svg>
+          </svg>
             <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="currentColor" d="M6.75 3.75A2.25 2.25 0 0 0 4.5 6v8.25c0 .6.24 1.17.66 1.59L4.5 18.9a.75.75 0 0 0 1.2.6l3.3-2.48h7.95A2.25 2.25 0 0 0 19.2 14.77V6A2.25 2.25 0 0 0 16.95 3.75H6.75Z"/>
             </svg>
             <span class="d1-nav-tip" aria-hidden="true">Chats</span>
-          </button>
-          <div class="d1-fly__panel d1-chats" id="d1-chat-menu" role="menu" aria-label="Chats">
+        </button>
+        <div class="d1-fly__panel d1-chats" id="d1-chat-menu" role="menu" aria-label="Chats">
             <div class="d1-chats__recent d3-chats__pages" data-d3-chat-history></div>
+            <div class="d1-chats__recent" data-d1-chat-list></div>
           </div>
         </div>
         <hr class="d3-rail__rule" aria-hidden="true">
@@ -185,7 +186,7 @@
             <path fill="currentColor" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5.5v-5.5h-5V21H4a1 1 0 0 1-1-1v-9.5Z"/>
           </svg>
           <span class="d1-nav-tip" aria-hidden="true">Home</span>
-        </button>
+          </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="kyb" aria-label="KYB Verification">
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M4.5 21V5a1.5 1.5 0 0 1 1.5-1.5h8A1.5 1.5 0 0 1 15.5 5v16M15.5 9.5H18a1.5 1.5 0 0 1 1.5 1.5v10M3 21h18M8 7.5h3.5M8 11.5h3.5M8 15.5h3.5"/>
@@ -194,7 +195,7 @@
             <path fill="currentColor" d="M6 3a2 2 0 0 0-2 2v15.25H3a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5h-1V11a2 2 0 0 0-2-2h-2V5a2 2 0 0 0-2-2H6Zm1.75 3.75a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5Zm0 4a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5Zm0 4a.75.75 0 0 0 0 1.5h3.5a.75.75 0 0 0 0-1.5h-3.5Z" fill-rule="evenodd"/>
           </svg>
           <span class="d1-nav-tip" aria-hidden="true">KYB Verification</span>
-        </button>
+          </button>
         <button type="button" class="d1-nav-btn" data-d3-nav="transactions" aria-label="Transactions">
           <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.5"/>
@@ -215,6 +216,18 @@
           </svg>
           <span class="d1-nav-tip" aria-hidden="true">Labs</span>
         </button>
+        <!-- Placeholder only — no view / route yet. -->
+        <button type="button" class="d1-nav-btn d1-nav-btn--placeholder" data-d3-nav-placeholder="dev-dashboard" aria-label="Dev Dashboard">
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3.75" y="5.25" width="16.5" height="11.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 20.25h8M12 16.75v3.5"/>
+            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m9.25 9.5 1.75 1.75L9.25 13M14.75 9.5 13 11.25l1.75 1.75"/>
+          </svg>
+          <svg class="d1-nav-btn__icon d1-nav-btn__icon--fill" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M5.25 4.5A1.5 1.5 0 0 0 3.75 6v9.5c0 .83.67 1.5 1.5 1.5h6v1.75H8a.75.75 0 0 0 0 1.5h8a.75.75 0 0 0 0-1.5h-3.25V17H18.75c.83 0 1.5-.67 1.5-1.5V6A1.5 1.5 0 0 0 18.75 4.5H5.25Zm4.35 4.65a.75.75 0 0 1 0 1.06L8.31 11.5l1.29 1.29a.75.75 0 1 1-1.06 1.06l-1.82-1.82a.75.75 0 0 1 0-1.06l1.82-1.82a.75.75 0 0 1 1.06 0Zm5.06 0a.75.75 0 0 1 1.06 0l1.82 1.82a.75.75 0 0 1 0 1.06l-1.82 1.82a.75.75 0 1 1-1.06-1.06l1.29-1.29-1.29-1.29a.75.75 0 0 1 0-1.06Z"/>
+          </svg>
+          <span class="d1-nav-tip" aria-hidden="true">Dev Dashboard</span>
+        </button>
       </div>
     </nav>
 
@@ -222,9 +235,9 @@
       <div class="d1-fly d1-fly--settings">
         <button type="button" class="d1-tool-btn d1-tool-btn--lg" data-d3-nav="settings" aria-label="Settings">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
-            <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-          </svg>
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+        </svg>
           <span class="d1-nav-tip" aria-hidden="true">Settings</span>
         </button>
         <div class="d1-fly__panel d1-account-menu" id="d1-settings-menu" role="menu" aria-label="Settings">
@@ -250,7 +263,8 @@
             <span class="d1-org__name">Pacific Ridge Financial</span>
           </div>
           <hr class="d1-fly__rule">
-          <button type="button" class="d1-menu-item" role="menuitem"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6.25 6.25a1.75 1.75 0 0 1 3.4.6c0 1.2-1.65 1.5-1.65 2.65"/><circle cx="8" cy="11.6" r=".6" fill="currentColor"/></svg>Help &amp; Support</button>
+          <button type="button" class="d1-menu-item" role="menuitem"><i class="fa-regular fa-circle-question" aria-hidden="true"></i>Help &amp; Support</button>
+          <button type="button" class="d1-menu-item" role="menuitem"><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="5" r="2.25" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M3.5 13.5c.6-2.2 2.3-3.5 4.5-3.5s3.9 1.3 4.5 3.5"/><path stroke="currentColor" stroke-width="1.25" stroke-linejoin="round" d="m11.5 7.5.9.4v1.3c0 1-.6 1.7-1.5 2-.9-.3-1.5-1-1.5-2V7.9l.9-.4.7-.3.7.3Z"/></svg>Privacy Policies</button>
           <button type="button" class="d1-menu-item" role="menuitem" data-d1-signout><svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 8H3m7 0L7.5 5.5M10 8 7.5 10.5M7 3h4.5A1.5 1.5 0 0 1 13 4.5v7A1.5 1.5 0 0 1 11.5 13H7"/></svg>Sign Out</button>
           <hr class="d1-fly__rule">
           <div class="d1-who">
@@ -261,21 +275,19 @@
       </div>
     </div>
   
-  </aside>
-
-  <!-- Chats: a docked panel beside the rail. The Chats icon opens and closes it; it stays
-       open while you work. -->
-  <aside class="d3-chatdock" id="d3-rail-chats" data-d3-chatdock aria-label="Chats" hidden>
-    <header class="d3-chatdock__head">
-      <h2 class="d3-chatdock__title">Chats</h2>
-      <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular d3-chatdock__hide" data-d3-chatdock-hide aria-label="Hide chats" data-tooltip="Hide chats">
-        <span class="tds-icon-btn__icon" aria-hidden="true">
-          <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M6.5 3v10" stroke="currentColor" stroke-width="1.25"/></svg>
-        </span>
-      </button>
-    </header>
-    <div class="d3-chatdock__list" data-d3-chat-list-all role="menu" aria-label="All chats"></div>
-    <div class="d1-chats__recent d3-chatdock__home" data-d1-chat-list></div>
+    <!-- Second layer of the nav: every chat. Opened from "See all" in the Chats
+         menu; the back button returns to the main nav. -->
+    <section class="d1-rail__layer2" data-d3-rail-layer2 aria-label="All chats" hidden>
+      <header class="d1-l2__head">
+        <button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular d1-l2__back" data-d3-rail-back aria-label="Back to navigation">
+          <span class="tds-icon-btn__icon">
+            <svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 3 5 8l5 5"/></svg>
+          </span>
+        </button>
+        <h2 class="d1-l2__title">Chats</h2>
+      </header>
+      <div class="d1-l2__list" data-d3-chat-list-all role="menu" aria-label="All chats"></div>
+    </section>
   </aside>
 
   <!-- Figma PageShell 1280:20394 — canvas holds TruAI panel + main -->
@@ -448,7 +460,6 @@
         <div class="d3-workspace__landing" data-d3-kyb-landing>
         <div class="d3-workspace__hero">
         <h1 class="d3-workspace__title">KYB Verification</h1>
-        <p class="d3-workspace__lede">Search for a business to start a verification yourself.</p>
         <!-- Manual search — synced from demo-2/verify-business -->
         <div class="d3-workspace__search" aria-labelledby="d3-kyb-search-h">
           <span class="d1-visually-hidden" id="d3-kyb-search-h">Search for a business</span>
@@ -509,9 +520,9 @@
                   <span class="tds-combobox__leading-visual vb-combobox__icon" aria-hidden="true">
                     <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
                   </span>
-                  <label class="d1-visually-hidden" for="vb-q">Search by business name</label>
+                  <label class="d1-visually-hidden" for="vb-q">Search for United States business</label>
                   <input class="tds-combobox__input" id="vb-q" type="text"
-                         placeholder="Search by business name" autocomplete="off"
+                         placeholder="Search for United States business" autocomplete="off"
                          role="combobox" aria-expanded="false" aria-controls="vb-search-list"
                          aria-autocomplete="list" aria-describedby="vb-search-hint"
                          data-d3-kyb-search>
@@ -642,7 +653,7 @@
         <p class="d3-workspace__fresh" data-d3-kyb-fresh hidden></p>
 
         <!-- Full report chrome (shown after verify / opening a recent card) -->
-        <article class="d3-workspace__card d3-kyb-resume" data-d3-kyb-resume hidden>
+        <article class="d3-workspace__card d3-kyb-resume" data-d3-kyb-resume data-d3-brh="on" hidden>
           <div class="d3-kyb-resume__body">
             <div class="d3-kyb-resume__identity">
               <div class="d3-workspace__biz-row">
@@ -880,12 +891,141 @@ No evidence of active trading, clients, or revenue.</p>
             </div>
           </div>
         </div>
+
+        <div class="tds-dialog tds-dialog--right tds-dialog--score-breakdown tds-dialog--scoped d3-kyb-score-breakdown-dialog" id="kyb-score-breakdown-dialog" hidden>
+          <div class="tds-dialog__backdrop">
+            <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="kyb-score-breakdown-title" tabindex="-1">
+              <header class="tds-dialog__header">
+                <div class="tds-dialog__header-row">
+                  <h2 class="tds-dialog__title" id="kyb-score-breakdown-title">Score Breakdown</h2>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">
+                    <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+                  </button>
+                </div>
+                <div class="tds-dialog__divider" role="presentation"></div>
+              </header>
+              <div class="tds-dialog__body kyb-score-breakdown-dialog__body">
+                <div class="kyb-score-breakdown">
+                  <div class="tds-announcement tds-announcement--neutral" role="status">
+                    <span class="tds-announcement__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="8" cy="8" r="6.25"/><path d="M8 7v4" stroke-linecap="round"/><circle cx="8" cy="5.25" r=".55" fill="currentColor" stroke="none"/></svg></span>
+                    <div class="tds-announcement__content">
+                      <p class="tds-announcement__title">Try different scenarios</p>
+                      <p class="tds-announcement__message">Adjust scoring factors to explore how your reputation score might change. These updates are temporary and won't be saved.</p>
+                    </div>
+                  </div>
+
+                  <div class="kyb-tab-summary__score kyb-score-breakdown__gauge-block">
+                    <div class="kyb-tab-summary__score-intro">
+                      <div class="kyb-score-card__title-row">
+                        <h2 class="kyb-score-card__title">Business Risk Score</h2>
+                      </div>
+                      <p class="kyb-score-card__subtitle">Confidence: <span data-kyb-score-breakdown-confidence>86%</span></p>
+                    </div>
+                    <div class="dv-di-gauge kyb-tab-summary__gauge" data-kyb-score-breakdown-gauge data-score="87"></div>
+                  </div>
+
+                  <div class="kyb-score-breakdown__factors" data-kyb-score-breakdown-factors>
+                    <div class="kyb-score-factor" data-kyb-score-factor="business-model">
+                      <div class="kyb-score-factor__head">
+                        <p class="kyb-score-factor__label">Business Model</p>
+                        <div class="kyb-score-factor__meta">
+                          <span class="kyb-score-factor__value" data-kyb-factor-value>84</span>
+                          <span class="tds-tag tds-tag--sm tds-tag--negative" data-kyb-factor-tag>High Risk</span>
+                        </div>
+                      </div>
+                      <div class="kyb-score-factor__slider">
+                        <div class="kyb-score-factor__track">
+                          <div class="kyb-score-factor__fill" style="width: 84%"></div>
+                          <span class="kyb-score-factor__knob" style="left: 84%"></span>
+                          <input type="range" class="kyb-score-factor__input" min="0" max="100" value="84" aria-label="Business Model score">
+                        </div>
+                        <div class="kyb-score-factor__axis"><span>None</span><span>Medium</span><span>Max</span></div>
+                      </div>
+                    </div>
+
+                    <div class="kyb-score-factor" data-kyb-score-factor="financial-health">
+                      <div class="kyb-score-factor__head">
+                        <p class="kyb-score-factor__label">Financial Health</p>
+                        <div class="kyb-score-factor__meta">
+                          <span class="kyb-score-factor__value" data-kyb-factor-value>68</span>
+                          <span class="tds-tag tds-tag--sm tds-tag--negative" data-kyb-factor-tag>High Risk</span>
+                        </div>
+                      </div>
+                      <div class="kyb-score-factor__slider">
+                        <div class="kyb-score-factor__track">
+                          <div class="kyb-score-factor__fill" style="width: 68%"></div>
+                          <span class="kyb-score-factor__knob" style="left: 68%"></span>
+                          <input type="range" class="kyb-score-factor__input" min="0" max="100" value="68" aria-label="Financial Health score">
+                        </div>
+                        <div class="kyb-score-factor__axis"><span>None</span><span>Medium</span><span>Max</span></div>
+                      </div>
+                    </div>
+
+                    <div class="kyb-score-factor" data-kyb-score-factor="fraud-financial-crimes">
+                      <div class="kyb-score-factor__head">
+                        <p class="kyb-score-factor__label">Fraud &amp; Financial Crimes</p>
+                        <div class="kyb-score-factor__meta">
+                          <span class="kyb-score-factor__value" data-kyb-factor-value>63</span>
+                          <span class="tds-tag tds-tag--sm tds-tag--negative" data-kyb-factor-tag>High Risk</span>
+                        </div>
+                      </div>
+                      <div class="kyb-score-factor__slider">
+                        <div class="kyb-score-factor__track">
+                          <div class="kyb-score-factor__fill" style="width: 63%"></div>
+                          <span class="kyb-score-factor__knob" style="left: 63%"></span>
+                          <input type="range" class="kyb-score-factor__input" min="0" max="100" value="63" aria-label="Fraud and Financial Crimes score">
+                        </div>
+                        <div class="kyb-score-factor__axis"><span>None</span><span>Medium</span><span>Max</span></div>
+                      </div>
+                    </div>
+
+                    <div class="kyb-score-factor" data-kyb-score-factor="governance-compliance">
+                      <div class="kyb-score-factor__head">
+                        <p class="kyb-score-factor__label">Governance &amp; Compliance</p>
+                        <div class="kyb-score-factor__meta">
+                          <span class="kyb-score-factor__value" data-kyb-factor-value>52</span>
+                          <span class="tds-tag tds-tag--sm tds-tag--intermediate" data-kyb-factor-tag>Medium Risk</span>
+                        </div>
+                      </div>
+                      <div class="kyb-score-factor__slider">
+                        <div class="kyb-score-factor__track">
+                          <div class="kyb-score-factor__fill" style="width: 52%"></div>
+                          <span class="kyb-score-factor__knob" style="left: 52%"></span>
+                          <input type="range" class="kyb-score-factor__input" min="0" max="100" value="52" aria-label="Governance and Compliance score">
+                        </div>
+                        <div class="kyb-score-factor__axis"><span>None</span><span>Medium</span><span>Max</span></div>
+                      </div>
+                    </div>
+
+                    <div class="kyb-score-factor" data-kyb-score-factor="third-party-market">
+                      <div class="kyb-score-factor__head">
+                        <p class="kyb-score-factor__label">Third-Party &amp; Market</p>
+                        <div class="kyb-score-factor__meta">
+                          <span class="kyb-score-factor__value" data-kyb-factor-value>57</span>
+                          <span class="tds-tag tds-tag--sm tds-tag--intermediate" data-kyb-factor-tag>Medium Risk</span>
+                        </div>
+                      </div>
+                      <div class="kyb-score-factor__slider">
+                        <div class="kyb-score-factor__track">
+                          <div class="kyb-score-factor__fill" style="width: 57%"></div>
+                          <span class="kyb-score-factor__knob" style="left: 57%"></span>
+                          <input type="range" class="kyb-score-factor__input" min="0" max="100" value="57" aria-label="Third-Party and Market score">
+                        </div>
+                        <div class="kyb-score-factor__axis"><span>None</span><span>Medium</span><span>Max</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
       <div class="d1-home" data-d1-stage="home" data-d1-repeat="true" data-d3-home-skin="dark">
         <div class="d3-home-hero" data-d3-home-build="pad-v4">
           <canvas class="d3-home-dots" id="d3-home-dots" aria-hidden="true"></canvas>
           <div class="d3-home-hero__body">
-          <section class="d1-welcome" aria-label="Welcome">
+        <section class="d1-welcome" aria-label="Welcome">
           <button type="button" class="d3-home-orb" data-d3-home-orb aria-label="Ask TruAI">
           </button>
           <header class="d1-hello">
@@ -1237,7 +1377,7 @@ No evidence of active trading, clients, or revenue.</p>
                 KYB Verification
               </span>
               <div class="d1-prompt__entry">
-                <label class="d1-visually-hidden" for="d1-prompt">Message</label>
+              <label class="d1-visually-hidden" for="d1-prompt">Message</label>
                 <textarea id="d1-prompt" class="d1-prompt__input" data-d1-input rows="1" placeholder="" aria-label="Verify a business by name or registration number"></textarea>
                 <span class="d1-prompt__ph" data-d1-ph-rotator aria-hidden="true">Ask questions or tell me what you’d like to do</span>
               </div>
@@ -1280,7 +1420,7 @@ No evidence of active trading, clients, or revenue.</p>
             </div>
             <p class="d1-visually-hidden" data-d1-status aria-live="polite"></p>
           </form>
-          <p class="d1-composer__note">Tru AI can make mistakes. Please double-check responses.</p>
+          <p class="d1-composer__note">TRU AI can make mistakes. Please double-check responses.</p>
           </div>
 
         <section class="d1-brief" aria-label="Account briefing">
@@ -1341,7 +1481,7 @@ No evidence of active trading, clients, or revenue.</p>
                     </tr>
                   </tbody>
                 </table>
-              </div>
+            </div>
             </div>
             <button type="button" class="d1-brief__go" data-d1-demo data-agent="tx" data-prompt="View all recent transactions">
               <svg class="d3-fa-line" viewBox="0 0 12.375 12.375" fill="none" aria-hidden="true"><path fill="currentColor" d="M8.42188 1.82617L9.625 1.375L10.0762 0.150391C10.1191 0.0644531 10.2051 0 10.3125 0C10.4199 0 10.5059 0.0644531 10.5488 0.150391L11 1.375L12.2246 1.82617C12.3105 1.86914 12.375 1.95508 12.375 2.0625C12.375 2.16992 12.3105 2.25586 12.2246 2.29883L11 2.75L10.5488 3.97461C10.5059 4.06055 10.4199 4.125 10.3125 4.125C10.2051 4.125 10.1191 4.06055 10.0762 3.97461L9.625 2.75L8.42188 2.29883C8.31445 2.25586 8.25 2.16992 8.25 2.0625C8.25 1.95508 8.31445 1.86914 8.42188 1.82617ZM4.44727 2.25586H4.42578L5.58594 4.72656L8.05664 5.88672C8.16406 5.92969 8.25 6.05859 8.25 6.1875C8.25 6.31641 8.16406 6.44531 8.05664 6.50977L5.58594 7.64844L4.42578 10.1191C4.38281 10.2266 4.25391 10.3125 4.125 10.3125C3.99609 10.3125 3.86719 10.2266 3.80273 10.1191L2.66406 7.64844L0.193359 6.50977C0.0859375 6.44531 0 6.31641 0 6.1875C0 6.05859 0.0859375 5.92969 0.193359 5.86523L2.66406 4.72656L3.82422 2.25586C3.86719 2.14844 3.99609 2.0625 4.125 2.0625C4.25391 2.0625 4.38281 2.14844 4.44727 2.25586ZM8.9375 9.625L9.38867 8.42188C9.43164 8.31445 9.51758 8.25 9.625 8.25C9.73242 8.25 9.81836 8.31445 9.86133 8.42188L10.3125 9.625L11.5371 10.0762C11.623 10.1191 11.6875 10.2051 11.6875 10.3125C11.6875 10.4199 11.623 10.5059 11.5371 10.5488L10.3125 11L9.86133 12.2246C9.81836 12.3105 9.73242 12.375 9.625 12.375C9.51758 12.375 9.43164 12.3105 9.38867 12.2246L8.9375 11L7.73438 10.5488C7.62695 10.5059 7.5625 10.4199 7.5625 10.3125C7.5625 10.2051 7.62695 10.1191 7.73438 10.0762L8.9375 9.625Z"/></svg>View all transactions
@@ -1427,7 +1567,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="components/ai-panel/parts/icons.js?v=11"></script>
 <script src="components/ai-panel/parts/icon-btn.js?v=1"></script>
 <script src="components/ai-panel/parts/prompt-card.js?v=1"></script>
-<script src="components/ai-panel/parts/composer.js?v=4"></script>
+<script src="components/ai-panel/parts/composer.js?v=3"></script>
 <script src="components/ai-panel/parts/header.js?v=8"></script>
 <script src="components/ai-panel/parts/askbar.js?v=1"></script>
 <script src="components/ai-panel/parts/size.js?v=3"></script>
@@ -1440,23 +1580,23 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/drawer.js?v=4"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
-<script src="../../Components/dialog/dialog.js"></script>
+<script src="../../Components/dialog/dialog.js?v=2"></script>
 <script src="../../pages/shared/tds-interactive-select.js"></script>
 <script src="transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js?v=40"></script>
 <script src="js/d3-kyb-ubo-graph.js?v=11"></script>
 <script src="js/d3-kyb-result-tabs.js?v=7"></script>
 <script src="../../Components/score-gauge/score-gauge.js"></script>
-<script src="js/d3-kyb-report-panels-data.js?v=1"></script>
-<script src="js/d3-kyb-report-panels.js?v=5"></script>
-<script src="js/d3-kyb-findings.js?v=20"></script>
-<script src="js/d3-kyb-session.js?v=29"></script>
+<script src="js/d3-kyb-report-panels-data.js?v=2"></script>
+<script src="js/d3-kyb-report-panels.js?v=11"></script>
+<script src="js/d3-kyb-findings.js?v=25"></script>
+<script src="js/d3-kyb-session.js?v=28"></script>
 <script src="js/d3-kyb-gap.js?v=14"></script>
 <script src="js/d3-kyb-config.js?v=9"></script>
 <script src="js/d3-kyb-package.js?v=12"></script>
 <script src="js/d3-kyb-resume.js?v=57"></script>
-<script src="js/d3-kyb-report-reveal.js?v=41"></script>
+<script src="js/d3-kyb-report-reveal.js?v=42"></script>
 <script src="js/d3-kyb-map-search.js?v=51"></script>
-<script src="js/d3-kyb-manual-search.js?v=18"></script>
+<script src="js/d3-kyb-manual-search.js?v=15"></script>
 <script src="js/d3-kyb-agent.js?v=81"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
@@ -1478,8 +1618,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>
 <script src="js/d3-home-dots.js"></script>
 <script src="js/d3-kyb-canvas.js?v=17"></script>
-<script src="js/d3-kyb-ground.js?v=2"></script>
-<script src="js/d3-chat-history.js?v=26"></script>
+<script src="js/d3-chat-history.js?v=21"></script>
 <script src="js/d3-chat-follow.js?v=1"></script>
 <script src="js/d3-embed-report.js?v=5"></script>
 <script src="js/d3-home-orb.js?v=5"></script>
