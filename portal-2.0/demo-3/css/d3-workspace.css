@@ -1287,6 +1287,23 @@
   gap: var(--spacing-12, 12px);
 }
 
+.d3-kyb-brh-switch {
+  margin-right: var(--spacing-4, 4px);
+}
+
+.d3-kyb-brh-switch .tds-switch__label-group {
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-caption, #5c6b6b);
+}
+
+/* BRH off: Risk Analysis tab stays out of the report chrome. */
+.d3-kyb-resume[data-d3-brh="off"] [data-d3-kyb-tab="risk"] {
+  display: none !important;
+}
+
 .d3-kyb-resume .d1-tag {
   gap: var(--gap-xs, 4px);
 }
@@ -1855,14 +1872,3 @@
     display: none;
   }
 }
-
-/* The manual route, named in one line under the title. */
-.d3-workspace__lede {
-  margin: -8px 0 0;
-  max-width: 46ch;
-  font-size: 15px;
-  line-height: 22px;
-  color: var(--text-caption, #617269);
-}
-/* Only the empty landing carries them; once a search is under way the surface changes. */
-.d3-workspace:not([data-d3-kyb-surface="resume"]) .d3-workspace__lede { display: none; }

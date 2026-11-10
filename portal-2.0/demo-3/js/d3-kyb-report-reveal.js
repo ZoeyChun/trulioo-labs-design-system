@@ -662,6 +662,10 @@
 
   function tabAllowed(id) {
     if (id === "findings") return true;
+    /* BRH off hides Risk Analysis regardless of package. */
+    if (id === "risk" && window.D3KybFindings && window.D3KybFindings.isBrhOn && !window.D3KybFindings.isBrhOn(resumeCard)) {
+      return false;
+    }
     var S = window.D3KybSession;
     return !S || S.tabAllowed(tier, id, tierAddons);
   }

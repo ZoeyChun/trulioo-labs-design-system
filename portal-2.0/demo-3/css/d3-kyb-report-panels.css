@@ -686,61 +686,521 @@
 .d3-rp .dv-sidebar-toggle--expand{display:none;}
 .d3-rp .dv-columns--sidebar-collapsed .dv-sidebar-toggle--expand{display:inline-flex;}
 
-/* Risk Analysis: score + key findings across the top, signals below, no container outline. */
+/* Risk Analysis summary card — Figma 2190:10816
+   Two-column card: gauge + CTA | KEY FINDINGS list */
 .d3-rp--signals .kyb-section--tab-layout,
 .d3-rp--signals .kyb-tab-layout.dv-columns,
-.d3-rp--signals .kyb-tab-detail{border:0 !important;box-shadow:none !important;background:transparent;}
-.d3-rp--signals .kyb-tab-layout.dv-columns{flex-direction:column;gap:var(--gap-xl, 24px);}
-.d3-rp--signals .kyb-tab-summary.dv-sidebar{width:100% !important;max-width:none !important;flex-direction:row !important;align-items:center;gap:var(--gap-xl, 32px);border:0 !important;padding:0 !important;}
-.d3-rp--signals .kyb-tab-summary__score{flex:0 0 auto;width:324px;}
-.d3-rp--signals .kyb-tab-summary__findings{flex:1;min-width:0;}
-.d3-rp--signals .kyb-tab-detail__header{display:none;}
-@media (max-width:960px){.d3-rp--signals .kyb-tab-summary.dv-sidebar{flex-direction:column !important;align-items:stretch;}.d3-rp--signals .kyb-tab-summary__score{width:100%;}}
+.d3-rp--signals .kyb-tab-detail {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent;
+}
+.d3-rp--signals .kyb-tab-layout.dv-columns {
+  flex-direction: column;
+  gap: var(--gap-xl);
+}
+.d3-rp--signals .kyb-tab-detail__header { display: none; }
 
-/* Outline around the score + key findings container. */
-.d3-rp--signals .kyb-tab-summary.dv-sidebar{border:1px solid var(--border-subtle) !important;border-radius:var(--radius-xl);padding:var(--spacing-24, 24px) !important;box-sizing:border-box;}
+.d3-rp--signals .kyb-tab-summary.dv-sidebar {
+  width: 100% !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  height: auto;
+  min-height: 0;
+  flex-direction: row !important;
+  align-items: stretch;
+  gap: 0;
+  box-sizing: border-box;
+  /* No left padding so the score column can center between the card edge and divider */
+  padding: var(--spacing-16) var(--spacing-24) var(--spacing-16) 0 !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-2xl);
+  background: var(--surface-neutral-01);
+  overflow: hidden;
+}
 
-/* Risk Analysis header: score column (centered) | divider | key findings (vertically centered). */
-.d3-rp--signals .kyb-tab-summary.dv-sidebar{align-items:stretch;gap:0;}
-.d3-rp--signals .kyb-tab-summary__score{display:flex;flex-direction:column;align-items:center;gap:var(--gap-lg, 16px);width:340px;padding-right:var(--spacing-32, 32px);border-right:1px solid var(--border-subtle);box-sizing:border-box;}
-.d3-rp--signals .kyb-tab-summary__score-head,.d3-rp--signals .kyb-tab-summary__score-head-row,.d3-rp--signals .kyb-tab-summary__score-intro{width:100%;align-items:center;text-align:center;}
-.d3-rp--signals .kyb-score-card__title-row{justify-content:center;}
-.d3-rp--signals .kyb-tab-summary__findings{align-self:center;padding-left:var(--spacing-32, 32px);display:flex;flex-direction:column;justify-content:center;}
-@media (max-width:960px){.d3-rp--signals .kyb-tab-summary__score{width:100%;padding-right:0;border-right:0;}.d3-rp--signals .kyb-tab-summary__findings{padding-left:0;align-self:stretch;}}
+/* Figma: no score title / TruAI in this card */
+.d3-rp--signals .kyb-tab-summary__score-head,
+.d3-rp--signals .kyb-truai-summary-card,
+.d3-rp--signals .kyb-tab-summary > .dv-sidebar-toggle--collapse {
+  display: none !important;
+}
 
-/* Compact Risk Analysis header. */
-.d3-rp--signals .kyb-tab-summary.dv-sidebar{padding:var(--spacing-16, 16px) var(--spacing-24, 24px) !important;}
-.d3-rp--signals .kyb-tab-summary__score{gap:var(--spacing-4, 4px);width:280px;}
-.d3-rp--signals .kyb-score-card__title{font-size:12px;line-height:16px;}
-.d3-rp--signals .kyb-score-card__subtitle{font-size:11px;line-height:14px;margin:0;}
-.d3-rp--signals .kyb-score-card__help{width:14px;height:14px;}
-.d3-rp--signals .kyb-score-card__help .icon{width:12px;height:12px;}
-.d3-rp--signals .kyb-tab-summary__gauge{max-width:132px;}
-.d3-rp--signals .kyb-tab-summary__breakdown-btn{margin-top:var(--spacing-4, 4px);}
-.d3-rp--signals .kyb-tab-summary__findings-title{font-size:14px;}
+.d3-rp--signals .kyb-tab-summary__score {
+  flex: 0 0 280px;
+  width: 280px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-lg);
+  padding: 0;
+  margin: 0 auto;
+  border-right: none;
+  box-sizing: border-box;
+  overflow: visible;
+  position: relative;
+  height: auto;
+  min-height: 0;
+  text-align: center;
+}
 
-/* Left-aligned score column. */
-.d3-rp--signals .kyb-tab-summary__score{align-items:flex-start;}
-.d3-rp--signals .kyb-tab-summary__score-head,.d3-rp--signals .kyb-tab-summary__score-head-row,.d3-rp--signals .kyb-tab-summary__score-intro{align-items:flex-start;text-align:left;}
-.d3-rp--signals .kyb-score-card__title-row{justify-content:flex-start;}
-.d3-rp--signals .kyb-tab-summary__gauge{margin:0;align-self:flex-start;}
-.d3-rp--signals .kyb-tab-summary__breakdown-btn{align-self:flex-start;}
+/* Full-height divider: connect to card top/bottom through vertical padding */
+.d3-rp--signals .kyb-tab-summary__score::after {
+  content: "";
+  position: absolute;
+  top: calc(-1 * var(--spacing-16));
+  bottom: calc(-1 * var(--spacing-16));
+  right: 0;
+  width: 1px;
+  background-color: var(--border-subtle);
+  pointer-events: none;
+}
 
-/* Score column centered between the card edge and the divider; no confidence line. */
-.d3-rp--signals .kyb-tab-summary__score{align-items:center;padding-left:var(--spacing-32, 32px);}
-.d3-rp--signals .kyb-tab-summary__score-head,.d3-rp--signals .kyb-tab-summary__score-head-row,.d3-rp--signals .kyb-tab-summary__score-intro{align-items:center;text-align:center;}
-.d3-rp--signals .kyb-score-card__title-row{justify-content:center;}
-.d3-rp--signals .kyb-tab-summary__gauge{align-self:center;}
-.d3-rp--signals .kyb-tab-summary__breakdown-btn{align-self:center;}
-.d3-rp--signals .kyb-score-card__subtitle{display:none;}
+/* Native ScoreGauge — keep position:relative so score/badge stay inside the gauge */
+.d3-rp--signals .kyb-tab-summary__gauge {
+  width: 227px;
+  max-width: 227px;
+  height: 180px;
+  overflow: visible;
+  flex: none;
+}
+.d3-rp--signals .kyb-tab-summary__gauge > .score-gauge {
+  position: relative;
+  display: block;
+  width: 227px;
+  height: 180px;
+  transform: none;
+  flex-shrink: 0;
+}
+.d3-rp--signals .kyb-tab-summary__breakdown-btn {
+  align-self: center;
+  margin: 0;
+}
 
-/* The gauge is a fixed 227x180 canvas: size it as a whole so it centers in the column. */
-.d3-rp--signals .kyb-tab-summary__gauge{width:227px;max-width:none;zoom:.75;}
+.d3-rp--signals .kyb-tab-summary__findings {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-16);
+  padding: 0 0 0 var(--spacing-32);
+  box-sizing: border-box;
+  height: auto;
+  position: relative;
+}
 
-/* Reserve only the scaled height so the header is as short as its content. */
-.d3-rp--signals .kyb-tab-summary__gauge{zoom:1;width:227px;height:135px;max-width:none;}
-.d3-rp--signals .kyb-tab-summary__gauge > .score-gauge{transform:scale(.75);transform-origin:top center;}
-.d3-rp--signals .kyb-tab-summary.dv-sidebar{padding:var(--spacing-12, 12px) var(--spacing-24, 24px) !important;align-items:center;}
-.d3-rp--signals .kyb-tab-summary__score{gap:2px;padding-top:0;padding-bottom:0;}
-.d3-rp--signals .kyb-tab-summary__findings{align-self:center;padding-top:0;padding-bottom:0;}
-.d3-rp--signals .kyb-tab-summary__score{align-self:stretch;justify-content:center;}
+.d3-rp--signals .kyb-tab-summary__view-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  min-width: 0;
+  width: 100%;
+}
+
+.d3-rp--signals .kyb-tab-summary__view-panel[hidden] {
+  display: none !important;
+}
+
+.d3-rp--signals .kyb-tab-summary__breakout-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24);
+}
+
+.d3-rp--signals .kyb-tab-summary__breakout-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.d3-rp--signals .kyb-tab-summary__breakout-row:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--spacing-24) / -2);
+  height: 1px;
+  background-color: var(--border-subtle);
+  pointer-events: none;
+}
+
+.d3-rp--signals .kyb-tab-summary__breakout-row:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.d3-rp--signals .kyb-tab-summary__breakout-name {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-default);
+  min-width: 0;
+}
+
+.d3-rp--signals .kyb-tab-summary__breakout-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  flex-shrink: 0;
+}
+
+.d3-rp--signals .kyb-tab-summary__breakout-score {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-caption);
+  white-space: nowrap;
+}
+
+.d3-rp--signals .kyb-tab-summary__view-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-8);
+  margin-top: var(--spacing-8);
+}
+
+.d3-rp--signals .kyb-tab-summary__view-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--border-subtle);
+  cursor: pointer;
+}
+
+.d3-rp--signals .kyb-tab-summary__view-dot.is-active {
+  background: var(--icon-default, var(--text-default));
+}
+
+.d3-rp--signals .kyb-tab-summary__view-dot:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Token: .text-label-sm-uppercase */
+.d3-rp--signals .kyb-tab-summary .kyb-tab-summary__findings-title {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+.d3-rp--signals .kyb-tab-summary__findings-list {
+  gap: var(--spacing-24);
+}
+
+.d3-rp--signals .kyb-tab-summary__finding {
+  position: relative;
+  padding: 0;
+  column-gap: var(--spacing-8);
+  row-gap: 0;
+}
+
+.d3-rp--signals .kyb-tab-summary__finding[data-kyb-jump-signal-category] {
+  cursor: pointer;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.d3-rp--signals .kyb-tab-summary__finding[data-kyb-jump-signal-category]:hover .kyb-tab-summary__finding-text,
+.d3-rp--signals .kyb-tab-summary__finding[data-kyb-jump-signal-category]:focus-visible .kyb-tab-summary__finding-text {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.d3-rp--signals .kyb-tab-summary__finding[data-kyb-jump-signal-category]:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Sit the divider in the middle of the 24px gap between rows */
+.d3-rp--signals .kyb-tab-summary__finding:not(:last-child)::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--spacing-24) / -2);
+  grid-column: auto;
+  height: 1px;
+}
+
+.d3-rp--signals .kyb-tab-summary__finding-text {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-default);
+  overflow-wrap: anywhere;
+}
+
+@keyframes d3-rp-jump-flash {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  35% {
+    background-color: var(--surface-hover);
+  }
+}
+
+.d3-rp--signals .kyb-jump-highlight {
+  animation: d3-rp-jump-flash 1.4s ease;
+}
+
+.d3-rp--signals .kyb-tab-summary__finding-icon {
+  color: var(--icon-negative);
+}
+.d3-rp--signals .kyb-tab-summary__finding-icon--intermediate {
+  color: var(--icon-intermediate);
+}
+.d3-rp--signals .kyb-tab-summary__finding-icon--positive {
+  color: var(--icon-positive);
+}
+
+@media (max-width: 960px) {
+  .d3-rp--signals .kyb-tab-summary.dv-sidebar {
+    flex-direction: column !important;
+    align-items: stretch;
+  }
+  .d3-rp--signals .kyb-tab-summary__score {
+    width: 100%;
+    flex-basis: auto;
+    padding: 0 0 var(--spacing-24);
+    border-right: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .d3-rp--signals .kyb-tab-summary__findings {
+    padding: var(--spacing-24) 0 0;
+  }
+}
+
+/* --- Score breakdown drawer: overlay only over workspace (right pane), not chat --- */
+.d3-workspace .d3-kyb-score-breakdown-dialog.tds-dialog {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  /* Keep out of flex flow so opening never reflows the report */
+  flex: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  pointer-events: none;
+}
+
+.d3-workspace .d3-kyb-score-breakdown-dialog.tds-dialog:not([hidden]) {
+  pointer-events: auto;
+}
+
+.d3-kyb-score-breakdown-dialog.tds-dialog--scoped .tds-dialog__backdrop {
+  padding: 0;
+  justify-content: flex-end;
+}
+
+.tds-dialog--right.tds-dialog--score-breakdown .tds-dialog__panel {
+  width: min(420px, 100%);
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  border-radius: 0;
+}
+
+/* Freeze report scroll while the drawer is open (avoids layout jump) */
+.d3-workspace:has(#kyb-score-breakdown-dialog.tds-dialog--open) .d3-kyb-resume.is-live .d3-kyb-resume__body,
+.d3-workspace:has(#kyb-score-breakdown-dialog.tds-dialog--open) .d3-workspace__detail {
+  overflow: hidden;
+}
+
+.kyb-score-breakdown-dialog__body {
+  padding: var(--padding-xl, 24px);
+  overflow: auto;
+}
+
+.kyb-score-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+}
+
+.kyb-score-breakdown__gauge-block {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+}
+
+.kyb-score-breakdown__gauge-block .kyb-tab-summary__score-intro {
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+.kyb-score-breakdown__gauge-block .kyb-score-card__title-row {
+  justify-content: flex-start;
+}
+
+.kyb-score-breakdown__gauge-block .kyb-score-card__title {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-default);
+}
+
+.kyb-score-breakdown__gauge-block .kyb-score-card__subtitle {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-caption);
+}
+
+.kyb-score-breakdown__gauge-block .kyb-tab-summary__gauge {
+  width: 227px;
+  max-width: 227px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.kyb-score-breakdown__gauge-block .kyb-tab-summary__gauge > .score-gauge {
+  margin: 0 auto;
+}
+
+.kyb-score-breakdown__factors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32, 32px);
+  width: 100%;
+}
+
+.kyb-score-factor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+}
+
+.kyb-score-factor__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md, 12px);
+}
+
+.kyb-score-factor__label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+}
+
+.kyb-score-factor__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8, 8px);
+  flex-shrink: 0;
+}
+
+.kyb-score-factor__value {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-default);
+}
+
+.kyb-score-factor__slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16, 16px);
+}
+
+.kyb-score-factor__track {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background-color: var(--surface-neutral-04);
+  overflow: visible;
+  isolation: isolate;
+}
+
+.kyb-score-factor__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  height: 100%;
+  border-radius: 4px 0 0 4px;
+  background-color: var(--interactive-default);
+  pointer-events: none;
+}
+
+.kyb-score-factor__track::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent calc(100% / 6 - 0.5px),
+    var(--surface-neutral-01) calc(100% / 6 - 0.5px),
+    var(--surface-neutral-01) calc(100% / 6 + 0.5px)
+  );
+}
+
+.kyb-score-factor__knob {
+  position: absolute;
+  top: calc(-1 * var(--spacing-4, 4px));
+  z-index: 7;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-left: calc(-1 * var(--spacing-8, 8px));
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.kyb-score-factor__input {
+  position: absolute;
+  inset: calc(-1 * (var(--spacing-4, 4px) + var(--spacing-2, 2px))) 0;
+  z-index: 4;
+  width: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.kyb-score-factor__axis {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--text-description);
+}
+
+.kyb-score-factor__axis span:nth-child(2) {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}

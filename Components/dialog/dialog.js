@@ -33,7 +33,8 @@
       dialog.querySelector(".tds-dialog__dismiss") ||
       dialog.querySelector(".tds-dialog__actions .tds-btn") ||
       dialog.querySelector(".tds-dialog__panel");
-    focusTarget?.focus?.();
+    /* preventScroll avoids jumping the underlying report/chat when a drawer opens */
+    focusTarget?.focus?.({ preventScroll: true });
   }
 
   function finishClose(dialog) {
