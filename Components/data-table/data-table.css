@@ -576,3 +576,12 @@ th[aria-sort="descending"] .tds-data-table__sort-icon {
 .tds-data-table__pagination-page--active:hover {
   background-color: var(--interactive-default);
 }
+
+/* Keyboard focus — the same 2px --border-focus ring the rest of the table
+   uses. Without this the pagination falls back to the browser's own outline,
+   which is a different colour and shows on mouse clicks too. */
+.tds-data-table__pagination-direction:focus-visible,
+.tds-data-table__pagination-page:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}

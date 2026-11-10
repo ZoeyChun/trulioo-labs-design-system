@@ -44,6 +44,9 @@
   var copyTimers = new WeakMap();
   var copyUid = 0;
   var expandedRows = {};
+  /* Product cells expanded to their full list, keyed by trid so a re-render
+     (autofit, resize) does not quietly collapse them. */
+  var expandedProducts = {};
   var dateFilter = { start: null, end: null };
   var dateFilterBound = false;
   var searchQuery = "";
@@ -51,6 +54,8 @@
   var productFilter = "";
   var currentPage = 1;
   var lastFilterTotal = -1;
+  /* Date column sort, newest first to match the unsorted order. */
+  var dateSortDir = "desc";
   var DEFAULT_PAGE_SIZE = 15;
   var MIN_PAGE_SIZE = 3;
   var MAX_PAGE_SIZE = 50;
@@ -81,19 +86,24 @@
     outcomes: [],
     products: [],
     country: "",
+    countries: [],
     risks: [],
     sources: [],
     types: [],
+    packages: [],
+    typeMode: "",
     user: "",
     watchlist: []
   };
-  var PRODUCT_VISIBLE = 3;
   var OUTCOME_LABELS = {
     positive: ["Verified", "No Hits Found"],
     intermediate: ["Review", "Pending Review", "In Progress"],
     negative: ["Not Verified", "Hits Found"],
-    "not-completed": ["Abandoned", "Timed Out", "Failed", "Not Started"]
+    "not-completed": ["Abandoned", "Timed Out", "Failed", "Not Started", "Not Complete"]
   };
+  /* Products beyond this many collapse behind a "+N more" button. */
+  var PRODUCT_COLLAPSE_AFTER = 8;
+
   var KYC_DATA_PACKAGES = ["Package1_KYC_Doc", "Package2_KYC_Doc"];
   /* Figma Cell 33 (mid) / Cell 36 (end) tree dividers */
   var TREE_MID =
@@ -169,7 +179,58 @@
     return settings.transactionId === "copy-trid-column";
   }
 
+  function showTypeColumn() {
+    return !window.UT_TX_NO_TYPE_COLUMN;
+  }
+
+  /* What the Source column shows. Rows may name who or what ran the check —
+     an API key, a portal user, or a Workflow Studio workflow — in which case
+     that wins over the bare channel ("API" / "Portal" / "Workflow"). */
+  function sourceText(item) {
+    return item.sourceLabel || item.source || "";
+  }
+
+  function allSources() {
+    return uniqueSorted(
+      rows.map(function (item) {
+        return sourceText(item);
+      })
+    );
+  }
+
+  /* Opt-in column: the package (the named bundle of checks) a row ran under. */
+  function showPackageColumn() {
+    return !!window.UT_TX_PACKAGE_COLUMN;
+  }
+
+  function allPackages() {
+    return uniqueSorted(
+      rows.map(function (item) {
+        return item.package || "";
+      })
+    );
+  }
+
+  /* A package belongs to one product — the product of the transactions that
+     ran it. Read it off the rows so the filter can never disagree with the
+     table. A package spanning products (bad data) reports the first it sees. */
+  function packageProduct(pkg) {
+    var product = "";
+    rows.forEach(function (item) {
+      if (!product && item.package === pkg) product = item.product || "";
+    });
+    return product;
+  }
+
+  /* With UT_TX_SCORE_IN_OUTCOME the risk score rides under the outcome tag
+     instead of holding its own column: the outcome is what the row is about,
+     the score qualifies it. */
+  function scoreInOutcome() {
+    return !!window.UT_TX_SCORE_IN_OUTCOME;
+  }
+
   function showScoreColumn() {
+    if (scoreInOutcome()) return false;
     if (window.UT_TX_PLAIN_TABLE) return true;
     return settings.score === "separate-column";
   }
@@ -208,6 +269,41 @@
     return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
   }
 
+  /* Sortable timestamp for a row. Prefers dateNumeric ("MM/DD/YYYY, HH:MM")
+     so the time of day breaks ties within a day; falls back to parsing
+     item.date. Rows without a usable date sink to the bottom either way. */
+  function itemDateValue(item) {
+    var numeric = item.dateNumeric || "";
+    var match = numeric.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:,\s*(\d{1,2}):(\d{2}))?/);
+    if (match) {
+      return new Date(
+        Number(match[3]),
+        Number(match[1]) - 1,
+        Number(match[2]),
+        Number(match[4] || 0),
+        Number(match[5] || 0)
+      ).getTime();
+    }
+    var d = new Date(item.date);
+    return isNaN(d.getTime()) ? null : d.getTime();
+  }
+
+  function dateSortEnabled() {
+    return !!window.UT_TX_SORT_DATE_ONLY;
+  }
+
+  function sortByDate(list) {
+    var dir = dateSortDir === "asc" ? 1 : -1;
+    return list.slice().sort(function (a, b) {
+      var av = itemDateValue(a);
+      var bv = itemDateValue(b);
+      if (av === null && bv === null) return 0;
+      if (av === null) return 1;
+      if (bv === null) return -1;
+      return (av - bv) * dir;
+    });
+  }
+
   function matchesDateFilter(item) {
     if (!dateFilter.start) return true;
     var day = itemDateKey(item);
@@ -228,13 +324,24 @@
       });
   }
 
+  /* A transaction can run more than one product. item.product stays the
+     primary one (what the column leads with); extras ride along in
+     item.extraProducts and count everywhere the primary does. */
+  function itemProducts(item) {
+    var list = [item.product];
+    if (item.extraProducts && item.extraProducts.length) {
+      list = list.concat(item.extraProducts);
+    }
+    return list.filter(Boolean);
+  }
+
   function allProducts() {
     var list = [];
     rows.forEach(function (item) {
-      list.push(item.product);
+      list = list.concat(itemProducts(item));
       if (item.children) {
         item.children.forEach(function (child) {
-          list.push(child.product);
+          list = list.concat(itemProducts(child));
         });
       }
     });
@@ -274,12 +381,77 @@
     return "";
   }
 
+  /* Live / Demo switch (a segmented control, not a checkbox group). Live is
+     the default, so the table opens on real traffic and the badge only counts
+     the switch once it has been moved off that default. */
+  var TYPE_MODE_DEFAULT = "Live";
+
+  function typeSwitchEl() {
+    return document.getElementById("utFiltTypeSwitch");
+  }
+
+  function currentTypeMode() {
+    var host = typeSwitchEl();
+    if (!host) return "";
+    var pressed = host.querySelector('[data-ut-type][aria-pressed="true"]');
+    return pressed ? pressed.getAttribute("data-ut-type") : TYPE_MODE_DEFAULT;
+  }
+
+  function setTypeMode(mode) {
+    var host = typeSwitchEl();
+    if (!host) return;
+    Array.prototype.forEach.call(host.querySelectorAll("[data-ut-type]"), function (btn) {
+      var on = btn.getAttribute("data-ut-type") === mode;
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      btn.classList.toggle("tds-segmented-control__item--selected", on);
+    });
+  }
+
+  function bindTypeSwitch() {
+    var host = typeSwitchEl();
+    if (!host || host.dataset.bound) return;
+    host.dataset.bound = "1";
+    setTypeMode(currentTypeMode() || TYPE_MODE_DEFAULT);
+    host.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-ut-type]");
+      if (!btn || btn.getAttribute("aria-pressed") === "true") return;
+      setTypeMode(btn.getAttribute("data-ut-type"));
+      currentPage = 1;
+      syncPanelFiltersFromDom();
+      updateFilterChrome();
+      render();
+    });
+  }
+
+  /* A facet can be offered in two places at once (a quick filter in the
+     toolbar and the same group mirrored in the Filters drawer), so the same
+     value can come back twice. Collapse it — activeFilterCount() counts
+     these, and a doubled value would read as two filters. */
   function selectedValues(name) {
-    return Array.prototype.slice
+    var seen = [];
+    Array.prototype.slice
       .call(document.querySelectorAll('input[name="' + name + '"]:checked'))
-      .map(function (el) {
-        return el.value;
+      .forEach(function (el) {
+        if (seen.indexOf(el.value) === -1) seen.push(el.value);
       });
+    return seen;
+  }
+
+  /* Keep every copy of a facet in lockstep: tick "High Risk" in the toolbar
+     and the drawer's copy ticks too, and vice versa. */
+  function mirrorFilterInput(input) {
+    if (!input || !input.name || input.name.indexOf("ut-filt-") !== 0) return;
+    document
+      .querySelectorAll(
+        'input[name="' + input.name + '"][value="' + cssEscapeValue(input.value) + '"]'
+      )
+      .forEach(function (el) {
+        if (el !== input) el.checked = input.checked;
+      });
+  }
+
+  function cssEscapeValue(value) {
+    return String(value).replace(/["\\]/g, "\\$&");
   }
 
   function syncPanelFiltersFromDom() {
@@ -288,23 +460,55 @@
     panelFilters.risks = selectedValues("ut-filt-risk");
     panelFilters.sources = selectedValues("ut-filt-source");
     panelFilters.types = selectedValues("ut-filt-type");
+    panelFilters.packages = packageSelect.el()
+      ? (packageSelect.get() ? [packageSelect.get()] : [])
+      : selectedValues("ut-filt-package");
+    panelFilters.countries = selectedValues("ut-filt-country");
+    panelFilters.typeMode = currentTypeMode();
     panelFilters.watchlist = selectedValues("ut-filt-watchlist");
     var countryEl = document.getElementById("utFiltCountrySelect");
     var userEl = document.getElementById("utFiltUserSelect");
     panelFilters.country = countryEl && countryEl.value ? countryEl.value : "";
-    panelFilters.user = userEl && userEl.value ? userEl.value : "";
+    panelFilters.user = sourceSelect.el()
+      ? sourceSelect.get()
+      : userEl && userEl.value
+      ? userEl.value
+      : "";
   }
 
+  /* Two different numbers, and conflating them is what made the two Clear
+     buttons disagree:
+
+       activeFilterCount()      — what the "More filters" badge counts. On
+                                  pages that lift Outcome / Risk / Country
+                                  into the toolbar, those have their own
+                                  per-facet counters, so counting them here
+                                  too would double-report them.
+       totalActiveFilterCount() — is anything filtered at all, wherever it
+                                  was set. Drives every Clear control, so
+                                  they all appear and disappear together. */
   function activeFilterCount() {
-    /* Pages that lift Outcome and Risk out of the panel (window.UT_INLINE_FILTERS)
-       count only what the panel still holds. */
     var inline = !!window.UT_INLINE_FILTERS;
     return (
-      (inline ? 0 : panelFilters.outcomes.length) +
+      totalActiveFilterCount() -
+      (inline
+        ? panelFilters.outcomes.length +
+          panelFilters.risks.length +
+          panelFilters.countries.length
+        : 0)
+    );
+  }
+
+  function totalActiveFilterCount() {
+    return (
+      panelFilters.outcomes.length +
       panelFilters.products.length +
-      (inline ? 0 : panelFilters.risks.length) +
+      panelFilters.risks.length +
+      panelFilters.countries.length +
+      (panelFilters.typeMode && panelFilters.typeMode !== TYPE_MODE_DEFAULT ? 1 : 0) +
       panelFilters.sources.length +
       panelFilters.types.length +
+      panelFilters.packages.length +
       panelFilters.watchlist.length +
       (panelFilters.country ? 1 : 0) +
       (panelFilters.user ? 1 : 0)
@@ -313,10 +517,15 @@
 
   function updateFilterChrome() {
     var count = activeFilterCount();
+    var total = totalActiveFilterCount();
     var clearBtn = document.getElementById("utTxFiltersClear");
     var countEl = document.getElementById("utTxFilterCount");
     var filterWrap = document.getElementById("utTxFilter");
-    if (clearBtn) clearBtn.disabled = count === 0;
+    /* Both Clear controls answer to the same question — is anything filtered
+       anywhere — so they never contradict each other. */
+    if (clearBtn) clearBtn.disabled = total === 0;
+    var quickClear = document.getElementById("utTxQuickClear");
+    if (quickClear) quickClear.hidden = total === 0;
     if (countEl) {
       countEl.textContent = String(count);
       countEl.hidden = count === 0;
@@ -332,9 +541,17 @@
       if (panelFilters.outcomes.indexOf(outcomeGroup(item)) === -1) return false;
     }
     if (panelFilters.products.length) {
-      if (panelFilters.products.indexOf(item.product) === -1) return false;
+      var hasProduct = itemProducts(item).some(function (product) {
+        return panelFilters.products.indexOf(product) !== -1;
+      });
+      if (!hasProduct) return false;
     }
-    if (panelFilters.country && item.country !== panelFilters.country) return false;
+    if (panelFilters.countries.length) {
+      if (panelFilters.countries.indexOf(item.country) === -1) return false;
+    } else if (panelFilters.country && item.country !== panelFilters.country) {
+      return false;
+    }
+    if (panelFilters.typeMode && item.type !== panelFilters.typeMode) return false;
     if (panelFilters.risks.length) {
       var risk = riskBucket(item);
       if (!risk || panelFilters.risks.indexOf(risk) === -1) return false;
@@ -345,15 +562,24 @@
     if (panelFilters.types.length) {
       if (panelFilters.types.indexOf(item.type) === -1) return false;
     }
+    if (panelFilters.packages.length) {
+      if (panelFilters.packages.indexOf(item.package) === -1) return false;
+    }
     if (panelFilters.user) {
-      if (panelFilters.user === "ABC-Service-Worker-1675118759" && item.source !== "Workflow") {
-        return false;
-      }
-      if (panelFilters.user === "Test_API_Key" && item.source !== "API") {
-        return false;
-      }
-      if (panelFilters.user === "Pria_K_Prod" && item.source !== "Portal") {
-        return false;
+      /* Rows that name their own source match on that directly. Rows without
+         one fall back to the original user-to-channel mapping. */
+      if (item.sourceLabel) {
+        if (item.sourceLabel !== panelFilters.user) return false;
+      } else {
+        if (panelFilters.user === "ABC-Service-Worker-1675118759" && item.source !== "Workflow") {
+          return false;
+        }
+        if (panelFilters.user === "Test_API_Key" && item.source !== "API") {
+          return false;
+        }
+        if (panelFilters.user === "Pria_K_Prod" && item.source !== "Portal") {
+          return false;
+        }
       }
     }
     if (panelFilters.watchlist.length) {
@@ -373,7 +599,8 @@
       item.country,
       item.trid,
       item.detail,
-      item.product
+      itemProducts(item).join(" "),
+      item.package
     ]
       .join(" ")
       .toLowerCase();
@@ -382,7 +609,7 @@
 
   function matchesProductFilter(item) {
     if (!productFilter) return true;
-    if (item.product === productFilter) return true;
+    if (itemProducts(item).indexOf(productFilter) !== -1) return true;
     if (item.children) {
       return item.children.some(function (child) {
         return child.product === productFilter;
@@ -676,6 +903,7 @@
 
   function pagedRows() {
     var list = filteredRows();
+    if (dateSortEnabled()) list = sortByDate(list);
     var total = list.length;
     if (lastFilterTotal !== -1 && lastFilterTotal !== total) currentPage = 1;
     lastFilterTotal = total;
@@ -734,6 +962,24 @@
       "</button></div></div>";
   }
 
+  /* The thead is rewritten on every render, so delegate from the <thead>
+     itself (which persists) and guard the listener with a bound flag. */
+  function bindSort() {
+    var head = document.getElementById("utTxHead");
+    if (!head || head.dataset.bound) return;
+    head.dataset.bound = "1";
+    head.addEventListener("click", function (e) {
+      var th = e.target.closest('[data-ut-sort="date"]');
+      if (!th) return;
+      e.preventDefault();
+      dateSortDir = dateSortDir === "asc" ? "desc" : "asc";
+      currentPage = 1;
+      render();
+      var btn = document.querySelector('[data-ut-sort="date"] .ut-tx-sort');
+      if (btn) btn.focus();
+    });
+  }
+
   function bindPagination() {
     var footer = document.getElementById("utTxFooter");
     if (!footer || footer.dataset.bound) return;
@@ -781,8 +1027,17 @@
     if (!host) return;
     var products = allProducts();
     var html = "";
+    /* Collapse the tail only when there is a tail worth collapsing. The old
+       threshold of 3 hid two of five products behind a "+1 more" button on
+       pages with a short catalogue — friction with nothing to show for it, on
+       the one surface meant to list every facet. Long catalogues still
+       collapse, so Source and Package stay above the fold. */
+    var collapseFrom =
+      products.length > PRODUCT_COLLAPSE_AFTER
+        ? PRODUCT_COLLAPSE_AFTER
+        : products.length;
     products.forEach(function (product, index) {
-      var hidden = index >= PRODUCT_VISIBLE;
+      var hidden = index >= collapseFrom;
       html += productOptionHtml(product, { hidden: hidden });
       if (product === "KYC Data") {
         KYC_DATA_PACKAGES.forEach(function (pkg) {
@@ -790,7 +1045,7 @@
         });
       }
     });
-    var extra = products.length - PRODUCT_VISIBLE;
+    var extra = products.length - collapseFrom;
     if (extra > 0) {
       html +=
         '<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary ut-tx-filters__more" id="utFiltProductMore" data-extra="' +
@@ -801,7 +1056,8 @@
         "</span>" +
         "<span>" +
         extra +
-        " more products</span></button>";
+        (extra === 1 ? " more product" : " more products") +
+        "</span></button>";
     }
     host.innerHTML = html;
   }
@@ -823,6 +1079,204 @@
     if (current) select.value = current;
   }
 
+  /* ---- Filter selects ----
+     Source and Package are the same control: a DS dropdown panel of
+     action-list-items, each a value with a quieter line naming what it belongs
+     to — the product for a package, the channel for a source. Single-select,
+     with an "All …" item to step back out. One factory builds both so they
+     cannot drift apart. */
+  var CHECK_ICON_SM =
+    '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg>';
+
+  function filterSelectItemHtml(key, value, label, description) {
+    return (
+      '<button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" aria-selected="false" data-ut-' +
+      key +
+      '="' +
+      escapeHtml(value) +
+      '"><span class="tds-action-list-item__check" aria-hidden="true">' +
+      CHECK_ICON_SM +
+      '</span><span class="tds-action-list-item__content"><span class="tds-action-list-item__label">' +
+      escapeHtml(label) +
+      "</span>" +
+      (description
+        ? '<span class="tds-action-list-item__description">' +
+          escapeHtml(description) +
+          "</span>"
+        : "") +
+      "</span></button>"
+    );
+  }
+
+  /* config: { key, wrapperId, valueId, panelId, placeholder, allLabel, options() } */
+  function createFilterSelect(config) {
+    var attr = "data-ut-" + config.key;
+
+    function wrapperEl() {
+      return document.getElementById(config.wrapperId);
+    }
+
+    /* The panel is portaled to <body> while open, so it stops being a
+       descendant of the field. Always reach it by id, never via the wrapper. */
+    function panelEl() {
+      return document.getElementById(config.panelId);
+    }
+
+    function get() {
+      var el = wrapperEl();
+      return el ? el.getAttribute("data-ut-value") || "" : "";
+    }
+
+    function set(value) {
+      var el = wrapperEl();
+      if (!el) return;
+      el.setAttribute("data-ut-value", value || "");
+      var valueEl = document.getElementById(config.valueId);
+      if (valueEl) {
+        valueEl.textContent = value || config.placeholder;
+        valueEl.classList.toggle("ut-tx-pkg-select__value--placeholder", !value);
+      }
+      var panel = panelEl();
+      if (!panel) return;
+      panel.querySelectorAll("[" + attr + "]").forEach(function (item) {
+        var on = item.getAttribute(attr) === (value || "");
+        item.setAttribute("aria-checked", on ? "true" : "false");
+        item.setAttribute("aria-selected", on ? "true" : "false");
+      });
+    }
+
+    function build() {
+      var panel = panelEl();
+      if (!panel) return;
+      var html = filterSelectItemHtml(config.key, "", config.allLabel, "");
+      config.options().forEach(function (opt) {
+        html += filterSelectItemHtml(config.key, opt.value, opt.label, opt.description);
+      });
+      panel.innerHTML = html;
+      set(get());
+    }
+
+    function bind() {
+      var el = wrapperEl();
+      if (!el || el.dataset.bound) return;
+      el.dataset.bound = "1";
+      var trigger = el.querySelector(".ut-tx-pkg-select__trigger");
+      if (window.TdsDropdownPanel && window.TdsDropdownPanel.initMenus) {
+        /* Scoped to this field so the panel's own menu binding never touches
+           the "More filters" button, which runs its own open/close. */
+        window.TdsDropdownPanel.initMenus(el);
+      }
+
+      /* The component measures the panel a little wider than it ends up
+         rendering, so its horizontal placement lands slightly off the field.
+         Vertical placement and flipping stay with the component; only the left
+         edge is pinned here. */
+      function alignPanelToTrigger() {
+        var panel = panelEl();
+        if (!panel || panel.hidden || !trigger) return;
+        if (panel.style.position !== "fixed") return;
+        var rect = trigger.getBoundingClientRect();
+        var pad = 16;
+        var left = rect.left;
+        var maxLeft = window.innerWidth - pad - panel.offsetWidth;
+        if (left > maxLeft) left = maxLeft;
+        if (left < pad) left = pad;
+        panel.style.left = Math.round(left) + "px";
+      }
+
+      if (trigger) {
+        /* initMenus bound its listener first, so by the time this runs the
+           panel is already placed — correcting in the same tick means it is
+           never painted at the wrong offset. The frame after is a safety net. */
+        trigger.addEventListener("click", function () {
+          alignPanelToTrigger();
+          window.requestAnimationFrame(alignPanelToTrigger);
+        });
+        window.addEventListener("resize", alignPanelToTrigger);
+      }
+
+      var panel = panelEl();
+      if (!panel) return;
+      panel.addEventListener("click", function (e) {
+        var item = e.target.closest("[" + attr + "]");
+        if (!item) return;
+        set(item.getAttribute(attr));
+        if (window.TdsDropdownPanel && window.TdsDropdownPanel.closeAll) {
+          window.TdsDropdownPanel.closeAll();
+        }
+        currentPage = 1;
+        syncPanelFiltersFromDom();
+        updateFilterChrome();
+        render();
+      });
+    }
+
+    return { el: wrapperEl, get: get, set: set, build: build, bind: bind };
+  }
+
+  var packageSelect = createFilterSelect({
+    key: "package",
+    wrapperId: "utFiltPackageSelect",
+    valueId: "utFiltPackageValue",
+    panelId: "utFiltPackageOptions",
+    placeholder: "Select Package",
+    allLabel: "All packages",
+    options: function () {
+      return allPackages().map(function (pkg) {
+        return { value: pkg, label: pkg, description: packageProduct(pkg) };
+      });
+    }
+  });
+
+  var sourceSelect = createFilterSelect({
+    key: "source",
+    wrapperId: "utFiltSourceSelect",
+    valueId: "utFiltSourceValue",
+    panelId: "utFiltSourceOptions",
+    placeholder: "Select Source",
+    allLabel: "All sources",
+    options: function () {
+      return allSources().map(function (src) {
+        return { value: src, label: src, description: sourceChannel(src) };
+      });
+    }
+  });
+
+  /* Which channel a source ran through — the quieter line under its name,
+     read off the rows so it cannot disagree with the table. */
+  function sourceChannel(sourceName) {
+    var channel = "";
+    rows.forEach(function (item) {
+      if (!channel && sourceText(item) === sourceName) {
+        channel = item.source === "Workflow" ? "Workflow Studio" : item.source || "";
+      }
+    });
+    return channel;
+  }
+
+  /* Country as a quick filter: checkboxes in #utFiltCountryOptions, built
+     from the rows the same way the panel's select was. */
+  function buildCountryCheckboxes() {
+    /* Country is offered in the toolbar and mirrored in the drawer, so fill
+       every host rather than just the toolbar's. */
+    var hosts = document.querySelectorAll(
+      "#utFiltCountryOptions, [data-ut-country-options]"
+    );
+    if (!hosts.length) return;
+    var html = "";
+    allCountries().forEach(function (country) {
+      html +=
+        '<label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-country" value="' +
+        escapeHtml(country) +
+        '"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">' +
+        escapeHtml(country) +
+        "</span></span></label>";
+    });
+    hosts.forEach(function (host) {
+      host.innerHTML = html;
+    });
+  }
+
   function clearAllFilters() {
     document
       .querySelectorAll(
@@ -835,9 +1289,19 @@
           el.checked = false;
         }
       });
+    /* The type switch has a default rather than an empty state. */
+    setTypeMode(TYPE_MODE_DEFAULT);
+    packageSelect.set("");
+    sourceSelect.set("");
     syncPanelFiltersFromDom();
     updateFilterChrome();
-    render();
+    /* The date range is a filter too, and it is the one filter with no
+       counter anywhere, so leaving it behind made "Clear all filters" look
+       like it had not worked. resetDateFilter() renders. The search term is
+       deliberately left alone: it is a query, it has its own clear, and the
+       status line above the table names it. */
+    if (dateFilter.start) resetDateFilter();
+    else render();
   }
 
   function setDrawerOpenClass() {
@@ -1242,6 +1706,82 @@
     );
   }
 
+  /* Product cell. One product reads as plain text; more than one leads with
+     the primary and a quiet "+N". Clicking it swaps the cell in place for the
+     full comma-separated list and the "+N" goes away — the list is the end
+     state, so there is nothing to toggle back to. */
+  function productHtml(item, opts) {
+    opts = opts || {};
+    var list = itemProducts(item);
+    var primary = list[0] || "";
+    var extras = list.slice(1);
+    var leadInner = opts.tag
+      ? '<span class="ut-product-tag">' + highlightMatch(primary) + "</span>"
+      : highlightMatch(primary);
+    if (!extras.length) {
+      return opts.tag
+        ? leadInner
+        : '<span class="ut-tx-product-cell__lead">' + leadInner + "</span>";
+    }
+
+    var all = list
+      .map(function (product) {
+        return highlightMatch(product);
+      })
+      .join(", ");
+
+    var trid = item.trid || "";
+    var open = !!expandedProducts[trid];
+
+    return (
+      '<span class="ut-tx-product-cell' +
+      (open ? " is-expanded" : "") +
+      '" data-ut-products="' +
+      escapeHtml(trid) +
+      '">' +
+      '<span class="ut-tx-product-cell__lead"' +
+      (open ? " hidden" : "") +
+      ">" +
+      leadInner +
+      "</span>" +
+      '<span class="ut-tx-product-cell__all"' +
+      (open ? "" : " hidden") +
+      ">" +
+      all +
+      "</span>" +
+      (open
+        ? ""
+        : '<button type="button" class="ut-tx-product-more" aria-label="' +
+          escapeHtml("Show all products: " + list.join(", ")) +
+          '">+' +
+          extras.length +
+          "</button>") +
+      "</span>"
+    );
+  }
+
+  /* The cell owns its own expand/collapse — no re-render, so sorting, paging
+     and filtering are untouched by it (and reset it, which is what you want). */
+  function bindProductExpand() {
+    var tbody = document.getElementById("utTxBody");
+    if (!tbody || tbody.dataset.productsBound) return;
+    tbody.dataset.productsBound = "1";
+    tbody.addEventListener("click", function (e) {
+      var btn = e.target.closest(".ut-tx-product-more");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var cell = btn.closest("[data-ut-products]");
+      if (!cell) return;
+      var trid = cell.getAttribute("data-ut-products") || "";
+      expandedProducts[trid] = true;
+      cell.classList.add("is-expanded");
+      cell.querySelector(".ut-tx-product-cell__lead").hidden = true;
+      cell.querySelector(".ut-tx-product-cell__all").hidden = false;
+      btn.remove();
+    });
+  }
+
   function isFlowStatusOutcome(item) {
     var label = ((item.outcome && item.outcome.label) || "").toLowerCase();
     return (
@@ -1312,22 +1852,40 @@
       return scoreHtml(item.score);
     }
 
+    if (scoreInOutcome()) {
+      return item.score ? outcomeStackHtml(primary, item.score, true) : primary;
+    }
+
     if (settings.score !== "combined-outcome" || window.UT_TX_PLAIN_TABLE) return primary;
 
     var kind = combinedScoreKind(item);
     if (kind === "result-tag") return primary;
-    if (item.score) {
-      return (
-        '<span class="ut-tx-outcome-stack">' +
-        primary +
-        '<span class="tds-data-table__cell-subtext ut-tx-outcome-sub">' +
-        escapeHtml(item.score.value) +
-        " " +
-        escapeHtml(item.score.label) +
-        "</span></span>"
-      );
-    }
+    if (item.score) return outcomeStackHtml(primary, item.score);
     return primary;
+  }
+
+  /* Secondary line under the outcome tag. `toned` keeps the risk level in its
+     colour — a High Risk row has to stay findable at a glance — while the
+     number and the type size keep the whole line subordinate to the tag. */
+  function outcomeStackHtml(primary, score, toned) {
+    var label = escapeHtml(score.label);
+    if (toned && score.tone) {
+      label =
+        '<span class="ut-tx-outcome-sub__label ut-tx-outcome-sub__label--' +
+        escapeHtml(score.tone) +
+        '">' +
+        label +
+        "</span>";
+    }
+    return (
+      '<span class="ut-tx-outcome-stack">' +
+      primary +
+      '<span class="tds-data-table__cell-subtext ut-tx-outcome-sub">' +
+      escapeHtml(score.value) +
+      " " +
+      label +
+      "</span></span>"
+    );
   }
 
   function scoreHtml(score) {
@@ -1524,26 +2082,27 @@
 
     cells +=
       '<td class="ut-tx-outcome-cell' +
+      ((scoreInOutcome() && item.score) ||
       (!window.UT_TX_PLAIN_TABLE &&
-      settings.score === "combined-outcome" &&
-      combinedScoreKind(item) === "stack" &&
-      item.score
+        settings.score === "combined-outcome" &&
+        combinedScoreKind(item) === "stack" &&
+        item.score)
         ? " ut-tx-outcome-cell--with-sub"
         : "") +
       '">' +
       outcomeHtml(item) +
       "</td>" +
       (window.UT_TX_PLAIN_TABLE
-        ? "<td>" +
-          highlightMatch(item.product) +
+        ? '<td class="ut-tx-td-product">' +
+          productHtml(item) +
           "</td><td>" +
           dateHtml(item) +
           "</td>"
         : "<td>" +
           dateHtml(item) +
-          '</td><td><span class="ut-product-tag">' +
-          highlightMatch(item.product) +
-          "</span></td>") +
+          '</td><td class="ut-tx-td-product">' +
+          productHtml(item, { tag: true }) +
+          "</td>") +
       '<td class="ut-tx-td-country">' +
       countryHtml(item) +
       "</td>";
@@ -1552,13 +2111,12 @@
       cells += "<td>" + scoreHtml(item.score) + "</td>";
     }
 
-    cells +=
-      "<td>" +
-      escapeHtml(item.source) +
-      "</td>" +
-      "<td>" +
-      escapeHtml(item.type) +
-      "</td>";
+    cells += '<td class="ut-tx-td-source">' + escapeHtml(sourceText(item)) + "</td>";
+    if (showPackageColumn()) {
+      cells +=
+        '<td class="ut-tx-td-package">' + highlightMatch(item.package || "--") + "</td>";
+    }
+    if (showTypeColumn()) cells += "<td>" + escapeHtml(item.type) + "</td>";
 
     if (showTridColumn()) {
       cells +=
@@ -1587,15 +2145,49 @@
       "<tr>" +
       '<th scope="col" class="ut-tx-th-name">Transaction</th>';
 
+    /* With UT_TX_SORT_DATE_ONLY the sort affordance (aria-sort + caret icon)
+       is kept for Date only; every other column renders as a plain header.
+       The Date header is then a real control: clicking it flips the order. */
     function sortTh(label, className) {
-      return (
-        '<th scope="col"' +
-        (className ? ' class="' + className + '"' : "") +
-        ' aria-sort="none"><span class="tds-data-table__sort-label">' +
+      var isDate = label.indexOf("Date") === 0;
+      if (dateSortEnabled() && !isDate) {
+        return (
+          '<th scope="col"' +
+          (className ? ' class="' + className + '"' : "") +
+          ">" +
+          label +
+          "</th>"
+        );
+      }
+
+      var live = dateSortEnabled() && isDate;
+      var state = live
+        ? dateSortDir === "asc"
+          ? "ascending"
+          : "descending"
+        : "none";
+      var inner =
         label +
         ' <span class="tds-data-table__sort-icon" aria-hidden="true">' +
         SORT_ICON +
-        "</span></span></th>"
+        "</span>";
+
+      return (
+        '<th scope="col"' +
+        (className ? ' class="' + className + '"' : "") +
+        ' aria-sort="' +
+        state +
+        '"' +
+        (live ? ' data-ut-sort="date"' : "") +
+        ">" +
+        (live
+          ? '<button type="button" class="tds-data-table__sort-label ut-tx-sort" title="' +
+            (dateSortDir === "asc" ? "Sorted oldest first" : "Sorted newest first") +
+            '">' +
+            inner +
+            "</button>"
+          : '<span class="tds-data-table__sort-label">' + inner + "</span>") +
+        "</th>"
       );
     }
 
@@ -1610,7 +2202,9 @@
       html += sortTh("Score");
     }
 
-    html += sortTh("Source") + sortTh("Type");
+    html += sortTh("Source");
+    if (showPackageColumn()) html += sortTh("Package");
+    if (showTypeColumn()) html += sortTh("Type");
 
     if (showTridColumn()) {
       html += '<th scope="col" class="ut-tx-col-trid">TRID</th>';
@@ -1634,8 +2228,9 @@
         : '<col class="ut-tx-col-date"><col class="ut-tx-col-product">') +
       '<col class="ut-tx-col-country">';
     if (showScoreColumn()) html += '<col class="ut-tx-col-score">';
-    html +=
-      '<col class="ut-tx-col-source">' + '<col class="ut-tx-col-type">';
+    html += '<col class="ut-tx-col-source">';
+    if (showPackageColumn()) html += '<col class="ut-tx-col-package">';
+    if (showTypeColumn()) html += '<col class="ut-tx-col-type">';
     if (showTridColumn()) html += '<col class="ut-tx-col-trid">';
     html += '<col class="ut-tx-col-actions">';
     cols.innerHTML = html;
@@ -1661,6 +2256,8 @@
     if (!table) return;
     table.classList.toggle("ut-tx-table--no-score", !showScoreColumn());
     table.classList.toggle("ut-tx-table--trid", showTridColumn());
+    table.classList.toggle("ut-tx-table--no-type", !showTypeColumn());
+    table.classList.toggle("ut-tx-table--package", showPackageColumn());
     table.classList.toggle(
       "ut-tx-table--copy-icon",
       settings.transactionId === "copy-icon"
@@ -1674,7 +2271,7 @@
     table.classList.toggle("ut-tx-table--date-double", settings.date === "double-line");
     table.classList.toggle(
       "ut-tx-table--score-combined",
-      settings.score === "combined-outcome"
+      scoreInOutcome() || settings.score === "combined-outcome"
     );
     table.classList.toggle("ut-tx-table--flag-only", settings.country === "flag-only");
   }
@@ -1698,7 +2295,7 @@
     var items = [
       ["Total", total],
       ["Verified", verified],
-      ["Needs review", review],
+      [window.UT_TX_OUTCOMES_V2 ? "In progress" : "Needs review", review],
       ["Not verified", notVerified],
       ["High risk", highRisk]
     ];
@@ -1716,6 +2313,128 @@
         );
       })
       .join("");
+  }
+
+  /* ---- Empty states ----
+     Three ways a table can have nothing in it, and each has a different way
+     out: a search that matched nothing, filters that excluded everything, or
+     genuinely no transactions yet. The table and footer are hidden rather
+     than left as a bare header row, and the message is placed in the card's
+     visible width instead of inside the wide scrolling table. */
+  var EMPTY_ICONS = {
+    search:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="21" cy="21" r="12"/><path d="M30 30l9 9"/><path d="M16 16l10 10M26 16 16 26"/></svg>',
+    filter:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h32l-12 14v12l-8 4V26z"/></svg>',
+    none:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="7" width="30" height="34" rx="3"/><path d="M16 17h16M16 24h16M16 31h10"/></svg>'
+  };
+
+  /* Has the view been narrowed at all? Covers the panel, the quick filters,
+     the toolbar date range and the product dropdown. */
+  function hasActiveNarrowing() {
+    if (activeFilterCount() > 0) return true;
+    if (panelFilters.outcomes.length || panelFilters.risks.length) return true;
+    if (panelFilters.countries.length || panelFilters.country) return true;
+    if (dateFilter.start) return true;
+    if (productFilter) return true;
+    return false;
+  }
+
+  function emptyStateCopy() {
+    if (searchDisplay) {
+      return {
+        icon: "search",
+        title: "No transactions match \u201c" + searchDisplay + "\u201d",
+        text: "Check the spelling, or search by a different name, country or ID.",
+        action: { label: "Clear search", kind: "clear-search" }
+      };
+    }
+    if (hasActiveNarrowing()) {
+      return {
+        icon: "filter",
+        title: "No transactions match these filters",
+        text: "Try removing a filter or widening the date range.",
+        action: { label: "Clear filters", kind: "clear-filters" }
+      };
+    }
+    return {
+      icon: "none",
+      title: "No transactions yet",
+      text: "Verifications you run will appear here.",
+      action: null
+    };
+  }
+
+  function emptyStateEl() {
+    var card = document.querySelector(".ut-tx-table-card");
+    if (!card) return null;
+    var el = card.querySelector(".ut-tx-no-results");
+    if (el) return el;
+    el = document.createElement("div");
+    el.className = "ut-tx-no-results";
+    el.hidden = true;
+    el.setAttribute("role", "status");
+    var scroll =
+      card.querySelector(".ut-tx-table-scroll") ||
+      card.querySelector(".tds-data-table__wrapper");
+    if (scroll && scroll.nextSibling) card.insertBefore(el, scroll.nextSibling);
+    else card.appendChild(el);
+    el.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-ut-empty-action]");
+      if (!btn) return;
+      if (btn.getAttribute("data-ut-empty-action") === "clear-search") {
+        var input = document.getElementById("utTxSearch");
+        if (input) input.value = "";
+        syncSearchClearVisibility();
+        applySearch("");
+      } else {
+        clearAllFilters();
+      }
+    });
+    return el;
+  }
+
+  function renderEmptyState(total) {
+    var el = emptyStateEl();
+    if (!el) return;
+    var card = document.querySelector(".ut-tx-table-card");
+    /* Pages wrap the table differently: some have the scroll box, some put
+       the table wrapper straight in the card. Hide whichever is there. */
+    var scroll =
+      card &&
+      (card.querySelector(".ut-tx-table-scroll") ||
+        card.querySelector(".tds-data-table__wrapper"));
+    var footer = document.getElementById("utTxFooter");
+    var empty = total === 0;
+
+    if (scroll) scroll.hidden = empty;
+    if (footer) footer.hidden = empty;
+    if (card) card.classList.toggle("ut-tx-table-card--empty", empty);
+    el.hidden = !empty;
+    if (!empty) {
+      el.innerHTML = "";
+      return;
+    }
+
+    var copy = emptyStateCopy();
+    el.innerHTML =
+      '<span class="ut-tx-no-results__icon" aria-hidden="true">' +
+      EMPTY_ICONS[copy.icon] +
+      "</span>" +
+      '<p class="ut-tx-no-results__title">' +
+      escapeHtml(copy.title) +
+      "</p>" +
+      '<p class="ut-tx-no-results__text">' +
+      escapeHtml(copy.text) +
+      "</p>" +
+      (copy.action
+        ? '<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary ut-tx-no-results__action" data-ut-empty-action="' +
+          copy.action.kind +
+          '">' +
+          escapeHtml(copy.action.label) +
+          "</button>"
+        : "");
   }
 
   function render() {
@@ -1746,6 +2465,7 @@
     });
     tbody.innerHTML = html;
     renderFooter(paged.total);
+    renderEmptyState(paged.total);
     if (window.TdsDropdownPanel && typeof window.TdsDropdownPanel.initMenus === "function") {
       window.TdsDropdownPanel.initMenus(tbody);
     }
@@ -1822,6 +2542,27 @@
 
     buildProductOptions();
     buildCountryOptions();
+    sourceSelect.bind();
+    sourceSelect.build();
+    packageSelect.bind();
+    packageSelect.build();
+    buildCountryCheckboxes();
+    bindTypeSwitch();
+
+    /* A facet mirrored into more than one surface is still one filter.
+       Capture phase: every change handler downstream — the drawer's, and the
+       toolbar's quick menus' — reads the DOM, so both copies have to agree
+       before any of them looks. */
+    document.addEventListener(
+      "change",
+      function (e) {
+        mirrorFilterInput(e.target);
+      },
+      true
+    );
+    /* Pick up defaults that are set in markup (the Live/Demo switch) before
+       the first render, so the table opens already scoped to them. */
+    syncPanelFiltersFromDom();
     updateFilterChrome();
 
     if (btn) {
@@ -1996,6 +2737,8 @@
     var reset = document.getElementById("utTxToolbarReset");
     if (reset) reset.addEventListener("click", resetToolbarFilters);
     bindPagination();
+    bindSort();
+    bindProductExpand();
     render();
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(function () {

@@ -146,11 +146,30 @@
      The checkboxes keep the engine's names (ut-filt-outcome / ut-filt-risk), so
      the table, the AI agent and "Clear all" all keep working; this only opens
      the menus and tells the engine when a box changed. */
+  /* The Filters drawer is meant to be the complete picture of what is
+     narrowing the table, but Outcome / Risk / Country live in the toolbar as
+     quick filters. Rather than keep a second hand-written copy of each option
+     list in the drawer markup, clone the quick menus into the drawer's empty
+     mirror slots. transaction-history.js ticks both copies in step, so either
+     surface can set or clear a facet. */
+  function mirrorQuickIntoDrawer(items) {
+    items.forEach(function (item) {
+      var key = item.getAttribute("data-quick");
+      var slot = document.querySelector('[data-ut-mirror="' + key + '"]');
+      var source = item.querySelector(".ut-tx-filters__options");
+      if (!key || !slot || !source) return;
+      /* Country is already filled by the engine's own builder. */
+      if (slot.children.length) return;
+      slot.innerHTML = source.innerHTML;
+    });
+  }
+
   function bindQuick() {
     var host = document.getElementById("utTxQuick");
     var panel = document.getElementById("utTxFilters");
     if (!host) return;
     var items = Array.prototype.slice.call(host.querySelectorAll(".ut-tx-quick__item"));
+    mirrorQuickIntoDrawer(items);
 
     function closeAll(except) {
       items.forEach(function (item) {
@@ -168,16 +187,10 @@
         count.hidden = n === 0;
         item.classList.toggle("is-selected", n > 0);
       });
-      var clear = document.getElementById("utTxQuickClear");
-      if (clear) {
-        var any = document.querySelectorAll("#utTxQuick input:checked, #utTxFilters input:checked").length > 0;
-        if (!any) {
-          Array.prototype.forEach.call(document.querySelectorAll("#utTxFilters select"), function (el) {
-            if (el.value) any = true;
-          });
-        }
-        clear.hidden = !any;
-      }
+      /* "Clear all filters" visibility is owned by the engine
+         (updateFilterChrome -> totalActiveFilterCount), which also counts the
+         Type switch and the Source / Package menus. Guessing from checkboxes
+         here left the button hidden when only one of those was set. */
     }
 
     var clearBtn = document.getElementById("utTxQuickClear");

@@ -370,6 +370,12 @@
   flex: 0 0 auto;
 }
 
+/* Empty state up: the table and its pager step aside. */
+.th-tx .ut-tx-table-scroll[hidden],
+.th-tx .ut-tx-table-card .tds-data-table__footer[hidden] {
+  display: none;
+}
+
 /* The table is wider than the column. Both scrollbars live on this box,
    in view, so Score, Source, and Type are not cut off by the panel. */
 .th-tx .tds-data-table__wrapper {
@@ -404,7 +410,9 @@
 }
 
 /* Figma 1049:109748 — one row, 8px gaps, 40px controls.
-   Search stays 480. Date grows into whatever is left. Filter sits at the end. */
+   Search takes whatever is left. The date is sized to its own content —
+   "03/16/2026 - 03/20/2026" plus the calendar and clear icons — rather than
+   splitting the bar 50/50 with search for a ten-character value. */
 .th-tx .ut-tx-toolbar {
   width: 100%;
   max-width: 100%;
@@ -425,15 +433,24 @@
 .th-tx .ut-tx-search {
   width: auto;
   max-width: none;
-  flex: 1 1 0;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
 .th-tx .ut-tx-date {
-  flex: 1 1 0;
-  width: auto;
+  flex: 0 1 248px;
+  width: 248px;
   min-width: 0;
-  max-width: none;
+  max-width: 248px;
+}
+
+/* Narrow columns: let the date give ground before search does. */
+@media (max-width: 1100px) {
+  .th-tx .ut-tx-date {
+    flex: 0 1 200px;
+    width: 200px;
+    max-width: 200px;
+  }
 }
 
 .th-tx .ut-tx-product[hidden] {
@@ -452,8 +469,8 @@
 }
 
 .th-tx .ut-tx-table {
-  width: 1314px;
-  min-width: 1314px;
+  width: 1352px;
+  min-width: 1352px;
   max-width: none;
 }
 
@@ -580,6 +597,34 @@
   display: none;
 }
 
+/* Keyboard focus on the quick-filter row.
+   The DS secondary button marks focus by turning its 1px border
+   --border-focus — but .is-selected below paints the same border the same
+   colour and wins on specificity, so a focused filter looked identical to an
+   applied one, and a focused *applied* filter showed nothing at all. A 2px
+   offset ring is the treatment the side rail and the in-table controls
+   already use, and it reads on top of either state. */
+.th-tx .ut-tx-quick__btn:focus-visible,
+.th-tx .ut-tx-quick__clear:focus-visible,
+.th-tx .tds-filter-button > .tds-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* The ring replaces the border swap, so the 1px border must not also shift.
+   (button.css trims --btn padding by 1px on focus to make room for a 2px
+   focus border these buttons never actually grow.) */
+.th-tx .ut-tx-quick__btn:focus-visible,
+.th-tx .tds-filter-button > .tds-btn--sm:focus-visible {
+  padding: var(--padding-xs) var(--padding-sm);
+}
+
+/* .tds-checkbox brings its own --border-focus halo, but the menu's own
+   overflow would crop it at the first and last option. */
+.th-tx .ut-tx-quick__menu {
+  padding: 10px 8px;
+}
+
 /* ------------------------------------------------------------------
    Same look as the KYB page: display title, soft cards, hairline rows.
    ------------------------------------------------------------------ */
@@ -645,7 +690,7 @@
 .th-tx .ut-tx-table {
   width: 100%;
   max-width: none;
-  min-width: 1314px;
+  min-width: 1352px;
 }
 
 /* No fade once the last column is in view. */

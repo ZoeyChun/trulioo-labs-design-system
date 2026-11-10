@@ -478,6 +478,37 @@ body {
   align-items: center;
 }
 
+/* Sortable header control — a real button, styled as the header text. */
+.ut-tx-table .ut-tx-sort {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.ut-tx-table .ut-tx-sort:hover {
+  color: var(--text-default);
+}
+
+.ut-tx-table .ut-tx-sort:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* The caret carries the direction: the inactive half fades back. */
+.ut-tx-table th[aria-sort="ascending"] .tds-data-table__sort-icon path:nth-of-type(2),
+.ut-tx-table th[aria-sort="descending"] .tds-data-table__sort-icon path:nth-of-type(1) {
+  opacity: 0.3;
+}
+
 .ut-tx-table th,
 .ut-tx-table td {
   height: 40px;
@@ -588,6 +619,177 @@ body {
 .ut-tx-col-score { width: 180px; min-width: 180px; max-width: 180px; }
 .ut-tx-col-source { width: 120px; min-width: 120px; max-width: 120px; }
 .ut-tx-col-type { width: 80px; min-width: 80px; max-width: 80px; }
+
+/* Without the Type column, Source takes the freed 80px — it now carries an
+   API key, portal user or workflow name, so the total table width is unchanged. */
+.ut-tx-table--no-type .ut-tx-col-source {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+/* ---- Empty states ----
+   Sits in the card in place of the table, so it centres on the card's visible
+   width rather than the table's much wider scroll width. */
+.ut-tx-no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-sizing: border-box;
+  min-height: 280px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.ut-tx-no-results[hidden] {
+  display: none;
+}
+
+/* The scroller and footer carry layout display values, which beat the UA's
+   [hidden] rule — hide them explicitly while the empty state is up. */
+.ut-tx-table-scroll[hidden],
+.ut-tx-table-card .tds-data-table__wrapper[hidden],
+.ut-tx-table-card .tds-data-table__footer[hidden] {
+  display: none;
+}
+
+.ut-tx-no-results__icon {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  color: var(--icon-faint);
+}
+
+.ut-tx-no-results__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ut-tx-no-results__title {
+  margin: 0;
+  max-width: 420px;
+  color: var(--text-default);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+
+.ut-tx-no-results__text {
+  margin: 0;
+  max-width: 420px;
+  color: var(--text-description);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.ut-tx-no-results__action {
+  margin-top: 16px;
+}
+
+/* No table means no bottom rule to meet. */
+.ut-tx-table-card--empty {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Multi-product rows: the primary product leads and a quiet "+N" expands the
+   cell in place to the full list. Collapsed it is a single tight line; expanded
+   the text wraps and the row grows to fit, so nothing overlays the table. */
+.ut-tx-product-cell {
+  display: flex;
+  align-items: center;
+  /* The count belongs to the name it follows — keep it close. */
+  gap: 2px;
+  min-width: 0;
+}
+
+.ut-tx-product-cell__lead,
+.ut-tx-product-cell__all {
+  min-width: 0;
+}
+
+.ut-tx-product-cell__lead {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ut-tx-product-cell__lead[hidden],
+.ut-tx-product-cell__all[hidden] {
+  display: none;
+}
+
+/* Expanded: block flow so the list wraps and the toggle trails the last word. */
+.ut-tx-product-cell.is-expanded {
+  display: block;
+  white-space: normal;
+}
+
+.ut-tx-product-cell__all {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Quiet by default — a count, not a chip. */
+.ut-tx-product-more {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--text-caption);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.ut-tx-product-more:hover {
+  color: var(--text-default);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ut-tx-product-more:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 1px;
+  border-radius: var(--radius-xs);
+}
+
+/* The cell clips its single collapsed line; expanded it has to be free to
+   wrap and push the row taller. */
+.ut-tx-table td.ut-tx-td-product {
+  overflow: hidden;
+}
+
+.ut-tx-table td.ut-tx-td-product:has(.is-expanded) {
+  overflow: visible;
+  white-space: normal;
+}
+
+/* Package — the named bundle of checks a transaction ran under. */
+.ut-tx-col-package { width: 190px; min-width: 190px; max-width: 190px; }
+
+/* Package widens the table rather than squeezing the other columns; the
+   card already scrolls horizontally. 1314 + 190 = 1504. */
+.ut-tx-table--package {
+  min-width: 1504px;
+  width: 1504px;
+  max-width: 1504px;
+}
+
+.ut-tx-table td.ut-tx-td-source,
+.ut-tx-table td.ut-tx-td-package {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .ut-tx-col-actions,
 .ut-tx-table .tds-data-table__actions-col {
   width: 32px;
@@ -1173,8 +1375,20 @@ body {
   color: var(--text-caption);
 }
 
+.ut-tx-outcome-sub__label--positive { color: var(--text-positive); }
+.ut-tx-outcome-sub__label--intermediate { color: var(--text-intermediate); }
+.ut-tx-outcome-sub__label--negative { color: var(--text-negative); }
+
 .ut-tx-table--score-combined tbody td.ut-tx-outcome-cell {
   white-space: normal;
+}
+
+/* Carrying the score as well, the outcome column needs the room the Score
+   column gave up. */
+.ut-tx-table--score-combined .ut-tx-col-outcome {
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
 }
 
 .ut-tx-table--score-combined tbody td.ut-tx-outcome-cell--with-sub {
@@ -1183,6 +1397,33 @@ body {
   padding-top: var(--padding-lg);
   padding-bottom: var(--padding-lg);
   vertical-align: middle;
+}
+
+/* Score folded into the outcome: every row gets the taller measure, scored or
+   not, so the rows stay on one rhythm instead of jumping between two heights. */
+/* The extra .ut-tx-table outranks data-table.css's :not() chain, which also
+   sets a td height. */
+.ut-tx-table.ut-tx-table--score-combined.ut-tx-table--no-score tbody td {
+  height: 72px;
+  min-height: 72px;
+  vertical-align: middle;
+}
+
+.ut-tx-table--score-combined.ut-tx-table--no-score tbody td.ut-tx-outcome-cell--with-sub {
+  height: 72px;
+  min-height: 72px;
+  padding-top: var(--padding-md);
+  padding-bottom: var(--padding-md);
+}
+
+/* The score is a separate thought from the tag — give it a line of its own
+   rather than letting it crowd the tag's underside. */
+.ut-tx-table--score-combined.ut-tx-table--no-score .ut-tx-outcome-stack {
+  gap: 6px;
+}
+
+.ut-tx-table--score-combined.ut-tx-table--no-score .ut-tx-outcome-sub {
+  padding-left: 2px;
 }
 
 /* Shared side drawers — Settings + Filters (Figma 301:48285 · 396px)
@@ -1396,6 +1637,89 @@ body {
   line-height: 16px;
   font-weight: 400;
   color: var(--text-caption);
+}
+
+/* ---- Package select ----
+   Trigger matches the Source field beside it; the panel is the DS dropdown,
+   so the product subtitle uses the action-list-item description style rather
+   than a tag — present, but quieter than the package name. */
+.ut-tx-pkg-select {
+  position: relative;
+  display: block;
+  /* The section is a flex column, so stretch rather than shrink to the
+     trigger's text — it has to line up with the Source field above it. */
+  width: 100%;
+  align-self: stretch;
+}
+
+.ut-tx-pkg-select__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  box-sizing: border-box;
+  width: 100%;
+  /* Same measure as the Source field above it (.tds-text-input__field--md). */
+  height: 32px;
+  padding: 0 var(--padding-sm);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  background-color: var(--surface-neutral-01);
+  color: var(--text-default);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ut-tx-pkg-select__trigger:hover {
+  border-color: var(--border-focus);
+}
+
+.ut-tx-pkg-select__trigger:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 1px;
+}
+
+.ut-tx-pkg-select__trigger .tds-text-input__leading-icon,
+.ut-tx-pkg-select__trigger .tds-caret {
+  flex: 0 0 auto;
+  color: var(--icon-faint);
+}
+
+.ut-tx-pkg-select__trigger .tds-caret {
+  margin-left: auto;
+}
+
+.ut-tx-pkg-select__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ut-tx-pkg-select__value--placeholder {
+  color: var(--text-placeholder);
+}
+
+/* Width comes entirely from TdsDropdownPanel, which sets an inline
+   min-width equal to the trigger. Two things have to hold for the panel to
+   line up with the field:
+   - border-box, or its padding and border add to that min-width and the panel
+     ends up wider than the trigger, too wide to fit beside it, and clamped to
+     the drawer edge;
+   - no percentage min-width here — the panel is portaled to <body> while open,
+     so a percentage resolves against the page, not the field. */
+.ut-tx-pkg-select__panel {
+  box-sizing: border-box;
+  width: 0;
+  padding: 4px;
+}
+
+.ut-tx-pkg-select__panel .tds-action-list-item {
+  gap: 6px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .ut-tx-filters__option--nested {

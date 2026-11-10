@@ -22,6 +22,7 @@ window.UT_TRANSACTIONS = [
     "dateDay": "16 Mar 2026",
     "dateTime": "10:42",
     "product": "Business Complete",
+    "extraProducts": ["Business Horizon"],
     "country": "United Kingdom",
     "countryCode": "gb",
     "score": {
@@ -30,15 +31,18 @@ window.UT_TRANSACTIONS = [
       "tone": "positive"
     },
     "source": "API",
+    "sourceLabel": "Test_API_Key",
+    "package": "Package4_KYB_Watchlist",
     "type": "Live"
   },
   {
     "name": "Kestrel Freight GmbH",
     "trid": "0759b082-ed37-506b-966d-fd4b42dbcdcf",
     "detail": "Adverse media to review",
+    "statusIcon": "in-progress",
     "outcome": {
-      "label": "Review",
-      "tone": "intermediate"
+      "label": "In Progress",
+      "tone": "signals-intermediate"
     },
     "date": "15 Mar 2026, 16:05",
     "dateNumeric": "03/15/2026, 16:05",
@@ -53,6 +57,8 @@ window.UT_TRANSACTIONS = [
       "tone": "intermediate"
     },
     "source": "Portal",
+    "sourceLabel": "Pria_K_Prod",
+    "package": "Package3_KYB_UBO",
     "type": "Live"
   },
   {
@@ -72,6 +78,8 @@ window.UT_TRANSACTIONS = [
     "countryCode": "us",
     "score": null,
     "source": "Portal",
+    "sourceLabel": "Pria_K_Prod",
+    "package": "Package2_KYB_Registry",
     "type": "Live"
   },
   {
@@ -87,6 +95,7 @@ window.UT_TRANSACTIONS = [
     "dateDay": "14 Mar 2026",
     "dateTime": "14:31",
     "product": "Business Complete",
+    "extraProducts": ["Business Horizon"],
     "country": "United States",
     "countryCode": "us",
     "score": {
@@ -95,6 +104,8 @@ window.UT_TRANSACTIONS = [
       "tone": "negative"
     },
     "source": "API",
+    "sourceLabel": "Test_API_Key",
+    "package": "Package4_KYB_Watchlist",
     "type": "Live"
   },
   {
@@ -118,6 +129,8 @@ window.UT_TRANSACTIONS = [
       "tone": "positive"
     },
     "source": "API",
+    "sourceLabel": "Test_API_Key",
+    "package": "Package3_KYB_UBO",
     "type": "Live"
   },
   {
@@ -141,6 +154,8 @@ window.UT_TRANSACTIONS = [
       "tone": "positive"
     },
     "source": "Portal",
+    "sourceLabel": "Pria_K_Prod",
+    "package": "Package4_KYB_Watchlist",
     "type": "Live"
   },
   {
@@ -161,6 +176,8 @@ window.UT_TRANSACTIONS = [
     "countryCode": "no",
     "score": null,
     "source": "API",
+    "sourceLabel": "Test_API_Key",
+    "package": "Package2_KYB_Registry",
     "type": "Live"
   },
   {
@@ -180,6 +197,8 @@ window.UT_TRANSACTIONS = [
     "countryCode": "se",
     "score": null,
     "source": "Portal",
+    "sourceLabel": "Pria_K_Prod",
+    "package": "Package3_KYB_UBO",
     "type": "Live"
   },
   {
@@ -199,15 +218,18 @@ window.UT_TRANSACTIONS = [
     "countryCode": "us",
     "score": null,
     "source": "Portal",
+    "sourceLabel": "Pria_K_Prod",
+    "package": "Package1_KYC_Doc",
     "type": "Live"
   },
   {
     "name": "Orchid Textiles Pvt Ltd",
     "trid": "3c3149ff-b7b1-5169-81ff-04712a2198e1",
     "detail": "Manual review required",
+    "statusIcon": "in-progress",
     "outcome": {
-      "label": "Review",
-      "tone": "intermediate"
+      "label": "In Progress",
+      "tone": "signals-intermediate"
     },
     "date": "11 Mar 2026, 17:20",
     "dateNumeric": "03/11/2026, 17:20",
@@ -218,6 +240,8 @@ window.UT_TRANSACTIONS = [
     "countryCode": "in",
     "score": null,
     "source": "Workflow",
+    "sourceLabel": "APAC Supplier Onboarding",
+    "package": "Package2_KYB_Registry",
     "type": "Live"
   },
   {
@@ -233,6 +257,7 @@ window.UT_TRANSACTIONS = [
     "dateDay": "11 Mar 2026",
     "dateTime": "12:09",
     "product": "Business Complete",
+    "extraProducts": ["Business Insights", "Business Horizon"],
     "country": "Canada",
     "countryCode": "ca",
     "score": {
@@ -241,15 +266,18 @@ window.UT_TRANSACTIONS = [
       "tone": "intermediate"
     },
     "source": "API",
+    "sourceLabel": "Test_API_Key",
+    "package": "Package4_KYB_Watchlist",
     "type": "Live"
   },
   {
     "name": "Meridian Apex Consulting Ltd.",
     "trid": "8e9c61ed-0c66-5df4-9c56-25cfd39b756f",
     "detail": "Adverse media flagged",
+    "statusIcon": "in-progress",
     "outcome": {
-      "label": "Review",
-      "tone": "intermediate"
+      "label": "In Progress",
+      "tone": "signals-intermediate"
     },
     "date": "10 Mar 2026, 10:55",
     "dateNumeric": "03/10/2026, 10:55",
@@ -264,15 +292,17 @@ window.UT_TRANSACTIONS = [
       "tone": "intermediate"
     },
     "source": "Portal",
+    "sourceLabel": "Pria_K_Prod",
+    "package": "Package3_KYB_UBO",
     "type": "Demo"
   },
   {
     "name": "Sunrise Retail Group",
     "trid": "facf9197-14a7-5bdd-8d93-edad7e5261f8",
-    "detail": "Search not completed",
-    "statusIcon": "abandoned",
+    "detail": "Timed out before completion",
+    "statusIcon": "timed-out",
     "outcome": {
-      "label": "Abandoned",
+      "label": "Not Complete",
       "tone": "signals"
     },
     "date": "09 Mar 2026, 13:40",
@@ -284,6 +314,8 @@ window.UT_TRANSACTIONS = [
     "countryCode": "au",
     "score": null,
     "source": "API",
+    "sourceLabel": "Test_API_Key",
+    "package": "Package1_KYC_Doc",
     "type": "Live"
   },
   {
@@ -307,6 +339,8 @@ window.UT_TRANSACTIONS = [
       "tone": "negative"
     },
     "source": "API",
+    "sourceLabel": "Test_API_Key",
+    "package": "Package4_KYB_Watchlist",
     "type": "Live"
   },
   {
@@ -322,6 +356,7 @@ window.UT_TRANSACTIONS = [
     "dateDay": "06 Mar 2026",
     "dateTime": "14:02",
     "product": "Business Insights",
+    "extraProducts": ["Business Essentials"],
     "country": "Netherlands",
     "countryCode": "nl",
     "score": {
@@ -330,15 +365,18 @@ window.UT_TRANSACTIONS = [
       "tone": "positive"
     },
     "source": "Portal",
+    "sourceLabel": "Pria_K_Prod",
+    "package": "Package3_KYB_UBO",
     "type": "Live"
   },
   {
     "name": "Delta Ventures Ltda",
     "trid": "84fa0141-8e85-5bb0-a6c9-fd632c48fcca",
     "detail": "Awaiting analyst review",
+    "statusIcon": "in-progress",
     "outcome": {
-      "label": "Pending Review",
-      "tone": "intermediate"
+      "label": "In Progress",
+      "tone": "signals-intermediate"
     },
     "date": "05 Mar 2026, 11:30",
     "dateNumeric": "03/05/2026, 11:30",
@@ -349,6 +387,8 @@ window.UT_TRANSACTIONS = [
     "countryCode": "br",
     "score": null,
     "source": "Workflow",
+    "sourceLabel": "LATAM Enhanced Due Diligence",
+    "package": "Package2_KYB_Registry",
     "type": "Demo"
   }
 ];
