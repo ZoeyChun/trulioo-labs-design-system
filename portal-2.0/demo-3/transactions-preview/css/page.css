@@ -705,3 +705,11 @@
   outline: 2px solid var(--border-focus);
   outline-offset: 2px;
 }
+
+/* Outcome and Risk are hidden from the toolbar rather than removed: their
+   option lists are the source the Filters drawer mirrors, so the markup has
+   to stay. .ut-tx-quick__item carries a position, which beats the UA's
+   [hidden] rule, so hide it explicitly. */
+.th-tx .ut-tx-quick__item[hidden] {
+  display: none;
+}

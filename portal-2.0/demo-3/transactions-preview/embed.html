@@ -46,7 +46,7 @@
        Page rules follow transaction-history.css so the column fit wins. -->
   <link rel="stylesheet" href="css/embed.css?v=5">
   <link rel="stylesheet" href="css/transaction-history.css?v=2">
-  <link rel="stylesheet" href="css/page.css?v=2">
+  <link rel="stylesheet" href="css/page.css?v=3">
   <link rel="stylesheet" href="../css/d3-icon-weight.css?v=1">
 </head>
 <body>
@@ -68,7 +68,6 @@
         <div class="ut-tx-main__scroll">
         <div class="ut-tx-page">
         <div class="ut-tx-block">
-          <div class="ut-tx-stats" id="utTxStats" aria-label="Transaction summary"></div>
           <div class="ut-tx-toolbar">
             <div class="ut-tx-toolbar__left">
               <div class="tds-text-input ut-tx-search">
@@ -120,7 +119,7 @@
           </div>
 
           <div class="ut-tx-quick" id="utTxQuick">
-            <div class="ut-tx-quick__item" data-quick="outcome">
+            <div class="ut-tx-quick__item" data-quick="outcome" hidden>
               <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary ut-tx-quick__btn" aria-haspopup="true" aria-expanded="false">
                 <span class="ut-tx-quick__label">Outcome</span>
                 <span class="tds-counter tds-counter--primary tds-counter--sm ut-tx-quick__count" hidden>0</span>
@@ -156,7 +155,7 @@
           </div>
               </div>
             </div>
-            <div class="ut-tx-quick__item" data-quick="risk">
+            <div class="ut-tx-quick__item" data-quick="risk" hidden>
               <button type="button" class="tds-btn tds-btn--sm tds-btn--secondary ut-tx-quick__btn" aria-haspopup="true" aria-expanded="false">
                 <span class="ut-tx-quick__label">Risk</span>
                 <span class="tds-counter tds-counter--primary tds-counter--sm ut-tx-quick__count" hidden>0</span>
@@ -191,6 +190,8 @@
             </div>
             <button type="button" class="tds-btn tds-btn--sm tds-btn--invisible ut-tx-quick__clear" id="utTxQuickClear" hidden>Clear all filters</button>
           </div>
+
+          <div class="ut-tx-stats" id="utTxStats" aria-label="Transaction summary"></div>
 
           <div class="ut-tx-table-section">
             <p class="ut-tx-search-status" id="utTxSearchStatus" hidden></p>
