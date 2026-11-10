@@ -795,11 +795,18 @@
 .d3h-entity__facts {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 0;
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 296px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   overflow: hidden;
   background: var(--surface-neutral-01);
+  box-sizing: border-box;
 }
 
 .d3h-entity__fact {
@@ -892,8 +899,43 @@
 .d3h-hero__score { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-4, 4px); position: relative; z-index: 1; }
 .d3h-hero__score .d3h-hero__gauge { width: 227px; height: 180px; }
 .d3h-hero__score .d3h-card__title--hero { text-align: center; }
-.d3h-bullets { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: var(--spacing-8, 8px); max-width: 58ch; }
-.d3h-bullets li { line-height: 1.5; }
+.d3h-bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-10, 10px);
+  max-width: 58ch;
+}
+.d3h-bullets li {
+  position: relative;
+  margin: 0;
+  padding-left: 1.1em;
+  color: var(--text-description, #526660);
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: var(--font-weight-regular, 400);
+}
+.d3h-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.35em;
+  height: 0.35em;
+  border-radius: var(--radius-full, 9999px);
+  background: currentColor;
+}
+.d3h-bullets .d3h-card__lede-mark {
+  display: inline;
+  padding: 0.08em 0.28em;
+  border-radius: var(--radius-sm, 4px);
+  font-weight: var(--font-weight-semibold, 600);
+  font-style: normal;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
 .d3h-card--hero-gauge .d3h-suggested { margin-top: var(--spacing-16, 16px); }
 @container d3rp (max-width: 900px) {
   .d3h-card--hero-gauge .d3h-card__inner { grid-template-columns: auto minmax(0, 1fr); }
@@ -907,7 +949,7 @@
 .d3h-hero__score { align-items: flex-start; gap: var(--spacing-8, 8px); padding-right: var(--spacing-24, 24px); }
 .d3h-hero__gaugebox { position: relative; width: 132px; height: 104px; }
 .d3h-hero__score .d3h-hero__gauge { position: absolute; top: 0; left: 50%; width: 227px; height: 180px; transform: translateX(-50%) scale(.58); transform-origin: top center; }
-.d3h-bullets { gap: var(--spacing-4, 4px); margin-top: var(--spacing-8, 8px); }
+.d3h-bullets { gap: var(--spacing-10, 10px); margin-top: 0; }
 .d3h-card--hero-gauge .d3h-card__inner { grid-template-columns: auto minmax(0, 1.2fr) minmax(240px, 0.9fr); }
 
 /* Hero from the Portal 2.0 design (Option1 - Combined): soft tone ring, gauge beside the verdict,
@@ -917,8 +959,9 @@
 .d3h-card--hero-gauge.d3h-card--tone-positive { border-color: var(--surface-positive, #e9f6ee); }
 .d3h-card--hero-gauge .d3h-card__inner { display: flex; align-items: center; gap: var(--spacing-24, 24px); padding: var(--spacing-24, 24px); grid-template-columns: none; }
 .d3h-card--hero-gauge .d3h-hero__map { display: none; }
-.d3h-hero__main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 20px; }
-.d3h-hero__top { display: flex; align-items: center; gap: var(--spacing-24, 24px); padding-bottom: 12px; }
+.d3h-hero__main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--spacing-24, 24px); padding: 0; }
+.d3h-hero__group { display: flex; flex-direction: column; gap: var(--spacing-12, 12px); min-width: 0; width: 100%; }
+.d3h-hero__top { display: flex; align-items: center; gap: var(--spacing-24, 24px); padding-bottom: 0; }
 .d3h-hero__gaugebox { position: relative; width: 130px; height: 92px; flex: none; overflow: hidden; }
 .d3h-hero__gaugebox .d3h-hero__gauge { position: absolute; top: 0; left: 50%; width: 227px; height: 180px; transform: translateX(-50%) scale(.572); transform-origin: top center; }
 .d3h-hero__gaugebox .score-gauge__value { font-size: 77px; }
@@ -926,16 +969,72 @@
 .d3h-hero__eyebrow { margin: 0; font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #61736b; }
 .d3h-hero__verdict .d3h-card__title--hero { font-size: 20px; line-height: 28px; font-weight: 600; }
 .d3h-hero__verdict .d3h-card__title--negative { color: #b22621; }
+.d3h-hero__verdict .d3h-card__title--intermediate { color: var(--text-intermediate, #8a5a00); }
+.d3h-hero__verdict .d3h-card__title--positive { color: var(--text-positive, #166534); }
+
+/* BRH off: thumbnail + status in place of the gauge / High Risk Entity block. */
+.d3h-hero__thumbwrap {
+  flex: none;
+  width: 120px;
+  height: 90px;
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  background: var(--surface-neutral-02, #f4f6f5);
+}
+.d3h-hero__thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.d3h-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 4px 0 0;
+  padding: 0;
+}
+.d3h-hero__meta > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.d3h-hero__meta dt {
+  margin: 0;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 500;
+  color: var(--text-caption, #5c6b6b);
+}
+.d3h-hero__meta dd {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-default, #172d2d);
+  overflow-wrap: anywhere;
+}
+.d3h-card--brh-off {
+  border-color: var(--surface-neutral-02, #eef1ef);
+}
+/* Legacy chip list — Overview now uses .d3h-bullets with tone marks. */
 .d3h-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .d3h-chips li { background: var(--surface-neutral-03, #e8ede8); color: var(--text-body, #172d2d); border-radius: 4px; padding: 2px 6px; font-size: 14px; line-height: 18px; font-weight: 500; }
-.d3h-card--hero-gauge .d3h-entity { flex: none; width: 340px; }
+.d3h-card--hero-gauge .d3h-entity {
+  flex: none;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  min-height: 0;
+}
 .d3h-entity__dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #3f9468; margin-right: 4px; }
 .d3h-entity__dot.is-off { background: #b0b9b4; }
 .d3h-entity__fact-value--status { display: inline-flex; align-items: center; }
 /* Always side by side: the entity card narrows with the panel instead of dropping below. */
-.d3h-card--hero-gauge .d3h-card__inner { flex-direction: row !important; align-items: center !important; }
+.d3h-card--hero-gauge .d3h-card__inner { flex-direction: row !important; align-items: stretch !important; }
 .d3h-card--hero-gauge .d3h-entity { flex: 0 1 340px; width: auto; min-width: 220px; }
-.d3h-hero__main { flex: 1 1 0; min-width: 0; padding: 12px; align-items: flex-start; }
+.d3h-hero__main { flex: 1 1 0; min-width: 0; padding: 0; align-items: flex-start; }
 .d3h-hero__top { flex-wrap: wrap; gap: 8px 16px; }
 .d3h-hero__verdict { min-width: 150px; }
 .d3h-chips li { max-width: 100%; }
@@ -962,19 +1061,6 @@
 }
 
 /* Suggested actions back in the hero: one row, no arrows. */
-.d3h-hero__main .d3h-suggested { margin-top: var(--spacing-8, 8px); padding-top: 0; }
-.d3h-hero__main .d3h-suggested__ctas { flex-wrap: nowrap; }
+.d3h-hero__main .d3h-suggested { margin-top: 0; padding-top: 0; }
+.d3h-hero__main .d3h-suggested__ctas { flex-wrap: nowrap; gap: var(--spacing-8, 8px); }
 .d3h-hero__main .d3h-suggested__ctas .tds-btn { white-space: nowrap; }
-.d3h-hero__main .d3h-suggested__ctas .tds-btn__trailing-icon { display: none; }
-
-/* Key points: bullets with a partly highlighted phrase (replaces the gray chips). */
-.d3h-points { list-style: disc; margin: 0; padding: 0 0 0 20px; display: flex; flex-direction: column; gap: 10px; color: var(--text-description, #526660); font-size: 15px; line-height: 24px; }
-.d3h-points li { padding-left: 4px; }
-.d3h-points li::marker { color: var(--text-description, #526660); }
-.d3h-points .d3h-card__lede-mark { font-weight: 500; padding: 1px 6px; border-radius: 4px; }
-
-/* Without a score: positive / intermediate status hero (design 2121:67912). */
-.d3h-card--hero-gauge.d3h-card--tone-positive { border-color: #eaf7f0; }
-.d3h-hero__verdict .d3h-card__title--positive { color: var(--text-positive, #166534); }
-.d3h-hero__verdict .d3h-card__title--intermediate { color: var(--text-intermediate, #8a5a00); }
-.d3h-card__lede-mark--positive { background: #eaf7f0; color: var(--text-positive, #166534); }
