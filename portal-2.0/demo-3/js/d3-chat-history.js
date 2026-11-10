@@ -72,7 +72,8 @@
   function firstUserMessage() {
     var p = $(".d1-user p", thread);
     var t = p ? p.textContent.trim() : "";
-    return t.length > 40 ? t.slice(0, 37) + "…" : t;
+    /* Kept whole: the dock fades long titles out and shows the full text on hover. */
+    return t;
   }
 
   /* A KYB chat is a verification only once it has reached the search / confirm /
@@ -474,7 +475,6 @@
 
   /* ------------------------------------------------------------ menu */
 
-  var MENU_MAX = 5;
   var listAll = $("[data-d3-chat-list-all]");
 
   /* A conversation is "ongoing" while the panel is minimized and the thread holds one:
@@ -498,11 +498,7 @@
     var name = document.createElement("span");
     name.className = "d3-chat-row__title";
     name.textContent = liveTitle();
-    var tag = document.createElement("span");
-    tag.className = "d3-chat-row__tag";
-    tag.textContent = "Ongoing";
     btn.appendChild(name);
-    btn.appendChild(tag);
     return btn;
   }
 
@@ -525,17 +521,7 @@
     var name = document.createElement("span");
     name.className = "d3-chat-row__title";
     name.textContent = entry.title || KIND_LABEL[entry.kind];
-    var tag = document.createElement("span");
-    tag.className = "d3-chat-row__tag";
-    tag.textContent = ongoing
-      ? "Ongoing"
-      : Object.keys(entry.pages)
-          .map(function (k) {
-            return k === "kyb" ? "KYB" : "Transactions";
-          })
-          .join(" · ");
     btn.appendChild(name);
-    btn.appendChild(tag);
     return btn;
   }
 
@@ -543,30 +529,16 @@
     host.innerHTML = "";
     if (listAll) listAll.innerHTML = "";
     if (!entries.length && !isOngoing()) {
-      closeLayer2();
+      if (listAll) {
+        var empty = document.createElement("p");
+        empty.className = "d1-l2__empty";
+        empty.textContent = "No chats yet. Your conversations will appear here.";
+        listAll.appendChild(empty);
+      }
       return;
     }
-    var label = document.createElement("p");
-    label.className = "d1-fly__label";
-    label.textContent = "Recent";
-    host.appendChild(label);
     var live = liveRow();
-    if (live) {
-      host.appendChild(live);
-      if (listAll) listAll.appendChild(liveRow());
-    }
-    /* The hover menu is a glance: the 5 most recent, then "See all". */
-    entries.slice(0, MENU_MAX).forEach(function (entry) {
-      host.appendChild(rowFor(entry));
-    });
-    if (entries.length > MENU_MAX) {
-      var more = document.createElement("button");
-      more.type = "button";
-      more.className = "d3-chat-seeall";
-      more.setAttribute("data-d3-chat-seeall", "");
-      more.textContent = "See all (" + entries.length + ")";
-      host.appendChild(more);
-    }
+    if (live && listAll) listAll.appendChild(live);
     if (listAll) {
       entries.forEach(function (entry) {
         listAll.appendChild(rowFor(entry));
@@ -574,36 +546,34 @@
     }
   }
 
-  /* ---- second layer of the nav ---- */
+  /* ---- the Chats dock ---- */
 
-  var layer2 = $("[data-d3-rail-layer2]");
+  var dock = $("[data-d3-chatdock]");
+  var chatsBtn = $('[data-d3-nav="messages"]');
 
-  function openLayer2() {
-    if (!layer2) return;
-    layer2.hidden = false;
-    shell.setAttribute("data-d3-rail-layer", "2");
-    var back = $("[data-d3-rail-back]");
-    if (back) window.setTimeout(function () { back.focus(); }, 60);
-    if (document.activeElement && document.activeElement !== back && document.activeElement.blur) {
-      document.activeElement.blur();
-    }
+  function setDock(open) {
+    if (!dock) return;
+    dock.hidden = !open;
+    if (open) shell.setAttribute("data-d3-chatdock", "open");
+    else shell.removeAttribute("data-d3-chatdock");
+    if (chatsBtn) chatsBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    hideTip();
   }
 
-  function closeLayer2() {
-    if (shell.getAttribute("data-d3-rail-layer") !== "2") return;
-    shell.removeAttribute("data-d3-rail-layer");
-    if (layer2) layer2.hidden = true;
-    var chats = $('[data-d3-nav="messages"]');
-    if (chats) chats.focus({ preventScroll: true });
+  /* The Chats icon is the only switch: it opens the dock and closes it again. The dock
+     stays put while you work in the page next to it. */
+  if (chatsBtn) {
+    chatsBtn.addEventListener("click", function () {
+      setDock(shell.getAttribute("data-d3-chatdock") !== "open");
+    });
   }
 
-  host.addEventListener("click", function (event) {
-    if (event.target.closest("[data-d3-chat-seeall]")) {
-      openLayer2();
-      return;
+  /* The visible way to put the dock away: the sidebar icon in its own header. */
+  document.addEventListener("click", function (event) {
+    if (event.target.closest && event.target.closest("[data-d3-chatdock-hide]")) {
+      setDock(false);
+      if (chatsBtn) chatsBtn.focus({ preventScroll: true });
     }
-    var row = event.target.closest("[data-d3-chat-entry]");
-    if (row) restore(row.getAttribute("data-d3-chat-entry"));
   });
 
   if (listAll) {
@@ -614,19 +584,41 @@
   }
 
   document.addEventListener("click", function (event) {
-    if (event.target.closest && event.target.closest("[data-d3-rail-back]")) closeLayer2();
-  });
-
-  document.addEventListener("click", function (event) {
     if (event.target.closest && event.target.closest("[data-d3-chat-live]") && window.D3Nav) {
-      closeLayer2();
       window.D3Nav.openChatPanel();
     }
   });
 
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && shell.getAttribute("data-d3-rail-layer") === "2") closeLayer2();
-  });
+  /* Long titles fade out at the edge; hovering a row shows the whole title. */
+  var tip = null;
+  function hideTip() {
+    if (tip) tip.hidden = true;
+  }
+  function showTip(row) {
+    var title = row.querySelector(".d3-chat-row__title");
+    if (!title || title.scrollWidth <= title.clientWidth + 1) return hideTip();
+    if (!tip) {
+      tip = document.createElement("div");
+      tip.className = "d3-chat-tip";
+      tip.setAttribute("role", "tooltip");
+      document.body.appendChild(tip);
+    }
+    tip.textContent = title.textContent;
+    tip.hidden = false;
+    var r = row.getBoundingClientRect();
+    var d = dock.getBoundingClientRect();
+    tip.style.left = Math.round(d.right + 8) + "px";
+    tip.style.top = Math.round(r.top + r.height / 2 - tip.offsetHeight / 2) + "px";
+  }
+  if (dock) {
+    dock.addEventListener("mouseover", function (event) {
+      var row = event.target.closest && event.target.closest(".d3-chat-row");
+      if (row) showTip(row);
+      else hideTip();
+    });
+    dock.addEventListener("mouseleave", hideTip);
+    dock.addEventListener("scroll", hideTip, true);
+  }
 
   /* ------------------------------------------------------------ wiring */
 
