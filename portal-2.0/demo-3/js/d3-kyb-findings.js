@@ -16,7 +16,8 @@
   "use strict";
 
   var statusOverride = null;
-  var lastVerdict = null; /* the verdict the Overview computed last: label + tone */
+  /* Business Risk Horizon — on shows gauge + Risk Analysis; off shows entity overview. */
+  var brhEnabled = true;
 
   var CHECK_TONE = { pass: "positive", review: "intermediate", fail: "negative", notrun: "default" };
   var CHECK_LABEL = { pass: "Complete", review: "Needs review", fail: "Failed / not found", notrun: "Not checked" };
@@ -78,7 +79,6 @@
       : level === "high" ? "Needs review" : level === "medium" ? "Verified · review notes" : "Verified";
     /* "Needs review" is a hold, not a failure: yellow. Red stays for Not verified / Flagged. */
     if (verdictLabel === "Needs review") verdictTone = "intermediate";
-    lastVerdict = { label: verdictLabel, tone: verdictTone };
 
     var addrRisk = risks.filter(function (x) {
       return /address/i.test(x.label + " " + x.id);
@@ -369,15 +369,39 @@
     return '<p class="d3ko__heading"><span class="d3ko__heading-icon" aria-hidden="true">' + OV_ICON[kind] + "</span>" + esc(label) + "</p>";
   }
 
+  function resumeRoot(card) {
+    return (card && card.closest("[data-d3-kyb-resume]")) || card || document.querySelector("[data-d3-kyb-resume]");
+  }
+
+  function isBrhOn(card) {
+    var root = resumeRoot(card);
+    if (root && root.hasAttribute("data-d3-brh")) return root.getAttribute("data-d3-brh") !== "off";
+    return brhEnabled;
+  }
+
   /* The high-level overview: headline, who the business is, and three short fact
-     groups. Everything deeper lives in the other tabs. */
+     groups. Everything deeper lives in the other tabs. Used when BRH is off
+     (thumbnail + details instead of the risk gauge hero). */
   function overviewHtml(biz, card) {
     var m = build(biz);
     var r = biz.report || {};
     var own = biz.ownership || [];
     var tone = m.verdictTone;
-    var lead =
-      tone === "negative" ? "High risk entity" : tone === "intermediate" ? "Medium risk entity" : "Low risk entity";
+    var status = statusOverride || biz.status || m.verdictLabel || "Verified";
+    /* No "High Risk Entity" / gauge copy when BRH is off — status-led overview. */
+    var lead = /not verified/i.test(status)
+      ? "Not verified"
+      : /review|flag/i.test(status)
+        ? "Needs review"
+        : /verif/i.test(status)
+          ? "Verified"
+          : m.verdictLabel || "Overview";
+    var toneClass =
+      /not verified|fail/i.test(status) || tone === "negative"
+        ? "risk"
+        : /review|flag/i.test(status) || tone === "intermediate"
+          ? "warn"
+          : "ok";
     var reasons = (biz.risks || [])
       .map(function (x) {
         return String(x.label || "").toLowerCase();
@@ -386,9 +410,9 @@
       .slice(0, 3);
     var tail = reasons.length
       ? reasons.join(", ")
-      : tone === "positive"
+      : /verif/i.test(lead)
         ? "active registration, sanctions and adverse media clear"
-        : "some checks need review";
+        : "registry match and remaining checks need attention";
 
     var country = biz.country || (biz.report && biz.report.country) || "United States";
     var reg = biz.reg || r.regNumber || "—";
@@ -435,12 +459,12 @@
     return (
       '<div class="d3-kyb-findings d3ko">' +
       '<p class="d3ko__kicker">Overview</p>' +
-      '<h2 class="d3ko__headline"><span class="d3ko__headline-' + (tone === "positive" ? "ok" : tone === "intermediate" ? "warn" : "risk") + '">' +
+      '<h2 class="d3ko__headline"><span class="d3ko__headline-' + toneClass + '">' +
       esc(lead) + "</span>: " + esc(tail) + "</h2>" +
       '<hr class="d3ko__rule">' +
       '<div class="d3ko__identity">' +
       '<img class="d3ko__thumb" src="assets/kyb-resume/building.png" alt="Office location" width="120" height="90">' +
-      '<div class="d3ko__who"><div class="d3ko__name-row"><p class="d3ko__name">' + esc(biz.name || "Business") + "</p>" + tag(tone, m.verdictLabel) + "</div>" +
+      '<div class="d3ko__who"><div class="d3ko__name-row"><p class="d3ko__name">' + esc(biz.name || "Business") + "</p>" + tag(tone, status) + "</div>" +
       '<div class="d3ko__fields">' +
       '<div class="tds-data-field"><div class="tds-data-field__label-row"><p class="tds-data-field__label">Country / Jurisdiction</p></div>' +
       '<div class="tds-data-field__content"><div class="tds-data-field__value-row"><p class="tds-data-field__value">' + esc(country) +
@@ -781,69 +805,49 @@
       : hero.classList.contains("kyb-summary-hero--intermediate")
         ? "intermediate"
         : "positive";
-    /* Without the Business Risk Values add-on there is no score: the hero states the verification
-       status instead (no gauge), in the status's own tone. */
-    var riskTab = card && card.querySelector('[data-d3-kyb-tab="risk"]');
-    var riskOn = !card || !!(riskTab && !riskTab.hidden);
-    var statusLabel = "";
-    if (!riskOn) {
-      if (lastVerdict) {
-        statusLabel = lastVerdict.label;
-        tone = lastVerdict.tone;
-      } else {
-        statusLabel = "Verified";
-        tone = "positive";
-      }
-    }
     var name = biz.name || NATIVE_NAME;
     var clean = function (n) {
       return n ? n.textContent.replace(/\s+/g, " ").trim().split(NATIVE_NAME).join(name) : "";
     };
     var title = clean(hero.querySelector(".kyb-summary-hero__risk-label"));
-    var lead = clean(hero.querySelector(".kyb-summary-hero__verdict-title"));
-    var findings = [].slice.call(hero.querySelectorAll(".kyb-summary-hero__finding-text")).map(clean);
 
     function mark(t) {
+      if (tone === "positive") return esc(t);
       return '<mark class="d3h-card__lede-mark d3h-card__lede-mark--' + tone + '">' + esc(t) + "</mark>";
     }
-    var parts = [];
-    if (lead) {
-      parts.push(
-        lead.indexOf(name) === 0 && lead.length > name.length
-          ? esc(name) + " " + mark(lead.slice(name.length).trim() + ".")
-          : mark(lead + ".")
-      );
+    /* Full sentence bullets: only the key phrase is marked (see Overview hero options). */
+    function bulletHtml(b) {
+      return (b.prefix ? esc(b.prefix) : "") + mark(b.mark) + (b.rest ? esc(b.rest) : "");
     }
-    findings.forEach(function (f) {
-      var cut = f.search(/,| with | and /);
-      parts.push(cut > 0 ? mark(f.slice(0, cut)) + esc(f.slice(cut)) : mark(f));
-    });
+    var HERO_BULLETS = {
+      negative: [
+        { mark: "Manual review", rest: " is required before any approval decision." },
+        { mark: "9 of 16 signals", rest: " raised verification flags." },
+        { mark: "18 of 100", rest: " legitimacy score against peer benchmarks.", prefix: "Legitimacy scored " },
+        { mark: "Officer IDs", rest: " are missing national identification for both officers." }
+      ],
+      intermediate: [
+        { mark: "Analyst review", rest: " is recommended before any approval decision." },
+        { mark: "4 of 16 signals", rest: " still need follow-up." },
+        { mark: "54 of 100", rest: " legitimacy score against peer benchmarks.", prefix: "Legitimacy scored " },
+        { mark: "Address match", rest: " is only partial across registry sources." }
+      ],
+      positive: [
+        { mark: "Checks cleared", rest: " with no manual review required." },
+        { mark: "2 of 16 signals", rest: " remain informational only." },
+        { mark: "82 of 100", rest: " legitimacy score against peer benchmarks.", prefix: "Legitimacy scored " },
+        { mark: "Officer IDs", rest: " are verified for both officers." }
+      ]
+    };
+    var bullets = (HERO_BULLETS[tone] || HERO_BULLETS.negative).map(bulletHtml);
 
-    /* Each point is one short sentence with only its key phrase highlighted. */
-    function sentence(raw) {
-      var m;
-      if (/manual review/i.test(raw)) return mark("Manual review") + " is required before any approval decision.";
-      if ((m = raw.match(/(\d+) of (\d+) verification signals flagged/i))) {
-        return mark(m[1] + " of " + m[2] + " signals") + " raised verification flags.";
-      }
-      if ((m = raw.match(/legitimacy score (\d+)\/100/i))) {
-        return "Legitimacy scored " + mark(m[1] + " of 100") + " against peer benchmarks.";
-      }
-      if (/officers? lack(s)? national id/i.test(raw)) {
-        return mark("Officer IDs") + " are missing national identification for both officers.";
-      }
-      /* Anything else: highlight the first phrase, keep the rest as plain text. */
-      var cut = raw.search(/,| with | and /);
-      return cut > 0 ? mark(raw.slice(0, cut)) + esc(raw.slice(cut)) + "." : mark(raw);
-    }
-    var shorts = [];
-    if (lead) shorts.push(sentence(lead));
-    findings.forEach(function (f) { shorts.push(sentence(f)); });
-
+    var brhOn = isBrhOn(card);
     var buttons = [].slice
       .call(hero.querySelectorAll(".kyb-summary-hero__actions [data-kyb-jump-tab]"))
       .filter(function (b) {
-        var t = card && card.querySelector('[data-d3-kyb-tab="' + HERO_JUMP_TAB[b.getAttribute("data-kyb-jump-tab")] + '"]');
+        var jump = b.getAttribute("data-kyb-jump-tab");
+        if (!brhOn && jump === "signals") return false;
+        var t = card && card.querySelector('[data-d3-kyb-tab="' + HERO_JUMP_TAB[jump] + '"]');
         return !card || (t && !t.hidden);
       })
       .map(function (b) {
@@ -855,12 +859,21 @@
       { jump: "signals", label: "Review Risk Analysis" },
       { jump: "match-signals", label: "Review Match Signals" }
     ].forEach(function (f) {
+      if (!brhOn && f.jump === "signals") return;
       var t = card && card.querySelector('[data-d3-kyb-tab="' + HERO_JUMP_TAB[f.jump] + '"]');
       if (buttons.length < 2 && (!card || (t && !t.hidden))) buttons.push(f);
     });
     buttons = buttons
       .map(function (b) {
-        return '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-kyb-jump-tab="' + esc(b.jump) + '">' + esc(b.label) + "</button>";
+        return (
+          '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-kyb-jump-tab="' +
+          esc(b.jump) +
+          '">' +
+          esc(b.label) +
+          '<span class="tds-btn__trailing-icon" aria-hidden="true">' +
+          '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="m6 4 4 4-4 4"/></svg></span></button>'
+        );
       })
       .join("");
 
@@ -878,27 +891,70 @@
     var gaugeEl = hero.querySelector(".kyb-summary-hero__gauge");
     var score = gaugeEl ? gaugeEl.getAttribute("data-score") || "" : "";
     var statusText = biz.status || "Active";
+    var verifyStatus = statusOverride || biz.verifyStatus || biz.resultStatus || "";
     var statusFact =
       '<div class="d3h-entity__fact"><div class="d3h-entity__fact-text">' +
       '<span class="d3h-entity__fact-label">Registration status</span>' +
       '<span class="d3h-entity__fact-value d3h-entity__fact-value--status"><i class="d3h-entity__dot' +
       (/active/i.test(statusText) ? "" : " is-off") + '" aria-hidden="true"></i>' + esc(statusText) + "</span></div></div>";
+
+    /* BRH on: gauge + Risk Analysis / High Risk Entity.
+       BRH off: same Overview card — thumbnail + status instead of that block. */
+    var topHtml;
+    if (brhOn) {
+      topHtml =
+        (score ? '<div class="d3h-hero__gaugebox"><div class="dv-di-gauge d3h-hero__gauge" data-score="' + esc(score) + '"></div></div>' : "") +
+        '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">Risk Analysis</p>' +
+        '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(title) + "</h2></div>";
+    } else {
+      var offTitle = /not verified/i.test(verifyStatus)
+        ? "Not Verified"
+        : /review|flag/i.test(verifyStatus)
+          ? "Needs Review"
+          : /verif/i.test(verifyStatus)
+            ? "Verified"
+            : name;
+      var offTone = /not verified|fail/i.test(verifyStatus)
+        ? "negative"
+        : /review|flag/i.test(verifyStatus)
+          ? "intermediate"
+          : "positive";
+      var office = String(r.address || biz.addr || "").split(" - ")[0].split(",")[0].trim() || "—";
+      topHtml =
+        '<div class="d3h-hero__thumbwrap">' +
+        '<img class="d3h-hero__thumb" src="assets/kyb-resume/building.png" alt="" width="120" height="90">' +
+        "</div>" +
+        '<div class="d3h-hero__verdict">' +
+        '<p class="d3h-hero__eyebrow">Overview</p>' +
+        '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + offTone + '">' + esc(offTitle) + "</h2>" +
+        '<dl class="d3h-hero__meta">' +
+        '<div><dt>Registration</dt><dd>' + esc(r.regNumber || biz.reg || "—") + "</dd></div>" +
+        "<div><dt>Address</dt><dd>" + esc(office) + "</dd></div>" +
+        "</dl></div>";
+    }
+
     hero.outerHTML =
-      '<section class="d3h-card d3h-card--hero d3h-card--hero-gauge d3h-card--tone-' + tone + '" aria-label="Verdict"' + (riskOn ? "" : ' data-d3h-status="1"') + '><div class="d3h-card__inner">' +
+      '<section class="d3h-card d3h-card--hero d3h-card--hero-gauge d3h-card--tone-' + tone + (brhOn ? "" : " d3h-card--brh-off") + '" aria-label="Verdict"><div class="d3h-card__inner">' +
       '<div class="d3h-hero__main">' +
-      '<div class="d3h-hero__top">' +
-      (riskOn && score ? '<div class="d3h-hero__gaugebox"><div class="dv-di-gauge d3h-hero__gauge" data-score="' + esc(score) + '"></div></div>' : "") +
-      '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">' + (riskOn ? "Risk Analysis" : "Verification status") + "</p>" +
-      '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(riskOn ? title : statusLabel) + "</h2></div>" +
+      '<div class="d3h-hero__group">' +
+      '<div class="d3h-hero__top">' + topHtml + "</div>" +
+      '<ul class="d3h-bullets">' + bullets.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
       "</div>" +
-      '<ul class="d3h-points">' + shorts.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
       (buttons
         ? '<div class="d3h-suggested" aria-label="Suggested actions"><p class="d3h-section-label">Suggested Actions</p><div class="d3h-suggested__ctas">' + buttons + "</div></div>"
         : "") +
       "</div>" +
       '<aside class="d3h-entity" aria-label="Entity information">' +
       '<div class="d3h-entity__facts">' +
-      fact("Country / Jurisdiction", biz.country || r.country || "United States", '<span class="d3h-entity__fact-flag" aria-hidden="true"><span class="fi fi-' + esc(cc) + '"></span></span>') +
+      fact(
+        "Country / Jurisdiction",
+        biz.country || r.country || "United States",
+        '<span class="d3h-entity__fact-flag" aria-hidden="true">' +
+          (cc === "us"
+            ? '<img src="assets/kyb-resume/flag-us.svg" alt="" width="18" height="12">'
+            : '<span class="fi fi-' + esc(cc) + '"></span>') +
+          "</span>"
+      ) +
       statusFact +
       fact("BRN / Registration number", r.regNumber || biz.reg) +
       fact("Business address", r.address || biz.addr) +
@@ -944,49 +1000,23 @@
     });
   }
 
-  /* With no score the hero states the verification status, and the header tag is its source:
-     follow it whenever it changes (it reads "Verifying…" until the report is done). */
-  function syncHeroStatus(panel, card) {
-    var hero = panel.querySelector("[data-d3h-status]");
-    var tag = card && card.querySelector(".d1-tag");
-    if (!hero || !tag) return;
-    var text = tag.textContent.replace(/\s+/g, " ").trim();
-    if (!text || /verifying/i.test(text)) return;
-    var tone = tag.classList.contains("d1-tag--positive") ? "positive" : tag.classList.contains("d1-tag--review") ? "intermediate" : "negative";
-    hero.className = hero.className.replace(/d3h-card--tone-\w+/, "d3h-card--tone-" + tone);
-    var h = hero.querySelector(".d3h-hero__verdict .d3h-card__title");
-    if (h) {
-      h.textContent = text;
-      h.className = h.className.replace(/d3h-card__title--(positive|intermediate|negative)/, "d3h-card__title--" + tone);
-    }
-    hero.querySelectorAll(".d3h-card__lede-mark").forEach(function (m) {
-      m.className = m.className.replace(/d3h-card__lede-mark--\w+/, "d3h-card__lede-mark--" + tone);
-    });
-  }
-
-  function watchStatusTag(panel, card) {
-    var tag = card && card.querySelector(".d1-tag");
-    if (!tag || tag.__d3hWatched) return;
-    tag.__d3hWatched = true;
-    new MutationObserver(function () { syncHeroStatus(panel, card); }).observe(tag, { attributes: true, childList: true, characterData: true, subtree: true });
-  }
-
   function paint(panel, card, biz, animate) {
     try {
       if (window.D3KybPanels && window.D3KybPanels.mount(panel, "summary")) {
-        upgradeHero(panel, biz, card); /* native Summary, with the v3 hero */
-        watchStatusTag(panel, card);
-        syncHeroStatus(panel, card);
-        panel.querySelectorAll(".d3h-hero__gauge[data-score]").forEach(function (g) {
-          var s = parseFloat(g.getAttribute("data-score") || "0");
-          g.setAttribute("data-risk", s < 30 ? "low" : s <= 60 ? "medium" : "high");
-          g.setAttribute("data-show-percent", "false");
-          g.removeAttribute("data-label");
-        });
-        if (window.ScoreGauge) window.ScoreGauge.renderAll(panel);
+        upgradeHero(panel, biz, card); /* same Overview card; BRH swaps gauge vs thumbnail */
+        if (isBrhOn(card)) {
+          panel.querySelectorAll(".d3h-hero__gauge[data-score]").forEach(function (g) {
+            var s = parseFloat(g.getAttribute("data-score") || "0");
+            g.setAttribute("data-risk", s < 30 ? "low" : s <= 60 ? "medium" : "high");
+            g.setAttribute("data-show-percent", "false");
+            g.removeAttribute("data-label");
+          });
+          if (window.ScoreGauge) window.ScoreGauge.renderAll(panel);
+        }
         tidyHighlights(panel, card);
+      } else {
+        panel.innerHTML = overviewHtml(biz, card);
       }
-      else panel.innerHTML = overviewHtml(biz, card);
       if (animate) {
         var root = panel.firstElementChild;
         if (root) root.classList.add("d3kf-in");
@@ -998,6 +1028,57 @@
     }
     panel.removeAttribute("aria-busy");
     bind(card);
+  }
+
+  function syncBrhChrome(card, enabled) {
+    var root = resumeRoot(card);
+    if (!root) return;
+    root.setAttribute("data-d3-brh", enabled ? "on" : "off");
+    var riskTab = root.querySelector('[data-d3-kyb-tab="risk"]');
+    if (riskTab) {
+      if (!enabled) riskTab.hidden = true;
+      else if (window.D3KybReport && typeof window.D3KybReport.tabAllowed === "function") {
+        riskTab.hidden = !window.D3KybReport.tabAllowed("risk");
+      } else riskTab.hidden = false;
+    }
+    root.querySelectorAll("[data-d3-brh-toggle]").forEach(function (btn) {
+      btn.setAttribute("aria-checked", enabled ? "true" : "false");
+    });
+  }
+
+  function setBrh(enabled, card) {
+    brhEnabled = enabled !== false;
+    var root = resumeRoot(card);
+    syncBrhChrome(root, brhEnabled);
+    if (!brhEnabled && root) {
+      var active = root.querySelector("[data-d3-kyb-tab].is-active");
+      if (active && active.getAttribute("data-d3-kyb-tab") === "risk") {
+        if (window.D3KybReport && window.D3KybReport.selectTab) window.D3KybReport.selectTab("findings", { silent: true });
+        else {
+          var findingsTab = root.querySelector('[data-d3-kyb-tab="findings"]');
+          if (findingsTab) findingsTab.click();
+        }
+      }
+    }
+    var panel = root && root.querySelector('[data-d3-kyb-panel="findings"]');
+    if (panel && panel.__kfCtx) {
+      paint(panel, panel.__kfCtx.card, panel.__kfCtx.biz, false);
+    } else if (root && window.D3KybReport && typeof window.D3KybReport.getCurrent === "function") {
+      var biz = window.D3KybReport.getCurrent();
+      if (biz) render(root, biz);
+    }
+    document.dispatchEvent(new CustomEvent("d3-kyb:brh-change", { detail: { enabled: brhEnabled } }));
+    return brhEnabled;
+  }
+
+  function bindBrhToggle() {
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-d3-brh-toggle]");
+      if (!btn) return;
+      e.preventDefault();
+      var next = btn.getAttribute("aria-checked") !== "true";
+      setBrh(next, btn.closest("[data-d3-kyb-resume]") || resumeRoot());
+    });
   }
 
   function finish(panel) {
@@ -1016,7 +1097,8 @@
     if (!card || !biz) return false;
     var panel = card.querySelector('[data-d3-kyb-panel="findings"]');
     if (!panel) return false;
-    var key = biz.name + "|" + (statusOverride || "");
+    syncBrhChrome(card, isBrhOn(card));
+    var key = biz.name + "|" + (statusOverride || "") + "|brh:" + (isBrhOn(card) ? "on" : "off");
     panel.__kfCtx = { card: card, biz: biz };
 
     if (panel.dataset.kfKey === key) {
@@ -1101,8 +1183,14 @@
     });
     check();
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", watch);
-  else watch();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () {
+    watch();
+    bindBrhToggle();
+  });
+  else {
+    watch();
+    bindBrhToggle();
+  }
 
   window.D3KybFindings = {
     render: render,
@@ -1118,6 +1206,10 @@
     },
     setStatus: function (v) {
       statusOverride = v || null;
+    },
+    setBrh: setBrh,
+    isBrhOn: function (card) {
+      return isBrhOn(card);
     }
   };
 })();
