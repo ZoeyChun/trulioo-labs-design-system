@@ -670,3 +670,37 @@
 .d3-workspace .d3-kyb-map.is-entering {
   display: none !important;
 }
+
+/* ------------------------------------------------------------------
+   Ground behind the AI panel too
+   While the KYB landing / map prompt is showing, the gray dotted ground fills the whole canvas,
+   so the panel floats on it instead of on white. The dots fade out behind the page column.
+   ------------------------------------------------------------------ */
+.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing]:not([hidden])),
+.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="map"] [data-d3-kyb-map-await]:not([hidden])) {
+  isolation: isolate;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing]:not([hidden]))::before,
+.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="map"] [data-d3-kyb-map-await]:not([hidden]))::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(88, 121, 101, 0.4) 1.2px, transparent 1.5px);
+  background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(circle 440px at var(--d3-kyb-cx, 50%) 48%, transparent 0, transparent 38%, #000 100%);
+  mask-image: radial-gradient(circle 440px at var(--d3-kyb-cx, 50%) 48%, transparent 0, transparent 38%, #000 100%);
+}
+
+/* The workspace no longer paints its own gray or dots in those states: the canvas does. */
+.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing]:not([hidden])) .d3-workspace,
+.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="map"] [data-d3-kyb-map-await]:not([hidden])) .d3-workspace {
+  background: transparent;
+}
+.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="resume"] [data-d3-kyb-landing]:not([hidden])) .d3-kyb-dots,
+.d1-shell[data-d3-view="chat"] .d3-canvas:has(.d3-workspace[data-d3-kyb-surface="map"] [data-d3-kyb-map-await]:not([hidden])) .d3-kyb-dots {
+  display: none;
+}

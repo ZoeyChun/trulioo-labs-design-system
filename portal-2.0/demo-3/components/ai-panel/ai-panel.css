@@ -5,7 +5,7 @@
 @import url("./parts/header.css?v=4");
 @import url("./parts/prompt-card.css");
 @import url("./parts/composer.css?v=3");
-@import url("./parts/askbar.css");
+@import url("./parts/askbar.css?v=3");
 
 .d3-chat-pane {
   --d3-chat-pane-w: 478px;
@@ -25,7 +25,7 @@
   background: var(--surface-neutral-01);
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  box-shadow: 0 3px 27.3px 0 #c4f1e2;
+  box-shadow: var(--elevation-md), 0 2px 8px 0 rgba(196, 241, 226, 0.9);
   overflow: hidden;
   box-sizing: border-box;
 }

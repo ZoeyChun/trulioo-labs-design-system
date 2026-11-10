@@ -18,7 +18,7 @@
   font-family: inherit;
   text-align: left;
   cursor: pointer;
-  filter: drop-shadow(0 3px 13.65px #c4f1e2);
+  box-shadow: var(--elevation-md), 0 2px 8px 0 rgba(196, 241, 226, 0.9);
   opacity: 0;
   translate: -50% 16px;
   pointer-events: none;

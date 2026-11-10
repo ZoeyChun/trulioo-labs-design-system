@@ -1,0 +1,17 @@
+/* Demo 3 — one hairline weight for every line icon.
+
+   The side nav draws 24-unit icons at 16px (and 20px for the large ones), which lands the stroke at
+   about 1px. Icons drawn on a 16-unit grid with a 1.5 stroke came out at 1.5px. Pinning the stroke to
+   1px in screen pixels (non-scaling) makes them all match, whatever size they are drawn at. */
+svg.d3-fa-line *,
+svg.icon *,
+.tds-icon-btn__icon svg *,
+.tds-btn__leading-icon svg *,
+.tds-btn__trailing-icon svg *,
+.tds-date-picker__icon svg *,
+.tds-data-table__pagination-direction svg *,
+.tds-combobox__leading-visual svg *,
+.tds-select__caret svg * {
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
