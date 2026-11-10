@@ -2284,7 +2284,13 @@
     var review = 0;
     var notVerified = 0;
     var highRisk = 0;
-    rows.forEach(function (item) {
+    /* With UT_TX_STATS_FOLLOW_FILTERS the cards describe the view you are
+       actually looking at — search, date, Live/Demo and every panel filter —
+       rather than the whole dataset, so Total always agrees with the row
+       count under the table. Purely a change of numbers; the cards look and
+       behave exactly as before. */
+    var source = window.UT_TX_STATS_FOLLOW_FILTERS ? filteredRows() : rows;
+    source.forEach(function (item) {
       total += 1;
       var group = outcomeGroup(item);
       if (group === "positive") verified += 1;
