@@ -547,3 +547,21 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Additional Data now lives inside Business Details as one group with sub-sections. */
+.d3-kyb-additional-host:not(:empty) { margin-top: 32px; }
+.d3-kyb-additional-group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-subtle, #dde2de);
+}
+.d3-kyb-additional-group .kyb-additional-data { gap: 32px; }
+.d3-kyb-additional-group .kyb-additional-data .kyb-subsection { gap: 16px; }
+.d3-kyb-additional-group .kyb-additional-data .kyb-subsection-title {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--text-description, #526660);
+}

@@ -687,6 +687,8 @@
     opts = opts || {};
     /* Sources live inside Match Signals & Sources. */
     if (id === "sources") id = "signals";
+    /* Additional Data moved into Business Details. */
+    if (id === "additional") id = "overview";
     var panel = resumeCard.querySelector('[data-d3-kyb-panel="' + id + '"]');
     if (!panel) return false;
     if (resumeCard.querySelector('[data-d3-kyb-tab="' + id + '"]') && !tabAllowed(id)) return false;
@@ -731,7 +733,7 @@
         ensureWebPanel(resolveBiz());
       });
     }
-    if (id === "additional") {
+    if (id === "overview") {
       window.requestAnimationFrame(function () {
         ensureAdditionalPanel(resolveBiz());
       });
@@ -790,7 +792,7 @@
   }
 
   function ensureAdditionalPanel(biz) {
-    var panel = resumeCard.querySelector('[data-d3-kyb-panel="additional"]');
+    var panel = resumeCard.querySelector("[data-d3-kyb-additional-host]");
     if (!panel || !biz) return false;
     if (window.D3KybResultTabs && window.D3KybResultTabs.renderAdditionalPanel) {
       window.D3KybResultTabs.renderAdditionalPanel(panel, biz);

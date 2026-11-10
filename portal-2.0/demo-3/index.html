@@ -72,7 +72,7 @@
   <link rel="stylesheet" href="css/d3-org.css?v=9">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=2">
   <link rel="stylesheet" href="css/d3-kyb-agent.css?v=11">
-  <link rel="stylesheet" href="css/d3-kyb-result-tabs.css?v=5">
+  <link rel="stylesheet" href="css/d3-kyb-result-tabs.css?v=6">
   <link rel="stylesheet" href="css/d3-kyb-findings.css?v=32">
   <link rel="stylesheet" href="../../Components/filter-tab/filter-tab.css">
   <link rel="stylesheet" href="../../Components/score-gauge/score-gauge.css">
@@ -698,18 +698,18 @@
 
             <div class="d3-kyb-tabs" role="tablist" aria-label="Verification sections">
               <button type="button" class="d3-kyb-tabs__item is-active" role="tab" aria-selected="true" data-d3-kyb-tab="findings">Overview</button>
+              <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="overview">Business Details</button>
               <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="risk">Risk Analysis</button>
               <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="signals">Match Signals</button>
               <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="ownership">Owners &amp; UBOs</button>
               <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="web">Web Insights</button>
-              <button type="button" class="d3-kyb-tabs__item" role="tab" aria-selected="false" data-d3-kyb-tab="additional">Additional Data</button>
             </div>
 
             <div class="d3-kyb-panel" data-d3-kyb-panel="findings" aria-label="Overview"></div>
 
             <div class="d3-kyb-panel" data-d3-kyb-panel="risk" aria-label="Risk Analysis" hidden></div>
 
-            <div class="d3-kyb-panel" data-d3-kyb-panel="overview" hidden>
+            <div class="d3-kyb-panel" data-d3-kyb-panel="overview" aria-label="Business Details" hidden>
               <div class="d3-kyb-hero" aria-hidden="true">
                 <div class="d3-kyb-hero__leaflet" data-d3-kyb-hero-map role="img" aria-label="Selected business location"></div>
                 <img class="d3-kyb-hero__map" data-d3-kyb-hero-fallback src="assets/kyb-resume/map.png" alt="" width="769" height="182" hidden>
@@ -814,16 +814,9 @@ No evidence of active trading, clients, or revenue.</p>
                     </div>
                   </div>
                 </section>
-                <section class="d3-kyb-alerts">
-                  <h3 class="d3-kyb-overview__title">News &amp; Alerts:</h3>
-                  <div class="d3-kyb-alerts__chips">
-                    <span class="d3-kyb-chip"><i class="fa-regular fa-circle-check" aria-hidden="true"></i> Adverse Media: None found</span>
-                    <span class="d3-kyb-chip"><i class="fa-regular fa-circle-check" aria-hidden="true"></i> Sanctions: None found</span>
-                    <span class="d3-kyb-chip"><i class="fa-regular fa-circle-check" aria-hidden="true"></i> Litigation: None found</span>
-                    <span class="d3-kyb-chip"><i class="fa-regular fa-circle-check" aria-hidden="true"></i> Positive Press: None found</span>
-                  </div>
-                </section>
               </div>
+            
+              <div class="d3-kyb-additional-host" data-d3-kyb-additional-host></div>
             </div>
 
             <div class="d3-kyb-panel" data-d3-kyb-panel="ownership" hidden>
@@ -834,9 +827,6 @@ No evidence of active trading, clients, or revenue.</p>
             </div>
             <div class="d3-kyb-panel" data-d3-kyb-panel="signals" hidden>
               <p class="d3-workspace__hint">Match Signals load after verification.</p>
-            </div>
-            <div class="d3-kyb-panel" data-d3-kyb-panel="additional" hidden>
-              <p class="d3-workspace__hint">Additional data loads after verification.</p>
             </div>
             <div class="d3-kyb-panel" data-d3-kyb-panel="raw" hidden>
               <div class="d3-kyb-raw">
@@ -1584,20 +1574,20 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="../../pages/shared/tds-interactive-select.js"></script>
 <script src="transactions/kyb-results/ubo-graph-dist/ubo-graph.bundle.js?v=40"></script>
 <script src="js/d3-kyb-ubo-graph.js?v=11"></script>
-<script src="js/d3-kyb-result-tabs.js?v=7"></script>
+<script src="js/d3-kyb-result-tabs.js?v=9"></script>
 <script src="../../Components/score-gauge/score-gauge.js"></script>
 <script src="js/d3-kyb-report-panels-data.js?v=2"></script>
-<script src="js/d3-kyb-report-panels.js?v=11"></script>
-<script src="js/d3-kyb-findings.js?v=28"></script>
-<script src="js/d3-kyb-session.js?v=28"></script>
+<script src="js/d3-kyb-report-panels.js?v=12"></script>
+<script src="js/d3-kyb-findings.js?v=29"></script>
+<script src="js/d3-kyb-session.js?v=29"></script>
 <script src="js/d3-kyb-gap.js?v=14"></script>
 <script src="js/d3-kyb-config.js?v=9"></script>
 <script src="js/d3-kyb-package.js?v=12"></script>
 <script src="js/d3-kyb-resume.js?v=57"></script>
 <script src="js/d3-kyb-report-reveal.js?v=42"></script>
 <script src="js/d3-kyb-map-search.js?v=51"></script>
-<script src="js/d3-kyb-manual-search.js?v=15"></script>
-<script src="js/d3-kyb-agent.js?v=81"></script>
+<script src="js/d3-kyb-manual-search.js?v=18"></script>
+<script src="js/d3-kyb-agent.js?v=82"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=42"></script>

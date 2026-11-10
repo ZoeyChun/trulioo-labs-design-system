@@ -304,7 +304,7 @@
       return { intent: "tab", tab: "signals" };
     }
     if (/additional data|additional detail/.test(lower)) {
-      return { intent: "tab", tab: "additional" };
+      return { intent: "tab", tab: "overview" };
     }
     if (/raw data|sources/.test(lower)) {
       return { intent: "tab", tab: /source/.test(lower) ? "signals" : "raw" };

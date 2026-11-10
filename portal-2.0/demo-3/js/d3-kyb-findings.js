@@ -103,18 +103,18 @@
     function riskEvidence(x) {
       var key = x.label + " " + x.id + " " + (x.evidence || "");
       if (/address/i.test(key)) {
-        return { tab: "overview", find: (r.address || biz.addr || "").split(",")[0], label: "Business address · Business Info" };
+        return { tab: "overview", find: (r.address || biz.addr || "").split(",")[0], label: "Business address · Business Details" };
       }
       if (/ubo|owner|shareholder|nominee/i.test(key) && own[0]) {
         return { tab: "ownership", find: own[0].name, label: own[0].name + " · Owners & UBOs" };
       }
       if (/media|sanction|litigation|press/i.test(key)) {
-        return { tab: "overview", find: "Sanctions", label: "News & Alerts · Business Info" };
+        return { tab: "overview", find: "Risk & assessment", label: "Risk & assessment · Business Details" };
       }
       if (/shell|holding|employee|trading|industry|sizing|naics/i.test(key)) {
-        return { tab: "overview", find: "Sizing", label: "Sizing and industry · Business Info" };
+        return { tab: "overview", find: "Sizing", label: "Sizing and industry · Business Details" };
       }
-      return { tab: "overview", find: "Registration number", label: "Registration · Business Info" };
+      return { tab: "overview", find: "Registration number", label: "Registration · Business Details" };
     }
     risks.forEach(function (x) {
       gaps.push({
@@ -145,7 +145,7 @@
         tagLabel: "Needs attention",
         metric: x[0] + ": " + x[1],
         detail: "",
-        ev: { tab: "overview", find: x[0], label: x[0] + " · Business Info" }
+        ev: { tab: "overview", find: x[0], label: x[0] + " · Business Details" }
       });
     });
 
@@ -156,7 +156,7 @@
         caption: "Registration",
         text: "Active registration, " + (r.regNumber || biz.reg || "on file") + (r.regDate ? ". " + r.regDate + "." : "."),
         kind: "registry",
-        ev: { tab: "overview", find: r.regNumber || biz.reg || "Registration", label: "Registration number · Business Info" },
+        ev: { tab: "overview", find: r.regNumber || biz.reg || "Registration", label: "Registration number · Business Details" },
         src: { label: registry, ev: { tab: "signals", find: "Business Name", label: "Business Name · Match Signals" } }
       });
     }
@@ -165,7 +165,7 @@
         caption: "Address",
         text: "Registered address on file: " + (r.address || biz.addr) + ".",
         kind: "registry",
-        ev: { tab: "overview", find: (r.address || biz.addr).split(",")[0], label: "Business address · Business Info" },
+        ev: { tab: "overview", find: (r.address || biz.addr).split(",")[0], label: "Business address · Business Details" },
         src: { label: registry, ev: { tab: "signals", find: "Business Name", label: "Business Name · Match Signals" } }
       });
     }
@@ -174,8 +174,8 @@
         caption: "Screening",
         text: "No sanctions, adverse media or litigation found.",
         kind: "screening",
-        ev: { tab: "overview", find: "Sanctions", label: "News & Alerts · Business Info" },
-        src: { label: "Screening", ev: { tab: "overview", find: "Sanctions", label: "News & Alerts · Business Info" } }
+        ev: { tab: "overview", find: "Risk & assessment", label: "Risk & assessment · Business Details" },
+        src: { label: "Screening", ev: { tab: "overview", find: "Risk & assessment", label: "Risk & assessment · Business Details" } }
       });
     }
     own
@@ -197,7 +197,7 @@
         caption: "Business activity",
         text: "Business activity: " + r.industry + ".",
         kind: "self-reported",
-        ev: { tab: "overview", find: r.industry.split("(")[0].trim().slice(0, 24), label: "Operations and industry · Business Info" },
+        ev: { tab: "overview", find: r.industry.split("(")[0].trim().slice(0, 24), label: "Operations and industry · Business Details" },
         src: { label: "Applicant form", ev: null }
       });
     }
@@ -790,7 +790,7 @@
 
   /* Which tab each native jump target opens, so a button never points at a tab the
      package does not include. */
-  var HERO_JUMP_TAB = { ownership: "ownership", presence: "web", "match-signals": "signals", signals: "risk", "business-insights": "additional", financial: "additional" };
+  var HERO_JUMP_TAB = { ownership: "ownership", presence: "web", "match-signals": "signals", signals: "risk", "business-insights": "overview", financial: "overview" };
   var NATIVE_NAME = "Meridian Apex Consulting Inc."; /* the name baked into the native Summary */
 
   /* The native Summary hero (gauge + verdict card) becomes the report hero from
@@ -967,11 +967,11 @@
   /* One card per report tab (after Overview), in tab order, named like the tab. A card
      whose tab the package leaves out is dropped. */
   var HIGHLIGHT_CARDS = [
+    { jump: "financial", name: "Business Details", detail: "Virtual office address" },
     { jump: "signals", name: "Risk Analysis" },
     { jump: "match-signals", name: "Match Signals" },
     { jump: "ownership", name: "Owners & UBOs" },
-    { jump: "presence", name: "Web Insights" },
-    { jump: "financial", name: "Additional Data", detail: "Virtual office address" }
+    { jump: "presence", name: "Web Insights" }
   ];
 
   function tidyHighlights(panel, card) {

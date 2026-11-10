@@ -5,7 +5,7 @@
 (function () {
   "use strict";
 
-  var JUMP = { "match-signals": "signals", "business-insights": "additional", ownership: "ownership", presence: "web", signals: "risk", financial: "additional", summary: "findings" };
+  var JUMP = { "match-signals": "signals", "business-insights": "overview", ownership: "ownership", presence: "web", signals: "risk", financial: "overview", summary: "findings" };
 
   /* Key Findings → Risk Analysis accordion categories (and optional signal-row anchors). */
   var FINDING_TARGETS = [

@@ -920,6 +920,8 @@
     if (!panel || !biz) return;
     var data = additionalDataForBiz(biz);
     panel.innerHTML =
+      '<section class="d3-kyb-additional-group" aria-label="Additional Data">' +
+      '<h3 class="d3-kyb-overview__title">Additional Data:</h3>' +
       '<div class="d3-kyb-tab-body d3-kyb-additional kyb-additional-data">' +
       additionalSection("Business profile", data.profile) +
       additionalSection("Registration & filings", data.registration) +
@@ -927,7 +929,7 @@
       additionalSection("Addresses", data.addresses) +
       additionalSection("Risk & assessment", data.risk) +
       additionalSection("Data quality & metadata", data.metadata) +
-      "</div>";
+      "</div></section>";
   }
 
   function renderAll(resumeCard, biz) {
@@ -937,8 +939,9 @@
       resumeCard.querySelector('[data-d3-kyb-panel="signals"]'),
       biz
     );
+    /* The former Additional Data tab now lives at the end of Business Details. */
     renderAdditionalPanel(
-      resumeCard.querySelector('[data-d3-kyb-panel="additional"]'),
+      resumeCard.querySelector("[data-d3-kyb-additional-host]"),
       biz
     );
     /* Sources are embedded in the Match Signals & Sources tab. */
