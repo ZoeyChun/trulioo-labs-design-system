@@ -1,0 +1,234 @@
+<!-- SCRATCH — KPI card options for review. Safe to delete. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transaction KPI cards — options</title>
+<link rel="stylesheet" href="../../../tokens/fonts.css">
+<link rel="stylesheet" href="../../../tokens/tokens.css">
+<link rel="stylesheet" href="../../../pages/shared/tds-shared-atoms.css">
+<link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+<style>
+  body { margin:0; padding:22px 26px 48px; background:var(--surface-neutral-02); font-family:var(--font-family); color:var(--text-default); }
+  h1 { font-size:19px; font-weight:500; margin:0 0 3px; }
+  .sub { color:var(--text-description); font-size:12px; margin:0 0 18px; max-width:820px; line-height:17px; }
+  .opt { background:var(--surface-neutral-01); border:1px solid var(--border-subtle); border-radius:12px; padding:16px 18px 18px; margin-bottom:18px; }
+  .opt__name { font-size:14px; font-weight:600; margin:0 0 3px; }
+  .opt__note { font-size:12px; color:var(--text-description); margin:0 0 14px; line-height:17px; }
+
+  /* toolbar — same furniture as the transactions page: search, date, quick
+     filters, More filters. Live/Demo is not here; it lives in the drawer. */
+  .bar { display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+  .bar__row { display:flex; align-items:center; gap:10px; }
+  .fld { display:flex; align-items:center; height:32px; box-sizing:border-box; border:1px solid var(--border-strong);
+    border-radius:var(--radius-button); background:var(--surface-neutral-01); overflow:hidden; }
+  .fld--search { flex:1 1 320px; max-width:420px; padding-left:10px; }
+  .fld--date { flex:0 0 190px; gap:7px; padding:0 10px; color:var(--text-placeholder); font-size:13px; }
+  .fld input { flex:1; min-width:0; height:100%; border:0; outline:0; background:none; font:inherit; font-size:13px; color:var(--text-default); }
+  .fld input::placeholder { color:var(--text-placeholder); }
+  .fld__go { flex:0 0 auto; width:26px; height:26px; margin:2px; display:inline-flex; align-items:center; justify-content:center;
+    border:0; border-radius:5px; background:var(--interactive-default); color:#fff; cursor:pointer; }
+  .fld__go svg { width:13px; height:13px; }
+  .chips { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .chip { display:inline-flex; align-items:center; gap:5px; height:28px; padding:0 10px; border:1px solid var(--border-strong);
+    border-radius:var(--radius-button); background:var(--surface-neutral-01); font:inherit; font-size:12px; color:var(--text-default); cursor:default; }
+  .chip svg { width:11px; height:11px; color:var(--icon-faint); }
+  .chip--ghost { border-style:dashed; color:var(--text-description); }
+  .bar__reset { margin-left:auto; border:0; background:none; font:inherit; font-size:12px; color:var(--interactive-default); cursor:pointer; text-decoration:underline; }
+  .bar__hint { font-size:11px; color:var(--text-caption); }
+
+  /* cards */
+  .stats { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); width:100%; box-sizing:border-box;
+    background:var(--surface-neutral-01); border:1px solid var(--border-subtle); border-radius:var(--radius-card,12px); overflow:hidden; }
+  .stat { display:flex; flex-direction:column; gap:4px; padding:16px 14px; border-left:1px solid var(--border-subtle); min-width:0; text-align:left; position:relative; }
+  .stat:first-child { border-left:none; }
+  .stat__label { margin:0; font-size:11px; line-height:15px; font-weight:500; text-transform:uppercase; letter-spacing:.5px; color:var(--text-description); }
+  .stat__value { margin:0; margin-top:auto; font-size:18px; line-height:26px; font-weight:600; color:var(--text-default); }
+  .stats--clickable .stat { appearance:none; border-top:0; border-right:0; border-bottom:0; background:none; font:inherit; cursor:pointer; transition:background-color .12s ease; }
+  .stats--clickable .stat:hover { background:var(--surface-hover); }
+  .stats--clickable .stat:focus-visible { outline:2px solid var(--border-focus); outline-offset:-2px; }
+  .stat.is-on { background:color-mix(in srgb, var(--interactive-default) 10%, var(--surface-neutral-01)); }
+  .stat.is-on .stat__label { color:var(--text-default); }
+  .stat.is-on::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--interactive-default); }
+
+  /* pills variant */
+  .pills { display:flex; flex-wrap:wrap; gap:8px; }
+  .pill { display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 12px; border:1px solid var(--border-subtle);
+    border-radius:999px; background:var(--surface-neutral-01); font:inherit; font-size:13px; color:var(--text-default); cursor:pointer; }
+  .pill:hover { background:var(--surface-hover); }
+  .pill.is-on { border-color:var(--interactive-default); background:color-mix(in srgb, var(--interactive-default) 10%, var(--surface-neutral-01)); }
+  .pill__n { font-weight:600; }
+  .pill__l { color:var(--text-description); }
+  .pill.is-on .pill__l { color:var(--text-default); }
+  .dot { width:7px; height:7px; border-radius:50%; flex:0 0 auto; }
+  .dot--total { background:var(--icon-faint); } .dot--pos { background:var(--text-positive); }
+  .dot--mid { background:var(--text-intermediate); } .dot--neg { background:var(--text-negative); }
+  .dot--risk { background:#8b5cf6; }
+
+  /* mini table */
+  .tbl { margin-top:12px; border:1px solid var(--border-subtle); border-radius:10px; overflow:hidden; }
+  table { width:100%; border-collapse:separate; border-spacing:0; table-layout:fixed; }
+  thead th { height:26px; background:var(--surface-neutral-02); border-bottom:1px solid var(--border-subtle); color:var(--text-description);
+    font-size:10px; font-weight:500; letter-spacing:.5px; text-transform:uppercase; text-align:left; padding:3px 10px; }
+  tbody td { height:34px; padding:3px 10px; border-bottom:1px solid var(--border-subtle); font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  tbody tr:last-child td { border-bottom:0; }
+  .foot { display:flex; align-items:center; justify-content:space-between; padding:7px 10px; background:var(--surface-neutral-02);
+    border-top:1px solid var(--border-subtle); font-size:11px; color:var(--text-description); }
+  .foot b { color:var(--text-default); }
+  .empty { padding:18px 10px; text-align:center; font-size:12px; color:var(--text-description); }
+  .t { display:inline-flex; align-items:center; height:19px; padding:0 7px; border-radius:999px; font-size:11px; font-weight:500; }
+  .t--pos { background:#e6f4ec; color:#166534; } .t--mid { background:#fdf3e2; color:#775516; }
+  .t--neg { background:#fdeaea; color:#ba151d; } .t--none { background:var(--surface-neutral-03); color:var(--text-description); }
+  .risk--high { color:var(--text-negative); } .risk--medium { color:var(--text-intermediate); } .risk--low { color:var(--text-positive); }
+</style>
+</head>
+<body>
+<h1>Transaction KPI cards — options</h1>
+<p class="sub">Each option is a working slice of the page, with the same toolbar the transactions page has. Type in the search and click the cards — the rows underneath react. Real Demo&nbsp;3 data: 16 transactions, of which the page shows the 14 Live ones by default.</p>
+<div id="out"></div>
+
+<script>
+var ROWS = [
+  ["Northwind Traders Ltd","Verified","positive","low","Live"],
+  ["Kestrel Freight GmbH","In Progress","intermediate","medium","Live"],
+  ["Lumen Health Partners","Verified","positive","","Live"],
+  ["Harbor Point Capital LLC","Not Verified","negative","high","Live"],
+  ["Sakura Robotics KK","Verified","positive","low","Live"],
+  ["Meridian Capital LLC","Verified","positive","low","Live"],
+  ["Blue Fjord Shipping AS","In Progress","intermediate","","Live"],
+  ["Apex Nordic Logistics AB","Verified","positive","","Live"],
+  ["Apex Dynamics LLC","Not Verified","negative","","Live"],
+  ["Orchid Textiles Pvt Ltd","In Progress","intermediate","","Live"],
+  ["Cobalt Analytics Inc.","Verified","positive","medium","Live"],
+  ["Meridian Apex Consulting Ltd.","In Progress","intermediate","medium","Demo"],
+  ["Sunrise Retail Group","Not Complete","not-completed","","Live"],
+  ["Vanguard Global Shipping","Not Verified","negative","high","Live"],
+  ["Aurora Pharma BV","Verified","positive","low","Live"],
+  ["Delta Ventures Ltda","In Progress","intermediate","","Demo"]
+].map(function(r){ return { name:r[0], outcome:r[1], group:r[2], risk:r[3], type:r[4] }; });
+
+var KPIS = [
+  { key:"total",        label:"Total",        dot:"total" },
+  { key:"positive",     label:"Verified",     dot:"pos" },
+  { key:"intermediate", label:"In progress",  dot:"mid" },
+  { key:"negative",     label:"Not verified", dot:"neg" },
+  { key:"highRisk",     label:"High risk",    dot:"risk" }
+];
+
+function matchesCard(r, key) {
+  if (!key || key === "total") return true;
+  if (key === "highRisk") return r.risk === "high";
+  return r.group === key;
+}
+/* everything except the card selection — search + Live/Demo */
+function baseSet(st) {
+  return ROWS.filter(function(r){
+    if (r.type !== st.type) return false;
+    if (st.q && r.name.toLowerCase().indexOf(st.q.toLowerCase()) === -1) return false;
+    return true;
+  });
+}
+function tableSet(st) { return baseSet(st).filter(function(r){ return matchesCard(r, st.sel); }); }
+
+function countsFor(mode, st) {
+  var src = (mode === "static" || mode === "filter") ? ROWS : baseSet(st);
+  var c = {};
+  KPIS.forEach(function(k){ c[k.key] = src.filter(function(r){ return matchesCard(r, k.key); }).length; });
+  return c;
+}
+
+var OPTIONS = [
+  { id:"1", name:"1 · Static — what is there now", mode:"static", visual:"cards", cardsFirst:true, chips:["Outcome","Risk","Country"],
+    note:"Cards above the toolbar, so they read as a page summary before you start filtering. Read-only: Total says 16 while the table shows the 14 Live ones, and searching moves the rows but not the cards." },
+  { id:"2", name:"2 · Cards as filters — absolute counts", mode:"filter", visual:"cards", chips:["Country"],
+    note:"Click a card to filter the rows; click again to clear. Outcome and Risk have left the toolbar — the cards are those filters now. Counts stay absolute, so a card always says how many are there to go to." },
+  { id:"3", name:"3 · Cards follow the filters — not clickable", mode:"reflect", visual:"cards", chips:["Outcome","Risk","Country"],
+    note:"Counts recompute against the current view, so Total opens at 14 — the Live set the page actually shows. Search and they follow. An honest summary, but you cannot click it." },
+  { id:"4", name:"4 · Both — clickable and live", mode:"both", visual:"cards", chips:["Country"],
+    note:"Click to filter — again replacing the Outcome and Risk dropdowns — and counts follow the search and everything else. A card never counts itself down to its own selection, so with Verified picked Total still shows the wider set. Powerful, but Total and the row count disagree." },
+  { id:"5", name:"5 · Compact pills (same interaction as 2)", mode:"filter", visual:"pills", chips:["Country"],
+    note:"A third of the height, handing the vertical space back to the table. Loses the dashboard presence." }
+];
+
+var state = {};
+/* Live is the page default and is set in the drawer, so it is fixed here. */
+OPTIONS.forEach(function(o){ state[o.id] = { sel:null, type:"Live", q:"" }; });
+
+function cardsHtml(o, st) {
+  var c = countsFor(o.mode, st);
+  var clickable = o.mode === "filter" || o.mode === "both";
+  if (o.visual === "pills") {
+    return '<div class="pills">' + KPIS.map(function(k){
+      return '<button type="button" class="pill'+(st.sel===k.key?' is-on':'')+'" data-k="'+k.key+'">'
+        + '<span class="dot dot--'+k.dot+'"></span><span class="pill__n">'+c[k.key]+'</span><span class="pill__l">'+k.label+'</span></button>';
+    }).join('') + '</div>';
+  }
+  var tag = clickable ? "button" : "div";
+  return '<div class="stats'+(clickable?' stats--clickable':'')+'">' + KPIS.map(function(k){
+    return '<'+tag+(clickable?' type="button"':'')+' class="stat'+(st.sel===k.key?' is-on':'')+'" data-k="'+k.key+'">'
+      + '<p class="stat__label">'+k.label+'</p><p class="stat__value">'+c[k.key]+'</p></'+tag+'>';
+  }).join('') + '</div>';
+}
+
+function tableHtml(o, st) {
+  var shown = tableSet(st), cap = 4;
+  var body = shown.length
+    ? '<table><thead><tr><th style="width:44%">Transaction</th><th style="width:26%">Outcome</th><th style="width:30%">Risk</th></tr></thead><tbody>'
+      + shown.slice(0,cap).map(function(r){
+          var cls = r.group==="positive"?"t--pos":r.group==="intermediate"?"t--mid":r.group==="negative"?"t--neg":"t--none";
+          return '<tr><td>'+r.name+'</td><td><span class="t '+cls+'">'+r.outcome+'</span></td>'
+            + '<td class="risk--'+(r.risk||'')+'">'+(r.risk ? r.risk.charAt(0).toUpperCase()+r.risk.slice(1)+' Risk' : '—')+'</td></tr>';
+        }).join('') + '</tbody></table>'
+    : '<p class="empty">No transactions match.</p>';
+  return '<div class="tbl">'+body
+    + '<div class="foot"><span>Showing <b>'+Math.min(cap,shown.length)+'</b> of <b>'+shown.length+'</b> rows</span>'
+    + '<span>'+(st.sel && st.sel!=="total" ? 'Card filter: <b>'+KPIS.filter(function(k){return k.key===st.sel;})[0].label+'</b>' : 'No card filter')+'</span></div></div>';
+}
+
+function paint() {
+  document.getElementById("out").innerHTML = OPTIONS.map(function(o){
+    var st = state[o.id];
+    return '<section class="opt" data-opt="'+o.id+'">'
+      + '<p class="opt__name">'+o.name+'</p><p class="opt__note">'+o.note+'</p>'
+      + (o.cardsFirst ? cardsHtml(o, st) + '<div style="height:12px"></div>' : '')
+      + '<div class="bar">'
+        + '<div class="bar__row">'
+          + '<span class="fld fld--search"><input type="search" placeholder="Search by name, country or ID" value="'+st.q.replace(/"/g,'&quot;')+'" data-q>'
+            + '<button type="button" class="fld__go" tabindex="-1"><svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></span>'
+          + '<span class="fld fld--date"><svg viewBox="0 0 16 16" fill="none" style="width:13px;height:13px"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.25"/><path d="M2 6.5h12M5.5 1.75V4M10.5 1.75V4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>mm/dd/yyyy</span>'
+          + '<button type="button" class="bar__reset" data-reset>Reset</button>'
+        + '</div>'
+        + '<div class="chips">'
+          + o.chips.map(function(n){ return '<span class="chip">'+n+'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 4 4 4-4"/></svg></span>'; }).join('')
+          + '<span class="chip chip--ghost">+ More filters</span>'
+          + '<span class="bar__hint">'+(o.chips.length===1 ? 'Outcome and Risk are gone from the toolbar — the cards do that job now.' : 'Search is live in this demo; the rest is page context.')+'</span>'
+        + '</div>'
+      + '</div>'
+      + (o.cardsFirst ? '' : cardsHtml(o, st)) + tableHtml(o, st)
+      + '</section>';
+  }).join("");
+}
+paint();
+
+var out = document.getElementById("out");
+function opt(el){ var s = el.closest("[data-opt]"); return { id:s.getAttribute("data-opt"), o:OPTIONS.filter(function(x){return x.id===s.getAttribute("data-opt");})[0] }; }
+
+out.addEventListener("click", function(e){
+  var k = e.target.closest("[data-k]"), r = e.target.closest("[data-reset]");
+  if (r) { var b=opt(r); state[b.id] = { sel:null, type:"Live", q:"" }; paint(); return; }
+  if (k) { var c=opt(k); if (c.o.mode==="static"||c.o.mode==="reflect") return;
+    var key = k.getAttribute("data-k");
+    state[c.id].sel = state[c.id].sel === key ? null : (key === "total" ? null : key);
+    paint(); }
+});
+out.addEventListener("input", function(e){
+  var q = e.target.closest("[data-q]"); if (!q) return;
+  var a = opt(q); state[a.id].q = q.value;
+  var pos = q.selectionStart; paint();
+  var again = document.querySelector('[data-opt="'+a.id+'"] [data-q]');
+  again.focus(); again.setSelectionRange(pos,pos);
+});
+</script>
+</body>
+</html>
