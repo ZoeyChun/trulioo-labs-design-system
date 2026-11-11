@@ -117,14 +117,87 @@
     );
   }
 
+  /* Sub-accounts: each package bills to one; the first is the default. Kept in this browser. */
+  var SUB_ACCOUNTS = {
+    essentials: ["BusinessEssentials", "BusinessEssentials-Sandbox"],
+    insights: ["BusinessInsights", "BusinessInsights-EU", "BusinessInsights-Sandbox"],
+    complete: ["BusinessComplete", "BusinessComplete-Sandbox"]
+  };
+  var SUB_KEY = "d3-kyb-subaccount";
+
+  function subAccount(pkgId) {
+    var list = SUB_ACCOUNTS[pkgId] || [];
+    try {
+      var saved = JSON.parse(window.localStorage.getItem(SUB_KEY) || "{}");
+      if (saved[pkgId] && list.indexOf(saved[pkgId]) !== -1) return saved[pkgId];
+    } catch (e) { /* storage blocked */ }
+    return list[0] || "";
+  }
+
+  function setSubAccount(pkgId, name) {
+    try {
+      var saved = JSON.parse(window.localStorage.getItem(SUB_KEY) || "{}");
+      saved[pkgId] = name;
+      window.localStorage.setItem(SUB_KEY, JSON.stringify(saved));
+    } catch (e) { /* ignore */ }
+  }
+
+  /* Default configuration on the manual form: the three packages as TDS radio
+     cards; the chosen one carries its Sub-account select. */
+  function defaults() {
+    var current = S.get().package;
+    return (
+      '<div class="d3-kyb-pkgcards" role="radiogroup" aria-label="Package">' +
+      S.packages
+        .map(function (p) {
+          var on = p.id === current;
+          var sub = "";
+          if (on && SUB_ACCOUNTS[p.id]) {
+            var cur = subAccount(p.id);
+            sub =
+              '<span class="d3-kyb-pkgcards__sub"><span class="d3-kyb-pkgcards__sublabel">Sub-account</span>' +
+              '<span class="tds-select tds-select--interactive" data-d3-kyb-sub>' +
+              '<button type="button" class="tds-select__trigger tds-select__trigger--md" aria-haspopup="listbox" aria-expanded="false" aria-label="Sub-account, ' + esc(cur) + '">' +
+              '<span class="tds-select__value">' + esc(cur) + "</span>" +
+              '<span class="tds-select__trailing-group"><span class="tds-caret tds-caret--default" aria-hidden="true"><svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg></span></span></button>' +
+              '<span class="tds-select__menu" role="listbox" aria-label="Sub-account" hidden><span class="tds-dropdown-panel">' +
+              SUB_ACCOUNTS[p.id]
+                .map(function (n) {
+                  return '<span class="tds-action-list-item' + (n === cur ? " tds-action-list-item--selected" : "") + '" role="option" data-value="' + esc(n) + '"><span class="tds-action-list-item__label">' + esc(n) + "</span></span>";
+                })
+                .join("") +
+              "</span></span></span></span>";
+          }
+          return (
+            '<span class="tds-radio-card' + (on ? " tds-radio-card--selected" : "") + '" role="radio" tabindex="0" aria-checked="' + (on ? "true" : "false") + '" data-d3-kyb-pkg-pick="' + p.id + '">' +
+            '<input type="radio" class="tds-radio" name="d3-kyb-pkg-default" tabindex="-1"' + (on ? " checked" : "") + ' aria-hidden="true">' +
+            '<span class="tds-radio-card__content">' +
+            '<span class="tds-radio-card__label-row"><span class="tds-radio-card__label">' + esc(p.name) + "</span>" +
+            (p.recommended ? ' <span class="tds-tag tds-tag--sm tds-tag--positive">Default</span>' : "") + "</span>" +
+            '<span class="tds-radio-card__description">' + esc(p.tagline) + "</span>" +
+            sub +
+            "</span></span>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  }
+
   function markup(el) {
-    return el && el.getAttribute("data-variant") === "cards" ? cards() : segmented();
+    var v = el && el.getAttribute("data-variant");
+    return v === "cards" ? cards() : v === "default" ? defaults() : segmented();
+  }
+
+  function initSelects(el) {
+    if (window.TdsInteractiveSelect && el.querySelector("[data-d3-kyb-sub]")) window.TdsInteractiveSelect.init(el);
   }
 
   function render(el) {
     if (!el) return;
     el.classList.add("d3-kyb-pkg");
     el.innerHTML = markup(el);
+    initSelects(el);
     if (mounted.indexOf(el) === -1) mounted.push(el);
   }
 
@@ -134,11 +207,23 @@
     });
     mounted.forEach(function (el) {
       var html = markup(el);
-      if (el.innerHTML !== html) el.innerHTML = html;
+      if (el.innerHTML !== html) {
+        el.innerHTML = html;
+        initSelects(el);
+      }
     });
   }
 
+  document.addEventListener("tds-select:change", function (event) {
+    var root = event.target.closest && event.target.closest("[data-d3-kyb-sub]");
+    var item = event.detail && event.detail.item;
+    if (!root || !item) return;
+    setSubAccount(S.get().package, item.getAttribute("data-value"));
+    document.dispatchEvent(new CustomEvent("d3-kyb:subaccount-change"));
+  });
+
   document.addEventListener("click", function (event) {
+    if (event.target.closest && event.target.closest("[data-d3-kyb-sub]")) return;
     var btn = event.target.closest && event.target.closest("[data-d3-kyb-pkg-pick]");
     if (!btn) return;
     event.preventDefault();
@@ -160,5 +245,5 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountAll);
   else mountAll();
 
-  window.D3KybPackage = { render: render, mountAll: mountAll, refresh: refresh };
+  window.D3KybPackage = { subAccount: function (id) { return subAccount(id || S.get().package); }, render: render, mountAll: mountAll, refresh: refresh };
 })();

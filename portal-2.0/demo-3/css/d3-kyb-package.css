@@ -193,3 +193,28 @@
   opacity: 0.55;
   pointer-events: none;
 }
+
+/* Default configuration on the manual form: TDS radio cards, the chosen one carries its sub-account. */
+.d3-kyb-pkgcards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-pkgcards .tds-radio-card { cursor: pointer; }
+
+.d3-kyb-pkgcards__sub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 4px);
+  margin-top: var(--spacing-8, 8px);
+}
+
+.d3-kyb-pkgcards__sublabel {
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.d3-kyb-pkgcards__sub .tds-select { width: 100%; }

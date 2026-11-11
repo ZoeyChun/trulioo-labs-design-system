@@ -219,6 +219,7 @@
     if (city) city.value = entity.city || "";
     if (st) st.value = entity.state || "";
     if (postal) postal.value = entity.postal || "";
+    if (window.D3KybFields) window.D3KybFields.fill(entity);
   }
 
   function showPrefill(show) {

@@ -249,23 +249,27 @@
   /* ---- the manual search form: show the saved setup as one line + Edit ---- */
   var editing = false;
 
+  /* The manual form starts with the default configuration (package + sub-account) already
+     chosen, as one line with Edit. Edit opens the choices; Done folds them back. */
   function syncSaved() {
     var line = document.querySelector("[data-d3-kyb-saved]");
     var prefill = document.getElementById("vb-prefill");
     if (!line || !prefill) return;
-    var cfg = S.savedConfig();
-    var use = !!cfg && !editing;
-    line.hidden = !use;
-    prefill.classList.toggle("vb-prefill--saved", use);
+    line.hidden = editing;
+    prefill.classList.toggle("vb-prefill--saved", !editing);
     var text = line.querySelector("[data-d3-saved-text]");
-    if (text && use) text.textContent = " · " + S.scopeLabel();
+    var P = window.D3KybPackage;
+    var id = S.get().package;
+    if (text) text.textContent = S.package(id).name + (P ? " · " + P.subAccount(id) : "");
   }
 
   document.addEventListener("click", function (event) {
-    if (!event.target.closest || !event.target.closest("[data-d3-saved-edit]")) return;
-    editing = true;
+    var t = event.target.closest && event.target.closest("[data-d3-saved-edit], [data-d3-saved-done]");
+    if (!t) return;
+    editing = t.hasAttribute("data-d3-saved-edit");
     syncSaved();
   });
+  document.addEventListener("d3-kyb:subaccount-change", syncSaved);
 
   /* A fresh verification (New verification, a new saved setup) goes back to the line. */
   document.addEventListener("d3-kyb:session-change", function (event) {

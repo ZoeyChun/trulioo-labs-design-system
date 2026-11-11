@@ -1454,7 +1454,7 @@
 
     var lines = [];
     lines.push("<li><b>Entity</b>" + esc(biz.name) + (biz.status ? " (" + esc(biz.status) + ")" : "") + "</li>");
-    lines.push("<li><b>" + (wiz && wiz.saved ? "Saved configuration" : "Scope") + "</b>" + esc(S.scopeLabel()) + "</li>");
+    lines.push("<li><b>" + (wiz && wiz.saved ? "Default configuration" : "Scope") + "</b>" + esc(S.scopeLabel()) + "</li>");
     if (r.ubo === "public") lines.push("<li><b>Ownership</b>Pulled from " + esc(registryThe(biz)) + "</li>");
     if (r.ubo === "skipped" || r.ubo === "off") lines.push("<li><b>Ownership</b>Reported as not disclosed</li>");
     if (st.ubo.email.trim() && r.ubo === "private" && st.uboRoute === "email") {

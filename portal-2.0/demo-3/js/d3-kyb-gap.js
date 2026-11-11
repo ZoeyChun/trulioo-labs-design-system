@@ -324,11 +324,6 @@
     if (variant !== "form" && r.fields === 0 && r.ubo !== "skipped") return "";
     html = entitySection(variant, st, c, biz) + ownerSection(variant, st, c, biz) + bankSection(variant, st);
 
-    if (variant === "form") {
-      var sum = S.formSummary();
-      html +=
-        '<p class="d3-kyb-gapsummary" data-d3-gap-summary>' + summaryText(sum) + "</p>";
-    }
     if (el.getAttribute("data-actions") === "1") {
       html +=
         '<div class="d3-kyb-gap__actions"><button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-inputs-continue' +

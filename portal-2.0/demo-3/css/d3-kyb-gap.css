@@ -776,9 +776,26 @@
   border-color: var(--border-subtle, #dde2de);
 }
 
-/* Manual search with a saved configuration: one line + Edit instead of the
-   package select and the add-ons. */
-.vb-prefill--saved [data-d3-kyb-pkg],
+/* Default configuration (package + add-ons) sits at the top of the manual form.
+   With a saved one it collapses to one line + Edit instead. */
+.d3-kyb-defaultcfg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+}
+
+.d3-kyb-defaultcfg__title {
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.d3-kyb-defaultcfg__edit { display: flex; flex-direction: column; gap: var(--spacing-12, 12px); }
+.d3-kyb-defaultcfg__done { align-self: flex-end; }
+.vb-prefill--saved .d3-kyb-defaultcfg__edit { display: none; }
+
 .vb-prefill--saved [data-d3-kyb-addons] {
   display: none !important;
 }
@@ -798,7 +815,9 @@
 
 .d3-kyb-savedline[hidden] { display: none; }
 
-.d3-kyb-savedline__text b { font-weight: 600; }
+.d3-kyb-savedline__text { min-width: 0; text-align: left; }
+.d3-kyb-savedline__text b { display: block; font-weight: 600; }
+.d3-kyb-savedline__text [data-d3-saved-text] { display: block; color: var(--text-caption, #5c6b6b); font-size: var(--font-size-xs, 12px); line-height: 16px; overflow-wrap: anywhere; }
 
 /* "Ready to verify": no icon column, and the buttons wrap instead of being cut off. */
 .d1-confirm.tds-announcement {

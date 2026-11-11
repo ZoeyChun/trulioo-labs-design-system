@@ -64,8 +64,9 @@
   <link rel="stylesheet" href="../../Components/radio-card/radio-card.css">
   <link rel="stylesheet" href="css/d3-home.css?v=18">
   <link rel="stylesheet" href="css/d3-workspace.css?v=38">
-  <link rel="stylesheet" href="css/d3-kyb-gap.css?v=36">
-  <link rel="stylesheet" href="css/d3-kyb-package.css?v=14">
+  <link rel="stylesheet" href="css/d3-kyb-gap.css?v=39">
+  <link rel="stylesheet" href="css/d3-kyb-fields.css?v=5">
+  <link rel="stylesheet" href="css/d3-kyb-package.css?v=15">
   <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=12">
   <link rel="stylesheet" href="css/d3-embed-report.css?v=1">
   <link rel="stylesheet" href="css/d3-kyb-details.css?v=1">
@@ -529,76 +530,20 @@
             <p class="vb-search-hint" id="vb-search-hint">Enter at least 3 characters to search for a business.</p>
 
             <div class="vb-prefill" id="vb-prefill" hidden>
-              <span class="tds-tag tds-tag--xl tds-tag--positive vb-prefill__badge" aria-hidden="true">
-                <span class="tds-tag__leading-visual" aria-hidden="true">
-                  <svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg>
-                </span>
-                Pre-filled
-              </span>
-
-              <div class="vb-prefill__grid">
-                <div class="tds-text-input tds-text-input--success">
-                  <label class="tds-field-label">BRN</label>
-                  <div class="tds-text-input__field tds-text-input__field--lg">
-                    <input class="tds-text-input__native" id="vb-prefill-brn" type="text" readonly tabindex="-1" value="">
-                  </div>
-                  <span class="tds-field-validation tds-field-validation--success">
-                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
-                    <span>Pre-filled</span>
-                  </span>
+              <div class="d3-kyb-defaultcfg" data-d3-kyb-defaultcfg>
+                <div class="d3-kyb-savedline" data-d3-kyb-saved>
+                  <span class="d3-kyb-savedline__text"><b>Default configuration</b><span data-d3-saved-text></span></span>
+                  <button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-saved-edit>Edit</button>
                 </div>
-
-                <div class="tds-text-input tds-text-input--success">
-                  <label class="tds-field-label">State / Province</label>
-                  <div class="tds-text-input__field tds-text-input__field--lg">
-                    <input class="tds-text-input__native" id="vb-prefill-state" type="text" readonly tabindex="-1" value="">
-                  </div>
-                  <span class="tds-field-validation tds-field-validation--success">
-                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
-                    <span>Pre-filled</span>
-                  </span>
-                </div>
-
-                <div class="tds-text-input tds-text-input--success vb-prefill__field--full">
-                  <label class="tds-field-label">Address</label>
-                  <div class="tds-text-input__field tds-text-input__field--lg">
-                    <input class="tds-text-input__native" id="vb-prefill-address" type="text" readonly tabindex="-1" value="">
-                  </div>
-                  <span class="tds-field-validation tds-field-validation--success">
-                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
-                    <span>Pre-filled</span>
-                  </span>
-                </div>
-
-                <div class="tds-text-input tds-text-input--success">
-                  <label class="tds-field-label">City</label>
-                  <div class="tds-text-input__field tds-text-input__field--lg">
-                    <input class="tds-text-input__native" id="vb-prefill-city" type="text" readonly tabindex="-1" value="">
-                  </div>
-                  <span class="tds-field-validation tds-field-validation--success">
-                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
-                    <span>Pre-filled</span>
-                  </span>
-                </div>
-
-                <div class="tds-text-input tds-text-input--success">
-                  <label class="tds-field-label">Postal code</label>
-                  <div class="tds-text-input__field tds-text-input__field--lg">
-                    <input class="tds-text-input__native" id="vb-prefill-postal" type="text" readonly tabindex="-1" value="">
-                  </div>
-                  <span class="tds-field-validation tds-field-validation--success">
-                    <span class="tds-field-validation__icon" aria-hidden="true"><svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg></span>
-                    <span>Pre-filled</span>
-                  </span>
+                <div class="d3-kyb-defaultcfg__edit" data-d3-kyb-defaultcfg-edit>
+                  <p class="d3-kyb-defaultcfg__title">Default configuration</p>
+                  <div data-d3-kyb-pkg data-variant="default"></div>
+                  <button type="button" class="tds-btn tds-btn--md tds-btn--primary d3-kyb-defaultcfg__done" data-d3-saved-done>Done</button>
                 </div>
               </div>
 
-              <div class="d3-kyb-savedline" data-d3-kyb-saved hidden>
-                <span class="d3-kyb-savedline__text"><b>Saved configuration</b><span data-d3-saved-text></span></span>
-                <button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-saved-edit>Edit</button>
-              </div>
-              <div data-d3-kyb-pkg data-variant="compact"></div>
-              <div data-d3-kyb-addons></div>
+              <div class="d3-kyb-fields" data-d3-kyb-fields></div>
+
               <div data-d3-kyb-inputs data-variant="form"></div>
 
               <div class="vb-prefill__actions">
@@ -1570,14 +1515,15 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-kyb-report-panels.js?v=12"></script>
 <script src="js/d3-kyb-findings.js?v=32"></script>
 <script src="js/d3-kyb-session.js?v=31"></script>
-<script src="js/d3-kyb-gap.js?v=14"></script>
-<script src="js/d3-kyb-config.js?v=12"></script>
-<script src="js/d3-kyb-package.js?v=12"></script>
+<script src="js/d3-kyb-gap.js?v=15"></script>
+<script src="js/d3-kyb-config.js?v=16"></script>
+<script src="js/d3-kyb-package.js?v=13"></script>
+<script src="js/d3-kyb-fields.js?v=6"></script>
 <script src="js/d3-kyb-resume.js?v=57"></script>
 <script src="js/d3-kyb-report-reveal.js?v=44"></script>
 <script src="js/d3-kyb-map-search.js?v=51"></script>
-<script src="js/d3-kyb-manual-search.js?v=18"></script>
-<script src="js/d3-kyb-agent.js?v=82"></script>
+<script src="js/d3-kyb-manual-search.js?v=19"></script>
+<script src="js/d3-kyb-agent.js?v=83"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=42"></script>

@@ -1,0 +1,93 @@
+/* Manual form fields: Required up front, Recommended and Optional in closed accordions. */
+.d3-kyb-fields {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+}
+
+.d3-kyb-fields__required {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-fields__title,
+.d3-kyb-fields__group-title {
+  margin: 0;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.d3-kyb-fields__group-sub {
+  margin: 0;
+  color: var(--text-caption, #5c6b6b);
+  font-size: var(--font-size-xs, 12px);
+  line-height: 16px;
+}
+
+.d3-kyb-fields__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+  padding: var(--spacing-12, 12px) 0 var(--spacing-4, 4px);
+}
+
+.d3-kyb-fields__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+}
+
+.d3-kyb-fields__group + .d3-kyb-fields__group { padding-top: var(--spacing-8, 8px); }
+
+.d3-kyb-fields .tds-text-input { min-width: 0; }
+
+.d3-kyb-fields__acc-head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8, 8px);
+  width: 100%;
+  min-height: 34px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-caption, #5c6b6b);
+  font: inherit;
+  cursor: pointer;
+}
+
+.d3-kyb-fields__acc-head:hover { color: var(--text-default, #172d2d); }
+
+.d3-kyb-fields__acc-title {
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.d3-kyb-fields__acc-chevron {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  transition: transform 160ms ease;
+  transform: rotate(-90deg);
+}
+
+.d3-kyb-fields__acc-chevron svg { width: 16px; height: 16px; }
+.d3-kyb-fields__acc.is-open .d3-kyb-fields__acc-chevron { transform: none; }
+.d3-kyb-fields__acc:not(.is-open) .d3-kyb-fields__acc-body { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-kyb-fields__acc-chevron { transition: none; }
+}
+
+/* Two columns in a row, like the original form. */
+.d3-kyb-fields__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-12, 12px) var(--spacing-16, 16px);
+}
