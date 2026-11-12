@@ -713,3 +713,70 @@
 .th-tx .ut-tx-quick__item[hidden] {
   display: none;
 }
+
+/* Outcome, Risk and Country live in the toolbar; their mirrored drawer
+   sections are hidden so each facet has a single home. .ut-tx-filters__section
+   sets display:flex, which beats the UA's [hidden] rule — and the drawer is a
+   sibling of .th-tx, not inside it, so this selector must not be scoped to it. */
+.ut-tx-filters .ut-tx-filters__section[hidden] {
+  display: none;
+}
+
+/* Search inside the Country quick menu. */
+.th-tx .ut-tx-filters__search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  margin-bottom: 6px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  background: var(--surface-neutral-01);
+}
+
+.th-tx .ut-tx-filters__search:focus-within {
+  border-color: var(--border-focus);
+}
+
+.th-tx .ut-tx-filters__search-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: var(--icon-faint);
+}
+
+.th-tx .ut-tx-filters__search-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.th-tx .ut-tx-filters__search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-default);
+}
+
+.th-tx .ut-tx-filters__search-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.th-tx .ut-tx-filters__empty {
+  margin: 0;
+  padding: 10px 8px;
+  font-size: 12px;
+  color: var(--text-description);
+}
+
+.th-tx .ut-tx-filters__empty[hidden] {
+  display: none;
+}
+
+.th-tx .ut-tx-quick__menu .ut-tx-filters__option[hidden] {
+  display: none;
+}

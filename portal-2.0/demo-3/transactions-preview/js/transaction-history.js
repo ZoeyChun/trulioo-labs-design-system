@@ -1022,10 +1022,31 @@
     );
   }
 
+  /* The catalogue reads as a ladder, so list it that way rather than
+     alphabetically. Anything not named here keeps alphabetical order at the
+     end, so a new product still appears. */
+  var PRODUCT_ORDER = [
+    "Business Essentials",
+    "Business Insights",
+    "Business Complete",
+    "Business Horizon"
+  ];
+
+  function orderProducts(list) {
+    return list.slice().sort(function (a, b) {
+      var ia = PRODUCT_ORDER.indexOf(a);
+      var ib = PRODUCT_ORDER.indexOf(b);
+      if (ia === -1 && ib === -1) return String(a).localeCompare(String(b));
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
+  }
+
   function buildProductOptions() {
     var host = document.getElementById("utFiltProductOptions");
     if (!host) return;
-    var products = allProducts();
+    var products = orderProducts(allProducts());
     var html = "";
     /* Collapse the tail only when there is a tail worth collapsing. The old
        threshold of 3 hid two of five products behind a "+1 more" button on
@@ -1254,26 +1275,66 @@
     return channel;
   }
 
-  /* Country as a quick filter: checkboxes in #utFiltCountryOptions, built
-     from the rows the same way the panel's select was. */
-  function buildCountryCheckboxes() {
-    /* Country is offered in the toolbar and mirrored in the drawer, so fill
-       every host rather than just the toolbar's. */
-    var hosts = document.querySelectorAll(
-      "#utFiltCountryOptions, [data-ut-country-options]"
+  function countryOptionHtml(country) {
+    return (
+      '<label class="ut-tx-filters__option" data-ut-country="' +
+      escapeHtml(country.toLowerCase()) +
+      '"><input class="tds-checkbox" type="checkbox" name="ut-filt-country" value="' +
+      escapeHtml(country) +
+      '"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">' +
+      escapeHtml(country) +
+      "</span></span></label>"
     );
-    if (!hosts.length) return;
-    var html = "";
-    allCountries().forEach(function (country) {
-      html +=
-        '<label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="ut-filt-country" value="' +
-        escapeHtml(country) +
-        '"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">' +
-        escapeHtml(country) +
-        "</span></span></label>";
+  }
+
+  /* Country is a quick filter in the toolbar. Twelve countries is a long menu
+     to read, so it gets a search box; the drawer's mirrored copy is a plain
+     list, since nothing is searching it. */
+  function buildCountryCheckboxes() {
+    var options = allCountries().map(countryOptionHtml).join("");
+
+    var toolbar = document.getElementById("utFiltCountryOptions");
+    if (toolbar) {
+      toolbar.innerHTML =
+        '<div class="ut-tx-filters__search">' +
+        '<span class="ut-tx-filters__search-icon" aria-hidden="true">' +
+        '<svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>' +
+        "</span>" +
+        '<input type="search" class="ut-tx-filters__search-input" data-ut-country-search placeholder="Search countries" aria-label="Search countries">' +
+        "</div>" +
+        '<p class="ut-tx-filters__empty" data-ut-country-empty hidden>No countries match.</p>' +
+        options;
+    }
+
+    document.querySelectorAll("[data-ut-country-options]").forEach(function (host) {
+      host.innerHTML = options;
     });
-    hosts.forEach(function (host) {
-      host.innerHTML = html;
+  }
+
+  /* Narrow the menu as you type; an empty box puts every country back. */
+  function filterCountryOptions(host, query) {
+    var q = String(query || "").trim().toLowerCase();
+    var empty = host.querySelector("[data-ut-country-empty]");
+    var shown = 0;
+    host.querySelectorAll("[data-ut-country]").forEach(function (label) {
+      var hit = !q || label.getAttribute("data-ut-country").indexOf(q) !== -1;
+      label.hidden = !hit;
+      if (hit) shown += 1;
+    });
+    if (empty) empty.hidden = !q || shown > 0;
+  }
+
+  function bindCountrySearch() {
+    var host = document.getElementById("utFiltCountryOptions");
+    if (!host || host.dataset.searchBound) return;
+    host.dataset.searchBound = "1";
+    host.addEventListener("input", function (e) {
+      if (!e.target.closest("[data-ut-country-search]")) return;
+      filterCountryOptions(host, e.target.value);
+    });
+    /* The menu closes on any click outside it, including this box. */
+    host.addEventListener("click", function (e) {
+      if (e.target.closest("[data-ut-country-search]")) e.stopPropagation();
     });
   }
 
@@ -2553,6 +2614,7 @@
     packageSelect.bind();
     packageSelect.build();
     buildCountryCheckboxes();
+    bindCountrySearch();
     bindTypeSwitch();
 
     /* A facet mirrored into more than one surface is still one filter.
