@@ -858,6 +858,10 @@
   /* Fit rows to the visible table section so the body doesn't need a
      vertical scrollbar. Recomputed on resize / layout changes. */
   function measurePageSize() {
+    /* With UT_TX_PAGE_SIZE the page shows a fixed number of rows and the
+       column scrolls to reach them, instead of trimming the count to whatever
+       happens to fit the window. */
+    if (window.UT_TX_PAGE_SIZE) return window.UT_TX_PAGE_SIZE;
     var section =
       document.querySelector(".th-tx .ut-tx-table-section") ||
       document.querySelector(".ut-tx-table-section");

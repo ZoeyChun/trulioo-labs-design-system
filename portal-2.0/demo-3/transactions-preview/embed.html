@@ -46,7 +46,7 @@
        Page rules follow transaction-history.css so the column fit wins. -->
   <link rel="stylesheet" href="css/embed.css?v=5">
   <link rel="stylesheet" href="css/transaction-history.css?v=3">
-  <link rel="stylesheet" href="css/page.css?v=7">
+  <link rel="stylesheet" href="css/page.css?v=8">
   <link rel="stylesheet" href="../css/d3-icon-weight.css?v=1">
 </head>
 <body>
@@ -392,6 +392,8 @@
   window.UT_TX_STATS_FOLLOW_FILTERS = true;
   /* Facets set in More filters appear as their own toolbar buttons. */
   window.UT_TX_FACET_CHIPS = true;
+  /* Twenty rows a page; the column scrolls rather than the table shrinking. */
+  window.UT_TX_PAGE_SIZE = 20;
 </script>
 <script>window.UT_INLINE_FILTERS=true;</script>
 <script src="js/embed-bridge.js?v=9"></script>
@@ -400,7 +402,7 @@
 <script src="../../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/demo-transactions.js?v=7"></script>
 <script src="js/scroll-fade.js?v=1"></script>
-<script src="js/transaction-history.js?v=7"></script>
+<script src="js/transaction-history.js?v=8"></script>
 
 </body>
 </html>

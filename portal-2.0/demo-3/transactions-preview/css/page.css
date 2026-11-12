@@ -820,3 +820,35 @@
 .th-tx .ut-tx-quick__option.is-on .ut-tx-quick__option-check {
   visibility: visible;
 }
+
+/* ------------------------------------------------------------------
+   Fixed page size: the view scrolls to the rows instead of the table
+   being trimmed to the window. The whole column scrolls as one — title,
+   cards and table together — so the chat panel can be collapsed or open
+   without changing how many transactions a page holds.
+   ------------------------------------------------------------------ */
+.th-tx.ut-tx-main {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.th-tx .ut-tx-main__scroll,
+.th-tx .ut-tx-page,
+.th-tx .ut-tx-block,
+.th-tx .ut-tx-table-section {
+  flex: 0 0 auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* The table box keeps its horizontal scroller but no longer caps its own
+   height — all twenty rows render and the column carries them. */
+.th-tx .ut-tx-table-scroll {
+  flex: 0 0 auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.th-tx .ut-tx-table-card {
+  flex: 0 0 auto;
+}
