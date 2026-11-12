@@ -828,8 +828,10 @@
    without changing how many transactions a page holds.
    ------------------------------------------------------------------ */
 .th-tx.ut-tx-main {
-  overflow-y: auto;
-  overflow-x: hidden;
+  /* The page scrolls, not this column — see embed.css. */
+  height: auto;
+  max-height: none;
+  overflow: visible;
 }
 
 .th-tx .ut-tx-main__scroll,

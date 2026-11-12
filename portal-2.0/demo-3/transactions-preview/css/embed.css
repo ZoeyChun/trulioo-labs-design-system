@@ -71,3 +71,24 @@ body {
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------
+   One list, scrolled by the page.
+   The embed was built as a fixed-height column with the content
+   scrolling inside it, which reads as a panel within a panel. The
+   document scrolls instead: nothing here fixes its height, so the body
+   grows to the table and the scrollbar belongs to the page.
+   ------------------------------------------------------------------ */
+html,
+body {
+  height: auto;
+  min-height: 100%;
+}
+
+.d3-tx-embed,
+.d3-tx-embed__stage,
+.d3-tx-embed__main {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}

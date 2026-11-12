@@ -861,6 +861,7 @@
     /* With UT_TX_PAGE_SIZE the page shows a fixed number of rows and the
        column scrolls to reach them, instead of trimming the count to whatever
        happens to fit the window. */
+    if (window.UT_TX_NO_PAGINATION) return MAX_PAGE_SIZE;
     if (window.UT_TX_PAGE_SIZE) return window.UT_TX_PAGE_SIZE;
     var section =
       document.querySelector(".th-tx .ut-tx-table-section") ||
@@ -932,6 +933,15 @@
   function renderFooter(total) {
     var footer = document.getElementById("utTxFooter");
     if (!footer) return;
+    /* One list, so the footer is a count rather than a pager. */
+    if (window.UT_TX_NO_PAGINATION) {
+      footer.innerHTML =
+        '<div class="tds-data-table__footer-counter">' +
+        total +
+        (total === 1 ? " transaction" : " transactions") +
+        "</div>";
+      return;
+    }
     var pages = pageCount(total);
     var start = total ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
     var end = Math.min(currentPage * PAGE_SIZE, total);
