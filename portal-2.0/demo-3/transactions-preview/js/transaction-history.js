@@ -521,7 +521,12 @@
       panelFilters.packages.length +
       panelFilters.watchlist.length +
       (panelFilters.country ? 1 : 0) +
-      (panelFilters.user ? 1 : 0)
+      (panelFilters.user ? 1 : 0) +
+      /* The date range narrows the table like anything else, and clearAllFilters
+         resets it — but it was missing from this tally, so with only a date set
+         both Clear controls believed nothing was filtered and stayed hidden. */
+      (dateFilter.start ? 1 : 0) +
+      (productFilter ? 1 : 0)
     );
   }
 
@@ -1663,6 +1668,9 @@
     dateFilter.start = nextStart;
     dateFilter.end = nextEnd;
     updateToolbarFilterChrome();
+    /* The Clear controls live in updateFilterChrome, which the date path was
+       not calling — so setting a date left "Clear filters" hidden. */
+    updateFilterChrome();
     if (changed) render();
   }
 
@@ -1681,10 +1689,18 @@
       delete range.dataset.end;
       delete range.dataset.datePickerRangeBound;
       range.innerHTML = DATE_RANGE_FIELDS_HTML;
-      if (window.initDatePickers) window.initDatePickers(range);
+      /* initDatePickers scans a root's descendants, and the range element is
+         the root here — passing it matched nothing, so after a clear the
+         field was rebuilt but never re-bound and stopped opening. Hand it the
+         parent instead; both init paths guard on their own bound flag, so
+         re-running over the toolbar touches nothing already wired. */
+      if (window.initDatePickers) {
+        window.initDatePickers(range.parentElement || document);
+      }
       bindDateClear();
     }
     updateToolbarFilterChrome();
+    updateFilterChrome();
     render();
   }
 
