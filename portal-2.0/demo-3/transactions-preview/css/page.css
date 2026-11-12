@@ -854,3 +854,26 @@
 .th-tx .ut-tx-table-card {
   flex: 0 0 auto;
 }
+
+/* Name over transaction id. The id makes the cell two lines tall, so the
+   name itself has to stay on one — otherwise a long name wraps, the row
+   grows past its neighbours, and the truncation tooltip never fires
+   because nothing is clipped. */
+.th-tx .ut-tx-table .ut-tx-name,
+.th-tx .ut-tx-table .ut-tx-name-sub {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.th-tx .ut-tx-table .ut-tx-name-row,
+.th-tx .ut-tx-table .ut-tx-id-row {
+  min-width: 0;
+}
+
+/* The copy control keeps its size while the id beside it gives way. */
+.th-tx .ut-tx-table .ut-tx-id-copy {
+  flex: 0 0 auto;
+}

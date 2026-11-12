@@ -165,6 +165,9 @@
     }
     if (settings.date === "12hr") settings.date = "long";
     if (settings.date === "24hr") settings.date = "numeric";
+    /* The page decides this one, not a stored preference — otherwise anyone
+       who opened this view before would keep the old name-only rows. */
+    if (window.UT_TX_NAME_TRID) settings.transaction = "name-trid";
   }
 
   function saveSettings() {
@@ -2019,7 +2022,9 @@
     var tbody = document.getElementById("utTxBody");
     if (!tbody) return;
     tbody
-      .querySelectorAll(".ut-tx-multi__lead, .ut-tx-multi__all, .ut-tx-td-source, .ut-tx-name")
+      .querySelectorAll(
+        ".ut-tx-multi__lead, .ut-tx-multi__all, .ut-tx-td-source, .ut-tx-name, .ut-tx-name-sub"
+      )
       .forEach(function (el) {
         var clipped = el.scrollWidth > el.clientWidth + 1;
         if (clipped) {

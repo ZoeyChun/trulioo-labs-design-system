@@ -46,7 +46,7 @@
        Page rules follow transaction-history.css so the column fit wins. -->
   <link rel="stylesheet" href="css/embed.css?v=6">
   <link rel="stylesheet" href="css/transaction-history.css?v=3">
-  <link rel="stylesheet" href="css/page.css?v=9">
+  <link rel="stylesheet" href="css/page.css?v=10">
   <link rel="stylesheet" href="../css/d3-icon-weight.css?v=1">
 </head>
 <body>
@@ -389,6 +389,8 @@
   /* Twenty rows a page; the column scrolls rather than the table shrinking. */
   /* One list of every match; the page scrolls to it. */
   window.UT_TX_NO_PAGINATION = true;
+  /* Transaction id sits under the name, with a copy control. */
+  window.UT_TX_NAME_TRID = true;
 </script>
 <script>window.UT_INLINE_FILTERS=true;</script>
 <script src="js/embed-bridge.js?v=9"></script>
@@ -397,7 +399,7 @@
 <script src="../../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/demo-transactions.js?v=7"></script>
 <script src="js/scroll-fade.js?v=1"></script>
-<script src="js/transaction-history.js?v=10"></script>
+<script src="js/transaction-history.js?v=11"></script>
 
 </body>
 </html>
