@@ -181,6 +181,14 @@
 
     function sync() {
       items.forEach(function (item) {
+        /* Package, Source and Type chips hold option buttons, not checkboxes,
+           and transaction-history.js owns their count and selected state. */
+        if (
+          item.classList.contains("ut-tx-quick__item--dynamic") &&
+          !item.querySelector("input")
+        ) {
+          return;
+        }
         var n = item.querySelectorAll("input:checked").length;
         var count = item.querySelector(".ut-tx-quick__count");
         count.textContent = String(n);

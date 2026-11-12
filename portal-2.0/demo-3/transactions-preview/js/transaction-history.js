@@ -516,6 +516,7 @@
   }
 
   function updateFilterChrome() {
+    updateFacetChips();
     var count = activeFilterCount();
     var total = totalActiveFilterCount();
     var clearBtn = document.getElementById("utTxFiltersClear");
@@ -528,11 +529,17 @@
     if (quickClear) quickClear.hidden = total === 0;
     if (countEl) {
       countEl.textContent = String(count);
-      countEl.hidden = count === 0;
+      /* The active facets show as their own buttons in the toolbar now, so
+         the More filters button stays plain rather than carrying a tally. */
+      countEl.hidden = count === 0 || !!window.UT_TX_FACET_CHIPS;
     }
     if (filterWrap) {
-      filterWrap.classList.toggle("tds-filter-button--selected", count > 0);
-      filterWrap.classList.toggle("tds-filter-button--multi", count > 1);
+      /* --selected swaps the button's label for its counter, which is the
+         behaviour the chips replace: the button has to keep reading
+         "More filters" however many facets are set. */
+      var chrome = !window.UT_TX_FACET_CHIPS;
+      filterWrap.classList.toggle("tds-filter-button--selected", chrome && count > 0);
+      filterWrap.classList.toggle("tds-filter-button--multi", chrome && count > 1);
     }
   }
 
@@ -1335,6 +1342,155 @@
     /* The menu closes on any click outside it, including this box. */
     host.addEventListener("click", function (e) {
       if (e.target.closest("[data-ut-country-search]")) e.stopPropagation();
+    });
+  }
+
+  /* ---- Facet chips ----
+     A facet set in the More filters drawer surfaces as its own button in the
+     toolbar, next to Country, and goes away again when cleared. The drawer
+     stays the one source of truth: these menus drive the same controls, so
+     either surface can set or clear a facet.
+
+     Product is a checkbox group, so its chip mirrors the same inputs and the
+     existing mirroring keeps both ticked in step. Package, Source and Type
+     are single-value controls, so their chips list options that call the
+     canonical setter. */
+  function facetChips() {
+    return [
+      {
+        key: "product",
+        multi: true,
+        name: "ut-filt-product",
+        options: function () {
+          return orderProducts(allProducts());
+        },
+        active: function () {
+          return selectedValues("ut-filt-product").length > 0;
+        }
+      },
+      {
+        key: "package",
+        options: allPackages,
+        get: packageSelect.get,
+        set: packageSelect.set,
+        active: function () {
+          return !!packageSelect.get();
+        }
+      },
+      {
+        key: "source",
+        options: allSources,
+        get: sourceSelect.get,
+        set: sourceSelect.set,
+        active: function () {
+          return !!sourceSelect.get();
+        }
+      },
+      {
+        key: "type",
+        options: function () {
+          return ["Live", "Demo"];
+        },
+        get: currentTypeMode,
+        set: setTypeMode,
+        /* Live is the default, so only a move off it counts as a filter. */
+        active: function () {
+          return currentTypeMode() !== TYPE_MODE_DEFAULT;
+        }
+      }
+    ];
+  }
+
+  function buildFacetChipMenus() {
+    facetChips().forEach(function (facet) {
+      var host = document.querySelector(
+        '[data-ut-quick-options="' + facet.key + '"]'
+      );
+      if (!host) return;
+      var html = "";
+      if (facet.multi) {
+        facet.options().forEach(function (value) {
+          html +=
+            '<label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="' +
+            facet.name +
+            '" value="' +
+            escapeHtml(value) +
+            '"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">' +
+            escapeHtml(value) +
+            "</span></span></label>";
+        });
+      } else {
+        facet.options().forEach(function (value) {
+          html +=
+            '<button type="button" class="ut-tx-quick__option" data-ut-facet="' +
+            facet.key +
+            '" data-ut-facet-value="' +
+            escapeHtml(value) +
+            '">' +
+            '<span class="ut-tx-quick__option-check" aria-hidden="true">' +
+            CHECK_ICON_SM +
+            "</span>" +
+            escapeHtml(value) +
+            "</button>";
+        });
+      }
+      host.innerHTML = html;
+    });
+  }
+
+  /* Show a chip only while its facet is set, and keep its menu reflecting the
+     current value. Called from updateFilterChrome, so it runs after every
+     filter change wherever that change came from. */
+  function updateFacetChips() {
+    facetChips().forEach(function (facet) {
+      var item = document.querySelector(
+        '.ut-tx-quick__item--dynamic[data-quick="' + facet.key + '"]'
+      );
+      if (!item) return;
+      var on = facet.active();
+      item.hidden = !on;
+      if (!facet.multi) {
+        var current = facet.get();
+        var count = item.querySelector(".ut-tx-quick__count");
+        if (count) {
+          count.textContent = "1";
+          count.hidden = !on;
+        }
+        item.classList.toggle("is-selected", on);
+        item.querySelectorAll("[data-ut-facet-value]").forEach(function (btn) {
+          btn.classList.toggle(
+            "is-on",
+            btn.getAttribute("data-ut-facet-value") === current
+          );
+        });
+      }
+    });
+  }
+
+  function bindFacetChips() {
+    var host = document.getElementById("utTxQuick");
+    if (!host || host.dataset.facetsBound) return;
+    host.dataset.facetsBound = "1";
+    host.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-ut-facet-value]");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var key = btn.getAttribute("data-ut-facet");
+      var value = btn.getAttribute("data-ut-facet-value");
+      var facet = facetChips().filter(function (f) {
+        return f.key === key;
+      })[0];
+      if (!facet) return;
+      /* Picking the current value again clears the facet — except Type,
+         which has a default to fall back to rather than an empty state. */
+      var next =
+        facet.get() === value ? (key === "type" ? TYPE_MODE_DEFAULT : "") : value;
+      facet.set(next);
+      currentPage = 1;
+      syncPanelFiltersFromDom();
+      updateFilterChrome();
+      render();
     });
   }
 
@@ -2153,17 +2309,9 @@
       '">' +
       outcomeHtml(item) +
       "</td>" +
-      (window.UT_TX_PLAIN_TABLE
-        ? '<td class="ut-tx-td-product">' +
-          productHtml(item) +
-          "</td><td>" +
-          dateHtml(item) +
-          "</td>"
-        : "<td>" +
-          dateHtml(item) +
-          '</td><td class="ut-tx-td-product">' +
-          productHtml(item, { tag: true }) +
-          "</td>") +
+      "<td>" +
+      dateHtml(item) +
+      "</td>" +
       '<td class="ut-tx-td-country">' +
       countryHtml(item) +
       "</td>";
@@ -2172,11 +2320,15 @@
       cells += "<td>" + scoreHtml(item.score) + "</td>";
     }
 
-    cells += '<td class="ut-tx-td-source">' + escapeHtml(sourceText(item)) + "</td>";
+    cells +=
+      '<td class="ut-tx-td-product">' +
+      productHtml(item, window.UT_TX_PLAIN_TABLE ? undefined : { tag: true }) +
+      "</td>";
     if (showPackageColumn()) {
       cells +=
         '<td class="ut-tx-td-package">' + highlightMatch(item.package || "--") + "</td>";
     }
+    cells += '<td class="ut-tx-td-source">' + escapeHtml(sourceText(item)) + "</td>";
     if (showTypeColumn()) cells += "<td>" + escapeHtml(item.type) + "</td>";
 
     if (showTridColumn()) {
@@ -2252,19 +2404,13 @@
       );
     }
 
-    html +=
-      sortTh("Outcome") +
-      (window.UT_TX_PLAIN_TABLE
-        ? sortTh("Product") + sortTh("Date (UTC)")
-        : sortTh("Date (UTC)") + sortTh("Product")) +
-      sortTh("Country", "ut-tx-th-country");
-
-    if (showScoreColumn()) {
-      html += sortTh("Score");
-    }
-
-    html += sortTh("Source");
+    /* Order reads outward from the transaction: what happened, when, where,
+       then what was run and how it got here. */
+    html += sortTh("Outcome") + sortTh("Date (UTC)") + sortTh("Country", "ut-tx-th-country");
+    if (showScoreColumn()) html += sortTh("Score");
+    html += sortTh("Product");
     if (showPackageColumn()) html += sortTh("Package");
+    html += sortTh("Source");
     if (showTypeColumn()) html += sortTh("Type");
 
     if (showTridColumn()) {
@@ -2284,13 +2430,12 @@
     var html =
       '<col class="ut-tx-col-name">' +
       '<col class="ut-tx-col-outcome">' +
-      (window.UT_TX_PLAIN_TABLE
-        ? '<col class="ut-tx-col-product"><col class="ut-tx-col-date">'
-        : '<col class="ut-tx-col-date"><col class="ut-tx-col-product">') +
+      '<col class="ut-tx-col-date">' +
       '<col class="ut-tx-col-country">';
     if (showScoreColumn()) html += '<col class="ut-tx-col-score">';
-    html += '<col class="ut-tx-col-source">';
+    html += '<col class="ut-tx-col-product">';
     if (showPackageColumn()) html += '<col class="ut-tx-col-package">';
+    html += '<col class="ut-tx-col-source">';
     if (showTypeColumn()) html += '<col class="ut-tx-col-type">';
     if (showTridColumn()) html += '<col class="ut-tx-col-trid">';
     html += '<col class="ut-tx-col-actions">';
@@ -2615,6 +2760,8 @@
     packageSelect.build();
     buildCountryCheckboxes();
     bindCountrySearch();
+    buildFacetChipMenus();
+    bindFacetChips();
     bindTypeSwitch();
 
     /* A facet mirrored into more than one surface is still one filter.

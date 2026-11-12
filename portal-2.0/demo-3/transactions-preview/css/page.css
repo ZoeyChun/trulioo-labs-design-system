@@ -780,3 +780,43 @@
 .th-tx .ut-tx-quick__menu .ut-tx-filters__option[hidden] {
   display: none;
 }
+
+/* Single-value facet menus (Package, Source, Type): option rows that read
+   like the checkbox groups beside them, with a check on the current value. */
+.th-tx .ut-tx-quick__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-default);
+  text-align: left;
+  cursor: pointer;
+}
+
+.th-tx .ut-tx-quick__option:hover {
+  background: var(--surface-hover);
+}
+
+.th-tx .ut-tx-quick__option-check {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  color: var(--interactive-default);
+  visibility: hidden;
+}
+
+.th-tx .ut-tx-quick__option-check svg {
+  width: 16px;
+  height: 16px;
+}
+
+.th-tx .ut-tx-quick__option.is-on .ut-tx-quick__option-check {
+  visibility: visible;
+}
