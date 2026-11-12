@@ -1032,6 +1032,9 @@
   /* The catalogue reads as a ladder, so list it that way rather than
      alphabetically. Anything not named here keeps alphabetical order at the
      end, so a new product still appears. */
+  /* The uniform row height a multi-value cell must not exceed. */
+  var MULTI_ROW_HEIGHT = 72;
+
   var PRODUCT_ORDER = [
     "Business Essentials",
     "Business Insights",
@@ -1923,58 +1926,124 @@
     );
   }
 
-  /* Product cell. One product reads as plain text; more than one leads with
-     the primary and a quiet "+N". Clicking it swaps the cell in place for the
-     full comma-separated list and the "+N" goes away — the list is the end
-     state, so there is nothing to toggle back to. */
-  function productHtml(item, opts) {
-    opts = opts || {};
-    var list = itemProducts(item);
-    var primary = list[0] || "";
-    var extras = list.slice(1);
-    var leadInner = opts.tag
-      ? '<span class="ut-product-tag">' + highlightMatch(primary) + "</span>"
-      : highlightMatch(primary);
-    if (!extras.length) {
-      return opts.tag
-        ? leadInner
-        : '<span class="ut-tx-product-cell__lead">' + leadInner + "</span>";
+  function itemPackages(item) {
+    var list = [item.package];
+    if (item.extraPackages && item.extraPackages.length) {
+      list = list.concat(item.extraPackages);
     }
+    return list.filter(Boolean);
+  }
 
+  /* A cell holding several values — the products a transaction ran, or the
+     packages behind them. It renders the full comma-separated list; a pass
+     after layout (fitMultiCells) collapses it to "first +N" only where the
+     list would not fit the row. Clicking "+N" expands that cell in place. */
+  function multiValueHtml(list, trid, key, opts) {
+    opts = opts || {};
+    list = list.filter(Boolean);
+    if (!list.length) return '<span class="ut-tx-multi__lead">--</span>';
+    var lead = opts.tag
+      ? '<span class="ut-product-tag">' + highlightMatch(list[0]) + "</span>"
+      : highlightMatch(list[0]);
+    if (list.length === 1) return '<span class="ut-tx-multi__lead">' + lead + "</span>";
+
+    var open = !!expandedProducts[key + ":" + trid];
     var all = list
-      .map(function (product) {
-        return highlightMatch(product);
+      .map(function (v) {
+        return highlightMatch(v);
       })
       .join(", ");
 
-    var trid = item.trid || "";
-    var open = !!expandedProducts[trid];
-
     return (
-      '<span class="ut-tx-product-cell' +
-      (open ? " is-expanded" : "") +
-      '" data-ut-products="' +
-      escapeHtml(trid) +
-      '">' +
-      '<span class="ut-tx-product-cell__lead"' +
+      '<span class="ut-tx-multi" data-ut-multi="' +
+      escapeHtml(key + ":" + trid) +
+      '"' +
+      (open ? ' data-ut-fit="open"' : "") +
+      ">" +
+      '<span class="ut-tx-multi__lead"' +
       (open ? " hidden" : "") +
       ">" +
-      leadInner +
+      lead +
       "</span>" +
-      '<span class="ut-tx-product-cell__all"' +
+      '<span class="ut-tx-multi__all"' +
       (open ? "" : " hidden") +
       ">" +
       all +
       "</span>" +
-      (open
-        ? ""
-        : '<button type="button" class="ut-tx-product-more" aria-label="' +
-          escapeHtml("Show all products: " + list.join(", ")) +
-          '">+' +
-          extras.length +
-          "</button>") +
-      "</span>"
+      '<button type="button" class="ut-tx-multi__more" aria-label="' +
+      escapeHtml("Show all: " + list.join(", ")) +
+      '"' +
+      (open ? " hidden" : "") +
+      ">+" +
+      (list.length - 1) +
+      "</button></span>"
     );
+  }
+
+  function productHtml(item, opts) {
+    return multiValueHtml(itemProducts(item), item.trid || "", "product", opts);
+  }
+
+  function packagesHtml(item) {
+    return multiValueHtml(itemPackages(item), item.trid || "", "package");
+  }
+
+  /* Show the whole list wherever it fits the row, and fall back to "first +N"
+     only where it would push the row taller. Runs after layout, because
+     whether three products fit depends on how long their names are. */
+  /* Anything clipped by its column says so on hover and on focus, using the
+     table's existing floating tooltip. Only actually-clipped cells get the
+     treatment, so a tooltip never repeats what is already on screen. */
+  function applyTruncationTooltips() {
+    var tbody = document.getElementById("utTxBody");
+    if (!tbody) return;
+    tbody
+      .querySelectorAll(".ut-tx-multi__lead, .ut-tx-multi__all, .ut-tx-td-source, .ut-tx-name")
+      .forEach(function (el) {
+        var clipped = el.scrollWidth > el.clientWidth + 1;
+        if (clipped) {
+          el.classList.add("ut-tx-tip-host");
+          el.setAttribute("tabindex", "0");
+          el.setAttribute("data-ut-tooltip", el.textContent.trim());
+        } else {
+          el.classList.remove("ut-tx-tip-host");
+          el.removeAttribute("tabindex");
+          el.removeAttribute("data-ut-tooltip");
+        }
+      });
+  }
+
+  function fitMultiCells() {
+    var tbody = document.getElementById("utTxBody");
+    if (!tbody) return;
+    tbody.querySelectorAll("[data-ut-multi]").forEach(function (cell) {
+      if (cell.getAttribute("data-ut-fit") === "open") return;
+      var lead = cell.querySelector(".ut-tx-multi__lead");
+      var all = cell.querySelector(".ut-tx-multi__all");
+      var more = cell.querySelector(".ut-tx-multi__more");
+      if (!lead || !all || !more) return;
+
+      var td = cell.closest("td");
+      var cs = window.getComputedStyle(td);
+      var budget =
+        MULTI_ROW_HEIGHT -
+        parseFloat(cs.paddingTop || 0) -
+        parseFloat(cs.paddingBottom || 0);
+
+      /* Measure the full list where it would actually sit. */
+      lead.hidden = true;
+      more.hidden = true;
+      all.hidden = false;
+      var fits = all.offsetHeight <= budget + 1;
+      if (fits) {
+        cell.setAttribute("data-ut-fit", "all");
+        return;
+      }
+      cell.setAttribute("data-ut-fit", "collapsed");
+      all.hidden = true;
+      lead.hidden = false;
+      more.hidden = false;
+    });
   }
 
   /* The cell owns its own expand/collapse — no re-render, so sorting, paging
@@ -1984,18 +2053,17 @@
     if (!tbody || tbody.dataset.productsBound) return;
     tbody.dataset.productsBound = "1";
     tbody.addEventListener("click", function (e) {
-      var btn = e.target.closest(".ut-tx-product-more");
+      var btn = e.target.closest(".ut-tx-multi__more");
       if (!btn) return;
       e.preventDefault();
       e.stopPropagation();
-      var cell = btn.closest("[data-ut-products]");
+      var cell = btn.closest("[data-ut-multi]");
       if (!cell) return;
-      var trid = cell.getAttribute("data-ut-products") || "";
-      expandedProducts[trid] = true;
-      cell.classList.add("is-expanded");
-      cell.querySelector(".ut-tx-product-cell__lead").hidden = true;
-      cell.querySelector(".ut-tx-product-cell__all").hidden = false;
-      btn.remove();
+      expandedProducts[cell.getAttribute("data-ut-multi")] = true;
+      cell.setAttribute("data-ut-fit", "open");
+      cell.querySelector(".ut-tx-multi__lead").hidden = true;
+      cell.querySelector(".ut-tx-multi__all").hidden = false;
+      btn.hidden = true;
     });
   }
 
@@ -2325,8 +2393,7 @@
       productHtml(item, window.UT_TX_PLAIN_TABLE ? undefined : { tag: true }) +
       "</td>";
     if (showPackageColumn()) {
-      cells +=
-        '<td class="ut-tx-td-package">' + highlightMatch(item.package || "--") + "</td>";
+      cells += '<td class="ut-tx-td-package">' + packagesHtml(item) + "</td>";
     }
     cells += '<td class="ut-tx-td-source">' + escapeHtml(sourceText(item)) + "</td>";
     if (showTypeColumn()) cells += "<td>" + escapeHtml(item.type) + "</td>";
@@ -2676,6 +2743,8 @@
       }
     });
     tbody.innerHTML = html;
+    fitMultiCells();
+    applyTruncationTooltips();
     renderFooter(paged.total);
     renderEmptyState(paged.total);
     if (window.TdsDropdownPanel && typeof window.TdsDropdownPanel.initMenus === "function") {

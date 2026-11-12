@@ -695,46 +695,48 @@ body {
   border-bottom: 1px solid var(--border-subtle);
 }
 
-/* Multi-product rows: the primary product leads and a quiet "+N" expands the
-   cell in place to the full list. Collapsed it is a single tight line; expanded
-   the text wraps and the row grows to fit, so nothing overlays the table. */
-.ut-tx-product-cell {
+/* Cells holding several values — products, or the packages behind them.
+   They render the whole list; fitMultiCells() collapses only the ones that
+   would not fit the row, and "+N" expands those in place. */
+.ut-tx-multi {
   display: flex;
   align-items: center;
-  /* The count belongs to the name it follows — keep it close. */
+  /* The count belongs to the value it follows — keep it close. */
   gap: 2px;
   min-width: 0;
 }
 
-.ut-tx-product-cell__lead,
-.ut-tx-product-cell__all {
+.ut-tx-multi__lead,
+.ut-tx-multi__all {
   min-width: 0;
 }
 
-.ut-tx-product-cell__lead {
+.ut-tx-multi__lead {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.ut-tx-product-cell__lead[hidden],
-.ut-tx-product-cell__all[hidden] {
+.ut-tx-multi__lead[hidden],
+.ut-tx-multi__all[hidden],
+.ut-tx-multi__more[hidden] {
   display: none;
 }
 
-/* Expanded: block flow so the list wraps and the toggle trails the last word. */
-.ut-tx-product-cell.is-expanded {
+/* Showing the whole list: block flow so it wraps across the row's lines. */
+.ut-tx-multi[data-ut-fit="all"],
+.ut-tx-multi[data-ut-fit="open"] {
   display: block;
   white-space: normal;
 }
 
-.ut-tx-product-cell__all {
+.ut-tx-multi__all {
   white-space: normal;
   overflow-wrap: anywhere;
 }
 
 /* Quiet by default — a count, not a chip. */
-.ut-tx-product-more {
+.ut-tx-multi__more {
   display: inline-flex;
   align-items: center;
   flex: 0 0 auto;
@@ -750,27 +752,21 @@ body {
   cursor: pointer;
 }
 
-.ut-tx-product-more:hover {
+.ut-tx-multi__more:hover {
   color: var(--text-default);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.ut-tx-product-more:focus-visible {
+.ut-tx-multi__more:focus-visible {
   outline: 2px solid var(--border-focus);
   outline-offset: 1px;
   border-radius: var(--radius-xs);
 }
 
-/* The cell clips its single collapsed line; expanded it has to be free to
-   wrap and push the row taller. */
-.ut-tx-table td.ut-tx-td-product {
+.ut-tx-table td.ut-tx-td-product,
+.ut-tx-table td.ut-tx-td-package {
   overflow: hidden;
-}
-
-.ut-tx-table td.ut-tx-td-product:has(.is-expanded) {
-  overflow: visible;
-  white-space: normal;
 }
 
 /* Package — the named bundle of checks a transaction ran under. */

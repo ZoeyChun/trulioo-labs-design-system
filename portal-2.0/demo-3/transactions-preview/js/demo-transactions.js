@@ -33,6 +33,7 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
+    "extraPackages": ["Package5_KYB_Horizon"],
     "type": "Live"
   },
   {
@@ -83,7 +84,7 @@ window.UT_TRANSACTIONS = [
     "type": "Live"
   },
   {
-    "name": "Harbor Point Capital LLC",
+    "name": "Harbor Point Capital Partners International Holdings LLC",
     "trid": "8f70dde0-955d-57ba-8855-170e93040c3f",
     "detail": "Ownership could not be confirmed",
     "outcome": {
@@ -106,6 +107,7 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
+    "extraPackages": ["Package5_KYB_Horizon"],
     "type": "Live"
   },
   {
@@ -268,6 +270,7 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
+    "extraPackages": ["Package3_KYB_UBO", "Package5_KYB_Horizon"],
     "type": "Live"
   },
   {
@@ -367,6 +370,7 @@ window.UT_TRANSACTIONS = [
     "source": "Portal",
     "sourceLabel": "Pria_K_Prod",
     "package": "Package3_KYB_UBO",
+    "extraPackages": ["Package2_KYB_Registry"],
     "type": "Live"
   },
   {
