@@ -97,9 +97,16 @@
   };
   var OUTCOME_LABELS = {
     positive: ["Verified", "No Hits Found"],
-    intermediate: ["Review", "Pending Review", "In Progress"],
+    intermediate: ["Review", "Pending Review"],
     negative: ["Not Verified", "Hits Found"],
-    "not-completed": ["Abandoned", "Timed Out", "Failed", "Not Started", "Not Complete"]
+    "not-completed": [
+      "Abandoned",
+      "Timed Out",
+      "Failed",
+      "Not Started",
+      "Not Complete",
+      "In Progress"
+    ]
   };
   /* Products beyond this many collapse behind a "+N more" button. */
   var PRODUCT_COLLAPSE_AFTER = 8;
@@ -2581,14 +2588,16 @@
       total += 1;
       var group = outcomeGroup(item);
       if (group === "positive") verified += 1;
-      else if (group === "intermediate") review += 1;
       else if (group === "negative") notVerified += 1;
+      else if (group === (window.UT_TX_OUTCOMES_V2 ? "not-completed" : "intermediate")) {
+        review += 1;
+      }
       if (riskBucket(item) === "high") highRisk += 1;
     });
     var items = [
       ["Total", total],
       ["Verified", verified],
-      [window.UT_TX_OUTCOMES_V2 ? "In progress" : "Needs review", review],
+      [window.UT_TX_OUTCOMES_V2 ? "Not complete" : "Needs review", review],
       ["Not verified", notVerified],
       ["High risk", highRisk]
     ];
