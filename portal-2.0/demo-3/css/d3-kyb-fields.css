@@ -91,3 +91,6 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-12, 12px) var(--spacing-16, 16px);
 }
+
+/* Once the manual form is open, the recent transactions step aside. */
+.d3-workspace:has(#vb-prefill:not([hidden])) .d3-kyb-recent { display: none; }
