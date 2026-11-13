@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYB Report module — standalone preview</title>
+  <link rel="preload" href="../../../tokens/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- TDS tokens + components (single bundle for this module) -->
+  <link rel="stylesheet" href="css/tds-deps.css">
+  <link rel="stylesheet" href="../../../assets/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="../../../pages/shared/flag-icons.css">
+
+  <!-- Module + vendored Demo 3 report styles (synced, not live-linked) -->
+  <link rel="stylesheet" href="css/chrome.css">
+  <link rel="stylesheet" href="vendor/css/d3-kyb-findings.css">
+  <link rel="stylesheet" href="vendor/css/d3-kyb-report-panels.css">
+  <link rel="stylesheet" href="vendor/css/d3-kyb-result-tabs.css">
+  <link rel="stylesheet" href="vendor/css/d3-kyb-ubo-graph.css">
+  <link rel="stylesheet" href="vendor/ubo-graph-dist/kyb-ubo-graph-react.css">
+  <link rel="stylesheet" href="vendor/css/d3-kyb-raw-dialog.css">
+</head>
+<body class="kr-preview-page">
+  <header class="kr-preview-page__bar">
+    <p class="kr-preview-page__title">KYB Report module · standalone · Meridian Capital LLC</p>
+    <div class="kr-preview-page__tools">
+      <div class="kr-version-switch" role="group" aria-label="Report version">
+        <span class="kr-version-switch__label">Version</span>
+        <div class="kr-version-switch__btns" data-kr-version-switch></div>
+      </div>
+      <a class="kr-preview-page__link" href="README.md">README</a>
+    </div>
+  </header>
+  <main class="kr-preview-page__main">
+    <p class="kr-preview-page__note">
+      Runs without the Demo 3 shell. Embed with
+      <code>KybReportModule.mount(host, { version: "default" })</code>
+      <code>version: "mvp-brh"</code>, or <code>version: "mvp-no-brh"</code>.
+    </p>
+    <div id="kyb-report-host"></div>
+  </main>
+
+  <!-- TDS component scripts used by panels / dialogs / UBO filters -->
+  <script src="../../../Components/score-gauge/score-gauge.js"></script>
+  <script src="../../../Components/dialog/dialog.js"></script>
+  <script src="../../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
+
+  <script src="vendor/ubo-graph-dist/ubo-graph.bundle.js"></script>
+  <script src="vendor/js/d3-kyb-ubo-graph.js"></script>
+  <script src="vendor/js/d3-kyb-report-panels-data.js"></script>
+  <script src="vendor/js/d3-kyb-report-panels.js"></script>
+  <script src="vendor/js/d3-kyb-result-tabs.js"></script>
+  <script src="vendor/js/dialogs-markup.js"></script>
+  <script src="js/versions.js"></script>
+  <script src="js/mvp-ownership-graph.js"></script>
+  <script src="js/mvp-match-signals.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/dialogs.js"></script>
+  <script src="js/raw.js"></script>
+  <script src="js/overview-enhance.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/mount.js"></script>
+  <script>
+    (function () {
+      var host = document.getElementById("kyb-report-host");
+      var switchEl = document.querySelector("[data-kr-version-switch]");
+      var params = new URLSearchParams(window.location.search);
+      var current = params.get("version") || "default";
+      var api = null;
+
+      function mountVersion(id) {
+        current = id;
+        if (api && api.destroy) api.destroy();
+        api = KybReportModule.mount(host, { version: id });
+        if (switchEl) {
+          switchEl.querySelectorAll("[data-kr-version-id]").forEach(function (btn) {
+            var on = btn.getAttribute("data-kr-version-id") === id;
+            btn.classList.toggle("is-active", on);
+            btn.setAttribute("aria-pressed", on ? "true" : "false");
+          });
+        }
+        var url = new URL(window.location.href);
+        url.searchParams.set("version", id);
+        window.history.replaceState({}, "", url);
+      }
+
+      if (switchEl) {
+        KybReportModule.versions().forEach(function (v) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "kr-version-switch__btn";
+          btn.setAttribute("data-kr-version-id", v.id);
+          btn.setAttribute("aria-pressed", "false");
+          btn.textContent = v.label;
+          btn.addEventListener("click", function () {
+            mountVersion(v.id);
+          });
+          switchEl.appendChild(btn);
+        });
+      }
+
+      mountVersion(current);
+    })();
+  </script>
+</body>
+</html>

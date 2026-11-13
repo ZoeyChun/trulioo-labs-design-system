@@ -1,0 +1,25 @@
+/* TDS tokens + components required by the KYB Report module.
+   Hosts can link this single file instead of listing each Component.
+
+   Paths are relative to this file (…/modules/kyb-report/css/) → repo root. */
+@import url("../../../../tokens/fonts.css");
+@import url("../../../../tokens/tokens.css");
+
+@import url("../../../../Components/button/button.css");
+@import url("../../../../Components/icon-button/icon-button.css");
+@import url("../../../../Components/_shared/tag/tag.css");
+@import url("../../../../Components/score-gauge/score-gauge.css");
+@import url("../../../../Components/data-field/data-field.css");
+@import url("../../../../Components/data-table/data-table.css");
+@import url("../../../../Components/accordion/accordion.css");
+@import url("../../../../Components/filter-tab/filter-tab.css");
+@import url("../../../../Components/ai-tag/ai-tag.css");
+@import url("../../../../Components/counter-label/counter-label.css");
+@import url("../../../../Components/dialog/dialog.css");
+@import url("../../../../Components/announcement/announcement.css");
+@import url("../../../../Components/segmented-control/segmented-control.css");
+@import url("../../../../Components/checkbox/checkbox.css");
+@import url("../../../../Components/action-list-item/action-list-item.css");
+@import url("../../../../Components/filter-button/filter-button.css");
+@import url("../../../../Components/_shared/caret/caret.css");
+@import url("../../../../Components/_shared/dropdown-panel/dropdown-panel.css");
