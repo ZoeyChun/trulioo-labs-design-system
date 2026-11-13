@@ -94,3 +94,5 @@
 
 /* Once the manual form is open, the recent transactions step aside. */
 .d3-workspace:has(#vb-prefill:not([hidden])) .d3-kyb-recent { display: none; }
+
+.d3-kyb-fields__req { color: var(--text-negative, #b3261e); }

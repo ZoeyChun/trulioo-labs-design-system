@@ -58,11 +58,12 @@
   var CHECK = '<svg viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 11.375C2.4707 11.375 0 8.9043 0 5.875C0 2.8457 2.4707 0.375 5.5 0.375C8.5293 0.375 11 2.8457 11 5.875C11 8.9043 8.5293 11.375 5.5 11.375ZM5.5 1.40625C3.0293 1.40625 1.03125 3.4043 1.03125 5.875C1.03125 8.3457 3.0293 10.3438 5.5 10.3438C7.9707 10.3438 9.96875 8.3457 9.96875 5.875C9.96875 3.4043 7.9707 1.40625 5.5 1.40625ZM7.02539 4.02734C7.19727 3.79102 7.51953 3.74805 7.73438 3.91992C7.9707 4.07031 8.01367 4.39258 7.86328 4.62891L5.2207 8.23828C5.13477 8.36719 5.00586 8.43164 4.85547 8.45312C4.70508 8.45312 4.55469 8.41016 4.44727 8.30273L3.24414 7.09961C3.05078 6.90625 3.05078 6.58398 3.24414 6.36914C3.45898 6.17578 3.78125 6.17578 3.97461 6.36914L4.74805 7.14258L7.02539 4.02734Z" fill="currentColor"/></svg>';
 
   /* A field with a value that came from the registry says so. */
-  function input(label, value) {
+  function input(label, value, required) {
     var filled = !!value;
     return (
-      '<div class="tds-text-input' + (filled ? " tds-text-input--success" : "") + '"><label class="tds-field-label">' + esc(label) + "</label>" +
-      '<div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" type="text" value="' + esc(value || "") + '"></div>' +
+      '<div class="tds-text-input' + (filled ? " tds-text-input--success" : "") + '"><label class="tds-field-label">' + esc(label) +
+      (required ? ' <span class="d3-kyb-fields__req" aria-hidden="true">*</span>' : "") + "</label>" +
+      '<div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" type="text"' + (required ? " required" : "") + ' value="' + esc(value || "") + '"></div>' +
       (filled
         ? '<span class="tds-field-validation tds-field-validation--success"><span class="tds-field-validation__icon" aria-hidden="true">' + CHECK + "</span><span>Pre-filled</span></span>"
         : "") +
@@ -101,23 +102,46 @@
     );
   }
 
+  /* One form: the required field and every field the registry already filled (recommended or
+     optional), in two columns with no headers (required ones carry a *). Fields still empty wait
+     in the Optional accordion. */
   function render() {
     var st = S.get();
     var sp = spec(st.package);
     var name = st.entity ? st.entity.name : "";
-    var rec = sp.recommended.map(function (l) { return input(l, prefilled(l)); }).join("");
-    var opt = sp.optional
+    var shown = [input("Business Name", name, true)];
+    var seen = {};
+    var groups = [];
+    var recRest = [];
+    sp.recommended.forEach(function (l) {
+      seen[l] = true;
+      if (prefilled(l)) shown.push(input(l, prefilled(l)));
+      else recRest.push(l);
+    });
+    if (recRest.length) groups.push({ title: "Recommended", fields: recRest });
+    sp.optional.forEach(function (g) {
+      var rest = [];
+      g.fields.forEach(function (l) {
+        if (prefilled(l) && !seen[l]) {
+          seen[l] = true;
+          shown.push(input(l, prefilled(l)));
+        } else if (!seen[l]) {
+          rest.push(l);
+        }
+      });
+      if (rest.length) groups.push({ title: g.title, sub: g.sub, fields: rest });
+    });
+    var opt = groups
       .map(function (g) {
         return (
           '<div class="d3-kyb-fields__group"><p class="d3-kyb-fields__group-title">' + esc(g.title) + "</p>" +
           (g.sub ? '<p class="d3-kyb-fields__group-sub">' + esc(g.sub) + "</p>" : "") +
-          '<div class="d3-kyb-fields__grid">' + g.fields.map(function (l) { return input(l, prefilled(l)); }).join("") + "</div></div>"
+          '<div class="d3-kyb-fields__grid">' + g.fields.map(function (l) { return input(l, ""); }).join("") + "</div></div>"
         );
       })
       .join("");
     host.innerHTML =
-      '<div class="d3-kyb-fields__required"><p class="d3-kyb-fields__title">Required for verification</p>' + input("Business Name", name) + "</div>" +
-      '<div class="d3-kyb-fields__required"><p class="d3-kyb-fields__title">Recommended</p><div class="d3-kyb-fields__grid">' + rec + "</div></div>" +
+      '<div class="d3-kyb-fields__grid">' + shown.join("") + "</div>" +
       accordion("optional", "Optional", '<div class="d3-kyb-fields__list">' + opt + "</div>");
   }
 
