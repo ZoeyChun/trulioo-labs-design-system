@@ -493,9 +493,10 @@
     return !isNaN(n) && n >= 1 && n <= 100;
   }
 
-  function inputsComplete() {
+  /* nameOnly: the manual form asks for the business name only; registration number and address are optional there. */
+  function inputsComplete(nameOnly) {
     var r = requirements();
-    if (r.profile && (!state.profile.name.trim() || !state.profile.regNo.trim() || !state.profile.address.trim())) return false;
+    if (r.profile && (!state.profile.name.trim() || (!nameOnly && (!state.profile.regNo.trim() || !state.profile.address.trim())))) return false;
     if (r.ubo === "private") {
       if (!state.ubo.name.trim() || !validPct(state.ubo.pct)) return false;
       if (state.uboRoute === "email" && !validEmail(state.ubo.email)) return false;

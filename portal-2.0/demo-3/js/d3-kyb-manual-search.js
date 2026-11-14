@@ -66,6 +66,8 @@
      registry search / entity form is open; until then typing never opens a list. */
   /* Typing opens the registry search straight away (no setup step any more). */
   var flow = { armed: true };
+  /* The manual form was opened from "Enter details manually" (not by the Finder setting). */
+  var enteredByHand = false;
 
   var typeahead = {
     country: getCountryByCode("us"),
@@ -233,7 +235,7 @@
     var submit = byId("vb-submit-btn");
     if (!submit) return;
     var S = window.D3KybSession;
-    var needsInputs = S && S.requirements().fields > 0 && !S.inputsComplete();
+    var needsInputs = S && S.requirements().fields > 0 && !S.inputsComplete(true);
     if ((typeahead.selected || manualMode()) && !needsInputs) submit.removeAttribute("aria-disabled");
     else submit.setAttribute("aria-disabled", "true");
   }
@@ -410,7 +412,15 @@
     }
     /* A registry without search: this field is the entity's legal name. */
     if (manualMode()) {
+      closeMenu();
       var S0 = window.D3KybSession;
+      /* Cleared a search that was taken to manual entry: back to searching, form closed. */
+      if (enteredByHand && !input.value.trim() && S0) {
+        enteredByHand = false;
+        S0.set({ profile: { name: "", regNo: "", address: "", taxId: "" } }, "manual");
+        S0.set({ finderEnabled: true }, "manual");
+        return;
+      }
       if (S0 && S0.get().profile.name !== input.value) {
         var pr = S0.get().profile;
         S0.set({ profile: { name: input.value, regNo: pr.regNo, address: pr.address, taxId: pr.taxId } }, "manual");
@@ -471,7 +481,10 @@
     if (!t || !t.closest || !t.closest("[data-d3-nomatch-manual]")) return;
     event.preventDefault();
     var S = window.D3KybSession;
-    if (S) S.set({ finderEnabled: false }, "manual");
+    if (S) {
+      enteredByHand = true;
+      S.set({ finderEnabled: false }, "manual");
+    }
   });
 
   function selectActiveMatch() {
@@ -614,6 +627,12 @@
     if (off && S) {
       closeMenu();
       typeahead.selected = null;
+      /* What was typed in the search field becomes the entity's name. */
+      var typed = (byId("vb-q") || {}).value || "";
+      var pr0 = S.get().profile;
+      if (typed.trim() && pr0.name !== typed) {
+        S.set({ profile: { name: typed, regNo: pr0.regNo, address: pr0.address, taxId: pr0.taxId } }, "manual");
+      }
       S.set({ entity: { id: "manual:" + typeahead.country.code, name: S.get().profile.name, cc: typeahead.country.code } }, "manual");
       showPrefill(true);
     } else {

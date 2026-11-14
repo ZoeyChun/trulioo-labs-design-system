@@ -182,6 +182,7 @@
   function entitySection(variant, st, c, biz) {
     var reg = c ? c.registry : "the registry";
     var r = S.requirements();
+    if (r.profile && variant === "form") return ""; // the form's own required fields collect it
     if (r.profile) {
       return block(
         (variant === "form" ? "1 · " : "") + "Entity profile",
