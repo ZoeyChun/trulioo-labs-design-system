@@ -796,9 +796,6 @@
 .d3-kyb-defaultcfg__done { align-self: flex-end; }
 .vb-prefill--saved .d3-kyb-defaultcfg__edit { display: none; }
 
-.vb-prefill--saved [data-d3-kyb-addons] {
-  display: none !important;
-}
 
 .d3-kyb-savedline {
   display: flex;

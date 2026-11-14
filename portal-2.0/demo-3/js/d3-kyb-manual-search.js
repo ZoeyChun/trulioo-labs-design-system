@@ -236,8 +236,13 @@
     if (!submit) return;
     var S = window.D3KybSession;
     var needsInputs = S && S.requirements().fields > 0 && !S.inputsComplete(true);
-    if ((typeahead.selected || manualMode()) && !needsInputs) submit.removeAttribute("aria-disabled");
-    else submit.setAttribute("aria-disabled", "true");
+    var ready = (typeahead.selected || manualMode()) && !needsInputs;
+    /* Continue (details -> add-ons) waits for the same things Execute does. */
+    [submit, byId("vb-continue-btn")].forEach(function (btn) {
+      if (!btn) return;
+      if (ready) btn.removeAttribute("aria-disabled");
+      else btn.setAttribute("aria-disabled", "true");
+    });
   }
 
   /* Add-ons, package or the details typed in change what Submit is waiting for. */
