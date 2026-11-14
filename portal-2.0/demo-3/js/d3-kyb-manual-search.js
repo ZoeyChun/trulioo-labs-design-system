@@ -245,14 +245,23 @@
     });
   }
 
+  document.addEventListener("d3-demo:prefill-change", function () {
+    updateSearchPlaceholder();
+  });
+
   /* Add-ons, package or the details typed in change what Submit is waiting for. */
   document.addEventListener("d3-kyb:session-change", updateSubmitButton);
+
+  /* Demo switch: the contract has no pre-fill, so the top field is just the business name. */
+  function noPrefillDemo() {
+    return document.documentElement.getAttribute("data-d3-prefill") === "off";
+  }
 
   function updateSearchPlaceholder() {
     var input = byId("vb-q");
     var label = document.querySelector('label[for="vb-q"]');
     if (!input) return;
-    var text = "Search by business name";
+    var text = noPrefillDemo() ? "Business name *" : "Search by business name";
     input.placeholder = text;
     if (label) label.textContent = text;
   }
@@ -430,6 +439,8 @@
         var pr = S0.get().profile;
         S0.set({ profile: { name: input.value, regNo: pr.regNo, address: pr.address, taxId: pr.taxId } }, "manual");
       }
+      /* No pre-fill: the form opens once a name is typed and closes when it is cleared. */
+      if (noPrefillDemo()) showPrefill(!!input.value.trim());
       return;
     }
 
@@ -639,7 +650,7 @@
         S.set({ profile: { name: typed, regNo: pr0.regNo, address: pr0.address, taxId: pr0.taxId } }, "manual");
       }
       S.set({ entity: { id: "manual:" + typeahead.country.code, name: S.get().profile.name, cc: typeahead.country.code } }, "manual");
-      showPrefill(true);
+      showPrefill(!noPrefillDemo() || !!(byId("vb-q") || {}).value.trim());
     } else {
       if (S && S.get().entity && /^manual:/.test(S.get().entity.id)) {
         S.set({ entity: null }, "manual");
@@ -973,6 +984,8 @@
 
   function init() {
     initTypeahead();
+    /* No pre-fill (contract, or the demo switch): the manual fields are there from the start. */
+    if (flow.armed && manualMode()) syncFinderMode();
     window.D3KybManualSearch = {
       /* The AI panel builds the same record for a hand-entered entity. */
       thinBiz: function (entity) {
@@ -994,6 +1007,7 @@
         showPrefill(false);
         updateStage();
         updateSubmitButton();
+        if (flow.armed && manualMode()) syncFinderMode();
       },
       getSelected: function () {
         return typeahead.selected;

@@ -76,6 +76,11 @@
     );
   }
 
+  /* No pre-fill: the name and country are in the field on top, not in this form. */
+  function noPrefill() {
+    return document.documentElement.getAttribute("data-d3-prefill") === "off";
+  }
+
   /* What the registry returned for the chosen business (set by the search on selection). */
   var data = null;
 
@@ -123,7 +128,8 @@
     var sp = spec(st.package);
     var manual = isManual();
     var name = manual ? st.profile.name : st.entity ? st.entity.name : "";
-    var shown = [input("Business Name", name, manual ? { required: true, profile: "name" } : { required: true })];
+    /* Without pre-fill the name lives in the field on top; the form starts at City. */
+    var shown = noPrefill() ? [] : [input("Business Name", name, manual ? { required: true, profile: "name" } : { required: true })];
     var seen = { "Business Name": true };
     var groups = [];
     if (manual) {
@@ -198,7 +204,7 @@
   var last = "";
   function sync() {
     var st = S.get();
-    var key = st.package + "|" + isManual() + "|" + (st.entity ? st.entity.id + (isManual() ? "" : st.entity.name) : "");
+    var key = st.package + "|" + isManual() + "|" + noPrefill() + "|" + (st.entity ? st.entity.id + (isManual() ? "" : st.entity.name) : "");
     if (key === last) return;
     last = key;
     render();
@@ -216,6 +222,11 @@
     }
   });
   sync();
+
+  document.addEventListener("d3-demo:prefill-change", function () {
+    last = "";
+    sync();
+  });
 
   window.D3KybFields = {
     fill: function (entity) {

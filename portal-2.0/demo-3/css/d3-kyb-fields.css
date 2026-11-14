@@ -120,3 +120,29 @@
 .d3-kyb-formsteps .tds-stepper__content { padding: var(--spacing-8, 8px) var(--spacing-8, 8px) 0 0; }
 .d3-kyb-formsteps .tds-stepper__label-row { flex-direction: column; align-items: flex-start; gap: var(--spacing-4, 4px); }
 .d3-kyb-formsteps .tds-stepper__title { overflow: visible; white-space: nowrap; font-size: var(--font-size-xs, 12px); line-height: var(--line-height-xs, 16px); }
+
+/* Demo-only pre-fill switch beside the page title (engineering review; not part of the product). */
+.d3-kyb-titlerow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-8, 8px) var(--spacing-16, 16px);
+}
+
+.d3-demo-prefill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8, 8px);
+  padding: 2px var(--spacing-8, 8px);
+  border: 1px dashed var(--border-default, #b8c2bc);
+  border-radius: var(--radius-full, 999px);
+  color: var(--text-caption, #5c6b6b);
+  font-size: var(--font-size-xs, 12px);
+  line-height: 16px;
+}
+
+.d3-demo-prefill .tds-switch { cursor: pointer; }
+
+/* No pre-fill: the top field is country + business name, with no suggestions. */
+[data-d3-prefill="off"] .vb-search-hint { display: none !important; }

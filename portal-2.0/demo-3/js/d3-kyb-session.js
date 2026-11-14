@@ -363,8 +363,8 @@
       if (was !== now) {
         var blank = blankState();
         /* The typed-in entity profile belongs to a hand-entered business: creating
-           that business must not wipe what was typed to create it. */
-        var keepProfile = !was && /^manual:/.test(now || "");
+           that business must not wipe what was typed to create it (nor switching country while still by hand). */
+        var keepProfile = (!was || /^manual:/.test(was)) && /^manual:/.test(now || "");
         if (!keepProfile) {
           if (!("profile" in next)) next.profile = blank.profile;
           if (!("profileDoc" in next)) next.profileDoc = false;
