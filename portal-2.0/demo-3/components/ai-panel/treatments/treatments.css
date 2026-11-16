@@ -368,6 +368,26 @@
   background: var(--surface-neutral-02, #f4f6f4);
 }
 
+/* In the chat the picker sits straight on the panel: no grey container, the rows are tinted, with no outline. */
+.d3-ai-selector[data-d3-ai-selector] {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.d3-ai-selector[data-d3-ai-selector] .d3-ai-selector__row {
+  border: 0;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d3-ai-selector[data-d3-ai-selector] .d3-ai-selector__row:hover {
+  background: color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 82%, var(--surface-neutral-03, #e8ede8));
+}
+
+.d3-ai-selector[data-d3-ai-selector] .d3-ai-selector__mark {
+  background: var(--surface-neutral-03, #e8ede8);
+}
+
 .d3-ai-selector__title {
   margin: 0;
   color: var(--text-default, #172d2d);

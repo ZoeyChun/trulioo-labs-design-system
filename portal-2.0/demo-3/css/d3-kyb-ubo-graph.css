@@ -181,8 +181,9 @@
   display: block;
   width: 100%;
   min-width: 0;
-  min-height: min(520px, 70vh);
-  height: min(640px, 78vh);
+  /* The height follows the graph (see .d3-kyb-ubo-graph). A fixed height here left empty space under a short
+     canvas, or let a tall one run into the section below. */
+  height: auto;
 }
 
 .d3-kyb-ubo-graph {
@@ -1496,10 +1497,6 @@
 
 /* Fluid graph panel height on small viewports (outside the surface container) */
 @media (max-width: 720px) {
-  .d3-kyb-ownership__view[data-d3-kyb-own-panel="graph"]:not([hidden]) {
-    min-height: 360px;
-    height: min(520px, 70vh);
-  }
 
   .d3-kyb-ownership__head {
     flex-wrap: wrap;
@@ -1526,3 +1523,6 @@
 .d3-kyb-ownership__table .d3-kyb-officer__main {
   cursor: pointer;
 }
+
+/* The Owners & UBOs sections are already spaced by the panel's gap; the officers section adds no margin of its own. */
+.d3-kyb-ownership .d3-kyb-officer { margin-top: 0; }

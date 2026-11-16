@@ -547,6 +547,26 @@
   align-items: flex-start;
 }
 
+/* No grey container: the rows sit straight on the panel, tinted, with no outline. */
+.d3-ai-selector.d3-kyb-choicelist {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.d3-kyb-choicelist .d3-ai-selector__row {
+  border: 0;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.d3-kyb-choicelist .d3-ai-selector__row:hover {
+  background: color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 82%, var(--surface-neutral-03, #e8ede8));
+}
+
+.d3-kyb-choicelist .d3-ai-selector__row:not(.is-on) .d3-ai-selector__mark {
+  background: var(--surface-neutral-03, #e8ede8);
+}
+
 .d3-kyb-choicelist .d3-ai-selector__mark {
   width: 48px;
   height: 48px;

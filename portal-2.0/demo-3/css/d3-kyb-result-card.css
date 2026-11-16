@@ -1,4 +1,19 @@
 /* The result summary under the report-ready card in the chat (d3-kyb-result-card.js). */
+/* No grey container around it: the white card is the container, with a subtle border. The title sits above it. */
+.d1-report-ready[data-d3-rc] {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.d1-report-ready[data-d3-rc] .d1-report-ready__card {
+  padding: var(--spacing-16, 16px);
+  border: 1px solid var(--border-subtle, #e4e8e6);
+  border-radius: var(--radius-2xl, 16px);
+}
+
+/* The heading and the tag above the card say what the card now says once (name, verdict). */
+.d3-chat-pane .d1-block:has(.d1-report-ready[data-d3-rc]) :is(.d1-report__title, [data-d1-report-tag]) { display: none; }
+
 /* One white panel: the report header row, then the summary under it. */
 .d1-report-ready[data-d3-rc] .d1-report-ready__card { flex-wrap: wrap; row-gap: var(--spacing-12, 12px); }
 /* The meta gives way, so View stays on the right instead of dropping under it. */
