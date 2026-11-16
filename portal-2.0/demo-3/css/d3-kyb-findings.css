@@ -1066,3 +1066,14 @@
 .d3h-hero__main .d3h-suggested { margin-top: 0; padding-top: 0; }
 .d3h-hero__main .d3h-suggested__ctas { flex-wrap: nowrap; gap: var(--spacing-8, 8px); }
 .d3h-hero__main .d3h-suggested__ctas .tds-btn { white-space: nowrap; }
+
+/* "+N" beside a registration number or address: a small default tag that opens the Business Details section. */
+.d3h-entity__more {
+  margin-left: var(--spacing-4, 4px);
+  vertical-align: middle;
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--font-size-xs, 12px);
+}
+.d3h-entity__more:hover { filter: brightness(0.96); }
+.d3h-entity__more:focus-visible { outline: 2px solid var(--border-focus, #0e8a78); outline-offset: 2px; }

@@ -396,7 +396,10 @@
       '<span class="kyb-browser-mock__dot"></span><span class="kyb-browser-mock__dot"></span><span class="kyb-browser-mock__dot"></span>' +
       "</div>" +
       '<div class="kyb-browser-mock__viewport" aria-label="Website preview">' +
-      '<div class="kyb-web-skeleton" aria-hidden="true">' +
+      /* A real preview when there is one; otherwise the placeholder website. */
+      (biz && biz.websitePreview
+        ? '<img class="kyb-browser-mock__preview" src="' + esc(biz.websitePreview) + '" alt="Website preview of ' + esc(s.domain) + '">'
+        : '<div class="kyb-web-skeleton" aria-hidden="true">' +
       '<div class="kyb-web-skeleton__nav">' +
       '<span class="kyb-web-skeleton__logo"></span>' +
       '<span class="kyb-web-skeleton__links">' +
@@ -412,7 +415,8 @@
       '<div class="kyb-web-skeleton__cards">' +
       '<span class="kyb-web-skeleton__card"></span>' +
       '<span class="kyb-web-skeleton__card"></span>' +
-      "</div></div></div></div>" +
+      "</div></div></div>") +
+      "</div>" +
       '<div class="kyb-browser-mock__cta">' +
       '<a class="tds-btn tds-btn--secondary tds-btn--md kyb-browser-mock__visit" href="https://' +
       esc(s.domain) +
@@ -828,6 +832,31 @@
     return { building: "—", street: raw || "—", type: "—" };
   }
 
+  /* A report often holds more than one registration number and address. The Overview shows a "+N" for them
+     and links to the Business Details section that lists them. */
+  function secondAddressOf(biz) {
+    var own = Array.isArray(biz && biz.ownership) ? biz.ownership : [];
+    return String((own[0] && own[0].address) || (biz && biz.officer && biz.officer.address2) || "");
+  }
+
+  /* Further registration numbers (a state or branch filing). The demo data holds one, so a second is derived. */
+  function extraRegistrations(biz) {
+    var report = (biz && biz.report) || {};
+    var reg = String(report.regNumber || (biz && biz.reg) || "");
+    var digits = reg.replace(/\D/g, "");
+    if (digits.length < 5) return [];
+    var rot = digits.slice(3) + digits.slice(0, 3);
+    var us = /^us$/i.test(String((biz && (biz.cc || biz.countryCode)) || "US"));
+    return [(us ? "DE File " : "Branch reg. ") + rot];
+  }
+
+  function extraCounts(biz) {
+    return {
+      brn: extraRegistrations(biz).length,
+      address: biz && (biz.addr || (biz.report && biz.report.address)) ? 1 : 0
+    };
+  }
+
   function additionalDataForBiz(biz) {
     var report = biz.report || {};
     var ownership = Array.isArray(biz.ownership) ? biz.ownership : [];
@@ -876,17 +905,27 @@
       ? "England"
       : (parts[parts.length - 1] || "—").replace(/\d.*/, "").trim() || "—";
 
-    var secondAddr = (ownership[0] && ownership[0].address) || officer.address2 || "";
+    /* Most reports hold a second address; when the data has none, a mailing (P.O. Box) address stands in. */
+    var ownSecond = (ownership[0] && ownership[0].address) || officer.address2 || "";
+    var boxNo = String(report.regNumber || biz.reg || "").replace(/\D/g, "").slice(-4) || "1204";
+    var secondAddr =
+      ownSecond ||
+      (city !== "—"
+        ? "P.O. Box " + boxNo + ", " + city + (state !== "—" ? ", " + state : "") + (postal !== "—" ? " " + postal : "")
+        : "");
     var secondParts = parseStreetParts(String(secondAddr).split(",")[0] || "");
-    var secondState = /san francisco|,\s*ca\b/i.test(secondAddr)
-      ? "CA"
-      : /calgary|,\s*ab\b/i.test(secondAddr)
-        ? "AB"
-        : "—";
-    var secondPostal =
-      (secondAddr.match(/\b(\d{5}(?:-\d{4})?)\b/) || [])[1] ||
-      (secondAddr.match(/\b([A-Z]\d[A-Z]\s*\d[A-Z]\d)\b/i) || [])[1] ||
-      "—";
+    var secondState = ownSecond
+      ? /san francisco|,\s*ca\b/i.test(secondAddr)
+        ? "CA"
+        : /calgary|,\s*ab\b/i.test(secondAddr)
+          ? "AB"
+          : "—"
+      : state;
+    var secondPostal = ownSecond
+      ? (secondAddr.match(/\b(\d{5}(?:-\d{4})?)\b/) || [])[1] ||
+        (secondAddr.match(/\b([A-Z]\d[A-Z]\s*\d[A-Z]\d)\b/i) || [])[1] ||
+        "—"
+      : postal;
 
     var incDate = report.regDate || "";
     var incMatch = incDate.match(/(\d{1,2}\s+\w+\s+\d{4}|\w+\s+\d{1,2},?\s+\d{4})/i);
@@ -898,6 +937,10 @@
     var highRisk = biz.riskLevel === "high";
     var parent = ownership.find(function (o) {
       return o.type === "corp";
+    });
+
+    var extraBrn = extraRegistrations(biz).map(function (v, i) {
+      return { label: "Additional registration number" + (i ? " " + (i + 2) : ""), value: v };
     });
 
     return {
@@ -915,7 +958,7 @@
             ? "Confirmation statement overdue risk; annual accounts filed with £1 capital"
             : "Annual report filed; franchise / confirmation statement current"
         }
-      ],
+      ].concat(extraBrn),
       ownership: [
         {
           label: "Ownership returned",
@@ -970,14 +1013,14 @@
     };
   }
 
-  function additionalSection(title, fields) {
+  function additionalSection(title, fields, key) {
     var grid = fields
       .map(function (f) {
         return dataField(f.label, valueText(f.value));
       })
       .join("");
     return (
-      '<section class="kyb-subsection">' +
+      '<section class="kyb-subsection"' + (key ? ' data-d3-section="' + key + '"' : "") + ">" +
       '<div class="kyb-subsection__head">' +
       '<h3 class="kyb-subsection-title">' +
       esc(title) +
@@ -996,9 +1039,9 @@
       '<h3 class="d3-kyb-overview__title">Additional Data:</h3>' +
       '<div class="d3-kyb-tab-body d3-kyb-additional kyb-additional-data">' +
       additionalSection("Business profile", data.profile) +
-      additionalSection("Registration & filings", data.registration) +
+      additionalSection("Registration & filings", data.registration, "registration") +
       additionalSection("Ownership & key people", data.ownership) +
-      additionalSection("Addresses", data.addresses) +
+      additionalSection("Addresses", data.addresses, "addresses") +
       additionalSection("Risk & assessment", data.risk) +
       additionalSection("Data quality & metadata", data.metadata) +
       "</div></section>";
@@ -1031,6 +1074,7 @@
     renderWebPanel: renderWebPanel,
     renderMatchSignalsPanel: renderMatchSignalsPanel,
     renderAdditionalPanel: renderAdditionalPanel,
-    renderSourcesPanel: renderSourcesPanel
+    renderSourcesPanel: renderSourcesPanel,
+    extraCounts: extraCounts
   };
 })();

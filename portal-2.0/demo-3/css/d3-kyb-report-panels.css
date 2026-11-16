@@ -764,7 +764,7 @@
   position: relative;
   width: 164px;
   max-width: 164px;
-  height: 130px;
+  height: 138px;
   overflow: hidden;
   flex: none;
 }
@@ -778,6 +778,18 @@
   transform: translateX(-50%) scale(0.72);
   transform-origin: top center;
   flex-shrink: 0;
+}
+/* The badge uses the TDS tag sm size (20px high, 8px side padding, 12px text). The gauge is drawn at 72%, so the
+   badge is scaled back by 1 / 0.72 to read at its real size. */
+.d3-rp--signals .kyb-tab-summary__gauge .score-gauge__badge {
+  box-sizing: border-box;
+  height: 20px;
+  padding: var(--spacing-2, 2px) var(--spacing-8, 8px);
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+  transform: scale(1.3889);
+  transform-origin: top center;
+  margin-top: var(--spacing-8, 8px);
 }
 .d3-rp--signals .kyb-tab-summary__breakdown-btn {
   align-self: center;

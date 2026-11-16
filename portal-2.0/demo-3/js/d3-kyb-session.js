@@ -90,7 +90,7 @@
     { id: "web", name: "Web Insights", short: "Web Insights", note: "", fields: 0, impact: "" },
     { id: "ubo", name: "UBO Discovery", short: "UBO Discovery", note: "", fields: 0, impact: "", privateOnly: true },
     { id: "ubopsc", name: "UBO and PSC Discovery", short: "UBO and PSC Discovery", note: "", fields: 0, impact: "", privateOnly: true },
-    { id: "risk", name: "Business Risk Values", short: "Business Risk Values", note: "", fields: 0, impact: "" }
+    { id: "risk", name: "Business Risk Horizon Score", short: "Business Risk Horizon Score", note: "", fields: 0, impact: "" }
   ];
 
   /* Which add-ons a package offers: Essentials has none; Insights gets the full
@@ -102,7 +102,7 @@
     return ADDONS.filter(function (a) { return !(id === "complete" && a.privateOnly); });
   }
 
-  /* Business Risk Values starts ticked wherever the package offers it. */
+  /* Business Risk Horizon Score starts ticked wherever the package offers it. */
   function defaultAddons(packageId) {
     return addonsFor(packageId).some(function (a) { return a.id === "risk"; }) ? ["risk"] : [];
   }
@@ -130,7 +130,7 @@
       if (!c || !pkg(c.package)) return null;
       var offered = addonsFor(c.package).map(function (a) { return a.id; });
       var list = Array.isArray(c.addons) ? c.addons.slice() : [];
-      /* Configurations saved before Business Risk Values became a default get it once. */
+      /* Configurations saved before Business Risk Horizon Score became a default get it once. */
       if (c.v !== 2 && offered.indexOf("risk") !== -1 && list.indexOf("risk") === -1) list.push("risk");
       return {
         package: c.package,
@@ -246,7 +246,7 @@
   /* The Web & Social tab also opens for the Web Insights add-on. */
   function tabAllowed(id, tab, addons) {
     if (tab === "findings") return true;
-    /* Risk Analysis is the Business Risk Values add-on. */
+    /* The Business Risk Horizon tab is the Business Risk Horizon Score add-on. */
     if (tab === "risk") return (addons || []).indexOf("risk") !== -1;
     /* Owners & UBOs: Complete includes it; Insights shows it when a UBO add-on is
        selected; Essentials never. The graph and details come from data, not from
@@ -350,7 +350,7 @@
     if ("package" in patch && !("packageChosen" in next)) next.packageChosen = true;
     if ("addons" in patch && !("addonsChosen" in next)) next.addonsChosen = true;
     /* Toggling an add-on by hand is remembered. Until then a package change brings
-       that package's default add-ons (Business Risk Values) with it. */
+       that package's default add-ons (Business Risk Horizon Score) with it. */
     if ("addons" in patch && source === "addons" && !("addonsTouched" in next)) next.addonsTouched = true;
     if ("package" in patch && !("addons" in patch) && !state.addonsTouched && !next.addonsTouched) {
       next.addons = defaultAddons(next.package);

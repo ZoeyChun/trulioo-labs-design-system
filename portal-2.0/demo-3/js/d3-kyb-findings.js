@@ -374,7 +374,7 @@
   }
 
   function isBrhOn(card) {
-    /* Business Risk Values is an add-on: without it there is no score, gauge or Risk Analysis.
+    /* Business Risk Horizon Score is an add-on: without it there is no score, gauge or Risk Analysis.
        The in-page switch can still turn it off for a report that has it. */
     var R = window.D3KybReport;
     if (R && typeof R.tabAllowed === "function" && !R.tabAllowed("risk")) return false;
@@ -886,11 +886,20 @@
 
     var r = biz.report || {};
     var cc = String(biz.cc || biz.countryCode || "US").toLowerCase();
-    function fact(label, value, trailing) {
+    /* More than one registration number or address: a "+N" tag that opens the Business Details section. */
+    var more = window.D3KybResultTabs && window.D3KybResultTabs.extraCounts ? window.D3KybResultTabs.extraCounts(biz) : { brn: 0, address: 0 };
+    function moreTag(key, n, noun) {
+      if (!n) return "";
+      return (
+        ' <button type="button" class="tds-tag tds-tag--sm tds-tag--default d3h-entity__more" data-d3-more="' + key + '"' +
+        ' aria-label="' + n + " more " + noun + (n > 1 ? "s" : "") + ', see Business Details">+' + n + "</button>"
+      );
+    }
+    function fact(label, value, trailing, moreHtml) {
       return (
         '<div class="d3h-entity__fact"><div class="d3h-entity__fact-text">' +
         '<span class="d3h-entity__fact-label">' + esc(label) + "</span>" +
-        '<span class="d3h-entity__fact-value">' + esc(value == null || value === "" ? "—" : value) + "</span></div>" +
+        '<span class="d3h-entity__fact-value">' + esc(value == null || value === "" ? "—" : value) + (moreHtml || "") + "</span></div>" +
         (trailing || "") + "</div>"
       );
     }
@@ -953,8 +962,8 @@
           "</span>"
       ) +
       statusFact +
-      fact("BRN / Registration number", r.regNumber || biz.reg) +
-      fact("Business address", r.address || biz.addr) +
+      fact("BRN / Registration number", r.regNumber || biz.reg, "", moreTag("registration", more.brn, "registration number")) +
+      fact("Business address", r.address || biz.addr, "", moreTag("addresses", more.address, "address")) +
       fact("Industry code", r.industry) +
       "</div></aside></div></section>";
   }
@@ -1066,6 +1075,34 @@
     }
     document.dispatchEvent(new CustomEvent("d3-kyb:brh-change", { detail: { enabled: brhEnabled } }));
     return brhEnabled;
+  }
+
+  /* "+N" on the Overview: open Business Details and bring the section into view. */
+  function bindMoreTags() {
+    document.addEventListener("click", function (e) {
+      var tag = e.target.closest && e.target.closest("[data-d3-more]");
+      if (!tag) return;
+      e.preventDefault();
+      var key = tag.getAttribute("data-d3-more");
+      var root = tag.closest("[data-d3-kyb-resume]") || document.querySelector("[data-d3-kyb-resume]");
+      if (!root) return;
+      if (window.D3KybReport && window.D3KybReport.selectTab) window.D3KybReport.selectTab("overview");
+      var tries = 0;
+      (function seek() {
+        var sec = root.querySelector('[data-d3-section="' + key + '"]');
+        if (!sec && tries < 20) {
+          tries += 1;
+          window.setTimeout(seek, 100);
+          return;
+        }
+        if (!sec) return;
+        sec.scrollIntoView({ behavior: "smooth", block: "start" });
+        sec.classList.remove("is-flash");
+        void sec.offsetWidth;
+        sec.classList.add("is-flash");
+        window.setTimeout(function () { sec.classList.remove("is-flash"); }, 1800);
+      })();
+    });
   }
 
   function bindBrhToggle() {
@@ -1183,10 +1220,12 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () {
     watch();
     bindBrhToggle();
+    bindMoreTags();
   });
   else {
     watch();
     bindBrhToggle();
+    bindMoreTags();
   }
 
   window.D3KybFindings = {
