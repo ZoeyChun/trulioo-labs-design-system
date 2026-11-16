@@ -553,8 +553,8 @@
   margin-top: -8px;
   min-width: 0;
   max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  /* Must stay visible — overflow-x:auto also clips Y and hides the menus. */
+  overflow: visible;
 }
 
 .th-tx .ut-tx-quick__item {
