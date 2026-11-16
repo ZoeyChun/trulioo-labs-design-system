@@ -545,7 +545,8 @@ body {
   font-weight: 500;
 }
 
-/* Sticky Transaction — Cell 2 (Figma 301:20333) */
+/* Sticky Transaction — Cell 2 (Figma 301:20333).
+   Above the horizontal-scroll edge fade (z-index 1) inside the table host. */
 .ut-tx-table thead th.ut-tx-th-name,
 .ut-tx-table tbody td.ut-tx-td-name {
   position: sticky;
@@ -1120,9 +1121,11 @@ body {
   display: block;
   min-width: 0;
   flex: 1 1 auto;
-  font-size: 14px;
-  line-height: 18px;
-  font-weight: 400;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: "wght" 400;
   color: var(--text-default);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1182,8 +1185,9 @@ body {
   display: block;
   min-width: 0;
   flex: 1 1 auto;
-  font-size: 12px;
-  line-height: 18px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
   font-weight: var(--font-weight-regular);
   font-variation-settings: "wght" 400;
   color: var(--text-caption);
@@ -1200,41 +1204,138 @@ body {
   max-width: 100%;
 }
 
-/* Full transaction id, shown only while the name cell is hovered or focused.
-   It hangs just under the cell so the pointer can move onto the copy control
-   without the panel closing, and it paints above the next row. */
-.ut-tx-table tbody td.ut-tx-td-name:hover,
-.ut-tx-table tbody td.ut-tx-td-name:focus-within {
-  z-index: 6;
-  overflow: visible;
+/* Name trigger for the floating Transaction ID popover. */
+.ut-tx-name--id-trigger {
+  cursor: default;
+  outline: none;
 }
 
-.ut-tx-name-id {
-  display: none;
-  position: absolute;
-  z-index: 2;
-  left: 0;
-  top: calc(100% - 2px);
-  align-items: center;
-  gap: 8px;
+.ut-tx-name--id-trigger:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Floating ID card — light tooltip shell, portaled to body (no row shift). */
+.ut-tx-id-popover {
+  position: fixed;
+  z-index: 120;
+  display: block;
   width: max-content;
-  max-width: 360px;
-  padding: 6px 8px;
+  max-width: min(420px, calc(100vw - 16px));
+  margin: 0;
+  padding: 0;
+  pointer-events: auto;
+}
+
+.ut-tx-id-popover[hidden] {
+  display: none !important;
+}
+
+/* 8px hover bridge so the cursor can leave the name for the copy button. */
+.ut-tx-id-popover--below::before,
+.ut-tx-id-popover--above::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.ut-tx-id-popover--below::before {
+  top: -8px;
+}
+
+.ut-tx-id-popover--above::after {
+  bottom: -8px;
+}
+
+.ut-tx-id-popover__card {
+  position: relative;
+  z-index: 1;
   box-sizing: border-box;
-  background: var(--surface-neutral-01, #fff);
-  border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: var(--radius-card, 8px);
-  box-shadow: 0 8px 24px rgba(23, 45, 45, 0.12);
+  padding: 8px 8px 8px 10px;
+  background: var(--surface-neutral-01);
+  border: 0.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.ut-tx-table tbody td.ut-tx-td-name:hover .ut-tx-name-id,
-.ut-tx-table tbody td.ut-tx-td-name:focus-within .ut-tx-name-id {
+/* 8px rotated square caret, 16px from the card's left edge. */
+.ut-tx-id-popover__caret {
+  position: absolute;
+  z-index: 0;
+  left: 16px;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  background: var(--surface-neutral-01);
+  border: 0.5px solid var(--border-subtle);
+  transform: rotate(45deg);
+}
+
+.ut-tx-id-popover--below .ut-tx-id-popover__caret {
+  top: -4px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.ut-tx-id-popover--above .ut-tx-id-popover__caret {
+  bottom: -4px;
+  border-left: none;
+  border-top: none;
+}
+
+.ut-tx-id-popover__header {
   display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-8);
+  margin-bottom: 4px;
+  min-height: 16px;
 }
 
-.ut-tx-name-id__value {
-  font-size: 12px;
-  line-height: 16px;
+/* Match DataField label — label/sm + caption color. */
+.ut-tx-id-popover__label {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-figma);
+  font-variation-settings: var(--font-variation-figma-medium);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+.ut-tx-id-popover__copied {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  font-variation-settings: var(--font-variation-figma-medium);
+  color: var(--text-positive);
+  margin-left: auto;
+}
+
+.ut-tx-id-popover__copied[hidden] {
+  display: none !important;
+}
+
+.ut-tx-id-popover__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  min-width: 0;
+}
+
+/* Match DataField value — body/sm, Inter, default text. */
+.ut-tx-id-popover__id {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
   font-weight: var(--font-weight-regular);
   font-variation-settings: "wght" 400;
   color: var(--text-default);
@@ -1242,9 +1343,41 @@ body {
   user-select: text;
 }
 
-.ut-tx-name-id .ut-tx-id-copy {
-  width: 16px;
-  height: 16px;
+.ut-tx-id-popover__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-neutral-01);
+  color: var(--icon-muted);
+  cursor: pointer;
+}
+
+.ut-tx-id-popover__copy:hover {
+  background: var(--surface-hover);
+}
+
+.ut-tx-id-popover__copy:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.ut-tx-id-popover__copy .icon {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.ut-tx-id-popover__copy.is-copied {
+  background: var(--surface-positive);
+  border-color: var(--border-positive);
+  color: var(--text-positive);
 }
 
 .ut-tx-id-copy,
@@ -1746,8 +1879,8 @@ body {
 .ut-tx-filters__option-label {
   font-size: 14px;
   line-height: 18px;
-  font-weight: 500;
-  font-variation-settings: var(--font-variation-figma-medium);
+  font-weight: var(--font-weight-regular, 400);
+  font-variation-settings: "wght" 400;
   color: var(--text-default);
 }
 

@@ -1883,6 +1883,13 @@
     dateFilter.end = null;
     var range = document.getElementById("utTxDateWrap");
     if (range) {
+      /* The open calendar is portaled to body. Wipe the range only after
+         removing any floated clone — otherwise a ghost calendar stays. */
+      document
+        .querySelectorAll("body > .tds-date-picker__calendar--floating")
+        .forEach(function (cal) {
+          cal.remove();
+        });
       range.classList.remove("tds-date-picker-range--open", "ut-tx-date--selected");
       delete range.dataset.start;
       delete range.dataset.end;
@@ -1926,10 +1933,17 @@
 
     if (!dateFilterBound) {
       dateFilterBound = true;
+      range.addEventListener("change", onPickerChange);
       range.addEventListener("click", onPickerChange, true);
       range.addEventListener("mousedown", onPickerChange, true);
+      /* Day clicks land on the portaled calendar (body), not the range. */
+      document.addEventListener("mousedown", function (event) {
+        if (!event.target.closest(".tds-date-picker__calendar--floating")) return;
+        window.setTimeout(syncDateFilterFromPicker, 0);
+      });
       document.addEventListener("click", function (event) {
         if (event.target.closest("#utTxDateWrap")) return;
+        if (event.target.closest(".tds-date-picker__calendar--floating")) return;
         window.setTimeout(syncDateFilterFromPicker, 0);
       });
     }
@@ -2554,8 +2568,16 @@
       );
     }
 
+    /* Name is the trigger for the floating Transaction ID popover when
+       UT_TX_NAME_TRID is on — dotted underline signals it is interactive. */
+    var nameOpen =
+      showNameTrid() && item.trid && !opts.isChild
+        ? '<span class="ut-tx-name ut-tx-name--id-trigger" tabindex="0" data-trid="' +
+          escapeHtml(item.trid) +
+          '" aria-haspopup="dialog" aria-expanded="false">'
+        : '<span class="ut-tx-name">';
     var primary =
-      '<span class="ut-tx-name">' +
+      nameOpen +
       highlightMatch(item.name) +
       "</span>" +
       (opts.isChild ? "" : statusIconHtml(item));
@@ -2581,22 +2603,6 @@
         secondary +
         "</span>"
     );
-
-    /* The id is not a second line. Hovering or focusing the name reveals
-       the full id and a copy control. */
-    if (showNameTrid() && item.trid) {
-      parts.push(
-        '<span class="ut-tx-name-id">' +
-          '<span class="ut-tx-name-id__value">' +
-          highlightMatch(item.trid) +
-          "</span>" +
-          '<button type="button" class="ut-tx-id-copy" data-trid="' +
-          escapeHtml(item.trid) +
-          '" aria-label="Copy Transaction ID">' +
-          COPY_ICON +
-          "</button></span>"
-      );
-    }
 
     return '<span class="ut-tx-name-cell">' + parts.join("") + "</span>";
   }
@@ -3057,6 +3063,7 @@
     }
     updateToolbarFilterChrome();
     if (scrollRoot) scrollRoot.scrollTop = scrollTop;
+    dismissIdPopoverIfStale();
   }
 
   function openSettings() {
@@ -3245,6 +3252,298 @@
     }
   }
 
+  /* Floating Transaction ID card on name hover/focus.
+     One shared popover (light tooltip shell) so rows never shift height. */
+  var idPopoverState = {
+    trigger: null,
+    openTimer: null,
+    closeTimer: null,
+    copiedTimer: null,
+    openMs: 300,
+    closeMs: 150,
+    gap: 4
+  };
+
+  function idPopoverEls() {
+    var pop = document.getElementById("utTxIdPopover");
+    if (!pop) return null;
+    return {
+      pop: pop,
+      id: pop.querySelector("[data-ut-id-value]"),
+      copy: pop.querySelector("[data-ut-id-copy]"),
+      copied: pop.querySelector("[data-ut-id-copied]")
+    };
+  }
+
+  function clearIdPopoverTimer(key) {
+    if (idPopoverState[key]) {
+      clearTimeout(idPopoverState[key]);
+      idPopoverState[key] = null;
+    }
+  }
+
+  function resetIdPopoverCopied() {
+    var els = idPopoverEls();
+    if (!els) return;
+    clearIdPopoverTimer("copiedTimer");
+    els.pop.classList.remove("is-copied");
+    if (els.copied) {
+      els.copied.hidden = true;
+      els.copied.textContent = "Copied";
+    }
+    if (els.copy) {
+      els.copy.classList.remove("is-copied");
+      els.copy.innerHTML = COPY_ICON;
+      els.copy.setAttribute("aria-label", "Copy transaction ID");
+    }
+  }
+
+  function hideIdPopover() {
+    var els = idPopoverEls();
+    clearIdPopoverTimer("openTimer");
+    clearIdPopoverTimer("closeTimer");
+    if (idPopoverState.trigger) {
+      idPopoverState.trigger.setAttribute("aria-expanded", "false");
+    }
+    idPopoverState.trigger = null;
+    resetIdPopoverCopied();
+    if (!els) return;
+    els.pop.hidden = true;
+    els.pop.style.left = "";
+    els.pop.style.top = "";
+  }
+
+  function dismissIdPopoverIfStale() {
+    if (
+      idPopoverState.trigger &&
+      (!idPopoverState.trigger.isConnected ||
+        !document.body.contains(idPopoverState.trigger))
+    ) {
+      hideIdPopover();
+    }
+  }
+
+  function positionIdPopover() {
+    var els = idPopoverEls();
+    var trigger = idPopoverState.trigger;
+    if (!els || !trigger || els.pop.hidden) return;
+    var rect = trigger.getBoundingClientRect();
+    var popH = els.pop.offsetHeight || 72;
+    var popW = els.pop.offsetWidth || 280;
+    var left = rect.left;
+    var pad = 8;
+    if (left + popW > window.innerWidth - pad) {
+      left = window.innerWidth - pad - popW;
+    }
+    if (left < pad) left = pad;
+    var belowTop = rect.bottom + idPopoverState.gap;
+    var placeBelow =
+      belowTop + popH <= window.innerHeight - pad ||
+      rect.top - idPopoverState.gap - popH < pad;
+    els.pop.classList.toggle("ut-tx-id-popover--below", placeBelow);
+    els.pop.classList.toggle("ut-tx-id-popover--above", !placeBelow);
+    var top = placeBelow
+      ? belowTop
+      : rect.top - idPopoverState.gap - popH;
+    els.pop.style.left = Math.round(left) + "px";
+    els.pop.style.top = Math.round(top) + "px";
+  }
+
+  function showIdPopover(trigger) {
+    var els = idPopoverEls();
+    if (!els || !trigger) return;
+    var trid = trigger.getAttribute("data-trid");
+    if (!trid) return;
+    if (idPopoverState.trigger && idPopoverState.trigger !== trigger) {
+      idPopoverState.trigger.setAttribute("aria-expanded", "false");
+    }
+    idPopoverState.trigger = trigger;
+    trigger.setAttribute("aria-expanded", "true");
+    els.id.textContent = trid;
+    resetIdPopoverCopied();
+    els.pop.hidden = false;
+    positionIdPopover();
+    window.requestAnimationFrame(positionIdPopover);
+  }
+
+  function scheduleIdPopoverOpen(trigger) {
+    clearIdPopoverTimer("closeTimer");
+    clearIdPopoverTimer("openTimer");
+    if (idPopoverState.trigger === trigger && idPopoverEls() && !idPopoverEls().pop.hidden) {
+      return;
+    }
+    idPopoverState.openTimer = setTimeout(function () {
+      idPopoverState.openTimer = null;
+      showIdPopover(trigger);
+    }, idPopoverState.openMs);
+  }
+
+  function scheduleIdPopoverClose() {
+    clearIdPopoverTimer("openTimer");
+    clearIdPopoverTimer("closeTimer");
+    idPopoverState.closeTimer = setTimeout(function () {
+      idPopoverState.closeTimer = null;
+      hideIdPopover();
+    }, idPopoverState.closeMs);
+  }
+
+  function selectIdPopoverText() {
+    var els = idPopoverEls();
+    if (!els || !els.id) return;
+    var range = document.createRange();
+    range.selectNodeContents(els.id);
+    var sel = window.getSelection();
+    if (!sel) return;
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  function markIdPopoverCopied() {
+    var els = idPopoverEls();
+    if (!els) return;
+    clearIdPopoverTimer("copiedTimer");
+    els.pop.classList.add("is-copied");
+    if (els.copied) {
+      els.copied.hidden = false;
+      els.copied.textContent = "Copied";
+    }
+    if (els.copy) {
+      els.copy.classList.add("is-copied");
+      els.copy.innerHTML = CHECK_ICON;
+      els.copy.setAttribute("aria-label", "Copied");
+    }
+    idPopoverState.copiedTimer = setTimeout(function () {
+      idPopoverState.copiedTimer = null;
+      resetIdPopoverCopied();
+    }, 1500);
+  }
+
+  function copyIdFromPopover() {
+    var els = idPopoverEls();
+    if (!els || !idPopoverState.trigger) return;
+    var trid = idPopoverState.trigger.getAttribute("data-trid") || "";
+    if (!trid) return;
+    clearIdPopoverTimer("closeTimer");
+    var ok = function () {
+      markIdPopoverCopied();
+    };
+    var fail = function () {
+      selectIdPopoverText();
+      markIdPopoverCopied();
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(trid).then(ok).catch(fail);
+    } else {
+      fail();
+    }
+  }
+
+  function bindIdPopover() {
+    var els = idPopoverEls();
+    if (!els || els.pop.dataset.bound) return;
+    els.pop.dataset.bound = "1";
+    els.copy.innerHTML = COPY_ICON;
+
+    /* mouseover/out bubble — pointerenter does not, so it cannot be delegated. */
+    document.addEventListener("mouseover", function (e) {
+      var trigger = e.target.closest && e.target.closest(".ut-tx-name--id-trigger");
+      if (!trigger) return;
+      var from = e.relatedTarget;
+      if (from && trigger.contains(from)) return;
+      scheduleIdPopoverOpen(trigger);
+    });
+    document.addEventListener("mouseout", function (e) {
+      var trigger = e.target.closest && e.target.closest(".ut-tx-name--id-trigger");
+      if (!trigger) return;
+      var next = e.relatedTarget;
+      if (next && trigger.contains(next)) return;
+      if (next && (els.pop.contains(next) || (next.closest && next.closest(".ut-tx-name--id-trigger") === trigger))) {
+        return;
+      }
+      scheduleIdPopoverClose();
+    });
+
+    document.addEventListener("focusin", function (e) {
+      var trigger = e.target.closest && e.target.closest(".ut-tx-name--id-trigger");
+      if (trigger) {
+        scheduleIdPopoverOpen(trigger);
+        return;
+      }
+      if (els.pop.contains(e.target)) clearIdPopoverTimer("closeTimer");
+    });
+    document.addEventListener("focusout", function (e) {
+      var next = e.relatedTarget;
+      if (next && (els.pop.contains(next) || (next.closest && next.closest(".ut-tx-name--id-trigger")))) {
+        return;
+      }
+      if (
+        (e.target.closest && e.target.closest(".ut-tx-name--id-trigger")) ||
+        els.pop.contains(e.target)
+      ) {
+        scheduleIdPopoverClose();
+      }
+    });
+
+    els.pop.addEventListener("mouseover", function (e) {
+      var from = e.relatedTarget;
+      if (from && els.pop.contains(from)) return;
+      clearIdPopoverTimer("closeTimer");
+      clearIdPopoverTimer("openTimer");
+    });
+    els.pop.addEventListener("mouseout", function (e) {
+      var next = e.relatedTarget;
+      if (next && els.pop.contains(next)) return;
+      if (
+        next &&
+        idPopoverState.trigger &&
+        (next === idPopoverState.trigger || idPopoverState.trigger.contains(next))
+      ) {
+        return;
+      }
+      scheduleIdPopoverClose();
+    });
+
+    els.copy.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      copyIdFromPopover();
+    });
+    els.copy.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      copyIdFromPopover();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && els.pop && !els.pop.hidden) {
+        e.preventDefault();
+        var trigger = idPopoverState.trigger;
+        hideIdPopover();
+        if (trigger && typeof trigger.focus === "function") trigger.focus();
+        return;
+      }
+      if (
+        e.key === "Tab" &&
+        !e.shiftKey &&
+        e.target.classList &&
+        e.target.classList.contains("ut-tx-name--id-trigger") &&
+        els.pop &&
+        !els.pop.hidden &&
+        idPopoverState.trigger === e.target
+      ) {
+        e.preventDefault();
+        els.copy.focus();
+      }
+    });
+
+    window.addEventListener("scroll", function () {
+      if (!els.pop.hidden) positionIdPopover();
+    }, true);
+    window.addEventListener("resize", function () {
+      if (!els.pop.hidden) positionIdPopover();
+    });
+  }
+
   function bindSettings() {
     var btn = document.getElementById("utTxSettingsBtn");
     var panel = document.getElementById("utTxSettings");
@@ -3320,6 +3619,7 @@
     bindSettings();
     bindFilters();
     bindTooltips();
+    bindIdPopover();
     bindDateFilter();
     bindSearch();
     bindProductFilter();

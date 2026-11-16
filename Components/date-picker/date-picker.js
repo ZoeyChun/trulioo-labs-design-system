@@ -62,23 +62,38 @@
     calendar.style.visibility = "hidden";
     calendar.style.left = "-9999px";
     calendar.style.top = "0px";
-    var calWidth = calendar.offsetWidth || 288;
-    var calHeight = calendar.offsetHeight || 320;
+    /* Use the laid-out size (incl. any grid overflow) so we shift before
+       the week row can hang past the viewport edge. */
+    var calWidth = Math.max(
+      calendar.offsetWidth || 288,
+      calendar.scrollWidth || 0
+    );
+    var calHeight = Math.max(
+      calendar.offsetHeight || 320,
+      calendar.scrollHeight || 0
+    );
+    var viewRight = window.innerWidth - VIEWPORT_PAD;
+    var viewBottom = window.innerHeight - VIEWPORT_PAD;
+    /* Prefer left-align to the field. If that overflows, right-align to the
+       field; then clamp so the full overlay stays in the viewport. */
     var left = rect.left;
-    if (left + calWidth > window.innerWidth - VIEWPORT_PAD) {
-      left = window.innerWidth - VIEWPORT_PAD - calWidth;
+    if (left + calWidth > viewRight) {
+      left = rect.right - calWidth;
+    }
+    if (left + calWidth > viewRight) {
+      left = viewRight - calWidth;
     }
     if (left < VIEWPORT_PAD) left = VIEWPORT_PAD;
     var top = rect.bottom + CALENDAR_GAP;
     if (
-      top + calHeight > window.innerHeight - VIEWPORT_PAD &&
+      top + calHeight > viewBottom &&
       rect.top - CALENDAR_GAP - calHeight > VIEWPORT_PAD
     ) {
       top = rect.top - CALENDAR_GAP - calHeight;
     }
     if (top < VIEWPORT_PAD) top = VIEWPORT_PAD;
-    if (top + calHeight > window.innerHeight - VIEWPORT_PAD) {
-      top = Math.max(VIEWPORT_PAD, window.innerHeight - VIEWPORT_PAD - calHeight);
+    if (top + calHeight > viewBottom) {
+      top = Math.max(VIEWPORT_PAD, viewBottom - calHeight);
     }
     calendar.style.left = Math.round(left) + "px";
     calendar.style.top = Math.round(top) + "px";
@@ -532,6 +547,9 @@
       state.viewDate = new Date(date);
       render();
       close();
+      /* Calendar is portaled to body, so day clicks never hit the range
+         node — notify hosts that the value changed. */
+      emitRangeChange();
     }
 
     var lastHandledDate = "";
@@ -576,15 +594,18 @@
       endField.setAttribute("aria-expanded", part === "end" ? "true" : "false");
     }
 
+    function emitRangeChange() {
+      range.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
     function open(part) {
       var nextPart = part || activePart;
       var reopeningSameRange = openContext && openContext.close === close;
-      /* Anchor to the visible field. Compact toolbars may hide the end
-         control, so fall back to start so the calendar still has a box. */
+      /* Anchor to the visible control. Compact toolbars hide the end field,
+         so the range root (or its start field) is the alignment box. */
       var anchor =
-        nextPart === "end" && endField.offsetParent !== null
-          ? endField
-          : startField;
+        range.querySelector(".tds-date-picker-range__fields") ||
+        startField;
 
       if (!reopeningSameRange) closeOpenPicker();
 

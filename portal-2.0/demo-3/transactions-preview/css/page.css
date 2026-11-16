@@ -320,9 +320,12 @@
   background: var(--surface-neutral-01, #fff);
 }
 
-/* Scroll host — fade on the right hints that more columns are off-screen. */
+/* Scroll host — edge fade is pinned here (outside the scrolling wrapper)
+   so it stays on the visible right edge while columns move. isolation keeps
+   the backdrop blur + its z-index inside the table, under toolbar/menus. */
 .th-tx .ut-tx-table-scroll {
   position: relative;
+  z-index: 0;
   display: flex;
   flex: 0 1 auto;
   flex-direction: column;
@@ -330,33 +333,89 @@
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
+  isolation: isolate;
 }
 
+/* Edge fades — table layer only. Blur stays off until the matching
+   scroll edge has content tucked under it (opacity alone still composites).
+   Inset from scrollbar gutters so the track stays clear. */
+.th-tx .ut-tx-table-scroll::before,
 .th-tx .ut-tx-table-scroll::after {
   content: "";
   position: absolute;
   top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
+  bottom: var(--ut-tx-scrollbar-height, 0px);
+  z-index: 1;
   width: 56px;
   pointer-events: none;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.55) 42%,
-    rgba(255, 255, 255, 0.94) 100%
-  );
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  /* Soften the blur so it only reads on the far edge. */
+  opacity: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: opacity 160ms ease;
+}
+
+/* Left: content sliding under the sticky Transaction column.
+   Header band matches thead (--surface-neutral-02); body matches rows. */
+.th-tx .ut-tx-table-scroll::before {
+  left: var(--ut-tx-sticky-name-width, 256px);
+  background-image:
+    linear-gradient(
+      to left,
+      color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 0%, transparent) 0%,
+      color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 55%, transparent) 42%,
+      color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 94%, transparent) 100%
+    ),
+    linear-gradient(
+      to left,
+      color-mix(in srgb, var(--surface-neutral-01, #fff) 0%, transparent) 0%,
+      color-mix(in srgb, var(--surface-neutral-01, #fff) 55%, transparent) 42%,
+      color-mix(in srgb, var(--surface-neutral-01, #fff) 94%, transparent) 100%
+    );
+  background-size:
+    100% var(--ut-tx-thead-height, 44px),
+    100% calc(100% - var(--ut-tx-thead-height, 44px));
+  background-position: top left, bottom left;
+  background-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, #000 55%);
+  mask-image: linear-gradient(to left, transparent 0%, #000 55%);
+}
+
+/* Right: more columns off-screen — same header/body split.
+   Stop short of the vertical scrollbar when one is present. */
+.th-tx .ut-tx-table-scroll::after {
+  right: var(--ut-tx-scrollbar-width, 0px);
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 0%, transparent) 0%,
+      color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 55%, transparent) 42%,
+      color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 94%, transparent) 100%
+    ),
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--surface-neutral-01, #fff) 0%, transparent) 0%,
+      color-mix(in srgb, var(--surface-neutral-01, #fff) 55%, transparent) 42%,
+      color-mix(in srgb, var(--surface-neutral-01, #fff) 94%, transparent) 100%
+    );
+  background-size:
+    100% var(--ut-tx-thead-height, 44px),
+    100% calc(100% - var(--ut-tx-thead-height, 44px));
+  background-position: top right, bottom right;
+  background-repeat: no-repeat;
   -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 55%);
   mask-image: linear-gradient(to right, transparent 0%, #000 55%);
-  border-right: 1px solid var(--border-subtle, #dde2de);
+}
+
+.th-tx .ut-tx-table-scroll.has-h-scroll:not(.is-at-start)::before,
+.th-tx .ut-tx-table-scroll.has-h-scroll:not(.is-at-end)::after {
+  opacity: 1;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .th-tx .ut-tx-table-scroll::after {
+  .th-tx .ut-tx-table-scroll.has-h-scroll:not(.is-at-start)::before,
+  .th-tx .ut-tx-table-scroll.has-h-scroll:not(.is-at-end)::after {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -381,6 +440,8 @@
 /* The table is wider than the column. Both scrollbars live on this box,
    in view, so Score, Source, and Type are not cut off by the panel. */
 .th-tx .tds-data-table__wrapper {
+  position: relative;
+  z-index: 0;
   flex: 0 1 auto;
   max-width: 100%;
   max-height: 100%;
@@ -546,6 +607,8 @@
 
 /* Outcome / Risk quick filters + "More filters", in a row under search + date. */
 .th-tx .ut-tx-quick {
+  position: relative;
+  z-index: 5;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
@@ -802,9 +865,6 @@
   border-color: transparent;
 }
 
-/* No fade once the last column is in view. */
-.th-tx .ut-tx-table-scroll::after { transition: opacity 160ms ease; }
-.th-tx .ut-tx-table-scroll.is-at-end::after { opacity: 0; }
 
 /* Pagination keyboard focus — the same 2px --border-focus ring the rest of
    the table uses. Kept local to this preview so Components/data-table stays
@@ -966,11 +1026,14 @@
 }
 
 /* The table box keeps its horizontal scroller but no longer caps its own
-   height — all twenty rows render and the column carries them. */
+   height — all twenty rows render and the column carries them. Keep
+   isolation so the edge fade cannot paint above toolbar / quick menus. */
 .th-tx .ut-tx-table-scroll {
   flex: 0 0 auto;
   max-height: none;
   overflow: visible;
+  isolation: isolate;
+  z-index: 0;
 }
 
 .th-tx .ut-tx-table-card {
@@ -994,8 +1057,8 @@
   font-variation-settings: var(--font-variation-figma-medium);
 }
 
-/* The name stays on one line. The transaction id is a hover panel, not a
-   second line, so a long name still truncates instead of wrapping the row. */
+/* The name stays on one line. The Transaction ID card floats outside the
+   row, so a long name still truncates instead of wrapping. */
 .th-tx .ut-tx-table .ut-tx-name,
 .th-tx .ut-tx-table .ut-tx-name-sub {
   display: block;

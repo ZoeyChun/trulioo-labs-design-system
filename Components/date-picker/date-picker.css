@@ -189,9 +189,7 @@
   position: fixed;
   z-index: 100;
   margin-top: 0;
-  /* Keep the 288px calendar when a range host rule set width:100%. */
-  width: 288px;
-  max-width: min(288px, calc(100vw - 32px));
+  box-sizing: border-box;
 }
 
 .tds-date-picker-range--interactive {
@@ -208,6 +206,13 @@
   width: 100%;
   max-width: 100%;
   margin-top: 0;
+}
+
+/* Must follow the range width:100% rule — floating calendars are portaled
+   out of the range and would otherwise stretch to the viewport. */
+.tds-date-picker__calendar.tds-date-picker__calendar--floating {
+  width: 288px;
+  max-width: min(288px, calc(100vw - 32px));
 }
 
 .tds-date-picker-range--disabled .tds-field-label,
@@ -325,7 +330,8 @@
 .tds-date-picker__week {
   display: flex;
   align-items: flex-start;
-  width: fit-content;
+  width: 100%;
+  max-width: 100%;
 }
 
 .tds-date-picker__weeks {
@@ -337,6 +343,7 @@
 
 .tds-date-picker__day {
   position: relative;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
