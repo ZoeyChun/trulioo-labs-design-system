@@ -230,6 +230,7 @@
     var lookup = byId("vb-lookup");
     if (section) section.hidden = !show;
     if (lookup) lookup.classList.toggle("vb-lookup--filled", !!show);
+    syncOpenBtn();
   }
 
   function updateSubmitButton() {
@@ -265,10 +266,44 @@
     /* The country is named in the field, so the small country select is hard to miss. */
     var where = typeahead.country ? typeahead.country.name : "";
     var text = noPrefillDemo()
-      ? where ? "Business name in " + where + " *" : "Business name *"
+      ? where ? "Business name or registration number in " + where + " *" : "Business name or registration number *"
       : where ? "Search business in " + where : "Search by business name";
     input.placeholder = text;
     if (label) label.textContent = text;
+    syncOpenBtn();
+  }
+
+  /* No pre-fill: the search field takes a business name or a registration number, and a button (not typing)
+     opens the form. */
+  var regFromSearch = false;
+
+  function looksLikeRegNo(v) {
+    var t = String(v || "");
+    var digits = (t.match(/\d/g) || []).length;
+    var alnum = (t.match(/[A-Za-z0-9]/g) || []).length;
+    /* Mostly digits (a short registry prefix is fine): "4417762", "NY DOS 4417762", "C4129087". */
+    return digits >= 4 && digits / alnum >= 0.5;
+  }
+
+  function syncOpenBtn() {
+    var btn = document.querySelector("[data-d3-open-form]");
+    var input = byId("vb-q");
+    var section = byId("vb-prefill");
+    if (!btn || !input) return;
+    var show = noPrefillDemo() && manualMode() && !(section && !section.hidden);
+    btn.hidden = !show;
+    if (input.value.trim().length >= MIN_QUERY_LEN) btn.removeAttribute("aria-disabled");
+    else btn.setAttribute("aria-disabled", "true");
+  }
+
+  function openFormFromSearch() {
+    var input = byId("vb-q");
+    var btn = document.querySelector("[data-d3-open-form]");
+    if (!input || !input.value.trim() || (btn && btn.getAttribute("aria-disabled") === "true")) return;
+    showPrefill(true);
+    syncOpenBtn();
+    var first = document.querySelector("#vb-prefill input:not([type=hidden]):not([readonly])");
+    if (first && !first.value) first.focus();
   }
 
   function updateSearchHint(query) {
@@ -440,12 +475,24 @@
         S0.set({ finderEnabled: true }, "manual");
         return;
       }
-      if (S0 && S0.get().profile.name !== input.value) {
+      if (S0) {
         var pr = S0.get().profile;
-        S0.set({ profile: { name: input.value, regNo: pr.regNo, address: pr.address, taxId: pr.taxId } }, "manual");
+        var v = input.value;
+        /* A registration number goes to its own field; anything else is the name. */
+        var asReg = noPrefillDemo() && looksLikeRegNo(v);
+        var nextName = asReg ? "" : v;
+        /* A number that came from this field leaves with it; one typed in the form stays. */
+        var nextReg = asReg ? v.trim() : regFromSearch ? "" : pr.regNo;
+        regFromSearch = asReg;
+        if (pr.name !== nextName || pr.regNo !== nextReg) {
+          S0.set({ profile: { name: nextName, regNo: nextReg, address: pr.address, taxId: pr.taxId } }, "manual");
+        }
       }
-      /* No pre-fill: the form opens once a name is typed and closes when it is cleared. */
-      if (noPrefillDemo()) showPrefill(!!input.value.trim());
+      /* No pre-fill: typing no longer opens the form (the Continue button does); clearing the search closes it. */
+      if (noPrefillDemo()) {
+        if (!input.value.trim()) showPrefill(false);
+        syncOpenBtn();
+      }
 
       return;
     }
@@ -678,7 +725,7 @@
     }
     /* The legal name typed in the entity form also shows in the name field. */
     var input = byId("vb-q");
-    if (flow.armed && manualMode() && input && d.state && d.changed.indexOf("profile") !== -1 && document.activeElement !== input) {
+    if (flow.armed && manualMode() && input && d.state && d.changed.indexOf("profile") !== -1 && document.activeElement !== input && !(noPrefillDemo() && regFromSearch)) {
       if (input.value !== d.state.profile.name) input.value = d.state.profile.name;
     }
   });
@@ -921,6 +968,10 @@
       }
       if (event.key === "Enter") {
         event.preventDefault();
+        if (noPrefillDemo() && manualMode()) {
+          openFormFromSearch();
+          return;
+        }
         if (typeahead.menuOpen) selectActiveMatch();
         else submitSelected();
         return;
@@ -950,6 +1001,9 @@
         submitSelected();
       });
     }
+
+    var openBtn = document.querySelector("[data-d3-open-form]");
+    if (openBtn) openBtn.addEventListener("click", openFormFromSearch);
 
     var goBtn = document.querySelector("[data-d3-setup-go]");
     if (goBtn) goBtn.addEventListener("click", advance);

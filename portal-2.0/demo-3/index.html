@@ -48,7 +48,7 @@
   <link rel="stylesheet" href="../../assets/flag-icons/css/flag-icons.min.css">
   <link rel="stylesheet" href="../../pages/shared/flag-icons.css">
   <link rel="stylesheet" href="../../Components/flag-icon/flag-icon.css">
-  <link rel="stylesheet" href="css/d3-kyb-search.css?v=2">
+  <link rel="stylesheet" href="css/d3-kyb-search.css?v=4">
   <link rel="stylesheet" href="css/welcome.css">
   <link rel="stylesheet" href="css/briefing.css?v=3">
   <link rel="stylesheet" href="css/sidebar.css">
@@ -66,7 +66,7 @@
   <link rel="stylesheet" href="css/d3-home.css?v=18">
   <link rel="stylesheet" href="css/d3-workspace.css?v=38">
   <link rel="stylesheet" href="css/d3-kyb-gap.css?v=43">
-  <link rel="stylesheet" href="css/d3-kyb-fields.css?v=21">
+  <link rel="stylesheet" href="css/d3-kyb-fields.css?v=22">
   <link rel="stylesheet" href="css/d3-kyb-pending.css?v=15">
   <link rel="stylesheet" href="css/d3-kyb-result-card.css?v=7">
   <link rel="stylesheet" href="css/d3-kyb-package.css?v=15">
@@ -537,6 +537,7 @@
                   </div>
                 </div>
               </div>
+              <button type="button" class="tds-icon-btn tds-icon-btn--primary tds-icon-btn--circular tds-icon-btn--sm vb-search-field__open" data-d3-open-form aria-label="Continue to the verification form" title="Continue" aria-disabled="true" hidden><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5"/></svg></button>
             </div>
 
             <p class="vb-search-hint" id="vb-search-hint">Enter at least 3 characters to search for a business.</p>
@@ -559,23 +560,17 @@
 
               <div data-d3-kyb-inputs data-variant="form" data-step-only="details"></div>
 
-              <!-- Step 2: add-ons -->
-              <div class="d3-kyb-step" data-step-only="addons">
-                <p class="d3-kyb-step__title">Add-ons</p>
-                <p class="d3-kyb-step__hint">Choose anything extra to include with this verification.</p>
+              <!-- Step 2: review, with the add-ons to choose at the bottom -->
+              <div class="d3-kyb-step" data-step-only="review">
+                <p class="d3-kyb-step__title">Review</p>
+                <p class="d3-kyb-step__hint">Check the details and choose any add-ons before you run the verification.</p>
+                <div class="d3-kyb-review" data-d3-kyb-review></div>
                 <div data-d3-kyb-addons></div>
               </div>
 
-              <!-- Step 3: review -->
-              <div class="d3-kyb-step" data-step-only="review">
-                <p class="d3-kyb-step__title">Review</p>
-                <p class="d3-kyb-step__hint">Check the details and add-ons before you run the verification.</p>
-                <div class="d3-kyb-review" data-d3-kyb-review></div>
-              </div>
-
               <div class="vb-prefill__actions">
-                <button class="tds-btn tds-btn--invisible tds-btn--lg" type="button" data-d3-step-back data-step-only="addons review">Back</button>
-                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="vb-continue-btn" data-d3-step-next data-step-only="details addons" aria-disabled="true">Continue</button>
+                <button class="tds-btn tds-btn--invisible tds-btn--lg" type="button" data-d3-step-back data-step-only="review">Back</button>
+                <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="vb-continue-btn" data-d3-step-next data-step-only="details" aria-disabled="true">Continue</button>
                 <button class="tds-btn tds-btn--primary tds-btn--lg" type="button" id="vb-submit-btn" data-step-only="review" aria-disabled="true">Execute verification</button>
               </div>
             </div>
@@ -1548,13 +1543,13 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-kyb-gap.js?v=16"></script>
 <script src="js/d3-kyb-config.js?v=16"></script>
 <script src="js/d3-kyb-package.js?v=13"></script>
-<script src="js/d3-kyb-fields.js?v=23"></script>
-<script src="js/d3-kyb-form-steps.js?v=6"></script>
+<script src="js/d3-kyb-fields.js?v=25"></script>
+<script src="js/d3-kyb-form-steps.js?v=8"></script>
 <script src="js/d3-demo-prefill.js?v=2"></script>
 <script src="js/d3-kyb-resume.js?v=58"></script>
 <script src="js/d3-kyb-report-reveal.js?v=45"></script>
 <script src="js/d3-kyb-map-search.js?v=52"></script>
-<script src="js/d3-kyb-manual-search.js?v=31"></script>
+<script src="js/d3-kyb-manual-search.js?v=35"></script>
 <script src="js/d3-kyb-agent.js?v=83"></script>
 <script src="js/d3-kyb-pending.js?v=14"></script>
 <script src="js/d3-kyb-result-card.js?v=4"></script>

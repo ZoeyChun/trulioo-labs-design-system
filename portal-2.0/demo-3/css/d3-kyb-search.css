@@ -377,3 +377,12 @@
   opacity: 0.45;
   pointer-events: none;
 }
+
+/* No pre-fill: the button inside the search field opens the form (typing alone does not). */
+.vb-search-field__open {
+  align-self: center;
+  flex: none;
+  margin-right: var(--spacing-8, 8px);
+}
+.vb-search-field__open[hidden] { display: none; }
+.vb-search-field__open[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }

@@ -35,6 +35,39 @@
     "Second Street Type", "Second City", "Second Suburb", "Second County", "Second State", "Second Postal Code"
   ];
 
+  var PSC_FIELDS = ["First Name", "Last Name", "Full Name", "Business Name"];
+  /* How many PSC blocks the form shows: the user adds as many as they need and removes the extra ones. */
+  var pscCount = 1;
+
+  function pscKey(i, label) {
+    return "PSC " + i + " " + label;
+  }
+
+  function pscMarkup(g) {
+    var out = '<div class="d3-kyb-fields__group"><p class="d3-kyb-fields__group-title">' + esc(g.title) + "</p>";
+    for (var i = 1; i <= pscCount; i++) {
+      out +=
+        '<div class="d3-kyb-fields__psc"><div class="d3-kyb-fields__psc-head"><p class="d3-kyb-fields__group-sub">PSC ' + i + "</p>" +
+        (i > 1 ? '<button type="button" class="tds-btn tds-btn--sm tds-btn--invisible" data-d3-psc-remove="' + i + '">Remove</button>' : "") +
+        '</div><div class="d3-kyb-fields__grid">' +
+        PSC_FIELDS.map(function (l) { return input(l, own(pscKey(i, l)), { typed: true, key: pscKey(i, l) }); }).join("") +
+        "</div></div>";
+    }
+    return out + '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary d3-kyb-fields__psc-add" data-d3-psc-add>Add another PSC</button></div>';
+  }
+
+  function removePsc(at) {
+    for (var j = at; j < pscCount; j++) {
+      PSC_FIELDS.forEach(function (l) {
+        var from = pscKey(j + 1, l);
+        if (typed[from] !== undefined) typed[pscKey(j, l)] = typed[from];
+        else delete typed[pscKey(j, l)];
+      });
+    }
+    PSC_FIELDS.forEach(function (l) { delete typed[pscKey(pscCount, l)]; });
+    pscCount -= 1;
+  }
+
   /* The Optional accordion: depends on the package. */
   function optionalGroups(pkgId) {
     var rich = pkgId !== "essentials";
@@ -48,7 +81,7 @@
     ];
     if (rich) {
       groups.push({ title: "Other", fields: ["Website"] });
-      groups.push({ title: "Persons of Significant Control (PSC)", sub: "PSC 1", fields: ["First Name", "Last Name", "Full Name", "Business Name"] });
+      groups.push({ title: "Persons of Significant Control (PSC)", psc: true, fields: PSC_FIELDS });
     }
     return groups;
   }
@@ -66,7 +99,7 @@
       (opts.required ? ' <span class="d3-kyb-fields__req" aria-hidden="true">*</span>' : "") + "</label>" +
       '<div class="tds-text-input__field tds-text-input__field--lg"><input class="tds-text-input__native" type="text"' +
       (opts.required ? " required" : "") + (opts.locked ? " readonly" : "") +
-      (opts.profile ? ' data-d3-profile="' + opts.profile + '"' : ' data-d3-label="' + esc(label) + '"') +
+      (opts.profile ? ' data-d3-profile="' + opts.profile + '"' : ' data-d3-label="' + esc(opts.key || label) + '"') +
       ' value="' + esc(value || "") + '"></div>' +
       (filled
         ? '<span class="tds-field-validation tds-field-validation--success"><span class="tds-field-validation__icon" aria-hidden="true">' + CHECK + "</span><span>Pre-filled</span></span>"
@@ -252,6 +285,7 @@
 
     var opt = optionalGroups(st.package)
       .map(function (g) {
+        if (g.psc) return pscMarkup(g);
         return (
           '<div class="d3-kyb-fields__group"><p class="d3-kyb-fields__group-title">' + esc(g.title) + "</p>" +
           (g.sub ? '<p class="d3-kyb-fields__group-sub">' + esc(g.sub) + "</p>" : "") +
@@ -268,7 +302,7 @@
       zone("identity", "Business identity", zone1) +
       (off ? finderMarkup() : "") +
       zone("address", "Registered address", zone2) +
-      accordion("optional", "Optional", '<div class="d3-kyb-fields__list">' + opt + "</div>");
+      accordion("optional", "View All", '<div class="d3-kyb-fields__list">' + opt + "</div>");
     if (off) {
       paintResults();
       updateFinder();
@@ -318,6 +352,17 @@
       paintResults();
       return;
     }
+    if (event.target.closest && event.target.closest("[data-d3-psc-add]")) {
+      pscCount += 1;
+      render();
+      return;
+    }
+    var rm = event.target.closest && event.target.closest("[data-d3-psc-remove]");
+    if (rm) {
+      removePsc(Number(rm.getAttribute("data-d3-psc-remove")));
+      render();
+      return;
+    }
     var t = event.target.closest && event.target.closest("[data-d3-fields-toggle]");
     if (!t) return;
     var key = t.getAttribute("data-d3-fields-toggle");
@@ -337,6 +382,7 @@
     /* A different registry business starts the typed extras over. */
     if (!manual && eid !== lastEntity) {
       typed = {};
+      pscCount = 1;
       finderResults = null;
       filledFrom = "";
     }

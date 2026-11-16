@@ -1,7 +1,7 @@
-/* Demo 3 — the manual form in three steps: details, add-ons, review.
+/* Demo 3 — the manual form in two steps: details, review.
 
-   Execute verification sits on the last step, after the user has chosen add-ons and seen a summary
-   of the fields and the add-ons. Each block of #vb-prefill names the step(s) it shows on with
+   Execute verification sits on the last step: a summary of the fields and the configuration, with the
+   add-ons to choose at the bottom. Each block of #vb-prefill names the step(s) it shows on with
    data-step-only. */
 (function () {
   "use strict";
@@ -10,8 +10,8 @@
   var root = document.getElementById("vb-prefill");
   if (!S || !root) return;
 
-  var ORDER = ["details", "addons", "review"];
-  var LABELS = { details: "Details", addons: "Add-ons", review: "Review" };
+  var ORDER = ["details", "review"];
+  var LABELS = { details: "Details", review: "Review" };
   var CHECK = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
 
   /* TDS stepper: done steps are checked, the current one is marked, the rest wait. */
@@ -52,20 +52,21 @@
       var input = el.querySelector("input");
       var label = el.querySelector("label");
       var text = label ? label.textContent.replace("*", "").trim() : "";
+      /* Repeated blocks (PSC 1, PSC 2…) carry their own name. */
+      var own = input && input.getAttribute("data-d3-label");
+      if (own && /^PSC \d+ /.test(own)) text = own;
       /* Country is listed under Configuration. */
       if (input && label && text !== "Country" && input.value.trim()) fields.push([text, input.value.trim()]);
     });
     var P = window.D3KybPackage;
     var pkg = S.package(st.package);
-    var addons = (st.addons || []).map(function (id) { return S.addon(id).name; });
     host.innerHTML =
       '<div class="d3-kyb-review__group"><p class="d3-kyb-review__group-title text-label-sm-uppercase">Business details</p><dl class="d3-kyb-review__grid">' +
       (fields.length ? fields.map(function (f) { return row(f[0], f[1]); }).join("") : row("Details", "None entered")) + "</dl></div>" +
       '<div class="d3-kyb-review__group"><p class="d3-kyb-review__group-title text-label-sm-uppercase">Configuration</p><dl class="d3-kyb-review__grid">' +
       row("Country", (S.country(st.country) || {}).name || "United States") +
       row("Package", pkg.name) +
-      (P ? row("Sub-account", P.subAccount(st.package)) : "") +
-      row("Add-ons", addons.length ? addons.join(", ") : "None") + "</dl></div>";
+      (P ? row("Sub-account", P.subAccount(st.package)) : "") + "</dl></div>";
   }
 
   function setStep(step) {
@@ -74,8 +75,10 @@
     Array.prototype.forEach.call(root.querySelectorAll("[data-step-only]"), function (el) {
       el.hidden = el.getAttribute("data-step-only").split(" ").indexOf(step) === -1;
     });
-    if (step === "addons" && window.D3KybGap) window.D3KybGap.renderAddons(root.querySelector("[data-d3-kyb-addons]"));
-    if (step === "review") summary();
+    if (step === "review") {
+      summary();
+      if (window.D3KybGap) window.D3KybGap.renderAddons(root.querySelector("[data-d3-kyb-addons]"));
+    }
   }
 
   function current() {

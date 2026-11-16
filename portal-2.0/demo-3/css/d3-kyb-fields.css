@@ -193,3 +193,21 @@
 .d3-kyb-find__name { color: var(--text-default, #172d2d); font-size: var(--font-size-sm, 14px); font-weight: 600; line-height: 20px; }
 .d3-kyb-find__line { color: var(--text-caption, #5c6b6b); font-size: var(--font-size-xs, 12px); line-height: 16px; overflow-wrap: anywhere; }
 .d3-kyb-find__more { margin: 0; color: var(--text-caption, #5c6b6b); font-size: var(--font-size-xs, 12px); line-height: 16px; }
+
+/* Persons of Significant Control: as many blocks as the user adds, the extra ones removable. */
+.d3-kyb-fields__psc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8, 8px);
+}
+.d3-kyb-fields__psc + .d3-kyb-fields__psc {
+  padding-top: var(--spacing-12, 12px);
+  border-top: 1px solid var(--border-subtle, #e4e8e6);
+}
+.d3-kyb-fields__psc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-8, 8px);
+}
+.d3-kyb-fields__psc-add { align-self: flex-start; }
