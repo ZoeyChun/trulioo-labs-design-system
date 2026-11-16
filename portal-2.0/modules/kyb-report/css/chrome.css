@@ -225,7 +225,7 @@
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: var(--spacing-24);
+  padding: 24px 160px;
   box-sizing: border-box;
 }
 .kr-preview-page__note {
@@ -630,6 +630,13 @@
 .kr-host .d3h-card--hero-gauge .d3h-hero__group {
   flex: 1 1 auto;
   min-height: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+.kr-host .d3h-card--hero-gauge .d3h-bullets {
+  max-width: none;
+  width: 100%;
 }
 
 .kr-host .d3h-card--hero-gauge .d3h-suggested {
