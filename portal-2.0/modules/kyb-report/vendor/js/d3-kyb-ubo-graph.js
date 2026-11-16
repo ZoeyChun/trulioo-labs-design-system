@@ -397,12 +397,48 @@
     );
   }
 
+  /* Same field format as ownership table expand: label above value in a 3-col grid. */
+  function fieldCardHtml(label, value) {
+    return (
+      '<div class="tds-data-field">' +
+      '<p class="tds-data-field__label">' +
+      esc(label) +
+      "</p>" +
+      '<div class="tds-data-field__content"><div class="tds-data-field__value-row">' +
+      '<p class="tds-data-field__value">' +
+      esc(value == null || value === "" ? "—" : value) +
+      "</p></div></div></div>"
+    );
+  }
+
+  function fieldsGridHtml(fields) {
+    return (
+      '<div class="d3-kyb-officer__cols kyb-field-grid kyb-field-grid--3">' +
+      (fields || [])
+        .map(function (item) {
+          return fieldCardHtml(item.label, item.value);
+        })
+        .join("") +
+      "</div>"
+    );
+  }
+
   /* Directors, Officers & PSCs as a table: one summary row per person, the rest of
      what we know opens under it. */
   function officerRows(officer, i) {
     var active = /^active$/i.test(String(officer.status || ""));
     var tagClass = active ? "tds-tag--positive" : "tds-tag--default";
     var addr = [officer.address1, officer.address2].filter(Boolean).join(" · ");
+    var fields = [
+      { label: "Given name", value: officer.givenName },
+      { label: "Surname", value: officer.surname },
+      { label: "National ID number", value: officer.nationalId },
+      { label: "Address", value: addr },
+      { label: "Position", value: officer.position },
+      { label: "Type", value: officer.type },
+      { label: "Begin date", value: officer.beginDate },
+      { label: "End date", value: officer.endDate }
+    ];
     return (
       '<tr class="d3-kyb-officer__main" tabindex="0" aria-expanded="false" data-d3-officer-toggle="' + i + '">' +
       '<td class="tds-data-table__text-cell">' + esc(officer.fullName) + "</td>" +
@@ -413,19 +449,8 @@
       '<td class="d3-kyb-officer__chev"><span class="d3-kyb-officer__chev-icon" aria-hidden="true">' + CHEVRON + "</span></td>" +
       "</tr>" +
       '<tr class="d3-kyb-officer__detail" data-d3-officer-detail="' + i + '" hidden><td colspan="5">' +
-      '<div class="d3-kyb-officer__cols">' +
-      '<dl class="d3-kyb-officer__list">' +
-      detailItem("Given name", officer.givenName) +
-      detailItem("Surname", officer.surname) +
-      detailItem("National ID number", officer.nationalId) +
-      detailItem("Address", addr) +
-      "</dl>" +
-      '<dl class="d3-kyb-officer__list">' +
-      detailItem("Position", officer.position) +
-      detailItem("Type", officer.type) +
-      detailItem("Begin date", officer.beginDate) +
-      detailItem("End date", officer.endDate) +
-      "</dl></div></td></tr>"
+      fieldsGridHtml(fields) +
+      "</td></tr>"
     );
   }
 
