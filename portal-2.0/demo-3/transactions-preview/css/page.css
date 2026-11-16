@@ -125,7 +125,9 @@
 /* The column stays the viewport. Rows and the columns past the panel
    scroll inside the table, so the right edge is not clipped. */
 .d3-tx-embed__main {
-  overflow: hidden;
+  /* Visible so in-place overlays (date range before float) are not clipped;
+     the floating calendar portals to body either way. */
+  overflow: visible;
 }
 
 /* Keep in sync with Labs .labs-page-header__title. */
@@ -469,8 +471,8 @@
 }
 
 .th-tx .ut-tx-table {
-  width: 1352px;
-  min-width: 1352px;
+  width: max(100%, 1280px);
+  min-width: 1280px;
   max-width: none;
 }
 
@@ -479,6 +481,14 @@
 .th-tx .ut-tx-table tbody td {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.th-tx .ut-tx-table tbody tr:has(.ut-tx-multi[data-ut-fit="open"]) > td,
+.th-tx .ut-tx-table td.ut-tx-td-product:has(.ut-tx-multi[data-ut-fit="open"]),
+.th-tx .ut-tx-table td.ut-tx-td-package:has(.ut-tx-multi[data-ut-fit="open"]) {
+  overflow: visible;
+  height: auto;
+  max-height: none;
 }
 
 .th-tx .ut-tx-table .tds-tag,
@@ -538,9 +548,13 @@
 .th-tx .ut-tx-quick {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   margin-top: -8px;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .th-tx .ut-tx-quick__item {
@@ -567,14 +581,22 @@
   top: calc(100% + 4px);
   left: 0;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   width: 288px;
   max-height: 360px;
-  overflow: auto;
+  overflow: hidden;
   padding: 8px;
   background: var(--surface-neutral-01, #fff);
   border: 1px solid var(--border-subtle, #dde2de);
   border-radius: var(--radius-card, 12px);
   box-shadow: 0 8px 24px rgba(23, 45, 45, 0.12);
+}
+
+.th-tx .ut-tx-quick__menu > .ut-tx-filters__options {
+  overflow: auto;
+  min-height: 0;
+  flex: 1 1 auto;
 }
 
 .th-tx .ut-tx-quick__menu[hidden] {
@@ -650,7 +672,7 @@
 }
 
 .th-tx .ut-tx-table thead th {
-  background-color: var(--surface-neutral-01, #fff);
+  background-color: var(--surface-neutral-02);
 }
 
 .th-tx .ut-tx-table thead th,
@@ -665,7 +687,7 @@
   box-shadow: none;
 }
 .th-tx .ut-tx-table thead th.ut-tx-th-name {
-  background-color: var(--surface-neutral-01, #fff);
+  background-color: var(--surface-neutral-02);
 }
 
 /* A short hairline between the KPIs: inset top and bottom, not full height. */
@@ -685,12 +707,99 @@
   .th-tx .ut-tx-stat + .ut-tx-stat::before { display: none; }
 }
 
-/* The table fills the card: when the card is wider than the columns (chat minimized) the rules
-   run edge to edge instead of stopping short of the right side. */
+/* Fill the card. Column widths below are the floor; leftover space is
+   shared so a collapsed chat does not leave an empty strip on the right. */
 .th-tx .ut-tx-table {
-  width: 100%;
+  width: max(100%, 1280px);
+  min-width: 1280px;
   max-width: none;
-  min-width: 1352px;
+}
+
+.th-tx .ut-tx-col-name,
+.th-tx .ut-tx-th-name,
+.th-tx .ut-tx-td-name {
+  width: 256px;
+  min-width: 256px;
+  max-width: none;
+}
+
+.th-tx .ut-tx-col-outcome,
+.th-tx .ut-tx-table--score-combined .ut-tx-col-outcome {
+  width: 220px;
+  min-width: 220px;
+  max-width: none;
+}
+
+.th-tx .ut-tx-col-date {
+  width: 148px;
+  min-width: 148px;
+  max-width: none;
+}
+
+.th-tx .ut-tx-col-country,
+.th-tx .ut-tx-th-country,
+.th-tx .ut-tx-td-country {
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+}
+
+.th-tx .ut-tx-col-product {
+  width: 172px;
+  min-width: 172px;
+  max-width: none;
+}
+
+.th-tx .ut-tx-col-package {
+  width: 208px;
+  min-width: 208px;
+  max-width: none;
+}
+
+.th-tx .ut-tx-col-source,
+.th-tx .ut-tx-table--no-type .ut-tx-col-source {
+  width: 196px;
+  min-width: 196px;
+  max-width: none;
+}
+
+/* Beat the engine's fixed px table locks so width:100% can take effect. */
+.th-tx .ut-tx-table.ut-tx-table--score-combined,
+.th-tx .ut-tx-table.ut-tx-table--score-combined.ut-tx-table--no-score,
+.th-tx .ut-tx-table.ut-tx-table--no-score,
+.th-tx .ut-tx-table.ut-tx-table--flag-only,
+.th-tx .ut-tx-table.ut-tx-table--package,
+.th-tx .ut-tx-table.ut-tx-table--no-score.ut-tx-table--package,
+.th-tx .ut-tx-table.ut-tx-table--flag-only.ut-tx-table--trid,
+.th-tx .ut-tx-table.ut-tx-table--no-score.ut-tx-table--trid,
+.th-tx .ut-tx-table.ut-tx-table--no-score.ut-tx-table--flag-only,
+.th-tx .ut-tx-table.ut-tx-table--no-score.ut-tx-table--flag-only.ut-tx-table--trid {
+  width: max(100%, 1280px);
+  min-width: 1280px;
+  max-width: none;
+}
+
+.th-tx .ut-tx-table--score-combined .ut-tx-col-outcome {
+  max-width: none;
+}
+
+.th-tx .ut-tx-col-package {
+  max-width: none;
+}
+
+.th-tx .ut-tx-quick__clear.tds-btn--invisible,
+.th-tx .ut-tx-filters__clear.tds-btn--invisible {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.th-tx .ut-tx-quick__clear.tds-btn--invisible:hover,
+.th-tx .ut-tx-filters__clear.tds-btn--invisible:hover,
+.th-tx .ut-tx-quick__clear.tds-btn--invisible:active,
+.th-tx .ut-tx-filters__clear.tds-btn--invisible:active {
+  background-color: transparent;
+  border-color: transparent;
 }
 
 /* No fade once the last column is in view. */
@@ -722,11 +831,24 @@
   display: none;
 }
 
+/* Search sits above the scrolling list so it spans the overlay, scrollbar included. */
+.th-tx .ut-tx-country-search {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.th-tx .ut-tx-country-search .ut-tx-filters__search {
+  width: 100%;
+  margin-bottom: 6px;
+}
+
 /* Search inside the Country quick menu. */
 .th-tx .ut-tx-filters__search {
   display: flex;
   align-items: center;
+  align-self: stretch;
   gap: 6px;
+  width: 100%;
   height: 32px;
   margin-bottom: 6px;
   padding: 0 8px;
@@ -855,10 +977,25 @@
   flex: 0 0 auto;
 }
 
-/* Name over transaction id. The id makes the cell two lines tall, so the
-   name itself has to stay on one — otherwise a long name wraps, the row
-   grows past its neighbours, and the truncation tooltip never fires
-   because nothing is clipped. */
+/* Transaction cell is label/md. Every other text cell is body/sm.
+   The variation axis is set explicitly so a parent weight cannot thicken it. */
+.th-tx .ut-tx-table tbody td {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+  font-variation-settings: "wght" 400;
+}
+
+.th-tx .ut-tx-table tbody td.ut-tx-td-name,
+.th-tx .ut-tx-table .ut-tx-name {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  font-variation-settings: var(--font-variation-figma-medium);
+}
+
+/* The name stays on one line. The transaction id is a hover panel, not a
+   second line, so a long name still truncates instead of wrapping the row. */
 .th-tx .ut-tx-table .ut-tx-name,
 .th-tx .ut-tx-table .ut-tx-name-sub {
   display: block;

@@ -189,6 +189,9 @@
   position: fixed;
   z-index: 100;
   margin-top: 0;
+  /* Keep the 288px calendar when a range host rule set width:100%. */
+  width: 288px;
+  max-width: min(288px, calc(100vw - 32px));
 }
 
 .tds-date-picker-range--interactive {

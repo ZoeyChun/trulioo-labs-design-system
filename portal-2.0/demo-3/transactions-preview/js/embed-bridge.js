@@ -48,7 +48,7 @@
   document.addEventListener(
     "click",
     function (event) {
-      if (event.target.closest("button, a, input, select, label, .ut-tx-row-menu, .ut-tx-id-copy, .ut-tx-copy-trid")) {
+      if (event.target.closest("button, a, input, select, label, .ut-tx-row-menu, .ut-tx-id-copy, .ut-tx-copy-trid, .ut-tx-name-id, .ut-tx-multi__more")) {
         return;
       }
       var row = event.target.closest("tr.ut-tx-row");

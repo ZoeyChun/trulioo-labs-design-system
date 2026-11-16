@@ -38,15 +38,16 @@
   <link rel="stylesheet" href="../../../Components/tooltip/tooltip.css">
   <link rel="stylesheet" href="../../../Components/announcement/announcement.css">
   <link rel="stylesheet" href="../../../Components/dismiss-action/dismiss-action.css">
-  <link rel="stylesheet" href="../../../Components/date-picker/date-picker.css">
+  <link rel="stylesheet" href="../../../Components/date-picker/date-picker.css?v=2">
   <link rel="stylesheet" href="../../../Components/_shared/dropdown-panel/dropdown-panel.css">
   <link rel="stylesheet" href="../../../Components/button-menu/button-menu.css">
   <link rel="stylesheet" href="../../../Components/action-list-item/action-list-item.css">
+  <link rel="stylesheet" href="../../../Components/select/combobox.css">
   <!-- shell, transactions table, this page's overrides, then the AI panel.
        Page rules follow transaction-history.css so the column fit wins. -->
-  <link rel="stylesheet" href="css/embed.css?v=6">
-  <link rel="stylesheet" href="css/transaction-history.css?v=3">
-  <link rel="stylesheet" href="css/page.css?v=10">
+  <link rel="stylesheet" href="css/embed.css?v=10">
+  <link rel="stylesheet" href="css/transaction-history.css?v=17">
+  <link rel="stylesheet" href="css/page.css?v=24">
   <link rel="stylesheet" href="../css/d3-icon-weight.css?v=1">
 </head>
 <body>
@@ -130,13 +131,13 @@
             <label class="ut-tx-filters__option">
               <input class="tds-checkbox" type="checkbox" name="ut-filt-outcome" value="positive">
               <span class="ut-tx-filters__option-text">
-                <span class="ut-tx-filters__option-label ut-tx-filters__option-label--positive">Verified</span>
+                <span class="ut-tx-filters__option-label">Verified</span>
               </span>
             </label>
             <label class="ut-tx-filters__option">
               <input class="tds-checkbox" type="checkbox" name="ut-filt-outcome" value="negative">
               <span class="ut-tx-filters__option-text">
-                <span class="ut-tx-filters__option-label ut-tx-filters__option-label--negative">Not Verified</span>
+                <span class="ut-tx-filters__option-label">Not Verified</span>
               </span>
             </label>
             <label class="ut-tx-filters__option">
@@ -308,38 +309,45 @@
 
         <section class="ut-tx-filters__section" aria-labelledby="utFiltSource">
           <h3 class="ut-tx-filters__heading" id="utFiltSource">Source</h3>
-          <!-- Same control as Package: a DS dropdown of action-list-items,
-               each naming the key, user or workflow and, beneath it, the
-               channel it ran through. -->
-          <div class="tds-button-menu ut-tx-pkg-select" id="utFiltSourceSelect" data-ut-value="">
-            <button type="button" class="ut-tx-pkg-select__trigger" aria-haspopup="menu" aria-expanded="false" aria-labelledby="utFiltSource utFiltSourceValue">
-              <span class="tds-text-input__leading-icon" aria-hidden="true">
-                <svg class="icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+          <!-- DS Combobox: the field itself is the search. Each row names the
+               key, user or workflow and, beneath it, the channel it ran through. -->
+          <div class="tds-combobox tds-combobox--full-width tds-combobox--interactive ut-tx-pkg-select" id="utFiltSourceSelect" data-ut-value="">
+            <div class="tds-combobox__field tds-combobox__field--md">
+              <span class="tds-combobox__leading-visual" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
               </span>
-              <span class="ut-tx-pkg-select__value ut-tx-pkg-select__value--placeholder" id="utFiltSourceValue">Select Source</span>
-              <span class="tds-caret tds-caret--default" aria-hidden="true">
-                <svg viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.073724 3.46966L3.4702 0.0732225C3.56783 -0.0244075 3.72612 -0.0244075 3.82375 0.0732225L7.22014 3.46966C7.37764 3.62716 7.26614 3.89644 7.04334 3.89644H0.250504C0.0277738 3.89644 -0.083766 3.62715 0.073724 3.46966Z" fill="currentColor"/><path d="M0.073724 7.32322L3.4702 10.7197C3.56783 10.8173 3.72612 10.8173 3.82375 10.7197L7.22014 7.32322C7.37764 7.16572 7.26614 6.89644 7.04334 6.89644H0.250504C0.0277738 6.89644 -0.083766 7.16573 0.073724 7.32322Z" fill="currentColor"/></svg>
+              <input class="tds-combobox__input" id="utFiltSourceValue" type="text" placeholder="Select Source" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="utFiltSourceOptions" aria-labelledby="utFiltSource">
+              <span class="tds-combobox__trailing-group">
+                <span class="tds-caret tds-caret--default" aria-hidden="true">
+                  <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                </span>
               </span>
-            </button>
-            <div class="tds-dropdown-panel ut-tx-pkg-select__panel" id="utFiltSourceOptions" role="menu" hidden></div>
+            </div>
+            <div class="tds-combobox__menu" hidden>
+              <div class="tds-dropdown-panel ut-tx-pkg-select__panel" id="utFiltSourceOptions" role="listbox" aria-multiselectable="true"></div>
+            </div>
           </div>
         </section>
 
         <section class="ut-tx-filters__section" aria-labelledby="utFiltPackage">
           <h3 class="ut-tx-filters__heading" id="utFiltPackage">Package</h3>
-          <!-- Select with subtitles: a DS dropdown panel of action-list-items,
-               each naming the package and, beneath it, the product it belongs to. -->
-          <div class="tds-button-menu ut-tx-pkg-select" id="utFiltPackageSelect" data-ut-value="">
-            <button type="button" class="ut-tx-pkg-select__trigger" aria-haspopup="menu" aria-expanded="false" aria-labelledby="utFiltPackage utFiltPackageValue">
-              <span class="tds-text-input__leading-icon" aria-hidden="true">
-                <svg class="icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+          <!-- DS Combobox: type in the field to filter. Each row names the
+               package and, beneath it, the product it belongs to. -->
+          <div class="tds-combobox tds-combobox--full-width tds-combobox--interactive ut-tx-pkg-select" id="utFiltPackageSelect" data-ut-value="">
+            <div class="tds-combobox__field tds-combobox__field--md">
+              <span class="tds-combobox__leading-visual" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
               </span>
-              <span class="ut-tx-pkg-select__value ut-tx-pkg-select__value--placeholder" id="utFiltPackageValue">Select Package</span>
-              <span class="tds-caret tds-caret--default" aria-hidden="true">
-                <svg viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.073724 3.46966L3.4702 0.0732225C3.56783 -0.0244075 3.72612 -0.0244075 3.82375 0.0732225L7.22014 3.46966C7.37764 3.62716 7.26614 3.89644 7.04334 3.89644H0.250504C0.0277738 3.89644 -0.083766 3.62715 0.073724 3.46966Z" fill="currentColor"/><path d="M0.073724 7.32322L3.4702 10.7197C3.56783 10.8173 3.72612 10.8173 3.82375 10.7197L7.22014 7.32322C7.37764 7.16572 7.26614 6.89644 7.04334 6.89644H0.250504C0.0277738 6.89644 -0.083766 7.16573 0.073724 7.32322Z" fill="currentColor"/></svg>
+              <input class="tds-combobox__input" id="utFiltPackageValue" type="text" placeholder="Select Package" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="utFiltPackageOptions" aria-labelledby="utFiltPackage">
+              <span class="tds-combobox__trailing-group">
+                <span class="tds-caret tds-caret--default" aria-hidden="true">
+                  <svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>
+                </span>
               </span>
-            </button>
-            <div class="tds-dropdown-panel ut-tx-pkg-select__panel" id="utFiltPackageOptions" role="menu" hidden></div>
+            </div>
+            <div class="tds-combobox__menu" hidden>
+              <div class="tds-dropdown-panel ut-tx-pkg-select__panel" id="utFiltPackageOptions" role="listbox" aria-multiselectable="true"></div>
+            </div>
           </div>
         </section>
 
@@ -347,6 +355,13 @@
       </div>
     </aside>
 </div>
+
+<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary ut-tx-scroll-top" id="utTxScrollTop" hidden>
+  <span class="tds-btn__leading-icon" aria-hidden="true">
+    <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M4 6.5 8 3l4 3.5"/></svg>
+  </span>
+  Back to top
+</button>
 
 <div class="ut-tx-toast tds-announcement tds-announcement--neutral tds-announcement--inline" id="utTxToast" role="status" aria-live="polite" hidden>
     <span class="tds-announcement__icon" aria-hidden="true">
@@ -389,17 +404,17 @@
   /* Twenty rows a page; the column scrolls rather than the table shrinking. */
   /* One list of every match; the page scrolls to it. */
   window.UT_TX_NO_PAGINATION = true;
-  /* Transaction id sits under the name, with a copy control. */
+  /* Transaction id and its copy control show on the name cell hover. */
   window.UT_TX_NAME_TRID = true;
 </script>
 <script>window.UT_INLINE_FILTERS=true;</script>
-<script src="js/embed-bridge.js?v=9"></script>
+<script src="js/embed-bridge.js?v=10"></script>
 <script src="../../../Components/_shared/dropdown-panel/dropdown-panel.js"></script>
-<script src="../../../Components/date-picker/date-picker.js"></script>
+<script src="../../../Components/date-picker/date-picker.js?v=2"></script>
 <script src="../../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/demo-transactions.js?v=7"></script>
-<script src="js/scroll-fade.js?v=1"></script>
-<script src="js/transaction-history.js?v=14"></script>
+<script src="js/scroll-fade.js?v=3"></script>
+<script src="js/transaction-history.js?v=28"></script>
 
 </body>
 </html>

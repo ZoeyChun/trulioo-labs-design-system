@@ -579,6 +579,12 @@
     function open(part) {
       var nextPart = part || activePart;
       var reopeningSameRange = openContext && openContext.close === close;
+      /* Anchor to the visible field. Compact toolbars may hide the end
+         control, so fall back to start so the calendar still has a box. */
+      var anchor =
+        nextPart === "end" && endField.offsetParent !== null
+          ? endField
+          : startField;
 
       if (!reopeningSameRange) closeOpenPicker();
 
@@ -590,9 +596,10 @@
         state.viewDate = new Date(state.rangeStart);
       }
       render();
-      calendar.hidden = false;
       range.classList.add("tds-date-picker-range--open");
-      openContext = { close: close };
+      /* Float to body like the single picker so overflow:hidden ancestors
+         and right-edge fields cannot clip the 288px calendar. */
+      showFloatingCalendar(anchor, calendar, range, close);
     }
 
     function close() {
@@ -602,8 +609,7 @@
       endField.classList.remove("tds-date-picker__field--focus");
       startField.setAttribute("aria-expanded", "false");
       endField.setAttribute("aria-expanded", "false");
-      calendar.hidden = true;
-      calendar.classList.remove(FLOATING_CLASS);
+      hideFloatingCalendar(calendar, range);
       range.classList.remove("tds-date-picker-range--open");
       state.hoverEnd = null;
       if (openContext && openContext.close === close) openContext = null;

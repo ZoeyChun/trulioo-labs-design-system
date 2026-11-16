@@ -214,11 +214,13 @@
   }
 
   function allPackages() {
-    return uniqueSorted(
-      rows.map(function (item) {
-        return item.package || "";
-      })
-    );
+    var values = [];
+    rows.forEach(function (item) {
+      itemPackages(item).forEach(function (pkg) {
+        values.push(pkg);
+      });
+    });
+    return uniqueSorted(values);
   }
 
   /* A package belongs to one product — the product of the transactions that
@@ -227,14 +229,15 @@
   function packageProduct(pkg) {
     var product = "";
     rows.forEach(function (item) {
-      if (!product && item.package === pkg) product = item.product || "";
+      if (!product && itemPackages(item).indexOf(pkg) !== -1) {
+        product = item.product || "";
+      }
     });
     return product;
   }
 
-  /* With UT_TX_SCORE_IN_OUTCOME the risk score rides under the outcome tag
-     instead of holding its own column: the outcome is what the row is about,
-     the score qualifies it. */
+  /* With UT_TX_SCORE_IN_OUTCOME the risk label + score sit beside the
+     outcome tag instead of in their own column. */
   function scoreInOutcome() {
     return !!window.UT_TX_SCORE_IN_OUTCOME;
   }
@@ -468,10 +471,12 @@
     panelFilters.outcomes = selectedValues("ut-filt-outcome");
     panelFilters.products = selectedValues("ut-filt-product");
     panelFilters.risks = selectedValues("ut-filt-risk");
-    panelFilters.sources = selectedValues("ut-filt-source");
+    panelFilters.sources = sourceSelect.el()
+      ? sourceSelect.get()
+      : selectedValues("ut-filt-source");
     panelFilters.types = selectedValues("ut-filt-type");
     panelFilters.packages = packageSelect.el()
-      ? (packageSelect.get() ? [packageSelect.get()] : [])
+      ? packageSelect.get()
       : selectedValues("ut-filt-package");
     panelFilters.countries = selectedValues("ut-filt-country");
     panelFilters.typeMode = currentTypeMode();
@@ -479,8 +484,11 @@
     var countryEl = document.getElementById("utFiltCountrySelect");
     var userEl = document.getElementById("utFiltUserSelect");
     panelFilters.country = countryEl && countryEl.value ? countryEl.value : "";
+    /* The Source menu stores its own list on panelFilters.sources. user is
+       only the legacy single-select, so it must stay empty here or the same
+       choice is counted twice. */
     panelFilters.user = sourceSelect.el()
-      ? sourceSelect.get()
+      ? ""
       : userEl && userEl.value
       ? userEl.value
       : "";
@@ -579,13 +587,20 @@
       if (!risk || panelFilters.risks.indexOf(risk) === -1) return false;
     }
     if (panelFilters.sources.length) {
-      if (panelFilters.sources.indexOf(item.source) === -1) return false;
+      var sourceHit = sourceSelect.el()
+        ? panelFilters.sources.indexOf(sourceText(item)) !== -1
+        : panelFilters.sources.indexOf(item.source) !== -1;
+      if (!sourceHit) return false;
     }
     if (panelFilters.types.length) {
       if (panelFilters.types.indexOf(item.type) === -1) return false;
     }
     if (panelFilters.packages.length) {
-      if (panelFilters.packages.indexOf(item.package) === -1) return false;
+      var pkgs = itemPackages(item);
+      var packageHit = panelFilters.packages.some(function (pkg) {
+        return pkgs.indexOf(pkg) !== -1;
+      });
+      if (!packageHit) return false;
     }
     if (panelFilters.user) {
       /* Rows that name their own source match on that directly. Rows without
@@ -751,7 +766,14 @@
 
     if (spec.outcomes) setCheckboxGroup("ut-filt-outcome", spec.outcomes);
     if (spec.risks) setCheckboxGroup("ut-filt-risk", spec.risks);
-    if (spec.sources) setCheckboxGroup("ut-filt-source", spec.sources);
+    if (spec.sources) {
+      setCheckboxGroup("ut-filt-source", spec.sources);
+      if (sourceSelect.el()) sourceSelect.set(spec.sources);
+    }
+    if (spec.packages) {
+      setCheckboxGroup("ut-filt-package", spec.packages);
+      if (packageSelect.el()) packageSelect.set(spec.packages);
+    }
     if (spec.types) setCheckboxGroup("ut-filt-type", spec.types);
     if (spec.products) setCheckboxGroup("ut-filt-product", spec.products);
     if (spec.watchlist) setCheckboxGroup("ut-filt-watchlist", spec.watchlist);
@@ -1061,9 +1083,6 @@
   /* The catalogue reads as a ladder, so list it that way rather than
      alphabetically. Anything not named here keeps alphabetical order at the
      end, so a new product still appears. */
-  /* The uniform row height a multi-value cell must not exceed. */
-  var MULTI_ROW_HEIGHT = 72;
-
   var PRODUCT_ORDER = [
     "Business Essentials",
     "Business Insights",
@@ -1140,20 +1159,21 @@
   }
 
   /* ---- Filter selects ----
-     Source and Package are the same control: a DS dropdown panel of
-     action-list-items, each a value with a quieter line naming what it belongs
-     to — the product for a package, the channel for a source. Single-select,
-     with an "All …" item to step back out. One factory builds both so they
-     cannot drift apart. */
+     Source and Package use the DS Combobox: the field itself is the search,
+     and the menu is a multi-select list of action-list items (label + quieter
+     description). Nothing selected means every value. */
   var CHECK_ICON_SM =
     '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg>';
 
   function filterSelectItemHtml(key, value, label, description) {
+    var search = (label + " " + (description || "")).toLowerCase();
     return (
-      '<button type="button" class="tds-action-list-item" role="menuitemradio" aria-checked="false" aria-selected="false" data-ut-' +
+      '<button type="button" class="tds-action-list-item" role="option" aria-checked="false" aria-selected="false" data-ut-' +
       key +
       '="' +
       escapeHtml(value) +
+      '" data-ut-search="' +
+      escapeHtml(search) +
       '"><span class="tds-action-list-item__check" aria-hidden="true">' +
       CHECK_ICON_SM +
       '</span><span class="tds-action-list-item__content"><span class="tds-action-list-item__label">' +
@@ -1168,110 +1188,244 @@
     );
   }
 
-  /* config: { key, wrapperId, valueId, panelId, placeholder, allLabel, options() } */
+  function listFrom(value) {
+    if (Array.isArray(value)) {
+      return value.filter(function (v) {
+        return !!v;
+      });
+    }
+    if (!value) return [];
+    return [String(value)];
+  }
+
+  /* config: { key, wrapperId, valueId, panelId, placeholder, options() } */
   function createFilterSelect(config) {
     var attr = "data-ut-" + config.key;
+    var filtering = false;
 
     function wrapperEl() {
       return document.getElementById(config.wrapperId);
     }
 
-    /* The panel is portaled to <body> while open, so it stops being a
-       descendant of the field. Always reach it by id, never via the wrapper. */
+    function inputEl() {
+      return document.getElementById(config.valueId);
+    }
+
+    function menuEl() {
+      var el = wrapperEl();
+      return el ? el.querySelector(".tds-combobox__menu") : null;
+    }
+
+    /* The panel is portaled with its menu shell while open. Reach it by id. */
     function panelEl() {
       return document.getElementById(config.panelId);
     }
 
+    function fieldEl() {
+      var el = wrapperEl();
+      return el ? el.querySelector(".tds-combobox__field") : null;
+    }
+
     function get() {
       var el = wrapperEl();
-      return el ? el.getAttribute("data-ut-value") || "" : "";
+      if (!el) return [];
+      var raw = el.getAttribute("data-ut-value") || "";
+      if (!raw) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return listFrom(parsed);
+      } catch (err) {}
+      return [raw];
+    }
+
+    function summaryText(list) {
+      if (!list.length) return "";
+      if (list.length === 1) return list[0];
+      return list.length + " selected";
+    }
+
+    function syncInputDisplay() {
+      var input = inputEl();
+      /* While the menu is open the field is the search box — don't overwrite
+         what the user is typing (or an empty query) with the selection summary. */
+      if (!input || filtering || isOpen()) return;
+      var list = get();
+      input.value = summaryText(list);
+      input.title = list.join(", ");
     }
 
     function set(value) {
+      var list = listFrom(value);
       var el = wrapperEl();
       if (!el) return;
-      el.setAttribute("data-ut-value", value || "");
-      var valueEl = document.getElementById(config.valueId);
-      if (valueEl) {
-        valueEl.textContent = value || config.placeholder;
-        valueEl.classList.toggle("ut-tx-pkg-select__value--placeholder", !value);
-      }
+      el.setAttribute("data-ut-value", list.length ? JSON.stringify(list) : "");
+      syncInputDisplay();
       var panel = panelEl();
       if (!panel) return;
       panel.querySelectorAll("[" + attr + "]").forEach(function (item) {
-        var on = item.getAttribute(attr) === (value || "");
+        var on = list.indexOf(item.getAttribute(attr)) !== -1;
         item.setAttribute("aria-checked", on ? "true" : "false");
         item.setAttribute("aria-selected", on ? "true" : "false");
+        item.classList.toggle("tds-action-list-item--selected", on);
       });
+    }
+
+    function toggle(value) {
+      var current = get().slice();
+      var index = current.indexOf(value);
+      if (index === -1) current.push(value);
+      else current.splice(index, 1);
+      set(current);
+    }
+
+    function filterOptions(query) {
+      var panel = panelEl();
+      if (!panel) return;
+      var q = String(query || "").trim().toLowerCase();
+      var empty = panel.querySelector("[data-ut-select-empty]");
+      var shown = 0;
+      panel.querySelectorAll("[" + attr + "]").forEach(function (item) {
+        var hay = item.getAttribute("data-ut-search") || "";
+        var hit = !q || hay.indexOf(q) !== -1;
+        item.hidden = !hit;
+        if (hit) shown += 1;
+      });
+      if (empty) empty.hidden = shown > 0;
+    }
+
+    function isOpen() {
+      var el = wrapperEl();
+      return !!(el && el.classList.contains("tds-combobox--open"));
+    }
+
+    function closeMenu() {
+      var el = wrapperEl();
+      var menu = menuEl();
+      var input = inputEl();
+      if (menu && window.TdsDropdownPanel) {
+        window.TdsDropdownPanel.close(menu);
+      }
+      if (el) el.classList.remove("tds-combobox--open");
+      if (menu) menu.hidden = true;
+      if (input) input.setAttribute("aria-expanded", "false");
+      filtering = false;
+      filterOptions("");
+      syncInputDisplay();
+    }
+
+    function openMenu() {
+      var el = wrapperEl();
+      var menu = menuEl();
+      var field = fieldEl();
+      var input = inputEl();
+      if (!el || !menu || !field || !input) return;
+      /* Already open — leave the panel where it is. Repositioning on every
+         focus/click after a pick made the menu jump. */
+      if (isOpen()) return;
+      el.classList.add("tds-combobox--open");
+      menu.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+      if (window.TdsDropdownPanel) {
+        window.TdsDropdownPanel.closeAll();
+        window.TdsDropdownPanel.open(field, menu, {
+          align: "start",
+          onClose: function () {
+            el.classList.remove("tds-combobox--open");
+            menu.hidden = true;
+            input.setAttribute("aria-expanded", "false");
+            filtering = false;
+            filterOptions("");
+            syncInputDisplay();
+          }
+        });
+      }
     }
 
     function build() {
       var panel = panelEl();
       if (!panel) return;
-      var html = filterSelectItemHtml(config.key, "", config.allLabel, "");
+      var html = '<p class="ut-tx-filters__empty" data-ut-select-empty hidden>No matches.</p>';
       config.options().forEach(function (opt) {
         html += filterSelectItemHtml(config.key, opt.value, opt.label, opt.description);
       });
       panel.innerHTML = html;
+      panel.setAttribute("aria-multiselectable", "true");
       set(get());
     }
 
     function bind() {
       var el = wrapperEl();
-      if (!el || el.dataset.bound) return;
-      el.dataset.bound = "1";
-      var trigger = el.querySelector(".ut-tx-pkg-select__trigger");
-      if (window.TdsDropdownPanel && window.TdsDropdownPanel.initMenus) {
-        /* Scoped to this field so the panel's own menu binding never touches
-           the "More filters" button, which runs its own open/close. */
-        window.TdsDropdownPanel.initMenus(el);
-      }
-
-      /* The component measures the panel a little wider than it ends up
-         rendering, so its horizontal placement lands slightly off the field.
-         Vertical placement and flipping stay with the component; only the left
-         edge is pinned here. */
-      function alignPanelToTrigger() {
-        var panel = panelEl();
-        if (!panel || panel.hidden || !trigger) return;
-        if (panel.style.position !== "fixed") return;
-        var rect = trigger.getBoundingClientRect();
-        var pad = 16;
-        var left = rect.left;
-        var maxLeft = window.innerWidth - pad - panel.offsetWidth;
-        if (left > maxLeft) left = maxLeft;
-        if (left < pad) left = pad;
-        panel.style.left = Math.round(left) + "px";
-      }
-
-      if (trigger) {
-        /* initMenus bound its listener first, so by the time this runs the
-           panel is already placed — correcting in the same tick means it is
-           never painted at the wrong offset. The frame after is a safety net. */
-        trigger.addEventListener("click", function () {
-          alignPanelToTrigger();
-          window.requestAnimationFrame(alignPanelToTrigger);
-        });
-        window.addEventListener("resize", alignPanelToTrigger);
-      }
-
+      var input = inputEl();
       var panel = panelEl();
-      if (!panel) return;
-      panel.addEventListener("click", function (e) {
-        var item = e.target.closest("[" + attr + "]");
-        if (!item) return;
-        set(item.getAttribute(attr));
-        if (window.TdsDropdownPanel && window.TdsDropdownPanel.closeAll) {
-          window.TdsDropdownPanel.closeAll();
+      var field = fieldEl();
+      if (!el || !input || !panel || !field || el.dataset.bound) return;
+      el.dataset.bound = "1";
+
+      input.addEventListener("focus", function () {
+        var summary = summaryText(get());
+        if (!filtering && summary && input.value === summary) {
+          input.select();
         }
-        currentPage = 1;
-        syncPanelFiltersFromDom();
-        updateFilterChrome();
-        render();
+        filterOptions(filtering ? input.value : "");
+        openMenu();
       });
+
+      input.addEventListener("click", function () {
+        openMenu();
+      });
+
+      input.addEventListener("input", function () {
+        filtering = true;
+        filterOptions(input.value);
+        openMenu();
+      });
+
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeMenu();
+          input.blur();
+          return;
+        }
+        if (e.key === "Enter") e.preventDefault();
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          openMenu();
+        }
+      });
+
+      /* Keep multi-select open: stop the document-level close path and keep
+         focus in the field so the next keystroke still filters. preventScroll
+         stops the page from jumping when focus returns to the field. */
+      panel.addEventListener(
+        "mousedown",
+        function (e) {
+          var item = e.target.closest("[" + attr + "]");
+          if (!item || item.hidden) return;
+          e.preventDefault();
+          e.stopPropagation();
+          toggle(item.getAttribute(attr));
+          if (typeof input.focus === "function") {
+            try {
+              input.focus({ preventScroll: true });
+            } catch (err) {
+              input.focus();
+            }
+          }
+          currentPage = 1;
+          syncPanelFiltersFromDom();
+          updateFilterChrome();
+          /* Keep the page scroll put — filtering the table can change
+             document height and the UA would otherwise jump the view. */
+          var scrollRoot = document.scrollingElement || document.documentElement;
+          var scrollTop = scrollRoot ? scrollRoot.scrollTop : 0;
+          render();
+          if (scrollRoot) scrollRoot.scrollTop = scrollTop;
+        },
+        true
+      );
     }
 
-    return { el: wrapperEl, get: get, set: set, build: build, bind: bind };
+    return { el: wrapperEl, get: get, set: set, toggle: toggle, build: build, bind: bind };
   }
 
   var packageSelect = createFilterSelect({
@@ -1280,7 +1434,6 @@
     valueId: "utFiltPackageValue",
     panelId: "utFiltPackageOptions",
     placeholder: "Select Package",
-    allLabel: "All packages",
     options: function () {
       return allPackages().map(function (pkg) {
         return { value: pkg, label: pkg, description: packageProduct(pkg) };
@@ -1294,7 +1447,6 @@
     valueId: "utFiltSourceValue",
     panelId: "utFiltSourceOptions",
     placeholder: "Select Source",
-    allLabel: "All sources",
     options: function () {
       return allSources().map(function (src) {
         return { value: src, label: src, description: sourceChannel(src) };
@@ -1314,14 +1466,40 @@
     return channel;
   }
 
+  function countryCodeFor(name) {
+    var code = "";
+    rows.forEach(function (item) {
+      if (!code && item.country === name) code = String(item.countryCode || "");
+    });
+    return code;
+  }
+
+  /* Flag + name (CODE), matching the table's country cell language. */
   function countryOptionHtml(country) {
+    var code = countryCodeFor(country);
+    var codeUpper = code.toUpperCase();
+    var search = (country + " " + codeUpper).toLowerCase();
+    var flag = code
+      ? '<span class="ut-tx-filters__country-flag" aria-hidden="true"><span class="fi fi-' +
+        escapeHtml(code) +
+        '"></span></span>'
+      : "";
+    var codeLabel = codeUpper
+      ? '<span class="ut-tx-filters__country-code">(' +
+        escapeHtml(codeUpper) +
+        ")</span>"
+      : "";
     return (
       '<label class="ut-tx-filters__option" data-ut-country="' +
-      escapeHtml(country.toLowerCase()) +
+      escapeHtml(search) +
       '"><input class="tds-checkbox" type="checkbox" name="ut-filt-country" value="' +
       escapeHtml(country) +
-      '"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular">' +
+      '"><span class="ut-tx-filters__option-text"><span class="ut-tx-filters__option-label ut-tx-filters__option-label--regular ut-tx-filters__country">' +
+      flag +
+      "<span>" +
       escapeHtml(country) +
+      "</span>" +
+      codeLabel +
       "</span></span></label>"
     );
   }
@@ -1334,13 +1512,24 @@
 
     var toolbar = document.getElementById("utFiltCountryOptions");
     if (toolbar) {
+      var menu = toolbar.closest(".ut-tx-quick__menu");
+      var searchHost = menu && menu.querySelector("[data-ut-country-search-host]");
+      if (menu && !searchHost) {
+        searchHost = document.createElement("div");
+        searchHost.className = "ut-tx-country-search";
+        searchHost.setAttribute("data-ut-country-search-host", "");
+        menu.insertBefore(searchHost, toolbar);
+      }
+      if (searchHost) {
+        searchHost.innerHTML =
+          '<div class="ut-tx-filters__search">' +
+          '<span class="ut-tx-filters__search-icon" aria-hidden="true">' +
+          '<svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>' +
+          "</span>" +
+          '<input type="search" class="ut-tx-filters__search-input" data-ut-country-search placeholder="Search countries" aria-label="Search countries">' +
+          "</div>";
+      }
       toolbar.innerHTML =
-        '<div class="ut-tx-filters__search">' +
-        '<span class="ut-tx-filters__search-icon" aria-hidden="true">' +
-        '<svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.25"/><path d="M10.5 10.5 13.5 13.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>' +
-        "</span>" +
-        '<input type="search" class="ut-tx-filters__search-input" data-ut-country-search placeholder="Search countries" aria-label="Search countries">' +
-        "</div>" +
         '<p class="ut-tx-filters__empty" data-ut-country-empty hidden>No countries match.</p>' +
         options;
     }
@@ -1364,15 +1553,16 @@
   }
 
   function bindCountrySearch() {
+    var menu = document.querySelector('[data-quick="country"] .ut-tx-quick__menu');
     var host = document.getElementById("utFiltCountryOptions");
-    if (!host || host.dataset.searchBound) return;
-    host.dataset.searchBound = "1";
-    host.addEventListener("input", function (e) {
+    if (!menu || !host || menu.dataset.searchBound) return;
+    menu.dataset.searchBound = "1";
+    menu.addEventListener("input", function (e) {
       if (!e.target.closest("[data-ut-country-search]")) return;
       filterCountryOptions(host, e.target.value);
     });
     /* The menu closes on any click outside it, including this box. */
-    host.addEventListener("click", function (e) {
+    menu.addEventListener("click", function (e) {
       if (e.target.closest("[data-ut-country-search]")) e.stopPropagation();
     });
   }
@@ -1384,9 +1574,9 @@
      either surface can set or clear a facet.
 
      Product is a checkbox group, so its chip mirrors the same inputs and the
-     existing mirroring keeps both ticked in step. Package, Source and Type
-     are single-value controls, so their chips list options that call the
-     canonical setter. */
+     existing mirroring keeps both ticked in step. Package and Source are
+     multi-select menus, so their chips toggle the same values. Type is a
+     single value with a default. */
   function facetChips() {
     return [
       {
@@ -1402,20 +1592,24 @@
       },
       {
         key: "package",
+        multi: true,
         options: allPackages,
         get: packageSelect.get,
         set: packageSelect.set,
+        toggle: packageSelect.toggle,
         active: function () {
-          return !!packageSelect.get();
+          return packageSelect.get().length > 0;
         }
       },
       {
         key: "source",
+        multi: true,
         options: allSources,
         get: sourceSelect.get,
         set: sourceSelect.set,
+        toggle: sourceSelect.toggle,
         active: function () {
-          return !!sourceSelect.get();
+          return sourceSelect.get().length > 0;
         }
       },
       {
@@ -1440,7 +1634,9 @@
       );
       if (!host) return;
       var html = "";
-      if (facet.multi) {
+      /* A named checkbox group is the model (Product). Package and Source
+         keep their model in the drawer menu, so their chips are toggles. */
+      if (facet.multi && facet.name) {
         facet.options().forEach(function (value) {
           html +=
             '<label class="ut-tx-filters__option"><input class="tds-checkbox" type="checkbox" name="' +
@@ -1481,19 +1677,18 @@
       if (!item) return;
       var on = facet.active();
       item.hidden = !on;
-      if (!facet.multi) {
-        var current = facet.get();
+      if (facet.get) {
+        var selected = facet.multi ? facet.get() : [facet.get()];
         var count = item.querySelector(".ut-tx-quick__count");
         if (count) {
-          count.textContent = "1";
+          count.textContent = String(facet.multi ? selected.length : 1);
           count.hidden = !on;
         }
         item.classList.toggle("is-selected", on);
         item.querySelectorAll("[data-ut-facet-value]").forEach(function (btn) {
-          btn.classList.toggle(
-            "is-on",
-            btn.getAttribute("data-ut-facet-value") === current
-          );
+          var hit = selected.indexOf(btn.getAttribute("data-ut-facet-value")) !== -1;
+          btn.classList.toggle("is-on", hit);
+          btn.setAttribute("aria-pressed", hit ? "true" : "false");
         });
       }
     });
@@ -1513,12 +1708,16 @@
       var facet = facetChips().filter(function (f) {
         return f.key === key;
       })[0];
-      if (!facet) return;
-      /* Picking the current value again clears the facet — except Type,
-         which has a default to fall back to rather than an empty state. */
-      var next =
-        facet.get() === value ? (key === "type" ? TYPE_MODE_DEFAULT : "") : value;
-      facet.set(next);
+      if (!facet || !facet.get) return;
+      if (facet.multi && facet.toggle) {
+        facet.toggle(value);
+      } else {
+        /* Picking the current value again clears the facet — except Type,
+           which has a default to fall back to rather than an empty state. */
+        var next =
+          facet.get() === value ? (key === "type" ? TYPE_MODE_DEFAULT : "") : value;
+        facet.set(next);
+      }
       currentPage = 1;
       syncPanelFiltersFromDom();
       updateFilterChrome();
@@ -1975,9 +2174,8 @@
   }
 
   /* A cell holding several values — the products a transaction ran, or the
-     packages behind them. It renders the full comma-separated list; a pass
-     after layout (fitMultiCells) collapses it to "first +N" only where the
-     list would not fit the row. Clicking "+N" expands that cell in place. */
+     packages behind them. The first value shows; the rest sit behind "+N".
+     Clicking "+N" reveals the full list in place. */
   function multiValueHtml(list, trid, key, opts) {
     opts = opts || {};
     list = list.filter(Boolean);
@@ -1990,9 +2188,9 @@
     var open = !!expandedProducts[key + ":" + trid];
     var all = list
       .map(function (v) {
-        return highlightMatch(v);
+        return '<span class="ut-tx-multi__item">' + highlightMatch(v) + "</span>";
       })
-      .join(", ");
+      .join("");
 
     return (
       '<span class="ut-tx-multi" data-ut-multi="' +
@@ -2010,7 +2208,7 @@
       ">" +
       all +
       "</span>" +
-      '<button type="button" class="ut-tx-multi__more" aria-label="' +
+      '<button type="button" class="ut-tx-multi__more tds-counter tds-counter--sm tds-counter--secondary" aria-label="' +
       escapeHtml("Show all: " + list.join(", ")) +
       '"' +
       (open ? " hidden" : "") +
@@ -2028,9 +2226,6 @@
     return multiValueHtml(itemPackages(item), item.trid || "", "package");
   }
 
-  /* Show the whole list wherever it fits the row, and fall back to "first +N"
-     only where it would push the row taller. Runs after layout, because
-     whether three products fit depends on how long their names are. */
   /* Anything clipped by its column says so on hover and on focus, using the
      table's existing floating tooltip. Only actually-clipped cells get the
      treatment, so a tooltip never repeats what is already on screen. */
@@ -2055,38 +2250,9 @@
       });
   }
 
-  function fitMultiCells() {
-    var tbody = document.getElementById("utTxBody");
-    if (!tbody) return;
-    tbody.querySelectorAll("[data-ut-multi]").forEach(function (cell) {
-      if (cell.getAttribute("data-ut-fit") === "open") return;
-      var lead = cell.querySelector(".ut-tx-multi__lead");
-      var all = cell.querySelector(".ut-tx-multi__all");
-      var more = cell.querySelector(".ut-tx-multi__more");
-      if (!lead || !all || !more) return;
-
-      var td = cell.closest("td");
-      var cs = window.getComputedStyle(td);
-      var budget =
-        MULTI_ROW_HEIGHT -
-        parseFloat(cs.paddingTop || 0) -
-        parseFloat(cs.paddingBottom || 0);
-
-      /* Measure the full list where it would actually sit. */
-      lead.hidden = true;
-      more.hidden = true;
-      all.hidden = false;
-      var fits = all.offsetHeight <= budget + 1;
-      if (fits) {
-        cell.setAttribute("data-ut-fit", "all");
-        return;
-      }
-      cell.setAttribute("data-ut-fit", "collapsed");
-      all.hidden = true;
-      lead.hidden = false;
-      more.hidden = false;
-    });
-  }
+  /* Extra values always stay behind "+N". Clicking the count reveals them;
+     a cell is never opened just because the full list would fit the row. */
+  function fitMultiCells() {}
 
   /* The cell owns its own expand/collapse — no re-render, so sorting, paging
      and filtering are untouched by it (and reset it, which is what you want). */
@@ -2161,6 +2327,65 @@
     );
   }
 
+  function outcomeLabel(item) {
+    return ((item.outcome && item.outcome.label) || "").toLowerCase();
+  }
+
+  /* A check still running has no result to score. */
+  function isInProgressOutcome(item) {
+    return outcomeLabel(item) === "in progress";
+  }
+
+  function isFailedOutcome(item) {
+    return outcomeLabel(item) === "failed";
+  }
+
+  function outcomeScore(item) {
+    if (!item.score || isInProgressOutcome(item) || isFailedOutcome(item)) return null;
+    return item.score;
+  }
+
+  var OUTCOME_CLOCK =
+    '<svg viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true">' +
+    '<circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.5"/>' +
+    '<path d="M8 4.75V8.25L10.25 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    "</svg>";
+
+  function inProgressHtml(item) {
+    return (
+      '<span class="tds-tag tds-tag--intermediate">' +
+      '<span class="tds-tag__leading-visual">' +
+      OUTCOME_CLOCK +
+      "</span>" +
+      escapeHtml(item.outcome.label) +
+      "</span>"
+    );
+  }
+
+  /* Figma 2320:20247 / 2320:20255 — status tag, then "{Risk} {n}/100"
+     with the score tinted by risk tone. */
+  function outcomePillHtml(item, score) {
+    var tone = item.outcome.tone === "negative" ? "negative" : "positive";
+    var scoreTone = score.tone || tone;
+    return (
+      '<span class="ut-tx-outcome-inline">' +
+      '<span class="tds-tag tds-tag--' +
+      tone +
+      '">' +
+      escapeHtml(item.outcome.label) +
+      "</span>" +
+      '<span class="ut-tx-outcome-risk">' +
+      '<span class="ut-tx-outcome-risk__label">' +
+      escapeHtml(score.label) +
+      "</span> " +
+      '<span class="ut-tx-outcome-risk__score ut-tx-score--' +
+      escapeHtml(scoreTone) +
+      '">' +
+      escapeHtml(score.value) +
+      "</span></span></span>"
+    );
+  }
+
   function outcomeHtml(item) {
     var outcome = item.outcome;
     if (!outcome) return "";
@@ -2169,25 +2394,31 @@
       return '<span class="ut-tx-empty">--</span>';
     }
 
+    if (isInProgressOutcome(item)) return inProgressHtml(item);
+    if (isFailedOutcome(item)) {
+      return '<span class="ut-tx-outcome-plain">' + escapeHtml(outcome.label) + "</span>";
+    }
+
     var primary = outcomeTagHtml(item);
+    var score = outcomeScore(item);
 
     if (
       !window.UT_TX_PLAIN_TABLE &&
       combinedScoreKind(item) === "score-level" &&
-      item.score
+      score
     ) {
-      return scoreHtml(item.score);
+      return scoreHtml(score);
     }
 
     if (scoreInOutcome()) {
-      return item.score ? outcomeStackHtml(primary, item.score, true) : primary;
+      return score ? outcomePillHtml(item, score) : primary;
     }
 
     if (settings.score !== "combined-outcome" || window.UT_TX_PLAIN_TABLE) return primary;
 
     var kind = combinedScoreKind(item);
     if (kind === "result-tag") return primary;
-    if (item.score) return outcomeStackHtml(primary, item.score);
+    if (score) return outcomeStackHtml(primary, score);
     return primary;
   }
 
@@ -2254,7 +2485,27 @@
   }
 
   function countryHtml(item) {
-    if (window.UT_TX_PLAIN_TABLE) return highlightMatch(item.country);
+    if (window.UT_TX_PLAIN_TABLE) {
+      var code = String(item.countryCode || "").toUpperCase();
+      var tip = item.country
+        ? ' class="ut-tx-country ut-tx-tip-host" tabindex="0" aria-label="' +
+          escapeHtml(item.country) +
+          '" data-ut-tooltip="' +
+          escapeHtml(item.country) +
+          '"'
+        : ' class="ut-tx-country"';
+      return (
+        "<span" +
+        tip +
+        ">" +
+        '<span class="ut-tx-country__flag" aria-hidden="true"><span class="fi fi-' +
+        escapeHtml(item.countryCode) +
+        '"></span></span>' +
+        '<span class="ut-tx-country__code">' +
+        (code ? highlightMatch(code) : highlightMatch(item.country)) +
+        "</span></span>"
+      );
+    }
     if (settings.country === "flag-only") {
       return (
         '<span class="ut-tx-country ut-tx-country--flag-only">' +
@@ -2275,21 +2526,6 @@
       '<span class="ut-tx-country__name">' +
       highlightMatch(item.country) +
       "</span></span>"
-    );
-  }
-
-  function tridSecondaryHtml(item) {
-    if (!item.trid) return "";
-    return (
-      '<span class="ut-tx-id-row">' +
-      '<span class="ut-tx-name-sub">' +
-      highlightMatch(item.trid) +
-      "</span>" +
-      '<button type="button" class="ut-tx-id-copy ut-tx-tip-host" data-trid="' +
-      escapeHtml(item.trid) +
-      '" aria-label="Copy Transaction ID" data-ut-tooltip="Copy Transaction ID">' +
-      COPY_ICON +
-      "</button></span>"
     );
   }
 
@@ -2335,8 +2571,6 @@
     if (settings.transaction === "name-additional" && item.detail) {
       secondary =
         '<span class="ut-tx-name-sub">' + highlightMatch(item.detail) + "</span>";
-    } else if (showNameTrid()) {
-      secondary = tridSecondaryHtml(item);
     }
 
     parts.push(
@@ -2348,10 +2582,31 @@
         "</span>"
     );
 
+    /* The id is not a second line. Hovering or focusing the name reveals
+       the full id and a copy control. */
+    if (showNameTrid() && item.trid) {
+      parts.push(
+        '<span class="ut-tx-name-id">' +
+          '<span class="ut-tx-name-id__value">' +
+          highlightMatch(item.trid) +
+          "</span>" +
+          '<button type="button" class="ut-tx-id-copy" data-trid="' +
+          escapeHtml(item.trid) +
+          '" aria-label="Copy Transaction ID">' +
+          COPY_ICON +
+          "</button></span>"
+      );
+    }
+
     return '<span class="ut-tx-name-cell">' + parts.join("") + "</span>";
   }
 
+  function showActionsColumn() {
+    return !window.UT_TX_PLAIN_TABLE && !window.UT_TX_NO_ROW_ACTIONS;
+  }
+
   function actionsHtml(item) {
+    if (!showActionsColumn()) return "";
     /* Button menu — DropdownPanel + ActionList.Item (Figma 832:13390) */
     var menuItems =
       '<button type="button" class="tds-action-list-item ut-tx-menu-copy" role="menuitem" data-trid="' +
@@ -2409,11 +2664,11 @@
 
     cells +=
       '<td class="ut-tx-outcome-cell' +
-      ((scoreInOutcome() && item.score) ||
-      (!window.UT_TX_PLAIN_TABLE &&
-        settings.score === "combined-outcome" &&
-        combinedScoreKind(item) === "stack" &&
-        item.score)
+      (!scoreInOutcome() &&
+      !window.UT_TX_PLAIN_TABLE &&
+      settings.score === "combined-outcome" &&
+      combinedScoreKind(item) === "stack" &&
+      outcomeScore(item)
         ? " ut-tx-outcome-cell--with-sub"
         : "") +
       '">' +
@@ -2526,9 +2781,11 @@
       html += '<th scope="col" class="ut-tx-col-trid">TRID</th>';
     }
 
-    html +=
-      '<th scope="col" class="tds-data-table__actions-col"><span class="visually-hidden">Actions</span></th>' +
-      "</tr>";
+    if (showActionsColumn()) {
+      html +=
+        '<th scope="col" class="tds-data-table__actions-col"><span class="visually-hidden">Actions</span></th>';
+    }
+    html += "</tr>";
 
     head.innerHTML = html;
   }
@@ -2547,7 +2804,7 @@
     html += '<col class="ut-tx-col-source">';
     if (showTypeColumn()) html += '<col class="ut-tx-col-type">';
     if (showTridColumn()) html += '<col class="ut-tx-col-trid">';
-    html += '<col class="ut-tx-col-actions">';
+    if (showActionsColumn()) html += '<col class="ut-tx-col-actions">';
     cols.innerHTML = html;
   }
 
@@ -2761,6 +3018,10 @@
   }
 
   function render() {
+    /* Filtering shortens the document; keep the scroll offset so the
+       viewport does not jump while a menu is open. */
+    var scrollRoot = document.scrollingElement || document.documentElement;
+    var scrollTop = scrollRoot ? scrollRoot.scrollTop : 0;
     renderCols();
     renderHead();
     applyToolbar();
@@ -2795,6 +3056,7 @@
       window.TdsDropdownPanel.initMenus(tbody);
     }
     updateToolbarFilterChrome();
+    if (scrollRoot) scrollRoot.scrollTop = scrollTop;
   }
 
   function openSettings() {
