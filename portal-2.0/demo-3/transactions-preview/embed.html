@@ -47,7 +47,7 @@
        Page rules follow transaction-history.css so the column fit wins. -->
   <link rel="stylesheet" href="css/embed.css?v=10">
   <link rel="stylesheet" href="css/transaction-history.css?v=22">
-  <link rel="stylesheet" href="css/page.css?v=30">
+  <link rel="stylesheet" href="css/page.css?v=31">
   <link rel="stylesheet" href="../css/d3-icon-weight.css?v=1">
 </head>
 <body>
@@ -65,7 +65,12 @@
          .ai-* or the [data-truai] state. -->
     <main class="d3-tx-embed__main">
       <section class="th-tx ut-tx-main">
-        <h1 class="th-tx__title">Transactions</h1>
+        <!-- The summary rides with the title: one header line that says
+             what the page is and what is in it. -->
+        <div class="th-tx__head">
+          <h1 class="th-tx__title">Transactions</h1>
+          <div class="ut-tx-stats ut-tx-stats--inline" id="utTxStats" aria-label="Transaction summary"></div>
+        </div>
         <div class="ut-tx-main__scroll">
         <div class="ut-tx-page">
         <div class="ut-tx-block">
@@ -228,8 +233,6 @@
             </div>
             <button type="button" class="tds-btn tds-btn--sm tds-btn--invisible ut-tx-quick__clear" id="utTxQuickClear" hidden>Clear all filters</button>
           </div>
-
-          <div class="ut-tx-stats" id="utTxStats" aria-label="Transaction summary"></div>
 
           <div class="ut-tx-table-section">
             <p class="ut-tx-search-status" id="utTxSearchStatus" hidden></p>

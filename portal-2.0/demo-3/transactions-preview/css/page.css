@@ -1077,3 +1077,64 @@
 .th-tx .ut-tx-table .ut-tx-id-copy {
   flex: 0 0 auto;
 }
+
+/* ------------------------------------------------------------------
+   Summary beside the title.
+   The KPIs were a full-width card band above the table, which gave five
+   numbers the same weight as the table itself. On one header line with
+   the title they stay readable and hand the room back to the rows.
+   ------------------------------------------------------------------ */
+.th-tx .th-tx__head {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.th-tx .th-tx__head .th-tx__title {
+  margin: 0;
+}
+
+/* Out of the card grid and onto a single row. */
+.th-tx .ut-tx-stats--inline {
+  display: flex;
+  width: auto;
+  max-width: 100%;
+  flex-wrap: wrap;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.th-tx .ut-tx-stats--inline .ut-tx-stat {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0 14px;
+  border-left: 1px solid var(--border-subtle, #dde2de);
+}
+
+.th-tx .ut-tx-stats--inline .ut-tx-stat:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.th-tx .ut-tx-stats--inline .ut-tx-stat:last-child {
+  padding-right: 0;
+}
+
+.th-tx .ut-tx-stats--inline .ut-tx-stat__label {
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+}
+
+.th-tx .ut-tx-stats--inline .ut-tx-stat__value {
+  margin-top: 0;
+  font-size: 15px;
+  line-height: 20px;
+}
