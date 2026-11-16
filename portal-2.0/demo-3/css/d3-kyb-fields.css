@@ -146,3 +146,50 @@
 
 /* No pre-fill: the top field is country + business name, with no suggestions. */
 [data-d3-prefill="off"] .vb-search-hint { display: none !important; }
+
+/* Two-zone form: Business identity, then Registered address. */
+.d3-kyb-fields { gap: var(--spacing-16, 16px); }
+.d3-kyb-fields__zone { display: flex; flex-direction: column; gap: var(--spacing-12, 12px); }
+.d3-kyb-fields__zone[hidden] { display: none; }
+.d3-kyb-fields__zone:not([hidden]) { animation: d3-fields-zone-in 180ms ease both; }
+
+@keyframes d3-fields-zone-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d3-kyb-fields__zone:not([hidden]) { animation: none; }
+}
+
+/* Find & auto-fill address: an optional secondary action between the two zones. */
+.d3-kyb-find { display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-8, 8px); text-align: left; }
+.d3-kyb-find__btn { gap: var(--spacing-8, 8px); }
+.d3-kyb-find__btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+.d3-kyb-find__icon { display: inline-flex; width: 16px; height: 16px; }
+.d3-kyb-find__icon svg { width: 16px; height: 16px; }
+.d3-kyb-find__hint { margin: 0; color: var(--text-caption, #5c6b6b); font-size: var(--font-size-xs, 12px); line-height: 16px; }
+
+.d3-kyb-find__results { display: flex; flex-direction: column; gap: var(--spacing-8, 8px); width: 100%; box-sizing: border-box; padding: var(--spacing-12, 12px); border-radius: var(--radius-lg, 12px); background: var(--surface-neutral-02, #f4f6f4); }
+.d3-kyb-find__results[hidden] { display: none; }
+.d3-kyb-find__head { display: flex; justify-content: space-between; align-items: center; gap: var(--spacing-8, 8px); color: var(--text-caption, #5c6b6b); font-size: var(--font-size-xs, 12px); line-height: 16px; }
+.d3-kyb-find__close { padding: 0; border: 0; background: transparent; color: var(--interactive-default, #1f5f4a); font: inherit; cursor: pointer; }
+
+.d3-kyb-find__card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: var(--spacing-12, 12px);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-neutral-01, #fff);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.d3-kyb-find__card:hover,
+.d3-kyb-find__card:focus-visible { border-color: var(--interactive-default, #1f5f4a); outline: 0; }
+.d3-kyb-find__name { color: var(--text-default, #172d2d); font-size: var(--font-size-sm, 14px); font-weight: 600; line-height: 20px; }
+.d3-kyb-find__line { color: var(--text-caption, #5c6b6b); font-size: var(--font-size-xs, 12px); line-height: 16px; overflow-wrap: anywhere; }
+.d3-kyb-find__more { margin: 0; color: var(--text-caption, #5c6b6b); font-size: var(--font-size-xs, 12px); line-height: 16px; }

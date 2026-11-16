@@ -441,6 +441,7 @@
       }
       /* No pre-fill: the form opens once a name is typed and closes when it is cleared. */
       if (noPrefillDemo()) showPrefill(!!input.value.trim());
+
       return;
     }
 
@@ -995,6 +996,26 @@
           biz.country = entity.country;
         }
         return biz;
+      },
+      /* The optional "Find & auto-fill address" on the manual form: every registry candidate for what was
+         typed, best match first (exact BRN, then names that start with it, then names that contain it). */
+      lookup: function (q) {
+        var pool = SEARCH_POOL_BY_COUNTRY[q.country] || [];
+        var name = normalize(q.name);
+        var brn = normalize(q.brn).replace(/[^a-z0-9]/g, "");
+        function score(e) {
+          var n = normalize(e.name);
+          var b = normalize(e.brn).replace(/[^a-z0-9]/g, "");
+          if (brn && b === brn) return 3;
+          if (name.length >= 3 && n.indexOf(name) === 0) return 2;
+          if ((name.length >= 3 && n.indexOf(name) !== -1) || (brn && b.indexOf(brn) !== -1)) return 1;
+          return 0;
+        }
+        return pool
+          .map(function (e) { return { e: e, s: score(e) }; })
+          .filter(function (x) { return x.s > 0; })
+          .sort(function (x, y) { return y.s - x.s; })
+          .map(function (x) { return x.e; });
       },
       submitSelected: submitSelected,
       clearSelection: clearSelection,

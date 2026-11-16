@@ -51,10 +51,10 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-d3-kyb-fields] .tds-text-input"), function (el) {
       var input = el.querySelector("input");
       var label = el.querySelector("label");
-      if (input && label && input.value.trim()) fields.push([label.textContent.replace("*", "").trim(), input.value.trim()]);
+      var text = label ? label.textContent.replace("*", "").trim() : "";
+      /* Country is listed under Configuration. */
+      if (input && label && text !== "Country" && input.value.trim()) fields.push([text, input.value.trim()]);
     });
-    /* Without pre-fill the name was typed in the top field, not in this form. */
-    if (document.documentElement.getAttribute("data-d3-prefill") === "off" && st.profile.name.trim()) fields.unshift(["Business Name", st.profile.name.trim()]);
     var P = window.D3KybPackage;
     var pkg = S.package(st.package);
     var addons = (st.addons || []).map(function (id) { return S.addon(id).name; });
