@@ -47,7 +47,7 @@
        Page rules follow transaction-history.css so the column fit wins. -->
   <link rel="stylesheet" href="css/embed.css?v=10">
   <link rel="stylesheet" href="css/transaction-history.css?v=22">
-  <link rel="stylesheet" href="css/page.css?v=31">
+  <link rel="stylesheet" href="css/page.css?v=33">
   <link rel="stylesheet" href="../css/d3-icon-weight.css?v=1">
 </head>
 <body>
@@ -130,6 +130,7 @@
                 <span class="ut-tx-quick__label">Outcome</span>
                 <span class="tds-counter tds-counter--primary tds-counter--sm ut-tx-quick__count" hidden>0</span>
                 <svg class="icon ut-tx-quick__caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+                <svg class="icon ut-tx-quick__clear-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" data-ut-quick-clear><path d="M4 4l8 8M12 4l-8 8"/></svg>
               </button>
               <div class="ut-tx-quick__menu" role="group" aria-label="Outcome" hidden>
                 <div class="ut-tx-filters__options">
@@ -160,6 +161,7 @@
                 <span class="ut-tx-quick__label">Risk</span>
                 <span class="tds-counter tds-counter--primary tds-counter--sm ut-tx-quick__count" hidden>0</span>
                 <svg class="icon ut-tx-quick__caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+                <svg class="icon ut-tx-quick__clear-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" data-ut-quick-clear><path d="M4 4l8 8M12 4l-8 8"/></svg>
               </button>
               <div class="ut-tx-quick__menu" role="group" aria-label="Risk" hidden>
                 <div class="ut-tx-filters__options">
@@ -174,6 +176,7 @@
                 <span class="ut-tx-quick__label">Country</span>
                 <span class="tds-counter tds-counter--primary tds-counter--sm ut-tx-quick__count" hidden>0</span>
                 <svg class="icon ut-tx-quick__caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+                <svg class="icon ut-tx-quick__clear-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" data-ut-quick-clear><path d="M4 4l8 8M12 4l-8 8"/></svg>
               </button>
               <div class="ut-tx-quick__menu" role="group" aria-label="Country" hidden>
                 <div class="ut-tx-filters__options" id="utFiltCountryOptions"></div>
@@ -187,6 +190,7 @@
                 <span class="ut-tx-quick__label">Product</span>
                 <span class="tds-counter tds-counter--primary tds-counter--sm ut-tx-quick__count" hidden>0</span>
                 <svg class="icon ut-tx-quick__caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+                <svg class="icon ut-tx-quick__clear-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" data-ut-quick-clear><path d="M4 4l8 8M12 4l-8 8"/></svg>
               </button>
               <div class="ut-tx-quick__menu" role="group" aria-label="Product" hidden>
                 <div class="ut-tx-filters__options" data-ut-quick-options="product"></div>
@@ -197,6 +201,7 @@
                 <span class="ut-tx-quick__label">Package</span>
                 <span class="tds-counter tds-counter--primary tds-counter--sm ut-tx-quick__count" hidden>0</span>
                 <svg class="icon ut-tx-quick__caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+                <svg class="icon ut-tx-quick__clear-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" data-ut-quick-clear><path d="M4 4l8 8M12 4l-8 8"/></svg>
               </button>
               <div class="ut-tx-quick__menu" role="group" aria-label="Package" hidden>
                 <div class="ut-tx-filters__options" data-ut-quick-options="package"></div>
@@ -207,6 +212,7 @@
                 <span class="ut-tx-quick__label">Source</span>
                 <span class="tds-counter tds-counter--primary tds-counter--sm ut-tx-quick__count" hidden>0</span>
                 <svg class="icon ut-tx-quick__caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+                <svg class="icon ut-tx-quick__clear-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" data-ut-quick-clear><path d="M4 4l8 8M12 4l-8 8"/></svg>
               </button>
               <div class="ut-tx-quick__menu" role="group" aria-label="Source" hidden>
                 <div class="ut-tx-filters__options" data-ut-quick-options="source"></div>
@@ -217,6 +223,7 @@
                 <span class="ut-tx-quick__label">Type</span>
                 <span class="tds-counter tds-counter--primary tds-counter--sm ut-tx-quick__count" hidden>0</span>
                 <svg class="icon ut-tx-quick__caret" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+                <svg class="icon ut-tx-quick__clear-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" data-ut-quick-clear><path d="M4 4l8 8M12 4l-8 8"/></svg>
               </button>
               <div class="ut-tx-quick__menu" role="group" aria-label="Type" hidden>
                 <div class="ut-tx-filters__options" data-ut-quick-options="type"></div>
@@ -432,7 +439,7 @@
 <script src="../../../pages/user-testing/transaction-history/transaction-history-data.js"></script>
 <script src="js/demo-transactions.js?v=7"></script>
 <script src="js/scroll-fade.js?v=7"></script>
-<script src="js/transaction-history.js?v=30"></script>
+<script src="js/transaction-history.js?v=31"></script>
 
 </body>
 </html>

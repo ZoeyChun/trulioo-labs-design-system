@@ -1694,6 +1694,61 @@
     });
   }
 
+  /* The × on a set filter. Checkbox facets clear by unticking every copy of
+     their inputs — toolbar and the drawer mirror alike; the single-value ones
+     go through their own setter. */
+  var QUICK_CHECKBOX_FACETS = {
+    outcome: "ut-filt-outcome",
+    risk: "ut-filt-risk",
+    country: "ut-filt-country",
+    product: "ut-filt-product"
+  };
+
+  function clearQuickFacet(key) {
+    var name = QUICK_CHECKBOX_FACETS[key];
+    if (name) {
+      document
+        .querySelectorAll('input[name="' + name + '"]:checked')
+        .forEach(function (input) {
+          input.checked = false;
+        });
+    } else {
+      var facet = facetChips().filter(function (f) {
+        return f.key === key;
+      })[0];
+      if (!facet || !facet.set) return;
+      facet.set(key === "type" ? TYPE_MODE_DEFAULT : "");
+    }
+    currentPage = 1;
+    syncPanelFiltersFromDom();
+    updateFilterChrome();
+    render();
+    /* embed-bridge owns the chips' counts and selected state, and listens for
+       a change on the filter panel. */
+    var panel = document.getElementById("utTxFilters");
+    if (panel) panel.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function bindQuickFacetClear() {
+    var host = document.getElementById("utTxQuick");
+    if (!host || host.dataset.clearBound) return;
+    host.dataset.clearBound = "1";
+    /* Capture, so this runs before the menu's own open handler. */
+    host.addEventListener(
+      "click",
+      function (e) {
+        var icon = e.target.closest("[data-ut-quick-clear]");
+        if (!icon) return;
+        var item = icon.closest(".ut-tx-quick__item");
+        if (!item || !item.classList.contains("is-selected")) return;
+        e.preventDefault();
+        e.stopPropagation();
+        clearQuickFacet(item.getAttribute("data-quick"));
+      },
+      true
+    );
+  }
+
   function bindFacetChips() {
     var host = document.getElementById("utTxQuick");
     if (!host || host.dataset.facetsBound) return;
@@ -3144,6 +3199,7 @@
     bindCountrySearch();
     buildFacetChipMenus();
     bindFacetChips();
+    bindQuickFacetClear();
     bindTypeSwitch();
 
     /* A facet mirrored into more than one surface is still one filter.

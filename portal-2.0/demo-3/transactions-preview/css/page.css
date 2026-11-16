@@ -495,24 +495,26 @@
 
 .th-tx .ut-tx-search {
   width: auto;
-  max-width: none;
+  /* Capped so the date keeps room for a full range — "03/16/2026 - 03/20/2026"
+     plus its calendar and clear icons — rather than search taking the bar. */
+  max-width: 420px;
   flex: 1 1 auto;
   min-width: 0;
 }
 
 .th-tx .ut-tx-date {
-  flex: 0 1 248px;
-  width: 248px;
+  flex: 0 1 320px;
+  width: 320px;
   min-width: 0;
-  max-width: 248px;
+  max-width: 320px;
 }
 
 /* Narrow columns: let the date give ground before search does. */
 @media (max-width: 1100px) {
   .th-tx .ut-tx-date {
-    flex: 0 1 200px;
-    width: 200px;
-    max-width: 200px;
+    flex: 0 1 248px;
+    width: 248px;
+    max-width: 248px;
   }
 }
 
@@ -1137,4 +1139,29 @@
   margin-top: 0;
   font-size: 15px;
   line-height: 20px;
+}
+
+/* A filter that is set offers the way out of it: the caret becomes an ×,
+   and clicking it clears that facet instead of opening the menu. */
+.th-tx .ut-tx-quick__clear-icon {
+  display: none;
+}
+
+.th-tx .ut-tx-quick__item.is-selected .ut-tx-quick__caret {
+  display: none;
+}
+
+.th-tx .ut-tx-quick__item.is-selected .ut-tx-quick__clear-icon {
+  /* Same measure as the caret it replaces — an svg with no width lays out
+     at zero, so the chip showed neither icon. */
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.th-tx .ut-tx-quick__item.is-selected .ut-tx-quick__clear-icon:hover {
+  color: var(--text-default);
+  background: color-mix(in srgb, var(--interactive-default) 16%, transparent);
 }
