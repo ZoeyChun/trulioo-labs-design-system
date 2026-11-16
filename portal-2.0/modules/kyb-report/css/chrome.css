@@ -579,12 +579,19 @@
   text-transform: none;
 }
 
+.kr-host[data-kr-version^="mvp"] .d3-kyb-officer__cols .tds-data-field__content,
+.kr-host[data-kr-version^="mvp"] .d3-kyb-officer__cols .tds-data-field__value-row {
+  overflow: visible;
+  max-width: 100%;
+}
+
 .kr-host[data-kr-version^="mvp"] .d3-kyb-officer__cols .tds-data-field__value {
   margin: 0;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-regular, 400);
   line-height: var(--line-height-sm, 22px);
   color: var(--text-default);
+  white-space: normal;
   overflow-wrap: anywhere;
 }
 
