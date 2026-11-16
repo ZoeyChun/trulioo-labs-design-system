@@ -727,8 +727,8 @@
 }
 
 .d3-rp--signals .kyb-tab-summary__score {
-  flex: 0 0 280px;
-  width: 280px;
+  flex: 0 0 248px;
+  width: 248px;
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -758,20 +758,25 @@
   pointer-events: none;
 }
 
-/* Native ScoreGauge — keep position:relative so score/badge stay inside the gauge */
+/* Native ScoreGauge, drawn at 72%: TDS has one fixed size (227x180), so it is scaled inside a smaller box (the
+   Overview hero does the same at 57%). Score and badge are inside the gauge, so they scale with it. */
 .d3-rp--signals .kyb-tab-summary__gauge {
-  width: 227px;
-  max-width: 227px;
-  height: 180px;
-  overflow: visible;
+  position: relative;
+  width: 164px;
+  max-width: 164px;
+  height: 130px;
+  overflow: hidden;
   flex: none;
 }
 .d3-rp--signals .kyb-tab-summary__gauge > .score-gauge {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 50%;
   display: block;
   width: 227px;
   height: 180px;
-  transform: none;
+  transform: translateX(-50%) scale(0.72);
+  transform-origin: top center;
   flex-shrink: 0;
 }
 .d3-rp--signals .kyb-tab-summary__breakdown-btn {

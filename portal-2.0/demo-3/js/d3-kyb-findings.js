@@ -863,7 +863,7 @@
     /* The package may leave out the tabs the native buttons point at (Owners & UBOs,
        Web Insights). Offer the tabs it does include instead of an empty block. */
     [
-      { jump: "signals", label: "Review Risk Analysis" },
+      { jump: "signals", label: "Review Business Risk Horizon" },
       { jump: "match-signals", label: "Review Match Signals" }
     ].forEach(function (f) {
       if (!brhOn && f.jump === "signals") return;
@@ -911,7 +911,7 @@
     if (brhOn) {
       topHtml =
         (score ? '<div class="d3h-hero__gaugebox"><div class="dv-di-gauge d3h-hero__gauge" data-score="' + esc(score) + '"></div></div>' : "") +
-        '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">Risk Analysis</p>' +
+        '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">Business Risk Horizon Score</p>' +
         '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(title) + "</h2></div>";
     } else {
       /* No score: the hero states the verification status, in its own tone. */
@@ -965,7 +965,7 @@
      whose tab the package leaves out is dropped. */
   var HIGHLIGHT_CARDS = [
     { jump: "financial", name: "Business Details", detail: "Virtual office address" },
-    { jump: "signals", name: "Risk Analysis" },
+    { jump: "signals", name: "Business Risk Horizon" },
     { jump: "match-signals", name: "Match Signals" },
     { jump: "ownership", name: "Owners & UBOs" },
     { jump: "presence", name: "Web Insights" }

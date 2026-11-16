@@ -27,6 +27,14 @@
 .d3-rc__verdict { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-8, 8px); min-height: 24px; }
 .d3-rc__flag { color: var(--text-intermediate, #8a5a00); font-size: var(--font-size-sm, 14px); font-weight: 500; line-height: 20px; }
 
+.d3-rc__score[hidden] { display: none; }
+.d3-rc__scoreval { display: flex; align-items: baseline; gap: var(--spacing-8, 8px); }
+.d3-rc__score-num { color: var(--text-default, #172d2d); font-size: 28px; font-weight: 600; line-height: 32px; }
+.d3-rc__score-label { font-size: var(--font-size-sm, 14px); font-weight: 600; line-height: 20px; }
+.d3-rc__score-label--negative { color: var(--text-negative, #b3261e); }
+.d3-rc__score-label--intermediate { color: var(--text-intermediate, #8a5a00); }
+.d3-rc__score-label--positive { color: var(--text-positive, #1f6b43); }
+
 .d3-rc__checks { display: flex; flex-direction: column; gap: 0; }
 .d3-rc__row { display: flex; flex-direction: column; gap: var(--spacing-4, 4px); }
 .d3-rc__label { color: var(--text-caption, #5c6b6b); }

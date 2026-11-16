@@ -50,6 +50,8 @@
     if (opts.unresolved.length) checks += row("Unresolved", opts.unresolved.map(function (l) { return chip(l, false); }).join(""));
     return (
       '<div class="d3-rc__verdict" data-d3-rc-verdict>' + (opts.verdictHtml || "") + "</div>" +
+      /* Business Risk Horizon score: shown only when the report has one. */
+      '<div class="d3-rc__row d3-rc__score" data-d3-rc-score hidden></div>' +
       '<div class="d3-rc__checks">' + checks + "</div>" +
       '<div class="d3-rc__receipt"><span class="d3-rc__receipt-label">Transaction ID</span>' +
       '<code class="d3-rc__receipt-id" data-d3-rc-id>' + esc(opts.txId || "") + "</code>" +
@@ -66,7 +68,13 @@
     var tx = res.querySelector("[data-d3-kyb-detail-txid]");
     if (!tag || !bullets || !tag.textContent.trim() || /verifying/i.test(tag.textContent)) return null;
     var m = bullets.textContent.match(/(\d+)\s+of\s+(\d+)\s+(?:verification\s+)?signals/i);
+    var gauge = res.querySelector(".d3h-hero__gauge[data-score]");
+    var title = res.querySelector(".d3h-hero__verdict .d3h-card__title--hero");
+    var tone = title ? (String(title.className).match(/d3h-card__title--(negative|intermediate|positive)/) || [])[1] : "";
     return {
+      score: gauge ? gauge.getAttribute("data-score") : "",
+      riskTitle: title && gauge ? title.textContent.trim() : "",
+      riskTone: tone || "",
       tagClass: tag.className,
       tagText: tag.textContent.trim(),
       flagged: m ? m[1] : "",
@@ -94,6 +102,14 @@
       var tone = String(data.tagClass).replace(/.*d1-tag--/, "d1-tag d1-tag--").split(" ").slice(0, 2).join(" ");
       v.innerHTML = '<span class="' + esc(tone) + '">' + esc(data.tagText) + "</span>" +
         (data.flagged ? '<span class="d3-rc__flag">' + esc(data.flagged) + " of " + esc(data.total) + " signals flagged</span>" : "");
+      var sc = body.querySelector("[data-d3-rc-score]");
+      if (sc && data.score) {
+        sc.innerHTML =
+          '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score</span>' +
+          '<span class="d3-rc__scoreval"><b class="d3-rc__score-num">' + esc(data.score) + "</b>" +
+          '<span class="d3-rc__score-label d3-rc__score-label--' + esc(data.riskTone) + '">' + esc(data.riskTitle) + "</span></span>";
+        sc.hidden = false;
+      }
       var id = body.querySelector("[data-d3-rc-id]");
       if (id && data.txId) id.textContent = data.txId;
     }
