@@ -742,7 +742,9 @@ body {
   overflow-wrap: anywhere;
 }
 
-/* Expanded +N list: grow the whole row and keep the cell padding. */
+/* Expanded +N list: grow the whole row and keep the cell padding. The row is
+   taller than its neighbours, so its cells centre against the wrapped list
+   rather than hanging at the top of it. */
 .ut-tx-table tbody tr:has(.ut-tx-multi[data-ut-fit="open"]) > td,
 .ut-tx-table.ut-tx-table--score-combined.ut-tx-table--no-score
   tbody
@@ -753,7 +755,7 @@ body {
   max-height: none;
   padding-top: var(--spacing-4);
   padding-bottom: var(--spacing-4);
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .ut-tx-table td.ut-tx-td-product:has(.ut-tx-multi[data-ut-fit="open"]),
