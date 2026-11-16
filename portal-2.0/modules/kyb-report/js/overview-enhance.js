@@ -9,16 +9,42 @@
     "match-signals": "signals",
     signals: "risk",
     "business-insights": "additional",
-    financial: "additional"
+    financial: "additional",
+    business: "business"
   };
   var NATIVE_NAME = "Meridian Apex Consulting Inc.";
   var HIGHLIGHT_CARDS = [
-    { jump: "signals", name: "Risk Analysis" },
+    { jump: "signals", name: "Business Risk Horizon" },
     { jump: "ownership", name: "Owners & UBOs" },
     { jump: "match-signals", name: "Match Signals" },
     { jump: "presence", name: "Web Insights" },
     { jump: "financial", name: "Additional Data", detail: "Virtual office address" }
   ];
+
+  function highlightCardsFor(version) {
+    var useBusiness =
+      version && version.tabIds && version.tabIds.indexOf("business") !== -1;
+    return HIGHLIGHT_CARDS.map(function (def) {
+      if (!useBusiness || def.jump !== "financial") return def;
+      return {
+        jump: "business",
+        name: "Business Details",
+        detail: def.detail
+      };
+    });
+  }
+
+  function jumpTabFor(jump, version) {
+    if (
+      (jump === "financial" || jump === "business-insights" || jump === "business") &&
+      version &&
+      version.tabIds &&
+      version.tabIds.indexOf("business") !== -1
+    ) {
+      return "business";
+    }
+    return HERO_JUMP_TAB[jump] || jump;
+  }
 
   function esc(v) {
     return String(v == null ? "" : v)
@@ -54,11 +80,51 @@
     return isNaN(n) ? -1 : n;
   }
 
-  /* Exactly 4 bullets from Owners & UBOs table/graph rows. */
+  /* Same rule as Owners & UBOs: person is a UBO when indirect ownership of root > 25%. */
+  var UBO_INDIRECT_THRESHOLD = 25;
+
+  function isUboPerson(row) {
+    if (!row || row.type === "business") return false;
+    if (row.flagged) return true;
+    if (/ubo/i.test(String(row.sub || row.statusLabel || ""))) return true;
+    return parsePct(row.indirectPct) > UBO_INDIRECT_THRESHOLD;
+  }
+
+  /* Count Match Signals field rows — match + derived count as matched. */
+  function matchSignalCounts(biz) {
+    var rows =
+      (biz &&
+        biz.matchSignals &&
+        Array.isArray(biz.matchSignals.rows) &&
+        biz.matchSignals.rows) ||
+      [];
+    var matched = rows.filter(function (row) {
+      return row.status === "match" || row.status === "derived";
+    }).length;
+    var total = rows.length;
+    return { matched: matched, total: total, rows: rows };
+  }
+
+  /* Same domain derivation as Web Insights / presence highlight. */
+  function domainFromBiz(biz) {
+    var email = (biz && biz.report && biz.report.email) || "";
+    var at = email.indexOf("@");
+    if (at > 0) return email.slice(at + 1).replace(/\.example$/i, ".com");
+    return (
+      String((biz && biz.name) || "meridiancapital")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "")
+        .slice(0, 18) + ".com"
+    );
+  }
+
+  /* Hero bullets: 2 ownership-structure + 2 web/social.
+     Complement Owners & UBOs / Web Insights cards — do not restate card lead facts
+     (UBO name/%, domain name, expiry “until Feb 2027”, “4 social profiles”). */
   function ownershipBulletsFromBiz(biz) {
     var rows = Array.isArray(biz && biz.ownership) ? biz.ownership : [];
-    var people = rows.filter(function (r) {
-      return r && r.type === "person";
+    var corps = rows.filter(function (r) {
+      return r && r.type === "business";
     });
     var maxDegree = 0;
     rows.forEach(function (r) {
@@ -67,40 +133,34 @@
     });
     var layerLabel =
       maxDegree >= 2 ? "2 (Indirect)" : maxDegree === 1 ? "1 (Direct)" : "0 (Root)";
-    var ranked = people.slice().sort(function (a, b) {
-      var uboA = /ubo/i.test(String(a.sub || a.statusLabel || "")) ? 1 : 0;
-      var uboB = /ubo/i.test(String(b.sub || b.statusLabel || "")) ? 1 : 0;
-      if (uboA !== uboB) return uboB - uboA;
-      return parsePct(b.indirectPct) - parsePct(a.indirectPct);
-    });
-    var highlight = ranked.slice(0, 2);
     var bullets = [
-      "Ownership layer: " + markHtml(layerLabel, "positive") + ".",
-      markHtml(String(people.length), "positive") + " beneficial owner(s) identified."
+      "Ownership layer: " + markHtml(layerLabel, "positive") + "."
     ];
-    highlight.forEach(function (p) {
-      var role = p.sub || "Shareholder";
-      var share =
-        p.indirectPct && p.indirectPct !== "—"
-          ? p.indirectPct
-          : p.pct || "—";
-      var note = p.flagged
-        ? markHtml(p.statusLabel || "Ultimate beneficial owner", "positive")
-        : markHtml("ID verified", "positive");
+    if (corps.length) {
       bullets.push(
-        markHtml(p.name || "—", "positive") +
-          " is " +
-          esc(role) +
-          " with " +
-          markHtml(share, "positive") +
-          " ownership — " +
-          note +
-          "."
+        markHtml(String(corps.length), "positive") +
+          " corporate " +
+          (corps.length === 1 ? "intermediary" : "intermediaries") +
+          " hold direct stakes in the root."
       );
-    });
-    while (bullets.length < 4) {
-      bullets.push("Ownership details are available under Owners &amp; UBOs.");
+    } else {
+      bullets.push(
+        "Ownership structure details are available under Owners &amp; UBOs."
+      );
     }
+    /* Web Insights MVP facts complementary to presence highlight card. */
+    bullets.push(
+      "WHOIS: registered " +
+        markHtml("Feb 2019", "positive") +
+        " via " +
+        markHtml("GoDaddy.com, LLC", "positive") +
+        " — aligns with incorporation."
+    );
+    bullets.push(
+      "Social mix: " +
+        markHtml("LinkedIn", "positive") +
+        ", Instagram, X, TikTok — LinkedIn leads; profiles are unverified."
+    );
     return bullets.slice(0, 4);
   }
 
@@ -158,6 +218,12 @@
           '" alt="" width="18" height="12">'
         : '<span class="fi fi-' + esc(cc) + '"></span>';
 
+    var signals = matchSignalCounts(biz);
+    var signalMeta =
+      signals.total > 0
+        ? signals.matched + "/" + signals.total + " signals matched"
+        : "No signals checked";
+
     /* Keep the same Overview card shell (hero-gauge + entity aside); only swap left content. */
     hero.outerHTML =
       '<section class="d3h-card d3h-card--hero d3h-card--hero-gauge d3h-card--tone-positive" aria-label="Verdict"><div class="d3h-card__inner">' +
@@ -169,9 +235,10 @@
       STATUS_FLAT_ICON +
       "</span>" +
       '<span class="kr-overview-status__title">Verified</span></div>' +
-      '<span class="kr-overview-status__meta">4/4 signals matched</span></div>' +
+      '<span class="kr-overview-status__meta">' +
+      esc(signalMeta) +
+      "</span></div>" +
       '<div class="kr-overview-ownership">' +
-      '<p class="d3h-section-label">Ownership</p>' +
       '<ul class="d3h-bullets">' +
       bullets
         .map(function (x) {
@@ -263,7 +330,7 @@
         };
       });
     [
-      { jump: "signals", label: "Review Risk Analysis" },
+      { jump: "signals", label: "Review Business Risk Horizon" },
       { jump: "match-signals", label: "Review Match Signals" }
     ].forEach(function (f) {
       if (buttons.length < 2) buttons.push(f);
@@ -315,7 +382,7 @@
           esc(score) +
           '"></div></div>'
         : "") +
-      '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">Risk Analysis</p>' +
+      '<div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">Business Risk Horizon Score</p>' +
       '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' +
       tone +
       '">' +
@@ -370,28 +437,24 @@
     var r = (biz && biz.report) || {};
 
     if (jump === "match-signals") {
-      var rows =
-        (biz.matchSignals && Array.isArray(biz.matchSignals.rows) && biz.matchSignals.rows) ||
-        [];
-      var matched = rows.filter(function (row) {
-        return row.status === "match" || row.status === "derived";
-      }).length;
-      var total = rows.length || 4;
-      var noMatch = rows
+      var counts = matchSignalCounts(biz);
+      var matched = counts.matched;
+      var total = counts.total || 0;
+      var noMatch = counts.rows
         .filter(function (row) {
           return row.status === "no-match";
         })
         .map(function (row) {
           return row.field;
         });
-      if (verified && noMatch.length === 0) {
+      if (verified && noMatch.length === 0 && total > 0) {
         return {
           metric: matched + "/" + total + " Signals Matched",
           detail: "All checked fields aligned across sources"
         };
       }
       return {
-        metric: matched + "/" + total + " Signals Matched",
+        metric: total ? matched + "/" + total + " Signals Matched" : "No signals",
         detail: noMatch.length
           ? noMatch.slice(0, 3).join(", ") + " did not match"
           : "Registry fields checked across datasources"
@@ -403,15 +466,20 @@
       var people = owners.filter(function (o) {
         return o.type === "person";
       });
-      var ubo = people.filter(function (o) {
-        return /ubo/i.test(String(o.sub || o.statusLabel || ""));
-      })[0];
+      var ubos = people.filter(isUboPerson).slice().sort(function (a, b) {
+        return parsePct(b.indirectPct) - parsePct(a.indirectPct);
+      });
+      var ubo = ubos[0];
+      var uboCount = ubos.length;
       var uboRisk = (Array.isArray(biz.risks) ? biz.risks : []).filter(function (risk) {
         return risk.id === "ubo";
       })[0];
       if (verified) {
         return {
-          metric: people.length + " beneficial owners",
+          metric:
+            uboCount +
+            " beneficial owner" +
+            (uboCount === 1 ? "" : "s"),
           detail: ubo
             ? ubo.name +
               " · " +
@@ -451,34 +519,23 @@
     }
 
     if (jump === "presence") {
-      var email = (r && r.email) || "";
-      var at = email.indexOf("@");
-      var domain =
-        at > 0
-          ? email.slice(at + 1).replace(/\.example$/i, ".com")
-          : String(biz.name || "meridiancapital")
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "")
-              .slice(0, 18) + ".com";
-      var highRisk = biz.riskLevel === "high" && !verified;
+      var domain = domainFromBiz(biz);
+      /* Mirror Web Insights Digital Presence status + social row. */
       return {
-        metric: highRisk
-          ? "Domain expired Feb 2025."
-          : "Domain active until Feb 2027.",
-        detail: highRisk
-          ? domain + " · limited social presence"
-          : "4 social profiles found"
+        metric: "Domain active until Feb 2027.",
+        detail: domain + " · 4 social profiles found"
       };
     }
 
-    if (jump === "financial" || jump === "business-insights") {
-      var sizing = r.sizing || "$0 revenue · 0 employees";
-      var metric = sizing
-        .replace(/;\s*/g, " · ")
-        .replace(/\s+reported\s+/i, " ");
+    if (jump === "financial" || jump === "business-insights" || jump === "business") {
+      /* Mirror Business Details company overview / profile. */
+      var status = biz.status || "Active";
+      var legal = r.legalForm || "Registered entity";
+      var reg = r.regNumber || biz.reg || "—";
+      var addr = r.address || biz.addr || biz.city || "";
       return {
-        metric: metric,
-        detail: "Virtual office address"
+        metric: status + " · " + legal,
+        detail: addr ? reg + " · " + addr : reg
       };
     }
 
@@ -486,8 +543,8 @@
       var risks = Array.isArray(biz.risks) ? biz.risks : [];
       var top = risks[0];
       return {
-        metric: top ? top.label : "Risk Analysis",
-        detail: top ? top.evidence : "Review risk signals"
+        metric: top ? top.label : "Business Risk Horizon",
+        detail: top ? top.evidence : "Review Business Risk Horizon"
       };
     }
 
@@ -508,14 +565,17 @@
       c.remove();
     });
     var allowed = version && version.tabIds ? version.tabIds : null;
-    HIGHLIGHT_CARDS.forEach(function (def) {
-      var c = byJump[def.jump];
+    highlightCardsFor(version).forEach(function (def) {
+      var sourceJump =
+        def.jump === "business" ? "financial" : def.jump;
+      var c = byJump[def.jump] || byJump[sourceJump];
       if (!c) return;
-      var mapped = HERO_JUMP_TAB[def.jump];
+      var mapped = jumpTabFor(def.jump, version);
       if (allowed && mapped && allowed.indexOf(mapped) === -1) return;
       var tabEl =
         card && card.querySelector('[data-d3-kyb-tab="' + mapped + '"]');
       if (card && (!tabEl || tabEl.hidden)) return;
+      c.setAttribute("data-kyb-jump-tab", def.jump);
       var cap = c.querySelector(".dv-summary-card__caption");
       if (cap) cap.textContent = def.name;
       var copy = highlightCopyFor(def.jump, biz || {}, version);

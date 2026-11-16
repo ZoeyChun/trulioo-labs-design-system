@@ -15,9 +15,9 @@ Not `v1` / `v2` — use labels in [`js/versions.js`](js/versions.js):
 
 | Version | BRH | Notes |
 |---------|-----|--------|
-| `default` | on | Full baseline report (includes Trulioo Sources on Match Signals) |
-| `mvp-brh` | on | MVP lane with BRH on; no Trulioo Sources; Owners & UBOs table-first; custom ownership network |
-| `mvp-no-brh` | off | Same MVP features; Risk Analysis tab hidden; Overview shows flat Verified + Ownership bullets |
+| `default` | on | Full baseline report (includes Trulioo Sources on Match Signals; Additional Data tab) |
+| `mvp-brh` | on | MVP lane with BRH on; no Trulioo Sources; Owners & UBOs table-first; **Business Details** replaces Additional Data |
+| `mvp-no-brh` | off | Same MVP features; Business Risk Horizon tab hidden; Overview shows flat Verified + Ownership bullets; **Business Details** replaces Additional Data |
 
 `mvp` still resolves to `mvp-brh` for backwards compatibility.
 
@@ -71,6 +71,8 @@ From a page under `portal-2.0/demo-X/` (one level deep):
 <script src="../modules/kyb-report/vendor/js/dialogs-markup.js"></script>
 <script src="../modules/kyb-report/js/versions.js"></script>
 <script src="../modules/kyb-report/js/mvp-ownership-graph.js"></script>
+<script src="../modules/kyb-report/js/mvp-match-signals.js"></script>
+<script src="../modules/kyb-report/js/mvp-business-details.js"></script>
 <script src="../modules/kyb-report/js/data.js"></script>
 <script src="../modules/kyb-report/js/dialogs.js"></script>
 <script src="../modules/kyb-report/js/raw.js"></script>
@@ -89,8 +91,9 @@ Adjust `../` depth if the host page is nested differently.
 | Tab | Source |
 |-----|--------|
 | Overview | `js/overview-enhance.js` + vendored `vendor/js/d3-kyb-report-panels*.js` |
-| Risk Analysis | vendored `d3-kyb-report-panels.js` (`signals` panel) + score breakdown dialog |
+| Business Risk Horizon | vendored `d3-kyb-report-panels.js` (`signals` panel) + score breakdown dialog |
 | Match Signals / Web / Additional | vendored `d3-kyb-result-tabs.js` |
+| Business Details (MVP) | `js/mvp-business-details.js` (map + overview + additional data) |
 | Owners & UBOs | vendored `d3-kyb-ubo-graph.js` + `ubo-graph.bundle.js` |
 | Raw Data | `js/raw.js` + dialog markup |
 | Versions | `js/versions.js` |

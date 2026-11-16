@@ -12,16 +12,36 @@
 
   var ALL_TABS = [
     { id: "findings", label: "Overview" },
-    { id: "risk", label: "Risk Analysis" },
+    { id: "risk", label: "Business Risk Horizon" },
     { id: "ownership", label: "Owners & UBOs" },
     { id: "signals", label: "Match Signals" },
     { id: "web", label: "Web Insights" },
+    { id: "business", label: "Business Details" },
     { id: "additional", label: "Additional Data" }
   ];
 
-  var TAB_IDS = ALL_TABS.map(function (t) {
-    return t.id;
+  var TAB_BY_ID = {};
+  ALL_TABS.forEach(function (t) {
+    TAB_BY_ID[t.id] = t;
   });
+
+  var DEFAULT_TABS = [
+    "findings",
+    "risk",
+    "ownership",
+    "signals",
+    "web",
+    "additional"
+  ];
+
+  var MVP_TABS = [
+    "findings",
+    "business",
+    "risk",
+    "ownership",
+    "signals",
+    "web"
+  ];
 
   var MVP_FEATURES = {
     truAi: true,
@@ -36,13 +56,11 @@
   };
 
   function pickTabs(ids) {
-    var set = {};
-    (ids || TAB_IDS).forEach(function (id) {
-      set[id] = true;
-    });
-    return ALL_TABS.filter(function (t) {
-      return set[t.id];
-    });
+    return (ids || DEFAULT_TABS)
+      .map(function (id) {
+        return TAB_BY_ID[id];
+      })
+      .filter(Boolean);
   }
 
   var REGISTRY = {
@@ -50,7 +68,7 @@
       id: "default",
       label: "Default",
       brh: true,
-      tabs: TAB_IDS.slice(),
+      tabs: DEFAULT_TABS.slice(),
       hero: "gauge",
       features: {
         truAi: true,
@@ -65,7 +83,8 @@
       id: "mvp-brh",
       label: "MVP BRH",
       brh: true,
-      tabs: TAB_IDS.slice(),
+      /* Business Details replaces Additional Data */
+      tabs: MVP_TABS.slice(),
       hero: "gauge",
       features: Object.assign({}, MVP_FEATURES)
     },
@@ -73,8 +92,8 @@
       id: "mvp-no-brh",
       label: "MVP No BRH",
       brh: false,
-      /* Hide Risk Analysis when BRH is off */
-      tabs: TAB_IDS.filter(function (id) {
+      /* Hide Risk Analysis when BRH is off; Business Details replaces Additional Data */
+      tabs: MVP_TABS.filter(function (id) {
         return id !== "risk";
       }),
       hero: "flat-verified",
@@ -117,7 +136,7 @@
         src.features || {}
       ),
       tabs: pickTabs(src.tabs),
-      tabIds: (src.tabs || TAB_IDS).slice()
+      tabIds: (src.tabs || DEFAULT_TABS).slice()
     };
   }
 

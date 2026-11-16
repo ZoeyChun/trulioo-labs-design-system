@@ -1,11 +1,35 @@
 /* MVP ownership network — 1 root → 3 corps → people.
    Drawer + table: business fields on corps; Ownership & UBOs person fields on people.
-   Random placeholder names; each node has its own field values. */
+   UBO rule: person with indirect ownership of the root > 25% is a UBO (graph + table). */
 (function (global) {
   "use strict";
 
+  var UBO_INDIRECT_THRESHOLD = 25;
+
+  function parseOwnershipPct(value) {
+    if (value == null || value === "" || value === "—") return 0;
+    var n = parseFloat(String(value).replace(/[^\d.]/g, ""));
+    return isNaN(n) ? 0 : n;
+  }
+
+  function isUboByIndirect(pct) {
+    return parseOwnershipPct(pct) > UBO_INDIRECT_THRESHOLD;
+  }
+
+  /* CamelCase / PascalCase → spaced words (BusinessLegalForm → Business Legal Form). */
+  function humanLabel(label) {
+    return String(label || "")
+      .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+      .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+      .replace(/_/g, " ")
+      .trim();
+  }
+
   function f(label, value, flag) {
-    var row = { label: label, value: value == null || value === "" ? "—" : String(value) };
+    var row = {
+      label: humanLabel(label),
+      value: value == null || value === "" ? "—" : String(value)
+    };
     if (flag) row.flag = flag;
     return row;
   }
@@ -189,6 +213,7 @@
       name: "Elena Vasquez",
       subtitle: "Owns 50%",
       pct: "50%",
+      indirectOfRoot: "16%",
       address: "14 Mercer Street, New York, NY 10013",
       fields: personFields({
         UniqueID: "11",
@@ -230,6 +255,7 @@
       name: "Marcus Chen",
       subtitle: "Owns 50%",
       pct: "50%",
+      indirectOfRoot: "16%",
       address: "620 Atlantic Avenue, Brooklyn, NY 11217",
       fields: personFields({
         UniqueID: "12",
@@ -269,9 +295,9 @@
     priya: {
       type: "person",
       name: "Amira Solis",
-      subtitle: "UBO · Owns 100%",
+      subtitle: "Owns 100%",
       pct: "100%",
-      risk: "high",
+      indirectOfRoot: "41%",
       address: "9 Asylum Street, Hartford, CT 06103",
       fields: personFields({
         UniqueID: "21",
@@ -313,6 +339,7 @@
       name: "Owen Blake",
       subtitle: "Owns 50%",
       pct: "50%",
+      indirectOfRoot: "13.5%",
       address: "2100 Pacific Avenue, San Francisco, CA 94115",
       fields: personFields({
         UniqueID: "31",
@@ -354,6 +381,7 @@
       name: "Sofia Rahman",
       subtitle: "Owns 50%",
       pct: "50%",
+      indirectOfRoot: "13.5%",
       address: "88 King Street, San Francisco, CA 94107",
       fields: personFields({
         UniqueID: "32",
@@ -392,6 +420,20 @@
     }
   };
 
+  function isPersonUbo(src) {
+    return !!(src && src.type === "person" && isUboByIndirect(src.indirectOfRoot));
+  }
+
+  function personGraphSubtitle(src) {
+    var owns = src.subtitle || (src.pct ? "Owns " + src.pct : "Shareholder");
+    owns = String(owns).replace(/^UBO\s*·\s*/i, "");
+    return isPersonUbo(src) ? "UBO · " + owns : owns;
+  }
+
+  function personTableRole(src) {
+    return isPersonUbo(src) ? "UBO" : "Shareholder";
+  }
+
   function nodeFrom(id, extras) {
     var src = ENTITY[id];
     var node = Object.assign(
@@ -399,7 +441,7 @@
         id: id,
         type: src.type,
         name: src.name,
-        subtitle: src.subtitle,
+        subtitle: src.type === "person" ? personGraphSubtitle(src) : src.subtitle,
         details: {
           status: "Active",
           statusTone: "positive",
@@ -414,14 +456,39 @@
 
   function connected(id, role) {
     var src = ENTITY[id];
+    var resolvedRole =
+      role ||
+      (src.type === "person" ? personTableRole(src) : "Shareholder");
     return {
       id: id,
       type: src.type,
-      role: role,
+      role: resolvedRole,
       name: src.name,
       pct: src.pct,
       address: src.address
     };
+  }
+
+  function personTableRow(id, pctLabel) {
+    var src = ENTITY[id];
+    var ubo = isPersonUbo(src);
+    var row = {
+      id: id,
+      type: "person",
+      name: src.name,
+      sub: personTableRole(src),
+      pct: pctLabel,
+      indirectPct: src.indirectOfRoot || "—",
+      degree: "2",
+      address: src.address,
+      fields: src.fields
+    };
+    if (ubo) {
+      row.status = "negative";
+      row.statusLabel = "Ultimate beneficial owner";
+      row.flagged = true;
+    }
+    return row;
   }
 
   var MVP_OWNERSHIP_GRAPH = {
@@ -434,19 +501,13 @@
         connected("harborline", "Shareholder")
       ];
       var northwind = nodeFrom("northwind");
-      northwind.details.connected = [
-        connected("elena", "Shareholder"),
-        connected("marcus", "Shareholder")
-      ];
+      northwind.details.connected = [connected("elena"), connected("marcus")];
       northwind.children = [nodeFrom("elena"), nodeFrom("marcus")];
       var cedar = nodeFrom("cedar");
-      cedar.details.connected = [connected("priya", "UBO")];
+      cedar.details.connected = [connected("priya")];
       cedar.children = [nodeFrom("priya")];
       var harborline = nodeFrom("harborline");
-      harborline.details.connected = [
-        connected("owen", "Shareholder"),
-        connected("sofia", "Shareholder")
-      ];
+      harborline.details.connected = [connected("owen"), connected("sofia")];
       harborline.children = [nodeFrom("owen"), nodeFrom("sofia")];
       root.children = [northwind, cedar, harborline];
       return root;
@@ -487,64 +548,11 @@
       address: ENTITY.harborline.address,
       fields: ENTITY.harborline.fields
     },
-    {
-      id: "priya",
-      type: "person",
-      name: ENTITY.priya.name,
-      sub: "UBO",
-      pct: "100% of Cedar Ridge",
-      indirectPct: "41%",
-      degree: "2",
-      address: ENTITY.priya.address,
-      status: "negative",
-      statusLabel: "Ultimate beneficial owner",
-      flagged: true,
-      fields: ENTITY.priya.fields
-    },
-    {
-      id: "elena",
-      type: "person",
-      name: ENTITY.elena.name,
-      sub: "Shareholder",
-      pct: "50% of Northwind",
-      indirectPct: "16%",
-      degree: "2",
-      address: ENTITY.elena.address,
-      fields: ENTITY.elena.fields
-    },
-    {
-      id: "marcus",
-      type: "person",
-      name: ENTITY.marcus.name,
-      sub: "Shareholder",
-      pct: "50% of Northwind",
-      indirectPct: "16%",
-      degree: "2",
-      address: ENTITY.marcus.address,
-      fields: ENTITY.marcus.fields
-    },
-    {
-      id: "owen",
-      type: "person",
-      name: ENTITY.owen.name,
-      sub: "Shareholder",
-      pct: "50% of Harborline",
-      indirectPct: "13.5%",
-      degree: "2",
-      address: ENTITY.owen.address,
-      fields: ENTITY.owen.fields
-    },
-    {
-      id: "sofia",
-      type: "person",
-      name: ENTITY.sofia.name,
-      sub: "Shareholder",
-      pct: "50% of Harborline",
-      indirectPct: "13.5%",
-      degree: "2",
-      address: ENTITY.sofia.address,
-      fields: ENTITY.sofia.fields
-    }
+    personTableRow("priya", "100% of Cedar Ridge"),
+    personTableRow("elena", "50% of Northwind"),
+    personTableRow("marcus", "50% of Northwind"),
+    personTableRow("owen", "50% of Harborline"),
+    personTableRow("sofia", "50% of Harborline")
   ];
 
   var INDIRECT_INFO =
@@ -570,7 +578,9 @@
     var src = ENTITY[node.id];
     if (src && src.fields) {
       if (!node.details) node.details = { status: "Active", statusTone: "positive" };
-      node.details.fields = src.fields.slice();
+      node.details.fields = src.fields.map(function (item) {
+        return Object.assign({}, item, { label: humanLabel(item.label) });
+      });
       if (!node.details.status) node.details.status = "Active";
       if (!node.details.statusTone) node.details.statusTone = "positive";
     }
@@ -589,10 +599,36 @@
   function detailItem(label, value) {
     return (
       '<div class="d3-kyb-officer__item"><dt>' +
-      esc(label) +
+      esc(humanLabel(label)) +
       "</dt><dd>" +
       esc(value || "—") +
       "</dd></div>"
+    );
+  }
+
+  /* Match Business Details / Additional Data: label above value in a 3-col grid. */
+  function fieldCardHtml(label, value) {
+    return (
+      '<div class="tds-data-field">' +
+      '<p class="tds-data-field__label">' +
+      esc(humanLabel(label)) +
+      "</p>" +
+      '<div class="tds-data-field__content"><div class="tds-data-field__value-row">' +
+      '<p class="tds-data-field__value">' +
+      esc(value == null || value === "" ? "—" : value) +
+      "</p></div></div></div>"
+    );
+  }
+
+  function fieldsGridHtml(fields) {
+    return (
+      '<div class="d3-kyb-officer__cols kyb-field-grid kyb-field-grid--3">' +
+      (fields || [])
+        .map(function (item) {
+          return fieldCardHtml(item.label, item.value);
+        })
+        .join("") +
+      "</div>"
     );
   }
 
@@ -672,27 +708,10 @@
         '.d3-kyb-ownership__table tr[data-d3-officer-detail="' + toggle + '"]'
       );
       if (!detail) return;
-      var fields = src.fields;
-      var half = Math.ceil(fields.length / 2);
-      function list(items) {
-        return (
-          '<dl class="d3-kyb-officer__list">' +
-          items
-            .map(function (item) {
-              return detailItem(item.label, item.value);
-            })
-            .join("") +
-          "</dl>"
-        );
-      }
       var cell = detail.querySelector("td");
       if (cell) {
         cell.setAttribute("colspan", "6");
-        cell.innerHTML =
-          '<div class="d3-kyb-officer__cols">' +
-          list(fields.slice(0, half)) +
-          list(fields.slice(half)) +
-          "</div>";
+        cell.innerHTML = fieldsGridHtml(src.fields);
       }
     });
   }

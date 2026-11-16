@@ -268,6 +268,11 @@
     return graph;
   }
 
+  function ownerIsBusiness(owner) {
+    var t = owner && owner.type;
+    return t === "corp" || t === "business" || t === "company";
+  }
+
   function synthesizeFromOwnership(biz) {
     var owners = biz.ownership || [];
     return {
@@ -280,7 +285,7 @@
         children: owners.map(function (owner, i) {
           return {
             id: "owner-" + i,
-            type: owner.type === "corp" ? "business" : "person",
+            type: ownerIsBusiness(owner) ? "business" : "person",
             name: owner.name,
             subtitle: owner.pct ? "Owns " + owner.pct : owner.role || "",
             risk: owner.flagged ? "high" : undefined
@@ -323,10 +328,11 @@
   function tableRowsFromBiz(biz) {
     if (!(biz && biz.ownershipUserProvided) && /meridian/i.test((biz && biz.name) || "")) return MERIDIAN_TABLE_ROWS.slice();
     var rows = (biz.ownership || []).map(function (owner) {
+      var isBiz = ownerIsBusiness(owner);
       return {
-        type: owner.type === "corp" ? "business" : "person",
+        type: isBiz ? "business" : "person",
         name: owner.name || "—",
-        sub: owner.role || owner.note || (owner.type === "corp" ? "Corporate" : "Individual"),
+        sub: owner.role || owner.note || owner.sub || (isBiz ? "Corporate" : "Individual"),
         pct: owner.pct || "—",
         address: owner.address || biz.addr || "—",
         status: owner.flagged ? "negative" : "positive",
@@ -595,8 +601,9 @@
     return true;
   }
 
-  function mountInto(panel, biz) {
+  function mountInto(panel, biz, opts) {
     if (!panel || !biz) return false;
+    var view = (opts && opts.defaultView) || "graph";
 
     /* Always rebuild so tab switches never land on a blank shell. */
     if (window.KybUboGraph && window.KybUboGraph.unmount) {
@@ -605,7 +612,9 @@
     }
     panel.innerHTML = panelMarkup(biz);
     bindViewToggle(panel, biz);
-    setView(panel, "graph");
+    setView(panel, view);
+    /* Always mount the UBO canvas (even if table is the default view) so
+       switching to graph never lands on an empty shell. */
     window.requestAnimationFrame(function () {
       mountGraphOnly(panel, biz);
     });

@@ -24,7 +24,8 @@
     "match-signals": "signals",
     signals: "risk",
     "business-insights": "additional",
-    financial: "additional"
+    financial: "additional",
+    business: "business"
   };
 
   function scriptDir() {
@@ -52,6 +53,13 @@
       tabs: (global.KybReportShell && global.KybReportShell.TABS) || [],
       tabIds: ["findings", "risk", "ownership", "signals", "web", "additional"]
     };
+  }
+
+  function detailTabId(version) {
+    if (version && version.tabIds && version.tabIds.indexOf("business") !== -1) {
+      return "business";
+    }
+    return "additional";
   }
 
   function isMvpVersion(version) {
@@ -110,12 +118,31 @@
     }
   }
 
+  function fitUboGraph(panel) {
+    var graphPane = panel.querySelector('[data-d3-kyb-own-panel="graph"]');
+    /* Never fit while the graph pane is hidden — that blanked the canvas. */
+    if (!graphPane || graphPane.hidden) return;
+    var btn = panel.querySelector(
+      '.kyb-ubo-graph__zoom-btn[aria-label="Reset view"]'
+    );
+    if (btn) btn.click();
+  }
+
   function expandUboBranches(panel) {
+    function clickMore() {
+      var btns = panel.querySelectorAll("[data-kyb-ubo-more]");
+      btns.forEach(function (btn) {
+        btn.click();
+      });
+      return btns.length;
+    }
     window.requestAnimationFrame(function () {
       window.setTimeout(function () {
-        panel.querySelectorAll("[data-kyb-ubo-more]").forEach(function (btn) {
-          btn.click();
-        });
+        clickMore();
+        window.setTimeout(function () {
+          clickMore();
+          fitUboGraph(panel);
+        }, 200);
       }, 160);
     });
   }
@@ -127,39 +154,43 @@
     expandUboBranches(panel);
   }
 
+  function scheduleMvpGraph(panel, biz) {
+    /* Wait past vendor rAF mount + panel un-hide so stage has real size. */
+    window.requestAnimationFrame(function () {
+      window.setTimeout(function () {
+        prepareMvpGraph(panel, biz);
+      }, 120);
+    });
+  }
+
   function applyOwnershipViewPrefs(panel, version, biz) {
     var view =
       (version && version.features && version.features.ownershipDefaultView) ||
       "graph";
     var control = panel.querySelector("[data-d3-kyb-own-view-control]");
+    /* MVP: table control first (left), then graph. */
     if (control && view === "table") {
       var tableBtn = control.querySelector('[data-d3-kyb-own-view="table"]');
       var graphBtn = control.querySelector('[data-d3-kyb-own-view="graph"]');
-      if (tableBtn && graphBtn && tableBtn !== control.firstElementChild) {
-        control.insertBefore(tableBtn, graphBtn);
+      if (tableBtn && graphBtn && control.firstElementChild !== tableBtn) {
+        control.insertBefore(tableBtn, control.firstElementChild);
       }
     }
     if (global.D3KybUboGraph && global.D3KybUboGraph.setView) {
       global.D3KybUboGraph.setView(panel, view);
     }
-    /* MVP: restore business fields on graph + expand 3-level tree.
-       Vendor mountInto schedules mountGraphOnly in rAF — remount after that. */
+    /* MVP: always mount/expand the UBO canvas (may be hidden under table).
+       Fit only after the graph panel is actually shown. */
     if (isMvpVersion(version)) {
       if (control && !control.dataset.krMvpExpandBound) {
         control.dataset.krMvpExpandBound = "1";
         control.addEventListener("click", function (e) {
           if (e.target.closest('[data-d3-kyb-own-view="graph"]')) {
-            window.setTimeout(function () {
-              prepareMvpGraph(panel, biz);
-            }, 80);
+            scheduleMvpGraph(panel, biz);
           }
         });
       }
-      if (view === "graph") {
-        window.setTimeout(function () {
-          prepareMvpGraph(panel, biz);
-        }, 80);
-      }
+      scheduleMvpGraph(panel, biz);
       if (global.KybReportMvpOwnership && global.KybReportMvpOwnership.enrichOwnershipTable) {
         global.KybReportMvpOwnership.enrichOwnershipTable(panel);
       }
@@ -170,16 +201,39 @@
     var panel = card.querySelector('[data-d3-kyb-panel="ownership"]');
     if (!panel) return;
     if (global.D3KybUboGraph && global.D3KybUboGraph.mountInto) {
-      global.D3KybUboGraph.mountInto(panel, biz);
-      applyOwnershipViewPrefs(panel, version || { features: {} }, biz);
+      var ver = version || { features: {} };
+      var defaultView =
+        (ver.features && ver.features.ownershipDefaultView) || "graph";
+      global.D3KybUboGraph.mountInto(panel, biz, { defaultView: defaultView });
+      applyOwnershipViewPrefs(panel, ver, biz);
       return;
     }
     panel.innerHTML =
       '<p class="d3-workspace__hint">Owners &amp; UBOs graph failed to load.</p>';
   }
 
+  function paintBusinessDetails(card, biz, api) {
+    var panel = card.querySelector('[data-d3-kyb-panel="business"]');
+    if (!panel) return;
+    if (
+      global.KybReportMvpBusinessDetails &&
+      global.KybReportMvpBusinessDetails.render
+    ) {
+      global.KybReportMvpBusinessDetails.render(panel, biz, api);
+      return;
+    }
+    panel.innerHTML =
+      '<p class="d3-workspace__hint">Business Details failed to load.</p>';
+  }
+
   function selectTab(card, id, biz, api) {
     if (id === "sources") id = "signals";
+    if (id === "additional" && detailTabId(api.versionConfig) === "business") {
+      id = "business";
+    }
+    if (id === "business" && !tabAllowed(api.versionConfig, "business")) {
+      id = "additional";
+    }
     if (!tabAllowed(api.versionConfig, id)) {
       id = "findings";
     }
@@ -196,6 +250,7 @@
     if (id === "findings") paintOverview(card, biz, api);
     if (id === "risk") paintRisk(card);
     if (id === "ownership") paintOwnership(card, biz, api.versionConfig);
+    if (id === "business") paintBusinessDetails(card, biz, api);
     if (id === "signals" || id === "web" || id === "additional") {
       paintResultTabs(card, biz, api.versionConfig);
     }
@@ -212,7 +267,14 @@
       var jump = e.target.closest("[data-kyb-jump-tab]");
       if (jump && card.contains(jump)) {
         var key = jump.getAttribute("data-kyb-jump-tab");
-        api.selectTab(JUMP[key] || key);
+        var mapped = JUMP[key] || key;
+        if (
+          (mapped === "additional" || key === "financial" || key === "business-insights") &&
+          detailTabId(api.versionConfig) === "business"
+        ) {
+          mapped = "business";
+        }
+        api.selectTab(mapped);
       }
     });
   }

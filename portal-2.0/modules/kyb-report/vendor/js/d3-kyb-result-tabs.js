@@ -139,14 +139,27 @@
     );
   }
 
-  function webAccordionHtml(title, left, right) {
-    /* Collapsed by default per Demo 3 QA. */
+  function parseFollowerCount(value) {
+    var n = parseInt(String(value == null ? "" : value).replace(/[^\d]/g, ""), 10);
+    return isNaN(n) ? 0 : n;
+  }
+
+  function formatFollowerCount(value) {
+    var n = parseFollowerCount(value);
+    return n === 1 ? "1 follower" : n.toLocaleString("en-US") + " followers";
+  }
+
+  function webAccordionHtml(title, left, right, followers) {
+    /* Collapsed by default per Demo 3 QA. Follower count sits right of title. */
     return (
       '<div class="tds-accordion tds-accordion--md kyb-web-accordion">' +
       '<button type="button" class="tds-accordion__header" aria-expanded="false">' +
       '<span class="tds-accordion__leading"><span class="tds-accordion__title">' +
       esc(title) +
-      '</span></span><span class="tds-accordion__trailing"><span class="tds-accordion__chevron" aria-hidden="true">' +
+      '</span></span><span class="tds-accordion__trailing">' +
+      '<span class="tds-tag tds-tag--sm tds-tag--default kyb-web-accordion__followers">' +
+      esc(formatFollowerCount(followers)) +
+      '</span><span class="tds-accordion__chevron" aria-hidden="true">' +
       ACCORDION_CHEVRON +
       "</span></span></button>" +
       '<div class="tds-accordion__content">' +
@@ -226,10 +239,11 @@
 
   function webAccordionsHtml(s) {
     var siteLink = valueLink("https://" + s.domain, s.domain);
-    return (
-      webAccordionHtml(
-        "LinkedIn",
-        [
+    var platforms = [
+      {
+        title: "LinkedIn",
+        followers: s.linkedinFollowers,
+        left: [
           { label: "Profile Name", value: webAccText(s.name) },
           { label: "About", value: webAccText(s.linkedinAbout) },
           { label: "Industries", value: webAccTags(s.industries), tagRow: true },
@@ -238,7 +252,7 @@
           { label: "Followers", value: webAccText(s.linkedinFollowers) },
           { label: "Founded", value: webAccText(s.founded) }
         ],
-        [
+        right: [
           { label: "Organization Type", value: webAccText(s.orgType) },
           { label: "Company Size", value: webAccText(s.companySize) },
           { label: "Locations", value: webAccTags(s.locations), tagRow: true },
@@ -246,10 +260,11 @@
           { label: "Country Codes", value: webAccTags(s.countryCodes), tagRow: true },
           { label: "Employees", value: webAccText(s.employees) }
         ]
-      ) +
-      webAccordionHtml(
-        "Instagram",
-        [
+      },
+      {
+        title: "Instagram",
+        followers: s.instagramFollowers,
+        left: [
           { label: "Profile Name", value: webAccText(s.handle) },
           { label: "Name", value: webAccText(s.name) },
           { label: "About", value: webAccText(s.instagramAbout) },
@@ -260,7 +275,7 @@
           { label: "Professional Account", value: webAccBool(s.professionalAccount) },
           { label: "Verified", value: webAccBool(s.verified) }
         ],
-        [
+        right: [
           { label: "Private", value: webAccBool(false) },
           { label: "Joined Recently", value: webAccBool(false) },
           { label: "Locations", value: webAccText(s.locations[0]) },
@@ -271,10 +286,11 @@
           { label: "Highlights Count", value: webAccText(s.highlightsCount) },
           { label: "Avg Engagement", value: webAccText(s.avgEngagement) }
         ]
-      ) +
-      webAccordionHtml(
-        "Twitter/X",
-        [
+      },
+      {
+        title: "Twitter/X",
+        followers: s.twitterFollowers,
+        left: [
           { label: "Profile Name", value: webAccText(s.shortName) },
           { label: "Name", value: webAccText(s.name) },
           { label: "Category", value: webAccText(s.businessCategory) },
@@ -283,7 +299,7 @@
           { label: "Business Account", value: webAccBool(s.businessAccount) },
           { label: "Government Account", value: webAccBool(false) }
         ],
-        [
+        right: [
           { label: "Locations", value: webAccTags(s.locations), tagRow: true },
           { label: "Followers", value: webAccText(s.twitterFollowers) },
           { label: "Following", value: webAccText(s.twitterFollowing) },
@@ -291,10 +307,11 @@
           { label: "Date Joined", value: webAccText(s.twitterDateJoined) },
           { label: "Post Count", value: webAccText(s.twitterPostCount) }
         ]
-      ) +
-      webAccordionHtml(
-        "TikTok",
-        [
+      },
+      {
+        title: "TikTok",
+        followers: s.tiktokFollowers,
+        left: [
           { label: "Nickname", value: webAccText(s.handle) },
           { label: "Biography", value: webAccText(s.tiktokBiography) },
           { label: "Verified", value: webAccBool(s.verified) },
@@ -302,7 +319,7 @@
           { label: "Following", value: webAccText(s.tiktokFollowing) },
           { label: "Like Count", value: webAccText(s.tiktokLikeCount) }
         ],
-        [
+        right: [
           { label: "Likes", value: webAccText(s.tiktokLikes) },
           { label: "Post Count", value: webAccText(s.tiktokPostCount) },
           { label: "Date Joined", value: webAccText(s.tiktokDateJoined) },
@@ -310,23 +327,64 @@
           { label: "Private", value: webAccBool(false) },
           { label: "Commerce User", value: webAccBool(false) }
         ]
-      )
+      }
+    ];
+
+    /* Highest follower count first; stable order when counts tie. */
+    platforms.sort(function (a, b) {
+      return parseFollowerCount(b.followers) - parseFollowerCount(a.followers);
+    });
+
+    return platforms
+      .map(function (p) {
+        return webAccordionHtml(p.title, p.left, p.right, p.followers);
+      })
+      .join("");
+  }
+
+  /* Compact Digital Presence row — same platforms as accordions, highest followers first. */
+  function socialHandlesRowHtml(s) {
+    var handle = s.handle || "meridian";
+    var handles = [
+      {
+        label: "LinkedIn",
+        followers: s.linkedinFollowers,
+        path: "linkedin.com/company/" + handle
+      },
+      {
+        label: "Instagram",
+        followers: s.instagramFollowers,
+        path: "instagram.com/" + handle
+      },
+      {
+        label: "Twitter/X",
+        followers: s.twitterFollowers,
+        path: "x.com/" + handle
+      },
+      {
+        label: "TikTok",
+        followers: s.tiktokFollowers,
+        path: "tiktok.com/@" + handle
+      }
+    ].sort(function (a, b) {
+      return parseFollowerCount(b.followers) - parseFollowerCount(a.followers);
+    });
+    return (
+      '<div class="kyb-web-social-row">' +
+      handles
+        .map(function (h) {
+          return dataField(h.label, valueLink("https://" + h.path, h.path));
+        })
+        .join("") +
+      "</div>"
     );
   }
 
   function renderWebPanel(panel, biz) {
     if (!panel || !biz) return;
     var s = socialProfileForBiz(biz);
-    var websiteStatus = s.highRisk
-      ? "Unavailable — domain expired, no live site to render"
-      : "Active — live site responding";
-    var expired = s.highRisk ? "1 Feb 2025" : "1 Feb 2027";
-    var linkedIn = s.highRisk
-      ? valueLink("https://linkedin.com/meridian", "linkedin.com/meridian")
-      : valueLink(
-          "https://linkedin.com/company/" + s.handle,
-          "linkedin.com/company/" + s.handle
-        );
+    var websiteStatus = "Active — live site responding";
+    var expired = "1 Feb 2027";
 
     panel.innerHTML =
       '<div class="d3-kyb-tab-body d3-kyb-web">' +
@@ -337,23 +395,40 @@
       '<div class="kyb-browser-mock__chrome">' +
       '<span class="kyb-browser-mock__dot"></span><span class="kyb-browser-mock__dot"></span><span class="kyb-browser-mock__dot"></span>' +
       "</div>" +
-      '<div class="kyb-browser-mock__viewport">' +
-      '<p class="kyb-browser-mock__placeholder">No website preview available</p>' +
+      '<div class="kyb-browser-mock__viewport" aria-label="Website preview">' +
+      '<div class="kyb-web-skeleton" aria-hidden="true">' +
+      '<div class="kyb-web-skeleton__nav">' +
+      '<span class="kyb-web-skeleton__logo"></span>' +
+      '<span class="kyb-web-skeleton__links">' +
+      '<span class="kyb-web-skeleton__pill"></span>' +
+      '<span class="kyb-web-skeleton__pill"></span>' +
+      '<span class="kyb-web-skeleton__pill"></span>' +
+      "</span></div>" +
+      '<div class="kyb-web-skeleton__hero"></div>' +
+      '<div class="kyb-web-skeleton__body">' +
+      '<span class="kyb-web-skeleton__line"></span>' +
+      '<span class="kyb-web-skeleton__line kyb-web-skeleton__line--med"></span>' +
+      '<span class="kyb-web-skeleton__line kyb-web-skeleton__line--short"></span>' +
+      '<div class="kyb-web-skeleton__cards">' +
+      '<span class="kyb-web-skeleton__card"></span>' +
+      '<span class="kyb-web-skeleton__card"></span>' +
+      "</div></div></div></div>" +
+      '<div class="kyb-browser-mock__cta">' +
+      '<a class="tds-btn tds-btn--secondary tds-btn--md kyb-browser-mock__visit" href="https://' +
+      esc(s.domain) +
+      '" target="_blank" rel="noopener noreferrer">Visit site</a>' +
       "</div></div>" +
       '<div class="kyb-web-details">' +
       '<div class="kyb-web-details-grid">' +
       dataField("Website", valueLink("https://" + s.domain, s.domain)) +
       dataField("Website Status", valueText(websiteStatus)) +
-      dataField("Domain Registrar", valueText("GoDaddy.com, LLC")) +
       dataField("Domain Registered", valueText("1 Feb 2019")) +
-      dataField("Domain Expired", valueText(expired, s.highRisk)) +
+      dataField("Domain Expires", valueText(expired)) +
+      dataField("Domain Registrar", valueText("GoDaddy.com, LLC")) +
       "</div>" +
       '<hr class="kyb-section-divider">' +
-      '<div class="kyb-web-social-row kyb-web-social-row--3">' +
-      dataField("LinkedIn", linkedIn) +
-      dataField("Instagram", valueText("No profile found")) +
-      dataField("Facebook", valueText("No profile found")) +
-      "</div></div></div></div>" +
+      socialHandlesRowHtml(s) +
+      "</div></div></div>" +
       '<div class="kyb-web-accordions" aria-label="Social media profiles">' +
       webAccordionsHtml(s) +
       "</div></div>";

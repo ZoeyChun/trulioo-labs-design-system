@@ -40,6 +40,14 @@
   gap: var(--spacing-24, 24px);
   width: 100%;
   min-width: 0;
+  min-height: 0;
+  visibility: visible;
+}
+
+.d3-kyb-ownership__view[data-d3-kyb-own-panel="table"]:not([hidden]) .d3-kyb-ownership__table {
+  display: block;
+  width: 100%;
+  visibility: visible;
 }
 
 .d3-kyb-ownership__table,
@@ -803,7 +811,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-12);
-  /* Width set inline from layout (content hug); CSS bounds as fallback */
+  /* Width set inline from layout; equal-width when min===max in graph config */
   width: max-content;
   min-width: 160px;
   max-width: 320px;
@@ -825,6 +833,19 @@
 .kyb-ubo-node--structural {
   border-style: dashed;
   background-color: var(--surface-neutral-02);
+}
+
+/* Ultimate beneficial owner — dashed border distinguishes UBO from other people. */
+.kyb-ubo-node--ubo {
+  border-style: dashed;
+  border-width: 2px;
+  border-color: var(--border-strong);
+  padding: calc(var(--spacing-12) - 1px);
+}
+
+.kyb-ubo-node--ubo.kyb-ubo-node--selected {
+  border-style: dashed;
+  border-color: var(--border-interactive);
 }
 
 /* Held above the usual dimmed opacity: the ownership path is only readable if
@@ -907,7 +928,8 @@
 }
 
 .kyb-ubo-node--selected .kyb-ubo-node__icon--business,
-.kyb-ubo-node--selected .kyb-ubo-node__icon--person {
+.kyb-ubo-node--selected .kyb-ubo-node__icon--person,
+.kyb-ubo-node--selected .kyb-ubo-node__icon--ubo {
   background-color: var(--interactive-default);
   color: var(--icon-inverse);
 }
@@ -1193,12 +1215,12 @@
 
 .kyb-ubo-drawer__field-label {
   margin: 0;
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
+  font-size: 14px;
+  line-height: var(--line-height-sm, 22px);
   font-weight: var(--font-weight-figma);
   font-variation-settings: var(--font-variation-figma-medium);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   color: var(--text-caption);
 }
 

@@ -50,10 +50,18 @@
     );
   }
 
+  var LEGEND_CHEVRON =
+    '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+    '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 6 4 4 4-4"/></svg>';
+
   function legendHtml() {
     return (
-      '<aside class="kr-match-legend" aria-label="Datasource match statuses">' +
-      '<ul class="kr-match-legend__statuses">' +
+      '<aside class="kr-match-legend tds-accordion tds-accordion--md" aria-label="Datasource match statuses">' +
+      '<button type="button" class="tds-accordion__header kr-match-legend__header" aria-expanded="false">' +
+      '<span class="tds-accordion__leading">' +
+      '<span class="tds-accordion__title kr-match-legend__title-text">Match status legend</span></span>' +
+      '<span class="tds-accordion__trailing kr-match-legend__trailing">' +
+      '<ul class="kr-match-legend__statuses" aria-hidden="true">' +
       '<li class="kr-match-legend__item">' +
       signalChip("match") +
       "</li>" +
@@ -67,6 +75,10 @@
       signalChip("derived") +
       "</li>" +
       "</ul>" +
+      '<span class="tds-accordion__chevron" aria-hidden="true">' +
+      LEGEND_CHEVRON +
+      "</span></span></button>" +
+      '<div class="tds-accordion__content kr-match-legend__content">' +
       '<div class="kr-match-legend__concepts">' +
       '<div class="kr-match-legend__concept"><h3 class="kr-match-legend__title">Match</h3>' +
       '<p class="kr-match-legend__copy">Indicates if an input field (Business Name, Registration Number etc.) matched the data returned by a source.</p></div>' +
@@ -76,8 +88,19 @@
       '<p class="kr-match-legend__copy">The source returned a value, but it did not match the input field.</p></div>' +
       '<div class="kr-match-legend__concept"><h3 class="kr-match-legend__title">Derived</h3>' +
       '<p class="kr-match-legend__copy">Data obtained from other fields — for example, Street name may be derived from Address line 1.</p></div>' +
-      "</div></aside>"
+      "</div></div></aside>"
     );
+  }
+
+  function bindLegendAccordion(legend) {
+    if (!legend || legend.dataset.krLegendBound === "1") return;
+    legend.dataset.krLegendBound = "1";
+    var header = legend.querySelector(".kr-match-legend__header");
+    if (!header) return;
+    header.addEventListener("click", function () {
+      var open = legend.classList.toggle("tds-accordion--expanded");
+      header.setAttribute("aria-expanded", open ? "true" : "false");
+    });
   }
 
   /* Expanded row: flat source list — name left, result right (ref: compact panels). */
@@ -156,6 +179,8 @@
       var banner = body.querySelector(".kyb-match-verification-banner");
       if (banner) banner.insertAdjacentHTML("beforeend", legendHtml());
     }
+    var legend = body && body.querySelector(".kr-match-legend");
+    if (legend) bindLegendAccordion(legend);
   }
 
   global.KybReportMvpMatchSignals = {
