@@ -395,6 +395,7 @@
 .d3kf-back button { all: unset; cursor: pointer; padding: 4px 10px; border-radius: 6px; background: var(--interactive-default); color: var(--text-inverse, #fff); font-weight: 500; }
 .d3kf-back button:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 2px; }
 .d3-kyb-evidence-active { outline: 2px solid #0e8a78; outline-offset: 2px; background-color: #e6f8f4; border-radius: 8px; transition: background-color 0.3s; }
+[data-d3-kyb-panel] .sr-only,
 .d3-kyb-findings .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 /* Cards with no evidence link must not look clickable. */
 .d3-kyb-findings .dv-summary-card:not([data-kf-jump]) { cursor: default; }

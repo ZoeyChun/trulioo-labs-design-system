@@ -1,0 +1,54 @@
+/* The result summary under the report-ready card in the chat (d3-kyb-result-card.js). */
+/* One white panel: the report header row, then the summary under it. */
+.d1-report-ready[data-d3-rc] .d1-report-ready__card { flex-wrap: wrap; row-gap: var(--spacing-12, 12px); }
+/* The meta gives way, so View stays on the right instead of dropping under it. */
+.d1-report-ready[data-d3-rc] .d1-report-ready__meta { flex: 1 1 0; min-width: 0; }
+.d1-report-ready[data-d3-rc] .d1-report-ready__card > .tds-btn { flex: none; }
+
+.d3-rc__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-sizing: border-box;
+  flex: 1 0 100%;
+  text-align: left;
+}
+
+/* Every section sits between two quiet dividers: header, verdict, checks reported, unresolved, receipt. */
+.d3-rc__verdict,
+.d3-rc__row,
+.d3-rc__receipt {
+  padding: var(--spacing-12, 12px) 0;
+  border-top: 1px solid var(--border-subtle, #e4e8e6);
+}
+
+.d3-rc__receipt { padding-bottom: 0; }
+
+.d3-rc__verdict { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-8, 8px); min-height: 24px; }
+.d3-rc__flag { color: var(--text-intermediate, #8a5a00); font-size: var(--font-size-sm, 14px); font-weight: 500; line-height: 20px; }
+
+.d3-rc__checks { display: flex; flex-direction: column; gap: 0; }
+.d3-rc__row { display: flex; flex-direction: column; gap: var(--spacing-4, 4px); }
+.d3-rc__label { color: var(--text-caption, #5c6b6b); }
+.d3-rc__chips { display: flex; flex-wrap: wrap; gap: var(--spacing-4, 4px) var(--spacing-8, 8px); }
+
+.d3-rc__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4, 4px);
+  padding: 2px var(--spacing-8, 8px);
+  border-radius: var(--radius-full, 999px);
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-xs, 12px);
+  line-height: 16px;
+}
+
+.d3-rc__chip.is-done { background: var(--surface-positive, #eaf7f0); color: var(--text-positive, #1f6b43); }
+.d3-rc__chip-icon { display: inline-flex; width: 14px; height: 14px; }
+.d3-rc__chip-icon svg { width: 14px; height: 14px; }
+
+
+.d3-rc__receipt { display: flex; align-items: center; gap: var(--spacing-8, 8px); }
+.d3-rc__receipt-label { flex: none; color: var(--text-caption, #5c6b6b); font-size: var(--font-size-xs, 12px); line-height: 16px; }
+.d3-rc__receipt-id { flex: 1 1 auto; min-width: 0; color: var(--text-default, #172d2d); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; line-height: 16px; overflow-wrap: anywhere; }

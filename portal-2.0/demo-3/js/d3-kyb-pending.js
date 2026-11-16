@@ -321,5 +321,9 @@
   /* A fresh verification leaves the submitted state. */
   document.addEventListener("d3-kyb:restore-idle", clearPanel);
 
-  window.D3KybPending = { isSlow: isSlow, demoName: "Brightwater Holdings Ltd." };
+  window.D3KybPending = {
+    isSlow: isSlow,
+    demoName: "Brightwater Holdings Ltd.",
+    job: function (ref) { return jobs[ref] || null; }
+  };
 })();
