@@ -393,6 +393,12 @@
   background: var(--surface-neutral-02, #f4f6f4);
 }
 
+/* The inner table inherits the data table's 720px minimum; inside the padded panel that overflows it. */
+.kyb-match-source-panel .tds-data-table {
+  min-width: 0;
+  width: 100%;
+}
+
 .d3-kyb-signals--beneath {
   margin-top: 8px;
 }

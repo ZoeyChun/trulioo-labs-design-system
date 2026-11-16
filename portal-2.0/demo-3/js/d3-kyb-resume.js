@@ -86,9 +86,25 @@
     syncChatBack(false);
     if (priorSurface === "map") {
       openMapExperience();
-      return;
+    } else {
+      openResumeExperience();
     }
-    openResumeExperience();
+    keepThreadLive();
+  }
+
+  /* Leaving the report parks the AI pane idle, but the conversation is still there:
+     switch the pane back on so the thread is shown, not the welcome screen. */
+  function keepThreadLive() {
+    if (window.D3ChatHistory && window.D3ChatHistory.leave) {
+      window.D3ChatHistory.leave({ to: "kyb", skipApply: true });
+    }
+    var th = document.querySelector("[data-d1-thread]");
+    if (th && th.children.length) {
+      window.setTimeout(function () {
+        if (window.D3Nav && window.D3Nav.markChatActive) window.D3Nav.markChatActive();
+        document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
+      }, 50);
+    }
   }
 
   /* New Chat always starts over at the KYB landing — never on a bare map. It is

@@ -83,11 +83,10 @@
 
   /* The checks and where each one is. */
   function stepRows() {
+    /* Real progress can't be followed check by check, so everything after the registry is one step. */
     return (
       step("completed", "Registry lookup", "Business found and confirmed", 1) +
-      step("current", "Sanctions and watchlists", "In progress", 2) +
-      step("incomplete", "Adverse media", "Queued", 3) +
-      step("incomplete", "Ownership and UBOs", "Queued", 4)
+      step("current", "Remaining checks", "Sanctions and watchlists, adverse media, ownership and UBOs are in progress", 2)
     );
   }
 
@@ -100,28 +99,29 @@
     );
   }
 
+  /* A spinning ring in the tag's own colour: it reads as work in progress. */
+  var IN_PROGRESS_HTML = '<span class="d3-kyb-pending__spin" aria-hidden="true"></span>In Progress';
+
   function panelHtml(job) {
-    var S = window.D3KybSession;
-    var pkg = S ? S.package(S.get().package).name : "Business Insights";
     var mark = function (t) { return '<mark class="d3h-card__lede-mark d3h-card__lede-mark--intermediate">' + esc(t) + "</mark>"; };
     return (
       '<section class="d3-kyb-pending" data-d3-pending aria-live="polite">' +
+      /* Right under the business name and status tag. */
+      '<div class="tds-announcement tds-announcement--neutral d3-kyb-pending__note" role="status">' +
+      '<span class="tds-announcement__icon" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
+      '<div class="tds-announcement__content"><p class="tds-announcement__title">You can leave this page</p>' +
+      '<p class="tds-announcement__message">We will let you know here when the report is ready.</p></div></div>' +
       /* The hero, built like the Overview hero: the state on the left, the submission on the right. */
       '<section class="d3h-card d3h-card--hero d3h-card--hero-gauge d3h-card--tone-intermediate" aria-label="Verification submitted"><div class="d3h-card__inner">' +
       '<div class="d3h-hero__main"><div class="d3h-hero__group">' +
       '<div class="d3h-hero__top"><div class="d3h-hero__verdict"><p class="d3h-hero__eyebrow">Verification status</p>' +
       '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--intermediate">Verification submitted</h2></div></div>' +
       '<ul class="d3h-bullets"><li>' + mark(job.biz.name) + " is being verified.</li><li>This can take up to " + mark("24 hours") + ".</li></ul></div>" +
-      '<div class="tds-announcement tds-announcement--neutral d3-kyb-pending__note" role="status">' +
-      '<span class="tds-announcement__icon" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
-      '<div class="tds-announcement__content"><p class="tds-announcement__title">You can leave this page</p>' +
-      '<p class="tds-announcement__message">We will let you know here when the report is ready.</p></div></div></div>' +
-      '<aside class="d3h-entity" aria-label="Submission"><div class="d3h-entity__facts">' +
-      fact("Transaction ID", job.ref) + fact("Submitted", stamp(job.at)) + fact("Expected", "Up to 24 hours") + fact("Package", pkg) +
-      "</div></aside></div></section>" +
-      '<section class="d3-kyb-pending__card" aria-label="Checks">' +
+      '</div>' +
+      /* On the right the checks and where each one is. */
+      '<aside class="d3h-entity d3-kyb-pending__checks" aria-label="Checks">' +
       '<p class="d3-kyb-pending__card-title text-label-sm-uppercase">Checks</p>' +
-      '<ol class="tds-stepper tds-stepper--vertical d3-kyb-pending__steps" aria-label="Checks">' + stepRows() + "</ol></section>" +
+      '<ol class="tds-stepper tds-stepper--vertical d3-kyb-pending__steps" aria-label="Checks">' + stepRows() + "</ol></aside></div></section>" +
       '<div class="d3-kyb-pending__actions">' +
       '<button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-pending-new>Start new verification</button>' +
       '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-pending-recent>View in recent transactions</button></div></section>'
@@ -136,7 +136,7 @@
     if (on) {
       if (!tag.hasAttribute("data-d3-pending-was")) tag.setAttribute("data-d3-pending-was", tag.className + "|" + tag.innerHTML);
       tag.className = "d1-tag d1-tag--review";
-      tag.textContent = "In Progress";
+      tag.innerHTML = IN_PROGRESS_HTML;
     } else if (tag.hasAttribute("data-d3-pending-was")) {
       tag.removeAttribute("data-d3-pending-was");
     }
@@ -145,6 +145,7 @@
   function showPanel(job) {
     var old = resume.querySelector("[data-d3-pending]");
     if (old) old.remove();
+    resume.removeAttribute("data-d3-pending-run");
     resume.setAttribute("data-d3-pending", "");
     var tabs = resume.querySelector(".d3-kyb-tabs");
     if (tabs) tabs.insertAdjacentHTML("beforebegin", panelHtml(job));
@@ -154,6 +155,7 @@
 
   function clearPanel() {
     restoreFollow();
+    resume.removeAttribute("data-d3-pending-run");
     resume.removeAttribute("data-d3-pending");
     var old = resume.querySelector("[data-d3-pending]");
     if (old) old.remove();
@@ -236,7 +238,7 @@
       '<span class="d3-kyb-recent__product">Business Insights</span>' +
       '<span class="d3-kyb-recent__name">' + esc(job.biz.name) + "</span>" +
       '<span class="d3-kyb-recent__role">Transaction ' + esc(shortRef(job.ref)) + "</span>" +
-      '<span class="d1-tag d1-tag--review">In Progress</span>' +
+      '<span class="d1-tag d1-tag--review">' + IN_PROGRESS_HTML + "</span>" +
       '<span class="d3-kyb-recent__date">' + esc(stamp(job.at)) + "</span>";
     grid.insertBefore(card, grid.firstChild);
   }
@@ -249,6 +251,7 @@
     var mine = token;
     var job = { ref: refFor(biz), biz: biz, at: new Date() };
     jobs[job.ref] = job;
+    resume.setAttribute("data-d3-pending-run", "");
     origReveal(biz);
     await sleep(DEMO_MS);
     if (mine !== token) return;
@@ -278,6 +281,7 @@
       }, 120);
     };
     document.addEventListener("d3-kyb:verify-ui-ready", onReady);
+    resume.setAttribute("data-d3-pending-run", "");
     origReveal(job.biz);
   }
 
