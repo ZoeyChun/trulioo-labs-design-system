@@ -166,8 +166,6 @@
       var id = tr.getAttribute("data-d3-match-row");
       var row = byId[id];
       if (!row) return;
-      var resultCell = tr.children[2];
-      if (resultCell) resultCell.innerHTML = signalChip(row.status);
       var detail = tr.nextElementSibling;
       if (!detail || !detail.classList.contains("kyb-match-detail-row")) return;
       var cell = detail.querySelector("td");

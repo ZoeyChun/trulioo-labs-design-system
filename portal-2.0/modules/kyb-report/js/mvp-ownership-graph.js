@@ -426,8 +426,8 @@
 
   function personGraphSubtitle(src) {
     var owns = src.subtitle || (src.pct ? "Owns " + src.pct : "Shareholder");
-    owns = String(owns).replace(/^UBO\s*·\s*/i, "");
-    return isPersonUbo(src) ? "UBO · " + owns : owns;
+    /* UBO is shown via tag; keep subtitle as plain “Owns …”. */
+    return String(owns).replace(/^UBO\s*[-·]\s*/i, "");
   }
 
   function personTableRole(src) {
@@ -451,6 +451,8 @@
       extras || {}
     );
     if (src.risk) node.risk = src.risk;
+    /* role drives UBO tag/icon in the graph (subtitle stays “Owns …”). */
+    if (src.type === "person" && isPersonUbo(src)) node.role = "UBO";
     return node;
   }
 

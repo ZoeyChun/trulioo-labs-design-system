@@ -607,9 +607,6 @@
           '<td class="tds-data-table__text-cell">' +
           esc(row.input) +
           "</td>" +
-          "<td>" +
-          signalChip(row.status) +
-          "</td>" +
           '<td class="tds-data-table__text-cell">' +
           esc(row.sources) +
           "</td>" +
@@ -621,7 +618,7 @@
           "</button></span></td></tr>" +
           '<tr class="kyb-match-detail-row"' +
           (expanded ? "" : " hidden") +
-          '><td colspan="5">' +
+          '><td colspan="4">' +
           '<div class="kyb-match-source-panel"><table class="tds-data-table kyb-match-source-table"><tbody>' +
           nested +
           "</tbody></table></div></td></tr>"
@@ -654,7 +651,7 @@
       "</div></div></div>" +
       '<div class="tds-data-table-container kyb-match-table">' +
       '<div class="tds-data-table__wrapper"><table class="tds-data-table tds-data-table--comfort">' +
-      "<thead><tr><th>Field</th><th>Input</th><th>Result</th><th>Sources</th>" +
+      "<thead><tr><th>Field</th><th>Input</th><th>Sources</th>" +
       '<th class="tds-data-table__actions-col" aria-hidden="true"></th></tr></thead>' +
       "<tbody>" +
       rowsHtml +

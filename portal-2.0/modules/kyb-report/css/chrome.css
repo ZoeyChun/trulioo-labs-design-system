@@ -222,9 +222,11 @@
   line-height: var(--line-height-sm);
 }
 .kr-preview-page__main {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   padding: var(--spacing-24);
+  box-sizing: border-box;
 }
 .kr-preview-page__note {
   margin: 0 0 var(--spacing-16);
@@ -468,13 +470,35 @@
   }
 }
 
-/* MVP ownership graph — equal-width cards with clear gaps (no touch/overlap). */
+/* MVP ownership graph — Figma card size; must match Gt layout (180×94) so wires hit card centers. */
 .kr-host[data-kr-version^="mvp"] .kyb-ubo-node,
 .kr-host[data-kr-version^="mvp"] .kyb-ubo-node--button {
-  width: 240px !important;
-  min-width: 240px !important;
-  max-width: 240px !important;
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+  height: 94px !important;
+  min-height: 94px !important;
+  max-height: 94px !important;
   box-sizing: border-box;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--spacing-8, 8px);
+  border-radius: 12px;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.kr-host[data-kr-version^="mvp"] .kyb-ubo-node__icon {
+  width: auto;
+  height: 15px;
+  background: transparent;
+  border-radius: 0;
+}
+
+.kr-host[data-kr-version^="mvp"] .kyb-ubo-node--selected .kyb-ubo-node__icon {
+  background: transparent;
+  color: var(--icon-faint, #617269);
 }
 
 .kr-host[data-kr-version^="mvp"] .kyb-ubo-graph__surface,
@@ -496,11 +520,25 @@
   z-index: 7;
 }
 
-/* UBO nodes — dashed outline so they read clearly vs shareholders */
+/* UBO nodes — intermediate tag (not dashed border); keep solid card chrome. */
 .kr-host[data-kr-version^="mvp"] .kyb-ubo-node--ubo {
-  border-style: dashed;
-  border-width: 2px;
-  border-color: var(--border-strong, #6b7280);
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--border-subtle, #dde2de);
+}
+
+.kr-host[data-kr-version^="mvp"] .kyb-ubo-node__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-8, 8px);
+  width: 100%;
+  min-width: 0;
+}
+
+.kr-host[data-kr-version^="mvp"] .kyb-ubo-node__tag {
+  flex-shrink: 0;
+  pointer-events: none;
 }
 
 /* MVP Owners & UBOs — expanded fields match Business Details / Additional Data */
@@ -565,15 +603,28 @@
 /* Overview hero: Suggested Actions always pinned to bottom of left column */
 .kr-host .d3h-card--hero-gauge .d3h-card__inner {
   align-items: stretch !important;
+  /* Fill the card edge-to-edge — do not center the two columns on wide panels. */
+  justify-content: flex-start !important;
+  gap: var(--spacing-32, 32px) !important;
+  width: 100%;
 }
 
 .kr-host .d3h-card--hero-gauge .d3h-hero__main {
   display: flex;
   flex-direction: column;
   align-self: stretch;
+  flex: 1 1 0 !important;
+  min-width: 0;
   min-height: 100%;
   height: auto;
   gap: var(--spacing-24, 24px);
+}
+
+.kr-host .d3h-card--hero-gauge .d3h-entity {
+  flex: 0 0 clamp(240px, 32%, 360px) !important;
+  width: auto !important;
+  max-width: none;
+  margin-left: auto;
 }
 
 .kr-host .d3h-card--hero-gauge .d3h-hero__group {
