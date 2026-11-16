@@ -1,0 +1,48 @@
+/* The slow-verification state (d3-kyb-pending.js): a submitted verification that can take up to 24 hours. */
+.d3-kyb-resume[data-d3-pending] .d3-kyb-tabs,
+.d3-kyb-resume[data-d3-pending] [data-d3-kyb-panel] { display: none !important; }
+
+/* No Raw Data or Export for a report that does not exist yet. */
+.d3-kyb-resume[data-d3-pending] .d3-workspace__biz-actions { display: none !important; }
+
+/* The submitted state: a hero like the Overview hero (the state and the submission side by side, with
+   "You can leave this page" at its bottom), the checks, then the next actions at the bottom of the container. */
+.d3-kyb-pending {
+  container: d3rp / inline-size;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-24, 24px);
+  box-sizing: border-box;
+  flex: 1 0 auto;
+  width: 100%;
+  padding: var(--spacing-8, 8px) 0 var(--spacing-24, 24px);
+  text-align: left;
+}
+
+.d3-kyb-pending .d3h-card--hero-gauge { margin-bottom: 0; }
+/* The same quiet rim as the other heroes; the state is carried by the title and the marks. */
+.d3-kyb-pending .d3h-card--hero-gauge.d3h-card--tone-intermediate { border-color: var(--surface-neutral-02, #f4f6f4); }
+.d3-kyb-pending .d3h-hero__main { gap: var(--spacing-24, 24px); }
+.d3-kyb-pending__note { margin-top: auto; }
+
+.d3-kyb-pending__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+  box-sizing: border-box;
+  padding: var(--spacing-20, 20px);
+  border: 1px solid var(--border-subtle, #e4e8e6);
+  border-radius: var(--radius-xl, 16px);
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: 0 1px 2px rgba(23, 45, 45, 0.04);
+}
+
+.d3-kyb-pending__card-title { margin: 0; color: var(--text-caption, #5c6b6b); }
+
+
+.d3-kyb-pending__steps { width: 100%; }
+.d3-kyb-pending__steps.tds-stepper--vertical .tds-stepper__item { width: 100%; }
+
+
+.d3-kyb-pending__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-8, 8px); margin-top: auto; padding-top: var(--spacing-8, 8px); }

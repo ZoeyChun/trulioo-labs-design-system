@@ -254,6 +254,7 @@
       var mapped = activityFromLabel(currentText);
       if (mapped) return mapped;
     }
+    if (pendingSubmitted()) return { label: "Verification submitted", busy: false, bubble: "idle", iconHtml: "" };
     if (/complete/i.test(toolsText) && !report) return acting("Generating report", ICON_FILE);
     if (step === "report" && report) {
       var tag = t && t.querySelector("[data-d1-report-tag]");
@@ -336,6 +337,13 @@
     });
   }
 
+  /* A slow verification was just submitted (d3-kyb-pending.js): the chat is free again, nothing to pick. */
+  function pendingSubmitted() {
+    var t = thread();
+    var last = t && t.lastElementChild;
+    return !!(last && last.hasAttribute("data-d3-pending-msg"));
+  }
+
   function hideMatchList(hidden) {
     document.querySelectorAll(".d3-kyb-cand-panel").forEach(function (el) {
       if (el.hidden !== hidden) el.hidden = hidden;
@@ -384,9 +392,11 @@
           ? "Business name, e.g. Meridian"
           : awaiting === "country"
             ? "Country of registration, e.g. United States"
-            : confirming
-              ? "Confirm above, or ask a follow-up"
-              : "Select a match or refine your search"
+            : pendingSubmitted()
+              ? "Start another verification or ask a question"
+              : confirming
+                ? "Confirm above, or ask a follow-up"
+                : "Select a match or refine your search"
       );
     } else {
       setPlaceholders("Ask about business verification");
@@ -758,6 +768,11 @@
 
   function watchFlow() {
     document.addEventListener("d3-kyb:report-ready", function () {
+      investigating = false;
+      window.setTimeout(applyChoice, 0);
+    });
+    /* A slow verification was submitted: the live progress is over, the chat is free (d3-kyb-pending.js). */
+    document.addEventListener("d3-kyb:pending", function () {
       investigating = false;
       window.setTimeout(applyChoice, 0);
     });

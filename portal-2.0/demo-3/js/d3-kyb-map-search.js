@@ -491,6 +491,41 @@
     }
   ];
 
+  /* The slow-verification demo business (see d3-kyb-pending.js). It is findable by name, but kept out of the
+     generic "Meridian" lists and the map. */
+  var SLOW_DEMO = [
+    {
+      id: "us-bw",
+      name: "Brightwater Holdings Ltd.",
+      country: "United States",
+      cc: "US",
+      city: "Wilmington, DE",
+      addr: "1000 N West Street, Wilmington, DE 19801",
+      reg: "DE File 7310022",
+      status: "Active",
+      brief: "Holding company · Delaware · North West Street office.",
+      lat: 39.7459,
+      lon: -75.5466,
+      riskLevel: "low",
+      ownership: [],
+      risks: [],
+      alerts: { adverseMedia: "None found", sanctions: "None found", litigation: "None found", positivePress: "None found" },
+      report: {
+        industry: "Investment holding (NAICS 551112)",
+        industryNote: "Delaware entity; checks are still running.",
+        regDate: "Incorporated Jun 4, 2016 (Delaware)",
+        legalForm: "Corporation",
+        address: "1000 N West Street, Wilmington, DE 19801",
+        sizing: "Not available yet.",
+        regNumber: "DE File 7310022",
+        taxId: "EIN 47-7310022",
+        phone: "+1 (302) 555-0140",
+        email: "info@brightwaterholdings.example",
+        sumA: "Brightwater Holdings Ltd. is an active Delaware holding company; the full report is still being prepared."
+      }
+    }
+  ];
+
   /* Back-compat alias used by older call sites / mental model. */
   var MERIDIAN_US = MERIDIANS;
 
@@ -878,6 +913,12 @@
       return matchesCountry(biz, country, cc);
     });
     if (!q) return pool.slice();
+    /* The slow demo business only answers to a name search. */
+    pool = pool.concat(
+      SLOW_DEMO.filter(function (biz) {
+        return matchesCountry(biz, country, cc);
+      })
+    );
 
     return pool.filter(function (biz) {
       var hay = [
@@ -906,8 +947,9 @@
   }
 
   function findById(id) {
-    for (var i = 0; i < MERIDIANS.length; i += 1) {
-      if (MERIDIANS[i].id === id) return MERIDIANS[i];
+    var all = MERIDIANS.concat(SLOW_DEMO);
+    for (var i = 0; i < all.length; i += 1) {
+      if (all[i].id === id) return all[i];
     }
     return null;
   }
@@ -917,7 +959,7 @@
     if (!q) return null;
     var exact = null;
     var partials = [];
-    MERIDIANS.forEach(function (biz) {
+    MERIDIANS.concat(SLOW_DEMO).forEach(function (biz) {
       var n = biz.name.toLowerCase();
       if (n === q) {
         exact = biz;

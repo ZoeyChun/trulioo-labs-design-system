@@ -46,6 +46,7 @@
       { id: "meridian-works", name: "Meridian Works Ltd.", country: "United Kingdom", countryCode: "gb", brn: "GB-0112290", address1: "100 Liverpool Street", city: "London", state: "England", postal: "EC2M 2AT", sample: "standard", lon: -0.082, lat: 51.518 }
     ],
     us: [
+      { id: "us-bw", name: "Brightwater Holdings Ltd.", country: "United States", countryCode: "us", brn: "DE File 7310022", address1: "1000 N West Street", city: "Wilmington", state: "DE", postal: "19801", sample: "standard", lon: -75.5466, lat: 39.7459 },
       { id: "us-cap", name: "Meridian Capital LLC", country: "United States", countryCode: "us", brn: "NY DOS 4417762", address1: "200 Vesey Street", city: "New York", state: "NY", postal: "10281", sample: "standard", lon: -74.0159, lat: 40.7128 },
       { id: "us-global", name: "Meridian Global Partners Inc.", country: "United States", countryCode: "us", brn: "DE File 5582014", address1: "1209 Orange Street", city: "Wilmington", state: "DE", postal: "19801", sample: "elevated", lon: -75.5466, lat: 39.748 },
       { id: "us-sf", name: "Meridian Analytics Inc.", country: "United States", countryCode: "us", brn: "CA SOS C4129087", address1: "525 Market Street", city: "San Francisco", state: "CA", postal: "94105", sample: "standard", lon: -122.3972, lat: 37.7897 },
