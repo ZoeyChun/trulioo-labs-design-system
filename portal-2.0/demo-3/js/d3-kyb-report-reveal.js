@@ -834,10 +834,16 @@
       return;
     }
 
+    /* The Owners & UBOs tab: the shared ownership network, table first, UBO tag for > 25% indirect ownership. */
+    var mvp = window.D3KybMvpOwnership;
+    var view = biz;
+    if (mvp && mvp.applyToBiz && biz) view = mvp.applyToBiz(biz);
+
     var mounted =
       window.D3KybUboGraph && window.D3KybUboGraph.mountInto
-        ? window.D3KybUboGraph.mountInto(panel, biz)
+        ? window.D3KybUboGraph.mountInto(panel, view, { defaultView: mvp ? "table" : "graph" })
         : false;
+    if (mounted && mvp && mvp.paint) mvp.paint(panel, view);
 
     if (!mounted) {
       panel.innerHTML =

@@ -109,6 +109,15 @@
   align-items: start;
 }
 
+/* Website thumbnail left, content right. */
+.kyb-web-layout > .kyb-browser-mock {
+  order: 1;
+}
+
+.kyb-web-layout > .kyb-web-details {
+  order: 2;
+}
+
 .kyb-web-details {
   display: flex;
   flex-direction: column;
@@ -138,6 +147,10 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.kyb-web-social-row--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .kyb-web-social-row > .tds-data-field {
   min-width: 0;
 }
@@ -154,6 +167,11 @@
 
 .kyb-web-accordions .kyb-web-accordion.tds-accordion {
   border-radius: 8px;
+}
+
+.kyb-web-accordion__followers.tds-tag {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .kyb-web-accordion-columns {
@@ -193,13 +211,15 @@
   flex-direction: column;
   gap: 12px;
   width: 308px;
-  height: 285px;
+  height: auto;
+  min-height: 285px;
   padding: 12px;
   border: 1px solid var(--border-subtle, #dde2de);
   border-radius: 16px;
   background: var(--surface-neutral-01, #fff);
   overflow: hidden;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .kyb-browser-mock__chrome {
@@ -218,12 +238,40 @@
 .kyb-browser-mock__dot:nth-child(3) { background: #28c840; }
 
 .kyb-browser-mock__viewport {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 12px;
   background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.kyb-browser-mock__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.kyb-browser-mock__meta .tds-data-field__label {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kyb-browser-mock__cta {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.kyb-browser-mock__visit.tds-btn {
+  width: 100%;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .kyb-browser-mock__placeholder {
@@ -514,7 +562,8 @@
   }
 
   .kyb-web-social-row,
-  .kyb-web-social-row--3 {
+  .kyb-web-social-row--3,
+  .kyb-web-social-row--4 {
     grid-template-columns: 1fr;
   }
 

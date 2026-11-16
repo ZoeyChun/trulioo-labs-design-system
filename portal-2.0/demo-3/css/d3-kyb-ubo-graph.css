@@ -40,6 +40,14 @@
   gap: var(--spacing-24, 24px);
   width: 100%;
   min-width: 0;
+  min-height: 0;
+  visibility: visible;
+}
+
+.d3-kyb-ownership__view[data-d3-kyb-own-panel="table"]:not([hidden]) .d3-kyb-ownership__table {
+  display: block;
+  width: 100%;
+  visibility: visible;
 }
 
 .d3-kyb-ownership__table,
@@ -724,20 +732,27 @@
   background-color: var(--border-strong);
 }
 
+/* Figma Portal 2.0 (2319:9739 / 2319:9752) — vertical card: icon (+ UBO tag) above title + subtitle.
+   Fixed 180×94 matches layout Gt so connector endpoints land on card edge centers. */
 .kyb-ubo-node {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-12);
-  /* Width set inline from layout (content hug); CSS bounds as fallback */
-  width: max-content;
-  min-width: 160px;
-  max-width: 320px;
-  padding: var(--spacing-12);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  background-color: var(--surface-neutral-01);
-  box-shadow: var(--elevation-xs);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--spacing-8, 8px);
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  height: 94px;
+  min-height: 94px;
+  max-height: 94px;
+  padding: var(--spacing-12, 12px);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 12px;
+  background-color: var(--surface-neutral-01, #fff);
+  box-shadow: none;
   box-sizing: border-box;
+  overflow: hidden;
   transition: opacity 0.3s ease, border-color 0.15s ease, background-color 0.15s ease;
 }
 
@@ -752,10 +767,38 @@
   background-color: var(--surface-neutral-02);
 }
 
+/* Ultimate beneficial owner — marked by intermediate “UBO” tag (Figma 2319:9752). */
+.kyb-ubo-node--ubo {
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--border-subtle, #dde2de);
+}
+
+.kyb-ubo-node--ubo.kyb-ubo-node--selected {
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--border-interactive);
+  padding: calc(var(--spacing-12, 12px) - 1px);
+}
+
 /* Held above the usual dimmed opacity: the ownership path is only readable if
    the intermediate entity's name still is. */
 .kyb-ubo-node--structural.kyb-ubo-node--dimmed {
   opacity: 0.55;
+}
+
+.kyb-ubo-node__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-8, 8px);
+  width: 100%;
+  min-width: 0;
+}
+
+.kyb-ubo-node__tag {
+  flex-shrink: 0;
+  pointer-events: none;
 }
 
 .kyb-ubo-node__icon {
@@ -763,54 +806,61 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-lg);
-  background-color: var(--surface-neutral-02);
-  color: var(--icon-faint);
+  width: auto;
+  height: 15px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  color: var(--icon-faint, #617269);
 }
 
 .kyb-ubo-node__icon svg {
-  width: 16px;
-  height: 16px;
+  width: auto;
+  height: 15px;
+  display: block;
 }
 
 .kyb-ubo-node--highlighted .kyb-ubo-node__icon {
-  border: 2px solid var(--border-intermediate);
-  box-sizing: border-box;
+  border: 0;
 }
 
 .kyb-ubo-node__copy {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--spacing-4, 4px);
   min-width: 0;
+  width: 100%;
 }
 
 .kyb-ubo-node__name {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  font-weight: var(--font-weight-figma);
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: var(--font-weight-figma, 500);
   font-variation-settings: var(--font-variation-figma-medium);
-  color: var(--text-default);
+  color: var(--text-default, #172d2d);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .kyb-ubo-node__meta {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-  color: var(--text-description);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: var(--font-weight-regular, 400);
+  color: var(--text-caption, #617269);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .kyb-ubo-node--button {
-  width: max-content;
-  min-width: 160px;
-  max-width: 320px;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  height: 94px;
+  min-height: 94px;
+  max-height: 94px;
   margin: 0;
   font: inherit;
   text-align: left;
@@ -822,29 +872,25 @@
 }
 
 .kyb-ubo-node--button:hover:not(.kyb-ubo-node--selected) .kyb-ubo-node__icon {
-  background-color: var(--surface-neutral-03);
+  background-color: transparent;
 }
 
 .kyb-ubo-node--selected {
   border: 2px solid var(--border-interactive);
-  padding: calc(var(--spacing-12) - 1px);
-  box-shadow: var(--elevation-xs);
+  padding: calc(var(--spacing-12, 12px) - 1px);
+  box-shadow: none;
 }
 
 .kyb-ubo-node--selected .kyb-ubo-node__icon--business,
-.kyb-ubo-node--selected .kyb-ubo-node__icon--person {
-  background-color: var(--interactive-default);
-  color: var(--icon-inverse);
+.kyb-ubo-node--selected .kyb-ubo-node__icon--person,
+.kyb-ubo-node--selected .kyb-ubo-node__icon--ubo {
+  background-color: transparent;
+  color: var(--icon-faint, #617269);
 }
 
-.kyb-ubo-node--risk-high .kyb-ubo-node__icon {
-  border: 2px solid var(--border-negative);
-  box-sizing: border-box;
-}
-
+.kyb-ubo-node--risk-high .kyb-ubo-node__icon,
 .kyb-ubo-node--risk-medium .kyb-ubo-node__icon {
-  border: 2px solid var(--border-intermediate);
-  box-sizing: border-box;
+  border: 0;
 }
 
 .kyb-ubo-tree__subtree {
@@ -1118,12 +1164,12 @@
 
 .kyb-ubo-drawer__field-label {
   margin: 0;
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
+  font-size: 14px;
+  line-height: var(--line-height-sm, 22px);
   font-weight: var(--font-weight-figma);
   font-variation-settings: var(--font-variation-figma-medium);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   color: var(--text-caption);
 }
 

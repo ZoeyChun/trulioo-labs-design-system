@@ -1,0 +1,167 @@
+/* Demo 3 — Owners & UBOs tab: the module's MVP card UI, expanded fields and graph chrome.
+   Ported from modules/kyb-report/css/chrome.css, scoped to the Demo 3 report. */
+
+/* The graph here has no search, filter or risk legend. */
+.d3-kyb-resume .kyb-ubo-graph__filter-btn,
+.d3-kyb-resume .kyb-ubo-graph__toolbar-card,
+.d3-kyb-resume .kyb-ubo-graph__legend {
+  display: none !important;
+}
+
+/* MVP ownership graph — Figma card size; must match Gt layout (180×94) so wires hit card centers. */
+.d3-kyb-resume .kyb-ubo-node,
+.d3-kyb-resume .kyb-ubo-node--button {
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+  height: 94px !important;
+  min-height: 94px !important;
+  max-height: 94px !important;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--spacing-8, 8px);
+  border-radius: 12px;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.d3-kyb-resume .kyb-ubo-node__icon {
+  width: auto;
+  height: 15px;
+  background: transparent;
+  border-radius: 0;
+}
+
+.d3-kyb-resume .kyb-ubo-node--selected .kyb-ubo-node__icon {
+  background: transparent;
+  color: var(--icon-faint, #617269);
+}
+
+.d3-kyb-resume .kyb-ubo-graph__surface,
+.d3-kyb-resume .kyb-ubo-graph-layout__canvas .kyb-ubo-graph__surface {
+  overflow: auto;
+}
+
+.d3-kyb-resume .kyb-ubo-canvas__slot {
+  z-index: 1;
+}
+
+.d3-kyb-resume .kyb-ubo-canvas__slot:hover,
+.d3-kyb-resume .kyb-ubo-canvas__slot:focus-within {
+  z-index: 6;
+}
+
+.d3-kyb-resume .kyb-ubo-node--selected {
+  position: relative;
+  z-index: 7;
+}
+
+/* UBO nodes — intermediate tag (not dashed border); keep solid card chrome. */
+.d3-kyb-resume .kyb-ubo-node--ubo {
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--border-subtle, #dde2de);
+}
+
+.d3-kyb-resume .kyb-ubo-node__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-8, 8px);
+  width: 100%;
+  min-width: 0;
+}
+
+.d3-kyb-resume .kyb-ubo-node__tag {
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+/* MVP Owners & UBOs — expanded fields match Business Details / Additional Data */
+.d3-kyb-resume .d3-kyb-officer__detail > td {
+  padding: 0;
+}
+
+.d3-kyb-resume .d3-kyb-officer__cols.kyb-field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-24, 24px);
+  padding: var(--spacing-20, 20px) var(--spacing-24) var(--spacing-24);
+  box-sizing: border-box;
+}
+
+.d3-kyb-resume .d3-kyb-officer__cols .tds-data-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.d3-kyb-resume .d3-kyb-officer__cols .tds-data-field__label {
+  margin: 0;
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-xs, 16px);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-caption);
+}
+
+/* UBO drawer field labels: spaced words, 14px. */
+.d3-kyb-resume .kyb-ubo-drawer__field-label {
+  font-size: 14px;
+  line-height: var(--line-height-sm, 22px);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.d3-kyb-resume .d3-kyb-officer__cols .tds-data-field__content,
+.d3-kyb-resume .d3-kyb-officer__cols .tds-data-field__value-row {
+  overflow: visible;
+  max-width: 100%;
+}
+
+.d3-kyb-resume .d3-kyb-officer__cols .tds-data-field__value {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-sm, 22px);
+  color: var(--text-default);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .d3-kyb-resume .d3-kyb-officer__cols.kyb-field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .d3-kyb-resume .d3-kyb-officer__cols.kyb-field-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Overview hero: Suggested Actions always pinned to bottom of left column */
+
+/* Owners & UBOs table: the name takes the room that is left; the numbers (degree, ownership %) are short, so
+   their columns stay narrow and the headers wrap. Below the minimum width the table scrolls sideways rather
+   than squeezing the name. */
+.d3-kyb-resume .d3-kyb-ownership__table { overflow-x: auto; }
+
+.d3-kyb-resume .d3-kyb-ownership__table table {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 680px;
+}
+
+.d3-kyb-resume .d3-kyb-ownership__table thead th { white-space: normal; vertical-align: middle; }
+.d3-kyb-resume .d3-kyb-ownership__table thead th:nth-child(1) { width: auto; min-width: 220px; }
+.d3-kyb-resume .d3-kyb-ownership__table thead th:nth-child(2) { width: 110px; }
+.d3-kyb-resume .d3-kyb-ownership__table thead th:nth-child(3) { width: 130px; }
+.d3-kyb-resume .d3-kyb-ownership__table thead th:nth-child(4) { width: 140px; }
+.d3-kyb-resume .d3-kyb-ownership__table thead th:nth-child(5) { width: 140px; }
+.d3-kyb-resume .d3-kyb-ownership__table thead th:nth-child(6) { width: 56px; }
