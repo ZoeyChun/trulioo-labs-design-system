@@ -261,7 +261,11 @@
     var input = byId("vb-q");
     var label = document.querySelector('label[for="vb-q"]');
     if (!input) return;
-    var text = noPrefillDemo() ? "Business name *" : "Search by business name";
+    /* The country is named in the field, so the small country select is hard to miss. */
+    var where = typeahead.country ? typeahead.country.name : "";
+    var text = noPrefillDemo()
+      ? where ? "Business name in " + where + " *" : "Business name *"
+      : where ? "Search business in " + where : "Search by business name";
     input.placeholder = text;
     if (label) label.textContent = text;
   }
