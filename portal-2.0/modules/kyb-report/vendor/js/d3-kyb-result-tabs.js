@@ -469,6 +469,7 @@
         rows: [
           {
             id: "business-name",
+            category: "Business Information",
             field: "Business Name",
             input: biz.name,
             status: "match",
@@ -477,6 +478,7 @@
           },
           {
             id: "jurisdiction",
+            category: "Business Information",
             field: "Jurisdiction of Incorporation",
             input: jurisdiction,
             status: "match",
@@ -485,6 +487,7 @@
           },
           {
             id: "city",
+            category: "Address",
             field: "City",
             input: city,
             status: "match",
@@ -493,6 +496,7 @@
           },
           {
             id: "state-province",
+            category: "Address",
             field: "State Province",
             input: state,
             status: "match",
@@ -510,6 +514,7 @@
       rows: [
         {
           id: "business-name",
+          category: "Business Information",
           field: "Business Name",
           input: biz.name,
           status: "no-match",
@@ -518,6 +523,7 @@
         },
         {
           id: "jurisdiction",
+          category: "Business Information",
           field: "Jurisdiction of Incorporation",
           input: jurisdiction,
           status: "match",
@@ -526,6 +532,7 @@
         },
         {
           id: "city",
+          category: "Address",
           field: "City",
           input: city,
           status: "no-match",
@@ -534,6 +541,7 @@
         },
         {
           id: "state-province",
+          category: "Address",
           field: "State Province",
           input: state,
           status: "match",
@@ -571,6 +579,85 @@
     });
   }
 
+  var MATCH_CATEGORY_ORDER = ["Business Information", "Address", "Additional"];
+
+  function matchCategoryHeaderHtml(label) {
+    return (
+      '<tr class="kyb-match-category-row">' +
+      '<th colspan="4" scope="colgroup">' +
+      esc(label) +
+      "</th></tr>"
+    );
+  }
+
+  function matchFieldRowPairHtml(row) {
+    var expanded = false;
+    var nested = (row.sourceRows || [])
+      .map(function (s) {
+        return (
+          '<tr><td class="tds-data-table__text-cell">' +
+          esc(s.name) +
+          "</td><td>" +
+          signalChip(s.status) +
+          "</td></tr>"
+        );
+      })
+      .join("");
+    return (
+      '<tr data-d3-match-row="' +
+      esc(row.id) +
+      '"' +
+      (expanded ? ' class="kyb-match-row--expanded"' : "") +
+      ">" +
+      '<td class="tds-data-table__text-cell">' +
+      esc(row.field) +
+      "</td>" +
+      '<td class="tds-data-table__text-cell">' +
+      esc(row.input) +
+      "</td>" +
+      '<td class="tds-data-table__text-cell">' +
+      esc(row.sources) +
+      "</td>" +
+      '<td data-align="right"><span class="tds-data-table__actions-cell">' +
+      '<button type="button" class="tds-data-table__action-icon kyb-match-row__toggle" aria-label="Show source details" aria-expanded="' +
+      (expanded ? "true" : "false") +
+      '">' +
+      '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>' +
+      "</button></span></td></tr>" +
+      '<tr class="kyb-match-detail-row"' +
+      (expanded ? "" : " hidden") +
+      '><td colspan="4">' +
+      '<div class="kyb-match-source-panel"><table class="tds-data-table kyb-match-source-table"><tbody>' +
+      nested +
+      "</tbody></table></div></td></tr>"
+    );
+  }
+
+  function matchRowsHtmlGrouped(rows) {
+    var byCat = {};
+    MATCH_CATEGORY_ORDER.forEach(function (c) {
+      byCat[c] = [];
+    });
+    var orphan = [];
+    (rows || []).forEach(function (row) {
+      var c = row.category || "Additional";
+      if (byCat[c]) byCat[c].push(row);
+      else orphan.push(row);
+    });
+    var html = "";
+    MATCH_CATEGORY_ORDER.forEach(function (c) {
+      var list = byCat[c];
+      if (!list.length) return;
+      html += matchCategoryHeaderHtml(c);
+      html += list.map(matchFieldRowPairHtml).join("");
+    });
+    if (orphan.length) {
+      html += matchCategoryHeaderHtml("Additional");
+      html += orphan.map(matchFieldRowPairHtml).join("");
+    }
+    return html;
+  }
+
   function renderMatchSignalsPanel(panel, biz) {
     if (!panel || !biz) return;
     var data = matchDataForBiz(biz);
@@ -580,51 +667,8 @@
     var statusIcon = data.verified ? ICON_MATCH : ICON_NO;
     var statusTitle = data.verified ? "Verified" : "Not Verified";
 
-    /* Match rows collapsed by default; user expands for source details. */
-    var rowsHtml = data.rows
-      .map(function (row) {
-        var expanded = false;
-        var nested = (row.sourceRows || [])
-          .map(function (s) {
-            return (
-              "<tr><td class=\"tds-data-table__text-cell\">" +
-              esc(s.name) +
-              "</td><td>" +
-              signalChip(s.status) +
-              "</td></tr>"
-            );
-          })
-          .join("");
-        return (
-          '<tr data-d3-match-row="' +
-          esc(row.id) +
-          '"' +
-          (expanded ? ' class="kyb-match-row--expanded"' : "") +
-          ">" +
-          '<td class="tds-data-table__text-cell">' +
-          esc(row.field) +
-          "</td>" +
-          '<td class="tds-data-table__text-cell">' +
-          esc(row.input) +
-          "</td>" +
-          '<td class="tds-data-table__text-cell">' +
-          esc(row.sources) +
-          "</td>" +
-          '<td data-align="right"><span class="tds-data-table__actions-cell">' +
-          '<button type="button" class="tds-data-table__action-icon kyb-match-row__toggle" aria-label="Show source details" aria-expanded="' +
-          (expanded ? "true" : "false") +
-          '">' +
-          '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>' +
-          "</button></span></td></tr>" +
-          '<tr class="kyb-match-detail-row"' +
-          (expanded ? "" : " hidden") +
-          '><td colspan="4">' +
-          '<div class="kyb-match-source-panel"><table class="tds-data-table kyb-match-source-table"><tbody>' +
-          nested +
-          "</tbody></table></div></td></tr>"
-        );
-      })
-      .join("");
+    /* Match rows collapsed by default; grouped under category headers. */
+    var rowsHtml = matchRowsHtmlGrouped(data.rows);
 
     panel.innerHTML =
       '<div class="d3-kyb-tab-body d3-kyb-match">' +

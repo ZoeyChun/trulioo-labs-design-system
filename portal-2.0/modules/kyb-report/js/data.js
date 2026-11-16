@@ -58,6 +58,7 @@
       rows: [
         {
           id: "business-name",
+          category: "Business Information",
           field: "Business Name",
           input: "Meridian Capital LLC",
           status: "no-match",
@@ -98,6 +99,7 @@
         },
         {
           id: "tax-id",
+          category: "Business Information",
           field: "Tax ID Number",
           input: "13-4417762",
           status: "match",
@@ -138,6 +140,7 @@
         },
         {
           id: "duns",
+          category: "Business Information",
           field: "DUNS Number",
           input: "084421903",
           status: "match",
@@ -173,6 +176,7 @@
         },
         {
           id: "brn",
+          category: "Business Information",
           field: "Business Registration Number",
           input: "NY DOS 4417762",
           status: "match",
@@ -223,6 +227,7 @@
         },
         {
           id: "jurisdiction",
+          category: "Business Information",
           field: "Jurisdiction of Incorporation",
           input: "New York",
           status: "match",
@@ -281,6 +286,7 @@
         },
         {
           id: "date-of-incorporation",
+          category: "Business Information",
           field: "Date of Incorporation",
           input: "14 Jun 2013",
           status: "match",
@@ -316,6 +322,7 @@
         },
         {
           id: "street-name",
+          category: "Address",
           field: "Street Name",
           input: "Vesey",
           status: "derived",
@@ -342,6 +349,7 @@
         },
         {
           id: "city",
+          category: "Address",
           field: "City",
           input: "New York",
           status: "no-match",
@@ -355,6 +363,7 @@
         },
         {
           id: "state-province",
+          category: "Address",
           field: "State Province",
           input: "NY",
           status: "match",
