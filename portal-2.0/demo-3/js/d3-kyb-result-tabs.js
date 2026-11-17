@@ -66,10 +66,16 @@
     );
   }
 
+  var ICON_DERIVED = '<span class="d3-match-derived-glyph">D</span>';
+  /* Missing reads as a minus in a circle, like Match (check) and No-match (cross). */
+  var ICON_MISSING_CHIP =
+    '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.25"/><path d="M4.75 8h6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+
   function signalChip(status) {
     var tone = "negative";
-    var label = "No Match";
+    var label = "No-match";
     var icon = ICON_NO;
+    var extra = "";
     if (status === "match") {
       tone = "positive";
       label = "Match";
@@ -77,11 +83,17 @@
     } else if (status === "missing") {
       tone = "intermediate";
       label = "Missing";
-      icon = ICON_MISS;
+      icon = ICON_MISSING_CHIP;
+    } else if (status === "derived") {
+      tone = "info";
+      label = "Derived";
+      icon = ICON_DERIVED;
+      extra = " tds-data-table__signals--derived";
     }
     return (
       '<span class="tds-data-table__signals tds-data-table__signals--' +
       tone +
+      extra +
       '"><span class="tds-data-table__signals-icon" aria-hidden="true">' +
       icon +
       "</span>" +
@@ -441,68 +453,67 @@
   }
 
   /* ——— Match Signals ——— */
-  function defaultSources(statuses) {
-    var names = [
-      "Business Documents 323100",
-      "Business Insights 344568",
-      "Business Insights 773174",
-      "Ownership Tree 480052"
-    ];
-    return names.map(function (name, i) {
-      return { name: name, status: statuses[i] || "missing" };
-    });
+  /* The nine fields every Match Signals tab reports: six about the business, three about its address. */
+  var SRC_NAMES = [
+    "Business Documents 323100",
+    "Business Insights 344568",
+    "Business Insights 773174",
+    "Ownership Tree 480052"
+  ];
+
+  function matchRow(id, category, field, input, status, sources, statuses) {
+    return {
+      id: id,
+      category: category,
+      field: field,
+      input: input || "—",
+      status: status,
+      sources: sources,
+      sourceRows: SRC_NAMES.map(function (name, i) {
+        return { name: name, status: statuses[i] || "missing" };
+      })
+    };
   }
 
   function matchDataForBiz(biz) {
     if (biz.matchSignals) return biz.matchSignals;
+    var rep = biz.report || {};
     var city = (biz.city || "").split(",")[0].trim() || "—";
-    var state =
-      (biz.city || "").split(",")[1] && (biz.city || "").split(",")[1].trim()
-        ? (biz.city || "").split(",")[1].trim()
-        : biz.cc === "US"
-          ? "Delaware"
-          : "—";
+    var stateRaw = (biz.city || "").split(",")[1] && (biz.city || "").split(",")[1].trim();
+    var state = stateRaw ? stateRaw : biz.cc === "US" ? "Delaware" : "—";
     var jurisdiction = state !== "—" ? state : biz.country || "—";
     var verified = biz.riskLevel === "low";
+    var reg = rep.regNumber || biz.reg || "—";
+    var date = String(rep.regDate || "").replace(/^Incorporated\s+/i, "").replace(/\s*\(.*\)\s*$/, "") || "—";
+    var street = parseStreetParts(rep.address || biz.addr || "").street || "—";
+    var taxId = rep.taxId;
+    var duns = rep.duns;
+    /* Meridian Capital LLC carries the full record the KYB Report module shows. */
+    if (/^meridian capital llc/i.test(biz.name || "")) {
+      taxId = "13-4417762";
+      duns = "084421903";
+      date = "14 Jun 2013";
+    }
+    var M = "match";
+    var X = "no-match";
+    var N = "missing";
+    var D = "derived";
 
     if (verified) {
       return {
         verified: true,
         rule: "Verification Rule: KYB Standard: 1 Records Match (BRN)",
-        metrics: { fields: "4 fields", sources: "4 of 4 datasources" },
+        metrics: { fields: "9 fields", sources: "4 of 4 datasources" },
         rows: [
-          {
-            id: "business-name",
-            field: "Business Name",
-            input: biz.name,
-            status: "match",
-            sources: "4/4 matched",
-            sourceRows: defaultSources(["match", "match", "match", "match"])
-          },
-          {
-            id: "jurisdiction",
-            field: "Jurisdiction of Incorporation",
-            input: jurisdiction,
-            status: "match",
-            sources: "4/4 matched",
-            sourceRows: defaultSources(["match", "match", "match", "match"])
-          },
-          {
-            id: "city",
-            field: "City",
-            input: city,
-            status: "match",
-            sources: "3/4 matched",
-            sourceRows: defaultSources(["match", "match", "match", "missing"])
-          },
-          {
-            id: "state-province",
-            field: "State Province",
-            input: state,
-            status: "match",
-            sources: "4/4 matched",
-            sourceRows: defaultSources(["match", "match", "match", "match"])
-          }
+          matchRow("business-name", "Business Information", "Business Name", biz.name, M, "4/4 matched", [M, M, M, M]),
+          matchRow("tax-id", "Business Information", "Tax ID Number", taxId, M, "3/4 matched", [N, M, M, M]),
+          matchRow("duns", "Business Information", "DUNS Number", duns, M, "3/4 matched", [N, M, M, M]),
+          matchRow("brn", "Business Information", "Business Registration Number", reg, M, "4/4 matched", [M, M, M, M]),
+          matchRow("jurisdiction", "Business Information", "Jurisdiction of Incorporation", jurisdiction, M, "4/4 matched", [M, M, M, M]),
+          matchRow("date-of-incorporation", "Business Information", "Date of Incorporation", date, M, "3/4 matched", [N, M, M, M]),
+          matchRow("street-name", "Address", "Street Name", street, D, "Derived from Address Line 1", [N, D, D, N]),
+          matchRow("city", "Address", "City", city, M, "3/4 matched", [M, M, M, N]),
+          matchRow("state-province", "Address", "State Province", state, M, "4/4 matched", [M, M, M, M])
         ]
       };
     }
@@ -510,40 +521,17 @@
     return {
       verified: false,
       rule: "Verification Rule: KYB Standard: 1 Records Match (BRN)",
-      metrics: { fields: "4 fields", sources: "4 of 7 datasources" },
+      metrics: { fields: "9 fields", sources: "4 of 7 datasources" },
       rows: [
-        {
-          id: "business-name",
-          field: "Business Name",
-          input: biz.name,
-          status: "no-match",
-          sources: "1/4 matched",
-          sourceRows: defaultSources(["no-match", "match", "no-match", "no-match"])
-        },
-        {
-          id: "jurisdiction",
-          field: "Jurisdiction of Incorporation",
-          input: jurisdiction,
-          status: "match",
-          sources: "3/4 matched",
-          sourceRows: defaultSources(["missing", "match", "match", "match"])
-        },
-        {
-          id: "city",
-          field: "City",
-          input: city,
-          status: "no-match",
-          sources: "0/4 matched",
-          sourceRows: defaultSources(["no-match", "no-match", "no-match", "no-match"])
-        },
-        {
-          id: "state-province",
-          field: "State Province",
-          input: state,
-          status: "match",
-          sources: "3/4 matched",
-          sourceRows: defaultSources(["missing", "match", "match", "match"])
-        }
+        matchRow("business-name", "Business Information", "Business Name", biz.name, X, "1/4 matched", [X, M, X, X]),
+        matchRow("tax-id", "Business Information", "Tax ID Number", taxId, M, "2/4 matched", [N, M, M, N]),
+        matchRow("duns", "Business Information", "DUNS Number", duns, M, "2/4 matched", [N, M, M, X]),
+        matchRow("brn", "Business Information", "Business Registration Number", reg, M, "3/4 matched", [M, M, M, N]),
+        matchRow("jurisdiction", "Business Information", "Jurisdiction of Incorporation", jurisdiction, M, "3/4 matched", [N, M, M, M]),
+        matchRow("date-of-incorporation", "Business Information", "Date of Incorporation", date, M, "2/4 matched", [N, M, M, N]),
+        matchRow("street-name", "Address", "Street Name", street, D, "Derived from Address Line 1", [N, D, D, N]),
+        matchRow("city", "Address", "City", city, X, "0/4 matched", [X, X, X, X]),
+        matchRow("state-province", "Address", "State Province", state, M, "3/4 matched", [N, M, M, M])
       ]
     };
   }
@@ -575,6 +563,124 @@
     });
   }
 
+  var MATCH_CATEGORY_ORDER = ["Business Information", "Address", "Additional"];
+
+  function matchFieldRowPairHtml(row) {
+    var nested = (row.sourceRows || [])
+      .map(function (s) {
+        return (
+          '<tr><td class="tds-data-table__text-cell">' +
+          esc(s.name) +
+          "</td><td>" +
+          signalChip(s.status) +
+          "</td></tr>"
+        );
+      })
+      .join("");
+    return (
+      '<tr data-d3-match-row="' +
+      esc(row.id) +
+      '">' +
+      '<td class="tds-data-table__text-cell">' +
+      esc(row.field) +
+      "</td>" +
+      '<td class="tds-data-table__text-cell">' +
+      esc(row.input) +
+      "</td>" +
+      '<td class="tds-data-table__text-cell">' +
+      esc(row.sources) +
+      "</td>" +
+      '<td data-align="right"><span class="tds-data-table__actions-cell">' +
+      '<button type="button" class="tds-data-table__action-icon kyb-match-row__toggle" aria-label="Show source details" aria-expanded="false">' +
+      '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>' +
+      "</button></span></td></tr>" +
+      '<tr class="kyb-match-detail-row" hidden><td colspan="4">' +
+      '<div class="kyb-match-source-panel"><table class="tds-data-table kyb-match-source-table"><tbody>' +
+      nested +
+      "</tbody></table></div></td></tr>"
+    );
+  }
+
+  /* One heading + table per category, the heading outside the table. */
+  function matchCategoryTableHtml(label, rows) {
+    if (!rows || !rows.length) return "";
+    return (
+      '<section class="kyb-match-category">' +
+      '<h3 class="kyb-match-category__title">' +
+      esc(label) +
+      "</h3>" +
+      '<div class="tds-data-table-container kyb-match-table">' +
+      '<div class="tds-data-table__wrapper"><table class="tds-data-table tds-data-table--comfort">' +
+      "<thead><tr><th>Field</th><th>Input</th><th>Sources</th>" +
+      '<th class="tds-data-table__actions-col" aria-hidden="true"></th></tr></thead>' +
+      "<tbody>" +
+      rows.map(matchFieldRowPairHtml).join("") +
+      "</tbody></table></div></div></section>"
+    );
+  }
+
+  function matchCategoriesHtml(rows) {
+    var byCat = {};
+    MATCH_CATEGORY_ORDER.forEach(function (c) {
+      byCat[c] = [];
+    });
+    var orphan = [];
+    (rows || []).forEach(function (row) {
+      var c = row.category || "Additional";
+      if (byCat[c]) byCat[c].push(row);
+      else orphan.push(row);
+    });
+    var html = "";
+    MATCH_CATEGORY_ORDER.forEach(function (c) {
+      html += matchCategoryTableHtml(c, byCat[c]);
+    });
+    if (orphan.length) html += matchCategoryTableHtml("Additional", orphan);
+    return html;
+  }
+
+  /* The match-status legend: one accordion row inside the banner, the four statuses at rest, what they mean when open. */
+  function matchLegendHtml() {
+    var chevron =
+      '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+      '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 6 4 4 4-4"/></svg>';
+    function concept(title, copy) {
+      return '<div class="d3-match-legend__concept"><h3 class="d3-match-legend__title">' + title + '</h3><p class="d3-match-legend__copy">' + copy + "</p></div>";
+    }
+    return (
+      '<aside class="d3-match-legend tds-accordion tds-accordion--md" aria-label="Datasource match statuses">' +
+      '<button type="button" class="tds-accordion__header d3-match-legend__header" aria-expanded="false">' +
+      '<span class="tds-accordion__leading"><span class="tds-accordion__title d3-match-legend__title-text">Match status legend</span></span>' +
+      '<span class="tds-accordion__trailing d3-match-legend__trailing">' +
+      '<ul class="d3-match-legend__statuses" aria-hidden="true">' +
+      ["match", "missing", "no-match", "derived"]
+        .map(function (st) {
+          return '<li class="d3-match-legend__item">' + signalChip(st) + "</li>";
+        })
+        .join("") +
+      "</ul>" +
+      '<span class="tds-accordion__chevron" aria-hidden="true">' +
+      chevron +
+      "</span></span></button>" +
+      '<div class="tds-accordion__content d3-match-legend__content"><div class="d3-match-legend__concepts">' +
+      concept("Match", "Indicates if an input field (Business Name, Registration Number etc.) matched the data returned by a source.") +
+      concept("Missing", "The source did not return a value for this field, so no comparison could be made.") +
+      concept("No-match", "The source returned a value, but it did not match the input field.") +
+      concept("Derived", "Data obtained from other fields — for example, Street name may be derived from Address line 1.") +
+      "</div></div></aside>"
+    );
+  }
+
+  function bindMatchLegend(panel) {
+    var legend = panel.querySelector(".d3-match-legend");
+    var header = legend && legend.querySelector(".d3-match-legend__header");
+    if (!header || legend.dataset.d3Bound) return;
+    legend.dataset.d3Bound = "1";
+    header.addEventListener("click", function () {
+      var open = legend.classList.toggle("tds-accordion--expanded");
+      header.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
+
   function renderMatchSignalsPanel(panel, biz) {
     if (!panel || !biz) return;
     var data = matchDataForBiz(biz);
@@ -583,52 +689,6 @@
       (data.verified ? " kyb-match-verification-banner--positive" : "");
     var statusIcon = data.verified ? ICON_MATCH : ICON_NO;
     var statusTitle = data.verified ? "Verified" : "Not Verified";
-
-    /* Match rows collapsed by default; user expands for source details. */
-    var rowsHtml = data.rows
-      .map(function (row) {
-        var expanded = false;
-        var nested = (row.sourceRows || [])
-          .map(function (s) {
-            return (
-              "<tr><td class=\"tds-data-table__text-cell\">" +
-              esc(s.name) +
-              "</td><td>" +
-              signalChip(s.status) +
-              "</td></tr>"
-            );
-          })
-          .join("");
-        return (
-          '<tr data-d3-match-row="' +
-          esc(row.id) +
-          '"' +
-          (expanded ? ' class="kyb-match-row--expanded"' : "") +
-          ">" +
-          '<td class="tds-data-table__text-cell">' +
-          esc(row.field) +
-          "</td>" +
-          '<td class="tds-data-table__text-cell">' +
-          esc(row.input) +
-          "</td>" +
-          '<td class="tds-data-table__text-cell">' +
-          esc(row.sources) +
-          "</td>" +
-          '<td data-align="right"><span class="tds-data-table__actions-cell">' +
-          '<button type="button" class="tds-data-table__action-icon kyb-match-row__toggle" aria-label="Show source details" aria-expanded="' +
-          (expanded ? "true" : "false") +
-          '">' +
-          '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>' +
-          "</button></span></td></tr>" +
-          '<tr class="kyb-match-detail-row"' +
-          (expanded ? "" : " hidden") +
-          '><td colspan="4">' +
-          '<div class="kyb-match-source-panel"><table class="tds-data-table kyb-match-source-table"><tbody>' +
-          nested +
-          "</tbody></table></div></td></tr>"
-        );
-      })
-      .join("");
 
     panel.innerHTML =
       '<div class="d3-kyb-tab-body d3-kyb-match">' +
@@ -652,18 +712,16 @@
       "</div>" +
       '<div class="kyb-field-strip__item">' +
       dataField("Sources Responded", valueText(data.metrics.sources)) +
-      "</div></div></div>" +
-      '<div class="tds-data-table-container kyb-match-table">' +
-      '<div class="tds-data-table__wrapper"><table class="tds-data-table tds-data-table--comfort">' +
-      "<thead><tr><th>Field</th><th>Input</th><th>Sources</th>" +
-      '<th class="tds-data-table__actions-col" aria-hidden="true"></th></tr></thead>' +
-      "<tbody>" +
-      rowsHtml +
-      "</tbody></table></div></div>" +
-      sourcesSectionsHtml(biz) +
+      "</div></div>" +
+      matchLegendHtml() +
+      "</div>" +
+      '<div class="kyb-match-categories">' +
+      matchCategoriesHtml(data.rows) +
+      "</div>" +
       "</div>";
 
     bindMatchToggles(panel);
+    bindMatchLegend(panel);
   }
 
   /* ——— Sources ——— */

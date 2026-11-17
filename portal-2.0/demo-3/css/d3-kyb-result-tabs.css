@@ -370,7 +370,8 @@
 }
 
 .kyb-match-table tr[data-d3-match-row].kyb-match-row--expanded > td {
-  border-bottom: none;
+  /* The main row keeps its divider when open, like the Owners & UBOs tables. */
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
 }
 
 .kyb-match-table .kyb-match-row__toggle svg {
@@ -381,16 +382,35 @@
   transform: rotate(180deg);
 }
 
+/* The open detail runs edge to edge on the neutral surface, square and with no gap around it: the same as an opened Owners & UBOs row. */
 .kyb-match-detail-row > td {
-  padding-top: 0;
+  padding: 0;
   border-top: none;
+  background: var(--surface-neutral-02, #f4f6f4);
 }
 
 .kyb-match-source-panel {
-  margin: 0 0 12px;
-  padding: 16px;
-  border-radius: 8px;
-  background: var(--surface-neutral-02, #f4f6f4);
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.kyb-match-table .kyb-match-source-panel .kyb-match-source-table {
+  table-layout: auto;
+  width: 100%;
+}
+
+.kyb-match-source-panel .kyb-match-source-table td {
+  padding: var(--spacing-12, 12px) var(--spacing-24, 24px);
+  background: transparent;
+}
+
+/* The source name on the left, its result on the right, both inside the panel. */
+.kyb-match-source-panel .kyb-match-source-table td:last-child {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
 }
 
 /* The inner table inherits the data table's 720px minimum; inside the padded panel that overflows it. */
@@ -772,3 +792,143 @@
   max-width: 100%;
 }
 
+
+/* ---- Match Signals: banner with the legend, one section per category ---- */
+.d3-kyb-match .kyb-match-verification-banner {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--spacing-24, 24px);
+}
+
+.kyb-match-categories {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+}
+
+.kyb-match-category {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+  min-width: 0;
+}
+
+.kyb-match-category__title {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: var(--line-height-sm, 22px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-default, #172d2d);
+}
+
+/* Shared column widths so every category table lines up. */
+.kyb-match-table .tds-data-table {
+  table-layout: fixed;
+  width: 100%;
+}
+.kyb-match-table .tds-data-table thead th:nth-child(1),
+.kyb-match-table .tds-data-table tbody tr[data-d3-match-row] > td:nth-child(1) { width: 32%; }
+.kyb-match-table .tds-data-table thead th:nth-child(2),
+.kyb-match-table .tds-data-table tbody tr[data-d3-match-row] > td:nth-child(2) { width: 36%; }
+.kyb-match-table .tds-data-table thead th:nth-child(3),
+.kyb-match-table .tds-data-table tbody tr[data-d3-match-row] > td:nth-child(3) { width: auto; }
+.kyb-match-table .tds-data-table thead th.tds-data-table__actions-col,
+.kyb-match-table .tds-data-table tbody tr[data-d3-match-row] > td:nth-child(4) {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+}
+
+/* Derived status */
+.d3-kyb-match .tds-data-table__signals--derived,
+.d3-kyb-match .tds-data-table__signals--info { color: var(--text-ai); }
+.d3-kyb-match .tds-data-table__signals--derived .tds-data-table__signals-icon,
+.d3-kyb-match .tds-data-table__signals--info .tds-data-table__signals-icon { color: var(--icon-ai); }
+.d3-match-derived-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1.25px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.5625rem;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1;
+}
+
+/* Match status legend: an accordion row inside the banner */
+.d3-kyb-match .kyb-match-verification-banner .d3-match-legend {
+  flex: 1 1 100%;
+  width: 100%;
+  margin-top: var(--spacing-8, 8px);
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+  overflow: hidden;
+}
+.d3-match-legend .d3-match-legend__header {
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-12, 12px) var(--spacing-16, 16px);
+  border: 0;
+  border-radius: 8px;
+  background: var(--surface-neutral-01, #fff);
+  cursor: pointer;
+}
+.d3-match-legend .d3-match-legend__header:hover { background: var(--surface-neutral-01, #fff); }
+.d3-match-legend .d3-match-legend__title-text {
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-default, #172d2d);
+  white-space: nowrap;
+}
+.d3-match-legend .d3-match-legend__trailing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-16, 16px);
+  margin-left: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.d3-match-legend__statuses {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-8, 8px) var(--spacing-24, 24px);
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.d3-match-legend__item { display: flex; align-items: center; gap: var(--spacing-8, 8px); margin: 0; }
+.d3-match-legend__item .tds-data-table__signals {
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+}
+.d3-match-legend .d3-match-legend__content {
+  padding: var(--spacing-16, 16px) var(--spacing-4, 4px) 0;
+  border-top: 0;
+}
+.d3-match-legend__concepts { display: flex; gap: var(--spacing-24, 24px); }
+.d3-match-legend__concept { flex: 1 1 0; min-width: 0; }
+.d3-match-legend__title {
+  margin: 0 0 var(--spacing-8, 8px);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-default, #172d2d);
+}
+.d3-match-legend__copy {
+  margin: 0;
+  font-size: var(--font-size-xs, 12px);
+  line-height: var(--line-height-xs, 16px);
+  color: var(--text-description, #526660);
+}
+@media (max-width: 720px) {
+  .d3-match-legend__concepts { flex-direction: column; }
+}
