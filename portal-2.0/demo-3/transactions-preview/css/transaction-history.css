@@ -848,14 +848,15 @@ body {
   height: 16px;
 }
 
-/* Expanded parent — surface-neutral-02 (incl. sticky Transaction col) */
+/* An expanded parent stays on the table's own white — the tint belongs to the
+   children below it, which is what marks the group out. */
 .ut-tx-table tbody tr.ut-tx-row--expanded > td {
-  background-color: var(--surface-neutral-02);
+  background-color: var(--surface-neutral-01);
 }
 
 .ut-tx-table tbody tr.ut-tx-row--expanded > td.tds-data-table__checkbox-cell,
 .ut-tx-table tbody tr.ut-tx-row--expanded > td.ut-tx-td-name {
-  background-color: var(--surface-neutral-02);
+  background-color: var(--surface-neutral-01);
 }
 
 /*

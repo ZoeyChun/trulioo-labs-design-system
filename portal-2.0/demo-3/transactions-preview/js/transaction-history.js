@@ -2627,11 +2627,18 @@
        date are the transaction's, and the child is one product inside it. What
        is its own is the id it ran under, so that is what the cell shows. */
     if (opts.isChild) {
+      var trid = item.trid || "";
+      /* A full id is wider than the Transaction column, and cutting only the
+         tail loses the half people actually scan for. Both ends are kept; the
+         whole thing is on the row's title and on Copy. */
+      var tridShort = trid.length > 24 ? trid.slice(0, 8) + "\u2026" + trid.slice(-12) : trid;
       parts.push(
         '<span class="ut-tx-name-stack">' +
           '<span class="ut-tx-name-row ut-tx-child-id">' +
-          '<span class="ut-tx-name ut-tx-name--trid">' +
-          highlightMatch(item.trid || "") +
+          '<span class="ut-tx-name ut-tx-name--trid" title="' +
+          escapeHtml(trid) +
+          '">' +
+          highlightMatch(tridShort) +
           "</span>" +
           (item.trid
             ? '<button type="button" class="tds-data-table__action-icon ut-tx-id-copy ut-tx-tip-host" data-trid="' +
