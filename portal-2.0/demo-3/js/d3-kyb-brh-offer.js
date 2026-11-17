@@ -60,7 +60,7 @@
       '<button type="button" class="tds-btn tds-btn--primary tds-btn--md d3-brh-hero-cta" data-d3-brh-cta data-d3-brh-run' +
       ' data-tooltip="A 0–100 risk score and the signals behind it. Not part of this verification yet.">' +
       '<span class="tds-btn__leading-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg></span>' +
-      "Add Business Risk Horizon</button>"
+      "Run Business Risk Horizon</button>"
     );
   }
 
@@ -69,7 +69,7 @@
     if (!offered()) return "";
     return (
       '<button type="button" class="d3-ai-next__btn" data-d3-brh-run>' +
-      '<span class="d3-ai-next__text">Add Business Risk Horizon Score</span>' +
+      '<span class="d3-ai-next__text">Run Business Risk Horizon Score</span>' +
       '<span class="d3-ai-next__arrow" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span></button>'
     );
   }
@@ -106,7 +106,7 @@
     })();
   }
 
-  /* An "Added" tag beside the tab, for a report that gained it. */
+  /* A "New" tag beside the tab, for a report that gained it. */
   function syncTag() {
     var tab = resume.querySelector('[data-d3-kyb-tab="risk"]');
     if (!tab) return;
@@ -116,7 +116,7 @@
       return;
     }
     if (tag) return;
-    tab.insertAdjacentHTML("beforeend", ' <span class="tds-tag tds-tag--sm tds-tag--default d3-brh-added-tag">Added</span>');
+    tab.insertAdjacentHTML("beforeend", ' <span class="tds-tag tds-tag--sm tds-tag--default d3-brh-added-tag">New</span>');
   }
 
   /* ---- confirm and run ---- */
@@ -142,7 +142,7 @@
   }
 
   /* The chat shows what was asked, as a message of the user's. */
-  var ASKED = "Add Business Risk Horizon Score";
+  var ASKED = "Run Business Risk Horizon Score";
 
   function echoAsked() {
     var thread = document.querySelector("[data-d1-thread]");
@@ -182,7 +182,7 @@
       node.className = "d1-turn d1-enter";
       node.innerHTML =
         '<div class="d1-ai d1-block d3-brh-reply">' +
-        '<p class="d3-brh-reply__lead">Business Risk Horizon has been added to <b>' + esc((b && b.name) || "this business") + "</b>.</p>" +
+        '<p class="d3-brh-reply__lead">Business Risk Horizon has run for <b>' + esc((b && b.name) || "this business") + "</b>.</p>" +
         '<div class="d3-brh-reply__card">' +
         '<div class="d3-brh-reply__section d3-brh-reply__head"><span class="d3-brh-reply__head-copy">' +
         '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score</span>' +

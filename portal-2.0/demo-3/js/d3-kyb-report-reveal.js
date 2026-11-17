@@ -57,13 +57,8 @@
   function setBizTag(label, tone) {
     if (!bizTag) return;
     bizTag.className = "d1-tag d1-tag--" + (tone || "review");
-    if (tone === "positive") {
-      bizTag.innerHTML =
-        '<i class="fa-regular fa-circle-check" aria-hidden="true"></i> ' +
-        (label || "Verified");
-    } else {
-      bizTag.textContent = label || "Verifying…";
-    }
+    /* No leading icon on any status: the colour and the word carry it. */
+    bizTag.textContent = label || (tone === "positive" ? "Verified" : "Verifying…");
   }
 
   function reportData(biz) {
@@ -1040,7 +1035,7 @@
     if (window.D3KybFindings) window.D3KybFindings.release();
   }
 
-  async function reveal(biz) {
+  async function reveal(biz, opts) {
     if (!biz) return;
     currentBiz = biz;
     /* Findings shows its skeleton until the report finishes verifying. This has to be
@@ -1071,18 +1066,7 @@
       el.hidden = true;
     });
 
-    /* 1) Zoom map to the selected business while still on the map surface. */
-    if (window.D3KybMapSearch && window.D3KybMapSearch.focusBusiness) {
-      setSurface("map");
-      if (mapEl) mapEl.classList.remove("is-fading");
-      await window.D3KybMapSearch.focusBusiness(biz, {
-        zoom: 12,
-        duration: 1.05,
-        holdMs: 420
-      });
-      if (token !== revealToken) return;
-    }
-
+    /* 1) Straight to the report view: its own Verifying skeleton replaces the map zoom + dotted skeleton card. */
     /* 2) Prepare report chrome, fade the map, then reveal. */
     prepareReportChrome(biz);
     await fadeMapThenShowReport();

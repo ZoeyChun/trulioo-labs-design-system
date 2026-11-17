@@ -1079,3 +1079,14 @@
 }
 .d3h-entity__more:hover { filter: brightness(0.96); }
 .d3h-entity__more:focus-visible { outline: 2px solid var(--border-focus, #0e8a78); outline-offset: 2px; }
+
+/* Highlights cards: a compact outlined View button (hugs its label, left aligned) that stays outlined on hover. */
+.dv-summary-evidence__grid .dv-summary-card__view { align-self: flex-start; width: auto; }
+.dv-summary-evidence__grid .dv-summary-card:is(:hover, :focus-within) .dv-summary-card__view.tds-btn.tds-btn--secondary {
+  background-color: var(--surface-neutral-01); border-color: var(--border-strong); color: var(--text-default); }
+.dv-summary-evidence__grid .dv-summary-card:is(:hover, :focus-within) .dv-summary-card__view .tds-btn__trailing-icon,
+.dv-summary-evidence__grid .dv-summary-card:is(:hover, :focus-within) .dv-summary-card__view .tds-btn__trailing-icon svg { color: var(--icon-faint); }
+
+/* Cards size to their content: no fixed row height leaving empty space under the text. */
+.dv-summary-evidence__grid { grid-auto-rows: auto !important; }
+.dv-summary-evidence__grid .dv-summary-card__inner { gap: var(--spacing-16); }

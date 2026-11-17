@@ -873,6 +873,11 @@
      pressed any more. */
   function lockPanel(el) {
     if (!el) return;
+    /* A card with nothing left to say (the saved setup answered it, the list moved on) leaves no empty shell behind. */
+    if (!el.innerText.trim() && !el.querySelector("img, svg, input, select, textarea")) {
+      el.remove();
+      return;
+    }
     el.classList.add("is-past");
     Array.prototype.forEach.call(el.querySelectorAll("button, input, select, textarea"), function (c) {
       c.disabled = true;

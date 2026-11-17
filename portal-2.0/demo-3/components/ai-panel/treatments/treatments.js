@@ -27,6 +27,7 @@
   var nextQuestions = REPORT_NEXT.slice();
   /* Empty until the user names a jurisdiction — never assume one. */
   var lastPlace = { country: "", cc: "" };
+  var lastEntity = "";
 
   /* Panel modes that get these treatments. */
   function mode() {
@@ -110,7 +111,30 @@
     }
     var place = lastPlace.country || lastPlace.cc;
     var short = place ? shortPlace(place) : "";
-    return short ? "Verify Meridian in " + short : "Verify Meridian";
+    var who = entityName();
+    return short ? "Verify " + who + " in " + short : "Verify " + who;
+  }
+
+  /* The business being verified, from the report on screen or the user's own words. */
+  function titleCase(s) {
+    return s.replace(/\b([a-z])/g, function (m) { return m.toUpperCase(); });
+  }
+
+  function nameFromText(text) {
+    var s = String(text || "").replace(/^\s*(please\s+)?(verify|check|look\s*up|search(\s+for)?|find|run)\s+/i, "");
+    s = s.replace(/\s+(in|from|based in|located in)\s+[A-Za-z .'-]+$/i, "").replace(/[?.!]+$/, "").trim();
+    if (!s || s.length > 40) return "";
+    return /[A-Z]/.test(s) ? s : titleCase(s);
+  }
+
+  function entityName() {
+    var R = window.D3KybReport;
+    var cur = R && R.getCurrent && R.getCurrent();
+    if (cur && cur.name) return String(cur.name).replace(/[,\s]+(ltd|llc|inc|plc|corp|limited)\.?$/i, "").trim();
+    if (lastEntity) return lastEntity;
+    var t = thread();
+    var p = t && t.querySelector(".d1-user p");
+    return (p && nameFromText(p.textContent)) || "a business";
   }
 
   /* The header names the conversation. A verification (search / confirm /
@@ -362,6 +386,7 @@
       selectorPage = 0;
       selectorKey = "";
       lastPlace = { country: "", cc: "" };
+      lastEntity = "";
       setTitle(PANEL_NAME);
     }
     step = wanted;
@@ -726,7 +751,9 @@
 
   function onUserText(text) {
     rememberPlace(text || "");
-    if (step !== "landing" && (lastPlace.country || lastPlace.cc)) setTitle(isKyb() ? kybTitle() : conversationTitle());
+    var named = nameFromText(text);
+    if (named && !/^(yes|no|ok|okay|thanks?|thank you)$/i.test(named) && !(lastPlace.country && named.toLowerCase() === String(lastPlace.country).toLowerCase())) lastEntity = lastEntity && !/verify|business/i.test(text) ? lastEntity : named;
+    if (step !== "landing" && (lastPlace.country || lastPlace.cc || lastEntity)) setTitle(isKyb() ? kybTitle() : conversationTitle());
   }
 
   function watchThread() {

@@ -997,8 +997,6 @@
       if (card && (!tabEl || tabEl.hidden)) return;
       var cap = c.querySelector(".dv-summary-card__caption");
       if (cap) cap.textContent = def.name;
-      var det = c.querySelector(".dv-summary-card__detail");
-      if (det && def.detail) det.textContent = def.detail;
       /* The risk tag stays only on the Risk Analysis card. */
       if (def.jump !== "signals") {
         c.querySelectorAll(".dv-summary-card__top .tds-tag").forEach(function (n) { n.remove(); });

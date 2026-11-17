@@ -1566,7 +1566,7 @@
   width: 100%;
   max-width: none;
   height: 182px;
-  border-radius: var(--radius-lg, 8px);
+  border-radius: var(--radius-2xl, 16px);
   overflow: hidden;
   background: var(--surface-neutral-01, #fff);
 }
