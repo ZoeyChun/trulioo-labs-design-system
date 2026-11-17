@@ -1201,3 +1201,36 @@
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------
+   Row hover. A row opens its report when clicked, with nothing to say
+   so until now — no cursor, no highlight. Both cells and the sticky
+   Transaction column take the same opaque tint: the sticky cell paints
+   its own background over the scrolling ones, so a tint on the row
+   alone would stop at its edge.
+   ------------------------------------------------------------------ */
+.th-tx .ut-tx-table tbody tr.ut-tx-row:not(.ut-tx-row--child) {
+  cursor: pointer;
+}
+
+.th-tx .ut-tx-table tbody tr.ut-tx-row:not(.ut-tx-row--child):hover > td,
+.th-tx .ut-tx-table tbody tr.ut-tx-row:not(.ut-tx-row--child):hover > td.ut-tx-td-name {
+  background-color: var(--surface-hover, #f4f6f4);
+}
+
+.th-tx .ut-tx-table tbody tr.ut-tx-row > td {
+  transition: background-color 120ms ease;
+}
+
+/* The controls inside a row keep their own pointer meaning. */
+.th-tx .ut-tx-table tbody tr.ut-tx-row button,
+.th-tx .ut-tx-table tbody tr.ut-tx-row a,
+.th-tx .ut-tx-table tbody tr.ut-tx-row [data-trid] {
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .th-tx .ut-tx-table tbody tr.ut-tx-row > td {
+    transition: none;
+  }
+}
