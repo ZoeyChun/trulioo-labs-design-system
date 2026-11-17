@@ -887,7 +887,6 @@ body {
   white-space: nowrap;
   overflow: hidden;
   border-bottom: none;
-  box-shadow: 1px 0 0 0 var(--border-subtle);
 }
 
 /* Name + detail / Name + TRID — allow cell to grow; tree still fills td */
@@ -901,10 +900,11 @@ body {
   border-bottom: 1px solid var(--border-subtle);
 }
 
+/* No line down the right edge: the children sit inside their parent's row,
+   and only the sticky column's scroll shadow (css/page.css) draws there. */
 .ut-tx-table tbody tr.ut-tx-row--child-last > td.ut-tx-td-name,
 .ut-tx-table--name-stack tbody tr.ut-tx-row--child-last > td.ut-tx-td-name {
   border-bottom: 1px solid var(--border-subtle);
-  box-shadow: 1px 0 0 0 var(--border-subtle);
 }
 
 .ut-tx-row--child .ut-tx-name-cell {
