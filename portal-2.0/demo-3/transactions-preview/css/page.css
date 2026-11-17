@@ -1221,6 +1221,13 @@
   background-color: var(--surface-hover, #f4f6f4);
 }
 
+/* A child already sits on the hover tint, so hovering one has to go a step
+   further or nothing would happen. */
+.th-tx .ut-tx-table tbody tr.ut-tx-row--child:hover > td,
+.th-tx .ut-tx-table tbody tr.ut-tx-row--child:hover > td.ut-tx-td-name {
+  background-color: var(--surface-neutral-03, #eaeeeb);
+}
+
 .th-tx .ut-tx-table tbody tr.ut-tx-row > td {
   transition: background-color 120ms ease;
 }

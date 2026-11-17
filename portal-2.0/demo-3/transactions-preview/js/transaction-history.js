@@ -2623,6 +2623,28 @@
       );
     }
 
+    /* A child repeats nothing of its parent: the business, the verdict and the
+       date are the transaction's, and the child is one product inside it. What
+       is its own is the id it ran under, so that is what the cell shows. */
+    if (opts.isChild) {
+      parts.push(
+        '<span class="ut-tx-name-stack">' +
+          '<span class="ut-tx-name-row ut-tx-child-id">' +
+          '<span class="ut-tx-name ut-tx-name--trid">' +
+          highlightMatch(item.trid || "") +
+          "</span>" +
+          (item.trid
+            ? '<button type="button" class="tds-data-table__action-icon ut-tx-id-copy ut-tx-tip-host" data-trid="' +
+              escapeHtml(item.trid) +
+              '" aria-label="Copy Transaction ID" data-ut-tooltip="Copy Transaction ID">' +
+              COPY_ICON +
+              "</button>"
+            : "") +
+          "</span></span>"
+      );
+      return '<span class="ut-tx-name-cell">' + parts.join("") + "</span>";
+    }
+
     /* Name is the trigger for the floating Transaction ID popover when
        UT_TX_NAME_TRID is on — dotted underline signals it is interactive.
        A parent row is a group, not a result: it carries no id of its own, so
@@ -2637,9 +2659,9 @@
       nameOpen +
       highlightMatch(item.name) +
       "</span>" +
-      (opts.isChild ? "" : statusIconHtml(item));
+      statusIconHtml(item);
 
-    if (!opts.isChild && item.count != null) {
+    if (item.count != null) {
       primary +=
         '<span class="tds-counter tds-counter--sm tds-counter--secondary">' +
         escapeHtml(item.count) +
@@ -2742,26 +2764,33 @@
         '">' +
         outcomeHtml(item) +
         "</td>";
+    /* Date, country and source are the transaction's too, so a child leaves
+       them be. Only the package it ran under is its own, beside its id. */
     cells +=
       "<td>" +
-      dateHtml(item) +
+      (isChild ? "" : dateHtml(item)) +
       "</td>" +
       '<td class="ut-tx-td-country">' +
-      countryHtml(item) +
+      (isChild ? "" : countryHtml(item)) +
       "</td>";
 
     if (showScoreColumn()) {
-      cells += "<td>" + scoreHtml(item.score) + "</td>";
+      cells += "<td>" + (isChild ? "" : scoreHtml(item.score)) + "</td>";
     }
 
     cells +=
       '<td class="ut-tx-td-product">' +
-      productHtml(item, window.UT_TX_PLAIN_TABLE ? undefined : { tag: true }) +
+      (isChild
+        ? ""
+        : productHtml(item, window.UT_TX_PLAIN_TABLE ? undefined : { tag: true })) +
       "</td>";
     if (showPackageColumn()) {
       cells += '<td class="ut-tx-td-package">' + packagesHtml(item) + "</td>";
     }
-    cells += '<td class="ut-tx-td-source">' + escapeHtml(sourceText(item)) + "</td>";
+    cells +=
+      '<td class="ut-tx-td-source">' +
+      (isChild ? "" : escapeHtml(sourceText(item))) +
+      "</td>";
     if (showTypeColumn()) cells += "<td>" + escapeHtml(item.type) + "</td>";
 
     if (showTridColumn()) {

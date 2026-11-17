@@ -22,7 +22,7 @@
     });
 
     if (frame) {
-      var src = "transactions-preview/embed.html?v=67";
+      var src = "transactions-preview/embed.html?v=68";
       if (frame.getAttribute("src") !== src) frame.setAttribute("src", src);
     }
 
@@ -50,8 +50,15 @@
     if (!frame) return;
     var rows = window.UT_TRANSACTIONS || [];
     var row = null;
+    /* A transaction that ran several products nests one child row per product,
+       and each child runs under an id of its own — so the search has to go a
+       level down or a child's id finds nothing and the report opens blank. */
     for (var i = 0; i < rows.length && !row; i += 1) {
       if (rows[i].trid === trid) row = rows[i];
+      var kids = rows[i].children || [];
+      for (var j = 0; j < kids.length && !row; j += 1) {
+        if (kids[j].trid === trid) row = kids[j];
+      }
     }
     var q = new URLSearchParams({ embed: "report" });
     if (row) {

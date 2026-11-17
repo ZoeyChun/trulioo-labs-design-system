@@ -868,14 +868,18 @@ body {
  * Tree is absolutely pinned to the td so the stroke spans full row
  * height (no gaps between segments when name-stack grows the row).
  */
+/* The children sit on a tint so the group reads as one block inside the
+   table, and their parent stays on the table's own white. The sticky name
+   cell paints its own background over the scrolling ones, so it has to be
+   told the same thing or the tint would stop at the column edge. */
 .ut-tx-table tbody tr.ut-tx-row--child > td {
   border-bottom: none;
-  background-color: var(--surface-neutral-01);
+  background-color: var(--surface-neutral-02);
 }
 
 .ut-tx-table tbody tr.ut-tx-row--child > td.tds-data-table__checkbox-cell,
 .ut-tx-table tbody tr.ut-tx-row--child > td.ut-tx-td-name {
-  background-color: var(--surface-neutral-01);
+  background-color: var(--surface-neutral-02);
 }
 
 .ut-tx-table tbody tr.ut-tx-row--child > td.ut-tx-td-name,
@@ -947,6 +951,32 @@ body {
 .ut-tx-row--child .ut-tx-name-stack {
   min-width: 0;
   flex: 1 1 auto;
+}
+
+/* The id is a reference, not a name — it reads quieter, and its Copy button
+   only appears once the row is under the pointer. */
+.ut-tx-child-id {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ut-tx-name--trid {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: var(--text-subtle, #5c6b63);
+}
+
+.ut-tx-child-id .ut-tx-id-copy {
+  flex: 0 0 auto;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.ut-tx-row--child:hover .ut-tx-id-copy,
+.ut-tx-child-id .ut-tx-id-copy:focus-visible {
+  opacity: 1;
 }
 
 .ut-tx-row--child .ut-tx-name {
