@@ -147,11 +147,23 @@
        the chat pane beside it. The pane is inset 8px top and bottom from the
        canvas; the drawer is a flex child of .d1-main and stretched the full
        height, so the two did not line up. Margins rather than a height
-       calculation, so the stretch still does the arithmetic. -->
+       calculation, so the stretch still does the arithmetic. The right edge
+       is inset to match, so the drawer reads as a card beside the pane
+       rather than a sheet welded to the window. -->
   <style>
     .d1-shell .d1-main > .d1-drawer {
       margin-top: 8px;
       margin-bottom: 8px;
+    }
+
+    /* The drawer sizes itself on the main axis, so a right margin alone just
+       overflowed the column — the width has to come down with it. That width
+       is set `!important` in d3-transactions.css, which no selector outranks,
+       so this has to carry the flag too. */
+    .d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="open"] > .d1-drawer,
+    .d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="expanded"] > .d1-drawer {
+      width: calc(var(--d1-drawer-w) - 8px) !important;
+      margin-right: 8px;
     }
   </style>
 </head>
