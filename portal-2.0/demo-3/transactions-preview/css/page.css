@@ -1244,3 +1244,73 @@
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------
+   Nested-row detail toggle (preview only).
+   Two ways of reading a nested transaction, side by side: the child as
+   its id and package alone, or repeating the transaction's columns the
+   way it did before. It is a comparison aid, not part of the design, so
+   it sits faint in the corner until it is reached for.
+   ------------------------------------------------------------------ */
+.ut-tx-viewtoggle {
+  position: fixed;
+  top: 10px;
+  right: 14px;
+  z-index: 40;
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background-color: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
+  opacity: 0.16;
+  transition: opacity 160ms ease;
+}
+
+.ut-tx-viewtoggle:hover,
+.ut-tx-viewtoggle:focus-within {
+  opacity: 1;
+}
+
+.ut-tx-viewtoggle button {
+  appearance: none;
+  border: 0;
+  margin: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--text-subtle, #5c6b63);
+  font-family: inherit;
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ut-tx-viewtoggle button[aria-pressed="true"] {
+  background-color: var(--surface-neutral-03, #eaeeeb);
+  color: var(--text-default, #172d2d);
+}
+
+.ut-tx-viewtoggle button:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 1px;
+}
+
+/* Full detail puts the backgrounds back the way they were too: the children
+   on the table's white, and the expanded parent carrying the tint. */
+[data-ut-child-view="full"] .ut-tx-table tbody tr.ut-tx-row--child > td,
+[data-ut-child-view="full"] .ut-tx-table tbody tr.ut-tx-row--child > td.ut-tx-td-name {
+  background-color: var(--surface-neutral-01);
+}
+
+[data-ut-child-view="full"] .ut-tx-table tbody tr.ut-tx-row--expanded > td,
+[data-ut-child-view="full"] .ut-tx-table tbody tr.ut-tx-row--expanded > td.ut-tx-td-name {
+  background-color: var(--surface-neutral-02);
+}
+
+[data-ut-child-view="full"] .th-tx .ut-tx-table tbody tr.ut-tx-row--child:hover > td,
+[data-ut-child-view="full"] .th-tx .ut-tx-table tbody tr.ut-tx-row--child:hover > td.ut-tx-td-name {
+  background-color: var(--surface-hover, #f4f6f4);
+}
