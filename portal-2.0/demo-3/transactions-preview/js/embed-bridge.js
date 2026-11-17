@@ -54,11 +54,28 @@
       var row = event.target.closest("tr.ut-tx-row");
       if (!row || row.classList.contains("ut-tx-row--child")) return;
       var cells = row.querySelectorAll("td");
-      var product = "";
-      /* PLAIN_TABLE column order: name, outcome, product, date, … */
-      if (cells.length >= 3) product = cells[2].textContent.trim();
+      /* Read the product from its own cell, not a column index — the column
+         order has changed once already, and an index silently pointed at the
+         date, which no product name matches, so every row opened the KYC
+         result instead of the KYB report. */
+      var productCell = row.querySelector(".ut-tx-td-product");
+      /* A multi-product cell holds both the collapsed lead and the full list,
+         one of them hidden — textContent would run the two together. */
+      var productLead = productCell && productCell.querySelector(".ut-tx-multi__lead");
+      var product = productLead
+        ? productLead.textContent.trim()
+        : productCell
+        ? productCell.textContent.trim()
+        : "";
+      var nameCell = row.querySelector(".ut-tx-td-name") || cells[0];
+      var nameEl = nameCell && nameCell.querySelector(".ut-tx-name");
       openByProduct(product, {
-        name: cells[0] ? cells[0].textContent.trim() : "",
+        name: nameEl
+          ? nameEl.textContent.trim()
+          : nameCell
+          ? nameCell.textContent.trim()
+          : "",
+        trid: (row.querySelector("[data-trid]") || {getAttribute: function () { return ""; }}).getAttribute("data-trid") || "",
         product: product
       });
     },
