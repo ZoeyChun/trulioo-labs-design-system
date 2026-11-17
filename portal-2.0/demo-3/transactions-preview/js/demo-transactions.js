@@ -372,7 +372,6 @@ window.UT_TRANSACTIONS = [
     "dateTime": "12:09",
     "product": "Business Complete",
     "extraProducts": [
-      "Business Insights",
       "Business Horizon"
     ],
     "country": "Canada",
@@ -386,12 +385,11 @@ window.UT_TRANSACTIONS = [
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
     "extraPackages": [
-      "Package3_KYB_UBO",
       "Package5_KYB_Horizon"
     ],
     "type": "Live",
     "expandable": true,
-    "count": 3,
+    "count": 2,
     "children": [
       {
         "name": "Cobalt Analytics Inc.",
@@ -406,30 +404,6 @@ window.UT_TRANSACTIONS = [
         "dateTime": "12:09",
         "product": "Business Complete",
         "package": "Package4_KYB_Watchlist",
-        "country": "Canada",
-        "countryCode": "ca",
-        "score": {
-          "value": "47/100",
-          "label": "Medium Risk",
-          "tone": "intermediate"
-        },
-        "source": "API",
-        "sourceLabel": "Test_API_Key",
-        "type": "Live"
-      },
-      {
-        "name": "Cobalt Analytics Inc.",
-        "trid": "8ae9f1fe-9ad9-5ec0-92ca-bb3975ea7f2e",
-        "outcome": {
-          "label": "Verified",
-          "tone": "positive"
-        },
-        "date": "11 Mar 2026, 12:09",
-        "dateNumeric": "03/11/2026, 12:09",
-        "dateDay": "11 Mar 2026",
-        "dateTime": "12:09",
-        "product": "Business Insights",
-        "package": "Package3_KYB_UBO",
         "country": "Canada",
         "countryCode": "ca",
         "score": {
@@ -553,9 +527,6 @@ window.UT_TRANSACTIONS = [
     "dateDay": "06 Mar 2026",
     "dateTime": "14:02",
     "product": "Business Insights",
-    "extraProducts": [
-      "Business Essentials"
-    ],
     "country": "Netherlands",
     "countryCode": "nl",
     "score": {
@@ -566,62 +537,7 @@ window.UT_TRANSACTIONS = [
     "source": "Portal",
     "sourceLabel": "Pria_K_Prod",
     "package": "Package3_KYB_UBO",
-    "extraPackages": [
-      "Package2_KYB_Registry"
-    ],
-    "type": "Live",
-    "expandable": true,
-    "count": 2,
-    "children": [
-      {
-        "name": "Aurora Pharma BV",
-        "trid": "2bb227cc-eefb-5787-956f-486237a0c986",
-        "outcome": {
-          "label": "Verified",
-          "tone": "positive"
-        },
-        "date": "06 Mar 2026, 14:02",
-        "dateNumeric": "03/06/2026, 14:02",
-        "dateDay": "06 Mar 2026",
-        "dateTime": "14:02",
-        "product": "Business Insights",
-        "package": "Package3_KYB_UBO",
-        "country": "Netherlands",
-        "countryCode": "nl",
-        "score": {
-          "value": "18/100",
-          "label": "Low Risk",
-          "tone": "positive"
-        },
-        "source": "Portal",
-        "sourceLabel": "Pria_K_Prod",
-        "type": "Live"
-      },
-      {
-        "name": "Aurora Pharma BV",
-        "trid": "2bb227cc-eefb-5787-956f-486237a0c986",
-        "outcome": {
-          "label": "Verified",
-          "tone": "positive"
-        },
-        "date": "06 Mar 2026, 14:02",
-        "dateNumeric": "03/06/2026, 14:02",
-        "dateDay": "06 Mar 2026",
-        "dateTime": "14:02",
-        "product": "Business Essentials",
-        "package": "Package2_KYB_Registry",
-        "country": "Netherlands",
-        "countryCode": "nl",
-        "score": {
-          "value": "18/100",
-          "label": "Low Risk",
-          "tone": "positive"
-        },
-        "source": "Portal",
-        "sourceLabel": "Pria_K_Prod",
-        "type": "Live"
-      }
-    ]
+    "type": "Live"
   },
   {
     "name": "Delta Ventures Ltda",

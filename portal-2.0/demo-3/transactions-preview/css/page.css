@@ -1209,12 +1209,15 @@
    its own background over the scrolling ones, so a tint on the row
    alone would stop at its edge.
    ------------------------------------------------------------------ */
-.th-tx .ut-tx-table tbody tr.ut-tx-row:not(.ut-tx-row--child) {
+.th-tx .ut-tx-table tbody tr.ut-tx-row {
   cursor: pointer;
 }
 
-.th-tx .ut-tx-table tbody tr.ut-tx-row:not(.ut-tx-row--child):hover > td,
-.th-tx .ut-tx-table tbody tr.ut-tx-row:not(.ut-tx-row--child):hover > td.ut-tx-td-name {
+/* Children are the rows that open a report, so they answer "which one am I
+   about to click" the same way their parent does — the parent's click opens
+   the breakdown instead, but it is still a click. */
+.th-tx .ut-tx-table tbody tr.ut-tx-row:hover > td,
+.th-tx .ut-tx-table tbody tr.ut-tx-row:hover > td.ut-tx-td-name {
   background-color: var(--surface-hover, #f4f6f4);
 }
 

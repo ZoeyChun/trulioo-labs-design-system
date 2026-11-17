@@ -2624,9 +2624,11 @@
     }
 
     /* Name is the trigger for the floating Transaction ID popover when
-       UT_TX_NAME_TRID is on — dotted underline signals it is interactive. */
+       UT_TX_NAME_TRID is on — dotted underline signals it is interactive.
+       A parent row is a group, not a result: it carries no id of its own, so
+       its name is inert and the id belongs to the children underneath it. */
     var nameOpen =
-      showNameTrid() && item.trid && !opts.isChild
+      showNameTrid() && item.trid && !item.expandable
         ? '<span class="ut-tx-name ut-tx-name--id-trigger" tabindex="0" data-trid="' +
           escapeHtml(item.trid) +
           '" aria-haspopup="dialog" aria-expanded="false">'
