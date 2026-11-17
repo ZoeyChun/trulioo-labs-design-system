@@ -143,6 +143,17 @@
       });
     })();
   </script>
+  <!-- Preview-only: the transaction details drawer sits in the same frame as
+       the chat pane beside it. The pane is inset 8px top and bottom from the
+       canvas; the drawer is a flex child of .d1-main and stretched the full
+       height, so the two did not line up. Margins rather than a height
+       calculation, so the stretch still does the arithmetic. -->
+  <style>
+    .d1-shell .d1-main > .d1-drawer {
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+  </style>
 </head>
 <body>
 
