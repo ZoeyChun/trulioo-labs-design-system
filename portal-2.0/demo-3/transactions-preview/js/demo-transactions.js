@@ -22,7 +22,9 @@ window.UT_TRANSACTIONS = [
     "dateDay": "16 Mar 2026",
     "dateTime": "10:42",
     "product": "Business Complete",
-    "extraProducts": ["Business Horizon"],
+    "extraProducts": [
+      "Business Horizon"
+    ],
     "country": "United Kingdom",
     "countryCode": "gb",
     "score": {
@@ -33,8 +35,62 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
-    "extraPackages": ["Package5_KYB_Horizon"],
-    "type": "Live"
+    "extraPackages": [
+      "Package5_KYB_Horizon"
+    ],
+    "type": "Live",
+    "expandable": true,
+    "count": 2,
+    "children": [
+      {
+        "name": "Northwind Traders Ltd",
+        "trid": "7bebf297-b8a5-5964-ba0b-ea937fcbc37b",
+        "outcome": {
+          "label": "Verified",
+          "tone": "positive"
+        },
+        "date": "16 Mar 2026, 10:42",
+        "dateNumeric": "03/16/2026, 10:42",
+        "dateDay": "16 Mar 2026",
+        "dateTime": "10:42",
+        "product": "Business Complete",
+        "package": "Package4_KYB_Watchlist",
+        "country": "United Kingdom",
+        "countryCode": "gb",
+        "score": {
+          "value": "12/100",
+          "label": "Low Risk",
+          "tone": "positive"
+        },
+        "source": "API",
+        "sourceLabel": "Test_API_Key",
+        "type": "Live"
+      },
+      {
+        "name": "Northwind Traders Ltd",
+        "trid": "7bebf297-b8a5-5964-ba0b-ea937fcbc37b",
+        "outcome": {
+          "label": "Verified",
+          "tone": "positive"
+        },
+        "date": "16 Mar 2026, 10:42",
+        "dateNumeric": "03/16/2026, 10:42",
+        "dateDay": "16 Mar 2026",
+        "dateTime": "10:42",
+        "product": "Business Horizon",
+        "package": "Package5_KYB_Horizon",
+        "country": "United Kingdom",
+        "countryCode": "gb",
+        "score": {
+          "value": "12/100",
+          "label": "Low Risk",
+          "tone": "positive"
+        },
+        "source": "API",
+        "sourceLabel": "Test_API_Key",
+        "type": "Live"
+      }
+    ]
   },
   {
     "name": "Kestrel Freight GmbH",
@@ -96,7 +152,9 @@ window.UT_TRANSACTIONS = [
     "dateDay": "14 Mar 2026",
     "dateTime": "14:31",
     "product": "Business Complete",
-    "extraProducts": ["Business Horizon"],
+    "extraProducts": [
+      "Business Horizon"
+    ],
     "country": "United States",
     "countryCode": "us",
     "score": {
@@ -107,8 +165,62 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
-    "extraPackages": ["Package5_KYB_Horizon"],
-    "type": "Live"
+    "extraPackages": [
+      "Package5_KYB_Horizon"
+    ],
+    "type": "Live",
+    "expandable": true,
+    "count": 2,
+    "children": [
+      {
+        "name": "Harbor Point Capital Partners International Holdings LLC",
+        "trid": "8f70dde0-955d-57ba-8855-170e93040c3f",
+        "outcome": {
+          "label": "Not Verified",
+          "tone": "negative"
+        },
+        "date": "14 Mar 2026, 14:31",
+        "dateNumeric": "03/14/2026, 14:31",
+        "dateDay": "14 Mar 2026",
+        "dateTime": "14:31",
+        "product": "Business Complete",
+        "package": "Package4_KYB_Watchlist",
+        "country": "United States",
+        "countryCode": "us",
+        "score": {
+          "value": "81/100",
+          "label": "High Risk",
+          "tone": "negative"
+        },
+        "source": "API",
+        "sourceLabel": "Test_API_Key",
+        "type": "Live"
+      },
+      {
+        "name": "Harbor Point Capital Partners International Holdings LLC",
+        "trid": "8f70dde0-955d-57ba-8855-170e93040c3f",
+        "outcome": {
+          "label": "Not Verified",
+          "tone": "negative"
+        },
+        "date": "14 Mar 2026, 14:31",
+        "dateNumeric": "03/14/2026, 14:31",
+        "dateDay": "14 Mar 2026",
+        "dateTime": "14:31",
+        "product": "Business Horizon",
+        "package": "Package5_KYB_Horizon",
+        "country": "United States",
+        "countryCode": "us",
+        "score": {
+          "value": "81/100",
+          "label": "High Risk",
+          "tone": "negative"
+        },
+        "source": "API",
+        "sourceLabel": "Test_API_Key",
+        "type": "Live"
+      }
+    ]
   },
   {
     "name": "Sakura Robotics KK",
@@ -259,7 +371,10 @@ window.UT_TRANSACTIONS = [
     "dateDay": "11 Mar 2026",
     "dateTime": "12:09",
     "product": "Business Complete",
-    "extraProducts": ["Business Insights", "Business Horizon"],
+    "extraProducts": [
+      "Business Insights",
+      "Business Horizon"
+    ],
     "country": "Canada",
     "countryCode": "ca",
     "score": {
@@ -270,8 +385,87 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
-    "extraPackages": ["Package3_KYB_UBO", "Package5_KYB_Horizon"],
-    "type": "Live"
+    "extraPackages": [
+      "Package3_KYB_UBO",
+      "Package5_KYB_Horizon"
+    ],
+    "type": "Live",
+    "expandable": true,
+    "count": 3,
+    "children": [
+      {
+        "name": "Cobalt Analytics Inc.",
+        "trid": "8ae9f1fe-9ad9-5ec0-92ca-bb3975ea7f2e",
+        "outcome": {
+          "label": "Verified",
+          "tone": "positive"
+        },
+        "date": "11 Mar 2026, 12:09",
+        "dateNumeric": "03/11/2026, 12:09",
+        "dateDay": "11 Mar 2026",
+        "dateTime": "12:09",
+        "product": "Business Complete",
+        "package": "Package4_KYB_Watchlist",
+        "country": "Canada",
+        "countryCode": "ca",
+        "score": {
+          "value": "47/100",
+          "label": "Medium Risk",
+          "tone": "intermediate"
+        },
+        "source": "API",
+        "sourceLabel": "Test_API_Key",
+        "type": "Live"
+      },
+      {
+        "name": "Cobalt Analytics Inc.",
+        "trid": "8ae9f1fe-9ad9-5ec0-92ca-bb3975ea7f2e",
+        "outcome": {
+          "label": "Verified",
+          "tone": "positive"
+        },
+        "date": "11 Mar 2026, 12:09",
+        "dateNumeric": "03/11/2026, 12:09",
+        "dateDay": "11 Mar 2026",
+        "dateTime": "12:09",
+        "product": "Business Insights",
+        "package": "Package3_KYB_UBO",
+        "country": "Canada",
+        "countryCode": "ca",
+        "score": {
+          "value": "47/100",
+          "label": "Medium Risk",
+          "tone": "intermediate"
+        },
+        "source": "API",
+        "sourceLabel": "Test_API_Key",
+        "type": "Live"
+      },
+      {
+        "name": "Cobalt Analytics Inc.",
+        "trid": "8ae9f1fe-9ad9-5ec0-92ca-bb3975ea7f2e",
+        "outcome": {
+          "label": "Verified",
+          "tone": "positive"
+        },
+        "date": "11 Mar 2026, 12:09",
+        "dateNumeric": "03/11/2026, 12:09",
+        "dateDay": "11 Mar 2026",
+        "dateTime": "12:09",
+        "product": "Business Horizon",
+        "package": "Package5_KYB_Horizon",
+        "country": "Canada",
+        "countryCode": "ca",
+        "score": {
+          "value": "47/100",
+          "label": "Medium Risk",
+          "tone": "intermediate"
+        },
+        "source": "API",
+        "sourceLabel": "Test_API_Key",
+        "type": "Live"
+      }
+    ]
   },
   {
     "name": "Meridian Apex Consulting Ltd.",
@@ -359,7 +553,9 @@ window.UT_TRANSACTIONS = [
     "dateDay": "06 Mar 2026",
     "dateTime": "14:02",
     "product": "Business Insights",
-    "extraProducts": ["Business Essentials"],
+    "extraProducts": [
+      "Business Essentials"
+    ],
     "country": "Netherlands",
     "countryCode": "nl",
     "score": {
@@ -370,8 +566,62 @@ window.UT_TRANSACTIONS = [
     "source": "Portal",
     "sourceLabel": "Pria_K_Prod",
     "package": "Package3_KYB_UBO",
-    "extraPackages": ["Package2_KYB_Registry"],
-    "type": "Live"
+    "extraPackages": [
+      "Package2_KYB_Registry"
+    ],
+    "type": "Live",
+    "expandable": true,
+    "count": 2,
+    "children": [
+      {
+        "name": "Aurora Pharma BV",
+        "trid": "2bb227cc-eefb-5787-956f-486237a0c986",
+        "outcome": {
+          "label": "Verified",
+          "tone": "positive"
+        },
+        "date": "06 Mar 2026, 14:02",
+        "dateNumeric": "03/06/2026, 14:02",
+        "dateDay": "06 Mar 2026",
+        "dateTime": "14:02",
+        "product": "Business Insights",
+        "package": "Package3_KYB_UBO",
+        "country": "Netherlands",
+        "countryCode": "nl",
+        "score": {
+          "value": "18/100",
+          "label": "Low Risk",
+          "tone": "positive"
+        },
+        "source": "Portal",
+        "sourceLabel": "Pria_K_Prod",
+        "type": "Live"
+      },
+      {
+        "name": "Aurora Pharma BV",
+        "trid": "2bb227cc-eefb-5787-956f-486237a0c986",
+        "outcome": {
+          "label": "Verified",
+          "tone": "positive"
+        },
+        "date": "06 Mar 2026, 14:02",
+        "dateNumeric": "03/06/2026, 14:02",
+        "dateDay": "06 Mar 2026",
+        "dateTime": "14:02",
+        "product": "Business Essentials",
+        "package": "Package2_KYB_Registry",
+        "country": "Netherlands",
+        "countryCode": "nl",
+        "score": {
+          "value": "18/100",
+          "label": "Low Risk",
+          "tone": "positive"
+        },
+        "source": "Portal",
+        "sourceLabel": "Pria_K_Prod",
+        "type": "Live"
+      }
+    ]
   },
   {
     "name": "Delta Ventures Ltda",

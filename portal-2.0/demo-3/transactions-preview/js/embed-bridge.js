@@ -24,6 +24,20 @@
     post(payload);
   }
 
+  /* A child row shows a tree connector where the id would be, so it carries
+     none of its own — it belongs to the transaction above it. */
+  function tridFor(row) {
+    var own = row.querySelector("[data-trid]");
+    if (own) return own.getAttribute("data-trid") || "";
+    if (!row.classList.contains("ut-tx-row--child")) return "";
+    var prev = row.previousElementSibling;
+    while (prev && prev.classList.contains("ut-tx-row--child")) {
+      prev = prev.previousElementSibling;
+    }
+    var parentTrid = prev && prev.querySelector("[data-trid]");
+    return parentTrid ? parentTrid.getAttribute("data-trid") || "" : "";
+  }
+
   function findByTrid(trid) {
     var list = window.UT_TRANSACTIONS || [];
     for (var i = 0; i < list.length; i += 1) {
@@ -52,7 +66,17 @@
         return;
       }
       var row = event.target.closest("tr.ut-tx-row");
-      if (!row || row.classList.contains("ut-tx-row--child")) return;
+      if (!row) return;
+      /* A transaction that ran several products is a parent: clicking it
+         opens the breakdown rather than a report, since there is no single
+         result to show. Its children each ran one product and open theirs.
+         The chevron itself is a button, so it never reaches this handler. */
+      var expand = row.querySelector(".ut-tx-expand");
+      if (expand && !row.classList.contains("ut-tx-row--child")) {
+        event.preventDefault();
+        expand.click();
+        return;
+      }
       var cells = row.querySelectorAll("td");
       /* Read the product from its own cell, not a column index — the column
          order has changed once already, and an index silently pointed at the
@@ -75,7 +99,7 @@
           : nameCell
           ? nameCell.textContent.trim()
           : "",
-        trid: (row.querySelector("[data-trid]") || {getAttribute: function () { return ""; }}).getAttribute("data-trid") || "",
+        trid: tridFor(row),
         product: product
       });
     },
