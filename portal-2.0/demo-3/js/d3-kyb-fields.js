@@ -496,7 +496,7 @@
       zone("identity", "Business identity", zone1) +
       (off ? finderMarkup() : "") +
       zone("address", "Registered address", zone2) +
-      accordion("optional", "View All", '<div class="d3-kyb-fields__list">' + opt + "</div>");
+      accordion("optional", "View all fields", '<div class="d3-kyb-fields__list">' + opt + "</div>");
     if (off) {
       paintResults();
       updateFinder();

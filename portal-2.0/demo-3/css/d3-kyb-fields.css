@@ -50,9 +50,12 @@
   align-items: center;
   gap: var(--spacing-8, 8px);
   width: 100%;
-  min-height: 34px;
+  min-height: 44px;
   padding: 0;
+  /* A line above and below the View All row so it reads as its own band. */
   border: 0;
+  border-top: 1px solid var(--border-subtle, #dde2de);
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
   background: transparent;
   color: var(--text-caption, #5c6b6b);
   font: inherit;
