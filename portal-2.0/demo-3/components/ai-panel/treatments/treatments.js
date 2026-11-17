@@ -721,7 +721,7 @@
   function showReport() {
     var ns = window.D3AiPanel;
     if (shell.getAttribute("data-d3-chat-size") === "full" && ns && typeof ns.setChatFull === "function") {
-      ns.setChatFull(false);
+      ns.setChatFull(false, { animate: true });
     }
     var surface = document.querySelector("[data-d3-kyb-surface]");
     var resume = window.D3KybResume;

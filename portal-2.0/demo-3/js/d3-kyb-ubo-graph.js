@@ -544,11 +544,11 @@
       '<div class="kyb-ownership-graph kyb-ubo-graph-layout__canvas" data-kyb-ownership-graph aria-label="Ownership structure graph"></div>' +
       /* Zoom lives in the bottom right corner; the graph's own zoom buttons stay hidden and these drive them. */
       '<div class="d3-kyb-ubo-zoom" role="group" aria-label="Graph zoom">' +
-      '<button type="button" class="d3-kyb-ubo-zoom__btn" data-d3-zoom="out" aria-label="Zoom out" data-tooltip="Zoom out"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M3.5 8h9"/></svg></button>' +
+      '<button type="button" class="d3-kyb-ubo-zoom__btn" data-d3-zoom="out" aria-label="Zoom out" data-tooltip="Zoom out"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" d="M3.5 8h9"/></svg></button>' +
       '<span class="d3-kyb-ubo-zoom__pct"><span data-d3-zoom-pct>100%</span></span>' +
-      '<button type="button" class="d3-kyb-ubo-zoom__btn" data-d3-zoom="in" aria-label="Zoom in" data-tooltip="Zoom in"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 3.5v9M3.5 8h9"/></svg></button>' +
+      '<button type="button" class="d3-kyb-ubo-zoom__btn" data-d3-zoom="in" aria-label="Zoom in" data-tooltip="Zoom in"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" d="M8 3.5v9M3.5 8h9"/></svg></button>' +
       '<span class="d3-kyb-ubo-zoom__sep" aria-hidden="true"></span>' +
-      '<button type="button" class="d3-kyb-ubo-zoom__btn" data-d3-zoom="fit" aria-label="Fit to page" data-tooltip="Fit to page" title="Fit to page"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.6 3.71A5.6 5.6 0 1 1 6.085 2.738L6.495 3.865A4.4 4.4 0 1 0 10.828 4.63z"/><path d="M5.709 1.704 8.545 2.48 6.871 4.899z"/></svg></button>' +
+      '<button type="button" class="d3-kyb-ubo-zoom__btn" data-d3-zoom="fit" aria-label="Fit to page" data-tooltip="Fit to page" title="Fit to page"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" d="M13 8a5 5 0 1 1-1.6-3.7M13 2.5v3h-3"/></svg></button>' +
       "</div>" +
       "</div></div></div>" +
       /* Below both views, so switching table / graph never changes it. */

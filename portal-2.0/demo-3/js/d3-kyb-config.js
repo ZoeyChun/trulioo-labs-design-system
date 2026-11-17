@@ -32,7 +32,7 @@
     var cfg = S.savedConfig();
     touched = !!cfg;
     draft = cfg
-      ? { package: cfg.package, country: S.savedCountry(), finder: cfg.finder, addons: cfg.addons.slice() }
+      ? { package: cfg.package, country: S.savedCountry(), finder: true, addons: cfg.addons.slice() }
       : { package: "insights", country: S.savedCountry(), finder: true, addons: S.defaultAddons ? S.defaultAddons("insights") : [] };
   }
 
@@ -131,12 +131,6 @@
       '<div class="d3-cfg__block"><h2 class="d3-cfg__h">Package</h2>' +
       '<p class="d3-cfg__hint">What every KYB verification includes.</p>' +
       '<div class="d3-cfg__cards" role="radiogroup" aria-label="Package">' + packageCards() + "</div></div>" +
-      '<hr class="d3-cfg__rule">' +
-      '<div class="d3-cfg__block"><h2 class="d3-cfg__h">Business Finder</h2>' +
-      '<div class="d3-cfg__row"><span class="d3-cfg__row-text"><span class="d3-cfg__check-name">Use Business Finder</span>' +
-      '<span class="d3-cfg__check-note">Search the registry and pre-fill the business details. Turn off to enter details manually.</span></span>' +
-      '<div class="tds-switch"><div class="tds-switch__track tds-switch__track--sm' + (draft.finder ? " tds-switch__track--on" : "") + '" role="switch" tabindex="0" aria-checked="' + (draft.finder ? "true" : "false") + '" aria-label="Use Business Finder" data-d3-cfg-finder>' +
-      '<span class="tds-switch__indicator" aria-hidden="true"></span><span class="tds-switch__handle" aria-hidden="true"></span></div></div></div></div>' +
       '<hr class="d3-cfg__rule">' +
       '<div class="d3-cfg__block"><h2 class="d3-cfg__h">Add-ons</h2>' +
       '<p class="d3-cfg__hint">Offered add-ons depend on the package.</p>' +

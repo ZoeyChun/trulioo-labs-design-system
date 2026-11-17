@@ -361,6 +361,8 @@ button {
   display: flex;
   align-items: center;
   gap: var(--spacing-8);
+  /* Lines up with the menu items' icons below. */
+  padding-inline: var(--spacing-8);
 }
 
 .d1-org__mark {
@@ -433,6 +435,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
+  padding-inline: var(--spacing-8);
 }
 
 .d1-who__mail {

@@ -143,6 +143,8 @@
 }
 
 .d3-demo-prefill .tds-switch { cursor: pointer; }
+.d3-demo-prefill__copy { display: flex; flex-direction: column; }
+.d3-demo-prefill__sub { font-size: 10px; line-height: 12px; color: var(--text-placeholder, #8a9a90); }
 
 /* No pre-fill: the top field is country + business name, with no suggestions. */
 [data-d3-prefill="off"] .vb-search-hint { display: none !important; }

@@ -103,9 +103,35 @@
     btn.setAttribute("data-tooltip", label);
   }
 
-  function setFull(full) {
+  var SHRINK_MS = 480;
+
+  /* Full canvas back to the docked panel, slowly: the panel narrows while the workspace grows into the freed space. */
+  function shrinkAnimated(el, fromW) {
+    if (!el || !el.animate || !fromW) return;
+    var toW = el.getBoundingClientRect().width;
+    if (Math.abs(fromW - toW) < 4) return;
+    var ease = "cubic-bezier(0.45, 0, 0.2, 1)";
+    el.animate(
+      [
+        { flexBasis: fromW + "px", width: fromW + "px" },
+        { flexBasis: toW + "px", width: toW + "px" }
+      ],
+      { duration: SHRINK_MS, easing: ease }
+    );
+    var main = document.querySelector(".d1-main");
+    if (main) main.animate([{ opacity: 0 }, { opacity: 0, offset: 0.1 }, { opacity: 1 }], { duration: SHRINK_MS, easing: "ease-out" });
+    var tick = window.setInterval(fireResize, 60);
+    window.setTimeout(function () {
+      window.clearInterval(tick);
+      fireResize();
+    }, SHRINK_MS + 60);
+  }
+
+  function setFull(full, opts) {
     var s = shell();
     if (!s) return;
+    var wasFull = isFull();
+    var fromW = !full && wasFull && opts && opts.animate && pane() ? pane().getBoundingClientRect().width : 0;
     if (full) {
       s.setAttribute("data-d3-chat-size", "full");
     } else {
@@ -113,6 +139,7 @@
     }
     syncExpandUi();
     fireResize();
+    if (fromW) shrinkAnimated(pane(), fromW);
   }
 
   function toggleFull() {

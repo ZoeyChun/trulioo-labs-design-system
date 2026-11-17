@@ -283,8 +283,46 @@
     toastEl = null;
   }
 
+  /* A soft two-note chime with the banner (Web Audio, no file): quiet and short. The audio context is
+     unlocked by the first click or key press on the page, which browsers require before any sound. */
+  var audioCtx = null;
+  function audio() {
+    if (audioCtx) return audioCtx;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    try { audioCtx = new AC(); } catch (e) { audioCtx = null; }
+    return audioCtx;
+  }
+  ["pointerdown", "keydown"].forEach(function (type) {
+    document.addEventListener(type, function () {
+      var c = audio();
+      if (c && c.state === "suspended") c.resume();
+    }, { once: false, passive: true });
+  });
+
+  function chime() {
+    var c = audio();
+    if (!c || c.state !== "running") return;
+    var t0 = c.currentTime + 0.02;
+    [[784, 0], [1175, 0.13]].forEach(function (n) {
+      var osc = c.createOscillator();
+      var g = c.createGain();
+      osc.type = "sine";
+      osc.frequency.value = n[0];
+      var t = t0 + n[1];
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.07, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+      osc.connect(g);
+      g.connect(c.destination);
+      osc.start(t);
+      osc.stop(t + 0.6);
+    });
+  }
+
   function showToast(job, withView) {
     hideToast();
+    chime();
     var el = document.createElement("div");
     /* A TDS announcement (info), floating over the page. */
     el.className = "d3-toast tds-announcement tds-announcement--info";
@@ -401,6 +439,9 @@
     if (!keepToast) hideToast();
     setDot(false);
     setTitleBadge(false);
+    /* From the expanded chat, the panel shrinks back so the report shows on the right. */
+    var aiNs = window.D3AiPanel;
+    if (aiNs && aiNs.isChatFull && aiNs.isChatFull()) aiNs.setChatFull(false, { animate: true });
     var kyb = railButton();
     var inKyb = inKybView();
     if (kyb && !inKyb) kyb.click();

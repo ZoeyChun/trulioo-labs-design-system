@@ -1211,9 +1211,17 @@
 
   /* Zoom the world map onto the selected business, then resolve. */
   function focusBusiness(biz, opts) {
-    opts = opts || {};
+    opts = Object.assign({}, opts || {});
     return new Promise(function (resolve) {
       if (!biz || biz.lat == null || biz.lon == null) {
+        resolve(false);
+        return;
+      }
+      /* The report is on screen (or the map cannot be measured, e.g. the chat is expanded over it): the
+         zoom is moot, and pulling the workspace back to the map would hide the report. */
+      var surfaceNow = workspace.getAttribute("data-d3-kyb-surface");
+      opts._tries = (opts._tries || 0) + 1;
+      if (surfaceNow === "report" || opts._tries > 12) {
         resolve(false);
         return;
       }

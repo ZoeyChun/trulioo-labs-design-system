@@ -42,11 +42,20 @@
   display: grid;
   flex: 0 0 auto;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  /* The same button as the composer's Send (tds-icon-btn sm, circular): outlined at rest, filled on hover. */
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-strong, #c5cec8);
   border-radius: var(--radius-full, 999px);
-  background: var(--interactive-disabled, #c5cec8);
-  transition: background-color 160ms ease;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-placeholder, #8a9a90);
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.d3-askbar .d3-askbar__send .d3-fa-line {
+  width: 16px;
+  height: 16px;
 }
 
 .d3-askbar__send img {
@@ -54,8 +63,12 @@
   rotate: 90deg;
 }
 
-.d3-askbar:hover .d3-askbar__send {
+.d3-askbar:hover .d3-askbar__send,
+.d3-askbar:focus-visible .d3-askbar__send {
   background: var(--interactive-default);
+  border-color: transparent;
+  /* The arrow follows the button's text colour: white on the dark fill, for contrast. */
+  color: var(--icon-inverse, #fff);
 }
 
 .d3-askbar:focus-visible {

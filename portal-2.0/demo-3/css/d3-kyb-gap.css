@@ -617,7 +617,8 @@
   box-sizing: border-box;
   padding: var(--spacing-16, 16px);
   border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: var(--radius-3xl, 24px);
+  /* The same corner as the result summary card (.d1-report-ready__card). */
+  border-radius: var(--radius-2xl, 16px);
 }
 
 .d3-kyb-wizard.is-past {
