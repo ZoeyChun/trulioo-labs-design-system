@@ -123,11 +123,12 @@
 
 /* Demo-only pre-fill switch beside the page title (engineering review; not part of the product). */
 .d3-kyb-titlerow {
+  /* The demo-only Pre-fill switch sits above the title, so the title and its tagline stay centred together. */
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-8, 8px) var(--spacing-16, 16px);
+  gap: var(--spacing-12, 12px);
 }
 
 .d3-demo-prefill {
