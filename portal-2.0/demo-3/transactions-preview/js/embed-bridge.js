@@ -38,40 +38,42 @@
     return parentTrid ? parentTrid.getAttribute("data-trid") || "" : "";
   }
 
-  /* The other products the same transaction ran. Business Horizon is not a
-     package: it is the Business Risk Horizon Score add-on, run as its own
-     transaction beside the verification (see js/d3-kyb-brh-offer.js). So a
-     child sitting next to a Business Horizon child is the verification the
-     score was added to — its report is the one that offers to run it. */
-  function siblingProducts(row) {
-    var first = row;
-    while (
-      first.previousElementSibling &&
-      first.previousElementSibling.classList.contains("ut-tx-row--child")
-    ) {
-      first = first.previousElementSibling;
-    }
-    var out = [];
-    var node = first;
-    while (node && node.classList.contains("ut-tx-row--child")) {
-      var cell = node.querySelector(".ut-tx-td-product");
-      if (cell) out.push(cell.textContent.trim());
-      node = node.nextElementSibling;
-    }
-    return out;
-  }
-
   function isHorizon(product) {
     return /horizon/i.test(String(product || ""));
   }
 
-  /* "on" opens the report that carries the score, "view" the verification
-     beside it — the score has already been run, so that report offers to show
-     it rather than to run it. "" leaves the report as it was. */
-  function brhModeFor(row, product) {
+  /* The transaction a child belongs to. Read from the data, not the rows: a
+     child shows only its id and its package now, so the cells it used to be
+     read out of are empty. */
+  function parentOf(trid) {
+    var list = window.UT_TRANSACTIONS || [];
+    for (var i = 0; i < list.length; i += 1) {
+      var kids = list[i].children || [];
+      for (var j = 0; j < kids.length; j += 1) {
+        if (kids[j].trid === trid) return list[i];
+      }
+    }
+    return null;
+  }
+
+  /* The other products the same transaction ran. Business Horizon is not a
+     package: it is the Business Risk Horizon Score add-on, run as its own
+     transaction beside the verification (see js/d3-kyb-brh-offer.js). So a
+     child sitting next to a Business Horizon child is the verification the
+     score was added to — its report is the one that offers to show it.
+
+     "on" opens the report that carries the score, "view" the verification
+     beside it, "" leaves the report as it was. */
+  function brhModeFor(row, product, trid) {
     if (!row.classList.contains("ut-tx-row--child")) return "";
     if (isHorizon(product)) return "on";
-    return siblingProducts(row).some(isHorizon) ? "view" : "";
+    var parent = parentOf(trid);
+    var siblings = parent ? parent.children || [] : [];
+    return siblings.some(function (c) {
+      return isHorizon(c.product);
+    })
+      ? "view"
+      : "";
   }
 
   function findByTrid(trid) {
@@ -114,6 +116,7 @@
         return;
       }
       var cells = row.querySelectorAll("td");
+      var trid = tridFor(row);
       /* Read the product from its own cell, not a column index — the column
          order has changed once already, and an index silently pointed at the
          date, which no product name matches, so every row opened the KYC
@@ -127,6 +130,12 @@
         : productCell
         ? productCell.textContent.trim()
         : "";
+      /* A child's product cell is empty — it shows its id and package and
+         repeats nothing else — so the product comes from the row's record. */
+      if (!product && trid) {
+        var record = findByTrid(trid);
+        if (record) product = record.product || "";
+      }
       var nameCell = row.querySelector(".ut-tx-td-name") || cells[0];
       var nameEl = nameCell && nameCell.querySelector(".ut-tx-name");
       openByProduct(product, {
@@ -135,9 +144,9 @@
           : nameCell
           ? nameCell.textContent.trim()
           : "",
-        trid: tridFor(row),
+        trid: trid,
         product: product,
-        brh: brhModeFor(row, product)
+        brh: brhModeFor(row, product, trid)
       });
     },
     true
