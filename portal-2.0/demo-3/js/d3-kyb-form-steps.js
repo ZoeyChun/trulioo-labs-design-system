@@ -58,6 +58,12 @@
       /* Country is listed under Configuration. */
       if (input && label && text !== "Country" && input.value.trim()) fields.push([text, input.value.trim()]);
     });
+    /* The jurisdiction is a pick, not a text field. */
+    var jurInput = document.querySelector("[data-d3-jur-input]");
+    if (jurInput && jurInput.value.trim()) {
+      var at = fields.findIndex(function (f) { return f[0] === "Business Registration Number"; });
+      fields.splice(at === -1 ? fields.length : at, 0, ["Jurisdiction Of Incorporation", jurInput.value.trim()]);
+    }
     var P = window.D3KybPackage;
     var pkg = S.package(st.package);
     host.innerHTML =

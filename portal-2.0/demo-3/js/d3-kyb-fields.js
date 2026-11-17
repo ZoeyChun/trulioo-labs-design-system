@@ -53,7 +53,7 @@
         PSC_FIELDS.map(function (l) { return input(l, own(pscKey(i, l)), { typed: true, key: pscKey(i, l) }); }).join("") +
         "</div></div>";
     }
-    return out + '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary d3-kyb-fields__psc-add" data-d3-psc-add>Add another PSC</button></div>';
+    return out + '<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary d3-kyb-fields__psc-add" data-d3-psc-add>Add another PSC</button></div>';
   }
 
   function removePsc(at) {
@@ -130,6 +130,172 @@
     }
   }
 
+  /* Jurisdiction Of Incorporation is a pick from the places the registry of the chosen country covers. */
+  var JURISDICTIONS = {
+    us: ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"],
+    gb: ["England", "Scotland", "Wales", "Northern Ireland"],
+    ca: ["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Northwest Territories", "Nova Scotia", "Nunavut", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon", "Federal (Canada)"],
+    au: ["Australian Capital Territory", "New South Wales", "Northern Territory", "Queensland", "South Australia", "Tasmania", "Victoria", "Western Australia"],
+    de: ["Baden-Württemberg", "Bavaria", "Berlin", "Brandenburg", "Bremen", "Hamburg", "Hesse", "Lower Saxony", "Mecklenburg-Vorpommern", "North Rhine-Westphalia", "Rhineland-Palatinate", "Saarland", "Saxony", "Saxony-Anhalt", "Schleswig-Holstein", "Thuringia"],
+    nl: ["Drenthe", "Flevoland", "Friesland", "Gelderland", "Groningen", "Limburg", "North Brabant", "North Holland", "Overijssel", "South Holland", "Utrecht", "Zeeland"],
+    sg: ["Singapore"],
+    se: ["Blekinge", "Dalarna", "Gotland", "Gävleborg", "Halland", "Jämtland", "Jönköping", "Kalmar", "Kronoberg", "Norrbotten", "Skåne", "Stockholm", "Södermanland", "Uppsala", "Värmland", "Västerbotten", "Västernorrland", "Västmanland", "Västra Götaland", "Örebro", "Östergötland"]
+  };
+  var JUR_LABEL = "Jurisdiction Of Incorporation";
+
+  function jurisdictionList() {
+    return JURISDICTIONS[S.get().country || "us"] || [];
+  }
+
+  var CARET = '<svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg>';
+
+  /* A TDS combobox: the field is the search, and the same field opens the list. */
+  function jurisdictionField() {
+    var list = jurisdictionList();
+    var cur = own(JUR_LABEL);
+    /* A pick from another country's list does not carry over. */
+    if (cur && list.indexOf(cur) === -1) {
+      cur = "";
+      delete typed[JUR_LABEL];
+    }
+    return (
+      '<div class="tds-combobox tds-combobox--full-width d3-kyb-jur" data-d3-jur>' +
+      '<label class="tds-field-label" for="d3-jur-input">' + JUR_LABEL + "</label>" +
+      '<div class="tds-combobox__field tds-combobox__field--lg">' +
+      '<span class="tds-combobox__leading-visual" aria-hidden="true">' + SEARCH_ICON + "</span>" +
+      '<input class="tds-combobox__input" id="d3-jur-input" type="text" role="combobox" aria-expanded="false" aria-controls="d3-jur-list" aria-autocomplete="list" autocomplete="off" placeholder="Select jurisdiction" value="' + esc(cur) + '" data-d3-jur-input>' +
+      '<span class="tds-combobox__trailing-group"><span class="tds-caret tds-caret--default" aria-hidden="true" data-d3-jur-caret>' + CARET + "</span></span></div>" +
+      '<div class="tds-combobox__menu"><div class="tds-dropdown-panel" id="d3-jur-list" role="listbox" aria-label="' + JUR_LABEL + '">' +
+      list
+        .map(function (n) {
+          return '<button type="button" class="tds-combobox__option" role="option" tabindex="-1" data-d3-jur-option="' + esc(n) + '">' + esc(n) + "</button>";
+        })
+        .join("") +
+      '<p class="d3-kyb-jur__none" hidden>No jurisdiction found</p>' +
+      "</div></div></div>"
+    );
+  }
+
+  function jurRoot() {
+    return host.querySelector("[data-d3-jur]");
+  }
+
+  function jurOpen(root, open) {
+    var input = root.querySelector("[data-d3-jur-input]");
+    root.classList.toggle("tds-combobox--open", open);
+    input.setAttribute("aria-expanded", open ? "true" : "false");
+    if (!open) {
+      Array.prototype.forEach.call(root.querySelectorAll(".tds-combobox__option--active"), function (o) { o.classList.remove("tds-combobox__option--active"); });
+    }
+  }
+
+  /* The list narrows as the user types. With the chosen value in the field, the whole list shows. */
+  function jurFilter(root, all) {
+    var input = root.querySelector("[data-d3-jur-input]");
+    var q = all ? "" : input.value.trim().toLowerCase();
+    var first = null;
+    Array.prototype.forEach.call(root.querySelectorAll("[data-d3-jur-option]"), function (o) {
+      var show = !q || o.getAttribute("data-d3-jur-option").toLowerCase().indexOf(q) !== -1;
+      o.hidden = !show;
+      o.classList.remove("tds-combobox__option--active");
+      if (show && !first) first = o;
+    });
+    root.querySelector(".d3-kyb-jur__none").hidden = !!first;
+    return first;
+  }
+
+  function jurPick(root, value) {
+    var input = root.querySelector("[data-d3-jur-input]");
+    input.value = value;
+    typed[JUR_LABEL] = value;
+    jurOpen(root, false);
+    filledFrom = "";
+    updateFinder();
+  }
+
+  /* Leaving the field without a pick puts the last pick (or nothing) back: only listed places count. */
+  function jurSettle(root) {
+    var input = root.querySelector("[data-d3-jur-input]");
+    var list = jurisdictionList();
+    var hit = list.filter(function (n) { return n.toLowerCase() === input.value.trim().toLowerCase(); })[0];
+    if (hit) {
+      if (typed[JUR_LABEL] !== hit) {
+        typed[JUR_LABEL] = hit;
+        filledFrom = "";
+        updateFinder();
+      }
+      input.value = hit;
+    } else {
+      input.value = own(JUR_LABEL);
+    }
+    jurOpen(root, false);
+  }
+
+  host.addEventListener("focusin", function (event) {
+    if (!event.target.matches || !event.target.matches("[data-d3-jur-input]")) return;
+    var root = event.target.closest("[data-d3-jur]");
+    jurFilter(root, true);
+    jurOpen(root, true);
+  });
+  host.addEventListener("input", function (event) {
+    if (!event.target.matches || !event.target.matches("[data-d3-jur-input]")) return;
+    var root = event.target.closest("[data-d3-jur]");
+    /* Typing changes the choice: the finder waits until a place is picked again. */
+    if (typed[JUR_LABEL]) {
+      delete typed[JUR_LABEL];
+      updateFinder();
+    }
+    jurFilter(root, false);
+    jurOpen(root, true);
+  });
+  host.addEventListener("keydown", function (event) {
+    var el = event.target;
+    if (!el.matches || !el.matches("[data-d3-jur-input]")) return;
+    var root = el.closest("[data-d3-jur]");
+    var shown = Array.prototype.filter.call(root.querySelectorAll("[data-d3-jur-option]"), function (o) { return !o.hidden; });
+    var at = shown.findIndex(function (o) { return o.classList.contains("tds-combobox__option--active"); });
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      if (!root.classList.contains("tds-combobox--open")) { jurFilter(root, true); jurOpen(root, true); shown = Array.prototype.slice.call(root.querySelectorAll("[data-d3-jur-option]")); at = -1; }
+      if (!shown.length) return;
+      if (at !== -1) shown[at].classList.remove("tds-combobox__option--active");
+      at = event.key === "ArrowDown" ? Math.min(at + 1, shown.length - 1) : Math.max(at - 1, 0);
+      shown[at].classList.add("tds-combobox__option--active");
+      shown[at].scrollIntoView({ block: "nearest" });
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      var pick = at !== -1 ? shown[at] : shown[0];
+      if (pick) jurPick(root, pick.getAttribute("data-d3-jur-option"));
+    } else if (event.key === "Escape") {
+      jurSettle(root);
+    }
+  });
+  /* Pick with the mouse (mousedown, so the field's blur does not close the list first). */
+  host.addEventListener("mousedown", function (event) {
+    var opt = event.target.closest && event.target.closest("[data-d3-jur-option]");
+    if (opt) {
+      event.preventDefault();
+      jurPick(opt.closest("[data-d3-jur]"), opt.getAttribute("data-d3-jur-option"));
+      return;
+    }
+    var caret = event.target.closest && event.target.closest("[data-d3-jur-caret]");
+    if (caret) {
+      event.preventDefault();
+      var root = caret.closest("[data-d3-jur]");
+      var input = root.querySelector("[data-d3-jur-input]");
+      if (root.classList.contains("tds-combobox--open")) jurSettle(root);
+      else {
+        input.focus();
+        jurFilter(root, true);
+        jurOpen(root, true);
+      }
+    }
+  });
+  host.addEventListener("focusout", function (event) {
+    if (!event.target.matches || !event.target.matches("[data-d3-jur-input]")) return;
+    jurSettle(event.target.closest("[data-d3-jur]"));
+  });
+
   var CHEVRON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 6 4 4 4-4"/></svg>';
 
   /* Figma ADS accordion (9003:6691): no box, a chevron on the left and a small uppercase section title. */
@@ -156,10 +322,10 @@
      a secondary button wakes up. It lists registry candidates; picking one fills the address zone and
      whichever identifier was missing. Ignoring it costs nothing: the fields below stay open. */
   var SEARCH_ICON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
-  var HINT_OFF = "Select country, jurisdiction, and enter business name or BRN to search registry.";
-  var HINT_ON = "Search the registry for matching businesses and auto-fill the address.";
   var FINDER_SHOWN = 5; // candidates listed; more than that asks the user to narrow the search
   var finderTotal = 0;
+  var finderAll = []; // every match; the list shows FINDER_SHOWN a page
+  var finderPage = 0;
   var finderResults = null; // null = closed, [] = searched with no hits
   var filledFrom = ""; // name of the candidate last used
 
@@ -174,12 +340,21 @@
     return !!(st.country || "us") && !!jur && (st.profile.name.trim().length >= 3 || validBrn(st.profile.regNo));
   }
 
+  /* What the finder still needs: a jurisdiction, plus a business name or a BRN. Said in one plain line. */
+  function finderNeed(met) {
+    var hasId = met.name || met.brn;
+    if (!met.jur && !hasId) return "Needs a jurisdiction and either a business name or a BRN.";
+    if (!met.jur) return "Still needs a jurisdiction.";
+    if (!hasId) return "Still needs a business name or a BRN.";
+    return "";
+  }
+
   function finderMarkup() {
     return (
       '<div class="d3-kyb-find" data-d3-find>' +
       '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary d3-kyb-find__btn" data-d3-find-btn aria-disabled="true">' +
       '<span class="d3-kyb-find__icon">' + SEARCH_ICON + "</span>Find &amp; auto-fill address</button>" +
-      '<p class="d3-kyb-find__hint" data-d3-find-hint>' + HINT_OFF + "</p>" +
+      '<p class="d3-kyb-find__hint" data-d3-find-hint></p>' +
       '<div class="d3-kyb-find__results" data-d3-find-results hidden></div></div>'
     );
   }
@@ -193,10 +368,13 @@
       return;
     }
     box.hidden = false;
-    var more = finderTotal > finderResults.length;
+    var pages = Math.ceil(finderTotal / FINDER_SHOWN);
+    var from = finderPage * FINDER_SHOWN + 1;
+    var to = Math.min(finderTotal, from + FINDER_SHOWN - 1);
+    var ARROW_L = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 3 5 8l5 5"/></svg>';
+    var ARROW_R = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6 3l5 5-5 5"/></svg>';
     box.innerHTML = finderResults.length
-      ? '<div class="d3-kyb-find__head"><span>' +
-        (more ? "Showing " + finderResults.length + " of " + finderTotal + " matches" : finderResults.length + (finderResults.length === 1 ? " match" : " matches")) +
+      ? '<div class="d3-kyb-find__head"><span>' + finderTotal + (finderTotal === 1 ? " match" : " matches") +
         '</span><button type="button" class="d3-kyb-find__close" data-d3-find-close>Hide</button></div>' +
         finderResults
           .map(function (e, i) {
@@ -208,7 +386,13 @@
             );
           })
           .join("") +
-        (more ? '<p class="d3-kyb-find__more">Not here? Add the full business name or the BRN to narrow it down, or keep entering the details below.</p>' : "")
+        (pages > 1
+          ? '<div class="d3-ai-selector__pager"><span>' + from + "-" + to + " of " + finderTotal + "</span>" +
+            '<span class="d3-ai-selector__pages">' +
+            '<button type="button" class="d3-ai-selector__page" data-d3-find-page="prev"' + (finderPage <= 0 ? " disabled" : "") + ' aria-label="Previous matches">' + ARROW_L + "</button>" +
+            '<button type="button" class="d3-ai-selector__page" data-d3-find-page="next"' + (finderPage >= pages - 1 ? " disabled" : "") + ' aria-label="Next matches">' + ARROW_R + "</button></span></div>" +
+            '<p class="d3-kyb-find__more">Not here? Add the full business name or the BRN to narrow it down, or keep entering the details below.</p>'
+          : "")
       : '<div class="d3-kyb-find__head"><span>No matches in the registry. Keep entering the details below.</span>' +
         '<button type="button" class="d3-kyb-find__close" data-d3-find-close>Hide</button></div>';
   }
@@ -220,7 +404,16 @@
     var btn = wrap.querySelector("[data-d3-find-btn]");
     btn.setAttribute("aria-disabled", ready ? "false" : "true");
     btn.classList.toggle("is-ready", ready);
-    wrap.querySelector("[data-d3-find-hint]").textContent = filledFrom ? "Filled from " + filledFrom + ". Review and edit anything below." : ready ? HINT_ON : HINT_OFF;
+    var st = S.get();
+    var met = {
+      jur: !!(typed["Jurisdiction Of Incorporation"] || "").trim(),
+      name: st.profile.name.trim().length >= 3,
+      brn: validBrn(st.profile.regNo)
+    };
+    var hint = wrap.querySelector("[data-d3-find-hint]");
+    var text = filledFrom ? "Filled from " + filledFrom + ". Review and edit anything below." : finderNeed(met);
+    hint.textContent = text;
+    hint.hidden = !text;
     if (!ready && finderResults !== null) {
       finderResults = null;
       paintResults();
@@ -236,6 +429,7 @@
     typed["City"] = e.city || typed["City"] || "";
     typed["Postal Code"] = e.postal || typed["Postal Code"] || "";
     typed["State Province"] = e.state || typed["State Province"] || "";
+    if (jurisdictionList().indexOf(e.state) !== -1) typed[JUR_LABEL] = e.state;
     S.set({ profile: next }, "fields");
     var q = document.getElementById("vb-q");
     if (q && q.value !== next.name) q.value = next.name;
@@ -270,7 +464,7 @@
 
     /* Business Name comes first. Without pre-fill the country is the one on top, so it is not repeated here,
        and the form (which opens once a name is typed) shows the address at once. */
-    var jur = fld("Jurisdiction Of Incorporation", manual ? "" : prefilled("Jurisdiction Of Incorporation"));
+    var jur = manual ? jurisdictionField() : fld(JUR_LABEL, prefilled(JUR_LABEL));
     var brn = manual ? input("Business Registration Number", st.profile.regNo, { profile: "regNo" }) : fld("Business Registration Number", prefilled("Business Registration Number"));
     var nameField = input("Business Name", name, manual ? { required: true, profile: "name" } : { required: true });
     var zone1 = off
@@ -338,7 +532,18 @@
       var st = S.get();
       var hits = window.D3KybManualSearch.lookup({ country: st.country || "us", name: st.profile.name, brn: validBrn(st.profile.regNo) ? st.profile.regNo : "" });
       finderTotal = hits.length;
+      finderAll = hits;
+      finderPage = 0;
       finderResults = hits.slice(0, FINDER_SHOWN);
+      paintResults();
+      return;
+    }
+    var pg = event.target.closest && event.target.closest("[data-d3-find-page]");
+    if (pg && finderResults) {
+      if (pg.disabled) return;
+      var last = Math.ceil(finderTotal / FINDER_SHOWN) - 1;
+      finderPage = Math.max(0, Math.min(last, finderPage + (pg.getAttribute("data-d3-find-page") === "next" ? 1 : -1)));
+      finderResults = finderAll.slice(finderPage * FINDER_SHOWN, finderPage * FINDER_SHOWN + FINDER_SHOWN);
       paintResults();
       return;
     }
@@ -387,7 +592,7 @@
       filledFrom = "";
     }
     lastEntity = eid;
-    var key = st.package + "|" + manual + "|" + noPrefill() + "|" + (st.entity ? st.entity.id + (manual ? "" : st.entity.name) : "");
+    var key = st.package + "|" + manual + "|" + noPrefill() + "|" + (manual ? st.country || "us" : "") + "|" + (st.entity ? st.entity.id + (manual ? "" : st.entity.name) : "");
     if (key === last) return;
     last = key;
     render();
