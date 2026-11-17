@@ -65,12 +65,13 @@
     return /horizon/i.test(String(product || ""));
   }
 
-  /* "on" opens the report that includes the score, "offer" the one that can
-     still add it, "" leaves the report as it was. */
+  /* "on" opens the report that carries the score, "view" the verification
+     beside it — the score has already been run, so that report offers to show
+     it rather than to run it. "" leaves the report as it was. */
   function brhModeFor(row, product) {
     if (!row.classList.contains("ut-tx-row--child")) return "";
     if (isHorizon(product)) return "on";
-    return siblingProducts(row).some(isHorizon) ? "offer" : "";
+    return siblingProducts(row).some(isHorizon) ? "view" : "";
   }
 
   function findByTrid(trid) {

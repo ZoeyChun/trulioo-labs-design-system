@@ -232,7 +232,7 @@
     }
     rec.applied = withBrh;
     S.set({ addons: addons }, "addons");
-    R().setTier(S.get().package, addons, { offer: false });
+    R().setTier(rec.tier || S.get().package, addons, { offer: false });
     /* The whole Overview loads again. */
     if (window.D3KybFindings && window.D3KybFindings.invalidate && window.D3KybFindings.render) {
       window.D3KybFindings.invalidate();
@@ -298,7 +298,8 @@
     if (viewBtn) {
       /* Either way the report that includes Business Risk Horizon is opened as a transaction of its own: the whole report
          loads again, on the Overview. */
-      showVersion(true, "findings", !!viewBtn.closest(".d3-brh-reply__card"));
+      var rec = added[current.key];
+      showVersion(true, (rec && rec.land) || "findings", !!viewBtn.closest(".d3-brh-reply__card"));
       return;
     }
     var copy = t.closest("[data-d3-brh-copy]");
@@ -337,6 +338,20 @@
       current.key = "r" + (++seq);
       current.name = (session && session.businessName) || "";
       running = false;
+      /* brhRan: the score was run beside this verification, as its own row in
+         the Transactions table — so nothing is run here and the chat has
+         nothing to say. The report simply offers to show it. The tier comes
+         along because the session's package is not this report's. */
+      if (session && session.brhRan) {
+        added[current.key] = {
+          tx: session.brhRan,
+          at: session.date || "",
+          applied: false,
+          replied: true,
+          tier: session.tier || "complete",
+          land: "risk"
+        };
+      }
       return origExpand.apply(this, arguments);
     };
   }

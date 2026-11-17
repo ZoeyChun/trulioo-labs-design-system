@@ -17,8 +17,8 @@
   var product = params.get("product") || "";
   /* Set by the Transactions table for a transaction that ran several products
      (see transactions-preview/js/embed-bridge.js): "on" opens the report that
-     includes the Business Risk Horizon Score, "offer" the verification beside
-     it, which can still add it. */
+     carries the Business Risk Horizon Score, "view" the verification beside
+     it, whose score has already been run and is there to be shown. */
   var brh = params.get("brh") || "";
 
   var session = {
@@ -37,9 +37,11 @@
   if (brh === "on" || /horizon/i.test(product)) {
     session.addons = ["risk"];
     session.tab = "risk";
-  } else if (brh === "offer") {
+  } else if (brh === "view") {
+    /* The verification itself has no score — that is the transaction beside
+       it — so the report opens without the tab and offers to show it. */
     session.addons = [];
-    session.offerBrh = true;
+    session.brhRan = session.transactionId;
   }
 
   var tries = 0;
