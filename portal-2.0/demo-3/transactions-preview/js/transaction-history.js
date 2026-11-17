@@ -2725,18 +2725,24 @@
       nameHtml(item, opts) +
       "</td>";
 
+    /* The outcome belongs to the transaction, not to one of the products it
+       ran — a child repeating its parent's verdict read as a verdict of its
+       own. The column keeps its place with the same marker empty cells use
+       elsewhere. */
+    cells += isChild
+      ? '<td class="ut-tx-outcome-cell"><span class="ut-tx-empty">--</span></td>'
+      : '<td class="ut-tx-outcome-cell' +
+        (!scoreInOutcome() &&
+        !window.UT_TX_PLAIN_TABLE &&
+        settings.score === "combined-outcome" &&
+        combinedScoreKind(item) === "stack" &&
+        outcomeScore(item)
+          ? " ut-tx-outcome-cell--with-sub"
+          : "") +
+        '">' +
+        outcomeHtml(item) +
+        "</td>";
     cells +=
-      '<td class="ut-tx-outcome-cell' +
-      (!scoreInOutcome() &&
-      !window.UT_TX_PLAIN_TABLE &&
-      settings.score === "combined-outcome" &&
-      combinedScoreKind(item) === "stack" &&
-      outcomeScore(item)
-        ? " ut-tx-outcome-cell--with-sub"
-        : "") +
-      '">' +
-      outcomeHtml(item) +
-      "</td>" +
       "<td>" +
       dateHtml(item) +
       "</td>" +
