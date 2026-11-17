@@ -108,3 +108,24 @@
 
 /* The dotted-ground skeleton belongs to the map surface; the report view has its own Verifying skeleton. */
 .d3-workspace[data-d3-kyb-surface="report"] .d3-kyb-skeleton { display: none !important; }
+
+/* Demo only: sends the result of a slow verification back, in place of the 24-hour wait. */
+.d3-sim-return {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8, 8px);
+  align-self: flex-start;
+  margin-top: var(--spacing-12, 12px);
+  padding: 4px var(--spacing-12, 12px);
+  border: 1px dashed var(--border-default, #b8c2bc);
+  border-radius: var(--radius-full, 999px);
+  background: transparent;
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 16px;
+  cursor: pointer;
+}
+.d3-sim-return:hover { background: var(--surface-neutral-02, #f4f6f4); }
+.d3-sim-return__sub { color: var(--text-placeholder, #8a9a90); font-weight: 400; }

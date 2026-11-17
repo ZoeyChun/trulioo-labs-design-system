@@ -752,7 +752,7 @@
   function onUserText(text) {
     rememberPlace(text || "");
     var named = nameFromText(text);
-    if (named && !/^(yes|no|ok|okay|thanks?|thank you)$/i.test(named) && !(lastPlace.country && named.toLowerCase() === String(lastPlace.country).toLowerCase())) lastEntity = lastEntity && !/verify|business/i.test(text) ? lastEntity : named;
+    if (named && !/^(yes|no|ok|okay|thanks?|thank you|verify|confirm|continue|edit|cancel|back|skip|done)$/i.test(named) && !(lastPlace.country && named.toLowerCase() === String(lastPlace.country).toLowerCase())) lastEntity = lastEntity && !/verify|business/i.test(text) ? lastEntity : named;
     if (step !== "landing" && (lastPlace.country || lastPlace.cc || lastEntity)) setTitle(isKyb() ? kybTitle() : conversationTitle());
   }
 

@@ -201,7 +201,8 @@
       '<span class="d1-report-ready__icon" aria-hidden="true"><i class="fa-regular fa-clock"></i></span>' +
       '<div class="d1-report-ready__meta"><p class="d1-report-ready__name">' + esc(job.biz.name) + "</p>" +
       '<p class="d1-report-ready__addr">In progress</p></div>' +
-      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-d3-pending-open="' + esc(job.ref) + '">View status</button></div></div>';
+      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-d3-pending-open="' + esc(job.ref) + '">View status</button></div>' +
+      '<button type="button" class="d3-sim-return" data-d3-pending-sim="' + esc(job.ref) + '">Simulate verification return <span class="d3-sim-return__sub">for dev team review</span></button></div>';
     thread.appendChild(wrap);
     var scroller = document.querySelector("[data-d3-chat-thread]") || thread.parentElement;
     if (scroller) scroller.scrollTop = scroller.scrollHeight;
@@ -358,6 +359,8 @@
   function disableChatCard(job) {
     var msg = thread && thread.querySelector('[data-d3-pending-msg="' + job.ref + '"]');
     if (!msg) return;
+    var sim = msg.querySelector("[data-d3-pending-sim]");
+    if (sim) sim.remove();
     Array.prototype.forEach.call(msg.querySelectorAll("button"), function (btn) {
       btn.disabled = true;
       btn.setAttribute("aria-disabled", "true");
@@ -498,8 +501,7 @@
     addRecent(job);
     freeComposer();
     document.dispatchEvent(new CustomEvent("d3-kyb:pending", { detail: { biz: biz, ref: job.ref } }));
-    /* The result comes back about 15 seconds later. */
-    job.timer = window.setTimeout(function () { ready(job); }, RESOLVE_MS);
+    /* The result does not come back by itself: the "Simulate verification return" button in the chat sends it (demo only). */
   }
 
   /* Back to a submitted verification (from the chat card or Recent): open the report surface, then the card. */
@@ -535,6 +537,12 @@
   document.addEventListener("click", function (event) {
     var t = event.target;
     if (!t.closest) return;
+    var sim = t.closest("[data-d3-pending-sim]");
+    if (sim) {
+      var sj = jobs[sim.getAttribute("data-d3-pending-sim")];
+      if (sj) ready(sj);
+      return;
+    }
     if (t.closest("[data-d3-toast-close]")) {
       hideToast();
       return;
