@@ -149,17 +149,15 @@
     return n === 1 ? "1 follower" : n.toLocaleString("en-US") + " followers";
   }
 
-  function webAccordionHtml(title, left, right, followers) {
-    /* Collapsed by default per Demo 3 QA. Follower count sits right of title. */
+  function webAccordionHtml(title, left, right) {
+    /* Collapsed by default per Demo 3 QA. */
     return (
       '<div class="tds-accordion tds-accordion--md kyb-web-accordion">' +
       '<button type="button" class="tds-accordion__header" aria-expanded="false">' +
       '<span class="tds-accordion__leading"><span class="tds-accordion__title">' +
       esc(title) +
       '</span></span><span class="tds-accordion__trailing">' +
-      '<span class="tds-tag tds-tag--sm tds-tag--default kyb-web-accordion__followers">' +
-      esc(formatFollowerCount(followers)) +
-      '</span><span class="tds-accordion__chevron" aria-hidden="true">' +
+      '<span class="tds-accordion__chevron" aria-hidden="true">' +
       ACCORDION_CHEVRON +
       "</span></span></button>" +
       '<div class="tds-accordion__content">' +
@@ -337,7 +335,7 @@
 
     return platforms
       .map(function (p) {
-        return webAccordionHtml(p.title, p.left, p.right, p.followers);
+        return webAccordionHtml(p.title, p.left, p.right);
       })
       .join("");
   }
@@ -581,15 +579,6 @@
 
   var MATCH_CATEGORY_ORDER = ["Business Information", "Address", "Additional"];
 
-  function matchCategoryHeaderHtml(label) {
-    return (
-      '<tr class="kyb-match-category-row">' +
-      '<th colspan="4" scope="colgroup">' +
-      esc(label) +
-      "</th></tr>"
-    );
-  }
-
   function matchFieldRowPairHtml(row) {
     var expanded = false;
     var nested = (row.sourceRows || [])
@@ -633,7 +622,24 @@
     );
   }
 
-  function matchRowsHtmlGrouped(rows) {
+  function matchCategoryTableHtml(label, rows) {
+    if (!rows || !rows.length) return "";
+    return (
+      '<section class="kyb-match-category">' +
+      '<h3 class="kyb-match-category__title">' +
+      esc(label) +
+      "</h3>" +
+      '<div class="tds-data-table-container kyb-match-table">' +
+      '<div class="tds-data-table__wrapper"><table class="tds-data-table tds-data-table--comfort">' +
+      "<thead><tr><th>Field</th><th>Input</th><th>Sources</th>" +
+      '<th class="tds-data-table__actions-col" aria-hidden="true"></th></tr></thead>' +
+      "<tbody>" +
+      rows.map(matchFieldRowPairHtml).join("") +
+      "</tbody></table></div></div></section>"
+    );
+  }
+
+  function matchCategoriesHtml(rows) {
     var byCat = {};
     MATCH_CATEGORY_ORDER.forEach(function (c) {
       byCat[c] = [];
@@ -646,15 +652,9 @@
     });
     var html = "";
     MATCH_CATEGORY_ORDER.forEach(function (c) {
-      var list = byCat[c];
-      if (!list.length) return;
-      html += matchCategoryHeaderHtml(c);
-      html += list.map(matchFieldRowPairHtml).join("");
+      html += matchCategoryTableHtml(c, byCat[c]);
     });
-    if (orphan.length) {
-      html += matchCategoryHeaderHtml("Additional");
-      html += orphan.map(matchFieldRowPairHtml).join("");
-    }
+    if (orphan.length) html += matchCategoryTableHtml("Additional", orphan);
     return html;
   }
 
@@ -667,8 +667,8 @@
     var statusIcon = data.verified ? ICON_MATCH : ICON_NO;
     var statusTitle = data.verified ? "Verified" : "Not Verified";
 
-    /* Match rows collapsed by default; grouped under category headers. */
-    var rowsHtml = matchRowsHtmlGrouped(data.rows);
+    /* One heading + table per category (outside the table). */
+    var categoriesHtml = matchCategoriesHtml(data.rows);
 
     panel.innerHTML =
       '<div class="d3-kyb-tab-body d3-kyb-match">' +
@@ -693,13 +693,9 @@
       '<div class="kyb-field-strip__item">' +
       dataField("Sources Responded", valueText(data.metrics.sources)) +
       "</div></div></div>" +
-      '<div class="tds-data-table-container kyb-match-table">' +
-      '<div class="tds-data-table__wrapper"><table class="tds-data-table tds-data-table--comfort">' +
-      "<thead><tr><th>Field</th><th>Input</th><th>Sources</th>" +
-      '<th class="tds-data-table__actions-col" aria-hidden="true"></th></tr></thead>' +
-      "<tbody>" +
-      rowsHtml +
-      "</tbody></table></div></div>" +
+      '<div class="kyb-match-categories">' +
+      categoriesHtml +
+      "</div>" +
       sourcesSectionsHtml(biz) +
       "</div>";
 

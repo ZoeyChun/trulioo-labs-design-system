@@ -357,30 +357,61 @@
   min-width: 0;
 }
 
+.kyb-match-categories {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+}
+
+.kyb-match-category {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12, 12px);
+  min-width: 0;
+}
+
+.kyb-match-category__title {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem); /* 14px */
+  line-height: var(--line-height-sm, 22px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-default, #172d2d);
+}
+
+/* Shared column widths so every category table aligns. */
+.kyb-match-table .tds-data-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.kyb-match-table .tds-data-table thead th:nth-child(1),
+.kyb-match-table .tds-data-table tbody tr[data-d3-match-row] > td:nth-child(1) {
+  width: 32%;
+}
+
+.kyb-match-table .tds-data-table thead th:nth-child(2),
+.kyb-match-table .tds-data-table tbody tr[data-d3-match-row] > td:nth-child(2) {
+  width: 36%;
+}
+
+.kyb-match-table .tds-data-table thead th:nth-child(3),
+.kyb-match-table .tds-data-table tbody tr[data-d3-match-row] > td:nth-child(3) {
+  width: auto;
+}
+
+.kyb-match-table .tds-data-table thead th.tds-data-table__actions-col,
+.kyb-match-table .tds-data-table tbody tr[data-d3-match-row] > td:nth-child(4) {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+}
+
 .kyb-match-table .tds-data-table thead th {
   background-color: var(--surface-neutral-02, #f4f4f4);
   font-size: 11px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: var(--text-description, #6f6f6f);
-}
-
-.kyb-match-table .kyb-match-category-row th {
-  padding: 10px 16px;
-  background-color: var(--surface-neutral-02, #f4f6f4);
-  border-bottom: 1px solid var(--border-subtle, #dde2de);
-  font-size: var(--font-size-xs, 12px);
-  font-weight: var(--font-weight-medium, 500);
-  line-height: var(--line-height-xs, 16px);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--text-caption, #617269);
-  text-align: left;
-}
-
-/* Gap between column header and first category header */
-.kyb-match-table .tds-data-table thead + tbody > .kyb-match-category-row:first-child th {
-  border-top: 8px solid var(--surface-neutral-01, #fff);
 }
 
 .kyb-match-table tr[data-d3-match-row] {
