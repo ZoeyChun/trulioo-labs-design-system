@@ -90,4 +90,6 @@
 .d3-brh-reply__txn .d3-rc__label { grid-column: 1; }
 .d3-brh-reply__txid { grid-column: 1; color: var(--text-default, #172d2d); overflow-wrap: anywhere; }
 .d3-brh-reply__txn > .tds-btn { grid-column: 2; grid-row: 1 / span 2; }
-.d3-brh-reply__view { align-self: flex-start; margin-top: var(--spacing-4, 4px); }
+.d3-brh-reply__head { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--spacing-12, 12px); }
+.d3-brh-reply__head-copy { display: flex; flex-direction: column; gap: var(--spacing-4, 4px); min-width: 0; }
+.d3-brh-reply__head > .tds-btn { flex: none; }

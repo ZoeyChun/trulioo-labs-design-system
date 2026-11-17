@@ -93,6 +93,19 @@
     );
   }
 
+  /* The tab's body mounts a moment after the tab opens, however it was opened: try until the score panel is there. */
+  function syncSoon() {
+    var tries = 0;
+    (function go() {
+      var panel = resume.querySelector('[data-d3-kyb-panel="risk"]');
+      if (panel && panel.querySelector(".kyb-tab-summary__score")) {
+        syncNote();
+        return;
+      }
+      if (++tries < 20) window.setTimeout(go, 150);
+    })();
+  }
+
   /* An "Added" tag beside the tab, for a report that gained it. */
   function syncTag() {
     var tab = resume.querySelector('[data-d3-kyb-tab="risk"]');
@@ -128,8 +141,7 @@
     if (c) c.click();
   }
 
-  /* Clicked from the AI panel's next actions: the chat shows what was asked, as a message of the user's. */
-  var fromChat = false;
+  /* The chat shows what was asked, as a message of the user's. */
   var ASKED = "Add Business Risk Horizon Score";
 
   function echoAsked() {
@@ -172,15 +184,16 @@
         '<div class="d1-ai d1-block d3-brh-reply">' +
         '<p class="d3-brh-reply__lead">Business Risk Horizon has been added to <b>' + esc((b && b.name) || "this business") + "</b>.</p>" +
         '<div class="d3-brh-reply__card">' +
-        '<div class="d3-brh-reply__section"><span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score</span>' +
+        '<div class="d3-brh-reply__section d3-brh-reply__head"><span class="d3-brh-reply__head-copy">' +
+        '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score</span>' +
         '<span class="d3-rc__scoreval"><b class="d3-rc__score-num">' + esc(gauge.getAttribute("data-score")) + "</b>" +
-        '<span class="d3-rc__score-label d3-rc__score-label--' + esc(tone) + '">' + esc(title.textContent.trim()) + "</span></span></div>" +
+        '<span class="d3-rc__score-label d3-rc__score-label--' + esc(tone) + '">' + esc(title.textContent.trim()) + "</span></span></span>" +
+        '<button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d3-brh-view>View</button></div>' +
         '<div class="d3-brh-reply__section"><span class="d3-rc__label text-label-sm-uppercase">Key findings</span>' +
         '<ul class="d3-brh-reply__list">' + list + "</ul></div>" +
         '<div class="d3-brh-reply__section d3-brh-reply__txn"><span class="d3-rc__label text-label-sm-uppercase">Transaction ID</span>' +
         '<span class="d3-brh-reply__txid text-body-xs" data-d3-brh-txid>' + esc(rec.tx) + "</span>" +
         '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-brh-copy>Copy</button></div>' +
-        '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm d3-brh-reply__view" data-d3-brh-view>View Business Risk Horizon</button>' +
         "</div></div>";
       thread.appendChild(node);
       if (node.scrollIntoView) node.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -208,7 +221,6 @@
       syncTag();
       /* The page opens on what was just added. */
       R().selectTab("risk");
-      window.setTimeout(syncNote, 300);
       postReply(added[key], key);
       /* Done: the suggestion to add it goes. */
       document.querySelectorAll(".d3-ai-next [data-d3-brh-run]").forEach(function (b) { b.remove(); });
@@ -219,14 +231,13 @@
     var t = event.target;
     if (!t || !t.closest) return;
     if (t.closest("[data-d3-brh-run]")) {
-      fromChat = !!t.closest(".d3-ai-next");
       openDialog();
       return;
     }
     if (t.closest("[data-d3-brh-confirm]")) {
       closeDialog();
-      if (fromChat) echoAsked();
-      fromChat = false;
+      /* From the AI panel or from the workspace, the chat shows what was asked. */
+      echoAsked();
       run();
       return;
     }
@@ -244,7 +255,7 @@
       window.setTimeout(function () { copy.textContent = "Copy"; }, 1600);
       return;
     }
-    if (t.closest('[data-d3-kyb-tab="risk"]')) window.setTimeout(syncNote, 150);
+    if (t.closest('[data-d3-kyb-tab="risk"]')) syncSoon();
   });
 
   /* Every reveal is a report of its own. */
@@ -257,5 +268,5 @@
     return origReveal.apply(this, arguments);
   };
 
-  window.D3KybBrhOffer = { buttonHtml: buttonHtml, nextHtml: nextHtml };
+  window.D3KybBrhOffer = { buttonHtml: buttonHtml, nextHtml: nextHtml, sync: syncSoon };
 })();

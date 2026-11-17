@@ -730,6 +730,8 @@
     }
     if (id === "risk" && window.D3KybPanels) {
       window.D3KybPanels.mount(panel, "signals");
+      /* A report that gained Business Risk Horizon shows its own transaction in this tab. */
+      if (window.D3KybBrhOffer && window.D3KybBrhOffer.sync) window.D3KybBrhOffer.sync();
     }
     if (id === "ownership") {
       window.requestAnimationFrame(function () {

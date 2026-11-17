@@ -380,6 +380,9 @@
   background: var(--surface-neutral-02, #f4f6f4);
 }
 
+/* The matching businesses need no icon: the name, address and registration say who they are. */
+.d3-ai-selector[data-d3-ai-selector] .d3-ai-selector__mark { display: none; }
+
 .d3-ai-selector[data-d3-ai-selector] .d3-ai-selector__row:hover {
   background: color-mix(in srgb, var(--surface-neutral-02, #f4f6f4) 82%, var(--surface-neutral-03, #e8ede8));
 }
