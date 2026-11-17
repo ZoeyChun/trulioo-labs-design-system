@@ -846,7 +846,58 @@
         { mark: "Officer IDs", rest: " are verified for both officers." }
       ]
     };
-    var bullets = (HERO_BULLETS[tone] || HERO_BULLETS.negative).map(bulletHtml);
+    /* The Overview says only what the data returned says: how many Match Signals fields matched, the ownership
+       structure, the domain record and the social profiles. Each line is read from that data. */
+    function heroBulletsFromData() {
+      var RT = window.D3KybResultTabs;
+      if (!RT || !RT.heroFacts) return null;
+      var f = RT.heroFacts(biz);
+      var out = [];
+      if (f.match.total) {
+        var line = mark(f.match.matched + " of " + f.match.total) + " Match Signals fields matched";
+        if (f.match.misses.length) line += " — " + mark(f.match.misses.join(", ")) + (f.match.misses.length > 1 ? " did not match." : " did not match.");
+        else line += ".";
+        out.push(line);
+      }
+      /* The rows the Owners & UBOs tab shows. */
+      var mvpOwn = window.D3KybMvpOwnership && window.D3KybMvpOwnership.rows;
+      var own = Array.isArray(mvpOwn) && mvpOwn.length ? mvpOwn : Array.isArray(biz.ownership) ? biz.ownership : [];
+      if (own.length) {
+        var maxDeg = 0;
+        own.forEach(function (o) {
+          var d = parseInt(o.degree, 10);
+          if (!isNaN(d) && d > maxDeg) maxDeg = d;
+        });
+        var layer = maxDeg >= 2 ? maxDeg + " (Indirect)" : maxDeg === 1 ? "1 (Direct)" : "0 (Root)";
+        var corps = own.filter(function (o) { return o.type === "business"; }).length;
+        var ubos = own.filter(function (o) {
+          return o.type !== "business" && (o.flagged || /ubo/i.test(String(o.sub || o.statusLabel || "")) || parseFloat(String(o.indirectPct || "").replace(/[^\d.]/g, "")) > 25);
+        }).length;
+        var l2 = "Ownership layer: " + mark(layer) + ".";
+        if (corps) l2 += " " + mark(String(corps)) + " corporate " + (corps === 1 ? "intermediary holds a direct stake" : "intermediaries hold direct stakes") + " in the root.";
+        l2 += ubos ? " " + mark(String(ubos)) + (ubos === 1 ? " UBO identified." : " UBOs identified.") : " No UBO identified.";
+        out.push(l2);
+      } else if (biz.ownershipUndisclosed) {
+        out.push("Ownership was " + mark("not disclosed") + " by the registry.");
+      }
+      var w = f.whois;
+      var regYear = String(w.registered).match(/(\d{4})/);
+      var incYear = String((biz.report && biz.report.regDate) || "").match(/(\d{4})/);
+      var align = regYear && incYear ? (parseInt(regYear[1], 10) >= parseInt(incYear[1], 10) ? "aligns with incorporation" : "predates incorporation") : "";
+      out.push("WHOIS: registered " + mark(w.registered) + " via " + mark(w.registrar) + (align ? " — " + align + "." : "."));
+      var active = f.socials.filter(function (x) { return x.followers > 0; });
+      if (active.length) {
+        out.push(
+          "Social mix: " + active.map(function (x, i) { return i === 0 ? mark(x.name) : esc(x.name); }).join(", ") +
+          " — " + esc(active[0].name) + " leads; profiles are " + (f.socialsVerified ? "verified." : "unverified.")
+        );
+      } else {
+        out.push(mark("No active social profiles") + " found.");
+      }
+      return out;
+    }
+    var dataBullets = heroBulletsFromData();
+    var bullets = dataBullets || (HERO_BULLETS[tone] || HERO_BULLETS.negative).map(bulletHtml);
 
     var brhOn = isBrhOn(card);
     var buttons = [].slice

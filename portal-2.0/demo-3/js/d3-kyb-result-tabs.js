@@ -392,11 +392,47 @@
     );
   }
 
+  /* The domain record the Web Insights tab shows, kept in one place so the Overview can read the same facts. */
+  function whoisForBiz(biz) {
+    var w = (biz && biz.web) || {};
+    return {
+      status: w.status || "Active — live site responding",
+      registered: w.registered || "1 Feb 2019",
+      expires: w.expires || "1 Feb 2027",
+      registrar: w.registrar || "GoDaddy.com, LLC"
+    };
+  }
+
+  /* What the Overview hero says comes from these three tabs' data: Match Signals, Web Insights and the social profiles. */
+  function heroFacts(biz) {
+    var md = matchDataForBiz(biz);
+    var rows = (md && md.rows) || [];
+    var misses = rows
+      .filter(function (r) { return r.status === "no-match"; })
+      .map(function (r) { return r.field; });
+    var matched = rows.filter(function (r) { return r.status === "match" || r.status === "derived"; }).length;
+    var w = whoisForBiz(biz);
+    var sp = socialProfileForBiz(biz);
+    var socials = [
+      { name: "LinkedIn", followers: parseInt(String(sp.linkedinFollowers).replace(/\D/g, ""), 10) || 0 },
+      { name: "Instagram", followers: parseInt(String(sp.instagramFollowers).replace(/\D/g, ""), 10) || 0 },
+      { name: "X", followers: parseInt(String(sp.twitterFollowers).replace(/\D/g, ""), 10) || 0 },
+      { name: "TikTok", followers: parseInt(String(sp.tiktokFollowers).replace(/\D/g, ""), 10) || 0 }
+    ].sort(function (a, b) { return b.followers - a.followers; });
+    return {
+      match: { matched: matched, total: rows.length, misses: misses },
+      whois: w,
+      socials: socials,
+      socialsVerified: !!sp.verified
+    };
+  }
+
   function renderWebPanel(panel, biz) {
     if (!panel || !biz) return;
     var s = socialProfileForBiz(biz);
-    var websiteStatus = "Active — live site responding";
-    var expired = "1 Feb 2027";
+    var whois = whoisForBiz(biz);
+    var websiteStatus = whois.status;
+    var expired = whois.expires;
 
     panel.innerHTML =
       '<div class="d3-kyb-tab-body d3-kyb-web">' +
@@ -438,9 +474,9 @@
       '<div class="kyb-web-details-grid">' +
       dataField("Website", valueLink("https://" + s.domain, s.domain)) +
       dataField("Website Status", valueText(websiteStatus)) +
-      dataField("Domain Registered", valueText("1 Feb 2019")) +
+      dataField("Domain Registered", valueText(whois.registered)) +
       dataField("Domain Expires", valueText(expired)) +
-      dataField("Domain Registrar", valueText("GoDaddy.com, LLC")) +
+      dataField("Domain Registrar", valueText(whois.registrar)) +
       "</div>" +
       '<hr class="kyb-section-divider">' +
       socialHandlesRowHtml(s) +
@@ -1152,6 +1188,7 @@
     renderAll: renderAll,
     renderWebPanel: renderWebPanel,
     renderMatchSignalsPanel: renderMatchSignalsPanel,
+    heroFacts: heroFacts,
     renderAdditionalPanel: renderAdditionalPanel,
     renderSourcesPanel: renderSourcesPanel,
     extraCounts: extraCounts

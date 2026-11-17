@@ -129,10 +129,7 @@
       /* On the right the checks and where each one is. */
       '<aside class="d3h-entity d3-kyb-pending__checks" aria-label="Checks">' +
       '<p class="d3-kyb-pending__card-title text-label-sm-uppercase">Checks</p>' +
-      '<ol class="tds-stepper tds-stepper--vertical d3-kyb-pending__steps" aria-label="Checks">' + stepRows() + "</ol></aside></div></section>" +
-      '<div class="d3-kyb-pending__actions">' +
-      '<button type="button" class="tds-btn tds-btn--md tds-btn--primary" data-d3-pending-new>Start new verification</button>' +
-      '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary" data-d3-pending-recent>View in recent transactions</button></div></section>'
+      '<ol class="tds-stepper tds-stepper--vertical d3-kyb-pending__steps" aria-label="Checks">' + stepRows() + "</ol></aside></div></section></section>"
     );
   }
 
@@ -564,18 +561,6 @@
       var j = jobs[card.getAttribute("data-d3-pending-card")];
       if (j) (j.ready ? openReport(j) : reopen(j));
       return;
-    }
-    if (t.closest("[data-d3-pending-new], [data-d3-pending-recent]")) {
-      var toRecent = !!t.closest("[data-d3-pending-recent]");
-      clearPanel();
-      var nv = document.querySelector("[data-d3-kyb-new]");
-      if (nv) nv.click();
-      if (toRecent) {
-        window.setTimeout(function () {
-          var rec = document.querySelector("[data-d3-kyb-recent]");
-          if (rec && rec.scrollIntoView) rec.scrollIntoView({ block: "center", behavior: "smooth" });
-        }, 400);
-      }
     }
   });
 

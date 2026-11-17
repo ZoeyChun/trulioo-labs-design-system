@@ -2,9 +2,6 @@
 .d3-kyb-resume:is([data-d3-pending], [data-d3-pending-run]) .d3-kyb-tabs,
 .d3-kyb-resume[data-d3-pending] [data-d3-kyb-panel] { display: none !important; }
 
-/* The page's own Start new verification sits under the hero, so the one next to the breadcrumb steps aside. */
-.d3-workspace:has(.d3-kyb-resume[data-d3-pending]) [data-d3-kyb-new] { display: none !important; }
-
 /* No Raw Data or Export for a report that does not exist yet. */
 .d3-kyb-resume:is([data-d3-pending], [data-d3-pending-run]) .d3-workspace__biz-actions { display: none !important; }
 
@@ -75,7 +72,6 @@
 .d3-kyb-pending__steps.tds-stepper--vertical .tds-stepper__caption { padding-left: 32px; }
 
 
-.d3-kyb-pending__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-8, 8px); }
 
 /* The result is back: a TDS announcement (info) floating over the page, and a dot on the KYB Verification rail button. */
 .d3-toast.tds-announcement {
