@@ -68,7 +68,8 @@
   <link rel="stylesheet" href="css/d3-kyb-gap.css?v=43">
   <link rel="stylesheet" href="css/d3-kyb-fields.css?v=32">
   <link rel="stylesheet" href="css/d3-kyb-pending.css?v=15">
-  <link rel="stylesheet" href="css/d3-kyb-result-card.css?v=10">
+  <link rel="stylesheet" href="css/d3-kyb-result-card.css?v=12">
+  <link rel="stylesheet" href="css/d3-kyb-brh-offer.css?v=15">
   <link rel="stylesheet" href="css/d3-kyb-package.css?v=15">
   <link rel="stylesheet" href="css/d3-kyb-canvas.css?v=12">
   <link rel="stylesheet" href="css/d3-embed-report.css?v=1">
@@ -76,7 +77,7 @@
   <link rel="stylesheet" href="css/d3-transactions.css?v=16">
   <link rel="stylesheet" href="css/d3-org.css?v=9">
   <link rel="stylesheet" href="css/d3-tx-agent.css?v=2">
-  <link rel="stylesheet" href="css/d3-kyb-agent.css?v=11">
+  <link rel="stylesheet" href="css/d3-kyb-agent.css?v=12">
   <link rel="stylesheet" href="css/d3-kyb-result-tabs.css?v=11">
   <link rel="stylesheet" href="css/d3-kyb-findings.css?v=36">
   <link rel="stylesheet" href="../../Components/filter-tab/filter-tab.css">
@@ -841,6 +842,38 @@ No evidence of active trading, clients, or revenue.</p>
           </div>
         </div>
 
+        <div class="tds-dialog tds-dialog--center tds-dialog--md tds-dialog--scoped d3-kyb-brh-dialog" id="d3-kyb-brh-dialog" hidden>
+          <div class="tds-dialog__backdrop">
+            <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="d3-kyb-brh-title" tabindex="-1">
+              <header class="tds-dialog__header">
+                <div class="tds-dialog__header-row">
+                  <h2 class="tds-dialog__title" id="d3-kyb-brh-title">Add Business Risk Horizon?</h2>
+                  <button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--md tds-dialog__dismiss" aria-label="Dismiss dialog">
+                    <span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span>
+                  </button>
+                </div>
+                <div class="tds-dialog__divider" role="presentation"></div>
+              </header>
+              <div class="tds-dialog__body">
+                <p class="d3-kyb-brh-dialog__text">This adds Business Risk Horizon to <b data-d3-brh-dialog-name>this business</b>.</p>
+                <ul class="d3-kyb-brh-dialog__list">
+                  <li>It runs as its own transaction, with a new Transaction ID.</li>
+                  <li>The verification, package and add-ons already run are not run again or changed.</li>
+                </ul>
+              </div>
+              <footer class="tds-dialog__footer">
+                <div class="tds-dialog__footer-row tds-dialog__footer-row--actions-only">
+                  <div class="tds-dialog__footer-meta"></div>
+                  <div class="tds-dialog__actions">
+                    <button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-dialog-close>Cancel</button>
+                    <button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d3-brh-confirm>Add Business Risk Horizon</button>
+                  </div>
+                </div>
+              </footer>
+            </div>
+          </div>
+        </div>
+
         <div class="tds-dialog tds-dialog--right tds-dialog--score-breakdown tds-dialog--scoped d3-kyb-score-breakdown-dialog" id="kyb-score-breakdown-dialog" hidden>
           <div class="tds-dialog__backdrop">
             <div class="tds-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="kyb-score-breakdown-title" tabindex="-1">
@@ -1537,7 +1570,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="../../Components/score-gauge/score-gauge.js"></script>
 <script src="js/d3-kyb-report-panels-data.js?v=2"></script>
 <script src="js/d3-kyb-report-panels.js?v=13"></script>
-<script src="js/d3-kyb-findings.js?v=36"></script>
+<script src="js/d3-kyb-findings.js?v=41"></script>
 <script src="js/d3-kyb-session.js?v=34"></script>
 <script src="js/d3-kyb-gap.js?v=16"></script>
 <script src="js/d3-kyb-config.js?v=16"></script>
@@ -1545,13 +1578,14 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="js/d3-kyb-fields.js?v=40"></script>
 <script src="js/d3-kyb-form-steps.js?v=10"></script>
 <script src="js/d3-demo-prefill.js?v=2"></script>
-<script src="js/d3-kyb-resume.js?v=58"></script>
-<script src="js/d3-kyb-report-reveal.js?v=45"></script>
+<script src="js/d3-kyb-resume.js?v=59"></script>
+<script src="js/d3-kyb-report-reveal.js?v=47"></script>
 <script src="js/d3-kyb-map-search.js?v=52"></script>
 <script src="js/d3-kyb-manual-search.js?v=35"></script>
-<script src="js/d3-kyb-agent.js?v=84"></script>
+<script src="js/d3-kyb-agent.js?v=86"></script>
 <script src="js/d3-kyb-pending.js?v=14"></script>
-<script src="js/d3-kyb-result-card.js?v=7"></script>
+<script src="js/d3-kyb-result-card.js?v=11"></script>
+<script src="js/d3-kyb-brh-offer.js?v=18"></script>
 <script src="js/d3-motion.js?v=3"></script>
 <script src="js/d3-labs.js?v=10"></script>
 <script src="js/d3-nav.js?v=42"></script>
@@ -1566,7 +1600,7 @@ No evidence of active trading, clients, or revenue.</p>
 <script src="../demo-4/js/truai-bubble.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-orb-motion.js?v=2"></script>
 <script src="components/ai-panel/orb/truai-float.js?v=10"></script>
-<script src="components/ai-panel/treatments/treatments.js?v=27"></script>
+<script src="components/ai-panel/treatments/treatments.js?v=29"></script>
 <script src="js/d3-home-skin.js?v=24"></script>
 <script src="js/d3-home-placeholder.js?v=3"></script>
 <script src="../demo-2/home-layout-01/js/dot-field.js"></script>

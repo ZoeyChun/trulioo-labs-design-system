@@ -931,10 +931,13 @@
             ? "Verified"
             : offLabels[tone] || "Verified";
       var offTone = /not verified|fail/i.test(offTitle) ? "negative" : /review/i.test(offTitle) ? "intermediate" : "positive";
+      /* Without the add-on, the way to add Business Risk Horizon sits beside the status. */
+      var offer = window.D3KybBrhOffer;
       topHtml =
         '<div class="d3h-hero__verdict">' +
         '<p class="d3h-hero__eyebrow">Verification status</p>' +
-        '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + offTone + '">' + esc(offTitle) + "</h2></div>";
+        '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + offTone + '">' + esc(offTitle) + "</h2></div>" +
+        (offer ? offer.buttonHtml() : "");
     }
 
     hero.outerHTML =

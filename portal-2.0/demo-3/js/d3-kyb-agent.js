@@ -36,8 +36,7 @@
   ];
   var SUGGEST_AFTER = [
     { q: "What contributed to this verification result?" },
-    { q: "Who ultimately owns this business?" },
-    { q: "Has this entity ever traded?" }
+    { q: "Who ultimately owns this business?" }
   ];
 
   /* Pane / parked composer copy — keep in sync with the active KYB step. */
@@ -146,6 +145,11 @@
       if (list[i] && span) {
         span.textContent = list[i].q;
         btn.setAttribute("data-d3-kyb-suggest", list[i].q);
+        btn.hidden = false;
+      } else {
+        /* A row with no suggestion left: out of the list, not left with its template text. */
+        btn.hidden = true;
+        btn.removeAttribute("data-d3-kyb-suggest");
       }
     });
     follow.classList.add("is-on");

@@ -14,8 +14,7 @@
 
   var REPORT_NEXT = [
     "What contributed to this verification result?",
-    "Who ultimately owns this business?",
-    "Has this entity ever traded?"
+    "Who ultimately owns this business?"
   ];
 
   var step = "landing";
@@ -448,7 +447,9 @@
       host.setAttribute("data-d3-ai-next", "");
       t.appendChild(host);
     }
-    var sig = "list|" + nextQuestions.join("|");
+    /* A report without Business Risk Horizon offers to add it, first among the next actions. */
+    var brhRow = window.D3KybBrhOffer && window.D3KybBrhOffer.nextHtml ? window.D3KybBrhOffer.nextHtml() : "";
+    var sig = "list|" + (brhRow ? "brh|" : "") + nextQuestions.join("|");
     host.className = "d3-ai-next d3-ai-next--list";
     host.setAttribute("role", "group");
     host.setAttribute("aria-label", "Continue your investigation");
@@ -458,6 +459,7 @@
       '<span class="d3-ai-next__arrow" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>';
     host.innerHTML =
       '<div class="d3-ai-next__list">' +
+      brhRow +
       nextQuestions
         .map(function (q) {
           return (

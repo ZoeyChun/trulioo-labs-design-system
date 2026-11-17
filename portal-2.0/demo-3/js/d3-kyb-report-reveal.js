@@ -670,10 +670,23 @@
     return !S || S.tabAllowed(tier, id, tierAddons);
   }
 
-  function setTier(next, addons) {
+  /* A report run without the Business Risk Horizon add-on offers to run it: a call to action in the Overview hero
+     (see d3-kyb-brh-offer.js). There is no tab until it has been run. Only a run from the session offers it. */
+  var brhOffer = false;
+
+  function offersBrh() {
+    return brhOffer;
+  }
+
+  function setTier(next, addons, opts) {
     var S = window.D3KybSession;
     tier = S && S.package(next) ? next : "complete";
     tierAddons = addons || [];
+    brhOffer = !!(
+      opts && opts.offer && S && S.addonsFor &&
+      tierAddons.indexOf("risk") === -1 &&
+      S.addonsFor(tier).some(function (a) { return a.id === "risk"; })
+    );
     resumeCard.querySelectorAll("[data-d3-kyb-tab]").forEach(function (t) {
       t.hidden = !tabAllowed(t.getAttribute("data-d3-kyb-tab"));
     });
@@ -1039,7 +1052,8 @@
     var data = reportData(biz);
     setTier(
       window.D3KybSession ? window.D3KybSession.get().package : "complete",
-      window.D3KybSession ? window.D3KybSession.get().addons : []
+      window.D3KybSession ? window.D3KybSession.get().addons : [],
+      { offer: true }
     );
 
     /* Chat-pane Back (not the minimize X) — available as soon as verify starts. */
@@ -1107,6 +1121,7 @@
       return tier;
     },
     tabAllowed: tabAllowed,
+    offersBrh: offersBrh,
     renderOwnershipPanel: renderOwnershipPanel,
     renderRawPanel: renderRawPanel,
     openRawDialog: openRawDialog,

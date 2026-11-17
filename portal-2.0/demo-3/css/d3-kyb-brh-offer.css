@@ -1,0 +1,93 @@
+/* Business Risk Horizon added to a report that was run without it (d3-kyb-brh-offer.js). */
+
+/* The overview hero without the score: a button beside the verification status, with a tooltip saying what it adds. */
+.d3h-hero__top:has(.d3-brh-hero-cta) { align-items: center; }
+.d3-brh-hero-cta { position: relative; flex: none; }
+.d3-brh-hero-cta[aria-disabled="true"] { gap: var(--spacing-8, 8px); cursor: default; pointer-events: none; opacity: 0.85; }
+.d3-brh-hero-cta .d3-kyb-pending__spin { width: 12px; height: 12px; border-width: 2px; }
+.d3-brh-hero-cta[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  width: max-content;
+  max-width: 240px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--surface-inverse, #172d2d);
+  color: var(--text-inverse, #f4f6f4);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 16px;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-2px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.d3-brh-hero-cta[data-tooltip]:hover::after,
+.d3-brh-hero-cta[data-tooltip]:focus-visible::after { opacity: 1; transform: translateY(0); transition-delay: 150ms; }
+.d3-brh-hero-cta[aria-disabled="true"]::after { display: none; }
+
+/* The Business Risk Horizon tab: its own transaction, and the tag beside the tab. */
+.d3-brh-txn { position: relative; display: inline-flex; align-self: center; margin: var(--spacing-8, 8px) 0 0; outline: none; cursor: default; }
+.d3-brh-txn__label { display: inline-flex; align-items: center; gap: var(--spacing-4, 4px); color: var(--text-caption, #5c6b6b); }
+.d3-brh-txn__label svg { width: 12px; height: 12px; }
+.d3-brh-txn:is(:hover, :focus-within) .d3-brh-txn__label { color: var(--text-default, #172d2d); }
+/* The ID and Copy appear on hover or focus, above the label. */
+.d3-brh-txn__pop {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12, 12px);
+  padding: var(--spacing-8, 8px) var(--spacing-12, 12px);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-lg, 8px);
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--elevation-md, 0 4px 16px rgba(23, 45, 45, 0.14));
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(2px);
+  transition: opacity 120ms ease, transform 120ms ease, visibility 120ms;
+}
+/* Keeps the popover open while the pointer crosses the gap to it. */
+.d3-brh-txn__pop::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 8px; }
+.d3-brh-txn:is(:hover, :focus-within) .d3-brh-txn__pop { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
+.d3-brh-txn__value { color: var(--text-default, #172d2d); white-space: nowrap; }
+.d3-kyb-tabs__item .d3-brh-added-tag { margin-left: var(--spacing-4, 4px); vertical-align: 1px; }
+
+/* The confirmation, over the report area. */
+.d3-workspace .d3-kyb-brh-dialog.tds-dialog { position: absolute; inset: 0; z-index: 40; }
+.d3-kyb-brh-dialog.tds-dialog--scoped .tds-dialog__backdrop { padding: 24px; }
+.d3-kyb-brh-dialog__text { margin: 0 0 var(--spacing-12, 12px); color: var(--text-default, #172d2d); font-size: var(--font-size-sm, 14px); line-height: 20px; }
+.d3-kyb-brh-dialog__list { margin: 0; padding-left: var(--spacing-20, 20px); color: var(--text-description, #526660); font-size: var(--font-size-sm, 14px); line-height: 20px; }
+
+/* The chat's answer when Business Risk Horizon is added: the score, the key findings, the transaction. */
+.d3-brh-reply { display: flex; flex-direction: column; gap: var(--spacing-12, 12px); }
+.d3-brh-reply__lead { margin: 0; color: var(--text-default, #172d2d); font-size: var(--font-size-sm, 14px); line-height: 20px; }
+.d3-brh-reply__card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: var(--spacing-16, 16px);
+  border: 1px solid var(--border-subtle, #e4e8e6);
+  border-radius: var(--radius-2xl, 16px);
+  background: var(--surface-neutral-01, #fff);
+}
+.d3-brh-reply__section { display: flex; flex-direction: column; gap: var(--spacing-4, 4px); padding: var(--spacing-12, 12px) 0; border-top: 1px solid var(--border-subtle, #e4e8e6); }
+.d3-brh-reply__section:first-child { padding-top: 0; border-top: 0; }
+.d3-brh-reply__list { display: flex; flex-direction: column; gap: var(--spacing-8, 8px); margin: var(--spacing-4, 4px) 0 0; padding: 0; list-style: none; }
+.d3-brh-reply__list .kyb-tab-summary__finding { display: flex; align-items: flex-start; gap: var(--spacing-8, 8px); cursor: default; font-size: var(--font-size-xs, 12px); line-height: 16px; }
+.d3-brh-reply__list .kyb-tab-summary__finding-icon { display: inline-flex; flex: none; width: 16px; height: 16px; }
+.d3-brh-reply__list .kyb-tab-summary__finding-icon svg { width: 16px; height: 16px; }
+.d3-brh-reply__txn { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: var(--spacing-8, 8px); }
+.d3-brh-reply__txn .d3-rc__label { grid-column: 1; }
+.d3-brh-reply__txid { grid-column: 1; color: var(--text-default, #172d2d); overflow-wrap: anywhere; }
+.d3-brh-reply__txn > .tds-btn { grid-column: 2; grid-row: 1 / span 2; }
+.d3-brh-reply__view { align-self: flex-start; margin-top: var(--spacing-4, 4px); }

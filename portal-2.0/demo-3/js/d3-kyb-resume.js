@@ -241,13 +241,12 @@
     }
   }
 
-  /* The same three follow-ups the live verification ends with (see REPORT_NEXT in
+  /* The same follow-ups the live verification ends with (see REPORT_NEXT in
      components/ai-panel/treatments/treatments.js) — one set, one look. */
   function reportNextActions() {
     return [
       { q: "What contributed to this verification result?", tab: "signals" },
-      { q: "Who ultimately owns this business?", tab: "ownership" },
-      { q: "Has this entity ever traded?", tab: "overview" }
+      { q: "Who ultimately owns this business?", tab: "ownership" }
     ];
   }
 

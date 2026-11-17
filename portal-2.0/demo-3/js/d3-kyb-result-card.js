@@ -42,6 +42,7 @@
     if (allowed("signals")) list.push("Screening");
     if (allowed("ownership")) list.push("Ownership");
     if (allowed("web")) list.push("Web insights");
+    if (addons.indexOf("risk") !== -1) list.push("Business Risk Horizon");
     return list;
   }
 
@@ -83,6 +84,17 @@
     };
   }
 
+  function paintScore(body, data) {
+    var sc = body.querySelector("[data-d3-rc-score]");
+    if (sc && data.score) {
+      sc.innerHTML =
+        '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score</span>' +
+        '<span class="d3-rc__scoreval"><b class="d3-rc__score-num">' + esc(data.score) + "</b>" +
+        '<span class="d3-rc__score-label d3-rc__score-label--' + esc(data.riskTone) + '">' + esc(data.riskTitle) + "</span></span>";
+      sc.hidden = false;
+    }
+  }
+
   function enhanceReady(card) {
     var data = null;
     var tries = 0;
@@ -102,14 +114,7 @@
       var tone = String(data.tagClass).replace(/.*d1-tag--/, "d1-tag d1-tag--").split(" ").slice(0, 2).join(" ");
       v.innerHTML = '<span class="' + esc(tone) + '">' + esc(data.tagText) + "</span>" +
         (data.flagged ? '<span class="d3-rc__flag">' + esc(data.flagged) + " of " + esc(data.total) + " signals flagged</span>" : "");
-      var sc = body.querySelector("[data-d3-rc-score]");
-      if (sc && data.score) {
-        sc.innerHTML =
-          '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score</span>' +
-          '<span class="d3-rc__scoreval"><b class="d3-rc__score-num">' + esc(data.score) + "</b>" +
-          '<span class="d3-rc__score-label d3-rc__score-label--' + esc(data.riskTone) + '">' + esc(data.riskTitle) + "</span></span>";
-        sc.hidden = false;
-      }
+      paintScore(body, data);
       var id = body.querySelector("[data-d3-rc-id]");
       if (id && data.txId) id.textContent = data.txId;
     }
