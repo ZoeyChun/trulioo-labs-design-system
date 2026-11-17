@@ -38,6 +38,41 @@
     return parentTrid ? parentTrid.getAttribute("data-trid") || "" : "";
   }
 
+  /* The other products the same transaction ran. Business Horizon is not a
+     package: it is the Business Risk Horizon Score add-on, run as its own
+     transaction beside the verification (see js/d3-kyb-brh-offer.js). So a
+     child sitting next to a Business Horizon child is the verification the
+     score was added to — its report is the one that offers to run it. */
+  function siblingProducts(row) {
+    var first = row;
+    while (
+      first.previousElementSibling &&
+      first.previousElementSibling.classList.contains("ut-tx-row--child")
+    ) {
+      first = first.previousElementSibling;
+    }
+    var out = [];
+    var node = first;
+    while (node && node.classList.contains("ut-tx-row--child")) {
+      var cell = node.querySelector(".ut-tx-td-product");
+      if (cell) out.push(cell.textContent.trim());
+      node = node.nextElementSibling;
+    }
+    return out;
+  }
+
+  function isHorizon(product) {
+    return /horizon/i.test(String(product || ""));
+  }
+
+  /* "on" opens the report that includes the score, "offer" the one that can
+     still add it, "" leaves the report as it was. */
+  function brhModeFor(row, product) {
+    if (!row.classList.contains("ut-tx-row--child")) return "";
+    if (isHorizon(product)) return "on";
+    return siblingProducts(row).some(isHorizon) ? "offer" : "";
+  }
+
   function findByTrid(trid) {
     var list = window.UT_TRANSACTIONS || [];
     for (var i = 0; i < list.length; i += 1) {
@@ -100,7 +135,8 @@
           ? nameCell.textContent.trim()
           : "",
         trid: tridFor(row),
-        product: product
+        product: product,
+        brh: brhModeFor(row, product)
       });
     },
     true

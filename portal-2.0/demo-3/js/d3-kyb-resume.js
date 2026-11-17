@@ -432,7 +432,12 @@
     if (window.D3KybFindings) window.D3KybFindings.setStatus(session.status || "Verified");
 
     if (window.D3Nav) window.D3Nav.openKybChat({ resume: true });
-    if (window.D3KybReport && window.D3KybReport.setTier) window.D3KybReport.setTier(session.tier || "complete", session.addons);
+    /* offer: a report opened without the Business Risk Horizon add-on can offer
+       to run it. Only the caller knows whether that makes sense here, so it is
+       off unless the session asks for it (see js/d3-kyb-brh-offer.js). */
+    if (window.D3KybReport && window.D3KybReport.setTier) {
+      window.D3KybReport.setTier(session.tier || "complete", session.addons, { offer: !!session.offerBrh });
+    }
     setSurface("report");
     setResumeVisible(true);
     if (resumeCard) resumeCard.classList.add("is-live");

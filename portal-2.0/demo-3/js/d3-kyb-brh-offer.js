@@ -327,6 +327,20 @@
     showVersion(false);
   }, true);
 
+  /* The Transactions drawer opens a report without running one (the resume
+     path, which skips reveal()), so without this the offer would have no
+     report to belong to and never show. */
+  var RES = window.D3KybResume;
+  if (RES && RES.expandToFullReport) {
+    var origExpand = RES.expandToFullReport;
+    RES.expandToFullReport = function (session) {
+      current.key = "r" + (++seq);
+      current.name = (session && session.businessName) || "";
+      running = false;
+      return origExpand.apply(this, arguments);
+    };
+  }
+
   /* Every reveal is a report of its own. */
   var origReveal = R().reveal;
   R().reveal = function (biz) {
