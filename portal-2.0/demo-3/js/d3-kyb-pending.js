@@ -115,7 +115,7 @@
     return (
       '<section class="d3-kyb-pending" data-d3-pending aria-live="polite">' +
       /* Right under the business name and status tag. */
-      '<div class="tds-announcement tds-announcement--neutral d3-kyb-pending__note" role="status">' +
+      '<div class="tds-announcement tds-announcement--warning d3-kyb-pending__note" role="status">' +
       '<span class="tds-announcement__icon" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
       '<div class="tds-announcement__content"><p class="tds-announcement__title">You can leave this page</p>' +
       '<p class="tds-announcement__message">We will notify you here as soon as the report is ready.</p></div></div>' +
