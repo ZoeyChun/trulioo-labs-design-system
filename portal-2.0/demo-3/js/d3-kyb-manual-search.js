@@ -225,7 +225,17 @@
     if (window.D3KybFields) window.D3KybFields.fill(entity);
   }
 
+  var countryChosen = false;
+  document.addEventListener("d3-cc:chosen", function () {
+    countryChosen = true;
+    showPrefill(true);
+    var first = document.querySelector("#vb-prefill input:not([type=hidden]):not([readonly])");
+    if (first && !first.value) first.focus();
+  });
+
   function showPrefill(show) {
+    /* Without pre-fill the form opens when a country is chosen in the Country dropdown. */
+    if (noPrefillDemo()) show = countryChosen;
     var section = byId("vb-prefill");
     var lookup = byId("vb-lookup");
     if (section) section.hidden = !show;
@@ -249,6 +259,11 @@
 
   document.addEventListener("d3-demo:prefill-change", function () {
     updateSearchPlaceholder();
+    /* Without pre-fill the form sits right under the Country dropdown. */
+    /* Either way the Country dropdown starts empty again. */
+    countryChosen = false;
+    document.dispatchEvent(new CustomEvent("d3-cc:reset"));
+    if (!typeahead.selected) showPrefill(false);
   });
 
   /* Add-ons, package or the details typed in change what Submit is waiting for. */
@@ -586,7 +601,7 @@
     updateSearchPlaceholder();
     typeahead.selected = null;
     if (window.D3KybSession && !manualMode()) window.D3KybSession.set({ entity: null }, "manual");
-    showPrefill(false);
+    showPrefill(noPrefillDemo());
     updateSearchHint("");
     closeMenu();
     /* Tell the shared session (the AI panel follows it). */
@@ -709,7 +724,7 @@
         S.set({ entity: null }, "manual");
       }
       if (!typeahead.selected) {
-        showPrefill(false);
+        showPrefill(noPrefillDemo());
         onSearchInput();
       }
     }
@@ -1084,6 +1099,8 @@
         if (q) q.value = "";
         closeMenu();
         clearSelection();
+        countryChosen = false;
+        document.dispatchEvent(new CustomEvent("d3-cc:reset"));
         showPrefill(false);
         updateStage();
         updateSubmitButton();

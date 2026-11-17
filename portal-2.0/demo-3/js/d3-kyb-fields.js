@@ -91,9 +91,13 @@
   /* opts.required: marked *; opts.profile: the field is the typed entity profile (manual route), so it writes to
      the session and never says "Pre-filled"; opts.typed: the user's own value, so no "Pre-filled" either;
      opts.locked: read-only and filled from the registry. */
+  /* What Business Finder wrote into each field. A field keeps the highlight until its value is changed. */
+  var finderFilled = {};
+
   function input(label, value, opts) {
     opts = opts || {};
-    var filled = !!value && !opts.profile && !opts.typed;
+    var fromFinder = !!value && finderFilled[opts.key || label] === value;
+    var filled = (!!value && !opts.profile && !opts.typed) || fromFinder;
     return (
       '<div class="tds-text-input' + (filled ? " tds-text-input--success" : "") + '"><label class="tds-field-label">' + esc(label) +
       (opts.required ? ' <span class="d3-kyb-fields__req" aria-hidden="true">*</span>' : "") + "</label>" +
@@ -102,7 +106,7 @@
       (opts.profile ? ' data-d3-profile="' + opts.profile + '"' : ' data-d3-label="' + esc(opts.key || label) + '"') +
       ' value="' + esc(value || "") + '"></div>' +
       (filled
-        ? '<span class="tds-field-validation tds-field-validation--success"><span class="tds-field-validation__icon" aria-hidden="true">' + CHECK + "</span><span>Pre-filled</span></span>"
+        ? '<span class="tds-field-validation tds-field-validation--success"><span class="tds-field-validation__icon" aria-hidden="true">' + CHECK + "</span><span>" + (fromFinder ? "Auto-filled by Business Finder" : "Pre-filled") + "</span></span>"
         : "") +
       "</div>"
     );
@@ -317,10 +321,10 @@
     );
   }
 
-  /* ---- Find & auto-fill address (optional; only when there is no pre-fill) ---------------------------
+  /* ---- Business Finder (optional; only when there is no pre-fill) ---------------------------
      Once Country + Jurisdiction and either a Business Name (3+ characters) or a valid-looking BRN are in,
-     a secondary button wakes up. It lists registry candidates; picking one fills the address zone and
-     whichever identifier was missing. Ignoring it costs nothing: the fields below stay open. */
+     a secondary button wakes up. It lists registry candidates (with their status); picking one fills the
+     business name, the BRN and the address. Ignoring it costs nothing: the fields below stay open. */
   var SEARCH_ICON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
   var FINDER_SHOWN = 5; // candidates listed; more than that asks the user to narrow the search
   var finderTotal = 0;
@@ -343,9 +347,9 @@
   /* What the finder still needs: a jurisdiction, plus a business name or a BRN. Said in one plain line. */
   function finderNeed(met) {
     var hasId = met.name || met.brn;
-    if (!met.jur && !hasId) return "Needs a jurisdiction and either a business name or a BRN.";
-    if (!met.jur) return "Still needs a jurisdiction.";
-    if (!hasId) return "Still needs a business name or a BRN.";
+    if (!met.jur && !hasId) return "Business Finder needs a jurisdiction and either a business name or a BRN.";
+    if (!met.jur) return "Business Finder still needs a jurisdiction.";
+    if (!hasId) return "Business Finder still needs a business name or a BRN.";
     return "";
   }
 
@@ -353,8 +357,8 @@
     return (
       '<div class="d3-kyb-find" data-d3-find>' +
       '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary d3-kyb-find__btn" data-d3-find-btn aria-disabled="true">' +
-      '<span class="d3-kyb-find__icon">' + SEARCH_ICON + "</span>Find &amp; auto-fill address</button>" +
-      '<p class="d3-kyb-find__hint" data-d3-find-hint></p>' +
+      '<span class="d3-kyb-find__icon">' + SEARCH_ICON + "</span>Business Finder</button>" +
+      '<p class="d3-kyb-find__hint" data-d3-find-hint aria-live="polite"></p>' +
       '<div class="d3-kyb-find__results" data-d3-find-results hidden></div></div>'
     );
   }
@@ -382,7 +386,7 @@
               '<button type="button" class="d3-kyb-find__card" data-d3-find-pick="' + i + '">' +
               '<span class="d3-kyb-find__name">' + esc(e.name) + "</span>" +
               '<span class="d3-kyb-find__line">' + esc([e.address1, e.city, e.state, e.postal].filter(Boolean).join(", ")) + "</span>" +
-              '<span class="d3-kyb-find__line">' + esc(e.brn || "") + "</span></button>"
+              '<span class="d3-kyb-find__line">' + esc([e.brn || "", e.status || "Active"].filter(Boolean).join(" · ")) + "</span></button>"
             );
           })
           .join("") +
@@ -411,7 +415,9 @@
       brn: validBrn(st.profile.regNo)
     };
     var hint = wrap.querySelector("[data-d3-find-hint]");
-    var text = filledFrom ? "Filled from " + filledFrom + ". Review and edit anything below." : finderNeed(met);
+    /* After a fill the fields say it themselves ("Auto-filled by Business Finder"), so the line under the button only ever
+       states what the button still needs. */
+    var text = filledFrom ? "" : finderNeed(met);
     hint.textContent = text;
     hint.hidden = !text;
     if (!ready && finderResults !== null) {
@@ -426,6 +432,13 @@
     /* What was typed was only a search term: the registered name and BRN replace it, so whichever
        identifier was missing is filled too. */
     var next = { name: e.name, regNo: e.brn || pr.regNo, address: e.address1 || pr.address, taxId: pr.taxId };
+    finderFilled = {
+      "Business Name": next.name,
+      "Business Registration Number": next.regNo,
+      "Address Line 1": next.address,
+      "City": e.city || "",
+      "Postal Code": e.postal || ""
+    };
     typed["City"] = e.city || typed["City"] || "";
     typed["Postal Code"] = e.postal || typed["Postal Code"] || "";
     typed["State Province"] = e.state || typed["State Province"] || "";
@@ -506,6 +519,17 @@
   /* Typing: profile fields write to the session; the others are remembered for the next re-draw. */
   host.addEventListener("input", function (event) {
     var el = event.target;
+    /* A value Business Finder wrote stops being "auto-filled" as soon as it is edited. */
+    var fieldKey = (el.getAttribute && (el.getAttribute("data-d3-label") || ({ name: "Business Name", regNo: "Business Registration Number", address: "Address Line 1" })[el.getAttribute("data-d3-profile")])) || "";
+    if (fieldKey && finderFilled[fieldKey] !== undefined && finderFilled[fieldKey] !== el.value) {
+      delete finderFilled[fieldKey];
+      var wrap = el.closest(".tds-text-input");
+      if (wrap) {
+        wrap.classList.remove("tds-text-input--success");
+        var note = wrap.querySelector(".tds-field-validation");
+        if (note) note.remove();
+      }
+    }
     var label = el.getAttribute && el.getAttribute("data-d3-label");
     if (label) typed[label] = el.value;
     var key = el.getAttribute && el.getAttribute("data-d3-profile");

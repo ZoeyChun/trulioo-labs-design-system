@@ -233,3 +233,22 @@
 .d3-kyb-jur [data-d3-jur-caret] { cursor: pointer; }
 .d3-kyb-jur__none { display: block; margin: 0; padding: var(--spacing-12, 12px); color: var(--text-description, #526660); font-size: var(--font-size-sm, 14px); }
 
+
+/* Without pre-fill the top of the form is a searchable Country dropdown, not the country + business search bar. */
+.d3-kyb-countrycb { display: none; }
+
+[data-d3-prefill="off"] .d3-kyb-countrycb {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 4px);
+  padding: var(--spacing-16, 16px);
+}
+
+[data-d3-prefill="off"] .vb-search-field { display: none !important; }
+
+.d3-kyb-countrycb .d3-cc-flag { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; }
+.d3-kyb-countrycb .d3-cc-globe { width: 16px; height: 16px; color: var(--icon-faint, #617269); }
+.d3-kyb-countrycb .d3-cc-option { display: flex; align-items: center; gap: var(--spacing-8, 8px); width: 100%; text-align: left; }
+.d3-kyb-countrycb .d3-cc-option[hidden] { display: none; }
+.d3-kyb-countrycb .d3-cc-empty { margin: 0; padding: var(--spacing-12, 12px) var(--spacing-16, 16px); color: var(--text-description, #526660); font-size: var(--font-size-sm, 14px); }
+.d3-kyb-countrycb .d3-cc-panel { max-height: 280px; overflow-y: auto; }
