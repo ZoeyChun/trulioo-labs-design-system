@@ -53,8 +53,8 @@
       /* Business Risk Horizon score: shown only when the report has one. */
       '<div class="d3-rc__row d3-rc__score" data-d3-rc-score hidden></div>' +
       '<div class="d3-rc__checks">' + checks + "</div>" +
-      '<div class="d3-rc__receipt"><span class="d3-rc__receipt-label">Transaction ID</span>' +
-      '<code class="d3-rc__receipt-id" data-d3-rc-id>' + esc(opts.txId || "") + "</code>" +
+      '<div class="d3-rc__receipt"><div class="d3-rc__receipt-main"><span class="d3-rc__label text-label-sm-uppercase">Transaction ID</span>' +
+      '<span class="d3-rc__receipt-id text-body-sm" data-d3-rc-id>' + esc(opts.txId || "") + "</span></div>" +
       '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-rc-copy>Copy</button></div>'
     );
   }

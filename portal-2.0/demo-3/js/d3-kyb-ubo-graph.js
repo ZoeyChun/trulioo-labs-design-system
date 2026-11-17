@@ -519,21 +519,9 @@
       '<h3 class="d3-kyb-ownership__title">' +
       esc(title) +
       "</h3>" +
-      '<div class="tds-segmented-control tds-segmented-control--icon-only" role="group" aria-label="Ownership view" data-d3-kyb-own-view-control>' +
-      '<button type="button" class="tds-segmented-control__item tds-segmented-control__item--selected" aria-pressed="true" aria-label="UBO graph view" data-d3-kyb-own-view="graph">' +
-      '<span class="tds-segmented-control__icon" aria-hidden="true">' +
-      '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-      '<circle cx="8" cy="3.25" r="1.75" stroke="currentColor" stroke-width="1.25"/>' +
-      '<circle cx="4" cy="12.25" r="1.75" stroke="currentColor" stroke-width="1.25"/>' +
-      '<circle cx="12" cy="12.25" r="1.75" stroke="currentColor" stroke-width="1.25"/>' +
-      '<path d="M8 5v2M8 7H4M8 7h4M4 7v3.5M12 7v3.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>' +
-      "</svg></span></button>" +
-      '<button type="button" class="tds-segmented-control__item" aria-pressed="false" aria-label="Table view" data-d3-kyb-own-view="table">' +
-      '<span class="tds-segmented-control__icon" aria-hidden="true">' +
-      '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-      '<rect x="2.5" y="2.5" width="11" height="11" rx="1" stroke="currentColor" stroke-width="1.25"/>' +
-      '<path d="M2.5 6h11M2.5 9.5h11M6 2.5v11" stroke="currentColor" stroke-width="1.25"/>' +
-      "</svg></span></button>" +
+      '<div class="tds-segmented-control tds-segmented-control--sm" role="group" aria-label="Ownership view" data-d3-kyb-own-view-control>' +
+      '<button type="button" class="tds-segmented-control__item tds-segmented-control__item--selected" aria-pressed="true" data-d3-kyb-own-view="graph"><span class="tds-segmented-control__label">Graph</span></button>' +
+      '<button type="button" class="tds-segmented-control__item" aria-pressed="false" data-d3-kyb-own-view="table"><span class="tds-segmented-control__label">Table</span></button>' +
       "</div></div>" +
       '<div class="d3-kyb-ownership__view" data-d3-kyb-own-panel="table" hidden>' +
       '<div class="tds-data-table-container d3-kyb-ownership__table">' +
@@ -554,6 +542,14 @@
       '<div class="d3-kyb-ubo-graph">' +
       '<div class="kyb-ubo-graph-layout" id="kyb-ubo-graph-fullscreen-root">' +
       '<div class="kyb-ownership-graph kyb-ubo-graph-layout__canvas" data-kyb-ownership-graph aria-label="Ownership structure graph"></div>' +
+      /* Zoom lives in the bottom right corner; the graph's own zoom buttons stay hidden and these drive them. */
+      '<div class="d3-kyb-ubo-zoom" role="group" aria-label="Graph zoom">' +
+      '<button type="button" class="d3-kyb-ubo-zoom__btn" data-d3-zoom="out" aria-label="Zoom out" data-tooltip="Zoom out"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M3.5 8h9"/></svg></button>' +
+      '<span class="d3-kyb-ubo-zoom__pct"><span data-d3-zoom-pct>100%</span></span>' +
+      '<button type="button" class="d3-kyb-ubo-zoom__btn" data-d3-zoom="in" aria-label="Zoom in" data-tooltip="Zoom in"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M8 3.5v9M3.5 8h9"/></svg></button>' +
+      '<span class="d3-kyb-ubo-zoom__sep" aria-hidden="true"></span>' +
+      '<button type="button" class="d3-kyb-ubo-zoom__btn" data-d3-zoom="fit" aria-label="Fit to page" data-tooltip="Fit to page" title="Fit to page"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.6 3.71A5.6 5.6 0 1 1 6.085 2.738L6.495 3.865A4.4 4.4 0 1 0 10.828 4.63z"/><path d="M5.709 1.704 8.545 2.48 6.871 4.899z"/></svg></button>' +
+      "</div>" +
       "</div></div></div>" +
       /* Below both views, so switching table / graph never changes it. */
       officerMarkup(officers) +
@@ -659,4 +655,27 @@
     panelMarkup: panelMarkup,
     setView: setView
   };
+
+  /* The zoom pill: − 63% + (the % fits the page). It presses the graph's own, hidden, zoom buttons. */
+  var ZOOM_LABEL = { out: "Zoom out", in: "Zoom in", fit: "Reset view" };
+  document.addEventListener("click", function (event) {
+    var b = event.target.closest && event.target.closest("[data-d3-zoom]");
+    if (!b) return;
+    var layout = b.closest(".kyb-ubo-graph-layout");
+    var real = layout && layout.querySelector('.kyb-ubo-graph__zoom-btn[aria-label="' + ZOOM_LABEL[b.getAttribute("data-d3-zoom")] + '"]');
+    if (real) real.click();
+    window.setTimeout(paintZoomPct, 60);
+  });
+
+  function paintZoomPct() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-d3-zoom-pct]"), function (el) {
+      var layout = el.closest(".kyb-ubo-graph-layout");
+      var canvas = layout && layout.querySelector(".kyb-ubo-canvas");
+      var z = canvas ? parseFloat(canvas.style.getPropertyValue("--kyb-ubo-zoom")) : NaN;
+      if (!(z > 0)) return;
+      var text = Math.round(z * 100) + "%";
+      if (el.textContent !== text) el.textContent = text;
+    });
+  }
+  window.setInterval(paintZoomPct, 250);
 })();

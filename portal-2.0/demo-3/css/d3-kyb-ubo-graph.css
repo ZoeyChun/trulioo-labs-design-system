@@ -190,8 +190,9 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  min-height: 520px;
-  height: min(68vh, 720px);
+  /* Short enough that Directors, Officers & PSCs stays above the fold. */
+  min-height: 360px;
+  height: 360px;
   gap: var(--spacing-12, 12px);
 }
 
@@ -200,7 +201,7 @@
 .d3-kyb-ubo-graph .kyb-ownership-graph,
 .d3-kyb-ubo-graph .kyb-ubo-react-root,
 .d3-kyb-ubo-graph .kyb-ubo-graph__surface {
-  min-height: 480px;
+  min-height: 340px;
 }
 
 .d3-kyb-ubo-graph__title {
@@ -1526,3 +1527,115 @@
 
 /* The Owners & UBOs sections are already spaced by the panel's gap; the officers section adds no margin of its own. */
 .d3-kyb-ownership .d3-kyb-officer { margin-top: 0; }
+
+/* The graph stands on its own: no search / entity type / filter card and no risk legend. */
+.kyb-ubo-graph__toolbar-card,
+.kyb-ubo-graph__legend { display: none !important; }
+
+/* Owners past the fifth wait behind Show more. */
+.d3-kyb-ownership__table tr.is-overflow { display: none; }
+/* The view is a column with a 24px gap; pull the button up so it sits 8px under the table. */
+.d3-kyb-ownership__more { align-self: flex-start; width: fit-content; margin-top: calc(var(--spacing-8, 8px) - var(--spacing-24, 24px)); }
+
+/* Zoom: − 63% + in the bottom right corner. The graph's own zoom buttons are hidden (the pill presses them);
+   full screen stays where it was. */
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn:not([aria-label$="fullscreen"]) { display: none; }
+.kyb-ubo-graph-layout { position: relative; }
+.d3-kyb-ubo-zoom {
+  position: absolute;
+  right: var(--spacing-12, 12px);
+  bottom: var(--spacing-12, 12px);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4, 4px);
+  padding: var(--spacing-4, 4px);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--elevation-sm, 0 2px 8px rgba(23, 45, 45, 0.1));
+}
+.d3-kyb-ubo-zoom__btn,
+.d3-kyb-ubo-zoom__pct {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  cursor: pointer;
+}
+.d3-kyb-ubo-zoom__pct { cursor: default; }
+.d3-kyb-ubo-zoom__btn { width: 28px; border-radius: 50%; }
+.d3-kyb-ubo-zoom__btn svg { width: 16px; height: 16px; }
+.d3-kyb-ubo-zoom__btn:hover { background: var(--surface-neutral-02, #f4f6f4); }
+.d3-kyb-ubo-zoom__pct { min-width: 48px; padding: 0 var(--spacing-8, 8px); border-radius: var(--radius-full, 9999px); font-size: var(--font-size-sm, 14px); font-variant-numeric: tabular-nums; color: var(--text-description, #526660); }
+.d3-kyb-ubo-zoom__sep { width: 1px; height: 16px; margin: 0 var(--spacing-2, 2px); background: var(--border-subtle, #dde2de); }
+
+/* Full screen: the opposing diagonal arrows. The graph draws its own icon, so it is swapped here. */
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label="Enter fullscreen"] svg { display: none; }
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label="Enter fullscreen"]::before {
+  content: "";
+  display: block;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 2.5H13.5V6.5M6.5 13.5H2.5V9.5M13.5 2.5 9 7M2.5 13.5 7 9'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 2.5H13.5V6.5M6.5 13.5H2.5V9.5M13.5 2.5 9 7M2.5 13.5 7 9'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Hover tooltips on the graph controls: the same dark tooltip as the chat header. Zoom sits low, so its tooltip
+   opens above; full screen sits high, so its opens below. */
+.d3-kyb-ubo-zoom [data-tooltip],
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label$="fullscreen"] { position: relative; }
+
+.d3-kyb-ubo-zoom [data-tooltip]::after,
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label$="fullscreen"]::after {
+  position: absolute;
+  z-index: 20;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--surface-inverse, #172d2d);
+  color: var(--text-inverse, #f4f6f4);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 16px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.d3-kyb-ubo-zoom [data-tooltip]::after {
+  content: attr(data-tooltip);
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, 2px);
+}
+.d3-kyb-ubo-zoom [data-tooltip]:hover::after,
+.d3-kyb-ubo-zoom [data-tooltip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); transition-delay: 150ms; }
+
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label="Enter fullscreen"]::after { content: "Full screen"; }
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label="Exit fullscreen"]::after { content: "Exit full screen"; }
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label$="fullscreen"]::after {
+  top: calc(100% + 6px);
+  right: 0;
+  transform: translateY(-2px);
+}
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label$="fullscreen"]:hover::after,
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label$="fullscreen"]:focus-visible::after { opacity: 1; transform: translateY(0); transition-delay: 150ms; }
+
+/* Full screen: a plain circle with an outline, no tray behind it. */
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom { padding: 0; background: transparent; }
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label$="fullscreen"] {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 50%;
+  background-color: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #172d2d);
+}
+.d3-kyb-ubo-graph .kyb-ubo-graph__zoom-btn[aria-label$="fullscreen"]:hover { background-color: var(--surface-neutral-02, #f4f6f4); }

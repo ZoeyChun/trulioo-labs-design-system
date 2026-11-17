@@ -725,9 +725,48 @@
   }
 
   /* Replace expanded table-row details with the same field catalogs as the graph. */
+  /* More than 5 owners: the rest wait behind a Show more button, so Directors, Officers & PSCs stays above the fold. */
+  var OWNER_ROWS_SHOWN = 5;
+
+  function limitOwnershipRows(panel) {
+    var box = panel.querySelector(".d3-kyb-ownership__table");
+    if (!box) return;
+    var view = box.parentElement;
+    var mains = box.querySelectorAll("tr.d3-kyb-officer__main");
+    var more = view.querySelector("[data-d3-own-more]");
+    if (mains.length <= OWNER_ROWS_SHOWN) {
+      if (more) more.remove();
+      return;
+    }
+    var open = !!(more && more.getAttribute("aria-expanded") === "true");
+    Array.prototype.forEach.call(mains, function (tr, i) {
+      var hide = i >= OWNER_ROWS_SHOWN && !open;
+      tr.classList.toggle("is-overflow", hide);
+      var key = tr.getAttribute("data-d3-officer-toggle");
+      var detail = key == null ? null : box.querySelector('tr[data-d3-officer-detail="' + key + '"]');
+      if (detail) detail.classList.toggle("is-overflow", hide);
+    });
+    var rest = mains.length - OWNER_ROWS_SHOWN;
+    if (!more) {
+      more = document.createElement("button");
+      more.type = "button";
+      more.className = "tds-btn tds-btn--sm tds-btn--secondary d3-kyb-ownership__more";
+      more.setAttribute("data-d3-own-more", "");
+      more.setAttribute("aria-expanded", "false");
+      more.addEventListener("click", function () {
+        var on = more.getAttribute("aria-expanded") !== "true";
+        more.setAttribute("aria-expanded", on ? "true" : "false");
+        limitOwnershipRows(panel);
+      });
+      box.insertAdjacentElement("afterend", more);
+    }
+    more.textContent = open ? "Show less" : "Show " + rest + " more";
+  }
+
   function enrichOwnershipTable(panel) {
     if (!panel) return;
     injectIndirectOwnershipColumn(panel);
+    limitOwnershipRows(panel);
     var byName = {};
     Object.keys(ENTITY).forEach(function (id) {
       byName[ENTITY[id].name] = ENTITY[id];

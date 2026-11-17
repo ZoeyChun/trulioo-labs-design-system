@@ -38,6 +38,13 @@
       var toggle = row.querySelector(".kyb-signal-row__toggle");
       var details = row.nextElementSibling;
       if (!toggle || !details || !details.classList.contains("kyb-signal-detail-row")) return;
+      /* The detail adds to the row; when its description only says the signal again, leave it out. */
+      var signalText = row.querySelector(".tds-data-table__text-cell");
+      var desc = details.querySelector(".kyb-signal-detail__description");
+      function plain(t) {
+        return String(t || "").replace(/\s+/g, " ").trim().replace(/[.\s]+$/, "").toLowerCase();
+      }
+      if (signalText && desc && plain(signalText.textContent) === plain(desc.textContent)) desc.remove();
       function set(on) {
         row.classList.toggle("kyb-signal-row--expanded", on);
         toggle.setAttribute("aria-expanded", on ? "true" : "false");

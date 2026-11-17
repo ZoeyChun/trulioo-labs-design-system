@@ -839,15 +839,28 @@
     return String((own[0] && own[0].address) || (biz && biz.officer && biz.officer.address2) || "");
   }
 
-  /* Further registration numbers (a state or branch filing). The demo data holds one, so a second is derived. */
+  /* Further registration numbers: a business often holds a second filing besides the one it was found by
+     (a state of incorporation or a branch). The demo data holds one, so a plausible second is derived. */
   function extraRegistrations(biz) {
     var report = (biz && biz.report) || {};
     var reg = String(report.regNumber || (biz && biz.reg) || "");
     var digits = reg.replace(/\D/g, "");
     if (digits.length < 5) return [];
-    var rot = digits.slice(3) + digits.slice(0, 3);
-    var us = /^us$/i.test(String((biz && (biz.cc || biz.countryCode)) || "US"));
-    return [(us ? "DE File " : "Branch reg. ") + rot];
+    var seed = parseInt(digits.slice(-7), 10) || 0;
+    function pad(n, len) {
+      var t = String(n);
+      while (t.length < len) t = "0" + t;
+      return t.slice(-len);
+    }
+    var cc = String((biz && (biz.cc || biz.countryCode)) || "US").toUpperCase();
+    if (cc === "US") {
+      /* Delaware file numbers are seven digits starting 3-7 for recent filings. */
+      return [{ label: "State of incorporation file number", value: "DE File " + (3000000 + ((seed * 7919) % 4000000)) }];
+    }
+    if (cc === "GB") {
+      return [{ label: "Branch registration number", value: "BR" + pad((seed * 7919) % 1000000, 6) }];
+    }
+    return [{ label: "Branch registration number", value: pad((seed * 7919) % 100000000, 8) }];
   }
 
   function extraCounts(biz) {
@@ -913,7 +926,11 @@
       (city !== "—"
         ? "P.O. Box " + boxNo + ", " + city + (state !== "—" ? ", " + state : "") + (postal !== "—" ? " " + postal : "")
         : "");
-    var secondParts = parseStreetParts(String(secondAddr).split(",")[0] || "");
+    var secondLine1 = String(secondAddr).split(",")[0].trim();
+    /* A P.O. Box has no building, street name or type. */
+    var secondParts = /^P\.?\s?O\.?\s+Box/i.test(secondLine1)
+      ? { building: "—", street: "—", type: "—" }
+      : parseStreetParts(secondLine1);
     var secondState = ownSecond
       ? /san francisco|,\s*ca\b/i.test(secondAddr)
         ? "CA"
@@ -939,9 +956,10 @@
       return o.type === "corp";
     });
 
-    var extraBrn = extraRegistrations(biz).map(function (v, i) {
-      return { label: "Additional registration number" + (i ? " " + (i + 2) : ""), value: v };
+    var extraBrn = extraRegistrations(biz).map(function (e) {
+      return { label: e.label, value: e.value };
     });
+    var primaryBrn = String(report.regNumber || biz.reg || "");
 
     return {
       profile: [
@@ -951,6 +969,8 @@
         { label: "Reference ID", value: report.regNumber || biz.reg || "—" }
       ],
       registration: [
+        { label: "Registration number", value: primaryBrn || "—" }
+      ].concat(extraBrn).concat([
         { label: "Incorporation date", value: incDate },
         {
           label: "Filings",
@@ -958,7 +978,7 @@
             ? "Confirmation statement overdue risk; annual accounts filed with £1 capital"
             : "Annual report filed; franchise / confirmation statement current"
         }
-      ].concat(extraBrn),
+      ]),
       ownership: [
         {
           label: "Ownership returned",
@@ -970,21 +990,22 @@
       ],
       addresses: [
         {
-          label: "Address line 1",
+          label: "Registered address line 1",
           value: suiteMatch ? suiteMatch[1] : streetSource || "—"
         },
-        { label: "Building number", value: streetBits.building },
-        { label: "Street name", value: streetBits.street },
-        { label: "Street type", value: streetBits.type },
-        { label: "City", value: city },
-        { label: "State / Province", value: state },
-        { label: "Postal code", value: postal },
-        { label: "Address line 1", value: secondAddr || "—" },
-        { label: "Building number", value: secondParts.building },
-        { label: "Street name", value: secondParts.street },
-        { label: "Street type", value: secondParts.type },
-        { label: "State", value: secondState },
-        { label: "Postal code", value: secondPostal }
+        { label: "Registered building number", value: streetBits.building },
+        { label: "Registered street name", value: streetBits.street },
+        { label: "Registered street type", value: streetBits.type },
+        { label: "Registered city", value: city },
+        { label: "Registered state / province", value: state },
+        { label: "Registered postal code", value: postal },
+        { label: "Mailing address line 1", value: secondLine1 || "—" },
+        { label: "Mailing building number", value: secondParts.building },
+        { label: "Mailing street name", value: secondParts.street },
+        { label: "Mailing street type", value: secondParts.type },
+        { label: "Mailing city", value: city },
+        { label: "Mailing state", value: secondState },
+        { label: "Mailing postal code", value: secondPostal }
       ],
       risk: [
         {

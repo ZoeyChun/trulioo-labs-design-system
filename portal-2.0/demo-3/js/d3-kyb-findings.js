@@ -877,9 +877,7 @@
           esc(b.jump) +
           '">' +
           esc(b.label) +
-          '<span class="tds-btn__trailing-icon" aria-hidden="true">' +
-          '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
-          '<path d="m6 4 4 4-4 4"/></svg></span></button>'
+          "</button>"
         );
       })
       .join("");

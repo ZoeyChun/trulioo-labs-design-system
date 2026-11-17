@@ -2134,9 +2134,6 @@
     var addr = biz.addr || (biz.report && biz.report.address) || "";
     var html =
       '<div class="d1-report-ready d3-kyb-agent__action" data-d1-report-action>' +
-      '<p class="d1-report-ready__title">' +
-      esc(opts.label || "Business Verification Report is ready") +
-      "</p>" +
       '<div class="d1-report-ready__card">' +
       '<span class="d1-report-ready__icon" aria-hidden="true"><i class="fa-regular fa-file-lines"></i></span>' +
       '<div class="d1-report-ready__meta">' +

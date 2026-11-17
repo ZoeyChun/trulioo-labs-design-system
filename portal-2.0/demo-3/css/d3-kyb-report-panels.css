@@ -501,15 +501,17 @@
 .d3-rp .kyb-signal-category tr[data-kyb-signal-row]{cursor: pointer;}
 .d3-rp .kyb-signal-category .tds-data-table__action-icon svg{transition: transform 0.15s ease;}
 .d3-rp .kyb-signal-row--expanded .tds-data-table__action-icon svg{transform: rotate(180deg);}
-.d3-rp .kyb-signal-detail-row > td{padding-top: 0;
-  border-top: none;}
+.d3-rp .kyb-signal-detail-row > td{padding: 0;
+  border-top: none;
+  background-color: var(--surface-neutral-02);}
+/* Same treatment as the Owners & UBOs row: a grey band straight under the row, edge to edge, square corners. */
 .d3-rp .kyb-signal-detail{display: flex;
   flex-direction: column;
   gap: var(--gap-lg);
-  margin: 0 0 var(--gap-md);
-  padding: var(--padding-md);
-  border-radius: var(--radius-lg);
-  background-color: var(--surface-neutral-02);}
+  margin: 0;
+  padding: var(--spacing-20, 20px) var(--spacing-24, 24px) var(--spacing-24, 24px);
+  border-radius: 0;
+  background-color: transparent;}
 .d3-rp .kyb-signal-detail__divider{margin: 0;
   border: none;
   border-top: 1px solid var(--border-subtle);}
