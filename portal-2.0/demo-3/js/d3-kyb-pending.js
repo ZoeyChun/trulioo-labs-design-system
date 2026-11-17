@@ -445,7 +445,11 @@
     var kyb = railButton();
     var inKyb = inKybView();
     if (kyb && !inKyb) kyb.click();
-    window.setTimeout(function () { R.reveal(job.biz, { direct: true }); }, inKyb ? 0 : 600);
+    window.setTimeout(function () {
+      /* The report plays its skeleton again, so it and the new summary in the chat arrive together. */
+      if (window.D3KybFindings && window.D3KybFindings.invalidate) window.D3KybFindings.invalidate();
+      R.reveal(job.biz, { direct: true });
+    }, inKyb ? 0 : 600);
   }
 
   /* Once the real report has painted, the cards carry its verdict. */

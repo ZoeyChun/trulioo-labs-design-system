@@ -1235,6 +1235,14 @@
        or null to derive the verdict from the business's own risk data. */
     hold: hold,
     release: release,
+    /* The next render of a business plays its skeleton again (a report that was only shown while it ran). */
+    invalidate: function () {
+      document.querySelectorAll('[data-d3-kyb-panel="findings"]').forEach(function (panel) {
+        window.clearTimeout(panel.__kfTimer);
+        delete panel.dataset.kfKey;
+        delete panel.dataset.kfState;
+      });
+    },
     /* For the next ms, a business is painted straight away instead of playing the skeleton. */
     instant: function (ms) {
       instantUntil = Date.now() + (ms || 800);
