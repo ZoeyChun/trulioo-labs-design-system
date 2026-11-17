@@ -1167,3 +1167,37 @@
   color: var(--text-default);
   background: color-mix(in srgb, var(--interactive-default) 16%, transparent);
 }
+
+/* ------------------------------------------------------------------
+   Depth under the sticky Transaction column.
+   A gradient fade over the left edge blended the two together — the
+   columns looked like they dissolved rather than passed behind. The
+   column casts a real shadow to its right instead, and only once the
+   table has actually moved, so a table sitting at its start stays flat.
+   ------------------------------------------------------------------ */
+.th-tx .ut-tx-table thead th.ut-tx-th-name,
+.th-tx .ut-tx-table tbody td.ut-tx-td-name {
+  transition: box-shadow 160ms ease;
+}
+
+.th-tx .ut-tx-table-scroll.has-h-scroll:not(.is-at-start) .ut-tx-table thead th.ut-tx-th-name,
+.th-tx .ut-tx-table-scroll.has-h-scroll:not(.is-at-start) .ut-tx-table tbody td.ut-tx-td-name {
+  box-shadow:
+    1px 0 0 0 var(--border-subtle, #dde2de),
+    10px 0 14px -8px rgba(23, 45, 45, 0.3);
+}
+
+/* The left fade stands down — the shadow is what reads now. The right one
+   stays: it says there are more columns, which nothing else shows. */
+.th-tx .ut-tx-table-scroll.has-h-scroll:not(.is-at-start)::before {
+  opacity: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .th-tx .ut-tx-table thead th.ut-tx-th-name,
+  .th-tx .ut-tx-table tbody td.ut-tx-td-name {
+    transition: none;
+  }
+}
