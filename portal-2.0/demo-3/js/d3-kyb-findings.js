@@ -882,6 +882,11 @@
       })
       .join("");
 
+    /* Suggested actions appear only when there is something to run: a report made without Business Risk Horizon
+       offers it here. Otherwise the block is left out. */
+    var offerApi = window.D3KybBrhOffer;
+    var suggested = offerApi ? offerApi.viewHtml() || (!brhOn ? offerApi.buttonHtml() : "") : "";
+
     var r = biz.report || {};
     var cc = String(biz.cc || biz.countryCode || "US").toLowerCase();
     /* More than one registration number or address: a "+N" tag that opens the Business Details section. */
@@ -931,13 +936,10 @@
             ? "Verified"
             : offLabels[tone] || "Verified";
       var offTone = /not verified|fail/i.test(offTitle) ? "negative" : /review/i.test(offTitle) ? "intermediate" : "positive";
-      /* Without the add-on, the way to add Business Risk Horizon sits beside the status. */
-      var offer = window.D3KybBrhOffer;
       topHtml =
         '<div class="d3h-hero__verdict">' +
         '<p class="d3h-hero__eyebrow">Verification status</p>' +
-        '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + offTone + '">' + esc(offTitle) + "</h2></div>" +
-        (offer ? offer.buttonHtml() : "");
+        '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + offTone + '">' + esc(offTitle) + "</h2></div>";
     }
 
     hero.outerHTML =
@@ -947,8 +949,8 @@
       '<div class="d3h-hero__top">' + topHtml + "</div>" +
       '<ul class="d3h-bullets">' + bullets.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
       "</div>" +
-      (buttons
-        ? '<div class="d3h-suggested" aria-label="Suggested actions"><p class="d3h-section-label">Suggested Actions</p><div class="d3h-suggested__ctas">' + buttons + "</div></div>"
+      (suggested
+        ? '<div class="d3h-suggested" aria-label="Suggested actions"><p class="d3h-section-label">Suggested Actions</p><div class="d3h-suggested__ctas">' + suggested + "</div></div>"
         : "") +
       "</div>" +
       '<aside class="d3h-entity" aria-label="Entity information">' +
@@ -1236,6 +1238,11 @@
     hold: hold,
     release: release,
     /* The next render of a business plays its skeleton again (a report that was only shown while it ran). */
+    /* Paint the Overview again from what it already holds (its suggested actions changed). */
+    refresh: function () {
+      var panel = document.querySelector('[data-d3-kyb-panel="findings"]');
+      if (panel && panel.__kfCtx) paint(panel, panel.__kfCtx.card, panel.__kfCtx.biz, false);
+    },
     invalidate: function () {
       document.querySelectorAll('[data-d3-kyb-panel="findings"]').forEach(function (panel) {
         window.clearTimeout(panel.__kfTimer);

@@ -60,7 +60,6 @@
 .d3-brh-txn__pop::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 8px; }
 .d3-brh-txn:is(:hover, :focus-within) .d3-brh-txn__pop { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
 .d3-brh-txn__value { color: var(--text-default, #172d2d); white-space: nowrap; }
-.d3-kyb-tabs__item .d3-brh-added-tag { margin-left: var(--spacing-4, 4px); vertical-align: 1px; }
 
 /* The confirmation, over the report area. */
 .d3-workspace .d3-kyb-brh-dialog.tds-dialog { position: absolute; inset: 0; z-index: 40; }
