@@ -151,3 +151,17 @@
   background: var(--surface-neutral-02, #f4f6f4);
   filter: blur(28px);
 }
+
+/* The details drawer sits in the same frame as the chat pane beside it: the pane is inset 8px top and bottom
+   from the canvas, so the drawer is inset to match, and on its right edge too, so it reads as a card. The
+   width is `!important` above, so the width that makes room for the margin carries the flag as well. */
+.d1-shell[data-d3-view="transactions"] .d1-main > .d1-drawer {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="open"] > .d1-drawer,
+.d1-shell[data-d3-view="transactions"] .d1-main[data-d1-drawer="expanded"] > .d1-drawer {
+  width: calc(var(--d1-drawer-w) - 8px) !important;
+  margin-right: 8px;
+}

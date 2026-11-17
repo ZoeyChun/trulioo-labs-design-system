@@ -22,7 +22,7 @@
     });
 
     if (frame) {
-      var src = "transactions-view/embed.html?v=23";
+      var src = "transactions-preview/embed.html?v=62";
       if (frame.getAttribute("src") !== src) frame.setAttribute("src", src);
     }
 
