@@ -24,56 +24,32 @@
     post(payload);
   }
 
-  /* A child row shows a tree connector where the id would be, so it carries
-     none of its own — it belongs to the transaction above it. */
   function tridFor(row) {
     var own = row.querySelector("[data-trid]");
-    if (own) return own.getAttribute("data-trid") || "";
-    if (!row.classList.contains("ut-tx-row--child")) return "";
-    var prev = row.previousElementSibling;
-    while (prev && prev.classList.contains("ut-tx-row--child")) {
-      prev = prev.previousElementSibling;
-    }
-    var parentTrid = prev && prev.querySelector("[data-trid]");
-    return parentTrid ? parentTrid.getAttribute("data-trid") || "" : "";
+    return own ? own.getAttribute("data-trid") || "" : "";
   }
 
   function isHorizon(product) {
     return /horizon/i.test(String(product || ""));
   }
 
-  /* The transaction a child belongs to. Read from the data, not the rows: a
-     child shows only its id and its package now, so the cells it used to be
-     read out of are empty. */
-  function parentOf(trid) {
-    var list = window.UT_TRANSACTIONS || [];
-    for (var i = 0; i < list.length; i += 1) {
-      var kids = list[i].children || [];
-      for (var j = 0; j < kids.length; j += 1) {
-        if (kids[j].trid === trid) return list[i];
-      }
-    }
-    return null;
-  }
-
-  /* The other products the same transaction ran. Business Horizon is not a
-     package: it is the Business Risk Horizon Score add-on, run as its own
-     transaction beside the verification (see js/d3-kyb-brh-offer.js). So a
-     child sitting next to a Business Horizon child is the verification the
-     score was added to — its report is the one that offers to show it.
+  /* Business Horizon is not a package: it is the Business Risk Horizon Score
+     add-on, and it runs as its own transaction beside the verification. So a
+     business with a Business Horizon row has already had the score run, and
+     its verification is the report that offers to show it rather than to run
+     it. Matched on the record, not the cells, so a column change cannot
+     quietly break it.
 
      "on" opens the report that carries the score, "view" the verification
      beside it, "" leaves the report as it was. */
   function brhModeFor(row, product, trid) {
-    if (!row.classList.contains("ut-tx-row--child")) return "";
     if (isHorizon(product)) return "on";
-    var parent = parentOf(trid);
-    var siblings = parent ? parent.children || [] : [];
-    return siblings.some(function (c) {
-      return isHorizon(c.product);
-    })
-      ? "view"
-      : "";
+    var record = findByTrid(trid);
+    if (!record) return "";
+    var ran = (window.UT_TRANSACTIONS || []).some(function (r) {
+      return r.name === record.name && isHorizon(r.product);
+    });
+    return ran ? "view" : "";
   }
 
   function findByTrid(trid) {
@@ -105,16 +81,6 @@
       }
       var row = event.target.closest("tr.ut-tx-row");
       if (!row) return;
-      /* A transaction that ran several products is a parent: clicking it
-         opens the breakdown rather than a report, since there is no single
-         result to show. Its children each ran one product and open theirs.
-         The chevron itself is a button, so it never reaches this handler. */
-      var expand = row.querySelector(".ut-tx-expand");
-      if (expand && !row.classList.contains("ut-tx-row--child")) {
-        event.preventDefault();
-        expand.click();
-        return;
-      }
       var cells = row.querySelectorAll("td");
       var trid = tridFor(row);
       /* Read the product from its own cell, not a column index — the column
@@ -130,12 +96,6 @@
         : productCell
         ? productCell.textContent.trim()
         : "";
-      /* A child's product cell is empty — it shows its id and package and
-         repeats nothing else — so the product comes from the row's record. */
-      if (!product && trid) {
-        var record = findByTrid(trid);
-        if (record) product = record.product || "";
-      }
       var nameCell = row.querySelector(".ut-tx-td-name") || cells[0];
       var nameEl = nameCell && nameCell.querySelector(".ut-tx-name");
       openByProduct(product, {

@@ -22,9 +22,6 @@ window.UT_TRANSACTIONS = [
     "dateDay": "16 Mar 2026",
     "dateTime": "10:42",
     "product": "Business Complete",
-    "extraProducts": [
-      "Business Horizon"
-    ],
     "country": "United Kingdom",
     "countryCode": "gb",
     "score": {
@@ -35,62 +32,32 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
-    "extraPackages": [
-      "Package5_KYB_Horizon"
-    ],
+    "type": "Live"
+  },
+  {
+    "name": "Northwind Traders Ltd",
+    "trid": "82142b3f-e46f-56df-b8d3-c02b77041c93",
+    "outcome": {
+      "label": "Verified",
+      "tone": "positive"
+    },
+    "date": "16 Mar 2026, 10:43",
+    "dateNumeric": "03/16/2026, 10:43",
+    "dateDay": "16 Mar 2026",
+    "dateTime": "10:43",
+    "product": "Business Horizon",
+    "package": "Package5_KYB_Horizon",
+    "country": "United Kingdom",
+    "countryCode": "gb",
+    "score": {
+      "value": "12/100",
+      "label": "Low Risk",
+      "tone": "positive"
+    },
+    "source": "API",
+    "sourceLabel": "Test_API_Key",
     "type": "Live",
-    "expandable": true,
-    "count": 2,
-    "children": [
-      {
-        "name": "Northwind Traders Ltd",
-        "trid": "8c339062-d7f4-5941-bea4-b381b5d376c3",
-        "outcome": {
-          "label": "Verified",
-          "tone": "positive"
-        },
-        "date": "16 Mar 2026, 10:42",
-        "dateNumeric": "03/16/2026, 10:42",
-        "dateDay": "16 Mar 2026",
-        "dateTime": "10:42",
-        "product": "Business Complete",
-        "package": "Package4_KYB_Watchlist",
-        "country": "United Kingdom",
-        "countryCode": "gb",
-        "score": {
-          "value": "12/100",
-          "label": "Low Risk",
-          "tone": "positive"
-        },
-        "source": "API",
-        "sourceLabel": "Test_API_Key",
-        "type": "Live"
-      },
-      {
-        "name": "Northwind Traders Ltd",
-        "trid": "82142b3f-e46f-56df-b8d3-c02b77041c93",
-        "outcome": {
-          "label": "Verified",
-          "tone": "positive"
-        },
-        "date": "16 Mar 2026, 10:42",
-        "dateNumeric": "03/16/2026, 10:42",
-        "dateDay": "16 Mar 2026",
-        "dateTime": "10:42",
-        "product": "Business Horizon",
-        "package": "Package5_KYB_Horizon",
-        "country": "United Kingdom",
-        "countryCode": "gb",
-        "score": {
-          "value": "12/100",
-          "label": "Low Risk",
-          "tone": "positive"
-        },
-        "source": "API",
-        "sourceLabel": "Test_API_Key",
-        "type": "Live"
-      }
-    ]
+    "detail": "Business Risk Horizon Score run beside the verification"
   },
   {
     "name": "Kestrel Freight GmbH",
@@ -152,9 +119,6 @@ window.UT_TRANSACTIONS = [
     "dateDay": "14 Mar 2026",
     "dateTime": "14:31",
     "product": "Business Complete",
-    "extraProducts": [
-      "Business Horizon"
-    ],
     "country": "United States",
     "countryCode": "us",
     "score": {
@@ -165,62 +129,7 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
-    "extraPackages": [
-      "Package5_KYB_Horizon"
-    ],
-    "type": "Live",
-    "expandable": true,
-    "count": 2,
-    "children": [
-      {
-        "name": "Harbor Point Capital Partners International Holdings LLC",
-        "trid": "cbb62166-93fe-525a-be8a-ea2e9a3456cd",
-        "outcome": {
-          "label": "Not Verified",
-          "tone": "negative"
-        },
-        "date": "14 Mar 2026, 14:31",
-        "dateNumeric": "03/14/2026, 14:31",
-        "dateDay": "14 Mar 2026",
-        "dateTime": "14:31",
-        "product": "Business Complete",
-        "package": "Package4_KYB_Watchlist",
-        "country": "United States",
-        "countryCode": "us",
-        "score": {
-          "value": "81/100",
-          "label": "High Risk",
-          "tone": "negative"
-        },
-        "source": "API",
-        "sourceLabel": "Test_API_Key",
-        "type": "Live"
-      },
-      {
-        "name": "Harbor Point Capital Partners International Holdings LLC",
-        "trid": "8c9bd676-8971-50b0-99dd-9285c4ae24f2",
-        "outcome": {
-          "label": "Not Verified",
-          "tone": "negative"
-        },
-        "date": "14 Mar 2026, 14:31",
-        "dateNumeric": "03/14/2026, 14:31",
-        "dateDay": "14 Mar 2026",
-        "dateTime": "14:31",
-        "product": "Business Horizon",
-        "package": "Package5_KYB_Horizon",
-        "country": "United States",
-        "countryCode": "us",
-        "score": {
-          "value": "81/100",
-          "label": "High Risk",
-          "tone": "negative"
-        },
-        "source": "API",
-        "sourceLabel": "Test_API_Key",
-        "type": "Live"
-      }
-    ]
+    "type": "Live"
   },
   {
     "name": "Sakura Robotics KK",
@@ -371,9 +280,6 @@ window.UT_TRANSACTIONS = [
     "dateDay": "11 Mar 2026",
     "dateTime": "12:09",
     "product": "Business Complete",
-    "extraProducts": [
-      "Business Horizon"
-    ],
     "country": "Canada",
     "countryCode": "ca",
     "score": {
@@ -384,62 +290,7 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
-    "extraPackages": [
-      "Package5_KYB_Horizon"
-    ],
-    "type": "Live",
-    "expandable": true,
-    "count": 2,
-    "children": [
-      {
-        "name": "Cobalt Analytics Inc.",
-        "trid": "927daceb-96ec-5597-b3e6-8b600c07785d",
-        "outcome": {
-          "label": "Verified",
-          "tone": "positive"
-        },
-        "date": "11 Mar 2026, 12:09",
-        "dateNumeric": "03/11/2026, 12:09",
-        "dateDay": "11 Mar 2026",
-        "dateTime": "12:09",
-        "product": "Business Complete",
-        "package": "Package4_KYB_Watchlist",
-        "country": "Canada",
-        "countryCode": "ca",
-        "score": {
-          "value": "47/100",
-          "label": "Medium Risk",
-          "tone": "intermediate"
-        },
-        "source": "API",
-        "sourceLabel": "Test_API_Key",
-        "type": "Live"
-      },
-      {
-        "name": "Cobalt Analytics Inc.",
-        "trid": "f3a323bb-a38d-5867-905f-caa5caa594ec",
-        "outcome": {
-          "label": "Verified",
-          "tone": "positive"
-        },
-        "date": "11 Mar 2026, 12:09",
-        "dateNumeric": "03/11/2026, 12:09",
-        "dateDay": "11 Mar 2026",
-        "dateTime": "12:09",
-        "product": "Business Horizon",
-        "package": "Package5_KYB_Horizon",
-        "country": "Canada",
-        "countryCode": "ca",
-        "score": {
-          "value": "47/100",
-          "label": "Medium Risk",
-          "tone": "intermediate"
-        },
-        "source": "API",
-        "sourceLabel": "Test_API_Key",
-        "type": "Live"
-      }
-    ]
+    "type": "Live"
   },
   {
     "name": "Meridian Apex Consulting Ltd.",

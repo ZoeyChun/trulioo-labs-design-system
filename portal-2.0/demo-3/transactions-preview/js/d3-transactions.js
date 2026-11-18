@@ -25,7 +25,7 @@
     });
 
     if (frame) {
-      var src = "transactions-preview/embed.html?v=71";
+      var src = "transactions-preview/embed.html?v=72";
       if (frame.getAttribute("src") !== src) frame.setAttribute("src", src);
     }
 

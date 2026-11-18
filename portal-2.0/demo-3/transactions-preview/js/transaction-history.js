@@ -876,58 +876,6 @@
     applyAiSpec({ clear: true, predicate: null });
   }
 
-  /* How a nested child reads. "compact": only the id it ran under and its
-     package, since the business, verdict, date, country and source belong to
-     the transaction above it. "full": those columns repeated down the group,
-     which is how it read before. The corner toggle switches between the two
-     so the two can be put side by side. */
-  var CHILD_VIEW_KEY = "ut-tx-child-view";
-  var childView = "compact";
-
-  function readChildView() {
-    try {
-      var q = new URLSearchParams(window.location.search).get("childView");
-      if (q === "full" || q === "compact") return q;
-      return window.localStorage.getItem(CHILD_VIEW_KEY) === "full" ? "full" : "compact";
-    } catch (e) {
-      return "compact";
-    }
-  }
-
-  function childCompact() {
-    return childView === "compact";
-  }
-
-  function applyChildView(next, persist) {
-    childView = next === "full" ? "full" : "compact";
-    document.documentElement.setAttribute("data-ut-child-view", childView);
-    if (persist) {
-      try {
-        window.localStorage.setItem(CHILD_VIEW_KEY, childView);
-      } catch (e) {
-        /* the demo does not depend on it */
-      }
-    }
-    document.querySelectorAll("[data-ut-child-view-set]").forEach(function (btn) {
-      btn.setAttribute(
-        "aria-pressed",
-        btn.getAttribute("data-ut-child-view-set") === childView ? "true" : "false"
-      );
-    });
-  }
-
-  function bindChildView() {
-    applyChildView(readChildView(), false);
-    var host = document.getElementById("utTxChildView");
-    if (!host) return;
-    host.addEventListener("click", function (event) {
-      var btn = event.target.closest("[data-ut-child-view-set]");
-      if (!btn) return;
-      applyChildView(btn.getAttribute("data-ut-child-view-set"), true);
-      render();
-    });
-  }
-
   window.UTTransactions = {
     showFailedLast7Days: showFailedLast7Days,
     clearAiView: clearAiView,
@@ -2678,32 +2626,6 @@
     /* A child repeats nothing of its parent: the business, the verdict and the
        date are the transaction's, and the child is one product inside it. What
        is its own is the id it ran under, so that is what the cell shows. */
-    if (opts.isChild && childCompact()) {
-      var trid = item.trid || "";
-      /* A full id is wider than the Transaction column, and cutting only the
-         tail loses the half people actually scan for. Both ends are kept; the
-         whole thing is on the row's title and on Copy. */
-      var tridShort = trid.length > 24 ? trid.slice(0, 8) + "\u2026" + trid.slice(-12) : trid;
-      parts.push(
-        '<span class="ut-tx-name-stack">' +
-          '<span class="ut-tx-name-row ut-tx-child-id">' +
-          '<span class="ut-tx-name ut-tx-name--trid" title="' +
-          escapeHtml(trid) +
-          '">' +
-          highlightMatch(tridShort) +
-          "</span>" +
-          (item.trid
-            ? '<button type="button" class="tds-data-table__action-icon ut-tx-id-copy ut-tx-tip-host" data-trid="' +
-              escapeHtml(item.trid) +
-              '" aria-label="Copy Transaction ID" data-ut-tooltip="Copy Transaction ID">' +
-              COPY_ICON +
-              "</button>"
-            : "") +
-          "</span></span>"
-      );
-      return '<span class="ut-tx-name-cell">' + parts.join("") + "</span>";
-    }
-
     /* Name is the trigger for the floating Transaction ID popover when
        UT_TX_NAME_TRID is on — dotted underline signals it is interactive.
        A parent row is a group, not a result: it carries no id of its own, so
@@ -2823,35 +2745,26 @@
         '">' +
         outcomeHtml(item) +
         "</td>";
-    /* Date, country and source are the transaction's too, so a compact child
-       leaves them be. Only the package it ran under is its own, beside its
-       id. A full child repeats them, as it did before. */
-    var bare = isChild && childCompact();
     cells +=
       "<td>" +
-      (bare ? "" : dateHtml(item)) +
+      dateHtml(item) +
       "</td>" +
       '<td class="ut-tx-td-country">' +
-      (bare ? "" : countryHtml(item)) +
+      countryHtml(item) +
       "</td>";
 
     if (showScoreColumn()) {
-      cells += "<td>" + (bare ? "" : scoreHtml(item.score)) + "</td>";
+      cells += "<td>" + scoreHtml(item.score) + "</td>";
     }
 
     cells +=
       '<td class="ut-tx-td-product">' +
-      (bare
-        ? ""
-        : productHtml(item, window.UT_TX_PLAIN_TABLE ? undefined : { tag: true })) +
+      productHtml(item, window.UT_TX_PLAIN_TABLE ? undefined : { tag: true }) +
       "</td>";
     if (showPackageColumn()) {
       cells += '<td class="ut-tx-td-package">' + packagesHtml(item) + "</td>";
     }
-    cells +=
-      '<td class="ut-tx-td-source">' +
-      (bare ? "" : escapeHtml(sourceText(item))) +
-      "</td>";
+    cells += '<td class="ut-tx-td-source">' + escapeHtml(sourceText(item)) + "</td>";
     if (showTypeColumn()) cells += "<td>" + escapeHtml(item.type) + "</td>";
 
     if (showTridColumn()) {
@@ -3774,7 +3687,6 @@
     bindFilters();
     bindTooltips();
     bindIdPopover();
-    bindChildView();
     bindDateFilter();
     bindSearch();
     bindProductFilter();
