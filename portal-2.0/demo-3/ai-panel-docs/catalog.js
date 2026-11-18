@@ -672,6 +672,48 @@
       }).join("") + "</dl></div>";
   }
 
+  /* The Chats dock beside the rail, with the rail's own Chats button. */
+  function chatDock(live) {
+    var DOCK_HIDE = '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.25"/>' +
+      '<path d="M6.5 3v10" stroke="currentColor" stroke-width="1.25"/>' +
+      '<path d="M11 6.25 9.25 8 11 9.75" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var CHAT_ICON = '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+      '<path stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" d="M13.5 9.5a1.5 1.5 0 0 1-1.5 1.5H6l-3 2.5V11H4a1.5 1.5 0 0 1-1.5-1.5v-5A1.5 1.5 0 0 1 4 3h8a1.5 1.5 0 0 1 1.5 1.5v5Z"/></svg>';
+    return '<div class="dx-dock">' +
+      '<div class="dx-dock__rail">' +
+      '<span class="d3-ai-ident__orb" data-orb="idle"></span>' +
+      '<button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--circular dx-rail-btn' +
+      (live ? " dx-rail-btn--live" : "") + '" aria-label="Chats">' +
+      '<span class="tds-icon-btn__icon" aria-hidden="true">' + CHAT_ICON + "</span></button></div>" +
+      '<aside class="d3-chatdock" style="display:flex">' +
+      '<header class="d3-chatdock__head"><h2 class="d3-chatdock__title">Chats</h2>' +
+      '<button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular d3-chatdock__hide" aria-label="Hide chats">' +
+      '<span class="tds-icon-btn__icon" aria-hidden="true">' + DOCK_HIDE + "</span></button></header>" +
+      '<div class="d3-chatdock__list" role="menu" aria-label="All chats">' +
+      '<button type="button" class="d1-chat-row d3-chat-row d1-chat-row--current' +
+      (live ? " d1-chat-row--live" : "") + '" role="menuitem">' +
+      '<span class="d3-chat-row__title">Verify Meridian Us in US</span></button>' +
+      "</div></aside></div>";
+  }
+
+  /* The panel at its smallest: one field that still takes a question. The bar
+     is revealed by the shell being closed on a non-home view, so the specimen
+     carries those attributes or it stays at opacity 0. */
+  function askBar(text) {
+    return '<div class="d1-shell dx-askbar-stage" data-d3-chat="closed" data-d3-view="transactions">' +
+      '<button type="button" class="d3-askbar" tabindex="-1">' +
+      '<span class="d3-askbar__text">' + text + "</span>" +
+      '<span class="d3-askbar__send" aria-hidden="true">' + I.send + "</span></button></div>";
+  }
+
+  /* The orb's states, side by side and live. */
+  function orbRow(states) {
+    return '<div class="dx-orbs">' + states.map(function (st) {
+      return '<div class="dx-orb-cell"><div class="dx-orb-cell__host" data-hero-orb="' + st[0] + '"></div>' +
+        '<p class="dx-orb-cell__name">' + st[1] + "</p></div>";
+    }).join("") + "</div>";
+  }
+
   function prefillRow(on) {
     return '<div class="d3-kyb-titlerow"><div class="d3-demo-prefill">' +
       '<span class="d3-demo-prefill__copy"><span class="d3-demo-prefill__label" id="dxpf' + (on ? 1 : 0) + '">Pre-fill</span>' +
@@ -1217,6 +1259,85 @@
       ["Find transactions requiring review", "Review, Pending Review and In Progress"],
       ["Show verified transactions only", "offered after a filter is on"],
       ["Clear filters and show all", "removes every filter the agent applied"]
+    ] } },
+
+  /* ------------------------------------------------- key considerations */
+  { id: "kc", group: "Across every option", name: "Key considerations", notes: true,
+    line: "How the panel behaves between the flows — what persists, what follows the user around, and what the orb is saying.",
+    steps: [
+      { title: "Persistence and chat history",
+        line: "A conversation stays live until the user starts a new one; what came before is kept.",
+        changes: ["The thread keeps going across pages and across flows — nothing resets on navigation.",
+                  "<strong>New Chat</strong> in the panel header is the only thing that ends it.",
+                  "The header names the chat and its state: the title is drawn from the conversation, the line under it says where it stands.",
+                  "Earlier conversations are listed under <strong>Chats</strong>, newest first, and reopening one restores it."],
+        view: function () { return X.cap("The header, with New Chat:") +
+          X.panelWithHead("Verify Meridian Us in US", "Awaiting input", "idle", "") +
+          X.cap("…and the saved chats:") +
+          X.sheet(chatDock(false)); } },
+
+      { title: "Ongoing chat notifications",
+        line: "A chat left running while the user goes elsewhere says so, rather than going quiet.",
+        changes: ["A green dot sits on the <strong>Chats</strong> button in the rail while a conversation is still going.",
+                  "The same dot marks the live row inside the Chats list, so it is clear <em>which</em> one.",
+                  "It is driven by the conversation's own state, not by unread messages."],
+        view: function () { return X.sheet(chatDock(true)); } },
+
+      { title: "Global context awareness",
+        line: "The panel answers from wherever the user is, and marks the seam when the subject changes.",
+        changes: ["A request is answered from any view — the user does not have to be on the matching page first.",
+                  "The answer comes from the agent that owns the subject: transactions questions from the Transactions agent, verification from the KYB one.",
+                  "Where the conversation crosses from one to the other, a labelled rule marks it: <em>Continued in KYB Verification</em>, or <em>Continued in Transactions</em>.",
+                  "Only the latest crossing is marked — older rules are dropped so the thread does not fill with them.",
+                  "Scope is the MVP's: verifying businesses and retrieving transactions. Outside it, the panel says so rather than guessing."],
+        view: function () { return X.pane(
+          '<div class="d3-tx-agent"><p class="d3-tx-agent__found">Found 3 transactions · not verified transactions</p>' +
+          "<p>I found 3 transactions matching “not verified transactions”. I’ve filtered the table to match — " +
+          "open a row there to view the full report.</p>" +
+          '<div class="tds-data-table-container d3-tx-agent__table"><div class="tds-data-table__wrapper">' +
+          '<table class="tds-data-table tds-data-table--compact">' +
+          "<thead><tr><th>Transaction</th><th>Outcome</th></tr></thead><tbody>" +
+          [["Harbor Point Capital Partners International Holdings LLC"], ["Apex Dynamics LLC"],
+           ["Vanguard Global Shipping"]].map(function (r) {
+            return "<tr><td>" + r[0] + '</td><td><span class="d1-tag d1-tag--negative">Not verified</span></td></tr>';
+          }).join("") + "</tbody></table></div></div>" +
+          "<p>The table is filtered to these results. Select a row there to open the full report on the right.</p></div>" +
+          '<div class="d3-chat-divider" role="separator"><span>Continued in KYB Verification</span></div>' +
+          X.user("meridian us") +
+          '<div class="d3-kyb-cand-panel" style="margin:16px 0"><div class="ai-reply">' +
+          '<p class="ai-reply__lead">Pick a business below and I’ll verify it with your default product — nothing else to set up.</p>' +
+          "</div></div>"); } },
+
+      { title: "Expand and minimize",
+        line: "The panel has three sizes, and the controls for them sit together in its header.",
+        changes: ["<strong>Expand</strong> takes the panel to the full canvas, for reading a long answer or a wide table.",
+                  "<strong>Minimize</strong> collapses it to the ask bar — a single field that still accepts a question.",
+                  "Minimized is not closed: a conversation left running keeps running, and the rail dot says so.",
+                  "The ask bar reads <em>Ask about business verification</em>; inside a conversation the placeholder follows the step instead, e.g. <em>Select a match or refine your search</em>."],
+        view: function () { return X.cap("The three controls, in the header:") +
+          X.panelWithHead("Verify Meridian Us in US", "Awaiting input", "idle", "") +
+          X.cap("…and minimized, as the ask bar:") +
+          X.sheet(askBar("Ask about business verification")); } },
+
+      { title: "AI visual reactions",
+        line: "One component, four states — the orb says what the assistant is doing without a line of copy.",
+        note: { k: "Reference", text: 'The states in isolation: <a href="https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/Misc/Loader/experiments/truai-bubble/" target="_blank" rel="noopener">the TruAI bubble experiments page</a>.' },
+        changes: ["<strong>Idle</strong> — waiting, a slow drift.",
+                  "<strong>Thinking</strong> — the request is being worked out.",
+                  "<strong>Acting</strong> — something is running: a search, a verification, a filter.",
+                  "<strong>Completed</strong> — the answer has landed.",
+                  "The orb appears at two sizes: small in the panel header beside the title, and large on the homepage hero.",
+                  "They are live below — the animation is the component, not a picture of it."],
+        view: function () { return orbRow([["idle", "Idle"], ["thinking", "Thinking"],
+                                           ["acting", "Acting"], ["completed", "Completed"]]); } }
+    ],
+    props: { name: "Where the state lives", head: ["Behaviour", "Driven by"], rows: [
+      ["Conversation continues", "the thread is kept until New Chat is pressed"],
+      ["Rail dot", "<code>data-d3-chat-ongoing</code> on the shell"],
+      ["Live row in Chats", "the row's own live state, inside the Chats dock"],
+      ["Page-change rule", "added when the answering agent changes; only the latest is kept"],
+      ["Panel size", "<code>data-d3-chat-size</code> — expanded, panel, or the ask bar"],
+      ["Orb state", "idle · thinking · acting · completed · needs-attention"]
     ] } }
 
   ] };

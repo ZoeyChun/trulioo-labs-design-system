@@ -586,3 +586,132 @@ body {
 
 /* A step with no reference screenshot: described, not drawn. */
 .dx-step--text .dx-changes { margin-top: 0; }
+
+/* ---------------------------------------------------------------- cards ---
+   Reference notes rather than a flow: each stands on its own, so there is no
+   number and no connector running between them. */
+.dx-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-24, 24px);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--spacing-8, 8px) 0 var(--spacing-40, 40px);
+}
+
+.dx-card {
+  padding: var(--spacing-24, 24px);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-default, #fff);
+}
+
+.dx-card__title {
+  margin: 0;
+  font-size: var(--font-size-lg, 18px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 24px;
+  color: var(--text-default);
+}
+
+.dx-card__line {
+  margin: var(--spacing-4, 4px) 0 0;
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+  color: var(--text-description, #4a5a51);
+}
+
+.dx-card .dx-view { margin-top: var(--spacing-16, 16px); }
+.dx-card--text .dx-changes { margin-top: var(--spacing-16, 16px); }
+
+/* The dot on the rail's Chats button while a chat runs in the background.
+   Copied from css/d3-shell.css (".d1-shell[data-d3-chat-ongoing=true]"), which
+   this page cannot link wholesale: its .d1-shell rules would restyle every
+   panel specimen. */
+.dx-view .dx-rail-btn { position: relative; }
+.dx-view .dx-rail-btn--live::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--icon-positive, #2f9e63);
+  box-shadow: 0 0 0 2px var(--surface-default, #fff);
+}
+
+/* The Chats dock, shown beside a stub of the rail it belongs to. */
+.dx-dock { display: flex; align-items: stretch; min-height: 180px; }
+.dx-dock__rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-24, 24px);
+  padding: var(--spacing-16, 16px) var(--spacing-12, 12px);
+  border-right: 1px solid var(--border-subtle, #dde2de);
+}
+.dx-dock__rail .d3-ai-ident__orb { width: 32px; height: 32px; }
+.dx-dock .d3-chatdock {
+  position: static;
+  flex: 1;
+  min-width: 0;
+  height: auto;
+  border: 0;
+  box-shadow: none;
+}
+
+/* The ask bar sits on the page background, not inside a panel. */
+.dx-askbar-stage {
+  position: relative;
+  min-height: 104px;
+  padding: var(--spacing-24, 24px) var(--spacing-16, 16px);
+}
+/* The bar positions itself from the bottom of its shell; here the stage is
+   the shell, so it only needs a floor to sit on. */
+.dx-askbar-stage .d3-askbar { bottom: 24px; width: calc(100% - 32px); max-width: 560px; }
+
+/* The orb's states, side by side and running. */
+.dx-orbs {
+  /* .dx-view is a flex row, so the grid has to claim the width itself. */
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-16, 16px);
+  padding: var(--spacing-24, 24px);
+}
+.dx-orb-cell { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-8, 8px); }
+.dx-orb-cell__host { position: relative; width: 96px; }
+/* mountPanel draws the whole panel presentation — orb plus a "TruAI" caption
+   and a status line. Only the orb is the subject here; the state is named by
+   the cell's own label underneath. */
+.dx-orb-cell__host .truai-panel__text { display: none; }
+.dx-orb-cell__name {
+  margin: 0;
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-description, #4a5a51);
+}
+
+/* The Chats rows' base look, from css/shell.css (".d1-chat-row"), which this
+   page cannot link wholesale: it styles html, body and .d1-shell. */
+.dx-view .d1-chat-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8, 8px);
+  width: 100%;
+  height: 29px;
+  margin: 0;
+  padding: 7px var(--spacing-12, 12px);
+  border: 0;
+  border-radius: var(--radius-lg, 12px);
+  background: transparent;
+  color: var(--text-default);
+  font-family: inherit;
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: normal;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}

@@ -138,6 +138,22 @@
       '<span class="dx-note__k">' + esc(note.k) + "</span><span>" + note.text + "</span></div>";
   }
 
+  /* Reference notes, not a flow: no numbers and no connector, because these
+     are things that are true at any point rather than steps in an order. */
+  function noteCardHtml(item) {
+    var visual = item.noVisual || !item.view ? "" : '<div class="dx-view">' + item.view() + "</div>";
+    return '<section class="dx-card' + (visual ? "" : " dx-card--text") + '">' +
+      '<h2 class="dx-card__title">' + esc(item.title) + "</h2>" +
+      (item.line ? '<p class="dx-card__line">' + item.line + "</p>" : "") +
+      visual +
+      ((item.changes || []).length
+        ? '<div class="dx-changes"><p class="dx-changes__k">What to know</p><ul>' +
+          item.changes.map(function (c) { return "<li>" + c + "</li>"; }).join("") + "</ul></div>"
+        : "") +
+      (item.note ? noteHtml(item.note) : "") +
+      "</section>";
+  }
+
   function tableHtml(sc) {
     if (!(sc.props && sc.props.rows && sc.props.rows.length)) return "";
     return '<section class="dx-end"><h2 class="dx-end__title">' + esc(sc.props.name || "Details") + "</h2>" +
@@ -165,9 +181,11 @@
       (sc.line ? '<p class="dx-head__line">' + sc.line + "</p>" : "") +
       "</div>" +
       branchBar(sc) +
-      '<ol class="dx-flow">' + sc.steps.map(function (st, i) {
-        return stepHtml(st, i + 1, branch, i === sc.steps.length - 1);
-      }).join("") + "</ol>" +
+      (sc.notes
+        ? '<div class="dx-cards">' + sc.steps.map(noteCardHtml).join("") + "</div>"
+        : '<ol class="dx-flow">' + sc.steps.map(function (st, i) {
+            return stepHtml(st, i + 1, branch, i === sc.steps.length - 1);
+          }).join("") + "</ol>") +
       tableHtml(sc);
 
     mountOrbs(stage);
