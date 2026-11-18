@@ -73,10 +73,10 @@
         desc: "Surface high-risk rows in view",
       },
       {
-        prompt: "Summarize recent activity",
+        prompt: "Summarize last 7 days activity",
         agent: "tx",
-        title: "Summarize recent activity",
-        desc: "Overview of what’s in the table",
+        title: "Summarize last 7 days activity",
+        desc: "Filter the table to the last 7 days",
       },
     ],
     kyc: [

@@ -27,3 +27,24 @@
 .d3-tx-agent__empty {
   margin-top: 8px;
 }
+
+.d3-tx-agent__table {
+  margin: 0 0 12px;
+}
+
+.d3-tx-agent__more {
+  color: var(--text-description);
+}
+
+/* The data table's own 720px minimum would push Outcome out of the chat column. */
+.d3-tx-agent__table .tds-data-table {
+  min-width: 0;
+  width: 100%;
+  table-layout: auto;
+}
+
+.d3-tx-agent__table .tds-data-table th:last-child,
+.d3-tx-agent__table .tds-data-table td:last-child {
+  width: 1%;
+  white-space: nowrap;
+}

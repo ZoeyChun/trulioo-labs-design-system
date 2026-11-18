@@ -798,15 +798,18 @@
       writePickerPart("end", dateFilter.end);
     }
 
-    if (spec.predicate === "unsuccessful") aiRowFilter = isUnsuccessful;
-    else if (spec.predicate === "review") {
+    /* Not verified and high risk are real filters, ticked in the Filters panel, so the chips show
+       what the table is filtered to and the user can change them there. */
+    if (spec.predicate === "unsuccessful") {
+      aiRowFilter = null;
+      setCheckboxGroup("ut-filt-outcome", ["negative"]);
+    } else if (spec.predicate === "review") {
       aiRowFilter = function (item) {
         return outcomeGroup(item) === "intermediate";
       };
     } else if (spec.predicate === "high-risk") {
-      aiRowFilter = function (item) {
-        return riskBucket(item) === "high" || (item.score && item.score.tone === "negative");
-      };
+      aiRowFilter = null;
+      setCheckboxGroup("ut-filt-risk", ["high"]);
     } else if (spec.predicate === null) {
       aiRowFilter = null;
     } else if (typeof spec.predicate === "function") {

@@ -21,7 +21,7 @@
     { q: "Find transactions requiring review", intent: "review" }
   ];
   var SUGGEST_AFTER = [
-    { q: "Summarize recent activity", intent: "summary" },
+    { q: "Summarize last 7 days activity", intent: "summary" },
     { q: "Show verified transactions only", intent: "verified" },
     { q: "Clear filters and show all", intent: "clear" }
   ];
@@ -296,7 +296,7 @@
       return { intent: "clear", spec: { clear: true, predicate: null }, layout: "text", label: "all transactions" };
     }
 
-    if (/summar(y|ize|ise)|overview|trends|pattern|recent activity|what('s| is) going on/.test(lower)) {
+    if (/summar(y|ize|ise)|overview|trends|pattern|recent activity|last 7 days|what('s| is) going on/.test(lower)) {
       intent = "summary";
       layout = "analysis";
       if (/7 days|week|recent/.test(lower)) spec.dateDays = 7;
@@ -488,11 +488,15 @@
       layout: "text",
       label: null,
       message:
-        "I can answer from the transactions currently in this table. Try “Show not verified transactions”, “Find high-risk transactions”, “Summarize recent activity”, or ask about a name or country that appears in the data."
+        "I can answer from the transactions currently in this table. Try “Show not verified transactions”, “Find high-risk transactions”, “Summarize last 7 days activity”, or ask about a name or country that appears in the data."
     };
   }
 
   /* ---- response builders (grounded) ---- */
+
+  var CLOCK_ICON =
+    '<svg viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.5"/>' +
+    '<path d="M8 4.75V8.25L10.25 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   /* Text-only reply — no clickable cards in chat. Open details from the table. */
   function buildListHtml(matches, label, intro) {
@@ -519,19 +523,28 @@
       return html + "</div>";
     }
 
-    var names = matches
-      .slice(0, 5)
-      .map(function (item) {
-        return item.name;
-      })
-      .filter(Boolean);
-    if (names.length) {
-      html +=
-        "<p class=\"d3-tx-agent__names\">" +
-        esc(names.join(", ")) +
-        (n > names.length ? "…" : "") +
-        "</p>";
-    }
+    /* The rows themselves, name and outcome, not a run of names. */
+    var shown = matches.slice(0, 5);
+    html +=
+      '<div class="tds-data-table-container d3-tx-agent__table"><div class="tds-data-table__wrapper">' +
+      '<table class="tds-data-table tds-data-table--compact"><thead><tr><th>Transaction</th><th>Outcome</th></tr></thead><tbody>' +
+      shown
+        .map(function (item) {
+          /* The same tag the Transactions table uses: In Progress and reviews are the amber tag with a clock. */
+          var pending = item.outcome === "In Progress" || item.outcome === "Review" || item.outcome === "Pending Review";
+          var tone = pending ? "intermediate" : /^(positive|negative)$/.test(item.tone) ? item.tone : "neutral";
+          return (
+            '<tr><td class="tds-data-table__text-cell">' +
+            esc(item.name) +
+            '</td><td><span class="tds-tag tds-tag--' + tone + '">' +
+            (pending ? '<span class="tds-tag__leading-visual">' + CLOCK_ICON + "</span>" : "") +
+            esc(item.outcome || "—") +
+            "</span></td></tr>"
+          );
+        })
+        .join("") +
+      "</tbody></table></div></div>" +
+      (n > shown.length ? '<p class="d3-tx-agent__more">+' + (n - shown.length) + " more in the table</p>" : "");
     html +=
       "<p>The table is filtered to these results. Select a row there to open the full report on the right.</p>";
     return html + "</div>";
@@ -567,12 +580,7 @@
         { label: "Unsuccessful / flagged", value: String(declined), status: declined ? "negative" : "positive" },
         { label: "Needs review", value: String(review), status: review ? "review" : "positive" },
         { label: "High risk scores", value: String(byRisk.high), status: byRisk.high ? "negative" : "positive" },
-        { label: "Top product", value: topProduct || "—", status: "positive" },
-        {
-          label: "Overall signal",
-          value: declined > matches.length / 3 ? "Elevated issues" : review ? "Some reviews pending" : "Mostly clear",
-          status: declined > matches.length / 3 ? "negative" : "positive"
-        }
+        { label: "Top product", value: topProduct || "—", status: "positive" }
       ],
       intro:
         "Here’s a summary grounded in the " +
