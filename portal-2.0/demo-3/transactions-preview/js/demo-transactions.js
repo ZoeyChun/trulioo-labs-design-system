@@ -290,7 +290,13 @@ window.UT_TRANSACTIONS = [
     "source": "API",
     "sourceLabel": "Test_API_Key",
     "package": "Package4_KYB_Watchlist",
-    "type": "Live"
+    "type": "Live",
+    "extraProducts": [
+      "Business Horizon"
+    ],
+    "extraPackages": [
+      "Package5_KYB_Horizon"
+    ]
   },
   {
     "name": "Meridian Apex Consulting Ltd.",

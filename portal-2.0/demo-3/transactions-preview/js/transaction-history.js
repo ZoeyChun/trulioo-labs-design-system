@@ -2455,6 +2455,15 @@
     );
   }
 
+  /* Business Risk Horizon does not verify a business — it scores its risk.
+     A transaction that ran only that has no verdict to report, so its outcome
+     is the risk level and the score, with nothing above them. A transaction
+     that ran it alongside a verification still has one, and keeps it. */
+  function isHorizonOnly(item) {
+    var products = itemProducts(item);
+    return products.length === 1 && /horizon/i.test(products[0]);
+  }
+
   function outcomeHtml(item) {
     var outcome = item.outcome;
     if (!outcome) return "";
@@ -2466,6 +2475,13 @@
     if (isInProgressOutcome(item)) return inProgressHtml(item);
     if (isFailedOutcome(item)) {
       return '<span class="ut-tx-outcome-plain">' + escapeHtml(outcome.label) + "</span>";
+    }
+
+    if (isHorizonOnly(item)) {
+      var horizonScore = outcomeScore(item);
+      return horizonScore
+        ? scoreHtml(horizonScore)
+        : '<span class="ut-tx-empty">--</span>';
     }
 
     var primary = outcomeTagHtml(item);

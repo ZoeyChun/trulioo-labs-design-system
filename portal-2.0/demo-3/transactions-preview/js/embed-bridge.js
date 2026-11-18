@@ -33,21 +33,33 @@
     return /horizon/i.test(String(product || ""));
   }
 
-  /* Business Horizon is not a package: it is the Business Risk Horizon Score
-     add-on, and it runs as its own transaction beside the verification. So a
-     business with a Business Horizon row has already had the score run, and
-     its verification is the report that offers to show it rather than to run
-     it. Matched on the record, not the cells, so a column change cannot
-     quietly break it.
+  function productsOf(record) {
+    var list = [record.product];
+    if (record.extraProducts && record.extraProducts.length) {
+      list = list.concat(record.extraProducts);
+    }
+    return list.filter(Boolean);
+  }
 
-     "on" opens the report that carries the score, "view" the verification
-     beside it, "" leaves the report as it was. */
+  /* Business Horizon is not a package: it is the Business Risk Horizon Score
+     add-on. It can run inside the verification's own transaction, or as a
+     transaction of its own beside it — so a business has the score if any of
+     its rows carries that product. Matched on the records, not the cells, so
+     a column change cannot quietly break it.
+
+     "on": this row is the score, and opens on it. "both": this row ran the
+     score alongside the verification, so the report carries it but opens on
+     the Overview. "view": the score is another transaction of this business,
+     and this report offers to show it. "" leaves the report as it was. */
   function brhModeFor(row, product, trid) {
-    if (isHorizon(product)) return "on";
     var record = findByTrid(trid);
+    var products = record ? productsOf(record) : [product];
+    if (products.some(isHorizon)) {
+      return products.length === 1 ? "on" : "both";
+    }
     if (!record) return "";
     var ran = (window.UT_TRANSACTIONS || []).some(function (r) {
-      return r.name === record.name && isHorizon(r.product);
+      return r.name === record.name && productsOf(r).some(isHorizon);
     });
     return ran ? "view" : "";
   }

@@ -34,11 +34,14 @@
   };
 
   /* Business Horizon is not a package: it is the Business Risk Horizon Score
-     add-on, which runs as a transaction of its own. Opening it opens the
-     report that carries the score, on that tab. */
-  if (brh === "on" || /horizon/i.test(product)) {
+     add-on. A transaction that ran only that opens on the score. */
+  if (brh === "on" || (!brh && /horizon/i.test(product))) {
     session.addons = ["risk"];
     session.tab = "risk";
+  } else if (brh === "both") {
+    /* Ran alongside the verification in the same transaction: the report
+       carries the score, but the verification is what it opens on. */
+    session.addons = ["risk"];
   } else if (brh === "view") {
     /* The verification itself has no score — that is the transaction beside
        it — so the report opens without the tab and offers to show it. */
