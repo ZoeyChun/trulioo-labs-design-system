@@ -94,40 +94,49 @@
 .d3-brh-reply__head-copy { display: flex; flex-direction: column; gap: var(--spacing-4, 4px); min-width: 0; }
 .d3-brh-reply__head > .tds-btn { flex: none; }
 
-/* The report as it was run, once Business Risk Horizon has been run beside it: the latest run under the suggested actions. */
+/* The report as it was run, once Business Risk Horizon has been run beside it: Run again, and the latest run as a split button. */
 .d3-brh-again { gap: var(--spacing-8, 8px); }
 .d3-brh-again[aria-disabled="true"] { cursor: default; pointer-events: none; opacity: 0.85; }
-.d3-brh-latest { display: flex; flex-direction: column; gap: var(--spacing-8, 8px); margin-top: var(--spacing-16, 16px); }
-.d3-brh-latest__row {
+.d3h-suggested__ctas:has(.d3-brh-split) { flex-wrap: wrap; align-items: center; }
+.d3-brh-split { position: relative; display: inline-flex; }
+.d3-brh-split--menu .d3-brh-split__main { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.d3-brh-split__caret { min-width: 40px; margin-left: -1px; padding-inline: var(--spacing-8, 8px); border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.d3-brh-split__caret svg { width: 16px; height: 16px; }
+.d3-brh-split__caret[aria-expanded="true"] svg { transform: rotate(180deg); }
+/* The menu opens upward: the split button sits at the bottom of the hero card, which would clip anything below it. */
+.d3-brh-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-12, 12px) var(--spacing-16, 16px);
-  padding: var(--spacing-12, 12px) var(--spacing-16, 16px);
+  flex-direction: column;
+  min-width: 340px;
+  padding: var(--spacing-4, 4px);
   border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: var(--radius-xl, 12px);
+  border-radius: var(--radius-lg, 8px);
   background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--elevation-lg, 0 8px 24px rgba(23, 45, 45, 0.12));
 }
-.d3-brh-latest__meta { display: flex; flex-direction: column; flex: 1 1 140px; min-width: 0; }
-.d3-brh-latest__time { color: var(--text-default, #172d2d); font-size: var(--font-size-sm, 14px); font-weight: var(--font-weight-medium, 500); line-height: 20px; }
-.d3-brh-latest__txn { color: var(--text-caption, #617269); }
-.d3-brh-latest__score { display: flex; align-items: baseline; gap: var(--spacing-8, 8px); }
-.d3-brh-latest__score b { color: var(--text-default, #172d2d); font-size: 20px; font-weight: var(--font-weight-semibold, 600); line-height: 24px; }
+.d3-brh-menu[hidden] { display: none; }
+.d3-brh-menu__item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  gap: var(--spacing-12, 12px);
+  width: 100%;
+  padding: var(--spacing-8, 8px) var(--spacing-12, 12px);
+  border: 0;
+  border-radius: var(--radius-md, 6px);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.d3-brh-menu__item:hover, .d3-brh-menu__item:focus-visible { background: var(--surface-neutral-02, #f4f6f4); outline: none; }
+.d3-brh-menu__when { white-space: nowrap; color: var(--text-default, #172d2d); font-size: var(--font-size-sm, 14px); line-height: 20px; }
+.d3-brh-menu__latest { margin-left: var(--spacing-4, 4px); padding: 0 6px; border-radius: 999px; background: var(--surface-neutral-03, #e8ebe8); color: var(--text-caption, #617269); font-size: 11px; line-height: 16px; }
+.d3-brh-menu__score { color: var(--text-default, #172d2d); font-size: var(--font-size-md, 16px); font-weight: var(--font-weight-semibold, 600); }
 .d3-brh-delta { color: var(--text-caption, #617269); font-size: var(--font-size-xs, 12px); line-height: 16px; white-space: nowrap; }
 .d3-brh-delta.is-up { color: var(--text-negative, #a2191f); }
 .d3-brh-delta.is-down { color: var(--text-positive, #0e6027); }
-.d3-brh-latest__all {
-  align-self: flex-start;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--text-interactive, #0e6b5e);
-  font: inherit;
-  font-size: var(--font-size-sm, 14px);
-  font-weight: var(--font-weight-medium, 500);
-  line-height: 20px;
-  cursor: pointer;
-}
-.d3-brh-latest__all:hover { text-decoration: underline; }
-/* A higher risk score is worse, so the arrows are coloured by what they mean: up is red, down is green. */
-.d3-brh-runs__table .tds-data-table { min-width: 0; width: 100%; }

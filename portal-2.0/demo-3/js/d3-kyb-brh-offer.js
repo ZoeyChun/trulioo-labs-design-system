@@ -121,23 +121,37 @@
     return !!rec && !rec.applied;
   }
 
-  function latestHtml() {
+  var CARET_SVG =
+    '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" d="m4 6 4 4 4-4"/></svg>';
+
+  /* The latest run as one split button: the button opens it, the caret lists every run (with their scores). */
+  function splitHtml() {
     var rec = added[current.key];
-    var i = rec.runs.length - 1;
-    var run = rec.runs[i];
+    var last = rec.runs.length - 1;
+    var main =
+      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md d3-brh-split__main" data-d3-brh-view data-d3-brh-run-idx="' + last + '">' +
+      "View latest</button>";
+    if (rec.runs.length < 2) return '<div class="d3-brh-split">' + main + "</div>";
+    var items = rec.runs
+      .map(function (run, i) {
+        return (
+          '<button type="button" class="d3-brh-menu__item" role="menuitem" data-d3-brh-view data-d3-brh-run-idx="' + i + '" data-d3-brh-menu-pick>' +
+          '<span class="d3-brh-menu__when">' + esc(run.atLabel) + (i === last ? ' <span class="d3-brh-menu__latest">Latest</span>' : "") + "</span>" +
+          '<span class="d3-brh-menu__score">' + esc(run.score) + "</span>" + deltaHtml(rec, i) + "</button>"
+        );
+      })
+      .reverse()
+      .join("");
     return (
-      '<div class="d3-brh-latest" aria-label="Latest Business Risk Horizon">' +
-      '<p class="d3h-section-label">Latest Business Risk Horizon</p>' +
-      '<div class="d3-brh-latest__row">' +
-      '<span class="d3-brh-latest__meta"><span class="d3-brh-latest__time">' + esc(run.atLabel) + "</span>" +
-      '<span class="d3-brh-latest__txn text-body-xs">txn ' + esc(shortTx(run.tx)) + "</span></span>" +
-      '<span class="d3-brh-latest__score"><b>' + esc(run.score) + "</b>" + deltaHtml(rec, i) + "</span>" +
-      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-brh-view data-d3-brh-run-idx="' + i + '">View</button></div>' +
-      (rec.runs.length > 1
-        ? '<button type="button" class="d3-brh-latest__all" data-d3-brh-all>View all runs (' + rec.runs.length + ") ›</button>"
-        : "") +
-      "</div>"
+      '<div class="d3-brh-split d3-brh-split--menu" data-d3-brh-split>' + main +
+      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md d3-brh-split__caret" data-d3-brh-menu aria-haspopup="menu" aria-expanded="false" aria-label="All Business Risk Horizon runs">' + CARET_SVG + "</button>" +
+      '<div class="d3-brh-menu" role="menu" aria-label="Business Risk Horizon runs" hidden>' + items + "</div></div>"
     );
+  }
+
+  function closeMenus() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-d3-brh-split] .d3-brh-menu"), function (m) { m.hidden = true; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-d3-brh-menu]"), function (b) { b.setAttribute("aria-expanded", "false"); });
   }
 
   /* The Overview's Suggested Actions. A report without Business Risk Horizon offers to run it; once it has been run, the
@@ -147,8 +161,8 @@
       return {
         ctas:
           '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md d3-brh-again" data-d3-brh-cta data-d3-brh-run>' +
-          AGAIN_ICON + "Run Business Risk Horizon again</button>",
-        extra: latestHtml()
+          AGAIN_ICON + "Run Business Risk Horizon again</button>" + splitHtml(),
+        extra: ""
       };
     }
     var one = !brhOn ? buttonHtml() : "";
@@ -416,46 +430,6 @@
     }, RUN_MS);
   }
 
-  /* All the runs of this report, newest first, each with a way into its own result. */
-  var RUNS_DIALOG_ID = "d3-kyb-brh-runs-dialog";
-
-  function openRunsDialog() {
-    var rec = added[current.key];
-    var dlg = document.getElementById(RUNS_DIALOG_ID);
-    if (!rec || !dlg) return;
-    var body = dlg.querySelector("[data-d3-brh-runs-body]");
-    var b = bizNow();
-    var name = dlg.querySelector("[data-d3-brh-runs-name]");
-    if (name) name.textContent = (b && b.name) || "this business";
-    if (body) {
-      body.innerHTML = rec.runs
-        .map(function (run, i) {
-          return (
-            '<tr><td class="tds-data-table__text-cell">' + esc(run.atLabel) + (i === rec.runs.length - 1 ? ' <span class="tds-tag tds-tag--sm tds-tag--default">Latest</span>' : "") + "</td>" +
-            '<td class="tds-data-table__text-cell text-body-xs">' + esc(shortTx(run.tx)) + "</td>" +
-            '<td class="tds-data-table__text-cell"><b>' + esc(run.score) + "</b></td>" +
-            '<td class="tds-data-table__text-cell">' + deltaHtml(rec, i) + "</td>" +
-            '<td data-align="right"><button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-brh-view data-d3-brh-run-idx="' + i + '" data-d3-brh-runs-close>View</button></td></tr>'
-          );
-        })
-        .reverse()
-        .join("");
-    }
-    var trigger = document.createElement("button");
-    trigger.type = "button";
-    trigger.hidden = true;
-    trigger.setAttribute("data-dialog-open", RUNS_DIALOG_ID);
-    document.body.appendChild(trigger);
-    trigger.click();
-    trigger.remove();
-  }
-
-  function closeRunsDialog() {
-    var dlg = document.getElementById(RUNS_DIALOG_ID);
-    var c = dlg && dlg.querySelector("[data-dialog-close]");
-    if (c) c.click();
-  }
-
   document.addEventListener("click", function (event) {
     var t = event.target;
     if (!t || !t.closest) return;
@@ -470,10 +444,16 @@
       run();
       return;
     }
-    if (t.closest("[data-d3-brh-all]")) {
-      openRunsDialog();
+    var menuBtn = t.closest("[data-d3-brh-menu]");
+    if (menuBtn) {
+      var menu = menuBtn.parentNode.querySelector(".d3-brh-menu");
+      var open = menu.hidden;
+      closeMenus();
+      menu.hidden = !open;
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
       return;
     }
+    if (!t.closest("[data-d3-brh-split]")) closeMenus();
     var viewBtn = t.closest("[data-d3-brh-view]");
     if (viewBtn) {
       /* Each run is opened as a transaction of its own: the whole report loads again, on the Overview. A score card in
@@ -482,8 +462,8 @@
       var idxAttr = viewBtn.getAttribute("data-d3-brh-run-idx");
       var card = viewBtn.closest(".d3-brh-reply__card");
       if (idxAttr == null && card) idxAttr = card.getAttribute("data-d3-brh-run-idx");
-      if (viewBtn.hasAttribute("data-d3-brh-runs-close")) closeRunsDialog();
-      showVersion(true, (rec && rec.land) || "findings", !!card || viewBtn.hasAttribute("data-d3-brh-runs-close"), idxAttr == null ? null : Number(idxAttr));
+      /* Picking a run from the menu loads that run even when it is the one already on screen. */
+      showVersion(true, (rec && rec.land) || "findings", !!card || viewBtn.hasAttribute("data-d3-brh-menu-pick"), idxAttr == null ? null : Number(idxAttr));
       return;
     }
     var copy = t.closest("[data-d3-brh-copy]");
@@ -497,6 +477,10 @@
       return;
     }
     if (t.closest('[data-d3-kyb-tab="risk"]')) syncSoon();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closeMenus();
   });
 
   /* The result card of the verification as it was run: View opens the report without Business Risk Horizon. */

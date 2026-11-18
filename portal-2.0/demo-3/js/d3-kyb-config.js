@@ -64,6 +64,12 @@
     );
   }
 
+  var LEVEL_NOTE = {
+    essentials: "Existence & BRN",
+    insights: "First-level UBO & directors",
+    complete: "Deep hierarchy & multi-tier traversal"
+  };
+
   function packageCards() {
     return S.packages
       .map(function (p) {
@@ -74,12 +80,21 @@
           '<span class="tds-radio-card__content">' +
           '<span class="tds-radio-card__label-row"><span class="tds-radio-card__label">' + esc(p.name) + "</span>" +
           (p.recommended ? ' <span class="tds-tag tds-tag--sm tds-tag--positive">Default</span>' : "") + "</span>" +
-          '<span class="tds-radio-card__description">' + esc(p.tagline) + "</span>" +
-          '<span class="tds-radio-card__description d3-cfg__bullets">' + esc(p.bullets.join(" · ")) + "</span>" +
+          '<span class="tds-radio-card__description">' + esc(S.levelNote(p.id) || p.tagline) + "</span>" +
           "</span></div>"
         );
       })
       .join("");
+  }
+
+  function checkRow(a) {
+    var on = draft.addons.indexOf(a.id) !== -1;
+    return (
+      '<label class="d3-cfg__check">' +
+      '<input type="checkbox" class="tds-checkbox" data-d3-cfg-addon="' + a.id + '"' + (on ? " checked" : "") + ">" +
+      '<span class="d3-cfg__check-text"><span class="d3-cfg__check-name">' + esc(a.name) + "</span>" +
+      (a.note ? '<span class="d3-cfg__check-note">' + esc(a.note) + "</span>" : "") + "</span></label>"
+    );
   }
 
   function addonRows() {
@@ -87,17 +102,7 @@
     if (!list.length) {
       return '<p class="d3-cfg__empty">' + esc(S.package(draft.package).name) + " has no add-ons.</p>";
     }
-    return list
-      .map(function (a) {
-        var on = draft.addons.indexOf(a.id) !== -1;
-        return (
-          '<label class="d3-cfg__check">' +
-          '<input type="checkbox" class="tds-checkbox" data-d3-cfg-addon="' + a.id + '"' + (on ? " checked" : "") + ">" +
-          '<span class="d3-cfg__check-text"><span class="d3-cfg__check-name">' + esc(a.name) + "</span>" +
-          (a.note ? '<span class="d3-cfg__check-note">' + esc(a.note) + "</span>" : "") + "</span></label>"
-        );
-      })
-      .join("");
+    return list.map(checkRow).join("");
   }
 
   function sameAsSaved(saved) {
@@ -128,12 +133,12 @@
       '<p class="d3-cfg__hint">Where the businesses you verify are registered. The search starts here.</p>' +
       countrySelect() + "</div>" +
       '<hr class="d3-cfg__rule">' +
-      '<div class="d3-cfg__block"><h2 class="d3-cfg__h">Package</h2>' +
-      '<p class="d3-cfg__hint">What every KYB verification includes.</p>' +
-      '<div class="d3-cfg__cards" role="radiogroup" aria-label="Package">' + packageCards() + "</div></div>" +
+      '<div class="d3-cfg__block"><h2 class="d3-cfg__h">Select Verification Level</h2>' +
+      '<p class="d3-cfg__hint">How deep every KYB verification goes.</p>' +
+      '<div class="d3-cfg__cards" role="radiogroup" aria-label="Product">' + packageCards() + "</div></div>" +
       '<hr class="d3-cfg__rule">' +
       '<div class="d3-cfg__block"><h2 class="d3-cfg__h">Add-ons</h2>' +
-      '<p class="d3-cfg__hint">Offered add-ons depend on the package.</p>' +
+      '<p class="d3-cfg__hint">Offered add-ons depend on the verification level.</p>' +
       '<div class="d3-cfg__checks">' + addonRows() + "</div></div>" +
       '<div class="d3-cfg__foot"><span class="d3-cfg__status"><b>' + (locked ? "Saved" : saved ? "Editing" : "Not saved") + "</b>" +
       '<span class="d3-cfg__summary">' + esc(summary()) + "</span></span>" +

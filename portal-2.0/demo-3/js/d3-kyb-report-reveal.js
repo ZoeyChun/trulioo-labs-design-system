@@ -673,9 +673,9 @@
     tier = S && S.package(next) ? next : "complete";
     tierAddons = addons || [];
     brhOffer = !!(
-      opts && opts.offer && S && S.addonsFor &&
+      opts && opts.offer && S && S.offersBrh &&
       tierAddons.indexOf("risk") === -1 &&
-      S.addonsFor(tier).some(function (a) { return a.id === "risk"; })
+      S.offersBrh(tier)
     );
     resumeCard.querySelectorAll("[data-d3-kyb-tab]").forEach(function (t) {
       t.hidden = !tabAllowed(t.getAttribute("data-d3-kyb-tab"));

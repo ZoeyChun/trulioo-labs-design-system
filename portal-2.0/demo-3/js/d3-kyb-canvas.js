@@ -199,12 +199,12 @@
       if (kind === "package" && !pending) {
         var gc = S && S.country(S.get().country);
         fill(
-          "Waiting for your package",
+          "Waiting for your product",
           (agentState && agentState.queryLabel) || "Business",
           "Choose how much to verify in the chat — then I’ll search" + (gc ? " " + gc.registry : " the registry") + ".",
           step("done", "Name set", esc((agentState && agentState.queryLabel) || "")) +
             step("done", "Country set", esc(gc ? gc.name : "")) +
-            step("current", "Package needed", "Choose in the chat") +
+            step("current", "Product needed", "Choose in the chat") +
             step("todo", "Business matches", "Pick the right entity")
         );
         ws.setAttribute(CHOICE, "package");
@@ -219,7 +219,7 @@
           "Choose in the chat whether to search" + (fc ? " " + fc.registry : " the registry") + " or enter the details yourself.",
           step("done", "Name set", esc((agentState && agentState.queryLabel) || "")) +
             step("done", "Country set", esc(fc ? fc.name : "")) +
-            step("done", "Package set", pkgName()) +
+            step("done", "Product set", pkgName()) +
             step("current", "Business Finder", "Choose in the chat")
         );
         ws.setAttribute(CHOICE, "finder");
@@ -233,7 +233,7 @@
           pc ? pc.name : "Entity details",
           (pc ? pc.registry : "This registry") + " has no automated search. Enter the entity details in the chat.",
           step("done", "Country set", esc(pc ? pc.name : "")) +
-            step("done", "Package set", pkgName()) +
+            step("done", "Product set", pkgName()) +
             step("current", "Entity details", "Enter them in the chat")
         );
         ws.setAttribute(CHOICE, "profile");
@@ -248,18 +248,18 @@
           step("done", "Business matches", picked(pending));
         var tag, lead;
         if (kind === "package") {
-          tag = "Waiting for your package";
+          tag = "Waiting for your product";
           lead = "Choose how much to verify for this business in the chat.";
-          steps += step("current", "Package needed", "Choose in the chat") + step("todo", "Add-ons", "Optional risk modules");
+          steps += step("current", "Product needed", "Choose in the chat") + step("todo", "Add-ons", "Optional risk modules");
         } else if (kind === "addons") {
           tag = "Optional add-ons";
           lead = "Choose any specialized risk modules in the chat, or continue without.";
-          steps += step("done", "Package set", pkgName()) + step("current", "Add-ons", "Choose in the chat");
+          steps += step("done", "Product set", pkgName()) + step("current", "Add-ons", "Choose in the chat");
         } else if (kind === "inputs") {
           tag = "Details needed";
           lead = "Only what the registry does not hold is asked for — " + r.fields + (r.fields === 1 ? " detail" : " details") + ". Fill it in the chat.";
           steps +=
-            step("done", "Package set", pkgName()) +
+            step("done", "Product set", pkgName()) +
             step("done", "Add-ons", addonsNote()) +
             step(
               "current",
@@ -271,7 +271,7 @@
         } else {
           tag = "Waiting for your confirmation";
           lead = "Execute the verification in the chat when you are ready.";
-          steps += step("done", "Package set", pkgName()) + step("done", "Add-ons", addonsNote());
+          steps += step("done", "Product set", pkgName()) + step("done", "Add-ons", addonsNote());
           if (r.ubo === "public") steps += step("done", "Ownership", "Pulled from " + esc((S.country(pending.cc) || {}).registry || "the registry"));
           else if (r.ubo === "private") steps += step("done", "Ownership", esc(S.get().ubo.name.trim()) + " · " + parseFloat(S.get().ubo.pct) + "%");
           else if (r.ubo === "skipped" || r.ubo === "off") steps += step("done", "Ownership", "Reported as not disclosed");

@@ -86,11 +86,10 @@
 
   /* Optional risk modules. `fields` is what each one asks the user for. */
   var ADDONS = [
-    { id: "filings", name: "Filings", short: "Filings", note: "Additional information on the business such as Judgements, Bankruptcies, Insolvencies etc.", fields: 0, impact: "" },
     { id: "web", name: "Web Insights", short: "Web Insights", note: "", fields: 0, impact: "" },
     { id: "ubo", name: "UBO Discovery", short: "UBO Discovery", note: "", fields: 0, impact: "", privateOnly: true },
     { id: "ubopsc", name: "UBO and PSC Discovery", short: "UBO and PSC Discovery", note: "", fields: 0, impact: "", privateOnly: true },
-    { id: "risk", name: "Business Risk Horizon Score", short: "Business Risk Horizon Score", note: "", fields: 0, impact: "" }
+    { id: "risk", name: "Business Risk Horizon", short: "Business Risk Horizon", note: "5-domain AI risk scoring (Fraud, Financial Health, Digital Signals)", fields: 0, impact: "" }
   ];
 
   /* Which add-ons a package offers: Essentials has none; Insights gets the full
@@ -102,9 +101,24 @@
     return ADDONS.filter(function (a) { return !(id === "complete" && a.privateOnly); });
   }
 
-  /* Business Risk Horizon Score starts ticked wherever the package offers it. */
+  /* One-line description of each verification level. */
+  var LEVEL_NOTES = {
+    essentials: "Existence & BRN",
+    insights: "First-level UBO & directors",
+    complete: "Deep hierarchy & multi-tier traversal"
+  };
+  function levelNote(id) {
+    return LEVEL_NOTES[id] || "";
+  }
+
+  /* Business Risk Horizon starts ticked wherever the level offers it. */
   function defaultAddons(packageId) {
     return addonsFor(packageId).some(function (a) { return a.id === "risk"; }) ? ["risk"] : [];
+  }
+
+  /* Insights and Complete reports can run Business Risk Horizon on top of the report (see d3-kyb-brh-offer.js). */
+  function offersBrh(packageId) {
+    return addonsFor(packageId).some(function (a) { return a.id === "risk"; });
   }
 
   /* A few real ABA routing numbers, so the demo can name the bank. */
@@ -130,8 +144,6 @@
       if (!c || !pkg(c.package)) return null;
       var offered = addonsFor(c.package).map(function (a) { return a.id; });
       var list = Array.isArray(c.addons) ? c.addons.slice() : [];
-      /* Configurations saved before Business Risk Horizon Score became a default get it once. */
-      if (c.v !== 2 && offered.indexOf("risk") !== -1 && list.indexOf("risk") === -1) list.push("risk");
       return {
         package: c.package,
         country: savedCountry(),
@@ -246,7 +258,7 @@
   /* The Web & Social tab also opens for the Web Insights add-on. */
   function tabAllowed(id, tab, addons) {
     if (tab === "findings") return true;
-    /* The Business Risk Horizon tab is the Business Risk Horizon Score add-on. */
+    /* The Business Risk Horizon tab is the Business Risk Horizon add-on. */
     if (tab === "risk") return (addons || []).indexOf("risk") !== -1;
     /* Owners & UBOs: Complete includes it; Insights shows it when a UBO add-on is
        selected; Essentials never. The graph and details come from data, not from
@@ -585,6 +597,8 @@
     addons: ADDONS,
     addonsFor: addonsFor,
     defaultAddons: defaultAddons,
+    offersBrh: offersBrh,
+    levelNote: levelNote,
     hasUboAddon: hasUboAddon,
     savedConfig: savedConfig,
     savedCountry: savedCountry,

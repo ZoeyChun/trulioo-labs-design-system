@@ -50,8 +50,8 @@
       .join("");
     return (
       '<div class="d3-kyb-pkg__row">' +
-      '<span class="d3-kyb-pkg__label">Package</span>' +
-      '<div class="tds-segmented-control tds-segmented-control--sm" role="radiogroup" aria-label="Package">' + items + "</div>" +
+      '<span class="d3-kyb-pkg__label">Product</span>' +
+      '<div class="tds-segmented-control tds-segmented-control--sm" role="radiogroup" aria-label="Product">' + items + "</div>" +
       "</div>" +
       '<p class="d3-kyb-pkg__note" data-d3-kyb-pkg-note>' + esc(row.note) + "</p>"
     );
@@ -95,7 +95,7 @@
     /* Nothing is highlighted until a package has actually been chosen. */
     var current = S.get().packageChosen ? S.get().package : "";
     return (
-      '<div class="d3-ai-selector d3-kyb-choicelist" role="radiogroup" aria-label="Package"><div class="d3-ai-selector__rows">' +
+      '<div class="d3-ai-selector d3-kyb-choicelist" role="radiogroup" aria-label="Product"><div class="d3-ai-selector__rows">' +
       S.packages
         .map(function (p) {
           var im = impact(p);
@@ -106,8 +106,7 @@
             '<span class="d3-ai-selector__copy">' +
             '<span class="ai-cand__name">' + esc(p.name) +
             (p.recommended ? ' <span class="d3-kyb-choicelist__badge">Default</span>' : "") + "</span>" +
-            '<span class="d3-ai-selector__addr">' + esc(p.tagline) + "</span>" +
-            '<span class="d3-ai-selector__addr">' + esc(p.bullets.join(" · ")) + "</span>" +
+            '<span class="d3-ai-selector__addr">' + esc(S.levelNote(p.id)) + "</span>" +
             '<span class="d3-ai-selector__reg' + (im.warn ? " is-warn" : "") + '">' + esc(im.text) + "</span>" +
             "</span></button>"
           );
@@ -147,7 +146,8 @@
   function defaults() {
     var current = S.get().package;
     return (
-      '<div class="d3-kyb-pkgcards" role="radiogroup" aria-label="Package">' +
+      '<div class="d3-kyb-addons__title">Select Verification Level</div>' +
+      '<div class="d3-kyb-pkgcards" role="radiogroup" aria-label="Verification level">' +
       S.packages
         .map(function (p) {
           var on = p.id === current;
@@ -155,12 +155,12 @@
           if (on && SUB_ACCOUNTS[p.id]) {
             var cur = subAccount(p.id);
             sub =
-              '<span class="d3-kyb-pkgcards__sub"><span class="d3-kyb-pkgcards__sublabel">Sub-account</span>' +
+              '<span class="d3-kyb-pkgcards__sub"><span class="d3-kyb-pkgcards__sublabel">Package</span>' +
               '<span class="tds-select tds-select--interactive" data-d3-kyb-sub>' +
-              '<button type="button" class="tds-select__trigger tds-select__trigger--md" aria-haspopup="listbox" aria-expanded="false" aria-label="Sub-account, ' + esc(cur) + '">' +
+              '<button type="button" class="tds-select__trigger tds-select__trigger--md" aria-haspopup="listbox" aria-expanded="false" aria-label="Package, ' + esc(cur) + '">' +
               '<span class="tds-select__value">' + esc(cur) + "</span>" +
               '<span class="tds-select__trailing-group"><span class="tds-caret tds-caret--default" aria-hidden="true"><svg viewBox="0 0 8 11" fill="currentColor"><path d="M4 0l3.5 4h-7L4 0z"/><path d="M4 11L.5 7h7L4 11z"/></svg></span></span></button>' +
-              '<span class="tds-select__menu" role="listbox" aria-label="Sub-account" hidden><span class="tds-dropdown-panel">' +
+              '<span class="tds-select__menu" role="listbox" aria-label="Package" hidden><span class="tds-dropdown-panel">' +
               SUB_ACCOUNTS[p.id]
                 .map(function (n) {
                   return '<span class="tds-action-list-item' + (n === cur ? " tds-action-list-item--selected" : "") + '" role="option" data-value="' + esc(n) + '"><span class="tds-action-list-item__label">' + esc(n) + "</span></span>";
@@ -174,7 +174,7 @@
             '<span class="tds-radio-card__content">' +
             '<span class="tds-radio-card__label-row"><span class="tds-radio-card__label">' + esc(p.name) + "</span>" +
             (p.recommended ? ' <span class="tds-tag tds-tag--sm tds-tag--positive">Default</span>' : "") + "</span>" +
-            '<span class="tds-radio-card__description">' + esc(p.tagline) + "</span>" +
+            '<span class="tds-radio-card__description">' + esc(S.levelNote(p.id)) + "</span>" +
             sub +
             "</span></span>"
           );

@@ -44,7 +44,7 @@
     search: "Business name and country",
     country: "Country of registration, e.g. United States",
     list: "Select a match or refine your search",
-    package: "Choose a package above",
+    package: "Choose a product above",
     addons: "Choose add-ons above",
     inputs: "Fill in the details above",
     profile: "Enter the entity details above",
@@ -1022,7 +1022,7 @@
       return (
         '<div class="d3-kyb-wiz__head"><span class="d3-kyb-wiz__count d3-kyb-wiz__count--default">' +
         '<svg class="d3-kyb-wiz__check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/><path d="m5.4 8.2 1.8 1.8 3.4-3.6"/></svg>' +
-        'Your default package</span>' +
+        'Your default product</span>' +
         '<button type="button" class="tds-btn tds-btn--sm tds-btn--secondary" data-d3-wiz-edit-saved>Edit</button></div>' +
         '<div class="d3-kyb-wiz__chips"><span class="d3-kyb-wiz__chip is-static is-default"><span>' + esc(S0.scopeLabel()) + "</span></span></div>"
       );
@@ -1260,7 +1260,7 @@
     /* With a default package saved, say outside the card what happens next. */
     if (!opts.biz && S.savedConfig && S.savedConfig()) {
       playHtml(
-        '<div class="ai-reply"><p class="ai-reply__lead">Pick a business below and I’ll verify it with your default package — nothing else to set up.</p></div>'
+        '<div class="ai-reply"><p class="ai-reply__lead">Pick a business below and I’ll verify it with your default product — nothing else to set up.</p></div>'
       );
     }
     var el = playHtml("");
@@ -1887,7 +1887,7 @@
     var S = window.D3KybSession;
     var current = S && S.package(R.getTier());
     playHtml(
-      "<p>" + esc(what) + " isn’t part of <strong>" + esc(current ? current.name : "this package") +
+      "<p>" + esc(what) + " isn’t part of <strong>" + esc(current ? current.name : "this product") +
         "</strong>. Choose <strong>Insights</strong> or <strong>Complete</strong> and run the verification again to include it.</p>"
     );
     setSuggestions(SUGGEST_AFTER);

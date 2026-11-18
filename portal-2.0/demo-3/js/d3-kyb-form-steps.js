@@ -71,8 +71,8 @@
       (fields.length ? fields.map(function (f) { return row(f[0], f[1]); }).join("") : row("Details", "None entered")) + "</dl></div>" +
       '<div class="d3-kyb-review__group"><p class="d3-kyb-review__group-title text-label-sm-uppercase">Configuration</p><dl class="d3-kyb-review__grid">' +
       row("Country", (S.country(st.country) || {}).name || "United States") +
-      row("Package", pkg.name) +
-      (P ? row("Sub-account", P.subAccount(st.package)) : "") + "</dl></div>";
+      row("Product", pkg.name) +
+      (P ? row("Package", P.subAccount(st.package)) : "") + "</dl></div>";
   }
 
   function setStep(step) {
