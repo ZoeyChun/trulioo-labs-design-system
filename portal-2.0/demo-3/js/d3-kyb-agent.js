@@ -1169,13 +1169,11 @@
         '<button type="button" class="d3-ai-selector__row' + (on ? " is-on" : "") + '" data-d3-kyb-finder-pick="on">' +
         '<span class="d3-ai-selector__mark" aria-hidden="true">' + (icons.finder || "") + "</span>" +
         '<span class="d3-ai-selector__copy"><span class="ai-cand__name">Use Business Finder</span>' +
-        '<span class="d3-ai-selector__addr">Search ' + esc(reg) + " and choose from the matches</span>" +
-        '<span class="d3-ai-selector__reg">Registry data is pre-filled and locked</span></span></button>' +
+        '<span class="d3-ai-selector__addr">Search ' + esc(reg) + ' and choose from the matches</span></span></button>' +
         '<button type="button" class="d3-ai-selector__row' + (off ? " is-on" : "") + '" data-d3-kyb-finder-pick="off">' +
         '<span class="d3-ai-selector__mark" aria-hidden="true">' + (icons.manual || "") + "</span>" +
         '<span class="d3-ai-selector__copy"><span class="ai-cand__name">Enter details manually</span>' +
-        '<span class="d3-ai-selector__addr">Type the entity’s name, number and address yourself</span>' +
-        '<span class="d3-ai-selector__reg is-warn">+3 fields (name, registration number, address)</span></span></button>' +
+        '<span class="d3-ai-selector__addr">Type the entity’s name, number and address yourself</span></span></button>' +
         "</div></div>";
       return;
     }

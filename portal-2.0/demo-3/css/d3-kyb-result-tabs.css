@@ -406,11 +406,20 @@
   background: transparent;
 }
 
-/* The source name on the left, its result on the right, both inside the panel. */
+/* The source name sits under Field and Input; its result lines up with the Sources column above (32% + 36% = 68%). */
+.kyb-match-table .kyb-match-source-panel .kyb-match-source-table {
+  table-layout: fixed;
+}
+
+.kyb-match-source-panel .kyb-match-source-table td:first-child {
+  width: 68%;
+  padding-left: var(--spacing-32, 32px);
+}
+
 .kyb-match-source-panel .kyb-match-source-table td:last-child {
-  width: 1%;
-  white-space: nowrap;
-  text-align: right;
+  width: auto;
+  padding-left: var(--spacing-8, 8px);
+  text-align: left;
 }
 
 /* The inner table inherits the data table's 720px minimum; inside the padded panel that overflows it. */

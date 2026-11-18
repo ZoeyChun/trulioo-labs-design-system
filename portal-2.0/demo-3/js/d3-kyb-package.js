@@ -98,7 +98,6 @@
       '<div class="d3-ai-selector d3-kyb-choicelist" role="radiogroup" aria-label="Product"><div class="d3-ai-selector__rows">' +
       S.packages
         .map(function (p) {
-          var im = impact(p);
           return (
             '<button type="button" class="d3-ai-selector__row' + (p.id === current ? " is-on" : "") + '" role="radio"' +
             ' aria-checked="' + (p.id === current ? "true" : "false") + '" data-d3-kyb-pkg-pick="' + p.id + '">' +
@@ -107,7 +106,6 @@
             '<span class="ai-cand__name">' + esc(p.name) +
             (p.recommended ? ' <span class="d3-kyb-choicelist__badge">Default</span>' : "") + "</span>" +
             '<span class="d3-ai-selector__addr">' + esc(S.levelNote(p.id)) + "</span>" +
-            '<span class="d3-ai-selector__reg' + (im.warn ? " is-warn" : "") + '">' + esc(im.text) + "</span>" +
             "</span></button>"
           );
         })
