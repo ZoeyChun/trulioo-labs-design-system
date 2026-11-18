@@ -460,14 +460,10 @@
     var bizTag = resumeCard && resumeCard.querySelector(".d1-tag");
     if (bizTag) {
       var status = session.status || "Verified";
+      /* Only Verified and Not Verified exist: an older Review / Flagged status reads as Not Verified. */
+      if (status === "Review" || status === "Flagged") status = "Not Verified";
       bizTag.textContent = status;
-      bizTag.className =
-        "d1-tag " +
-        (status === "Review"
-          ? "d1-tag--review"
-          : status === "Flagged" || status === "Not Verified"
-            ? "d1-tag--negative"
-            : "d1-tag--positive");
+      bizTag.className = "d1-tag " + (status === "Not Verified" ? "d1-tag--negative" : "d1-tag--positive");
     }
     /* Populate Owners & UBOs / other report tabs (resume path skips reveal). */
     if (window.D3KybReport && window.D3KybReport.seedFromName) {
@@ -599,14 +595,9 @@
       seedReportChat(session);
       var tag = resumeCard && resumeCard.querySelector(".d1-tag");
       if (tag) {
+        if (status === "Review" || status === "Flagged") status = "Not Verified";
         tag.textContent = status;
-        tag.className =
-          "d1-tag " +
-          (status === "Review"
-            ? "d1-tag--review"
-            : status === "Flagged" || status === "Not Verified"
-              ? "d1-tag--negative"
-              : "d1-tag--positive");
+        tag.className = "d1-tag " + (status === "Not Verified" ? "d1-tag--negative" : "d1-tag--positive");
       }
       document.dispatchEvent(new CustomEvent("d3-kyb:park-composer"));
       if (window.D3Nav) window.D3Nav.markChatActive();

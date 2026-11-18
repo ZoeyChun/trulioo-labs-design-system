@@ -26,8 +26,8 @@
     ask: "I'll run the full KYB check on that entity now.",
     sumA: "Meridian Apex Consulting is a real, active UK company, but I wouldn't onboard it yet.",
     sumB: "It has 0 employees, £1 in capital, and a virtual office address. I also found 3 connections to your other transactions that change the picture.",
-    tag: "Needs review",
-    tone: "review",
+    tag: "Not Verified",
+    tone: "negative",
     calls: [
       { label: "Matching against the UK registry", done: "Matched on Companies House 11876542", ms: 1150, detail: ["Companies House 11876542 — status active", "Incorporated 1 Feb 2019"] },
       { label: "Pulling filings, officers, and capital", done: "Found a shell-company profile", ms: 1400, detail: ["0 employees declared on the latest return", "£1 issued share capital", "Registered office is a virtual office"], hit: 2 },
@@ -135,8 +135,8 @@
     ask: "I'll flag it for review rather than mark it verified.",
     sumA: "Address mismatch. This demo record needs review before onboarding.",
     sumB: "The registry address and the application address are not the same.",
-    tag: "Needs review",
-    tone: "review",
+    tag: "Not Verified",
+    tone: "negative",
     calls: [
       { label: "Matching against the US registry", done: "Matched Northstar Trading Ltd.", ms: 1100, detail: ["Registered name matches the application", "Status active"] },
       { label: "Comparing the filed address to the application", done: "Address mismatch found", ms: 1450, detail: ["Registry address and application address do not match", "Flagged for manual review"], hit: 1 }
@@ -460,7 +460,7 @@
     node.querySelector("[data-d1-co]").textContent = company.name;
     var tag = node.querySelector("[data-d1-report-tag]");
     tag.textContent = company.tag || "Verified";
-    tag.className = "d1-tag d1-tag--" + (company.tone === "review" ? "review" : "positive");
+    tag.className = "d1-tag d1-tag--" + (company.tone === "negative" ? "negative" : "positive");
     place(node);
     showText(node.querySelector("[data-d1-sum-a]"), company.sumA);
     if (token.cancelled) return;
@@ -1110,7 +1110,7 @@
       return {
         parts: [
           { t: "typing", ms: 800 },
-          say(name + " still has open items — " + (convo.entity.tag === "Needs review" ? "it’s flagged for review" : "there are unresolved findings") + ". I’d resolve those before approving.", "You can approve anyway, but the open items will carry forward."),
+          say(name + " still has open items — " + (convo.entity.tag === "Not Verified" ? "it’s not verified" : "there are unresolved findings") + ". I’d resolve those before approving.", "You can approve anyway, but the open items will carry forward."),
           { t: "confirm", action: "Approve " + name + " anyway", detail: "Open items remain. Approval will note that findings were acknowledged.", yes: "Approve anyway", toast: name + " approved with open items", warn: true }
         ],
         suggestions: convo.entity.suggestions
@@ -1246,7 +1246,7 @@
         { t: "typing", ms: 700 },
         say("Here’s how the two stack up side by side."),
         { t: "compare", left: "Meridian Apex", right: "Apex Nordic", rows: [
-          { label: "Status", l: "Needs review", r: "Verified", hl: "left" },
+          { label: "Status", l: "Not Verified", r: "Verified", hl: "left" },
           { label: "Registry", l: "No match found", r: "Matched", hl: "left" },
           { label: "Employees", l: "0 reported", r: "12", hl: "left" },
           { label: "Share capital", l: "£1", r: "SEK 500 000", hl: "left" },

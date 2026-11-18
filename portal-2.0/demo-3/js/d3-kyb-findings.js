@@ -64,7 +64,7 @@
        reveal path it comes from the business's risk data. Findings follows both. */
     var st = statusOverride;
     var level = st
-      ? st === "Verified" ? "low" : st === "Review" ? "medium" : "high"
+      ? st === "Verified" ? "low" : "high"
       : biz.riskLevel || "low";
     if (!st && level !== "high" && risks.some(function (x) { return x.severity === "high"; })) level = "high";
     var notVerified = st === "Not Verified";
@@ -72,13 +72,11 @@
     var registry =
       (S && S.country && biz.cc && S.country(biz.cc) && S.country(biz.cc).registry) || "Registry";
 
-    var verdictTone = level === "low" ? "positive" : level === "medium" ? "intermediate" : "negative";
-    /* Same wording as the report header tag; colour still follows the risk level. */
+    /* A verification is Verified or Not Verified (or In Progress, handled elsewhere): the same wording as the report header tag. */
     var verdictLabel = st
-      ? st === "Review" ? "Needs review" : st === "Not Verified" ? "Not verified" : st
-      : level === "high" ? "Needs review" : level === "medium" ? "Verified · review notes" : "Verified";
-    /* "Needs review" is a hold, not a failure: yellow. Red stays for Not verified / Flagged. */
-    if (verdictLabel === "Needs review") verdictTone = "intermediate";
+      ? st === "Verified" ? "Verified" : "Not verified"
+      : level === "high" ? "Not verified" : "Verified";
+    var verdictTone = verdictLabel === "Verified" ? "positive" : "negative";
 
     var addrRisk = risks.filter(function (x) {
       return /address/i.test(x.label + " " + x.id);
@@ -279,19 +277,15 @@
     } else if (st && st !== "Verified" && !gaps.length) {
       gaps = [
         {
-          caption: st === "Flagged" ? "Flagged" : "Review",
-          tone: st === "Flagged" ? "negative" : "intermediate",
-          tagLabel: st === "Flagged" ? "Flagged" : "Needs review",
-          metric: biz.name + (st === "Flagged" ? " was flagged during screening." : " was routed to manual review."),
+          caption: "Not verified",
+          tone: "negative",
+          tagLabel: "Not verified",
+          metric: biz.name + " could not be verified.",
           detail: "Open the tabs for the signals behind this result.",
           ev: { tab: "signals", find: "Business Name", label: "Business Name · Match Signals" }
         }
       ];
-      if (st === "Flagged") {
-        next = { title: "Escalate for review. Don't approve yet.", why: "The result was flagged. Review the signals before deciding." };
-      } else {
-        next = { title: "Request more info before deciding", why: "The result needs a manual review before a decision." };
-      }
+      next = { title: "Request more info before deciding", why: "The result could not be verified. Review the signals before deciding." };
       if (checks.every(function (c) { return c.status === "pass"; })) {
         checks[1].status = "review";
         done = checks.filter(function (c) { return c.status === "pass"; }).length;
@@ -398,11 +392,9 @@
     /* No "High Risk Entity" / gauge copy when BRH is off — status-led overview. */
     var lead = /not verified/i.test(status)
       ? "Not verified"
-      : /review|flag/i.test(status)
-        ? "Needs review"
-        : /verif/i.test(status)
-          ? "Verified"
-          : m.verdictLabel || "Overview";
+      : /verif/i.test(status)
+        ? "Verified"
+        : m.verdictLabel || "Overview";
     var toneClass =
       /not verified|fail/i.test(status) || tone === "negative"
         ? "risk"
@@ -800,6 +792,26 @@
   var HERO_JUMP_TAB = { ownership: "ownership", presence: "web", "match-signals": "signals", signals: "risk", "business-insights": "overview", financial: "overview" };
   var NATIVE_NAME = "Meridian Apex Consulting Inc."; /* the name baked into the native Summary */
 
+  /* The risk this business carries, as the Overview shows it: the Business Risk Horizon score, its label and its tone.
+     Read from the business's own risk data; a run of Business Risk Horizon can score a little differently (scoreOverride),
+     and its band follows that score. Bands are the gauge's: under 30 low, up to 60 medium, above that high. */
+  function riskProfile(biz, scoreOverride) {
+    var risks = (biz && biz.risks) || [];
+    var level = biz && biz.riskLevel;
+    var high = level === "high" || risks.some(function (x) { return x.severity === "high"; });
+    var score = scoreOverride != null ? Number(scoreOverride) : high ? 87 : level === "medium" ? 47 : 18;
+    var band = score < 30 ? "low" : score <= 60 ? "medium" : "high";
+    return {
+      score: score,
+      band: band,
+      label: band === "high" ? "High Risk Entity" : band === "medium" ? "Medium Risk Entity" : "Low Risk Entity",
+      tone: band === "high" ? "negative" : band === "medium" ? "intermediate" : "positive",
+      tag: band === "high" ? "High Risk" : band === "medium" ? "Medium Risk" : "Low Risk",
+      factor: Math.round(score * 0.97),
+      signals: band === "high" ? "14 signals detected, 7 increasing" : band === "medium" ? "9 signals detected, 3 increasing" : "5 signals detected, none increasing"
+    };
+  }
+
   /* The native Summary hero (gauge + verdict card) becomes the report hero from
      verification-report-tds/v3: risk title, a narrative with the key phrases marked,
      Suggested Actions, and an entity card. Text and actions come from the native hero;
@@ -817,6 +829,11 @@
       return n ? n.textContent.replace(/\s+/g, " ").trim().split(NATIVE_NAME).join(name) : "";
     };
     var title = clean(hero.querySelector(".kyb-summary-hero__risk-label"));
+    /* The score, its label and the tone follow this business's risk, not the sample the panel carries. */
+    var runScoreNow = window.D3KybBrhOffer && window.D3KybBrhOffer.currentScore ? window.D3KybBrhOffer.currentScore() : null;
+    var profile = riskProfile(biz, runScoreNow);
+    tone = profile.tone;
+    title = profile.label;
 
     function mark(t) {
       if (tone === "positive") return esc(t);
@@ -883,8 +900,13 @@
       var w = f.whois;
       var regYear = String(w.registered).match(/(\d{4})/);
       var incYear = String((biz.report && biz.report.regDate) || "").match(/(\d{4})/);
-      var align = regYear && incYear ? (parseInt(regYear[1], 10) >= parseInt(incYear[1], 10) ? "aligns with incorporation" : "predates incorporation") : "";
-      out.push("WHOIS: registered " + mark(w.registered) + " via " + mark(w.registrar) + (align ? " — " + align + "." : "."));
+      var align = "";
+      if (regYear && incYear) {
+        var gap = parseInt(regYear[1], 10) - parseInt(incYear[1], 10);
+        align = gap < 0 ? "predates incorporation" : gap <= 1 ? "aligns with incorporation" : "registered " + gap + " years after incorporation";
+      }
+      var whoisLine = "WHOIS: registered " + mark(w.registered) + " via " + mark(w.registrar) + (align ? " — " + align : "");
+      out.push(whoisLine + (w.privacy ? "; registrant is hidden by a privacy service." : "."));
       var active = f.socials.filter(function (x) { return x.followers > 0; });
       if (active.length) {
         out.push(
@@ -936,7 +958,7 @@
     /* Suggested actions appear only when there is something to run: a report made without Business Risk Horizon
        offers it here. Otherwise the block is left out. */
     var offerApi = window.D3KybBrhOffer;
-    var suggested = offerApi ? offerApi.viewHtml() || (!brhOn ? offerApi.buttonHtml() : "") : "";
+    var suggested = offerApi && offerApi.suggested ? offerApi.suggested(brhOn) : null;
 
     var r = biz.report || {};
     var cc = String(biz.cc || biz.countryCode || "US").toLowerCase();
@@ -959,7 +981,7 @@
     }
 
     var gaugeEl = hero.querySelector(".kyb-summary-hero__gauge");
-    var score = gaugeEl ? gaugeEl.getAttribute("data-score") || "" : "";
+    var score = gaugeEl ? String(profile.score) : "";
     var statusText = biz.status || "Active";
     var verifyStatus = statusOverride || biz.verifyStatus || biz.resultStatus || "";
     var statusFact =
@@ -978,15 +1000,12 @@
         '<h2 class="d3h-card__title d3h-card__title--hero d3h-card__title--' + tone + '">' + esc(title) + "</h2></div>";
     } else {
       /* No score: the hero states the verification status, in its own tone. */
-      var offLabels = { negative: "Not Verified", intermediate: "Needs Review", positive: "Verified" };
-      var offTitle = /not verified|fail/i.test(verifyStatus)
-        ? "Not Verified"
-        : /review|flag/i.test(verifyStatus)
-          ? "Needs Review"
-          : /verif/i.test(verifyStatus)
-            ? "Verified"
-            : offLabels[tone] || "Verified";
-      var offTone = /not verified|fail/i.test(offTitle) ? "negative" : /review/i.test(offTitle) ? "intermediate" : "positive";
+      /* The same answer as the report header tag: the session's status if it has one, else the business's own risk data. */
+      var riskHigh = biz.riskLevel === "high" || (biz.risks || []).some(function (x) { return x.severity === "high"; });
+      var offTitle = verifyStatus
+        ? /not verified|fail|review|flag/i.test(verifyStatus) ? "Not Verified" : "Verified"
+        : riskHigh ? "Not Verified" : "Verified";
+      var offTone = /not verified/i.test(offTitle) ? "negative" : "positive";
       topHtml =
         '<div class="d3h-hero__verdict">' +
         '<p class="d3h-hero__eyebrow">Verification status</p>' +
@@ -1001,7 +1020,7 @@
       '<ul class="d3h-bullets">' + bullets.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
       "</div>" +
       (suggested
-        ? '<div class="d3h-suggested" aria-label="Suggested actions"><p class="d3h-section-label">Suggested Actions</p><div class="d3h-suggested__ctas">' + suggested + "</div></div>"
+        ? '<div class="d3h-suggested" aria-label="Suggested actions"><p class="d3h-section-label">Suggested Actions</p><div class="d3h-suggested__ctas">' + suggested.ctas + "</div>" + (suggested.extra || "") + "</div>"
         : "") +
       "</div>" +
       '<aside class="d3h-entity" aria-label="Entity information">' +
@@ -1034,7 +1053,7 @@
     { jump: "presence", name: "Web Insights" }
   ];
 
-  function tidyHighlights(panel, card) {
+  function tidyHighlights(panel, card, biz) {
     var h = panel.querySelector(".dv-summary-evidence__title");
     if (h) h.textContent = "Highlights";
     var grid = panel.querySelector(".dv-summary-evidence__grid");
@@ -1053,6 +1072,20 @@
       /* The risk tag stays only on the Risk Analysis card. */
       if (def.jump !== "signals") {
         c.querySelectorAll(".dv-summary-card__top .tds-tag").forEach(function (n) { n.remove(); });
+      } else if (biz) {
+        /* That card reads the score, band and signals of this business (and of the run on screen). */
+        var rp = riskProfile(biz, window.D3KybBrhOffer && window.D3KybBrhOffer.currentScore ? window.D3KybBrhOffer.currentScore() : null);
+        var metric = c.querySelector(".dv-summary-card__metric");
+        if (metric) {
+          metric.innerHTML = 'Business Model: <span class="dv-summary-card__accent dv-summary-card__accent--' + rp.tone + '">' + rp.factor + "</span>/100";
+        }
+        var det = c.querySelector(".dv-summary-card__detail");
+        if (det) det.textContent = rp.signals;
+        var tag = c.querySelector(".dv-summary-card__top .tds-tag");
+        if (tag) {
+          tag.textContent = rp.tag;
+          tag.className = "tds-tag tds-tag--md tds-tag--" + rp.tone;
+        }
       }
       grid.appendChild(c);
     });
@@ -1071,7 +1104,7 @@
           });
           if (window.ScoreGauge) window.ScoreGauge.renderAll(panel);
         }
-        tidyHighlights(panel, card);
+        tidyHighlights(panel, card, biz);
       } else {
         panel.innerHTML = overviewHtml(biz, card);
       }
@@ -1288,6 +1321,7 @@
        or null to derive the verdict from the business's own risk data. */
     hold: hold,
     release: release,
+    riskProfile: riskProfile,
     /* The next render of a business plays its skeleton again (a report that was only shown while it ran). */
     /* Paint the Overview again from what it already holds (its suggested actions changed). */
     refresh: function () {
@@ -1306,7 +1340,8 @@
       instantUntil = Date.now() + (ms || 800);
     },
     setStatus: function (v) {
-      statusOverride = v || null;
+      /* Only Verified and Not Verified exist: an old Review / Flagged status reads as Not Verified. */
+      statusOverride = v ? (/^verified$/i.test(v) ? "Verified" : "Not Verified") : null;
     },
     setBrh: setBrh,
     brhSwitchedOff: brhSwitchedOff,

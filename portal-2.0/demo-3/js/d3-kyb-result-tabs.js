@@ -195,11 +195,19 @@
     });
   }
 
+  /* high / medium / low, from the business's own risk data: what the web and social data below should look like. */
+  function riskBandOf(biz) {
+    var risks = (biz && biz.risks) || [];
+    if ((biz && biz.riskLevel === "high") || risks.some(function (x) { return x.severity === "high"; })) return "high";
+    return biz && biz.riskLevel === "medium" ? "medium" : "low";
+  }
+
   function socialProfileForBiz(biz) {
     var name = biz.name || "Business";
     var handle = slugHandle(name).slice(0, 16) || "meridian";
     var domain = domainFromBiz(biz);
     var highRisk = biz.riskLevel === "high";
+    var band = riskBandOf(biz);
     var city = (biz.city || "").split(",")[0].trim() || "London";
     var country = biz.country || "United Kingdom";
     var hq = city + ", " + country;
@@ -225,18 +233,18 @@
       locations: [hq],
       headquarters: hq,
       countryCodes: [biz.cc === "GB" ? "GBR" : biz.cc || "GBR"],
-      linkedinFollowers: highRisk ? "12" : "184",
-      instagramFollowers: highRisk ? "0" : "48",
+      linkedinFollowers: band === "high" ? "12" : band === "medium" ? "184" : "2,140",
+      instagramFollowers: band === "high" ? "0" : band === "medium" ? "48" : "612",
       instagramFollowing: "3",
       instagramPostCount: "0",
       highlightsCount: "0",
       avgEngagement: "0%",
-      twitterFollowers: highRisk ? "0" : "7",
+      twitterFollowers: band === "high" ? "0" : band === "medium" ? "7" : "96",
       twitterFollowing: "2",
       twitterSubscriptions: "0",
       twitterPostCount: highRisk ? "0" : "3",
       twitterDateJoined: "March 2019",
-      tiktokFollowers: "0",
+      tiktokFollowers: band === "low" ? "230" : "0",
       tiktokFollowing: "0",
       tiktokLikeCount: "0",
       tiktokLikes: "0",
@@ -244,7 +252,7 @@
       tiktokDateJoined: "Not Available",
       businessAccount: true,
       professionalAccount: false,
-      verified: false,
+      verified: band === "low",
       highRisk: highRisk
     };
   }
@@ -395,11 +403,20 @@
   /* The domain record the Web Insights tab shows, kept in one place so the Overview can read the same facts. */
   function whoisForBiz(biz) {
     var w = (biz && biz.web) || {};
+    var band = riskBandOf(biz);
+    /* An established business has an old, openly registered domain; a thin one a recent domain behind a privacy service. */
+    var d =
+      band === "high"
+        ? { registered: "3 Sep 2025", expires: "3 Sep 2026", registrar: "Gandi SAS", privacy: true, status: "Active — parked page" }
+        : band === "medium"
+          ? { registered: "9 Jun 2022", expires: "9 Jun 2027", registrar: "GoDaddy.com, LLC", privacy: false, status: "Active — live site responding" }
+          : { registered: "12 Mar 2014", expires: "12 Mar 2028", registrar: "Namecheap, Inc.", privacy: false, status: "Active — live site responding" };
     return {
-      status: w.status || "Active — live site responding",
-      registered: w.registered || "1 Feb 2019",
-      expires: w.expires || "1 Feb 2027",
-      registrar: w.registrar || "GoDaddy.com, LLC"
+      status: w.status || d.status,
+      registered: w.registered || d.registered,
+      expires: w.expires || d.expires,
+      registrar: w.registrar || d.registrar,
+      privacy: !!d.privacy
     };
   }
 
@@ -518,7 +535,8 @@
     var stateRaw = (biz.city || "").split(",")[1] && (biz.city || "").split(",")[1].trim();
     var state = stateRaw ? stateRaw : biz.cc === "US" ? "Delaware" : "—";
     var jurisdiction = state !== "—" ? state : biz.country || "—";
-    var verified = biz.riskLevel === "low";
+    /* Verified or not follows the report header: only a high-risk business is Not Verified. */
+    var verified = !(biz.riskLevel === "high" || (biz.risks || []).some(function (x) { return x.severity === "high"; }));
     var reg = rep.regNumber || biz.reg || "—";
     var date = String(rep.regDate || "").replace(/^Incorporated\s+/i, "").replace(/\s*\(.*\)\s*$/, "") || "—";
     var street = parseStreetParts(rep.address || biz.addr || "").street || "—";
@@ -534,6 +552,26 @@
     var X = "no-match";
     var N = "missing";
     var D = "derived";
+
+    if (verified && biz.riskLevel === "medium") {
+      /* Verified on the BRN, but a field did not agree across sources. */
+      return {
+        verified: true,
+        rule: "Verification Rule: KYB Standard: 1 Records Match (BRN)",
+        metrics: { fields: "9 fields", sources: "4 of 5 datasources" },
+        rows: [
+          matchRow("business-name", "Business Information", "Business Name", biz.name, M, "4/4 matched", [M, M, M, M]),
+          matchRow("tax-id", "Business Information", "Tax ID Number", taxId, M, "3/4 matched", [N, M, M, M]),
+          matchRow("duns", "Business Information", "DUNS Number", duns, M, "2/4 matched", [N, M, M, N]),
+          matchRow("brn", "Business Information", "Business Registration Number", reg, M, "4/4 matched", [M, M, M, M]),
+          matchRow("jurisdiction", "Business Information", "Jurisdiction of Incorporation", jurisdiction, M, "3/4 matched", [N, M, M, M]),
+          matchRow("date-of-incorporation", "Business Information", "Date of Incorporation", date, M, "3/4 matched", [N, M, M, M]),
+          matchRow("street-name", "Address", "Street Name", street, D, "Derived from Address Line 1", [N, D, D, N]),
+          matchRow("city", "Address", "City", city, X, "1/4 matched", [X, M, X, N]),
+          matchRow("state-province", "Address", "State Province", state, M, "3/4 matched", [N, M, M, M])
+        ]
+      };
+    }
 
     if (verified) {
       return {

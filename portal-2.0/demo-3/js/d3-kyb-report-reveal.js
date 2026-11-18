@@ -445,9 +445,7 @@
 
     if (window.D3KybFindings) window.D3KybFindings.release();
     if (biz.riskLevel === "high" || (biz.risks && biz.risks.some(function (r) { return r.severity === "high"; }))) {
-      setBizTag("Needs review", "review");
-    } else if (biz.riskLevel === "medium") {
-      setBizTag("Verified · review notes", "review");
+      setBizTag("Not Verified", "negative");
     } else {
       setBizTag("Verified", "positive");
     }
@@ -538,11 +536,8 @@
     var tag = node.querySelector("[data-d1-report-tag]");
     if (tag) {
       if (biz.riskLevel === "high") {
-        tag.textContent = "Needs review";
-        tag.className = "d1-tag d1-tag--review";
-      } else if (biz.riskLevel === "medium") {
-        tag.textContent = "Verified · review notes";
-        tag.className = "d1-tag d1-tag--review";
+        tag.textContent = "Not Verified";
+        tag.className = "d1-tag d1-tag--negative";
       } else {
         tag.textContent = "Verified";
         tag.className = "d1-tag d1-tag--positive";
@@ -600,7 +595,7 @@
       var rid = "rep-" + reportSeq;
       reports[rid] = {
         biz: currentBiz || biz,
-        status: biz.riskLevel === "high" ? "Review" : "Verified",
+        status: biz.riskLevel === "high" ? "Not Verified" : "Verified",
         tier: tier,
         addons: (window.D3KybSession && window.D3KybSession.get().addons.slice()) || []
       };

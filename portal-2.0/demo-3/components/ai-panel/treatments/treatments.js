@@ -474,7 +474,7 @@
     }
     /* A report without Business Risk Horizon offers to add it, first among the next actions. */
     var brhRow = window.D3KybBrhOffer && window.D3KybBrhOffer.nextHtml ? window.D3KybBrhOffer.nextHtml() : "";
-    var sig = "list|" + (brhRow ? "brh|" : "") + nextQuestions.join("|");
+    var sig = "list|" + brhRow + "|" + nextQuestions.join("|");
     host.className = "d3-ai-next d3-ai-next--list";
     host.setAttribute("role", "group");
     host.setAttribute("aria-label", "Continue your investigation");

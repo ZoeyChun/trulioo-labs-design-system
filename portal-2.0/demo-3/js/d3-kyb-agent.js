@@ -2003,7 +2003,7 @@
     });
     rows.push({
       label: "Overall signal",
-      value: biz.riskLevel === "high" ? "Needs review" : "Review notes",
+      value: "Not Verified",
       status: "negative"
     });
     await playAnalysis("Why " + biz.name + " is flagged", rows);
@@ -2062,7 +2062,7 @@
       { label: "Flagged UBOs", value: String(flaggedCount(biz)), status: flaggedCount(biz) ? "negative" : "positive" },
       {
         label: "Overall signal",
-        value: biz.riskLevel === "high" ? "Needs review" : "Verified",
+        value: biz.riskLevel === "high" ? "Not Verified" : "Verified",
         status: biz.riskLevel === "high" ? "negative" : "positive"
       }
     ]);

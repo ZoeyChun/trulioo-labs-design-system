@@ -16,8 +16,16 @@
   var seq = 0;
   var current = { key: "", name: "" };
   var running = false;
-  /* run key -> { tx, at } of the Business Risk Horizon transaction */
+  /* run key -> { runs: [{ tx, atLabel, score }], applied, viewing, ... }: every Business Risk Horizon run of that report is
+     its own transaction. applied = a version that includes Business Risk Horizon is on screen (viewing = which run). */
   var added = {};
+  /* The score of a first run comes from the business's own risk; later runs stay in its band. */
+  function baseScore() {
+    var F = window.D3KybFindings;
+    var b = bizNow();
+    return F && F.riskProfile && b ? F.riskProfile(b).score : 87;
+  }
+  var BANDS = { low: [8, 28], medium: [38, 58], high: [62, 94] };
 
   function esc(v) {
     return String(v == null ? "" : v)
@@ -48,6 +56,38 @@
     return d.getDate() + " " + m[d.getMonth()] + " " + d.getFullYear();
   }
 
+  function timeLabel(d) {
+    var m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var h = d.getHours();
+    var min = d.getMinutes();
+    return d.getDate() + " " + m[d.getMonth()] + ", " + (h % 12 || 12) + ":" + (min < 10 ? "0" : "") + min + " " + (h < 12 ? "AM" : "PM");
+  }
+
+  /* A new run of the same business can score a little differently: that is what running it again is for. */
+  function nextScore(rec) {
+    var prev = rec.runs.length ? rec.runs[rec.runs.length - 1].score : null;
+    if (prev == null) return baseScore();
+    var band = BANDS[prev < 30 ? "low" : prev <= 60 ? "medium" : "high"];
+    var step = 3 + Math.floor(Math.random() * 4);
+    var next = prev + (Math.random() < 0.5 ? -step : step);
+    return Math.max(band[0], Math.min(band[1], next));
+  }
+
+  function shortTx(tx) {
+    return String(tx || "").slice(0, 8);
+  }
+
+  function deltaOf(rec, i) {
+    return i > 0 ? rec.runs[i].score - rec.runs[i - 1].score : null;
+  }
+
+  function deltaHtml(rec, i) {
+    var d = deltaOf(rec, i);
+    if (d == null) return '<span class="d3-brh-delta is-first">first run</span>';
+    if (d === 0) return '<span class="d3-brh-delta">no change vs previous</span>';
+    return '<span class="d3-brh-delta ' + (d > 0 ? "is-up" : "is-down") + '">' + (d > 0 ? "▲ " : "▼ ") + Math.abs(d) + " vs previous</span>";
+  }
+
   function offered() {
     var b = bizNow();
     return !!(R().offersBrh && R().offersBrh() && b && b.name === current.name);
@@ -67,45 +107,123 @@
   var ARROW_SVG =
     '<span class="d3-ai-next__arrow" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg></span>';
 
-  /* Once it has been added, the way to see it: a button in the Overview's suggested actions. Nothing opens by itself. */
-  function viewHtml() {
-    if (!added[current.key] || added[current.key].applied) return "";
+  var AGAIN_ICON =
+    '<span class="tds-btn__leading-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8a5 5 0 1 1-1.5-3.55M13 2.75v3h-3"/></svg></span>';
+
+  /* The report as it was run, once Business Risk Horizon has been run beside it: the latest run, and a way to run it again. */
+  function hasRuns() {
+    var rec = added[current.key];
+    return !!(rec && rec.runs && rec.runs.length);
+  }
+
+  function showingOriginal() {
+    var rec = added[current.key];
+    return !!rec && !rec.applied;
+  }
+
+  function latestHtml() {
+    var rec = added[current.key];
+    var i = rec.runs.length - 1;
+    var run = rec.runs[i];
     return (
-      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md" data-d3-brh-view>' +
-      "View Business Risk Horizon Score</button>"
+      '<div class="d3-brh-latest" aria-label="Latest Business Risk Horizon">' +
+      '<p class="d3h-section-label">Latest Business Risk Horizon</p>' +
+      '<div class="d3-brh-latest__row">' +
+      '<span class="d3-brh-latest__meta"><span class="d3-brh-latest__time">' + esc(run.atLabel) + "</span>" +
+      '<span class="d3-brh-latest__txn text-body-xs">txn ' + esc(shortTx(run.tx)) + "</span></span>" +
+      '<span class="d3-brh-latest__score"><b>' + esc(run.score) + "</b>" + deltaHtml(rec, i) + "</span>" +
+      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-brh-view data-d3-brh-run-idx="' + i + '">View</button></div>' +
+      (rec.runs.length > 1
+        ? '<button type="button" class="d3-brh-latest__all" data-d3-brh-all>View all runs (' + rec.runs.length + ") ›</button>"
+        : "") +
+      "</div>"
     );
   }
 
-  /* In the AI panel's suggested next actions: the same call as a row, and once it has run, the row that opens the score. */
+  /* The Overview's Suggested Actions. A report without Business Risk Horizon offers to run it; once it has been run, the
+     report as it was run offers to run it again and shows the latest run. A version that includes it offers nothing. */
+  function suggested(brhOn) {
+    if (hasRuns() && showingOriginal()) {
+      return {
+        ctas:
+          '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md d3-brh-again" data-d3-brh-cta data-d3-brh-run>' +
+          AGAIN_ICON + "Run Business Risk Horizon again</button>",
+        extra: latestHtml()
+      };
+    }
+    var one = !brhOn ? buttonHtml() : "";
+    return one ? { ctas: one, extra: "" } : null;
+  }
+
+  /* In the AI panel's suggested next actions: run it, or once it has run: see the latest and run it again. */
   function nextHtml() {
-    if (added[current.key] && !added[current.key].applied) {
+    if (hasRuns()) {
+      if (!showingOriginal()) return "";
       return (
-        '<button type="button" class="d3-ai-next__btn" data-d3-brh-view>' +
-        '<span class="d3-ai-next__text">View Business Risk Horizon Score</span>' + ARROW_SVG + "</button>"
+        '<button type="button" class="d3-ai-next__btn" data-d3-brh-view data-d3-brh-run-idx="' + (added[current.key].runs.length - 1) + '">' +
+        '<span class="d3-ai-next__text">View latest Business Risk Horizon</span>' + ARROW_SVG + "</button>" +
+        '<button type="button" class="d3-ai-next__btn" data-d3-brh-run data-d3-brh-again>' +
+        '<span class="d3-ai-next__text">Run Business Risk Horizon again</span>' + ARROW_SVG + "</button>"
       );
     }
-    if (added[current.key] || !offered()) return "";
+    if (!offered()) return "";
     return (
       '<button type="button" class="d3-ai-next__btn" data-d3-brh-run>' +
       '<span class="d3-ai-next__text">Run Business Risk Horizon Score</span>' + ARROW_SVG + "</button>"
     );
   }
 
+  /* Put the right rows into the AI panel's list again (after a run, or when the version on screen changes). */
+  function refreshNext() {
+    var host = document.querySelector("[data-d3-ai-next]");
+    var list = host && host.querySelector(".d3-ai-next__list");
+    if (!list) return;
+    Array.prototype.forEach.call(list.querySelectorAll("[data-d3-brh-run], [data-d3-brh-view]"), function (b) { b.remove(); });
+    var html = nextHtml();
+    if (html) list.insertAdjacentHTML("afterbegin", html);
+    host.removeAttribute("data-sig");
+  }
+
+  /* The score the version on screen belongs to (each run can score differently), for the Overview and the score tab. */
+  function currentScore() {
+    var rec = added[current.key];
+    if (!rec || !rec.applied || rec.viewing == null || !rec.runs[rec.viewing]) return null;
+    return rec.runs[rec.viewing].score;
+  }
+
   /* The Business Risk Horizon tab shows its own transaction in the score panel: the label, and the ID with Copy on hover. */
   function syncNote() {
     var rec = added[current.key];
+    var run = rec && rec.runs && rec.runs[rec.viewing != null ? rec.viewing : rec.runs.length - 1];
     var panel = resume.querySelector('[data-d3-kyb-panel="risk"]');
     if (!panel) return;
     var old = panel.querySelector(".d3-brh-txn");
     if (old) old.remove();
     var score = panel.querySelector(".kyb-tab-summary__score");
-    if (!rec || !score) return;
+    if (!score) return;
+    /* The score tab shows the score of the run on screen, or this business's own when Business Risk Horizon came with the report. */
+    var F = window.D3KybFindings;
+    var b = bizNow();
+    var shown = run && rec.applied ? run.score : F && F.riskProfile && b ? F.riskProfile(b).score : null;
+    if (shown != null) {
+      var band = shown < 30 ? "low" : shown <= 60 ? "medium" : "high";
+      var changed = false;
+      Array.prototype.forEach.call(panel.querySelectorAll(".dv-di-gauge[data-score]"), function (g) {
+        if (g.getAttribute("data-score") !== String(shown)) { g.setAttribute("data-score", String(shown)); changed = true; }
+        g.setAttribute("data-risk", band);
+        /* The badge under the number names the band of this score. */
+        var label = band === "high" ? "High Risk" : band === "medium" ? "Medium Risk" : "Low Risk";
+        if (g.getAttribute("data-label") !== label) { g.setAttribute("data-label", label); changed = true; }
+      });
+      if (changed && window.ScoreGauge && window.ScoreGauge.renderAll) window.ScoreGauge.renderAll(panel);
+    }
+    if (!run) return;
     score.insertAdjacentHTML(
       "beforeend",
       '<div class="d3-brh-txn" tabindex="0" aria-label="Transaction ID of the Business Risk Horizon run">' +
       '<span class="d3-brh-txn__label text-label-sm-uppercase">Transaction ID' +
       '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 5.5V4a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 4v5A1.5 1.5 0 0 0 4 10.5h1.5"/></svg></span>' +
-      '<span class="d3-brh-txn__pop"><span class="d3-brh-txn__value text-body-xs" data-d3-brh-txid>' + esc(rec.tx) + "</span>" +
+      '<span class="d3-brh-txn__pop"><span class="d3-brh-txn__value text-body-xs" data-d3-brh-txid>' + esc(run.tx) + "</span>" +
       '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-brh-copy>Copy</button></span></div>'
     );
   }
@@ -130,6 +248,20 @@
     var b = bizNow();
     var name = dlg.querySelector("[data-d3-brh-dialog-name]");
     if (name) name.textContent = (b && b.name) || "this business";
+    /* Running it again says that it makes a new transaction and leaves the report as it is. */
+    var again = hasRuns();
+    var title = dlg.querySelector(".tds-dialog__title");
+    if (title) title.textContent = again ? "Run Business Risk Horizon again?" : "Run Business Risk Horizon?";
+    var text = dlg.querySelector(".d3-kyb-brh-dialog__text");
+    if (text) text.innerHTML = (again ? "This runs Business Risk Horizon again for " : "This runs Business Risk Horizon for ") + "<b>" + esc((b && b.name) || "this business") + "</b>.";
+    var list = dlg.querySelector(".d3-kyb-brh-dialog__list");
+    if (list) {
+      list.innerHTML = again
+        ? "<li>It creates a new transaction, with a new Transaction ID. The earlier runs stay as they are.</li><li>Compare the new score with the earlier ones in the list of runs.</li>"
+        : "<li>It runs as its own transaction, with a new Transaction ID.</li><li>The verification, package and add-ons already run are not run again or changed.</li>";
+    }
+    var confirm = dlg.querySelector("[data-d3-brh-confirm]");
+    if (confirm) confirm.textContent = again ? "Run again" : "Run Business Risk Horizon";
     var trigger = document.createElement("button");
     trigger.type = "button";
     trigger.hidden = true;
@@ -149,18 +281,19 @@
   var ASKED = "Run Business Risk Horizon Score";
 
   function echoAsked() {
+    var text = hasRuns() ? "Run Business Risk Horizon again" : ASKED;
     var thread = document.querySelector("[data-d1-thread]");
     if (!thread) return;
     var node = document.createElement("section");
     node.className = "d1-turn d1-enter";
     node.innerHTML = '<div class="d1-user"><p></p></div>';
-    node.querySelector("p").textContent = ASKED;
+    node.querySelector("p").textContent = text;
     thread.appendChild(node);
     if (node.scrollIntoView) node.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
   /* The chat answers with what was added: the score, the key findings and the transaction. */
-  function postReply(rec, key) {
+  function postReply(rec, key, run, idx) {
     var tries = 0;
     (function go() {
       if (key !== current.key) return;
@@ -186,16 +319,16 @@
       node.innerHTML =
         '<div class="d1-ai d1-block d3-brh-reply">' +
         /* The "has run for" line was said when the run finished (postLead), so the answer is just the card. */
-        '<div class="d3-brh-reply__card">' +
+        '<div class="d3-brh-reply__card" data-d3-brh-run-idx="' + idx + '">' +
         '<div class="d3-brh-reply__section d3-brh-reply__head"><span class="d3-brh-reply__head-copy">' +
-        '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score</span>' +
-        '<span class="d3-rc__scoreval"><b class="d3-rc__score-num">' + esc(gauge.getAttribute("data-score")) + "</b>" +
+        '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score' + (idx > 0 ? " · run " + (idx + 1) : "") + '</span>' +
+        '<span class="d3-rc__scoreval"><b class="d3-rc__score-num">' + esc(run.score) + "</b>" +
         '<span class="d3-rc__score-label d3-rc__score-label--' + esc(tone) + '">' + esc(title.textContent.trim()) + "</span></span></span>" +
-        '<button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d3-brh-view>View</button></div>' +
+        '<button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d3-brh-view data-d3-brh-run-idx="' + idx + '">View</button></div>' +
         '<div class="d3-brh-reply__section"><span class="d3-rc__label text-label-sm-uppercase">Key findings</span>' +
         '<ul class="d3-brh-reply__list">' + list + "</ul></div>" +
         '<div class="d3-brh-reply__section d3-brh-reply__txn"><span class="d3-rc__label text-label-sm-uppercase">Transaction ID</span>' +
-        '<span class="d3-brh-reply__txid text-body-xs" data-d3-brh-txid>' + esc(rec.tx) + "</span>" +
+        '<span class="d3-brh-reply__txid text-body-xs" data-d3-brh-txid>' + esc(run.tx) + "</span>" +
         '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-brh-copy>Copy</button></div>' +
         "</div></div>";
       thread.appendChild(node);
@@ -218,19 +351,22 @@
     if (node.scrollIntoView) node.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
-  /* The two results are two transactions: the report as it was run (no Business Risk Horizon) and the one that includes it.
-     Opening either loads the whole report again as that version. land = the tab to leave open ("findings" or "risk"). */
-  function showVersion(withBrh, land, reload) {
+  /* The results are separate transactions: the report as it was run (no Business Risk Horizon) and one for each Business
+     Risk Horizon run. Opening one loads the whole report again as that version. land = the tab to leave open
+     ("findings" or "risk"); idx = which run; reload = load again even when it is the version already on screen. */
+  function showVersion(withBrh, land, reload, idx) {
     var rec = added[current.key];
     if (!rec) return;
     var key = current.key;
+    var runIdx = withBrh ? (idx == null || !rec.runs[idx] ? rec.runs.length - 1 : idx) : null;
     var addons = S.get().addons.filter(function (a) { return a !== "risk"; });
     if (withBrh) addons.push("risk");
-    if (!!rec.applied === !!withBrh && !reload) {
+    if (!!rec.applied === !!withBrh && (!withBrh || rec.viewing === runIdx) && !reload) {
       if (land) R().selectTab(land);
       return;
     }
     rec.applied = withBrh;
+    rec.viewing = runIdx;
     S.set({ addons: addons }, "addons");
     R().setTier(rec.tier || S.get().package, addons, { offer: false });
     /* The whole Overview loads again. */
@@ -238,14 +374,15 @@
       window.D3KybFindings.invalidate();
       window.D3KybFindings.render(resume, bizNow());
     }
-    document.querySelectorAll(".d3-ai-next [data-d3-brh-view]").forEach(function (b) { b.remove(); });
+    refreshNext();
     if (withBrh) {
       /* The score tab fills itself when it is first shown; show it for an instant so the chat can quote it. */
       R().selectTab("risk", { silent: true });
       R().selectTab("findings", { silent: true });
-      if (!rec.replied) {
-        rec.replied = true;
-        postReply(rec, key);
+      var run = rec.runs[runIdx];
+      if (!run.replied) {
+        run.replied = true;
+        postReply(rec, key, run, runIdx);
       }
       if (land === "risk") R().selectTab("risk");
       else R().selectTab("findings", { silent: true });
@@ -255,29 +392,68 @@
   }
 
   function run() {
-    if (running || !offered()) return;
+    var existing = added[current.key];
+    if (running || (!offered() && !(existing && existing.runs.length))) return;
     running = true;
     var key = current.key;
     var cta = resume.querySelector("[data-d3-brh-cta]");
+    var again = !!(existing && existing.runs.length);
     if (cta) {
       cta.setAttribute("aria-disabled", "true");
-      cta.innerHTML = '<span class="d3-kyb-pending__spin" aria-hidden="true"></span>Adding Business Risk Horizon…';
+      cta.innerHTML = '<span class="d3-kyb-pending__spin" aria-hidden="true"></span>' + (again ? "Running Business Risk Horizon…" : "Adding Business Risk Horizon…");
     }
     window.setTimeout(function () {
       running = false;
       /* A newer report took the stage while this ran: leave it alone. */
       if (key !== current.key) return;
-      added[key] = { tx: uuid(), at: dayLabel(new Date()), applied: false };
-      /* The report stays as it was: no tab, no score yet. The suggested actions now offer the score. */
+      var rec = added[key] || (added[key] = { runs: [], applied: false, viewing: null });
+      var now = new Date();
+      rec.runs.push({ tx: uuid(), atLabel: timeLabel(now), score: nextScore(rec) });
+      /* The report stays as it was: no tab, no score yet. The suggested actions offer the latest run and another run. */
       postLead(key);
-      document.querySelectorAll(".d3-ai-next [data-d3-brh-run]").forEach(function (b) {
-        b.removeAttribute("data-d3-brh-run");
-        b.setAttribute("data-d3-brh-view", "");
-        var text = b.querySelector(".d3-ai-next__text");
-        if (text) text.textContent = "View Business Risk Horizon Score";
-      });
+      refreshNext();
       if (window.D3KybFindings && window.D3KybFindings.refresh) window.D3KybFindings.refresh();
     }, RUN_MS);
+  }
+
+  /* All the runs of this report, newest first, each with a way into its own result. */
+  var RUNS_DIALOG_ID = "d3-kyb-brh-runs-dialog";
+
+  function openRunsDialog() {
+    var rec = added[current.key];
+    var dlg = document.getElementById(RUNS_DIALOG_ID);
+    if (!rec || !dlg) return;
+    var body = dlg.querySelector("[data-d3-brh-runs-body]");
+    var b = bizNow();
+    var name = dlg.querySelector("[data-d3-brh-runs-name]");
+    if (name) name.textContent = (b && b.name) || "this business";
+    if (body) {
+      body.innerHTML = rec.runs
+        .map(function (run, i) {
+          return (
+            '<tr><td class="tds-data-table__text-cell">' + esc(run.atLabel) + (i === rec.runs.length - 1 ? ' <span class="tds-tag tds-tag--sm tds-tag--default">Latest</span>' : "") + "</td>" +
+            '<td class="tds-data-table__text-cell text-body-xs">' + esc(shortTx(run.tx)) + "</td>" +
+            '<td class="tds-data-table__text-cell"><b>' + esc(run.score) + "</b></td>" +
+            '<td class="tds-data-table__text-cell">' + deltaHtml(rec, i) + "</td>" +
+            '<td data-align="right"><button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-brh-view data-d3-brh-run-idx="' + i + '" data-d3-brh-runs-close>View</button></td></tr>'
+          );
+        })
+        .reverse()
+        .join("");
+    }
+    var trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.hidden = true;
+    trigger.setAttribute("data-dialog-open", RUNS_DIALOG_ID);
+    document.body.appendChild(trigger);
+    trigger.click();
+    trigger.remove();
+  }
+
+  function closeRunsDialog() {
+    var dlg = document.getElementById(RUNS_DIALOG_ID);
+    var c = dlg && dlg.querySelector("[data-dialog-close]");
+    if (c) c.click();
   }
 
   document.addEventListener("click", function (event) {
@@ -294,12 +470,20 @@
       run();
       return;
     }
+    if (t.closest("[data-d3-brh-all]")) {
+      openRunsDialog();
+      return;
+    }
     var viewBtn = t.closest("[data-d3-brh-view]");
     if (viewBtn) {
-      /* Either way the report that includes Business Risk Horizon is opened as a transaction of its own: the whole report
-         loads again, on the Overview. */
+      /* Each run is opened as a transaction of its own: the whole report loads again, on the Overview. A score card in
+         the chat reloads it even when that run is already on screen. */
       var rec = added[current.key];
-      showVersion(true, (rec && rec.land) || "findings", !!viewBtn.closest(".d3-brh-reply__card"));
+      var idxAttr = viewBtn.getAttribute("data-d3-brh-run-idx");
+      var card = viewBtn.closest(".d3-brh-reply__card");
+      if (idxAttr == null && card) idxAttr = card.getAttribute("data-d3-brh-run-idx");
+      if (viewBtn.hasAttribute("data-d3-brh-runs-close")) closeRunsDialog();
+      showVersion(true, (rec && rec.land) || "findings", !!card || viewBtn.hasAttribute("data-d3-brh-runs-close"), idxAttr == null ? null : Number(idxAttr));
       return;
     }
     var copy = t.closest("[data-d3-brh-copy]");
@@ -344,10 +528,9 @@
          along because the session's package is not this report's. */
       if (session && session.brhRan) {
         added[current.key] = {
-          tx: session.brhRan,
-          at: session.date || "",
+          runs: [{ tx: session.brhRan, atLabel: session.date || "", score: baseScore(), replied: true }],
           applied: false,
-          replied: true,
+          viewing: null,
           tier: session.tier || "complete",
           land: "risk"
         };
@@ -365,5 +548,5 @@
     return origReveal.apply(this, arguments);
   };
 
-  window.D3KybBrhOffer = { buttonHtml: buttonHtml, viewHtml: viewHtml, nextHtml: nextHtml, sync: syncSoon };
+  window.D3KybBrhOffer = { buttonHtml: buttonHtml, suggested: suggested, nextHtml: nextHtml, currentScore: currentScore, sync: syncSoon };
 })();
