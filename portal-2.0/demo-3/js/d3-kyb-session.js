@@ -144,6 +144,8 @@
       if (!c || !pkg(c.package)) return null;
       var offered = addonsFor(c.package).map(function (a) { return a.id; });
       var list = Array.isArray(c.addons) ? c.addons.slice() : [];
+      /* Configurations saved before Business Risk Horizon was on by default get it once. */
+      if (c.v !== 3 && offered.indexOf("risk") !== -1 && list.indexOf("risk") === -1) list.push("risk");
       return {
         package: c.package,
         country: savedCountry(),
@@ -159,7 +161,7 @@
 
   function saveConfig(cfg) {
     try {
-      window.localStorage.setItem(CONFIG_KEY, JSON.stringify({ v: 2, package: cfg.package, country: cfg.country || "us", finder: cfg.finder !== false, addons: cfg.addons || [] }));
+      window.localStorage.setItem(CONFIG_KEY, JSON.stringify({ v: 3, package: cfg.package, country: cfg.country || "us", finder: cfg.finder !== false, addons: cfg.addons || [] }));
     } catch (e) { /* storage blocked: the demo just won't remember */ }
   }
 
