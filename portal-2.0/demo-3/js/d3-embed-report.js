@@ -14,35 +14,15 @@
   }
   if (params.get("embed") !== "report") return;
 
-  var product = params.get("product") || "";
-  /* Set by the Transactions table for a transaction that ran several products
-     (see transactions-preview/js/embed-bridge.js): "on" opens the report that
-     carries the Business Risk Horizon Score, "view" the verification beside
-     it, whose score has already been run and is there to be shown. */
-  var brh = params.get("brh") || "";
-
   var session = {
     incomplete: false,
     businessName: params.get("name") || "Business",
     status: params.get("status") || "Verified",
     country: params.get("country") || "United States",
-    tier: ({ "Business Essentials": "essentials", "Business Insights": "insights", "Business Complete": "complete" })[product] || "complete",
+    tier: ({ "Business Essentials": "essentials", "Business Insights": "insights", "Business Complete": "complete" })[params.get("product")] || "complete",
     transactionId: params.get("txid") || "",
     date: params.get("date") || ""
   };
-
-  /* Business Horizon is not a package: it is the Business Risk Horizon Score
-     add-on, which runs as a transaction of its own. Opening it opens the
-     report that carries the score, on that tab. */
-  if (brh === "on" || /horizon/i.test(product)) {
-    session.addons = ["risk"];
-    session.tab = "risk";
-  } else if (brh === "view") {
-    /* The verification itself has no score — that is the transaction beside
-       it — so the report opens without the tab and offers to show it. */
-    session.addons = [];
-    session.brhRan = session.transactionId;
-  }
 
   var tries = 0;
   (function open() {
@@ -52,12 +32,6 @@
       return;
     }
     window.D3KybResume.expandToFullReport(session);
-    if (session.tab && window.D3KybReport && window.D3KybReport.selectTab) {
-      /* The tab bodies mount a beat after the report does. */
-      window.setTimeout(function () {
-        window.D3KybReport.selectTab(session.tab);
-      }, 600);
-    }
     /* The report seeds its own demo details a beat later; keep this row's. */
     [400, 1200, 2500].forEach(function (ms) {
       window.setTimeout(function () {
