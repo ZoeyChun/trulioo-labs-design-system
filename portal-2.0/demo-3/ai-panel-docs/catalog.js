@@ -167,7 +167,7 @@
       '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score' + (o.run ? " · run " + o.run : "") + "</span>" +
       '<span class="d3-rc__scoreval"><b class="d3-rc__score-num">' + o.score + "</b>" +
       '<span class="d3-rc__score-label d3-rc__score-label--intermediate">' + o.label + "</span></span></span>" +
-      '<button type="button" class="tds-btn tds-btn--primary tds-btn--md">View</button></div>' +
+      '<div class="d3-brh-split"><button type="button" class="tds-btn tds-btn--secondary tds-btn--md d3-brh-split__main">View Latest Score</button></div></div>' +
       '<div class="d3-brh-reply__section"><span class="d3-rc__label text-label-sm-uppercase">Key findings</span>' +
       '<ul class="d3-brh-reply__list">' + list + "</ul></div>" +
       '<div class="d3-brh-reply__section d3-brh-reply__txn"><span class="d3-rc__label text-label-sm-uppercase">Transaction ID</span>' +
@@ -692,17 +692,18 @@
                   "The verification already run is not repeated or changed."],
         view: function () { return X.brhDialog(false); } },
 
-      { num: "4", title: "The score card", actor: "Action",
-        trigger: "reads the summary in chat, then clicks <strong>View</strong>",
+      { num: "4", title: "The score card", actor: "Panel",
+        trigger: "waits — the run answers in the chat by itself",
         changes: ["The request is echoed, then the chat confirms the run finished.",
-                  "A score card follows: the score and its band, the key findings behind it, and the new transaction ID.",
-                  "The suggested next actions swap to <em>View latest</em> and <em>Run again</em>."],
+                  "The score card follows straight after, with no click to reveal it: the score and its band, the key findings behind it, and the new transaction ID.",
+                  "The card carries a <strong>View Latest Score</strong> button; after a second run it gains a caret listing every run.",
+                  "The suggested next actions swap to <em>View latest</em> and <em>Run again</em>, and move <em>below</em> the newest message."],
         view: function () { return X.pane(X.user("Run Business Risk Horizon Score") +
           '<p class="d3-brh-reply__lead" style="margin:16px 0">Business Risk Horizon has run for <b>' + ENTITY + "</b>.</p>" +
           X.brhReplyCard({ score: "47", label: "Medium Risk Entity", tx: "d0ac9cfc-cc91-4ae5-a2b6-83cbae02bd46" })); } },
 
-      { num: "5", title: "The new transaction", actor: "Workspace", noVisual: true,
-        trigger: "opens the version of the report that includes the score",
+      { num: "5", title: "The new transaction", actor: "Action", noVisual: true,
+        trigger: "clicks <strong>View Latest Score</strong> on the card",
         changes: ["A <strong>Business Risk Horizon</strong> tab joins the tab row.",
                   "The Overview leads with the score and its risk band.",
                   "The offer rows disappear on this version — they belong to the report as it was run."],
