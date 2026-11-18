@@ -118,8 +118,8 @@
 
   /* The agent's two-line reply at the top of a wizard question. */
   function wizReply(lead, sub) {
-    return '<div class="ai-reply"><p class="ai-reply__lead">' + lead + "</p>" +
-      (sub ? '<p class="ai-reply__sub">' + sub + "</p>" : "") + "</div>";
+    return '<div class="d3-kyb-cand-panel"><div class="ai-reply"><p class="ai-reply__lead">' + lead + "</p>" +
+      (sub ? '<p class="ai-reply__sub">' + sub + "</p>" : "") + "</div></div>";
   }
 
   /* Business Finder vs manual entry — two rows, no cost lines. */
@@ -358,6 +358,7 @@
 
   /* The result summary card under the report-ready header in the chat. */
   var RC_CHECK = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var RC_OPEN = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="4.75" stroke="currentColor" stroke-width="1.5"/></svg>';
 
   function resultCard(o) {
     var chips = (o.checks || []).map(function (c) {
@@ -388,7 +389,57 @@
       "</div></div></div>";
   }
 
-  window.DOCSX = { I: I, pane: pane, panelHead: panelHead, panelWithHead: panelWithHead, homeHero: homeHero, resultCard: resultCard, sheet: sheet, cap: cap, iconBtn: iconBtn, user: user, ai: ai,
+  /* The 24-hour case: the same report-ready shell, filled with a pending body
+     instead of a result — no transaction ID, because that belongs to the result. */
+  function pendingCard(name, sim) {
+    var chip = function (label, done) {
+      return '<span class="d3-rc__chip' + (done ? " is-done" : "") + '"><span class="d3-rc__chip-icon">' +
+        (done ? RC_CHECK : RC_OPEN) + "</span>" + label + "</span>";
+    };
+    var row = function (label, chips) {
+      return '<div class="d3-rc__row"><span class="d3-rc__label text-label-sm-uppercase">' + label +
+        '</span><span class="d3-rc__chips">' + chips + "</span></div>";
+    };
+    return '<div class="d1-ai d3-kyb-agent-wrap"><div class="d1-report-ready d3-kyb-agent__action" data-d3-rc>' +
+      '<p class="d1-report-ready__title">Verification submitted. This can take up to 24 hours. ' +
+      "You can keep working and I will tell you when it is ready.</p>" +
+      '<div class="d1-report-ready__card">' +
+      '<span class="d1-report-ready__icon" aria-hidden="true"><i class="fa-regular fa-clock"></i></span>' +
+      '<div class="d1-report-ready__meta"><p class="d1-report-ready__name">' + name + "</p>" +
+      '<p class="d1-report-ready__addr">In progress</p></div>' +
+      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md">View status</button>' +
+      '<div class="d3-rc__body">' +
+      '<div class="d3-rc__verdict"><span class="d1-tag d1-tag--review">In Progress</span>' +
+      '<span class="d3-rc__flag">Up to 24 hours</span></div>' +
+      '<div class="d3-rc__checks">' + row("Checks reported", chip("Business registry", true)) +
+      row("Unresolved", chip("Screening") + chip("Adverse media") + chip("Ownership")) + "</div>" +
+      "</div></div>" + (sim ? simChip() : "") + "</div></div>";
+  }
+
+  function simChip() {
+    return '<button type="button" class="d3-sim-return">Simulate verification return ' +
+      '<span class="d3-sim-return__sub">for dev team review</span></button>';
+  }
+
+  /* The alert, as it floats over whatever page the user is on. */
+  function readyToast(name, shortRef) {
+    return '<div style="width:100%;max-width:420px;margin:0 auto">' +
+      '<div class="tds-announcement tds-announcement--info">' +
+      '<span class="tds-announcement__icon" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
+      '<div class="tds-announcement__content"><p class="tds-announcement__title">Verification ready</p>' +
+      '<p class="tds-announcement__message">' + name + " \u00b7 Transaction " + shortRef + "</p>" +
+      '<div class="tds-announcement__actions">' +
+      '<button type="button" class="tds-btn tds-btn--primary tds-btn--sm">View</button></div></div>' +
+      '<button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--sm tds-announcement__dismiss" aria-label="Dismiss">' +
+      '<span class="tds-icon-btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4 4 12"/></svg></span></button></div></div>';
+  }
+
+  function summaryBlock(text) {
+    return '<div class="d1-summary"><h3>Summary</h3><p>' + text + "</p></div>";
+  }
+
+  window.DOCSX = { I: I, pendingCard: pendingCard, simChip: simChip, readyToast: readyToast, summaryBlock: summaryBlock, pane: pane, panelHead: panelHead, panelWithHead: panelWithHead, homeHero: homeHero, resultCard: resultCard, sheet: sheet, cap: cap, iconBtn: iconBtn, user: user, ai: ai,
     composer: composer, promptCard: promptCard, identRow: identRow, wizTop: wizTop,
     LEVELS: LEVELS, levelList: levelList, ADDONS: ADDONS, ADDON_NAME: ADDON_NAME,
     addonGroup: addonGroup, selector: selector, wizCard: wizCard, wizReply: wizReply, finderChoice: finderChoice, brhReplyCard: brhReplyCard, brhDialog: brhDialog, suggestedActions: suggestedActions, confirmCard: confirmCard, nextList: nextList, tabs: tabs };
@@ -400,6 +451,7 @@
   var X = window.DOCSX, I = X.I;
 
   var ENTITY = "Meridian Industrial Holdings LLC";
+  var BW = "Brightwater Holdings Ltd.";
   var LEVEL_NAME = { essentials: "Business Essentials", insights: "Business Insights", complete: "Business Complete" };
   var SCOPE = { essentials: "Business Essentials", insights: "Business Insights + Web Insights + UBO Discovery + Business Risk Horizon",
                 complete: "Business Complete + Business Risk Horizon" };
@@ -532,7 +584,8 @@
                   "The scope line is labelled <strong>Default configuration</strong> — the package came from the contract, not from a choice just made."],
         note: { k: "Or", text: '<strong>Edit</strong> instead of Verify opens every question — <a href="#s/o2b">Scenario B</a>.' },
         view: function () { return X.pane(X.user("Meridian Capital LLC") +
-          '<div class="ai-reply" style="margin:16px 0"><p class="ai-reply__lead">Everything is ready. Click below to start the verification.</p></div>' +
+          '<div class="d3-kyb-cand-panel" style="margin:16px 0"><div class="ai-reply">' +
+          '<p class="ai-reply__lead">Everything is ready. Click below to start the verification.</p></div></div>' +
           X.confirmCard([["Entity", "Meridian Capital LLC (Active)"],
                          ["Default configuration", SCOPE.insights]])); } },
 
@@ -746,61 +799,63 @@
     ] } },
 
   /* ----------------------------------------------------------- option 2D */
-  { id: "o2d", group: "Option 2 · AI chat", name: "D · Long verification delays",
+  { id: "o2d", group: "Option 2 \u00b7 AI chat", name: "D \u00b7 Long verification delays",
     line: "Some registries take up to 24 hours. The run becomes a submitted record and the result arrives later as a notification.",
     steps: [
-      { title: "Start", actor: "Action", noVisual: true, trigger: "types “Verify Brightwater Holdings Ltd”",
+      { num: "1", title: "Start", actor: "Action", noVisual: true,
+        trigger: "types \u201cVerify Brightwater Holdings Ltd\u201d",
         note: { k: "Demo", text: "<strong>Brightwater Holdings Ltd.</strong> stands in for the slow case; every other name resolves normally.", warn: true },
-        changes: ["Nothing is different yet — this is whichever of Scenario A or B applies."],
-        view: function () { return X.pane(X.user("Verify Brightwater Holdings Ltd")); } },
+        changes: ["Nothing is different yet \u2014 this is whichever of Scenario A or B applies."] },
 
-      { title: "Run", actor: "Action", noVisual: true, trigger: "confirms, and the investigation starts",
-        changes: ["The investigation starts exactly as it always does.",
-                  "The composer is held: “Verification in progress…”."],
-        view: function () { return X.pane('<section class="d1-block"><div class="d1-progress">' +
-          '<div class="d1-progress__row"><span>Investigating</span><span class="d1-progress__pct">40%</span></div>' +
-          '<div class="d1-progress__track"><div class="d1-progress__fill d1-progress__fill--active" style="width:40%"></div></div></div>' +
-          '<div class="d1-steps"><div class="d1-activity"><button type="button" class="d1-activity__toggle d1-activity__toggle--current" aria-expanded="false">' +
-          '<span class="d1-activity__mark"><i class="d1-spin fa-solid fa-spinner fa-spin" aria-hidden="true"></i></span>' +
-          "<span>Pulling business registry records…</span>" + I.chevD + I.chevU + "</button></div></div></section>"); } },
+      { num: "2", title: "Confirm and run", actor: "Action",
+        trigger: "clicks <strong>Verify</strong> on the confirmation card",
+        changes: ["The confirmation card is the ordinary one \u2014 nothing warns that this entity is slow.",
+                  "The scope reads <strong>Default configuration</strong>, so the package came from the contract.",
+                  "Business Risk Horizon is part of that default here, which is why the result later carries a score."],
+        view: function () { return X.pane(X.user(BW) +
+          '<div class="d3-kyb-cand-panel" style="margin:16px 0"><div class="ai-reply">' +
+          '<p class="ai-reply__lead">Everything is ready. Click below to start the verification.</p></div></div>' +
+          X.confirmCard([["Entity", BW + " (Active)"],
+                         ["Default configuration", SCOPE.insights]])); } },
 
-      { title: "Submitted", actor: "Panel", noVisual: true, trigger: "replaces the progress block with a submitted card",
+      { num: "3", title: "Submitted", actor: "Panel",
+        trigger: "replaces the progress block with a submitted card",
+        note: { k: "Rule", text: "No transaction ID yet \u2014 that belongs to the result, not to the request." },
         changes: ["The live progress block is <strong>removed</strong>, not left spinning.",
-                  "A submitted card takes its place: the wait, the entity, and a way to check status.",
-                  "The composer is released and the suggestions change to leaving — start another, or see recent.",
-                  "The right panel shows a fuller status card; Recent transactions tags the entry <em>In Progress</em>."],
-        view: function () { return X.pane('<div class="d1-ai"><div class="d1-report-ready">' +
-          '<p class="d1-report-ready__title">Verification submitted. This can take up to 24 hours. You can keep working and I will tell you when it is ready.</p>' +
-          '<div class="d1-report-ready__card"><span class="d1-report-ready__icon" aria-hidden="true"><i class="fa-regular fa-clock"></i></span>' +
-          '<div class="d1-report-ready__meta"><p class="d1-report-ready__name">Brightwater Holdings Ltd.</p>' +
-          '<p class="d1-report-ready__addr">In progress</p></div>' +
-          '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md">View status</button></div>' +
-          '<button type="button" class="d3-sim-return">Simulate verification return <span class="d3-sim-return__sub">for dev team review</span></button>' +
-          "</div></div>"); } },
+                  "The card states the wait up front and promises the alert: <em>I will tell you when it is ready</em>.",
+                  "<strong>In Progress</strong> and <em>Up to 24 hours</em> sit where the verdict normally goes.",
+                  "Checks split in two: <em>Business registry</em> has reported; Screening, Adverse media and Ownership are listed as unresolved, with hollow circles instead of ticks.",
+                  "The composer is released and the suggestions change to leaving \u2014 start another, or see recent.",
+                  "Recent transactions tags the entry <em>In Progress</em>."],
+        view: function () { return X.pane(X.pendingCard(BW)); } },
 
-      { title: "Trigger return", actor: "Action", noVisual: true, trigger: "clicks <strong>Simulate verification return</strong>", demo: true,
-        note: { k: "Demo", text: "A review affordance only. The result also comes back on its own after about 15 seconds. <strong>Not part of the product.</strong>", warn: true },
-        changes: ["Nothing in the product — this button exists so the team can see the end of the flow without waiting."],
-        view: function () { return X.pane('<button type="button" class="d3-sim-return">Simulate verification return ' +
-          '<span class="d3-sim-return__sub">for dev team review</span></button>'); } },
+      { num: "4", title: "Trigger the return", actor: "Action", demo: true,
+        trigger: "clicks <strong>Simulate verification return</strong>",
+        note: { k: "Demo", text: "A review affordance only. It sits directly under the submitted card, and the result also comes back on its own after about 15 seconds. <strong>Not part of the product.</strong>", warn: true },
+        changes: ["Nothing in the product \u2014 this button exists so the team can see the end of the flow without waiting.",
+                  "Its dashed outline and the <em>for dev team review</em> sub-label mark it as scaffolding."],
+        view: function () { return X.pane(X.simChip()); } },
 
-      { title: "Ready", actor: "Panel", noVisual: true, trigger: "notifies wherever the user is in the portal",
-        note: { k: "Rule", text: "The alert fires anywhere in the portal, not just on the KYB page — the point of the submitted state is that the user left." },
-        changes: ["An alert appears with the entity, the transaction and a View action.",
-                  "The submitted card stays as the record, with its buttons disabled.",
-                  "The report summary is added below it, and Recent transactions turns Verified."],
-        view: function () { return '<div style="width:100%;max-width:420px;margin:0 auto">' +
-          '<div class="tds-announcement tds-announcement--info">' +
-          '<span class="tds-announcement__icon" aria-hidden="true"><i class="fa-regular fa-bell"></i></span>' +
-          '<div class="tds-announcement__content"><p class="tds-announcement__title">Verification ready</p>' +
-          '<p class="tds-announcement__message">Brightwater Holdings Ltd. · Transaction 8c2f4e7a</p>' +
-          '<div class="tds-announcement__actions"><button type="button" class="tds-btn tds-btn--primary tds-btn--sm">View</button></div>' +
-          "</div></div></div>"; } }
+      { num: "5", title: "Ready", actor: "Panel",
+        trigger: "notifies wherever the user is in the portal",
+        note: { k: "Rule", text: "The alert fires anywhere in the portal, not just on the KYB page \u2014 the point of the submitted state is that the user left." },
+        changes: ["An alert floats in with the entity, a short transaction reference and a <strong>View</strong> action; it dismisses itself after 20 seconds, or on the \u00d7.",
+                  "In the chat, the submitted card stays as the record and the summary is added below it.",
+                  "The result card is the ordinary one: verdict, score, every check now ticked, and the full transaction ID.",
+                  "Recent transactions turns <em>Verified</em>."],
+        view: function () { return X.cap("The alert, over whatever page the user is on:") +
+          X.readyToast(BW, "266bedcd") +
+          X.cap("\u2026and the summary, back in the chat:") +
+          X.pane(X.summaryBlock(BW + " is an active Delaware holding company; the full report is still being prepared.") +
+            X.resultCard({ name: BW, addr: "1000 N West Street, Wilmington, DE 19801", reg: "7310022",
+              score: "18", scoreLabel: "Low Risk Entity", scoreTone: "positive",
+              checks: ["Business registry", "Screening", "Ownership", "Web insights", "Business Risk Horizon"],
+              tx: "8c2f4e7a-19bd-4f02-a6c1-77de42915b3a" }), ' data-d3-ai-step="report"'); } }
     ],
     props: { name: "Timing", head: ["", ""], rows: [
       ["Product", "about a minute of live progress, then the submitted state; the result up to 24 hours"],
       ["Demo", "about 5 seconds to submitted, about 15 to the result"],
-      ["Also shows in", "the right panel status card · Recent transactions, tagged In Progress · a dot on the KYB rail button"]
+      ["Also shows in", "the right panel status card \u00b7 Recent transactions, tagged In Progress \u00b7 a dot on the KYB rail button"]
     ] } },
 
   /* ----------------------------------------------------------- option 3A */
