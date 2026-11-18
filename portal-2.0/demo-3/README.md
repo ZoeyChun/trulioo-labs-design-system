@@ -30,6 +30,20 @@ Meridian KYB conversation (verify → progress → results) still runs in the pa
 
 `data-d1-tpl` message templates are copied into `ai-panel-lab/index.html` from the portal — keep them in sync when portal templates change.
 
+## Scenario documentation
+
+Step-by-step walkthroughs of the three ways into a KYB verification — homepage,
+AI chat, and the manual form — for design and product review. One step on screen
+at a time, with the real UI rendered at each step and a level switch on the
+customized-package scenario. No code or implementation detail.
+
+| | URL |
+|--|--|
+| GitHub Pages | [demo-3/ai-panel-docs/](https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/demo-3/ai-panel-docs/) |
+| Local | http://127.0.0.1:8765/portal-2.0/demo-3/ai-panel-docs/index.html |
+
+See [`ai-panel-docs/README.md`](ai-panel-docs/README.md).
+
 ## KYB workspace canvas
 
 Fork reduced to **KYB Verification only**, re-cast as a two-column workspace:

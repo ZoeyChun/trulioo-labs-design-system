@@ -1,0 +1,588 @@
+/* TruAI docs — app chrome.
+   One screen, one subject: the page itself never scrolls; the sidebar and the
+   stage scroll independently. Everything here is namespaced `dx-`. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;                 /* the shell owns scrolling */
+}
+
+body {
+  background: var(--surface-neutral-02, #f4f6f4);
+  color: var(--text-default, #172d2d);
+  font-family: var(--font-family-base, "Inter", system-ui, sans-serif);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dx-app {
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  grid-template-rows: 52px minmax(0, 1fr);
+  grid-template-areas: "bar bar" "nav stage";
+  height: 100dvh;
+}
+
+/* ------------------------------------------------------------- top bar --- */
+
+.dx-bar {
+  grid-area: bar;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+  background: var(--surface-neutral-01, #fff);
+}
+
+.dx-bar__mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--interactive-default, #004c45);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.dx-bar__title { font-size: 14px; font-weight: 600; }
+.dx-bar__sub { color: var(--text-description, #617269); font-size: 12px; }
+
+.dx-bar__links { display: flex; gap: 6px; margin-left: auto; }
+
+.dx-bar__link {
+  padding: 5px 11px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 999px;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-default, #172d2d);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.dx-bar__link:hover { border-color: var(--interactive-default, #004c45); }
+
+/* ------------------------------------------------------------- sidebar --- */
+
+.dx-nav {
+  grid-area: nav;
+  overflow-y: auto;
+  padding: 12px 8px 24px;
+  border-right: 1px solid var(--border-subtle, #dde2de);
+  background: var(--surface-neutral-01, #fff);
+}
+
+.dx-nav__group {
+  margin: 14px 0 4px;
+  padding: 0 10px;
+  color: var(--text-caption, #617269);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dx-nav__group:first-child { margin-top: 2px; }
+
+.dx-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-description, #617269);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dx-nav__item:hover { background: var(--surface-neutral-02, #f4f6f4); color: var(--text-default, #172d2d); }
+
+.dx-nav__item.is-on {
+  background: var(--interactive-subtle, #e3f1ee);
+  color: var(--interactive-default, #004c45);
+  font-weight: 600;
+}
+
+.dx-nav__n {
+  margin-left: auto;
+  color: var(--text-placeholder, #8a9a90);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------- stage --- */
+
+.dx-stage {
+  grid-area: stage;
+  min-width: 0;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) { .dx-stage { scroll-behavior: auto; } }
+
+.dx-head { padding: 18px 24px 10px; }
+
+.dx-head__eyebrow {
+  margin: 0 0 1px;
+  color: var(--text-caption, #617269);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dx-head__title { margin: 0; font-size: 19px; font-weight: 600; line-height: 26px; }
+
+.dx-head__line {
+  margin: 2px 0 0;
+  max-width: 76ch;
+  color: var(--text-description, #617269);
+  font-size: 13px;
+}
+
+.dx-head__files { display: flex; flex-wrap: wrap; gap: 5px; margin-left: auto; max-width: 42%; justify-content: flex-end; }
+
+.dx-file {
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
+  color: var(--text-description, #617269);
+  font-family: var(--font-family-mono, ui-monospace, "SF Mono", Menlo, monospace);
+  font-size: 10.5px;
+}
+
+/* ------------------------------------------------------------ branch --- */
+
+/* Sticky so the switch stays reachable while the flow is scrolled. */
+.dx-branchbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 24px 4px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface-neutral-01, #fff) 94%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.dx-branchbar__label {
+  color: var(--text-caption, #617269);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.dx-branchbar__hint {
+  margin-left: auto;
+  color: var(--text-placeholder, #8a9a90);
+  font-size: 11.5px;
+}
+
+.dx-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.dx-chip {
+  padding: 4px 11px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 999px;
+  background: var(--surface-neutral-01, #fff);
+  color: var(--text-description, #617269);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.dx-chip:hover { border-color: var(--interactive-default, #004c45); }
+
+.dx-chip.is-on {
+  border-color: var(--interactive-default, #004c45);
+  background: var(--interactive-subtle, #e3f1ee);
+  color: var(--interactive-default, #004c45);
+  font-weight: 600;
+}
+
+.dx-chip:focus-visible { outline: 2px solid var(--border-focus, #004c45); outline-offset: 2px; }
+
+/* ---------------------------------------------------------- the flow --- */
+
+.dx-flow {
+  margin: 12px 0 0;
+  padding: 0 24px;
+  list-style: none;
+}
+
+.dx-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 0 16px;
+  padding-bottom: 28px;
+}
+
+/* the line that makes the sequence read as one flow */
+.dx-step:not(.dx-step--last)::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  bottom: 0;
+  left: 13px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--border-subtle, #dde2de);
+}
+
+.dx-step__num {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--interactive-default, #004c45);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dx-step__body { min-width: 0; padding-top: 2px; }
+
+.dx-step__head { display: flex; align-items: baseline; gap: 8px; }
+
+.dx-step__title { margin: 0; font-size: 15.5px; font-weight: 600; line-height: 24px; }
+
+.dx-step__trigger {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 2px 0 10px;
+  color: var(--text-default, #172d2d);
+  font-size: 13.5px;
+  line-height: 20px;
+}
+
+.dx-step__actor {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: var(--interactive-default, #004c45);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.dx-step__actor--sys { background: var(--surface-neutral-02, #f4f6f4); color: var(--text-description, #617269); }
+
+/* ---- the specimen ---- */
+
+.dx-view {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 12px;
+  background:
+    repeating-conic-gradient(var(--surface-neutral-02, #f4f6f4) 0% 25%, transparent 0% 50%) 0 0 / 16px 16px,
+    var(--surface-neutral-01, #fff);
+}
+
+.dx-view [hidden] { display: none !important; }
+
+/* ---- specimen containers, used by the views ---- */
+
+/* The panel column, so chat specimens sit in a real width. */
+.dx-panelbox {
+  width: 100%;
+  max-width: 438px;
+  padding: 16px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 12px;
+  background: var(--surface-neutral-01, #fff);
+}
+
+.dx-panelbox--wide { max-width: 600px; }
+
+/* The workspace sheet on the right of the portal. */
+.dx-sheet {
+  width: 100%;
+  max-width: 560px;
+  padding: 20px;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 12px;
+  background: var(--surface-neutral-01, #fff);
+  box-shadow: var(--elevation-sm);
+}
+
+.dx-sheet .tds-combobox__menu,
+.dx-sheet .tds-dropdown-panel { position: static; }
+.dx-sheet .vb-search-field { align-items: flex-start; }
+.dx-sheet .d3-workspace__title { margin: 0 0 4px; font-family: var(--font-family-display, "Tobias", Georgia, serif); font-size: 24px; font-weight: 400; }
+.dx-sheet .d3-workspace__lede { margin: 0 0 14px; color: var(--text-description, #617269); font-size: 13px; }
+
+.dx-caption {
+  width: 100%;
+  margin: 0;
+  color: var(--text-placeholder, #8a9a90);
+  font-size: 11.5px;
+  text-align: center;
+}
+
+/* Marks the one control a step is about. */
+.dx-point { outline: 2px solid var(--interactive-default, #004c45); outline-offset: 3px; border-radius: 8px; }
+
+/* ---- what changes ---- */
+
+.dx-changes {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
+}
+
+.dx-changes__k {
+  margin: 0 0 4px;
+  color: var(--text-caption, #617269);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.dx-changes ul { margin: 0; padding-left: 18px; }
+
+.dx-changes li {
+  margin: 2px 0;
+  color: var(--text-default, #172d2d);
+  font-size: 13px;
+  line-height: 19px;
+}
+
+.dx-changes li::marker { color: var(--interactive-default, #004c45); }
+
+/* ---- a step that does not happen on this branch ---- */
+
+.dx-step--skip .dx-step__num {
+  background: var(--surface-neutral-02, #f4f6f4);
+  border: 1px dashed var(--border-strong, #c4cdc8);
+  color: var(--text-placeholder, #8a9a90);
+}
+
+.dx-step--skip .dx-step__title { color: var(--text-placeholder, #8a9a90); text-decoration: line-through; }
+.dx-step--skip .dx-step__trigger { opacity: .55; }
+
+.dx-step__none {
+  margin: 0;
+  padding: 14px;
+  border: 1px dashed var(--border-subtle, #dde2de);
+  border-radius: 10px;
+  color: var(--text-placeholder, #8a9a90);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ---- notes ---- */
+
+.dx-note {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 9px 12px;
+  border-left: 3px solid var(--interactive-default, #004c45);
+  border-radius: 0 8px 8px 0;
+  background: var(--interactive-subtle, #e3f1ee);
+  font-size: 12.5px;
+  line-height: 18px;
+}
+
+.dx-note--warn { border-left-color: #c2850c; background: #fdf4e3; }
+
+.dx-note__k {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  line-height: 18px;
+}
+
+.dx-demo {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #fdf4e3;
+  color: #8a5d05;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* ---- the table at the end ---- */
+
+.dx-end { padding: 4px 24px 40px; }
+
+.dx-end__title {
+  margin: 0 0 10px;
+  font-size: 15.5px;
+  font-weight: 600;
+}
+
+.dx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  background: var(--surface-neutral-01, #fff);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.dx-table th, .dx-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-subtle, #dde2de);
+  text-align: left;
+  vertical-align: top;
+}
+
+.dx-table th {
+  color: var(--text-caption, #617269);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--surface-neutral-02, #f4f6f4);
+}
+
+.dx-table tr:last-child td { border-bottom: 0; }
+
+@media (max-width: 900px) {
+  .dx-app { grid-template-columns: 1fr; grid-template-areas: "bar" "stage"; }
+  .dx-nav { display: none; }
+}
+
+/* ---- the portal home hero, as scenery for the homepage step ---- */
+
+.dx-hero {
+  position: relative;
+  width: 100%;
+  padding: 40px 28px 34px;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(140, 200, 170, .18) 0 1.4px, transparent 1.6px) 0 0 / 34px 30px,
+    radial-gradient(circle at 62% 72%, rgba(140, 200, 170, .13) 0 1.1px, transparent 1.3px) 0 0 / 46px 41px,
+    #19302b;
+  text-align: center;
+  overflow: hidden;
+}
+
+.dx-hero__hello {
+  margin: 0 0 24px;
+  color: #fff;
+  font-family: var(--font-family-display, "Tobias", Georgia, serif);
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 48px;
+}
+
+/* The home stage lays the composer out as a grid: entry on top, context tag
+   and actions sharing the row below. Same rules the portal uses. */
+.dx-hero .d1-composer { margin: 0 auto; max-width: 560px; }
+
+.dx-hero .d1-prompt {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--spacing-16, 16px);
+  padding: var(--spacing-16, 16px);
+  /* A static specimen cannot hold focus, so the ring is drawn in. */
+  outline: 2px solid var(--border-focus, #004c45);
+  outline-offset: 2px;
+}
+
+.dx-hero .d1-prompt__field { display: contents; }
+
+.dx-hero .d1-prompt__entry { grid-column: 1 / -1; grid-row: 1; align-self: start; }
+
+.dx-hero .d1-prompt__input {
+  width: 100%;
+  height: 22px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default, #172d2d);
+  font: inherit;
+  font-size: 14px;
+  line-height: 22px;
+  resize: none;
+}
+
+.dx-hero .d1-prompt__input:focus { outline: none; }
+
+/* Plain text with a green dot on the home stage, not a chip. */
+.dx-hero .tds-tag.d1-prompt__ctx {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  align-self: center;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-default, #172d2d);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dx-hero .d1-prompt__ctx-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--interactive-default, #004c45);
+}
+
+.dx-hero .d1-prompt__bar { grid-column: 2; grid-row: 2; width: auto; }
+.dx-hero .d1-prompt__send-wrap { display: flex; align-items: center; gap: 4px; }
+
+.dx-hero__note {
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, .62);
+  font-size: 13px;
+}
+
+/* Sub-steps (2a, 2b …) need a pill rather than a circle. */
+.dx-step__num--wide { width: auto; min-width: 28px; padding: 0 7px; border-radius: 14px; }
+
+/* A dialog specimen shows the panel in place, not as a fixed overlay. */
+.dx-dialog { width: 100%; max-width: 460px; }
+.dx-dialog .tds-dialog__panel { max-height: none; box-shadow: var(--elevation-lg); }
+
+/* A step with no reference screenshot: described, not drawn. */
+.dx-step--text .dx-changes { margin-top: 0; }

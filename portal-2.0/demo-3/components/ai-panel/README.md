@@ -75,6 +75,13 @@ Docked width is stored in `sessionStorage` (`d3-chat-pane-w`) and restored on re
 - `[data-d3-chat-thread]`, `[data-d3-chat-composer]`, `[data-d3-pane-input]`
 - `[data-d3-askbar]`
 
+## Scenarios
+
+Step-by-step walkthroughs of the flows this panel appears in, for design review:
+
+`../../ai-panel-docs/index.html` — GitHub Pages:
+`…/portal-2.0/demo-3/ai-panel-docs/`
+
 ## Panel lab
 
 Standalone page (no portal shell / no sign-in) for UI experiments:

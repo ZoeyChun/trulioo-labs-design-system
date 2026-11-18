@@ -1,0 +1,87 @@
+<!doctype html>
+<!-- TruAI scenarios — one screen, one step.
+     Content lives in catalog.js; this file is only the shell. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TruAI scenarios — Demo 3</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css">
+
+<!-- tokens -->
+<link rel="stylesheet" href="../../../tokens/fonts.css">
+<link rel="stylesheet" href="../../../tokens/tokens.css">
+
+<!-- TDS components the panel composes with -->
+<link rel="stylesheet" href="../../../Components/icon-button/icon-button.css">
+<link rel="stylesheet" href="../../../Components/button/button.css">
+<link rel="stylesheet" href="../../../Components/_shared/tag/tag.css">
+<link rel="stylesheet" href="../../../Components/announcement/announcement.css">
+<link rel="stylesheet" href="../../../Components/data-table/data-table.css">
+<link rel="stylesheet" href="../../../Components/data-field/data-field.css">
+<link rel="stylesheet" href="../../../Components/checkbox/checkbox.css">
+<link rel="stylesheet" href="../../../Components/spinner/spinner.css">
+<link rel="stylesheet" href="../../../Components/stepper/stepper.css">
+<link rel="stylesheet" href="../../../Components/switch/switch.css">
+<link rel="stylesheet" href="../../../Components/dialog/dialog.css">
+<link rel="stylesheet" href="../../../Components/text-input/text-input.css">
+<link rel="stylesheet" href="../../../Components/select/select.css">
+<link rel="stylesheet" href="../../../Components/select/combobox.css">
+<link rel="stylesheet" href="../../../Components/_shared/dropdown-panel/dropdown-panel.css">
+<link rel="stylesheet" href="../../../Components/_shared/caret/caret.css">
+<link rel="stylesheet" href="../../../Components/action-list-item/action-list-item.css">
+<link rel="stylesheet" href="../../../assets/flag-icons/css/flag-icons.min.css">
+<link rel="stylesheet" href="../../../pages/shared/flag-icons.css">
+
+<!-- the real Demo 3 CSS: specimens are the live components -->
+<link rel="stylesheet" href="../composer/prompt.css">
+<link rel="stylesheet" href="../css/messages.css">
+<link rel="stylesheet" href="../css/motion.css">
+<link rel="stylesheet" href="../css/d3-thinking.css">
+<link rel="stylesheet" href="../css/d3-fa.css">
+<link rel="stylesheet" href="../css/d3-icon-weight.css">
+<link rel="stylesheet" href="../css/d3-kyb-agent.css">
+<link rel="stylesheet" href="../css/d3-kyb-gap.css">
+<link rel="stylesheet" href="../css/d3-kyb-package.css">
+<link rel="stylesheet" href="../css/d3-kyb-pending.css">
+<link rel="stylesheet" href="../css/d3-kyb-fields.css">
+<link rel="stylesheet" href="../css/d3-kyb-search.css">
+<link rel="stylesheet" href="../css/d3-kyb-result-card.css">
+<link rel="stylesheet" href="../css/d3-kyb-brh-offer.css">
+<link rel="stylesheet" href="../css/d3-workspace.css">
+<link rel="stylesheet" href="../components/ai-panel/ai-panel.css">
+<link rel="stylesheet" href="../../demo-4/css/truai-bubble.css">
+<link rel="stylesheet" href="../components/ai-panel/treatments/treatments.css">
+
+<!-- app chrome last -->
+<link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+<div class="dx-app">
+  <header class="dx-bar">
+    <span class="dx-bar__mark" aria-hidden="true">AI</span>
+    <div>
+      <div class="dx-bar__title">TruAI</div>
+      <div class="dx-bar__sub">Portal 2.0 · Demo 3 · verification scenarios</div>
+    </div>
+    <nav class="dx-bar__links" aria-label="Related">
+      <a class="dx-bar__link" href="../index.html">Live demo</a>
+    </nav>
+  </header>
+
+  <nav class="dx-nav" id="dx-nav" aria-label="Contents"></nav>
+
+  <main class="dx-stage" id="dx-stage" tabindex="-1"></main>
+</div>
+
+<!-- live orbs, same scripts the portal loads -->
+<script src="../components/ai-panel/orb/truai-orb-motion.js"></script>
+<script src="../../demo-4/js/truai-bubble.js"></script>
+<script src="../components/ai-panel/orb/truai-float.js"></script>
+
+<script src="catalog.js"></script>
+<script src="docs.js"></script>
+</body>
+</html>
