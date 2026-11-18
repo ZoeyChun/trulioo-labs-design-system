@@ -61,10 +61,10 @@
     ],
     tx: [
       {
-        prompt: "Show declined transactions",
+        prompt: "Show not verified transactions",
         agent: "tx",
-        title: "Show declined transactions",
-        desc: "Filter the table to declined results",
+        title: "Show not verified transactions",
+        desc: "Filter the table to not verified results",
       },
       {
         prompt: "Find high-risk transactions",

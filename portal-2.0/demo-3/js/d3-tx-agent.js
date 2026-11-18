@@ -16,7 +16,7 @@
   var lastSpec = null;
 
   var SUGGEST_FILTER = [
-    { q: "Show declined transactions", intent: "declined" },
+    { q: "Show not verified transactions", intent: "declined" },
     { q: "Find high-risk transactions", intent: "high-risk" },
     { q: "Find transactions requiring review", intent: "review" }
   ];
@@ -333,7 +333,7 @@
       intent = "declined";
       spec.predicate = "unsuccessful";
       if (/7 days|last week|past week/.test(lower)) spec.dateDays = 7;
-      return { intent: intent, spec: spec, layout: "list", label: "declined or unsuccessful verifications" };
+      return { intent: intent, spec: spec, layout: "list", label: "not verified transactions" };
     }
 
     /* Asking for past verifications / the history in general ("find a previous
@@ -488,7 +488,7 @@
       layout: "text",
       label: null,
       message:
-        "I can answer from the transactions currently in this table. Try “Show declined transactions”, “Find high-risk transactions”, “Summarize recent activity”, or ask about a name or country that appears in the data."
+        "I can answer from the transactions currently in this table. Try “Show not verified transactions”, “Find high-risk transactions”, “Summarize recent activity”, or ask about a name or country that appears in the data."
     };
   }
 
@@ -605,7 +605,7 @@
         title: "No matching transaction",
         steps: [
           { text: "That name or ID is not in the demo transaction dataset.", done: false },
-          { text: "Try a name visible in the table, or ask to list declined / high-risk rows.", done: false }
+          { text: "Try a name visible in the table, or ask to list not verified / high-risk rows.", done: false }
         ],
         intro: "I can only explain transactions that exist in this dataset."
       };
