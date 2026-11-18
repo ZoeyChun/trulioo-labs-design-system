@@ -1157,6 +1157,66 @@
       ["Lists", "five candidates at a time, paged, with the total"],
       ["On pick", "fills name, BRN and address — labelled Auto-filled by Business Finder"],
       ["Skipping it", "costs nothing; the fields below stay open"]
+    ] } },
+
+  /* ------------------------------------------------------------ option 4 */
+  { id: "o4", group: "Option 4 · Transactions", name: "Filtering transactions in chat",
+    line: "On the Transactions page the panel answers about the table in front of it — every answer also filters the table.",
+    steps: [
+      { num: "1", title: "Open the panel on Transactions", actor: "Panel", noVisual: true,
+        trigger: "opens TruAI while the workspace is showing Transactions",
+        note: { k: "Scope", text: "A different agent from the KYB one. It answers only from the rows in this table — asked for something it cannot see, it says so rather than inventing rows." },
+        changes: ["The suggested actions are the three filters: <em>Show not verified transactions</em>, <em>Find high-risk transactions</em>, <em>Find transactions requiring review</em>.",
+                  "A KYB request typed here is handed off to the KYB agent rather than answered badly."] },
+
+      { num: "2", title: "Ask", actor: "Action", noVisual: true,
+        trigger: "picks a suggested action, or types the request in their own words",
+        note: { k: "Rule", text: "The cards are a shortcut, not the only route — the wording is parsed, so “risky”, “elevated risk” and “high risk” all reach the same filter." },
+        changes: ["The request is echoed as the user’s own message.",
+                  "The panel shows <em>Reviewing verification activity…</em> while it works.",
+                  "The suggested actions hide until the answer has landed."] },
+
+      { num: "3a", title: "Summarize last 7 days", actor: "Panel", noVisual: true,
+        trigger: "“Summarize last 7 days activity”",
+        changes: ["Existing filters are <strong>cleared</strong> first, then the table is scoped to the last 7 days.",
+                  "The answer is an activity summary, not a row list: transactions in view, most common outcome, unsuccessful / flagged, needs review, high risk scores, top product.",
+                  "Counts that are non-zero are toned — flagged and high-risk read negative, needs-review reads review.",
+                  "Under it, up to five <em>notable items</em> are listed as a table: anything unsuccessful, high-risk, or awaiting review.",
+                  "The suggested actions change to the after-set: <em>Summarize last 7 days activity</em>, <em>Show verified transactions only</em>, <em>Clear filters and show all</em>."] },
+
+      { num: "3b", title: "Find high-risk", actor: "Panel", noVisual: true,
+        trigger: "“Find high-risk transactions”",
+        changes: ["The workspace table is filtered to high risk — a real filter, not a highlight.",
+                  "The chat leads with the count: <em>Found N transactions · high-risk transactions</em>.",
+                  "The matches follow as a compact two-column table — Transaction and Outcome — capped at five rows.",
+                  "Each row opens its transaction from the chat.",
+                  "Medium and low risk are separate intents, reached the same way."] },
+
+      { num: "3c", title: "Show not verified", actor: "Panel", noVisual: true,
+        trigger: "“Show not verified transactions”",
+        note: { k: "Wording", text: "The product says <strong>not verified</strong>, not “declined” — in the prompt card, in the agent’s copy, and on the outcome tag." },
+        changes: ["The table is filtered to unsuccessful outcomes.",
+                  "Same shape of answer as high-risk: a count line, then the matching rows with their outcome tags.",
+                  "<em>Find transactions requiring review</em> is the third filter, covering Review, Pending Review and In Progress."] },
+
+      { num: "4", title: "Nothing matched", actor: "Panel", noVisual: true,
+        trigger: "the request is understood but no row matches",
+        changes: ["An info announcement replaces the table: nothing in the dataset matched.",
+                  "It says plainly that the agent only uses the transactions shown, and will not invent rows.",
+                  "The suggested filters come back so the user has somewhere to go."] },
+
+      { num: "5", title: "Clear", actor: "Action", noVisual: true,
+        trigger: "“Clear filters and show all”",
+        changes: ["Every filter the agent applied is removed and the full table returns.",
+                  "The suggested actions return to the three filters."] }
+    ],
+    props: { name: "The three cards", head: ["Prompt", "What it does"], rows: [
+      ["Summarize last 7 days activity", "clears filters, scopes to 7 days, answers with a summary plus notable rows"],
+      ["Find high-risk transactions", "filters the table to high risk; lists the matches"],
+      ["Show not verified transactions", "filters the table to unsuccessful outcomes; lists the matches"],
+      ["Find transactions requiring review", "Review, Pending Review and In Progress"],
+      ["Show verified transactions only", "offered after a filter is on"],
+      ["Clear filters and show all", "removes every filter the agent applied"]
     ] } }
 
   ] };
