@@ -130,7 +130,7 @@
     var last = rec.runs.length - 1;
     var main =
       '<button type="button" class="tds-btn tds-btn--secondary tds-btn--md d3-brh-split__main" data-d3-brh-view data-d3-brh-run-idx="' + last + '">' +
-      "View latest</button>";
+      "View Latest Score</button>";
     if (rec.runs.length < 2) return '<div class="d3-brh-split">' + main + "</div>";
     var items = rec.runs
       .map(function (run, i) {
@@ -307,50 +307,50 @@
   }
 
   /* The chat answers with what was added: the score, the key findings and the transaction. */
-  function postReply(rec, key, run, idx) {
-    var tries = 0;
-    (function go() {
-      if (key !== current.key) return;
-      var panel = resume.querySelector('[data-d3-kyb-panel="risk"]');
-      var items = panel ? panel.querySelectorAll(".kyb-tab-summary__finding") : [];
-      var gauge = panel && panel.querySelector(".dv-di-gauge[data-score]");
-      var title = resume.querySelector(".d3h-hero__verdict .d3h-card__title--hero");
-      if (!items.length || !gauge || !title) {
-        if (++tries < 30) window.setTimeout(go, 400);
-        return;
-      }
-      var tone = (String(title.className).match(/d3h-card__title--(negative|intermediate|positive)/) || [])[1] || "negative";
-      var list = Array.prototype.map.call(items, function (li) {
-        var icon = li.querySelector(".kyb-tab-summary__finding-icon");
-        var text = li.querySelector(".kyb-tab-summary__finding-text");
-        return '<li class="kyb-tab-summary__finding"><span class="' + esc(icon ? icon.className : "kyb-tab-summary__finding-icon") + '" aria-hidden="true">' +
-          (icon ? icon.innerHTML : "") + '</span><span class="kyb-tab-summary__finding-text">' + esc(text ? text.textContent : li.textContent) + "</span></li>";
-      }).join("");
-      var thread = document.querySelector("[data-d1-thread]");
-      if (!thread) return;
-      var node = document.createElement("section");
-      node.className = "d1-turn d1-enter";
-      node.innerHTML =
-        '<div class="d1-ai d1-block d3-brh-reply">' +
-        /* The "has run for" line was said when the run finished (postLead), so the answer is just the card. */
-        '<div class="d3-brh-reply__card" data-d3-brh-run-idx="' + idx + '">' +
-        '<div class="d3-brh-reply__section d3-brh-reply__head"><span class="d3-brh-reply__head-copy">' +
-        '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score' + (idx > 0 ? " · run " + (idx + 1) : "") + '</span>' +
-        '<span class="d3-rc__scoreval"><b class="d3-rc__score-num">' + esc(run.score) + "</b>" +
-        '<span class="d3-rc__score-label d3-rc__score-label--' + esc(tone) + '">' + esc(title.textContent.trim()) + "</span></span></span>" +
-        '<button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d3-brh-view data-d3-brh-run-idx="' + idx + '">View</button></div>' +
-        '<div class="d3-brh-reply__section"><span class="d3-rc__label text-label-sm-uppercase">Key findings</span>' +
-        '<ul class="d3-brh-reply__list">' + list + "</ul></div>" +
-        '<div class="d3-brh-reply__section d3-brh-reply__txn"><span class="d3-rc__label text-label-sm-uppercase">Transaction ID</span>' +
-        '<span class="d3-brh-reply__txid text-body-xs" data-d3-brh-txid>' + esc(run.tx) + "</span>" +
-        '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-brh-copy>Copy</button></div>' +
-        "</div></div>";
-      thread.appendChild(node);
-      if (node.scrollIntoView) node.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    })();
+  /* The key findings are the score tab's own: mount it off screen so the chat can quote them without opening the tab. */
+  function findingsHtml() {
+    var P = window.D3KybPanels;
+    if (!P || !P.mount) return "";
+    var host = document.createElement("div");
+    P.mount(host, "signals");
+    var items = host.querySelectorAll(".kyb-tab-summary__finding");
+    return Array.prototype.map.call(items, function (li) {
+      var icon = li.querySelector(".kyb-tab-summary__finding-icon");
+      var text = li.querySelector(".kyb-tab-summary__finding-text");
+      return '<li class="kyb-tab-summary__finding"><span class="' + esc(icon ? icon.className : "kyb-tab-summary__finding-icon") + '" aria-hidden="true">' +
+        (icon ? icon.innerHTML : "") + '</span><span class="kyb-tab-summary__finding-text">' + esc(text ? text.textContent : li.textContent) + "</span></li>";
+    }).join("");
   }
 
-  /* When the run finishes the chat says so, and nothing else: the score is shown when it is asked for. */
+  function postReply(rec, key, run, idx) {
+    if (key !== current.key) return;
+    var F = window.D3KybFindings;
+    var prof = F && F.riskProfile ? F.riskProfile(bizNow(), run.score) : { tone: "intermediate", label: "Risk Entity" };
+    var list = findingsHtml();
+    var thread = document.querySelector("[data-d1-thread]");
+    if (!thread) return;
+    var node = document.createElement("section");
+    node.className = "d1-turn d1-enter";
+    node.innerHTML =
+      '<div class="d1-ai d1-block d3-brh-reply">' +
+      /* The "has run for" line was said when the run finished (postLead), so the answer is just the card. */
+      '<div class="d3-brh-reply__card" data-d3-brh-run-idx="' + idx + '">' +
+      '<div class="d3-brh-reply__section d3-brh-reply__head"><span class="d3-brh-reply__head-copy">' +
+      '<span class="d3-rc__label text-label-sm-uppercase">Business Risk Horizon Score' + (idx > 0 ? " · run " + (idx + 1) : "") + '</span>' +
+      '<span class="d3-rc__scoreval"><b class="d3-rc__score-num">' + esc(run.score) + "</b>" +
+      '<span class="d3-rc__score-label d3-rc__score-label--' + esc(prof.tone) + '">' + esc(prof.label) + "</span></span></span>" +
+      '<button type="button" class="tds-btn tds-btn--primary tds-btn--md" data-d3-brh-view data-d3-brh-run-idx="' + idx + '">View</button></div>' +
+      (list ? '<div class="d3-brh-reply__section"><span class="d3-rc__label text-label-sm-uppercase">Key findings</span>' +
+      '<ul class="d3-brh-reply__list">' + list + "</ul></div>" : "") +
+      '<div class="d3-brh-reply__section d3-brh-reply__txn"><span class="d3-rc__label text-label-sm-uppercase">Transaction ID</span>' +
+      '<span class="d3-brh-reply__txid text-body-xs" data-d3-brh-txid>' + esc(run.tx) + "</span>" +
+      '<button type="button" class="tds-btn tds-btn--secondary tds-btn--sm" data-d3-brh-copy>Copy</button></div>' +
+      "</div></div>";
+    thread.appendChild(node);
+    if (node.scrollIntoView) node.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  /* When the run finishes the chat says so; the score card follows straight after (postReply). */
   function postLead(key) {
     if (key !== current.key) return;
     var b = bizNow();
@@ -363,6 +363,13 @@
       '<p class="d3-brh-reply__lead">Business Risk Horizon has run for <b>' + esc((b && b.name) || "this business") + "</b>.</p></div>";
     thread.appendChild(node);
     if (node.scrollIntoView) node.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  /* The next-actions list (View latest, Run again) belongs under the newest message, not above it. */
+  function listLast() {
+    var thread = document.querySelector("[data-d1-thread]");
+    var host = document.querySelector("[data-d3-ai-next]");
+    if (thread && host && host.parentNode === thread && thread.lastElementChild !== host) thread.appendChild(host);
   }
 
   /* The results are separate transactions: the report as it was run (no Business Risk Horizon) and one for each Business
@@ -425,7 +432,11 @@
       rec.runs.push({ tx: uuid(), atLabel: timeLabel(now), score: nextScore(rec) });
       /* The report stays as it was: no tab, no score yet. The suggested actions offer the latest run and another run. */
       postLead(key);
+      var made = rec.runs[rec.runs.length - 1];
+      made.replied = true;
+      postReply(rec, key, made, rec.runs.length - 1);
       refreshNext();
+      listLast();
       if (window.D3KybFindings && window.D3KybFindings.refresh) window.D3KybFindings.refresh();
     }, RUN_MS);
   }

@@ -97,7 +97,8 @@
 /* The report as it was run, once Business Risk Horizon has been run beside it: Run again, and the latest run as a split button. */
 .d3-brh-again { gap: var(--spacing-8, 8px); }
 .d3-brh-again[aria-disabled="true"] { cursor: default; pointer-events: none; opacity: 0.85; }
-.d3h-suggested__ctas:has(.d3-brh-split) { flex-wrap: wrap; align-items: center; }
+.d3h-suggested__ctas:has(.d3-brh-split),
+.d3h-hero__main .d3h-suggested__ctas:has(.d3-brh-split) { flex-wrap: wrap; align-items: center; }
 .d3-brh-split { position: relative; display: inline-flex; }
 .d3-brh-split--menu .d3-brh-split__main { border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .d3-brh-split__caret { min-width: 40px; margin-left: -1px; padding-inline: var(--spacing-8, 8px); border-top-left-radius: 0; border-bottom-left-radius: 0; }
