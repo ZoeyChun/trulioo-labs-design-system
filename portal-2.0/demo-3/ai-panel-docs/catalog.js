@@ -21,6 +21,8 @@
     arrow: '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5"/></svg>',
     chevD: '<svg class="d3-fa-line d1-chev-down" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 6 4 4 4-4"/></svg>',
     chevU: '<svg class="d3-fa-line d1-chev-up" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 10 4-4 4 4"/></svg>',
+    pagerL: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M10 3 5 8l5 5"/></svg>',
+    pagerR: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6 3l5 5-5 5"/></svg>',
     search12: '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M7.90625 4.46875C7.90625 2.57812 6.35938 1.03125 4.46875 1.03125C2.57812 1.03125 1.03125 2.57812 1.03125 4.46875C1.03125 6.35938 2.57812 7.90625 4.46875 7.90625C6.35938 7.90625 7.90625 6.35938 7.90625 4.46875ZM7.24023 7.9707C6.48828 8.57227 5.52148 8.9375 4.46875 8.9375C1.99805 8.9375 0 6.93945 0 4.46875C0 1.99805 1.99805 0 4.46875 0C6.93945 0 8.9375 1.99805 8.9375 4.46875C8.9375 5.52148 8.57227 6.48828 7.9707 7.24023L10.8496 10.1191C11.043 10.3125 11.043 10.6562 10.8496 10.8496C10.6562 11.043 10.3125 11.043 10.1191 10.8496L7.24023 7.9707Z" fill="currentColor"/></svg>',
     file11: '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" aria-hidden="true"><path d="M1.375 1.03125C1.18164 1.03125 1.03125 1.18164 1.03125 1.375V9.625C1.03125 9.81836 1.18164 9.96875 1.375 9.96875H6.875C7.06836 9.96875 7.21875 9.81836 7.21875 9.625V4.46875H5.32812C4.46875 4.46875 3.78125 3.78125 3.78125 2.92188V1.03125H1.375ZM4.8125 1.46094V2.92188C4.8125 3.20117 5.04883 3.4375 5.32812 3.4375H6.78906L4.8125 1.46094ZM1.375 0H4.25391C4.61914 0 4.96289 0.150391 5.2207 0.408203L7.8418 3.0293C8.09961 3.28711 8.25 3.65234 8.25 4.01758V9.625C8.25 10.377 7.62695 11 6.875 11H1.375C0.623047 11 0 10.377 0 9.625V1.375C0 0.623047 0.623047 0 1.375 0ZM2.57812 5.5H5.67188C5.95117 5.5 6.1875 5.73633 6.1875 6.01562C6.1875 6.29492 5.95117 6.53125 5.67188 6.53125H2.57812C2.29883 6.53125 2.0625 6.29492 2.0625 6.01562C2.0625 5.73633 2.29883 5.5 2.57812 5.5ZM2.57812 7.5625H5.67188C5.95117 7.5625 6.1875 7.79883 6.1875 8.07812C6.1875 8.35742 5.95117 8.59375 5.67188 8.59375H2.57812C2.29883 8.59375 2.0625 8.35742 2.0625 8.07812C2.0625 7.79883 2.29883 7.5625 2.57812 7.5625Z" fill="currentColor"/></svg>',
     lvl: {
@@ -452,6 +454,7 @@
 
   var ENTITY = "Meridian Industrial Holdings LLC";
   var BW = "Brightwater Holdings Ltd.";
+  var APEX = "Meridian Apex Consulting Inc.";
   var LEVEL_NAME = { essentials: "Business Essentials", insights: "Business Insights", complete: "Business Complete" };
   var SCOPE = { essentials: "Business Essentials", insights: "Business Insights + Web Insights + UBO Discovery + Business Risk Horizon",
                 complete: "Business Complete + Business Risk Horizon" };
@@ -500,11 +503,11 @@
       return '<li class="tds-stepper__item tds-stepper__item--' + state + '"' + (cur ? ' aria-current="step"' : "") + '>' +
         '<div class="tds-stepper__line" aria-hidden="true"></div><div class="tds-stepper__content">' +
         '<div class="tds-stepper__label-row"><span class="tds-stepper__icon" aria-hidden="true">' +
-        '<span class="tds-stepper__icon-badge">' + n + "</span></span>" +
+        (state === "completed" ? STEP_CHECK : '<span class="tds-stepper__icon-badge">' + n + "</span>") + "</span>" +
         '<span class="tds-stepper__title">' + label + "</span></div></div></li>";
     }
     return '<ol class="tds-stepper tds-stepper--horizontal d3-kyb-formsteps" aria-label="Verification steps">' +
-      item(1, "Details", onReview ? "complete" : "current", !onReview) +
+      item(1, "Details", onReview ? "completed" : "current", !onReview) +
       item(2, "Review", onReview ? "current" : "incomplete", onReview) + "</ol>";
   }
 
@@ -519,12 +522,155 @@
   }
 
   var SAVEDLINE = '<div class="d3-kyb-defaultcfg"><div class="d3-kyb-savedline">' +
-    '<span class="d3-kyb-savedline__text"><b>Default configuration</b><span>Business Insights · BusinessInsights</span></span>' +
+    '<span class="d3-kyb-savedline__text"><b>Default configuration</b><span>Business Insights \u00b7 BusinessInsights-Sandbox</span></span>' +
     '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary">Edit</button></div></div>';
 
-  var ACC = '<div class="d3-kyb-fields__acc"><button type="button" class="d3-kyb-fields__acc-head" aria-expanded="false">' +
-    '<span class="d3-kyb-fields__acc-chevron" aria-hidden="true">' + I.arrow + "</span>" +
-    '<span class="d3-kyb-fields__acc-title">View all fields</span></button></div>';
+  var STEP_CHECK = '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.707 7.293-5.5 5.5a1 1 0 0 1-1.414 0l-2.5-2.5a1 1 0 1 1 1.414-1.414L8.5 10.586l4.793-4.793a1 1 0 0 1 1.414 1.414z"/></svg>';
+  var FIELD_CHEVRON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m4 6 4 4 4-4"/></svg>';
+
+  function acc(open, body) {
+    return '<div class="d3-kyb-fields__acc' + (open ? " is-open" : "") + '">' +
+      '<button type="button" class="d3-kyb-fields__acc-head" aria-expanded="' + (open ? "true" : "false") + '">' +
+      '<span class="d3-kyb-fields__acc-chevron" aria-hidden="true">' + FIELD_CHEVRON + "</span>" +
+      '<span class="d3-kyb-fields__acc-title">View all fields</span></button>' +
+      '<div class="d3-kyb-fields__acc-body">' + (body || "") + "</div></div>";
+  }
+
+  var ACC = acc(false);
+
+  /* One group inside View all fields: a title and a grid of empty optional fields. */
+  function fieldGroup(title, labels, filled) {
+    return '<div class="d3-kyb-fields__group"><p class="d3-kyb-fields__group-title">' + title + "</p>" +
+      '<div class="d3-kyb-fields__grid">' + labels.map(function (l) {
+        return field(l, (filled && filled[l]) || "", false, !!(filled && filled[l]));
+      }).join("") + "</div></div>";
+  }
+
+  /* The three verification levels as the radio cards the manual form draws. */
+  function levelCards(current) {
+    return '<div class="d3-kyb-pkg"><div class="d3-kyb-addons__title">Select Verification Level</div>' +
+      '<div class="d3-kyb-pkgcards" role="radiogroup" aria-label="Verification level">' +
+      X.LEVELS.map(function (p) {
+        var on = p.id === current;
+        return '<span class="tds-radio-card' + (on ? " tds-radio-card--selected" : "") + '" role="radio" aria-checked="' + on + '">' +
+          '<input type="radio" class="tds-radio"' + (on ? " checked" : "") + ' aria-hidden="true" readonly>' +
+          '<span class="tds-radio-card__content">' +
+          '<span class="tds-radio-card__label-row"><span class="tds-radio-card__label">' + p.name + "</span>" +
+          (p.badge ? ' <span class="tds-tag tds-tag--sm tds-tag--positive">' + p.badge + "</span>" : "") + "</span>" +
+          '<span class="tds-radio-card__description">' + p.note + "</span>" +
+          (on ? subSelect("BusinessInsights-Sandbox") : "") + "</span></span>";
+      }).join("") + "</div>" +
+      '<div style="display:flex;justify-content:flex-end;margin-top:16px">' +
+      '<button type="button" class="tds-btn tds-btn--md tds-btn--primary">Done</button></div></div>';
+  }
+
+  function subSelect(value) {
+    return '<span class="d3-kyb-pkgcards__sub"><span class="d3-kyb-pkgcards__sublabel">Package</span>' +
+      '<span class="tds-select tds-select--interactive">' +
+      '<button type="button" class="tds-select__trigger tds-select__trigger--md" aria-haspopup="listbox" aria-expanded="false">' +
+      '<span class="tds-select__value">' + value + "</span>" +
+      '<span class="tds-select__trailing-group">' + CARET + "</span></button></span></span>";
+  }
+
+  /* Business Finder: the button, and the candidate list it opens. */
+  function finder(ready) {
+    return '<div class="d3-kyb-find">' +
+      '<button type="button" class="tds-btn tds-btn--md tds-btn--secondary d3-kyb-find__btn"' +
+      (ready ? "" : ' aria-disabled="true"') + '>' +
+      '<span class="d3-kyb-find__icon">' + SEARCH + "</span>Business Finder</button></div>";
+  }
+
+  function finderResults(total, rows, from, to) {
+    return '<div class="d3-kyb-find"><button type="button" class="tds-btn tds-btn--md tds-btn--secondary d3-kyb-find__btn">' +
+      '<span class="d3-kyb-find__icon">' + SEARCH + "</span>Business Finder</button>" +
+      '<div class="d3-kyb-find__results">' +
+      '<div class="d3-kyb-find__head"><span>' + total + ' matches</span>' +
+      '<button type="button" class="d3-kyb-find__close">Hide</button></div>' +
+      rows.map(function (r) {
+        return '<button type="button" class="d3-kyb-find__card">' +
+          '<span class="d3-kyb-find__name">' + r[0] + "</span>" +
+          '<span class="d3-kyb-find__line">' + r[1] + "</span>" +
+          '<span class="d3-kyb-find__line">' + r[2] + "</span></button>";
+      }).join("") +
+      '<div class="d3-ai-selector__pager"><span>' + from + "-" + to + " of " + total + "</span>" +
+      '<span class="d3-ai-selector__pages">' +
+      '<button type="button" class="d3-ai-selector__page" disabled aria-label="Previous matches">' + I.pagerL + "</button>" +
+      '<button type="button" class="d3-ai-selector__page" aria-label="Next matches">' + I.pagerR + "</button></span></div>" +
+      '<p class="d3-kyb-find__more">Not here? Add the full business name or the BRN to narrow it down, ' +
+      "or keep entering the details below.</p></div></div>";
+  }
+
+  /* The country combobox the form shows when nothing is pre-filled. */
+  function countryCombo(open) {
+    var COUNTRIES = [["us", "United States"], ["gb", "United Kingdom"], ["ca", "Canada"], ["au", "Australia"],
+                     ["de", "Germany"], ["nl", "Netherlands"], ["sg", "Singapore"], ["se", "Sweden"]];
+    return '<div data-d3-prefill="off"><div class="d3-kyb-countrycb"><label class="tds-field-label">Country</label>' +
+      '<div class="tds-combobox tds-combobox--full-width' + (open ? " tds-combobox--open" : "") + '">' +
+      '<div class="tds-combobox__field tds-combobox__field--lg">' +
+      '<span class="tds-combobox__leading-visual d3-cc-flag" aria-hidden="true">' + GLOBE + "</span>" +
+      '<input class="tds-combobox__input" type="text" placeholder="Search country" readonly aria-label="Country">' +
+      '<span class="tds-combobox__trailing-group">' + CARET + "</span></div>" +
+      '<div class="tds-combobox__menu"><div class="tds-dropdown-panel d3-cc-panel" role="listbox" aria-label="Country">' +
+      COUNTRIES.map(function (c) {
+        return '<button type="button" class="tds-combobox__option d3-cc-option" role="option">' +
+          '<span class="fi fi-' + c[0] + '" aria-hidden="true"></span><span>' + c[1] + "</span></button>";
+      }).join("") + "</div></div></div></div></div>";
+  }
+
+  /* Jurisdiction is a pick, not a text field. */
+  function jurField(value) {
+    return '<div class="tds-combobox tds-combobox--full-width d3-kyb-jur">' +
+      '<label class="tds-field-label">Jurisdiction Of Incorporation</label>' +
+      '<div class="tds-combobox__field tds-combobox__field--lg">' +
+      '<span class="tds-combobox__leading-visual" aria-hidden="true">' + SEARCH + "</span>" +
+      '<input class="tds-combobox__input" type="text" placeholder="Select jurisdiction" readonly value="' + (value || "") + '">' +
+      '<span class="tds-combobox__trailing-group">' + CARET + "</span></div></div>";
+  }
+
+  var GLOBE = '<svg class="d3-fa-line d3-cc-globe" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+    '<circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.25"/>' +
+    '<path d="M1.75 8h12.5M8 1.75c1.7 1.7 2.6 3.8 2.6 6.25S9.7 12.55 8 14.25M8 1.75C6.3 3.45 5.4 5.55 5.4 8s.9 4.55 2.6 6.25" ' +
+    'stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>';
+
+  /* The landing search: a country select and a combobox sharing one field. */
+  function searchField(names, activeIndex) {
+    return '<div class="vb-search-field">' +
+      '<div class="tds-select tds-select--interactive vb-search-country">' +
+      '<button type="button" class="tds-select__trigger tds-select__trigger--lg" aria-label="Country, United States">' +
+      '<span class="tds-select__country-flag" aria-hidden="true"><span class="fi fi-us"></span></span>' +
+      '<span class="tds-select__value vb-search-country__value">United States</span>' +
+      '<span class="tds-select__trailing-group">' + CARET + "</span></button></div>" +
+      '<div class="vb-search-field__divider" aria-hidden="true"></div>' +
+      '<div class="tds-combobox tds-combobox--full-width tds-combobox--open vb-combobox">' +
+      '<div class="tds-combobox__field tds-combobox__field--lg vb-combobox__field">' +
+      '<span class="tds-combobox__leading-visual vb-combobox__icon" aria-hidden="true">' + SEARCH + "</span>" +
+      '<input class="tds-combobox__input" type="text" value="meridian" readonly aria-label="Search by business name"></div>' +
+      '<div class="tds-combobox__menu"><div class="tds-dropdown-panel vb-combobox__panel" role="listbox">' +
+      '<div class="vb-combobox__options">' +
+      names.map(function (n, i) {
+        return '<button type="button" class="tds-action-list-item vb-combobox__option' +
+          (i === activeIndex ? " tds-action-list-item--active" : "") + '" role="option">' +
+          '<span class="tds-action-list-item__content"><span class="tds-action-list-item__label">' + n + "</span>" +
+          '<span class="tds-action-list-item__description">United States</span></span></button>';
+      }).join("") + "</div>" +
+      '<div class="vb-combobox__footer">Showing ' + names.length + ' of 1284 matches \u2014 keep typing to refine</div>' +
+      "</div></div></div></div>";
+  }
+
+  /* The form's footer: Continue on step 1, Back + Execute on step 2. */
+  function formActions(label, withBack) {
+    return '<div class="vb-prefill__actions">' +
+      (withBack ? '<button type="button" class="tds-btn tds-btn--invisible tds-btn--lg">Back</button>' : "") +
+      '<button type="button" class="tds-btn tds-btn--primary tds-btn--lg">' + label + "</button></div>";
+  }
+
+  function reviewGroup(title, rows) {
+    return '<div class="d3-kyb-review__group">' +
+      '<p class="d3-kyb-review__group-title text-label-sm-uppercase">' + title + "</p>" +
+      '<dl class="d3-kyb-review__grid">' + rows.map(function (r) {
+        return '<div class="d3-kyb-review__row"><dt>' + r[0] + "</dt><dd>" + r[1] + "</dd></div>";
+      }).join("") + "</dl></div>";
+  }
 
   function prefillRow(on) {
     return '<div class="d3-kyb-titlerow"><div class="d3-demo-prefill">' +
@@ -862,141 +1008,155 @@
   { id: "o3a", group: "Option 3 · Manual form", name: "A · Auto pre-fill path",
     line: "The contract includes pre-fill, so the registry fills the form and the user reviews it.",
     steps: [
-      { title: "Pre-fill on", actor: "Action", noVisual: true, trigger: "checks the <strong>Pre-fill</strong> switch is ON", demo: true,
-        changes: ["The landing offers a business search rather than an empty form.",
-                  "In the product this comes from the contract, not a switch."],
+      { num: "1", title: "Pre-fill on", actor: "Action", demo: true,
+        trigger: "checks the <strong>Pre-fill</strong> switch is ON",
+        note: { k: "Demo", text: "A review affordance. In the product this comes from the contract, not a switch. <strong>Not part of the product.</strong>", warn: true },
+        changes: ["The switch sits beside the <em>KYB Verification</em> title, in the same dashed outline as the other demo controls.",
+                  "With it on, the page offers a business search rather than an empty form.",
+                  "The lede reads <em>Search for a business to start a verification yourself.</em>"],
         view: function () { return X.sheet(prefillRow(true)); } },
 
-      { title: "Search", actor: "Action", noVisual: true, trigger: "types “meridian” and selects a result",
-        changes: ["The dropdown lists matches with their jurisdiction, and says how many it is showing of how many.",
-                  "Selecting one opens the form with the registry data already in it.",
-                  "Each filled field is marked <strong>Pre-filled</strong>."],
-        view: function () { return X.sheet('<div class="vb-search-field">' +
-          '<div class="tds-select tds-select--interactive vb-search-country">' +
-          '<button type="button" class="tds-select__trigger tds-select__trigger--lg">' +
-          '<span class="tds-select__country-flag" aria-hidden="true"><span class="fi fi-us"></span></span>' +
-          '<span class="tds-select__value vb-search-country__value">United States</span>' +
-          '<span class="tds-select__trailing-group">' + CARET + "</span></button></div>" +
-          '<div class="tds-combobox tds-combobox--full-width tds-combobox--open vb-combobox">' +
-          '<div class="tds-combobox__field tds-combobox__field--lg vb-combobox__field">' +
-          '<span class="tds-combobox__leading-visual vb-combobox__icon" aria-hidden="true">' + SEARCH + "</span>" +
-          '<input class="tds-combobox__input" type="text" value="meridian" readonly aria-label="Search business"></div>' +
-          '<div class="tds-combobox__menu"><div class="tds-dropdown-panel vb-combobox__panel" role="listbox">' +
-          '<div class="vb-combobox__options">' +
-          ["Meridian Apex Consulting Inc.", "Meridian Capital LLC", "Meridian Global Partners Inc."].map(function (n, i) {
-            return '<button type="button" class="tds-action-list-item vb-combobox__option' + (i === 1 ? " tds-action-list-item--active" : "") +
-              '" role="option"><span class="tds-action-list-item__content"><span class="tds-action-list-item__label">' + n + "</span>" +
-              '<span class="tds-action-list-item__description">United States</span></span></button>';
-          }).join("") + "</div>" +
-          '<div class="vb-combobox__footer">Showing 5 of 1284 matches — keep typing to refine</div>' +
-          "</div></div></div></div>"); } },
+      { num: "2", title: "Search and pick", actor: "Action",
+        trigger: "types “meridian” and selects an entity",
+        changes: ["The field pairs a country select with the search box — the country decides which registry is searched.",
+                  "Matches list the name and the country; the footer says how many of how many are shown.",
+                  "Picking one opens the two-step form with the registry data already in it.",
+                  "Every field the registry filled is marked <strong>Pre-filled</strong> in green; what it had nothing for stays empty."],
+        view: function () { return X.cap("Typing opens the matches:") +
+          X.sheet(searchField(["Meridian Apex Consulting Inc.", "Meridian Capital LLC", "Meridian Global Partners Inc.",
+                               "Meridian Analytics Inc.", "Meridian Industrial Holdings LLC"], 0)) +
+          X.cap("…and picking one fills the form:") +
+          X.sheet(stepper(false) + SAVEDLINE +
+            '<div class="d3-kyb-fields__grid">' +
+            field("Business Name", APEX, true, true) + field("Country", "United States", false, true) +
+            field("Jurisdiction Of Incorporation", "CA, United States", false, true) +
+            field("Business Registration Number", "US-8891-INC", false, true) +
+            field("Address Line 1", "50 Fremont St", false, true) + field("Address Line 2", "") +
+            field("City", "San Francisco", false, true) + field("Postal Code", "94105", false, true) +
+            "</div>" + ACC + formActions("Continue")); } },
 
-      { title: "Review fields", actor: "Action", noVisual: true, trigger: "keeps the default configuration, or clicks <strong>Edit</strong>",
-        note: { k: "Shared", text: "One setting, three places — Settings, this form and the AI wizard all show the same configuration." },
-        changes: ["The configuration sits above the fields as one line, with an Edit button.",
-                  "Required and pre-filled fields are distinguished at a glance."],
-        view: function () { return X.sheet(stepper(false) + SAVEDLINE +
-          '<div class="d3-kyb-fields__grid">' +
-          field("Business Name", "Meridian Capital LLC", true, true) + field("Country", "United States", false, true) +
-          field("Jurisdiction Of Incorporation", "NY, United States", false, true) +
-          field("Business Registration Number", "NY DOS 4417762", false, true) + "</div>"); } },
+      { num: "3", title: "Configuration or fields", actor: "Action",
+        trigger: "keeps the default configuration, or clicks <strong>Edit</strong> to change it",
+        note: { k: "Shared", text: "One setting, three places — Settings, this form and the AI wizard all read the same configuration." },
+        changes: ["The configuration sits above the fields as one line: the product and the package it bills to.",
+                  "<strong>Edit</strong> opens the three levels as radio cards under <em>Select Verification Level</em>.",
+                  "Only the selected card carries a <strong>Package</strong> select — the billing sub-account for that level.",
+                  "Business Insights is tagged <em>Default</em>; <strong>Done</strong> closes the editor back to the one-line summary."],
+        view: function () { return X.cap("Closed, as one line:") + X.sheet(SAVEDLINE) +
+          X.cap("Open, after Edit:") + X.sheet(levelCards("insights")); } },
 
-      { title: "Optional fields", actor: "Action", noVisual: true, trigger: "opens the <strong>View all fields</strong> accordion",
+      { num: "4", title: "Optional fields", actor: "Action",
+        trigger: "opens the <strong>View all fields</strong> accordion",
         changes: ["Everything beyond the required and recommended fields is collapsed by default.",
-                  "Nothing in here blocks Continue."],
-        view: function () { return X.sheet(ACC); } },
+                  "Inside, the optional fields are grouped — Business, Address, Second Address.",
+                  "Pre-fill reaches in here too: <em>State Province</em> is filled and marked, the rest are empty.",
+                  "Nothing in this accordion blocks <strong>Continue</strong>."],
+        view: function () { return X.sheet(acc(true,
+          fieldGroup("Business", ["Tax ID Number", "Tradestyle Name", "Communication", "KYB Monitoring Callback URL",
+                                  "KYB Monitoring Fields", "KYB Monitoring Frequency"]) +
+          fieldGroup("Address", ["State Province", "Unit Number", "Building Number", "Building Name",
+                                 "Street Name", "Street Type", "Suburb", "County"], { "State Province": "CA" }) +
+          fieldGroup("Second Address", ["Second Address 1", "Second Unit Number",
+                                        "Second Building Number", "Second Building Name"]))); } },
 
-      { title: "Review step", actor: "Action", noVisual: true, trigger: "clicks <strong>Continue</strong>",
-        changes: ["Step 2 shows business details and configuration as two groups.",
-                  "The add-on list is the same one the chat wizard shows, offering the same modules."],
+      { num: "5", title: "Review", actor: "Action",
+        trigger: "clicks <strong>Continue</strong>",
+        note: { k: "Rule", text: "The add-ons are chosen here, on the last step — not with the level. Same modules the chat wizard offers." },
+        changes: ["Step 1 turns to a green check; step 2 becomes current.",
+                  "The entered details are restated as two read-only groups: <strong>Business details</strong> and <strong>Configuration</strong>.",
+                  "Configuration names the country, the <em>Product</em> and the <em>Package</em> — three different things.",
+                  "The add-ons sit at the bottom: Web Insights, UBO Discovery and Business Risk Horizon ticked, UBO and PSC Discovery left off.",
+                  "<strong>Execute verification</strong> replaces Continue, with <strong>Back</strong> beside it."],
         view: function () { return X.sheet(stepper(true) +
           '<p class="d3-kyb-step__title">Review</p>' +
           '<p class="d3-kyb-step__hint">Check the details and choose any add-ons before you run the verification.</p>' +
-          '<div class="d3-kyb-review"><div class="d3-kyb-review__group"><p class="d3-kyb-review__group-title">Business details</p>' +
-          '<dl class="d3-kyb-review__grid">' +
-          '<div class="d3-kyb-review__row"><dt>Business Name</dt><dd>Meridian Capital LLC</dd></div>' +
-          '<div class="d3-kyb-review__row"><dt>Jurisdiction</dt><dd>NY, United States</dd></div></dl></div>' +
-          '<div class="d3-kyb-review__group"><p class="d3-kyb-review__group-title">Configuration</p>' +
-          '<dl class="d3-kyb-review__grid">' +
-          '<div class="d3-kyb-review__row"><dt>Product</dt><dd>Business Insights</dd></div>' +
-          '<div class="d3-kyb-review__row"><dt>Package</dt><dd>BusinessInsights</dd></div></dl></div></div>' +
-          X.addonGroup("insights") +
-          '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">' +
-          '<button type="button" class="tds-btn tds-btn--lg tds-btn--secondary">Back</button>' +
-          '<button type="button" class="tds-btn tds-btn--lg tds-btn--primary">Execute verification</button></div>'); } },
+          '<div class="d3-kyb-review">' +
+          reviewGroup("Business details", [["Business Name", APEX], ["Jurisdiction Of Incorporation", "CA, United States"],
+            ["Business Registration Number", "US-8891-INC"], ["Address Line 1", "50 Fremont St"],
+            ["City", "San Francisco"], ["Postal Code", "94105"], ["State Province", "CA"]]) +
+          reviewGroup("Configuration", [["Country", "United States"], ["Product", "Business Insights"],
+            ["Package", "BusinessInsights-Sandbox"]]) + "</div>" +
+          X.addonGroup("insights", ["web", "ubo", "risk"]) + formActions("Execute verification", true)); } },
 
-      { title: "Results", actor: "Action", noVisual: true, trigger: "clicks <strong>Execute verification</strong>",
+      { num: "6", title: "Results", actor: "Action", noVisual: true,
+        trigger: "clicks <strong>Execute verification</strong>",
         note: { k: "Then", text: 'Risk score left unticked → <a href="#s/o2c">Scenario C</a>. Brightwater → <a href="#s/o2d">Scenario D</a>.' },
         changes: ["From here the outcome is identical to the chat path — same report, same tabs, same rules.",
-                  "The panel narrates it alongside."],
-        view: function () { return X.pane(reportBlock(CHECKS.insights), ' data-d3-ai-step="report"'); } }
+                  "The panel narrates it alongside."] }
     ],
     props: { name: "What the words mean", head: ["On screen", "Means"], rows: [
       ["Product", "the verification level — Essentials, Insights or Complete"],
-      ["Package", "the billing sub-account for that level"],
-      ["Verification Level", "the heading over the level cards in Settings"]
+      ["Package", "the billing sub-account for that level, e.g. BusinessInsights-Sandbox"],
+      ["Verification Level", "the heading over the level cards, here and in Settings"]
     ] } },
 
   /* ----------------------------------------------------------- option 3B */
   { id: "o3b", group: "Option 3 · Manual form", name: "B · Manual data entry path",
     line: "No pre-fill, so the form opens empty. Business Finder unlocks once there is enough to search with.",
     steps: [
-      { title: "Pre-fill off", actor: "Action", noVisual: true, trigger: "sets the <strong>Pre-fill</strong> switch to OFF", demo: true,
-        note: { k: "Knock-on", text: "The same setting drives the chat — with pre-fill off, the AI stops asking the Business Finder question too." },
-        changes: ["The business search is replaced by a country selector.",
-                  "The lede changes to “Enter the business details to start a verification.”"],
+      { num: "1", title: "Pre-fill off", actor: "Action", demo: true,
+        trigger: "sets the <strong>Pre-fill</strong> switch to OFF",
+        note: { k: "Knock-on", text: "The same setting drives the chat — with pre-fill off, the AI stops assuming the Business Finder step too." },
+        changes: ["The switch loses its fill and the handle moves left.",
+                  "The business search is replaced by a country selector.",
+                  "The lede changes to <em>Enter the business details to start a verification.</em>"],
         view: function () { return X.sheet(prefillRow(false)); } },
 
-      { title: "Country first", actor: "Action", noVisual: true, trigger: "selects a country to open the form",
+      { num: "2", title: "Country first", actor: "Action",
+        trigger: "selects a country to open the form",
         changes: ["The country comes first because it decides the rest — which registry, and which fields are needed.",
-                  "Only then do the empty fields appear."],
-        view: function () { return X.sheet('<div class="d3-kyb-countrycb"><label class="tds-field-label">Country</label>' +
-          '<div class="tds-combobox tds-combobox--full-width tds-combobox--open">' +
-          '<div class="tds-combobox__field tds-combobox__field--lg">' +
-          '<span class="tds-combobox__leading-visual d3-cc-flag" aria-hidden="true">' + SEARCH + "</span>" +
-          '<input class="tds-combobox__input" type="text" placeholder="Search country" readonly aria-label="Country">' +
-          '<span class="tds-combobox__trailing-group">' + CARET + "</span></div>" +
-          '<div class="tds-combobox__menu"><div class="tds-dropdown-panel d3-cc-panel" role="listbox">' +
-          [["us", "United States"], ["gb", "United Kingdom"], ["ca", "Canada"], ["sg", "Singapore"]].map(function (c) {
-            return '<button type="button" class="tds-combobox__option d3-cc-option" role="option">' +
-              '<span class="fi fi-' + c[0] + '" aria-hidden="true"></span><span>' + c[1] + "</span></button>";
-          }).join("") + "</div></div></div></div>"); } },
+                  "A globe stands where the flag will be, so the field never looks like it is missing something.",
+                  "Only after a country is chosen do the empty fields appear."],
+        view: function () { return X.sheet(countryCombo(true)); } },
 
-      { title: "Unlock Finder", actor: "Action", noVisual: true, trigger: "enters a jurisdiction and either a business name or a BRN",
-        changes: ["The Business Finder button stays inert until there is enough to search with.",
-                  "Its requirement is stated in words underneath, rather than discovered by clicking."],
-        view: function () { return X.sheet('<div class="d3-kyb-fields__grid">' +
-          field("Business Name", "", true) + field("Jurisdiction Of Incorporation", "", false, false, "Select jurisdiction") +
-          field("Business Registration Number", "") + "</div>" +
-          '<div class="d3-kyb-find"><button type="button" class="tds-btn tds-btn--md tds-btn--secondary d3-kyb-find__btn" aria-disabled="true">' +
-          '<span class="d3-kyb-find__icon">' + SEARCH + "</span>Business Finder</button>" +
-          '<p class="d3-kyb-find__hint">Business Finder needs a jurisdiction and either a business name or a BRN.</p></div>'); } },
+      { num: "3", title: "Unlock the Finder", actor: "Action",
+        trigger: "enters a jurisdiction and either a business name or a BRN",
+        changes: ["The fields open empty — nothing is marked <em>Pre-filled</em> on this path.",
+                  "Jurisdiction is a searchable pick, not free text.",
+                  "<strong>Business Finder</strong> stays inert until there is a jurisdiction and either a name or a BRN.",
+                  "Once both are in, the button wakes up."],
+        view: function () { return X.cap("Empty — the Finder is inert:") +
+          X.sheet('<div class="d3-kyb-fields__grid">' + field("Business Name", "", true) + jurField("") +
+            field("Business Registration Number", "") + "</div>" + finder(false)) +
+          X.cap("…and once a name and a jurisdiction are in:") +
+          X.sheet('<div class="d3-kyb-fields__grid">' + field("Business Name", "meridian", true) + jurField("Alabama") +
+            field("Business Registration Number", "") + "</div>" + finder(true)); } },
 
-      { title: "Search — optional", actor: "Action", noVisual: true, trigger: "clicks <strong>Business Finder</strong> and picks a match",
-        changes: ["Using the finder fills and locks the registry fields, the same way the pre-fill path does.",
-                  "Skipping it leaves everything as typed."],
-        view: function () { return X.sheet('<div class="d3-kyb-fields__grid">' +
-          field("Business Name", "Meridian", true) + field("Jurisdiction Of Incorporation", "NY, United States") + "</div>" +
-          '<div class="d3-kyb-find"><button type="button" class="tds-btn tds-btn--md tds-btn--secondary d3-kyb-find__btn dx-point">' +
-          '<span class="d3-kyb-find__icon">' + SEARCH + "</span>Business Finder</button>" +
-          '<p class="d3-kyb-find__hint">Ready — searches the Secretary of State business registry.</p></div>'); } },
+      { num: "4", title: "Search — optional", actor: "Action",
+        trigger: "clicks <strong>Business Finder</strong> and picks a match",
+        note: { k: "Optional", text: "Skipping the Finder costs nothing — the fields below stay open and typed values are kept." },
+        changes: ["The results open under the button: a count, a <strong>Hide</strong> control, and a card per candidate.",
+                  "Each card carries the name, the registered address, and the registration number with its status.",
+                  "Five are listed at a time, with a pager and a line on how to narrow the search.",
+                  "Picking one fills the business name, the BRN and the address — marked <em>Auto-filled by Business Finder</em>, not <em>Pre-filled</em>."],
+        view: function () { return X.sheet(finderResults(9, [
+            ["Meridian Capital LLC", "200 Vesey Street, New York, NY, 10281", "NY DOS 4417762 · Active"],
+            ["Meridian Global Partners Inc.", "1209 Orange Street, Wilmington, DE, 19801", "DE File 5582014 · Active"],
+            ["Meridian Analytics Inc.", "525 Market Street, San Francisco, CA, 94105", "CA SOS C4129087 · Active"],
+            ["Meridian Industrial Holdings LLC", "233 S Wacker Drive, Chicago, IL, 60606", "IL SOS 04581276 · Active"],
+            ["Meridian Partners Inc.", "200 California St, San Francisco, CA, 94111", "US-7731-INC · Active"]
+          ], 1, 5)); } },
 
-      { title: "Review &amp; execute", actor: "Action", noVisual: true, trigger: "Continue, then <strong>Execute verification</strong>",
+      { num: "5", title: "Optional fields", actor: "Action", noVisual: true,
+        trigger: "opens the <strong>View all fields</strong> accordion",
+        changes: ["The same accordion as the pre-fill path, but every field inside opens empty.",
+                  "Nothing in it blocks <strong>Continue</strong>."] },
+
+      { num: "6", title: "Review", actor: "Action", noVisual: true,
+        trigger: "clicks <strong>Continue</strong>",
+        changes: ["Identical to the pre-fill path — business details, configuration, add-ons.",
+                  "Only what was actually entered is listed, so this group is usually shorter."] },
+
+      { num: "7", title: "Results", actor: "Action", noVisual: true,
+        trigger: "clicks <strong>Execute verification</strong>",
         note: { k: "Else", text: "Where the registry does not publish owners, ownership is recorded as not disclosed unless the user supplied it." },
-        changes: ["Identical to the pre-fill path from here — business details, configuration, add-ons.",
-                  "Execute runs the same verification and produces the same report."],
-        view: function () { return X.sheet(stepper(true) +
-          '<p class="d3-kyb-step__title">Review</p>' +
-          '<p class="d3-kyb-step__hint">Check the details and choose any add-ons before you run the verification.</p>' +
-          X.addonGroup("insights") +
-          '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">' +
-          '<button type="button" class="tds-btn tds-btn--lg tds-btn--secondary">Back</button>' +
-          '<button type="button" class="tds-btn tds-btn--lg tds-btn--primary">Execute verification</button></div>'); } }
+        changes: ["The same verification runs and produces the same report as every other path."] }
     ],
-    props: { name: "Registries", head: ["Market", "Searchable", "Publishes owners"], rows: [
-      ["United Kingdom · Netherlands · Sweden", "yes", "public"],
-      ["United States · Australia · Germany", "yes", "private"],
-      ["Canada · Singapore", "<strong>no</strong>", "private"]
+    props: { name: "Business Finder", head: ["", ""], rows: [
+      ["Needs", "a country, a jurisdiction, and either a business name (3+ characters) or a BRN"],
+      ["Lists", "five candidates at a time, paged, with the total"],
+      ["On pick", "fills name, BRN and address — labelled Auto-filled by Business Finder"],
+      ["Skipping it", "costs nothing; the fields below stay open"]
     ] } }
 
   ] };
