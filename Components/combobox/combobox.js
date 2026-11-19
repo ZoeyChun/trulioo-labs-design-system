@@ -23,9 +23,16 @@
     return ((label && label.textContent) || option.textContent || "").trim();
   }
 
+  function getMenu(root) {
+    return root.__tdsComboboxMenu || root.querySelector(".tds-combobox__menu");
+  }
+
   function getOptions(root) {
+    var menu = getMenu(root);
+    if (!menu) return [];
+    /* Menu may be portaled to document.body by TdsDropdownPanel — query the menu, not root. */
     return Array.prototype.slice.call(
-      root.querySelectorAll(".tds-combobox__option:not(.tds-combobox__option--empty)")
+      menu.querySelectorAll(".tds-combobox__option:not(.tds-combobox__option--empty)")
     );
   }
 
@@ -44,7 +51,7 @@
   }
 
   function filterOptions(root, query) {
-    var menu = root.querySelector(".tds-combobox__menu");
+    var menu = getMenu(root);
     if (!menu) return;
     var q = (query || "").trim().toLowerCase();
     var options = getOptions(root);
@@ -56,6 +63,13 @@
     });
     var empty = ensureEmptyRow(menu);
     empty.hidden = visible > 0;
+    /* Filtering changes menu height; if it was flipped above the field, re-anchor. */
+    if (root.classList.contains("tds-combobox--open") && global.TdsDropdownPanel) {
+      var field = root.querySelector(".tds-combobox__field");
+      if (field && global.TdsDropdownPanel.positionInViewport) {
+        global.TdsDropdownPanel.positionInViewport(field, menu, { align: "start" });
+      }
+    }
   }
 
   function syncAria(root, open) {
@@ -98,8 +112,7 @@
 
   function closeCombobox(root) {
     if (!root.classList.contains("tds-combobox--open")) return;
-    var menu = root.__tdsComboboxMenu || root.querySelector(".tds-combobox__menu");
-    var field = root.querySelector(".tds-combobox__field");
+    var menu = getMenu(root);
     root.classList.remove("tds-combobox--open");
     syncAria(root, false);
     if (global.TdsDropdownPanel && menu) {
@@ -119,8 +132,9 @@
     if (root.classList.contains("tds-combobox--disabled")) return;
     var input = root.querySelector(".tds-combobox__input");
     var field = root.querySelector(".tds-combobox__field");
-    var menu = root.__tdsComboboxMenu || root.querySelector(".tds-combobox__menu");
+    var menu = getMenu(root);
     if (!input || !menu) return;
+    root.__tdsComboboxMenu = menu;
 
     var filterSource = root.classList.contains("tds-combobox--selected") ? "" : input.value;
     if (root.classList.contains("tds-combobox--open")) {
@@ -239,8 +253,10 @@
         if (first) first.focus();
       }
       if (event.key === "Enter") {
+        var liveMenu = getMenu(root);
         var highlighted =
-          menu.querySelector(".tds-combobox__option--highlighted:not([hidden])") ||
+          (liveMenu &&
+            liveMenu.querySelector(".tds-combobox__option--highlighted:not([hidden])")) ||
           getOptions(root).find(function (option) {
             return !option.hidden;
           });

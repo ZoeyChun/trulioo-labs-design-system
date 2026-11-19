@@ -346,6 +346,11 @@ button.tds-caret:disabled {
   appearance: none;
 }
 
+/* Author display:flex would otherwise override the [hidden] UA rule. */
+.tds-combobox__option[hidden] {
+  display: none;
+}
+
 .tds-combobox__option:hover,
 .tds-combobox__option--highlighted {
   background-color: var(--surface-hover);
