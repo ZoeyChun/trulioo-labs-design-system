@@ -641,17 +641,65 @@ body {
   box-shadow: 0 0 0 2px var(--surface-default, #fff);
 }
 
-/* The Chats dock, shown beside a stub of the rail it belongs to. */
-.dx-dock { display: flex; align-items: stretch; min-height: 180px; }
+/* The Chats dock, shown beside the portal's own rail. */
+.dx-dock { display: flex; align-items: stretch; min-height: 200px; }
+/* The rail's own look, from css/shell.css (".d1-rail", ".d1-rail__header",
+   ".d1-logo", ".d1-rail__nav", ".d1-nav-btn"), which this page cannot link
+   wholesale: it styles html, body and .d1-shell. Only the sizing and the
+   logo plate are copied; d3-rail.css supplies the rest. */
 .dx-dock__rail {
+  position: static;
+  z-index: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 72px;
+  width: 72px;
+  height: auto;
+  background: var(--surface-neutral-03, #eef1ee);
+}
+.dx-view .d1-rail__header {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: var(--spacing-16, 16px) var(--padding-lg, 16px) var(--padding-lg, 16px);
+}
+.dx-view .d1-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg, 12px);
+  background: var(--interactive-default, #16423a);
+  overflow: hidden;
+}
+.dx-view .d1-logo img { display: block; flex-shrink: 0; }
+.dx-view .d1-rail__nav {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-24, 24px);
-  padding: var(--spacing-16, 16px) var(--spacing-12, 12px);
-  border-right: 1px solid var(--border-subtle, #dde2de);
+  flex: 1 1 auto;
+  gap: var(--gap-lg, 16px);
+  min-height: 0;
+  padding: var(--padding-xl, 24px) var(--padding-lg, 16px);
 }
-.dx-dock__rail .d3-ai-ident__orb { width: 32px; height: 32px; }
+.dx-view .d1-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg, 12px);
+  background: transparent;
+  color: var(--icon-faint, #617269);
+  cursor: pointer;
+}
+.dx-view .d1-nav-btn svg { display: block; flex-shrink: 0; width: 24px; height: 24px; }
+.dx-view .d3-rail__rule { width: 24px; margin: 0; border: 0; border-top: 1px solid var(--border-subtle, #dde2de); }
 .dx-dock .d3-chatdock {
   position: static;
   flex: 1;
@@ -769,3 +817,7 @@ body {
   white-space: nowrap;
   cursor: pointer;
 }
+
+/* Expanded: the panel takes the canvas beside the rail. */
+.dx-expand { display: flex; align-items: stretch; width: 100%; min-height: 320px; }
+.dx-expand__pane { flex: 1; position: static; }

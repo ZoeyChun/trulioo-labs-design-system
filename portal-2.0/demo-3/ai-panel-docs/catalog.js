@@ -672,19 +672,25 @@
       }).join("") + "</dl></div>";
   }
 
-  /* The Chats dock beside the rail, with the rail's own Chats button. */
+  /* The Chats dock, beside the rail it opens from: the Trulioo logo mark at
+     the top, then the Chats button — the portal's own nav, not a stand-in. */
   function chatDock(live) {
     var DOCK_HIDE = '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.25"/>' +
       '<path d="M6.5 3v10" stroke="currentColor" stroke-width="1.25"/>' +
       '<path d="M11 6.25 9.25 8 11 9.75" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    var CHAT_ICON = '<svg class="d3-fa-line" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
-      '<path stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" d="M13.5 9.5a1.5 1.5 0 0 1-1.5 1.5H6l-3 2.5V11H4a1.5 1.5 0 0 1-1.5-1.5v-5A1.5 1.5 0 0 1 4 3h8a1.5 1.5 0 0 1 1.5 1.5v5Z"/></svg>';
     return '<div class="dx-dock">' +
-      '<div class="dx-dock__rail">' +
-      '<span class="d3-ai-ident__orb" data-orb="idle"></span>' +
-      '<button type="button" class="tds-icon-btn tds-icon-btn--invisible tds-icon-btn--circular dx-rail-btn' +
-      (live ? " dx-rail-btn--live" : "") + '" aria-label="Chats">' +
-      '<span class="tds-icon-btn__icon" aria-hidden="true">' + CHAT_ICON + "</span></button></div>" +
+      '<aside class="d1-rail dx-dock__rail" aria-label="Primary">' +
+      '<div class="d1-rail__header"><span class="d1-logo">' +
+      '<img src="../assets/logo-mark.svg" alt="" width="29.9995" height="24.6107"></span></div>' +
+      '<nav class="d1-rail__nav" aria-label="Primary"><div class="d1-rail__nav-top">' +
+      '<button type="button" class="d1-nav-btn d1-nav-btn--lg dx-rail-btn' +
+      (live ? " dx-rail-btn--live" : "") + '" aria-label="Chats" aria-expanded="true">' +
+      '<svg class="d1-nav-btn__icon d1-nav-btn__icon--line" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+      '<path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ' +
+      'd="M4.5 6.75A2.25 2.25 0 0 1 6.75 4.5h10.5A2.25 2.25 0 0 1 19.5 6.75v7.5a2.25 2.25 0 0 1-2.25 2.25H9.3L5.4 19.6a.75.75 0 0 1-1.2-.6v-2.5A2.25 2.25 0 0 1 4.5 14.25v-7.5Z"/></svg>' +
+      "</button>" +
+      '<hr class="d3-rail__rule" aria-hidden="true">' +
+      "</div></nav></aside>" +
       '<aside class="d3-chatdock" style="display:flex">' +
       '<header class="d3-chatdock__head"><h2 class="d3-chatdock__title">Chats</h2>' +
       '<button type="button" class="tds-icon-btn tds-icon-btn--sm tds-icon-btn--invisible tds-icon-btn--circular d3-chatdock__hide" aria-label="Hide chats">' +
@@ -694,6 +700,37 @@
       (live ? " d1-chat-row--live" : "") + '" role="menuitem">' +
       '<span class="d3-chat-row__title">Verify Meridian Us in US</span></button>' +
       "</div></aside></div>";
+  }
+
+  /* Expanded: data-d3-chat-size="full" and the panel takes the canvas beside
+     the rail. The expand control becomes Collapse, pressed. */
+  function expandedPanel() {
+    var head = '<div class="d3-chat-pane__head" style="margin-bottom:0">' +
+      '<div class="d3-ai-ident"><span class="d3-ai-ident__orb" data-orb="idle"></span>' +
+      '<span class="d3-ai-ident__copy"><span class="d3-ai-ident__title">Verify Meridian Us in US</span>' +
+      '<span class="d3-ai-ident__status"><span>Awaiting input</span></span></span></div>' +
+      '<div class="d3-chat-pane__tools">' +
+      X.iconBtn(I.newChat, "New Chat", "tds-icon-btn--invisible tds-icon-btn--circular d3-chat-pane__new", " data-d3-chat-new") +
+      X.iconBtn(I.collapse, "Collapse", "tds-icon-btn--invisible tds-icon-btn--circular d3-chat-pane__expand", ' aria-pressed="true"') +
+      X.iconBtn(I.minimize, "Minimize", "tds-icon-btn--invisible d3-chat-pane__close") +
+      "</div></div>";
+    return '<div class="dx-expand d1-shell" data-d3-chat="open" data-d3-chat-mode="kyb" ' +
+      'data-d3-ai-orb="header" data-d3-chat-size="full">' +
+      railStub() +
+      '<aside class="d3-chat-pane dx-expand__pane" style="display:flex;margin:0;box-shadow:none;min-width:0;padding:16px">' +
+      head +
+      '<div style="margin-top:16px">' + X.user("verify meridian, US") +
+      '<div class="d3-kyb-cand-panel" style="margin-top:16px"><div class="ai-reply">' +
+      '<p class="ai-reply__lead">Got it — meridian in United States.</p>' +
+      '<p class="ai-reply__sub">What level of compliance and risk verification do you need to perform today?</p>' +
+      "</div></div>" + X.levelList("insights") + "</div></aside></div>";
+  }
+
+  /* Just enough of the rail to place the panel against it. */
+  function railStub() {
+    return '<aside class="d1-rail dx-dock__rail" aria-label="Primary">' +
+      '<div class="d1-rail__header"><span class="d1-logo">' +
+      '<img src="../assets/logo-mark.svg" alt="" width="29.9995" height="24.6107"></span></div></aside>';
   }
 
   /* The panel at its smallest: one field that still takes a question. The bar
@@ -1318,13 +1355,17 @@
 
       { title: "Expand and minimize",
         line: "The panel has three sizes, and the controls for them sit together in its header.",
-        changes: ["<strong>Expand</strong> takes the panel to the full canvas, for reading a long answer or a wide table.",
-                  "<strong>Minimize</strong> collapses it to the ask bar — a single field that still accepts a question.",
+        changes: ["Three controls sit together in the header: <strong>New Chat</strong>, <strong>Expand</strong>, <strong>Minimize</strong>.",
+                  "<strong>Expand</strong> sets <code>data-d3-chat-size=\"full\"</code>: the panel takes the whole canvas beside the rail, and its icon flips to a collapse arrow.",
+                  "Expanded is for reading — a long answer, a wide table — and the thread is unchanged by it.",
+                  "<strong>Minimize</strong> collapses it to the ask bar: a single field that still accepts a question.",
                   "Minimized is not closed: a conversation left running keeps running, and the rail dot says so.",
                   "The ask bar reads <em>Ask about business verification</em>; inside a conversation the placeholder follows the step instead, e.g. <em>Select a match or refine your search</em>."],
-        view: function () { return X.cap("The three controls, in the header:") +
+        view: function () { return X.cap("Panel — the default, beside the workspace:") +
           X.panelWithHead("Verify Meridian Us in US", "Awaiting input", "idle", "") +
-          X.cap("…and minimized, as the ask bar:") +
+          X.cap("Expanded — the whole canvas, and the icon flips to collapse:") +
+          expandedPanel() +
+          X.cap("Minimized — the ask bar:") +
           X.sheet(askBar("Ask about business verification")); } },
 
       { title: "AI visual reactions",
