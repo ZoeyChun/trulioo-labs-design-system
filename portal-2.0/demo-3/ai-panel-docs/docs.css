@@ -671,6 +671,60 @@ body {
    the shell, so it only needs a floor to sit on. */
 .dx-askbar-stage .d3-askbar { bottom: 24px; width: calc(100% - 32px); max-width: 560px; }
 
+/* The state picker: one live orb, and the states to put it in. */
+.dx-orbplay {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-16, 16px);
+  padding: var(--spacing-32, 32px) var(--spacing-16, 16px) var(--spacing-24, 24px);
+}
+
+.dx-orbplay__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+}
+
+.dx-orbplay__states {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-8, 8px);
+}
+
+.dx-orbplay__btn {
+  padding: 7px var(--spacing-16, 16px);
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 999px;
+  background: var(--surface-default, #fff);
+  color: var(--text-description, #4a5a51);
+  font-family: inherit;
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.dx-orbplay__btn:hover { border-color: var(--border-default, #b9c3bc); color: var(--text-default); }
+
+.dx-orbplay__btn.is-on {
+  border-color: transparent;
+  background: var(--surface-brand, #16423a);
+  color: #fff;
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.dx-orbplay__hint {
+  margin: 0;
+  color: var(--text-caption, #617269);
+  font-size: var(--font-size-xs, 12px);
+  line-height: 16px;
+}
+
 /* The orb's states, side by side and running. */
 .dx-orbs {
   /* .dx-view is a flex row, so the grid has to claim the width itself. */

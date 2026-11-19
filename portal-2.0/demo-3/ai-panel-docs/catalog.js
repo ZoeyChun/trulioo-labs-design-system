@@ -706,12 +706,20 @@
       '<span class="d3-askbar__send" aria-hidden="true">' + I.send + "</span></button></div>";
   }
 
-  /* The orb's states, side by side and live. */
-  function orbRow(states) {
-    return '<div class="dx-orbs">' + states.map(function (st) {
-      return '<div class="dx-orb-cell"><div class="dx-orb-cell__host" data-hero-orb="' + st[0] + '"></div>' +
-        '<p class="dx-orb-cell__name">' + st[1] + "</p></div>";
-    }).join("") + "</div>";
+  /* One live orb and the states to put it in — the same shape as the
+     component's own experiments page, so the transitions can be watched
+     rather than inferred from four stills. */
+  function orbPlayer(states, initial) {
+    return '<div class="dx-orbplay">' +
+      '<div class="dx-orbplay__stage" data-orb-player="' + initial + '"></div>' +
+      '<div class="dx-orbplay__states" role="radiogroup" aria-label="Orb state">' +
+      states.map(function (st) {
+        return '<button type="button" class="dx-orbplay__btn' + (st[0] === initial ? " is-on" : "") +
+          '" role="radio" aria-checked="' + (st[0] === initial) + '" data-dx-orb-state="' + st[0] + '">' +
+          st[1] + "</button>";
+      }).join("") + "</div>" +
+      '<p class="dx-orbplay__hint">Completed settles back to idle on its own, after a hold.</p>' +
+      "</div>";
   }
 
   function prefillRow(on) {
@@ -1320,16 +1328,17 @@
           X.sheet(askBar("Ask about business verification")); } },
 
       { title: "AI visual reactions",
-        line: "One component, four states — the orb says what the assistant is doing without a line of copy.",
+        line: "One component, five states — the orb says what the assistant is doing without a line of copy.",
         note: { k: "Reference", text: 'The states in isolation: <a href="https://zoeychun.github.io/trulioo-labs-design-system/portal-2.0/Misc/Loader/experiments/truai-bubble/" target="_blank" rel="noopener">the TruAI bubble experiments page</a>.' },
         changes: ["<strong>Idle</strong> — waiting, a slow drift.",
                   "<strong>Thinking</strong> — the request is being worked out.",
                   "<strong>Acting</strong> — something is running: a search, a verification, a filter.",
-                  "<strong>Completed</strong> — the answer has landed.",
+                  "<strong>Completed</strong> — the answer has landed; it holds, then settles back to idle by itself.",
+                  "<strong>Needs attention</strong> — there is something to look at; its status line reads <em>Review findings</em>.",
                   "The orb appears at two sizes: small in the panel header beside the title, and large on the homepage hero.",
-                  "They are live below — the animation is the component, not a picture of it."],
-        view: function () { return orbRow([["idle", "Idle"], ["thinking", "Thinking"],
-                                           ["acting", "Acting"], ["completed", "Completed"]]); } }
+                  "The picker above runs the real component — switch states to watch it move between them, not just land on them."],
+        view: function () { return orbPlayer([["idle", "Idle"], ["thinking", "Thinking"],
+          ["acting", "Acting"], ["completed", "Completed"], ["needs-attention", "Needs attention"]], "idle"); } }
     ],
     props: { name: "Where the state lives", head: ["Behaviour", "Driven by"], rows: [
       ["Conversation continues", "the thread is kept until New Chat is pressed"],

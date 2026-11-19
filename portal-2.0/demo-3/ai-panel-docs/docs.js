@@ -81,6 +81,33 @@
       var o = window.TruAIBubble.mountPanel(host, { state: host.getAttribute("data-hero-orb") || "idle" });
       if (o) orbs.push(o);
     });
+    /* The state picker: one orb the buttons drive. Completed settles back to
+       idle on its own, so the buttons follow it rather than lying about it. */
+    root.querySelectorAll("[data-orb-player]").forEach(function (host) {
+      if (!window.TruAIBubble || !window.TruAIBubble.mountPanel) return;
+      var group = host.parentElement;
+      var sync = function (state) {
+        group.querySelectorAll("[data-dx-orb-state]").forEach(function (b) {
+          var on = b.getAttribute("data-dx-orb-state") === state;
+          b.classList.toggle("is-on", on);
+          b.setAttribute("aria-checked", on ? "true" : "false");
+        });
+      };
+      var o = window.TruAIBubble.mountPanel(host, {
+        state: host.getAttribute("data-orb-player") || "idle",
+        actingLabel: "Searching the registry",
+        onCompletedEnd: function () { sync("idle"); }
+      });
+      if (!o) return;
+      orbs.push(o);
+      group.querySelectorAll("[data-dx-orb-state]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var state = btn.getAttribute("data-dx-orb-state");
+          o.set({ state: state });
+          sync(state);
+        });
+      });
+    });
   }
 
   function branchBar(sc) {
