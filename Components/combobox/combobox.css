@@ -19,9 +19,14 @@
      --selected   a value is committed             (Clear.data-visible)
      --focus      field chrome focus (static demo)
      --disabled / --invalid / --success
+     --interactive  opt-in for combobox.js wiring
 
      Open and selected are orthogonal. Use both when the menu is open
      on a committed value: .tds-combobox--open.tds-combobox--selected
+
+     Interaction (Components/combobox/combobox.js):
+       Add .tds-combobox--interactive to enable open / filter / select /
+       clear / outside-click + Escape close. Dispatches tds-combobox:* events.
 
    Structure (maps to Base UI anatomy):
      .tds-combobox                          → Root
@@ -275,11 +280,27 @@
   pointer-events: none;
 }
 
-/* --- Caret --- */
+/* --- Caret / trigger --- */
 
 .tds-combobox .tds-caret {
   color: var(--icon-faint);
   flex-shrink: 0;
+}
+
+button.tds-caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+}
+
+button.tds-caret:disabled {
+  cursor: not-allowed;
 }
 
 /* --- Menu (floating dropdown panel) --- */

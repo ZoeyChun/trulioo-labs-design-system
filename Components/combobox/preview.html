@@ -304,5 +304,69 @@
         </div>
       </div>
     </section>
+
+    <!-- Interactive (combobox.js) ------------------------------------ -->
+    <section>
+      <h2>Interactive — .tds-combobox--interactive (open / filter / select / clear)</h2>
+      <p class="lead" style="margin-bottom: 16px">
+        Focus or type to open, pick an option to commit and close, clear to reset, click outside or Escape to dismiss.
+        Requires <code>combobox.js</code> (optional <code>dropdown-panel.js</code> for viewport positioning).
+      </p>
+      <div class="open-grid">
+        <div class="open-cell">
+          <div class="tds-combobox tds-combobox--md tds-combobox--interactive" style="max-width: 320px">
+            <label class="tds-field-label" for="cb-live">Country</label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input
+                id="cb-live"
+                class="tds-combobox__input"
+                type="text"
+                placeholder="Select country"
+                role="combobox"
+                aria-expanded="false"
+                aria-autocomplete="list"
+                autocomplete="off"
+              />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear selection">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <button type="button" class="tds-caret tds-caret--down" data-combobox-trigger aria-label="Open popup">
+                <svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+            </div>
+            <div class="tds-combobox__menu" id="cb-live-list" role="listbox">
+              <div class="tds-dropdown-panel">
+                <button type="button" class="tds-combobox__option" role="option" data-value="United States">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-us"></span></span>
+                  <span class="tds-combobox__option-label">United States</span>
+                </button>
+                <button type="button" class="tds-combobox__option" role="option" data-value="United Kingdom">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-gb"></span></span>
+                  <span class="tds-combobox__option-label">United Kingdom</span>
+                </button>
+                <button type="button" class="tds-combobox__option" role="option" data-value="United Arab Emirates">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-ae"></span></span>
+                  <span class="tds-combobox__option-label">United Arab Emirates</span>
+                </button>
+                <button type="button" class="tds-combobox__option" role="option" data-value="Canada">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-ca"></span></span>
+                  <span class="tds-combobox__option-label">Canada</span>
+                </button>
+                <button type="button" class="tds-combobox__option" role="option" data-value="Germany">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-de"></span></span>
+                  <span class="tds-combobox__option-label">Germany</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="../_shared/dropdown-panel/dropdown-panel.js"></script>
+    <script src="./combobox.js"></script>
   </body>
 </html>
