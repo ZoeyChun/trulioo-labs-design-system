@@ -1,0 +1,377 @@
+@import '../_shared/field-label/field-label.css';
+@import '../_shared/field-caption/field-caption.css';
+@import '../_shared/field-validation/field-validation.css';
+@import '../_shared/caret/caret.css';
+@import '../_shared/dropdown-panel/dropdown-panel.css';
+@import '../action-list-item/action-list-item.css';
+
+/* ============================================================
+   Combobox
+   Figma: Combobox (9915:6974)
+
+   A searchable Select for long or unknown lists. Users type to
+   filter options instead of scrolling.
+
+   Sizes:  sm (24px) | md (32px) | lg (42px)
+
+   State model (Base UI–aligned — open ⊥ selected):
+     --open       popup / listbox is open          (like data-popup-open)
+     --selected   a value is committed             (Clear.data-visible)
+     --focus      field chrome focus (static demo)
+     --disabled / --invalid / --success
+
+     Open and selected are orthogonal. Use both when the menu is open
+     on a committed value: .tds-combobox--open.tds-combobox--selected
+
+   Structure (maps to Base UI anatomy):
+     .tds-combobox                          → Root
+       .tds-field-label                     → Label (optional, --no-label)
+       .tds-combobox__field                 → InputGroup
+         .tds-combobox__leading-visual      → (decorative / search)
+         .tds-combobox__input               → Input
+         .tds-combobox__clear               → Clear  (keep mounted; CSS hides)
+         .tds-caret                         → Trigger / Icon
+       .tds-combobox__menu                  → Popup (only when --open)
+         .tds-dropdown-panel                → List surface
+           .tds-combobox__option            → Item
+           .tds-combobox__option--empty     → Empty
+           .tds-combobox__option-check      → ItemIndicator
+       .tds-field-caption / validation
+   ============================================================ */
+
+.tds-combobox {
+  --_field-height: 32px;
+  --_field-pad-y: var(--spacing-4);
+  --_field-pad-x: var(--spacing-8);
+  --_field-text-size: var(--font-size-sm);
+  --_leading-size: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  font-family: var(--font-family);
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* No label — tighten the gap when rendered without a FieldLabel */
+.tds-combobox--no-label {
+  gap: 0;
+}
+
+.tds-combobox--disabled > .tds-field-label {
+  color: var(--text-disabled);
+}
+
+/* --- Sizes (match Select) --- */
+
+/* Prefer size on the root. Legacy .tds-combobox__field--{sm|md|lg} still maps via :has(). */
+.tds-combobox--sm,
+.tds-combobox:has(.tds-combobox__field--sm) {
+  --_field-height: 24px;
+  --_field-pad-y: var(--spacing-2);
+  --_field-pad-x: var(--spacing-8);
+  --_field-text-size: var(--font-size-xs);
+  --_leading-size: 12px;
+}
+
+.tds-combobox--md,
+.tds-combobox:has(.tds-combobox__field--md) {
+  --_field-height: 32px;
+  --_field-pad-y: var(--spacing-4);
+  --_field-pad-x: var(--spacing-8);
+  --_field-text-size: var(--font-size-sm);
+  --_leading-size: 14px;
+}
+
+.tds-combobox--lg,
+.tds-combobox:has(.tds-combobox__field--lg) {
+  --_field-height: 42px;
+  --_field-pad-y: var(--spacing-8);
+  --_field-pad-x: var(--spacing-12);
+  --_field-text-size: var(--font-size-sm);
+  --_leading-size: 16px;
+}
+
+/* --- Field (the trigger / typeable input shell) --- */
+
+.tds-combobox__field {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  width: 100%;
+  box-sizing: border-box;
+  height: var(--_field-height);
+  padding: var(--_field-pad-y) var(--_field-pad-x);
+  background-color: var(--surface-neutral-01);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  cursor: text;
+  overflow: clip;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+/* Focus ring: interaction / open only — not merely because a value is selected */
+
+.tds-combobox__field:focus-within,
+.tds-combobox--focus .tds-combobox__field,
+.tds-combobox--open .tds-combobox__field {
+  border-color: var(--border-focus);
+  border-width: 2px;
+  outline: none;
+  /* Compensate 1px growth so the content doesn't jump */
+  padding: calc(var(--_field-pad-y) - 1px) calc(var(--_field-pad-x) - 1px);
+}
+
+/* Disabled */
+
+.tds-combobox--disabled .tds-combobox__field {
+  background-color: var(--surface-neutral-02);
+  border-color: var(--border-disabled);
+  cursor: not-allowed;
+}
+
+.tds-combobox--disabled .tds-combobox__input,
+.tds-combobox--disabled .tds-combobox__input::placeholder {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.tds-combobox--disabled .tds-combobox__leading-visual,
+.tds-combobox--disabled .tds-combobox__clear,
+.tds-combobox--disabled .tds-caret {
+  color: var(--icon-disabled);
+}
+
+/* Validation */
+
+.tds-combobox--invalid .tds-combobox__field {
+  border-color: var(--border-negative);
+  border-width: 2px;
+  padding: calc(var(--_field-pad-y) - 1px) calc(var(--_field-pad-x) - 1px);
+}
+
+.tds-combobox--success .tds-combobox__field {
+  border-color: var(--border-positive);
+  border-width: 2px;
+  padding: calc(var(--_field-pad-y) - 1px) calc(var(--_field-pad-x) - 1px);
+}
+
+/* --- Input (the typeable text) --- */
+
+.tds-combobox__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--_field-text-size);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-default);
+}
+
+.tds-combobox__input::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* When the combobox is "selected" the typed text is actually a value: keep default color */
+.tds-combobox--selected .tds-combobox__input {
+  color: var(--text-default);
+}
+
+/* --- Leading visual (flag or FA search icon) --- */
+
+/*
+ * Visibility (keep nodes mounted — Base UI Clear keepMounted pattern):
+ *
+ *   Condition                         | Leading | Clear
+ *   ----------------------------------|---------|------------------
+ *   --show-leading                    | show    | —
+ *   --show-clear                      | —       | show
+ *   --selected (has value)            | show    | show  (Clear visible)
+ *   --open without --selected         | show    | hide  (filtering)
+ *   --open with --selected            | show    | show  (value + popup)
+ *
+ * Figma props: showLeadingVisual → --show-leading · showClear → --show-clear
+ */
+
+.tds-combobox__leading-visual {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--icon-faint);
+  font-size: var(--_leading-size);
+  line-height: 1;
+}
+
+.tds-combobox__leading-visual > .fi {
+  width: calc(var(--_leading-size) + 6px);
+  line-height: var(--_leading-size);
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 8%);
+}
+
+.tds-combobox__leading-visual > svg,
+.tds-combobox__leading-visual > img {
+  width: 1em;
+  height: auto;
+  display: block;
+}
+
+.tds-combobox--show-leading .tds-combobox__leading-visual,
+.tds-combobox--open .tds-combobox__leading-visual,
+.tds-combobox--selected .tds-combobox__leading-visual {
+  display: inline-flex;
+}
+
+/* --- Clear button (FA xmark) — Base UI Combobox.Clear --- */
+
+.tds-combobox__clear {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--_leading-size);
+  height: var(--_leading-size);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--icon-faint);
+  cursor: pointer;
+  font-size: var(--_leading-size);
+  line-height: 1;
+}
+
+/* Visible when there is a value to clear (or author toggles showClear) */
+.tds-combobox--show-clear .tds-combobox__clear,
+.tds-combobox--selected .tds-combobox__clear {
+  display: inline-flex;
+}
+
+/* Filtering with no committed value: hide clear (searching) */
+.tds-combobox--open:not(.tds-combobox--selected) .tds-combobox__clear {
+  display: none;
+}
+
+.tds-combobox__clear:hover {
+  color: var(--icon-default);
+}
+
+.tds-combobox__clear:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.tds-combobox--disabled .tds-combobox__clear {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --- Caret --- */
+
+.tds-combobox .tds-caret {
+  color: var(--icon-faint);
+  flex-shrink: 0;
+}
+
+/* --- Menu (floating dropdown panel) --- */
+
+.tds-combobox__menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + var(--spacing-4));
+  left: 0;
+  z-index: 100;
+  min-width: 100%;
+  width: max-content;
+  max-width: calc(100vw - var(--spacing-32));
+}
+
+/* Popup opens only with --open (Base UI data-popup-open). Selected alone stays closed. */
+.tds-combobox--open .tds-combobox__menu {
+  display: block;
+}
+
+.tds-combobox__menu .tds-dropdown-panel {
+  min-width: 100%;
+}
+
+/* --- Option rows --- */
+
+.tds-combobox__option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-8) var(--spacing-12);
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--text-default);
+  appearance: none;
+}
+
+.tds-combobox__option:hover,
+.tds-combobox__option--highlighted {
+  background-color: var(--surface-hover);
+}
+
+.tds-combobox__option--selected {
+  background-color: var(--surface-selected);
+}
+
+.tds-combobox__option-visual {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.tds-combobox__option-visual > .fi {
+  width: 20px;
+  line-height: 14px;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 8%);
+}
+
+.tds-combobox__option-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tds-combobox__option-check {
+  color: var(--icon-default);
+  flex-shrink: 0;
+}
+
+/* Empty / no-results row */
+.tds-combobox__option--empty {
+  color: var(--text-placeholder);
+  cursor: default;
+}
+
+.tds-combobox__option--empty:hover {
+  background: transparent;
+}
+
+/* --- Full width modifier --- */
+
+.tds-combobox--full-width {
+  width: 100%;
+}

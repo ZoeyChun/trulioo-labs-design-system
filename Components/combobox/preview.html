@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Combobox — Trulioo Design System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css" />
+    <link rel="stylesheet" href="../../tokens/fonts.css" />
+    <link rel="stylesheet" href="../../tokens/tokens.css" />
+    <link rel="stylesheet" href="./combobox.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 48px;
+        background: var(--surface-neutral-02);
+        font-family: var(--font-family);
+        color: var(--text-default);
+      }
+      h1 {
+        font-family: var(--font-family-display);
+        font-weight: var(--font-weight-regular);
+        font-size: 40px;
+        line-height: 1.2;
+        margin: 0 0 8px;
+      }
+      p.lead {
+        color: var(--text-description);
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0 0 32px;
+        max-width: 720px;
+      }
+      section {
+        background: var(--surface-neutral-01);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-card);
+        padding: 24px;
+        margin-bottom: 24px;
+      }
+      h2 {
+        font-size: 11px;
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-caption);
+        margin: 0 0 16px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+      }
+      .cell {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .cell-caption {
+        font-size: 12px;
+        color: var(--text-caption);
+      }
+      .open-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 32px;
+        align-items: flex-start;
+      }
+      .open-cell {
+        position: relative;
+        min-height: 320px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Combobox</h1>
+    <p class="lead">
+      A searchable Select for long or unknown lists. State classes follow Base UI’s model:
+      <code>--open</code> (popup) is independent of <code>--selected</code> (committed value). Clear stays
+      mounted and shows when there is a value; the menu only appears with <code>--open</code>.
+    </p>
+
+    <!-- Sizes ------------------------------------------------------- -->
+    <section>
+      <h2>Sizes · Rest · with FieldLabel</h2>
+      <div class="row">
+        <div class="cell">
+          <span class="cell-caption">Small — 24 px</span>
+          <div class="tds-combobox tds-combobox--sm">
+            <label class="tds-field-label" for="cb-sm">Country</label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true"><span class="fi fi-us"></span></span>
+              <input id="cb-sm" class="tds-combobox__input" placeholder="Select country" />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear"><i class="fa-solid fa-xmark"></i></button>
+              <span class="tds-caret tds-caret--down">
+                <svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <span class="cell-caption">Medium — 32 px · required · with caption</span>
+          <div class="tds-combobox tds-combobox--md">
+            <label class="tds-field-label" for="cb-md">
+              Country
+              <span class="tds-field-label__required" aria-hidden="true">*</span>
+            </label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true"><span class="fi fi-us"></span></span>
+              <input id="cb-md" class="tds-combobox__input" placeholder="Select country" />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear"><i class="fa-solid fa-xmark"></i></button>
+              <span class="tds-caret tds-caret--down">
+                <svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </span>
+            </div>
+            <span class="tds-field-caption">Pick the business's country of incorporation.</span>
+          </div>
+        </div>
+        <div class="cell">
+          <span class="cell-caption">Large — 42 px</span>
+          <div class="tds-combobox tds-combobox--lg">
+            <label class="tds-field-label" for="cb-lg">Country</label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true"><span class="fi fi-us"></span></span>
+              <input id="cb-lg" class="tds-combobox__input" placeholder="Select country" />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear"><i class="fa-solid fa-xmark"></i></button>
+              <span class="tds-caret tds-caret--down">
+                <svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- States ------------------------------------------------------ -->
+    <section>
+      <h2>States · Medium — same markup, different wrapper class</h2>
+      <div class="row">
+        <div class="cell">
+          <span class="cell-caption">Default · no toggles</span>
+          <div class="tds-combobox tds-combobox--md">
+            <label class="tds-field-label" for="cb-default">Country</label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true"><span class="fi fi-us"></span></span>
+              <input id="cb-default" class="tds-combobox__input" placeholder="Select country" />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear"><i class="fa-solid fa-xmark"></i></button>
+              <span class="tds-caret tds-caret--down"><svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <span class="cell-caption">Focused + show-leading + show-clear</span>
+          <div class="tds-combobox tds-combobox--md tds-combobox--focus tds-combobox--show-leading tds-combobox--show-clear">
+            <label class="tds-field-label" for="cb-focus">Country</label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true"><span class="fi fi-ca"></span></span>
+              <input id="cb-focus" class="tds-combobox__input" value="Canada" />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear"><i class="fa-solid fa-xmark"></i></button>
+              <span class="tds-caret tds-caret--down"><svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            </div>
+          </div>
+        </div>
+        <div class="cell">
+          <span class="cell-caption">Invalid · with validation</span>
+          <div class="tds-combobox tds-combobox--md tds-combobox--invalid">
+            <label class="tds-field-label" for="cb-invalid">Country</label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true"><span class="fi fi-us"></span></span>
+              <input id="cb-invalid" class="tds-combobox__input" placeholder="Select country" />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear"><i class="fa-solid fa-xmark"></i></button>
+              <span class="tds-caret tds-caret--down"><svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            </div>
+            <span class="tds-field-validation tds-field-validation--error">Country is required.</span>
+          </div>
+        </div>
+        <div class="cell">
+          <span class="cell-caption">Disabled</span>
+          <div class="tds-combobox tds-combobox--md tds-combobox--disabled">
+            <label class="tds-field-label tds-field-label--disabled" for="cb-dis">Country</label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true"><span class="fi fi-us"></span></span>
+              <input id="cb-dis" class="tds-combobox__input" placeholder="Select country" disabled />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear" disabled><i class="fa-solid fa-xmark"></i></button>
+              <span class="tds-caret tds-caret--down"><svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Open · search mode ----------------------------------------- -->
+    <section>
+      <h2>Open · Search mode — --open without --selected (menu on, clear hidden)</h2>
+      <div class="open-grid">
+        <div class="open-cell">
+          <div class="tds-combobox tds-combobox--md tds-combobox--open">
+            <label class="tds-field-label" for="cb-open">Country</label>
+            <div class="tds-combobox__field">
+              <!-- CSS shows leading in --open; author supplies search icon while filtering -->
+              <span class="tds-combobox__leading-visual" aria-hidden="true">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input id="cb-open" class="tds-combobox__input" placeholder="Search countries" autofocus />
+              <!-- Keep mounted; hidden while --open:not(--selected) even if --show-clear is set -->
+              <button type="button" class="tds-combobox__clear" aria-label="Clear selection"><i class="fa-solid fa-xmark"></i></button>
+              <span class="tds-caret tds-caret--down"><svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            </div>
+            <div class="tds-combobox__menu">
+              <div class="tds-dropdown-panel" role="listbox">
+                <button class="tds-combobox__option" role="option">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-us"></span></span>
+                  <span class="tds-combobox__option-label">United States</span>
+                </button>
+                <button class="tds-combobox__option tds-combobox__option--highlighted" role="option">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-gb"></span></span>
+                  <span class="tds-combobox__option-label">United Kingdom</span>
+                </button>
+                <button class="tds-combobox__option" role="option">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-ae"></span></span>
+                  <span class="tds-combobox__option-label">United Arab Emirates</span>
+                </button>
+                <button class="tds-combobox__option" role="option">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-ca"></span></span>
+                  <span class="tds-combobox__option-label">Canada</span>
+                </button>
+                <button class="tds-combobox__option" role="option">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-de"></span></span>
+                  <span class="tds-combobox__option-label">Germany</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Selected · filled (closed) ----------------------------------- -->
+    <section>
+      <h2>Selected · closed — value committed, clear visible, menu closed</h2>
+      <div class="row">
+        <div class="cell">
+          <span class="cell-caption">--selected only (Base UI: clear visible when has value)</span>
+          <div class="tds-combobox tds-combobox--md tds-combobox--selected">
+            <label class="tds-field-label" for="cb-selected-closed">Country</label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true">
+                <span class="fi fi-us"></span>
+              </span>
+              <input id="cb-selected-closed" class="tds-combobox__input" value="United States" />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear selection">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <span class="tds-caret tds-caret--down"><svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Selected + open ---------------------------------------------- -->
+    <section>
+      <h2>Selected + open — --open --selected (popup + clear both on)</h2>
+      <div class="open-grid">
+        <div class="open-cell">
+          <div class="tds-combobox tds-combobox--md tds-combobox--open tds-combobox--selected">
+            <label class="tds-field-label" for="cb-selected">Country</label>
+            <div class="tds-combobox__field">
+              <span class="tds-combobox__leading-visual" aria-hidden="true">
+                <span class="fi fi-us"></span>
+              </span>
+              <input id="cb-selected" class="tds-combobox__input" value="United States" aria-expanded="true" />
+              <button type="button" class="tds-combobox__clear" aria-label="Clear selection">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <span class="tds-caret tds-caret--down"><svg viewBox="0 0 10 5" aria-hidden="true"><path d="M0 0 L5 5 L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            </div>
+            <div class="tds-combobox__menu">
+              <div class="tds-dropdown-panel" role="listbox">
+                <button class="tds-combobox__option tds-combobox__option--selected" role="option" aria-selected="true">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-us"></span></span>
+                  <span class="tds-combobox__option-label">United States</span>
+                  <span class="tds-combobox__option-check" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
+                </button>
+                <button class="tds-combobox__option" role="option">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-gb"></span></span>
+                  <span class="tds-combobox__option-label">United Kingdom</span>
+                </button>
+                <button class="tds-combobox__option" role="option">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-ae"></span></span>
+                  <span class="tds-combobox__option-label">United Arab Emirates</span>
+                </button>
+                <button class="tds-combobox__option" role="option">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-ca"></span></span>
+                  <span class="tds-combobox__option-label">Canada</span>
+                </button>
+                <button class="tds-combobox__option" role="option">
+                  <span class="tds-combobox__option-visual"><span class="fi fi-de"></span></span>
+                  <span class="tds-combobox__option-label">Germany</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

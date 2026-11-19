@@ -137,10 +137,21 @@ components:
     cssFile: select/select.css
     classPrefixes:
       - tds-select
-      - tds-combobox
     subComponents: FieldLabel, FieldCaption, FieldValidation, Caret, DropdownPanel, Tag
     figmaNodeId: "96:1624"
-    notes: Includes combobox variant
+    notes: Closed-list picker with DropdownPanel menu
+  -
+    id: combobox
+    name: Combobox
+    category: Form Inputs
+    figmaStatus: Done
+    figmaVariants: 15
+    cssFile: combobox/combobox.css
+    classPrefixes:
+      - tds-combobox
+    subComponents: FieldLabel, FieldCaption, FieldValidation, Caret, DropdownPanel
+    figmaNodeId: "9915:6974"
+    notes: Searchable Select — type to filter; sizes sm/md/lg; states rest/focus/open/selected/disabled; showLeadingVisual + showClear toggles
   -
     id: date-picker
     name: DatePicker

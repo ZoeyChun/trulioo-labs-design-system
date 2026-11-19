@@ -1,81 +1,129 @@
 {
-  "lastBuiltAt": "2026-08-10T21:15:00.211Z",
+  "lastBuiltAt": "2026-11-19T15:53:45.828Z",
   "summary": {
-    "totalComponents": 52,
-    "cssDone": 48,
+    "totalComponents": 53,
+    "cssDone": 49,
     "cssPartial": 0,
     "cssNotStarted": 3,
-    "figmaDone": 52,
-    "figmaEligible": 52,
+    "figmaDone": 53,
+    "figmaEligible": 53,
     "figmaDonePercent": 100,
-    "demoPageCount": 8,
-    "avgAdoptionPercent": 33,
-    "builtForAdoption": 47
+    "demoPageCount": 14,
+    "avgAdoptionPercent": 34,
+    "builtForAdoption": 48
   },
   "pages": [
     {
       "id": "bank-verification",
       "label": "Bank Verification",
       "path": "pages/bank-verification",
-      "used": 14,
-      "total": 47,
-      "percent": 30
+      "used": 20,
+      "total": 48,
+      "percent": 42
+    },
+    {
+      "id": "business-reputation-review",
+      "label": "Business Reputation Review",
+      "path": "pages/business-reputation-review",
+      "used": 13,
+      "total": 48,
+      "percent": 27
     },
     {
       "id": "preview",
       "label": "Component preview",
       "path": "pages/preview",
       "used": 44,
-      "total": 47,
-      "percent": 94
+      "total": 48,
+      "percent": 92
+    },
+    {
+      "id": "demo-app",
+      "label": "Demo App",
+      "path": "pages/Demo App",
+      "used": 1,
+      "total": 48,
+      "percent": 2
+    },
+    {
+      "id": "device-intelligence",
+      "label": "Device Intelligence",
+      "path": "pages/device-intelligence",
+      "used": 16,
+      "total": 48,
+      "percent": 33
     },
     {
       "id": "document-verification",
       "label": "Document Verification",
       "path": "pages/document-verification",
-      "used": 15,
-      "total": 47,
-      "percent": 32
+      "used": 23,
+      "total": 48,
+      "percent": 48
     },
     {
       "id": "electronic-id",
       "label": "Electronic Id",
       "path": "pages/electronic-id",
-      "used": 12,
-      "total": 47,
-      "percent": 26
+      "used": 26,
+      "total": 48,
+      "percent": 54
     },
     {
       "id": "experiments-ubo-graph",
       "label": "Experiments · Ubo Graph",
       "path": "pages/Experiments/ubo-graph",
       "used": 1,
-      "total": 47,
+      "total": 48,
       "percent": 2
     },
     {
       "id": "kyb-results",
       "label": "KYB Results",
       "path": "pages/KYB Results",
-      "used": 23,
-      "total": 47,
-      "percent": 49
+      "used": 26,
+      "total": 48,
+      "percent": 54
+    },
+    {
+      "id": "kyc-eidas",
+      "label": "KYC eIDAS",
+      "path": "pages/KYC eIDAS",
+      "used": 4,
+      "total": 48,
+      "percent": 8
     },
     {
       "id": "kyc-form",
       "label": "Kyc Form",
       "path": "pages/kyc-form",
-      "used": 13,
-      "total": 47,
-      "percent": 28
+      "used": 14,
+      "total": 48,
+      "percent": 29
     },
     {
       "id": "unified-intelligence-home",
       "label": "Unified Intelligence Home",
       "path": "pages/unified-intelligence-home",
-      "used": 3,
-      "total": 47,
-      "percent": 6
+      "used": 13,
+      "total": 48,
+      "percent": 27
+    },
+    {
+      "id": "unified-kyc-flow",
+      "label": "Unified Kyc Flow",
+      "path": "pages/unified-kyc-flow",
+      "used": 11,
+      "total": 48,
+      "percent": 23
+    },
+    {
+      "id": "user-testing",
+      "label": "User Testing",
+      "path": "pages/user-testing",
+      "used": 19,
+      "total": 48,
+      "percent": 40
     }
   ],
   "components": [
@@ -94,13 +142,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": true,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": true,
+        "user-testing": true
       }
     },
     {
@@ -117,14 +171,20 @@
       "notes": "4 variants x 3 sizes x 7 states x 2 shapes; loading swaps icon for .tds-spinner--xs",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
+        "business-reputation-review": false,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "demo-app": false,
+        "device-intelligence": true,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -143,13 +203,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -167,13 +233,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -192,13 +264,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -217,13 +295,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -240,13 +324,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -263,13 +353,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -286,13 +382,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -311,13 +413,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -336,13 +444,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -353,22 +467,58 @@
       "figmaVariants": 30,
       "cssFile": "select/select.css",
       "classPrefixes": [
-        "tds-select",
-        "tds-combobox"
+        "tds-select"
       ],
       "subComponents": "FieldLabel, FieldCaption, FieldValidation, Caret, DropdownPanel, Tag",
       "figmaNodeId": "96:1624",
-      "notes": "Includes combobox variant",
+      "notes": "Closed-list picker with DropdownPanel menu",
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": true,
+        "user-testing": false
+      }
+    },
+    {
+      "id": "combobox",
+      "name": "Combobox",
+      "category": "Form Inputs",
+      "figmaStatus": "Done",
+      "figmaVariants": 15,
+      "cssFile": "combobox/combobox.css",
+      "classPrefixes": [
+        "tds-combobox"
+      ],
+      "subComponents": "FieldLabel, FieldCaption, FieldValidation, Caret, DropdownPanel",
+      "figmaNodeId": "9915:6974",
+      "notes": "Searchable Select — type to filter; sizes sm/md/lg; states rest/focus/open/selected/disabled; showLeadingVisual + showClear toggles",
+      "cssStatus": "Done",
+      "usedInPages": {
+        "bank-verification": true,
+        "business-reputation-review": true,
+        "preview": false,
+        "demo-app": false,
+        "device-intelligence": false,
+        "document-verification": false,
+        "electronic-id": true,
+        "experiments-ubo-graph": false,
+        "kyb-results": false,
+        "kyc-eidas": false,
+        "kyc-form": true,
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -387,13 +537,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -411,13 +567,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": true,
+        "user-testing": true
       }
     },
     {
@@ -435,13 +597,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -460,13 +628,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": true,
+        "user-testing": false
       }
     },
     {
@@ -484,13 +658,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": true,
+        "user-testing": false
       }
     },
     {
@@ -507,13 +687,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": true,
+        "user-testing": false
       }
     },
     {
@@ -531,13 +717,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -555,13 +747,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": true,
+        "user-testing": true
       }
     },
     {
@@ -580,13 +778,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -604,13 +808,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": true,
+        "user-testing": true
       }
     },
     {
@@ -627,14 +837,20 @@
       "notes": "TruAI badge; sparkles icon always required",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
+        "business-reputation-review": false,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "demo-app": false,
+        "device-intelligence": true,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -654,13 +870,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": true,
         "kyc-form": true,
-        "unified-intelligence-home": true
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -677,13 +899,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": true,
         "kyc-form": true,
-        "unified-intelligence-home": true
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -700,13 +928,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -724,13 +958,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "demo-app": false,
+        "device-intelligence": false,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -748,13 +988,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "demo-app": false,
+        "device-intelligence": false,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -773,13 +1019,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -797,13 +1049,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -818,13 +1076,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": false,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -843,14 +1107,20 @@
       "notes": "Complex composite with many sub-components",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -866,14 +1136,20 @@
       "figmaNodeId": "856:13029",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
+        "business-reputation-review": false,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "demo-app": false,
+        "device-intelligence": true,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -890,13 +1166,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -914,13 +1196,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
-        "document-verification": false,
-        "electronic-id": false,
+        "demo-app": false,
+        "device-intelligence": true,
+        "document-verification": true,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": true,
+        "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -937,13 +1225,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -962,13 +1256,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": true,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": true,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": true,
         "experiments-ubo-graph": true,
         "kyb-results": true,
+        "kyc-eidas": true,
         "kyc-form": true,
-        "unified-intelligence-home": true
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": true,
+        "user-testing": true
       }
     },
     {
@@ -985,13 +1285,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": true,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": true,
+        "user-testing": true
       }
     },
     {
@@ -1008,13 +1314,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": false,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
-        "kyb-results": true,
+        "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1033,13 +1345,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": false,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -1055,14 +1373,20 @@
       "figmaNodeId": "866:13118",
       "cssStatus": "Done",
       "usedInPages": {
-        "bank-verification": false,
+        "bank-verification": true,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": true,
         "document-verification": true,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": true,
+        "user-testing": true
       }
     },
     {
@@ -1081,13 +1405,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1106,13 +1436,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
-        "electronic-id": false,
+        "electronic-id": true,
         "experiments-ubo-graph": false,
-        "kyb-results": false,
+        "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1131,13 +1467,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": true,
-        "electronic-id": true,
+        "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": true,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1153,13 +1495,19 @@
       "cssStatus": "Not Started",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": false,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1175,13 +1523,19 @@
       "cssStatus": "Not Started",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": false,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1198,13 +1552,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": false,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1220,13 +1580,19 @@
       "cssStatus": "Not Started",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": false,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1244,13 +1610,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1265,13 +1637,19 @@
       "cssStatus": "N/A",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": false,
+        "demo-app": false,
+        "device-intelligence": false,
         "document-verification": false,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": false,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     },
     {
@@ -1290,13 +1668,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
-        "document-verification": false,
+        "demo-app": false,
+        "device-intelligence": false,
+        "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": true,
+        "unified-kyc-flow": false,
+        "user-testing": true
       }
     },
     {
@@ -1315,13 +1699,19 @@
       "cssStatus": "Done",
       "usedInPages": {
         "bank-verification": false,
+        "business-reputation-review": false,
         "preview": true,
-        "document-verification": false,
+        "demo-app": false,
+        "device-intelligence": false,
+        "document-verification": true,
         "electronic-id": false,
         "experiments-ubo-graph": false,
         "kyb-results": true,
+        "kyc-eidas": false,
         "kyc-form": false,
-        "unified-intelligence-home": false
+        "unified-intelligence-home": false,
+        "unified-kyc-flow": false,
+        "user-testing": false
       }
     }
   ],
@@ -1455,6 +1845,10 @@
     }
   ],
   "warnings": [
-    "Unlisted component folder in Components/: risk-category-strip"
+    "Unlisted component folder in Components/: demo-guidance-card",
+    "Unlisted component folder in Components/: progress-bar",
+    "Unlisted component folder in Components/: risk-category-strip",
+    "Unlisted component folder in Components/: stepper",
+    "Unlisted component folder in Components/: tap-indicator"
   ]
 }

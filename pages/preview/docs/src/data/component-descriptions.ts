@@ -48,6 +48,8 @@ const COMPONENT_PAGE_DESCRIPTIONS: Partial<Record<ComponentPageId, string>> = {
     "Textareas collect multi-line notes, comments, and policy text. They share field label, caption, and validation patterns with TextInput and include a resize grip for longer content.",
   select:
     "Select fields let users choose from predefined options — country, province, verification package. The trigger opens a DropdownPanel menu with single or multi-select modes.",
+  combobox:
+    "Comboboxes are searchable Selects for long lists. --open (popup) and --selected (committed value) are independent: clear shows when there is a value; the menu only appears with --open. Prefer Select when the list is short enough to browse.",
   "date-picker":
     "Date pickers reduce format errors for incorporation dates, document expiry, and reporting ranges. Single and range modes share calendar day styling and validation states.",
   radio:

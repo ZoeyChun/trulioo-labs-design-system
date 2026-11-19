@@ -25,7 +25,7 @@ const NESTED_SKIP = new Set([
   "data-table/sort-button/sort-button.css",
 ]);
 
-const SECONDARY_ENTRIES = new Set(["select/combobox.css"]);
+const SECONDARY_ENTRIES = new Set([]);
 
 const SKIP_PAGE_DIRS = new Set(["_shared", "shared", "node_modules", "dist"]);
 const PREVIEW_SOURCE_SKIP = new Set(["react-dist", "docs-dist", "react", "docs", "node_modules"]);

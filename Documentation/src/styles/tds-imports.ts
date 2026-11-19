@@ -34,7 +34,7 @@ import "../../../Components/risk-category-strip/risk-category-strip.css";
 import "../../../Components/score-gauge/score-gauge.css";
 import "../../../Components/section-header/section-header.css";
 import "../../../Components/segmented-control/segmented-control.css";
-import "../../../Components/select/combobox.css";
+import "../../../Components/combobox/combobox.css";
 import "../../../Components/select/select.css";
 import "../../../Components/side-nav/side-nav.css";
 import "../../../Components/spinner/spinner.css";

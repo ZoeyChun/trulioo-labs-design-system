@@ -16,7 +16,7 @@ const NESTED_SKIP = new Set([
   "side-nav/nav-list/nav-list.css",
   "data-table/sort-button/sort-button.css",
 ]);
-const SECONDARY_ENTRIES = new Set(["select/combobox.css"]);
+const SECONDARY_ENTRIES = new Set([]);
 
 function discoverComponentImports() {
   const imports = [];

@@ -21,7 +21,7 @@ const NESTED_SKIP = new Set([
 ]);
 
 /** Secondary entry files (same folder, different primary name). */
-const SECONDARY_ENTRIES = new Set(["select/combobox.css"]);
+const SECONDARY_ENTRIES = new Set([]);
 
 /** Base reset + typography for preview page shell (not in tokens.css). */
 const PREVIEW_BASE_CSS = `/* --- Base --- */
