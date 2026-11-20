@@ -67,7 +67,49 @@
     orbs = [];
   }
 
+  /* The home hero's dot globe — the same sphere math as js/d3-home-4.js, drawn
+     into the specimen's own canvas so it re-renders with the step. */
+  function mountGlobe(canvas) {
+    var STOPS = [[255, 209, 102], [90, 199, 202], [158, 223, 182], [90, 199, 202]];
+    var COUNT = 2000, TILT = 23 * Math.PI / 180, PERSPECTIVE = 2.6, SPEED = 0.00003;
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var golden = Math.PI * (3 - Math.sqrt(5)), dots = [], i;
+    function grad(t) {
+      var f = Math.min(Math.max(t, 0), 1) * (STOPS.length - 1), k0 = Math.min(Math.floor(f), STOPS.length - 2), k = f - k0;
+      return STOPS[k0].map(function (v, c) { return Math.round(v + (STOPS[k0 + 1][c] - v) * k); });
+    }
+    for (i = 0; i < COUNT; i++) {
+      var y = 1 - (i / (COUNT - 1)) * 2, r = Math.sqrt(1 - y * y), th = golden * i;
+      dots.push({ x: Math.cos(th) * r, y: y, z: Math.sin(th) * r, c: grad((1 - y) / 2), seed: Math.random() * 6.2832 });
+    }
+    var ctx = canvas.getContext("2d"), host = canvas.parentNode, w = 0, h = 0, dpr = 1, angle = 0, last = 0, raf = 0;
+    var cosT = Math.cos(TILT), sinT = Math.sin(TILT);
+    function frame(now) {
+      raf = requestAnimationFrame(frame);
+      if (!host.offsetParent || document.hidden) { last = now; return; }
+      if (Math.abs(host.clientWidth - w) > 1 || Math.abs(host.clientHeight - h) > 1) {
+        dpr = Math.min(window.devicePixelRatio || 1, 2); w = host.clientWidth; h = host.clientHeight;
+        canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      }
+      var dt = last ? now - last : 16; last = now;
+      if (!reduced) angle += dt * SPEED;
+      var R = Math.min(w * 0.46, h * 0.85), cx = w / 2, cy = h / 2, cosA = Math.cos(angle), sinA = Math.sin(angle);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h); ctx.globalCompositeOperation = "lighter";
+      for (var n = 0; n < dots.length; n++) {
+        var d = dots[n], x1 = d.x * cosA + d.z * sinA, z1 = -d.x * sinA + d.z * cosA;
+        var y2 = d.y * cosT - z1 * sinT, z2 = d.y * sinT + z1 * cosT, p = PERSPECTIVE / (PERSPECTIVE - z2);
+        var depth = (z2 + 1) / 2, tw = reduced ? 1 : 0.75 + 0.25 * Math.sin(now * 0.001 + d.seed);
+        var rim = Math.sqrt(x1 * x1 + y2 * y2), edge = Math.pow(rim, 0.64);
+        ctx.fillStyle = "rgba(" + d.c[0] + "," + d.c[1] + "," + d.c[2] + "," + ((0.02 + 0.98 * edge) * (0.6 + 0.4 * depth) * tw).toFixed(3) + ")";
+        ctx.beginPath(); ctx.arc(cx + x1 * R * p, cy + y2 * R * p, (0.6 + 1.3 * edge) * p, 0, 6.2832); ctx.fill();
+      }
+    }
+    raf = requestAnimationFrame(frame);
+    return { destroy: function () { cancelAnimationFrame(raf); } };
+  }
+
   function mountOrbs(root) {
+    root.querySelectorAll("[data-dx-globe]").forEach(function (c) { orbs.push(mountGlobe(c)); });
     root.querySelectorAll("[data-orb]").forEach(function (host) {
       if (!window.TruAIFloat || !window.TruAIFloat.mountHeader) return;
       var o = window.TruAIFloat.mountHeader(host);
@@ -84,7 +126,9 @@
     /* The state picker: one orb the buttons drive. Completed settles back to
        idle on its own, so the buttons follow it rather than lying about it. */
     root.querySelectorAll("[data-orb-player]").forEach(function (host) {
-      if (!window.TruAIBubble || !window.TruAIBubble.mountPanel) return;
+      /* TruAIFloat is the orb the experiments page and the portal share: the logo
+         wraps around the sphere while Thinking, and Acting pulses. */
+      if (!window.TruAIFloat || !window.TruAIFloat.mount) return;
       var group = host.parentElement;
       var sync = function (state) {
         group.querySelectorAll("[data-dx-orb-state]").forEach(function (b) {
@@ -93,20 +137,30 @@
           b.setAttribute("aria-checked", on ? "true" : "false");
         });
       };
-      var o = window.TruAIBubble.mountPanel(host, {
-        state: host.getAttribute("data-orb-player") || "idle",
-        actingLabel: "Searching the registry",
-        onCompletedEnd: function () { sync("idle"); }
-      });
+      var o = window.TruAIFloat.mount(host, {});
       if (!o) return;
       orbs.push(o);
-      group.querySelectorAll("[data-dx-orb-state]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var state = btn.getAttribute("data-dx-orb-state");
-          o.set({ state: state });
-          sync(state);
+      /* The portal shows the orb bare; the title and status sit beside it in the header. */
+      var I = window.DOCSX.I;
+      var STATUS = { idle: ["", "Awaiting input"], thinking: ["", "Thinking…"],
+                     acting: [I.search12, "Checking registry"], completed: [I.file11, "Report ready"] };
+      var statusEl = group.querySelector(".dx-orbplay__status");
+      var go = function (state) {
+        var st = STATUS[state] || STATUS.idle;
+        if (statusEl) statusEl.innerHTML = (st[0] ? '<span class="dx-orbplay__status-icon">' + st[0] + "</span>" : "") + "<span>" + st[1] + "</span>";
+        o.setMode({
+          state: state,
+          actingLabel: "Checking registry",
+          actingIconHtml: window.DOCSX.I.search12,
+          /* Completed holds, then settles back to idle — the buttons follow it. */
+          onCompletedEnd: function () { o.setMode({ state: "idle" }); sync("idle"); }
         });
+        sync(state);
+      };
+      group.querySelectorAll("[data-dx-orb-state]").forEach(function (btn) {
+        btn.addEventListener("click", function () { go(btn.getAttribute("data-dx-orb-state")); });
       });
+      go(host.getAttribute("data-orb-player") || "idle");
     });
   }
 
