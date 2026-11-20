@@ -63,6 +63,8 @@
   /* -------------------------------------------------------------- render --- */
 
   function destroyOrbs() {
+    desktopObservers.forEach(function (o) { o.disconnect(); });
+    desktopObservers = [];
     orbs.forEach(function (o) { try { o.destroy(); } catch (e) {} });
     orbs = [];
   }
@@ -106,6 +108,25 @@
     }
     raf = requestAnimationFrame(frame);
     return { destroy: function () { cancelAnimationFrame(raf); } };
+  }
+
+  /* Scale each desktop frame to the width of its column. */
+  var desktopObservers = [];
+  function fitDesktops(root) {
+    root.querySelectorAll(".dx-desktop-wrap").forEach(function (wrap) {
+      var inner = wrap.firstElementChild;
+      var fit = function () {
+        var k = wrap.clientWidth / 1440;
+        inner.style.transform = "scale(" + k + ")";
+        wrap.style.height = Math.round(820 * k) + "px";
+      };
+      fit();
+      if (window.ResizeObserver) {
+        var ro = new ResizeObserver(fit);
+        ro.observe(wrap);
+        desktopObservers.push(ro);
+      }
+    });
   }
 
   function mountOrbs(root) {
@@ -270,6 +291,7 @@
       tableHtml(sc);
 
     mountOrbs(stage);
+    fitDesktops(stage);
     stage.scrollTop = 0;
   }
 

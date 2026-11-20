@@ -56,17 +56,6 @@ body {
 
 .dx-bar__links { display: flex; gap: 6px; margin-left: auto; }
 
-.dx-bar__link {
-  padding: 5px 11px;
-  border: 1px solid var(--border-subtle, #dde2de);
-  border-radius: 999px;
-  background: var(--surface-neutral-01, #fff);
-  color: var(--text-default, #172d2d);
-  font-size: 12px;
-  text-decoration: none;
-}
-
-.dx-bar__link:hover { border-color: var(--interactive-default, #004c45); }
 
 /* ------------------------------------------------------------- sidebar --- */
 
@@ -705,7 +694,8 @@ body {
 .dx-view .d1-nav-tip { display: none; }
 
 /* The Chats dock, shown beside the portal's own rail. */
-.dx-dock { display: flex; align-items: stretch; min-height: 200px; }
+.dx-sheet:has(> .dx-dock) { width: max-content; max-width: 100%; padding: 0; overflow: hidden; border-radius: 16px; }
+.dx-dock { display: flex; align-items: stretch; width: max-content; max-width: 100%; min-height: 360px; }
 /* The rail's own look, from css/shell.css (".d1-rail", ".d1-rail__header",
    ".d1-logo", ".d1-rail__nav", ".d1-nav-btn"), which this page cannot link
    wholesale: it styles html, body and .d1-shell. Only the sizing and the
@@ -736,10 +726,12 @@ body {
   padding: 0;
   border: 0;
   border-radius: var(--radius-lg, 12px);
-  background: var(--interactive-default, #16423a);
-  overflow: hidden;
+  /* Home layout 4 draws the mark without the green tile: the dark symbol as a
+     plain background (css/d3-home-refresh.css). */
+  background: url("../assets/logo-mark-dark.svg") center / 30px 24.6px no-repeat;
+  overflow: visible;
 }
-.dx-view .d1-logo img { display: block; flex-shrink: 0; }
+.dx-view .d1-logo img { display: block; flex-shrink: 0; visibility: hidden; }
 .dx-view .d1-rail__nav {
   display: flex;
   flex-direction: column;
@@ -768,8 +760,9 @@ body {
   display: flex;
   transform: none;
   inset: auto;
-  width: auto;
-  flex: 1;
+  /* The real dock is a narrow 200px panel beside the 72px rail (css/d3-rail.css). */
+  width: 200px;
+  flex: 0 0 200px;
   min-width: 0;
   height: auto;
   border: 0;
@@ -893,6 +886,24 @@ body {
   cursor: pointer;
 }
 
-/* Expanded: the panel takes the canvas beside the rail. */
-.dx-expand { display: flex; align-items: stretch; width: 100%; min-height: 320px; }
-.dx-expand__pane { flex: 1; position: static; }
+/* Expanded: a real desktop frame, scaled to the column by docs.js. */
+.dx-desktop-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle, #dde2de);
+  border-radius: 12px;
+  background: var(--surface-neutral-01, #fff);
+}
+.dx-desktop {
+  display: flex;
+  align-items: stretch;
+  width: 1440px;
+  height: 820px;
+  transform-origin: 0 0;
+  background: var(--surface-neutral-01, #fff);
+  text-align: left;
+}
+.dx-desktop .d3-chat-pane { height: calc(100% - 16px); }
+.dx-desktop .d3-chat-pane__thread { flex: 1 1 auto; overflow: hidden; }
+.dx-desktop .dx-dock__rail { height: auto; }

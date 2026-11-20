@@ -810,28 +810,27 @@
       "</div></aside></div>";
   }
 
-  /* Expanded: data-d3-chat-size="full" and the panel takes the canvas beside
-     the rail. The expand control becomes Collapse, pressed. */
+  /* Expanded: data-d3-chat-size="full" — the panel takes the whole canvas beside
+     the rail and the workspace hides. Drawn at a real 1440x820 desktop and scaled
+     down to fit (docs.js fitDesktops), so the proportions are the product's. */
   function expandedPanel() {
-    var head = '<div class="d3-chat-pane__head" style="margin-bottom:0">' +
-      '<div class="d3-ai-ident"><span class="d3-ai-ident__orb" data-orb="idle"></span>' +
-      '<span class="d3-ai-ident__copy"><span class="d3-ai-ident__title">Verify Meridian Capital in US</span>' +
-      '<span class="d3-ai-ident__status"><span>Awaiting input</span></span></span></div>' +
+    var head = '<div class="d3-chat-pane__head">' +
+      X.identRow("Verify Meridian Capital in US", "Awaiting input", null, "idle") +
       '<div class="d3-chat-pane__tools">' +
       X.iconBtn(I.newChat, "New Chat", "tds-icon-btn--invisible tds-icon-btn--circular d3-chat-pane__new", " data-d3-chat-new") +
       X.iconBtn(I.collapse, "Collapse", "tds-icon-btn--invisible tds-icon-btn--circular d3-chat-pane__expand", ' aria-pressed="true"') +
       X.iconBtn(I.minimize, "Minimize", "tds-icon-btn--invisible d3-chat-pane__close") +
       "</div></div>";
-    return '<div class="dx-expand d1-shell" data-d3-chat="open" data-d3-chat-mode="kyb" ' +
-      'data-d3-ai-orb="header" data-d3-chat-size="full">' +
+    return '<div class="dx-desktop-wrap"><div class="dx-desktop d1-shell" data-d3-chat="open" data-d3-chat-mode="kyb" ' +
+      'data-d3-ai-orb="header" data-d3-chat-size="full" data-d3-view="kyb">' +
       railStub() +
-      '<aside class="d3-chat-pane dx-expand__pane" style="display:flex;margin:0;box-shadow:none;min-width:0;padding:16px">' +
-      head +
-      '<div style="margin-top:16px">' + X.user("verify meridian, US") +
-      '<div class="d3-kyb-cand-panel" style="margin-top:16px"><div class="ai-reply">' +
-      '<p class="ai-reply__lead">Got it — meridian in United States.</p>' +
-      '<p class="ai-reply__sub">What level of compliance and risk verification do you need to perform today?</p>' +
-      "</div></div>" + X.levelList("insights") + "</div></aside></div>";
+      '<aside class="d3-chat-pane is-active">' + head +
+      '<div class="d3-chat-pane__body"><div class="d3-chat-pane__thread"><div class="d1-thread">' +
+      X.user("verify meridian, US") +
+      '<div class="d1-ai"><div class="ai-reply"><p class="ai-reply__lead">Got it — meridian in United States.</p>' +
+      '<p class="ai-reply__sub">What level of compliance and risk verification do you need to perform today?</p></div></div>' +
+      X.levelList("insights") +
+      "</div></div>" + X.composer("Select a match or refine your search", false, false).replace(" d3-pane-idle-form", "") + "</div></aside></div></div>";
   }
 
   /* The rail the panel sits against. */
