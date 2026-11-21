@@ -385,7 +385,7 @@
     return html + '<div class="tds-data-table-container d3-tx-agent__table"><div class="tds-data-table__wrapper">' +
       '<table class="tds-data-table tds-data-table--compact"><thead><tr><th>Transaction</th><th>Outcome</th></tr></thead><tbody>' +
       rows.map(function (r) {
-        var pending = r[1] === "In Progress" || r[1] === "Review" || r[1] === "Pending Review";
+        var pending = r[1] === "In Progress";
         var tone = pending ? "intermediate" : r[1] === "Not Verified" ? "negative" : r[1] === "Verified" ? "positive" : "neutral";
         return '<tr><td class="tds-data-table__text-cell">' + r[0] + '</td><td><span class="tds-tag tds-tag--' + tone + '">' +
           (pending ? '<span class="tds-tag__leading-visual">' + CLOCK + "</span>" : "") + r[1] + "</span></td></tr>";
@@ -1321,22 +1321,23 @@
             finder(false) + ADDRESS_EMPTY + "</div></div>") +
           X.cap("…and once a name and a jurisdiction are in:") +
           X.sheet('<div class="vb-prefill dx-noanim"><div class="d3-kyb-fields">' +
-            zone("identity", "Business identity", field("Business Name", "meridian", true) + jurField("Alabama") + field("Business Registration Number", "")) +
+            zone("identity", "Business identity", field("Business Name", "meridian", true) + jurField("Illinois") + field("Business Registration Number", "")) +
             finder(true) + ADDRESS_EMPTY + "</div></div>"); } },
 
       { num: "4", title: "Search — optional", actor: "Action",
         trigger: "clicks <strong>Business Finder</strong> and picks a match",
         note: { k: "Optional", text: "Skipping the Finder costs nothing — the fields below stay open and typed values are kept." },
         changes: ["The results open under the button: a count, a <strong>Hide</strong> control, and a card per candidate.",
+                  "Every candidate is registered in the one jurisdiction that was picked — here Illinois — never a mix of states.",
                   "Each card carries the name, the registered address, and the registration number with its status.",
                   "Five are listed at a time, with a pager and a line on how to narrow the search.",
                   "Picking one fills the business name, the BRN and the address — marked <em>Auto-filled by Business Finder</em>, not <em>Pre-filled</em>."],
         view: function () { return X.sheet(finderResults(9, [
-            ["Meridian Capital LLC", "200 Vesey Street, New York, NY, 10281", "NY DOS 4417762 · Active"],
-            ["Meridian Global Partners Inc.", "1209 Orange Street, Wilmington, DE, 19801", "DE File 5582014 · Active"],
-            ["Meridian Analytics Inc.", "525 Market Street, San Francisco, CA, 94105", "CA SOS C4129087 · Active"],
             ["Meridian Industrial Holdings LLC", "233 S Wacker Drive, Chicago, IL, 60606", "IL SOS 04581276 · Active"],
-            ["Meridian Partners Inc.", "200 California St, San Francisco, CA, 94111", "US-7731-INC · Active"]
+            ["Meridian Capital Partners LLC", "120 N LaSalle Street, Chicago, IL, 60602", "IL SOS 03974418 · Active"],
+            ["Meridian Logistics Inc.", "410 W Main Street, Springfield, IL, 62701", "IL SOS 05120937 · Active"],
+            ["Meridian Analytics Group LLC", "77 W Wacker Drive, Chicago, IL, 60601", "IL SOS 04288150 · Active"],
+            ["Meridian Partners Inc.", "300 E Randolph Street, Chicago, IL, 60601", "IL SOS 05561203 · Active"]
           ], 1, 5)); } },
 
       { num: "5", title: "Optional fields", actor: "Action", noVisual: true,
@@ -1356,6 +1357,7 @@
     ],
     props: { name: "Business Finder", head: ["", ""], rows: [
       ["Needs", "a country, a jurisdiction, and either a business name (3+ characters) or a BRN"],
+      ["Searches", "only the selected jurisdiction's registry, so every match is from that one jurisdiction"],
       ["Lists", "five candidates at a time, paged, with the total"],
       ["On pick", "fills name, BRN and address — labelled Auto-filled by Business Finder"],
       ["Skipping it", "costs nothing; the fields below stay open"]
@@ -1386,13 +1388,13 @@
         changes: ["Existing filters are <strong>cleared</strong> first, then the table is scoped to the last 7 days.",
                   "The answer is an activity summary, not a row list: transactions in view, most common outcome, unsuccessful / flagged, needs review, high risk scores, top product.",
                   "A zero count reads positive (green); a non-zero unsuccessful / flagged or high-risk count reads negative, and needs-review reads review.",
-                  "Under it, a list headed <em>Found N transactions · notable items</em> (up to five rows of anything unsuccessful, high-risk, or awaiting review).",
+                  "Under it, a list headed <em>Found N transactions · notable items</em> (up to five rows of anything unsuccessful, high-risk, or still in progress).",
                   "The suggested actions change to the after-set: <em>Summarize last 7 days activity</em>, <em>Show verified transactions only</em>, <em>Clear filters and show all</em>."],
         view: function () { return X.txPanel(X.user("Summarize last 7 days activity") +
           X.txReply("<p>Here’s a summary grounded in the 24 transactions currently available in this demo dataset.</p>") +
           X.txSummary("Activity summary", [["Transactions in view", "24 of 24"], ["Most common outcome", "Verified (15)"],
             ["Unsuccessful / flagged", "4", "negative"], ["Needs review", "5", "review"], ["High risk scores", "3", "negative"], ["Top product", "Business Insights", "positive"]]) +
-          X.txReply(X.txList("notable items", "A few rows worth a closer look (from the same dataset):", [["Kestrel Freight GmbH", "In Progress"], ["Harbor Point Capital Partners International Holdings LLC", "Not Verified"], ["Apex Dynamics LLC", "Review"]], 0)) +
+          X.txReply(X.txList("notable items", "A few rows worth a closer look (from the same dataset):", [["Kestrel Freight GmbH", "In Progress"], ["Harbor Point Capital Partners International Holdings LLC", "Not Verified"], ["Apex Dynamics LLC", "Verified"]], 0)) +
           X.txFollow(["Summarize last 7 days activity", "Show verified transactions only", "Clear filters and show all"]), "Summarize last 7 days activity", "Awaiting input", "idle"); } },
 
       { num: "3b", title: "Find high-risk", actor: "Panel",
@@ -1404,15 +1406,15 @@
                   "With matches, the suggested actions switch to the after-set (Summarize / Show verified only / Clear); with none they return to the three filters.",
                   "Medium and low risk are separate intents, reached the same way."],
         view: function () { return X.txPanel(X.user("Find high-risk transactions") +
-          X.txReply(X.txList("high-risk transactions", "I found 8 transactions matching “high-risk transactions”. I’ve filtered the table to match.", [["Kestrel Freight GmbH", "In Progress"], ["Harbor Point Capital Partners International Holdings LLC", "Not Verified"], ["Apex Dynamics LLC", "Review"], ["Meridian Capital LLC", "Verified"], ["Northwind Traders Ltd.", "Not Verified"]], 3)) +
+          X.txReply(X.txList("high-risk transactions", "I found 8 transactions matching “high-risk transactions”. I’ve filtered the table to match.", [["Kestrel Freight GmbH", "In Progress"], ["Harbor Point Capital Partners International Holdings LLC", "Not Verified"], ["Apex Dynamics LLC", "Verified"], ["Meridian Capital LLC", "Verified"], ["Northwind Traders Ltd.", "Not Verified"]], 3)) +
           X.txFollow(["Summarize last 7 days activity", "Show verified transactions only", "Clear filters and show all"]), "Find high-risk transactions", "Awaiting input", "idle"); } },
 
       { num: "3c", title: "Show not verified", actor: "Panel",
         trigger: "“Show not verified transactions”",
         note: { k: "Wording", text: "The product says <strong>not verified</strong>, not “declined” — in the prompt card, in the agent’s copy, and on the outcome tag." },
         changes: ["The table is filtered to unsuccessful outcomes.",
-                  "Same shape of answer as high-risk: a count line, then the matching rows with the table’s own outcome tag — red <em>Not Verified</em>, amber (with a clock) for Review, Pending Review and In Progress.",
-                  "<em>Find transactions requiring review</em> is the third filter, covering Review, Pending Review and In Progress."],
+                  "Same shape of answer as high-risk: a count line, then the matching rows with the table’s own outcome tag — red <em>Not Verified</em>, green <em>Verified</em>, and amber (with a clock) for <em>In Progress</em>.",
+                  "<em>Find transactions requiring review</em> is the third filter, covering rows still <em>In Progress</em>."],
         view: function () { return X.txPanel(X.user("Show not verified transactions") +
           X.txReply(X.txList("not verified transactions", "I found 3 transactions matching “not verified transactions”. I’ve filtered the table to match.", [["Harbor Point Capital Partners International Holdings LLC", "Not Verified"], ["Apex Dynamics LLC", "Not Verified"], ["Vanguard Global Shipping", "Not Verified"]], 0)) +
           X.txFollow(["Summarize last 7 days activity", "Show verified transactions only", "Clear filters and show all"]), "Show not verified transactions", "Awaiting input", "idle"); } },
@@ -1439,7 +1441,7 @@
       ["Summarize last 7 days activity", "clears filters, scopes to 7 days, answers with a summary plus notable rows"],
       ["Find high-risk transactions", "filters the table to high risk; lists the matches"],
       ["Show not verified transactions", "filters the table to unsuccessful outcomes; lists the matches"],
-      ["Find transactions requiring review", "a follow-up chip, not a landing card — Review, Pending Review and In Progress"],
+      ["Find transactions requiring review", "a follow-up chip, not a landing card — rows still In Progress"],
       ["Show verified transactions only", "offered after a filter is on"],
       ["Clear filters and show all", "removes every filter the agent applied"]
     ] } },
